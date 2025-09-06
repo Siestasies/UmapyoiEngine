@@ -5,7 +5,7 @@
 int main() 
 {
     // Create window
-    UmapyoiEngine::Window window(800, 600, "UmapyoiEngine - Game Name");
+    UmapyoiEngine::Window window(800, 600, "UmapyoiEngine");
     
     // Initialize the engine
     if (!window.Initialize()) 
@@ -17,14 +17,16 @@ int main()
     std::cout << "Press ESC to exit." << std::endl;
     
     // Game loop
-    while (!window.ShouldClose()) {
+    while (!window.ShouldClose()) 
+    {
         // Check for ESC key
-        if (window.IsKeyPressed(GLFW_KEY_ESCAPE)) {
+        if (window.IsKeyPressed(GLFW_KEY_ESCAPE)) 
+        {
             std::cout << "ESC pressed, exiting..." << std::endl;
             break;
         }
         
-        // Update the engine (handles rendering and events)
+        // Update the engine
         window.Update();
     }
     
