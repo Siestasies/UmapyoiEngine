@@ -1,6 +1,7 @@
 #include "Window.hpp"
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include "Input.hpp"
 
 int main() 
 {
@@ -13,21 +14,23 @@ int main()
         std::cerr << "Failed to initialize UmapyoiEngine!" << std::endl;
         return -1;
     }
-    
-    std::cout << "Press ESC to exit." << std::endl;
+
+    // Initialize input system
+    UmapyoiEngine::Input::Initialize(window.GetGLFWWindow());
     
     // Game loop
     while (!window.ShouldClose()) 
     {
-        // Check for ESC key
-        if (window.IsKeyPressed(GLFW_KEY_ESCAPE)) 
-        {
-            std::cout << "ESC pressed, exiting..." << std::endl;
-            break;
-        }
-        
-        // Update the engine
+        // Update window
         window.Update();
+
+        // Close if ESC key is pressed
+        if (UmapyoiEngine::Input::KeyPressed(GLFW_KEY_ESCAPE))
+        {
+            window.Close();
+        }
+
+        UmapyoiEngine::Input::Update();
     }
     
     // Shut down when window goes out of scope

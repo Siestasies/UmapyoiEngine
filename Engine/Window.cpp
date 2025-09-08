@@ -5,7 +5,7 @@ namespace UmapyoiEngine
 {
     
     Window::Window(int width, int height, const std::string& title)
-        : m_Window(nullptr), m_Width(width), m_Height(height), m_Title(title), m_Initialized(false) {}
+        : mWindow(nullptr), mWidth(width), mHeight(height), mTitle(title), mInitialized(false) {}
     
     Window::~Window() 
     {
@@ -24,8 +24,8 @@ namespace UmapyoiEngine
         }
         
         // Create window
-        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title.c_str(), nullptr, nullptr);
-        if (!m_Window) 
+        mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
+        if (!mWindow) 
         {
             std::cerr << "Failed to create GLFW window!" << std::endl;
             glfwTerminate();
@@ -33,24 +33,24 @@ namespace UmapyoiEngine
         }
         
         // Make the window's context current
-        glfwMakeContextCurrent(m_Window);
+        glfwMakeContextCurrent(mWindow);
         
-        std::cout << "UmapyoiEngine window created: " << m_Title << " (" << m_Width << "x" << m_Height << ")" << std::endl;
+        std::cout << "UmapyoiEngine window created: " << mTitle << " (" << mWidth << "x" << mHeight << ")" << std::endl;
         
-        m_Initialized = true;
+        mInitialized = true;
         return true;
     }
     
     void Window::Update() 
     {
-        if (!m_Initialized) return;
+        if (!mInitialized) return;
         
         // Clear the screen to purple colour
         glClearColor(0.6f, 0.3f, 0.8f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         // Swap front and back buffers
-        glfwSwapBuffers(m_Window);
+        glfwSwapBuffers(mWindow);
         
         // Poll for and process events
         glfwPollEvents();
@@ -58,31 +58,32 @@ namespace UmapyoiEngine
     
     void Window::Shutdown() 
     {
-        if (m_Initialized)
+        if (mInitialized)
         {
             std::cout << "Shutting down UmapyoiEngine..." << std::endl;
             
-            if (m_Window) 
+            if (mWindow) 
             {
-                glfwDestroyWindow(m_Window);
-                m_Window = nullptr;
+                glfwDestroyWindow(mWindow);
+                mWindow = nullptr;
             }
             
             glfwTerminate();
-            m_Initialized = false;
+            mInitialized = false;
+        }
+    }
+
+    void Window::Close()
+    {
+        if (mWindow)
+        {
+            glfwSetWindowShouldClose(mWindow, GLFW_TRUE);
         }
     }
     
     bool Window::ShouldClose() const 
     {
-        if (!m_Initialized || !m_Window) return true;
-        return glfwWindowShouldClose(m_Window);
+        if (!mInitialized || !mWindow) return true;
+        return glfwWindowShouldClose(mWindow);
     }
-    
-    bool Window::IsKeyPressed(int key) const 
-    {
-        if (!m_Initialized || !m_Window) return false;
-        return glfwGetKey(m_Window, key) == GLFW_PRESS;
-    }
-    
 }

@@ -16,18 +16,18 @@ namespace UmapyoiEngine
         void Shutdown();
         
         bool ShouldClose() const;
-        int GetWidth() const { return m_Width; }
-        int GetHeight() const { return m_Height; }
-        
-        // For checking if ESC was pressed
-        bool IsKeyPressed(int key) const;
+        void Close();
+
+        int GetWidth() const { return mWidth; }
+        int GetHeight() const { return mHeight; }
+
+        GLFWwindow* GetGLFWWindow() const { return mWindow; }
         
     private:
-        GLFWwindow* m_Window;
-        int m_Width;
-        int m_Height;
-        std::string m_Title;
-        bool m_Initialized;
+        GLFWwindow* mWindow;
+        int mWidth;
+        int mHeight;
+        std::string mTitle;
+        bool mInitialized;
     };
-    
 }
