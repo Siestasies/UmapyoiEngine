@@ -11,7 +11,7 @@ int main()
     // Initialize the engine
     if (!window.Initialize()) 
     {
-        std::cerr << "Failed to initialize UmapyoiEngine!" << std::endl;
+        std::cerr << "Failed to initialize window" << std::endl;
         return -1;
     }
 
@@ -34,6 +34,6 @@ int main()
     }
     
     // Shut down when window goes out of scope
-    std::cout << "Game ended successfully!" << std::endl;
+    std::cout << "Game closed" << std::endl;
     return 0;
 }
