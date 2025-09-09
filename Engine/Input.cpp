@@ -4,7 +4,7 @@
 
 namespace UmapyoiEngine
 {
-	// Definition and initialization of static member variables
+	// Static member variables
 	std::array<bool, GLFW_KEY_LAST + 1> Input::sKeys;
 	std::array<bool, GLFW_KEY_LAST + 1> Input::sKeysPrevFrame;
 	std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> Input::sMouseButtons;
