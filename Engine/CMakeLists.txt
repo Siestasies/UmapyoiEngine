@@ -4,14 +4,25 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "*.hpp"
 )
 
+# Force CMake to reconfigure when source files are added/removed
+set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
+
 # Create the UmapyoiEngine library
 add_library(UmapyoiEngine STATIC ${ENGINE_SOURCES})
 
-# Link GLFW to the engine
-target_link_libraries(UmapyoiEngine PUBLIC glfw)
+# Link libraries
+target_link_libraries(UmapyoiEngine 
+    PUBLIC 
+        glfw
+        OpenGL::GL  # Cross-platform OpenGL linking
+)
 
-# Windows OpenGL linking
-target_link_libraries(UmapyoiEngine PUBLIC opengl32)
+# Include GLM headers
+target_include_directories(UmapyoiEngine 
+    PUBLIC 
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${glm_SOURCE_DIR}  # Add GLM include directory
+)
 
-# Make the Engine headers available to Game
-target_include_directories(UmapyoiEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# Set C++ standard for this target
+target_compile_features(UmapyoiEngine PUBLIC cxx_std_20)
