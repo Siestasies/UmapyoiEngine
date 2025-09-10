@@ -21,6 +21,18 @@ Makefile
 *.VC.db
 *.VC.opendb
 *.dir/
+CMakeOverview
+ProjectSettings.json
+*.sqlite
+*WorkspaceState.json
+*.vsix
+.vs/
+*.backup.json
+*Layout.backup.json
+*INPUT.ipch
+*WINDOW.ipch
+*MAIN.ipch
+.vscode/
 
 # Ignore Xcode files (macOS)
 *.xcworkspace/
