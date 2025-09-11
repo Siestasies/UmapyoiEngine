@@ -70,8 +70,6 @@ namespace UmapyoiEngine
 				}
 			}
 		}
-		// Check mouse position
-		std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
 
 		sKeysPrevFrame = sKeys;
 		sMouseButtonsPrevFrame = sMouseButtons;
@@ -111,6 +109,8 @@ namespace UmapyoiEngine
 	{
 		sMouseX = xpos;
 		sMouseY = ypos;
+		// Check mouse position
+		std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
 	}
 
 	bool Input::KeyDown(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false; }
