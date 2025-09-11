@@ -39,6 +39,7 @@ FetchContent_MakeAvailable(glm)
 # ------------------------
 set(FMOD_API_DIR "${CMAKE_SOURCE_DIR}/Extern/fmod/api/core")
 set(FMOD_INCLUDE_DIR "${FMOD_API_DIR}/inc")
+set(FMOD_LIB_DIR "${FMOD_API_DIR}/lib/x64")
 
 # Detect architecture
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -54,8 +55,10 @@ set(FMOD_LIB_DIR "${FMOD_API_DIR}/lib/${FMOD_ARCH_DIR}")
 # ------------------------
 # Add FMOD wrapper
 # ------------------------
-# FMOD wrapper CMake uses FMOD_LIB_DIR and FMOD_INCLUDE_DIR
+# Must set FMOD_INCLUDE_DIR and FMOD_LIB_DIR *before* add_subdirectory
 add_subdirectory(Extern/fmod)
+
+
 
 # ------------------------
 # Build Engine first, then Game

@@ -1,22 +1,28 @@
-cmake_minimum_required(VERSION 3.15)
-project(FMOD)
+message("Processing FMOD wrapper CMake")
+message("FMOD_INCLUDE_DIR=${FMOD_INCLUDE_DIR}")
+message("FMOD_LIB_DIR=${FMOD_LIB_DIR}")
 
-# ------------------------
-# Core library
-# ------------------------
-add_library(FMOD::Core UNKNOWN IMPORTED)
-set_target_properties(FMOD::Core PROPERTIES
+# --- Core ---
+add_library(FMODCore STATIC IMPORTED GLOBAL)
+set_target_properties(FMODCore PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${FMOD_INCLUDE_DIR}"
     IMPORTED_LOCATION_DEBUG "${FMOD_LIB_DIR}/fmodL_vc.lib"
     IMPORTED_LOCATION_RELEASE "${FMOD_LIB_DIR}/fmod_vc.lib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "${FMOD_LIB_DIR}/fmod_vc.lib"
+    IMPORTED_LOCATION_MINSIZEREL "${FMOD_LIB_DIR}/fmod_vc.lib"
 )
+add_library(FMOD::Core ALIAS FMODCore)
 
-# ------------------------
-# Studio library
-# ------------------------
-add_library(FMOD::Studio UNKNOWN IMPORTED)
-set_target_properties(FMOD::Studio PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${FMOD_INCLUDE_DIR}"
-    IMPORTED_LOCATION_DEBUG "${FMOD_LIB_DIR}/fmodstudioL_vc.lib"
-    IMPORTED_LOCATION_RELEASE "${FMOD_LIB_DIR}/fmodstudio_vc.lib"
+# --- Studio ---
+set(FMOD_STUDIO_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/api/studio/inc")
+set(FMOD_STUDIO_LIB_DIR "${CMAKE_CURRENT_LIST_DIR}/api/studio/lib/x64")
+
+add_library(FMODStudio STATIC IMPORTED GLOBAL)
+set_target_properties(FMODStudio PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${FMOD_STUDIO_INCLUDE_DIR}"
+    IMPORTED_LOCATION_DEBUG "${FMOD_STUDIO_LIB_DIR}/fmodstudioL_vc.lib"
+    IMPORTED_LOCATION_RELEASE "${FMOD_STUDIO_LIB_DIR}/fmodstudio_vc.lib"
+    IMPORTED_LOCATION_RELWITHDEBINFO "${FMOD_STUDIO_LIB_DIR}/fmodstudio_vc.lib"
+    IMPORTED_LOCATION_MINSIZEREL "${FMOD_STUDIO_LIB_DIR}/fmodstudio_vc.lib"
 )
+add_library(FMOD::Studio ALIAS FMODStudio)
