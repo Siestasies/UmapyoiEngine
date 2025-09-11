@@ -28,6 +28,9 @@ FetchContent_Declare(
 set(GLM_TEST_ENABLE OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glm)
 
+# Add FMOD subdir
+add_subdirectory(extern/fmod)
+
 # Build Engine first, then Game
 add_subdirectory(Engine)
 add_subdirectory(Game)
