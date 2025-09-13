@@ -1,28 +1,41 @@
 #include "Window.hpp"
+#include "Graphics.hpp"
+#include "Input.hpp"
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include "Input.hpp"
 
-int main() 
+int main()
 {
+    std::cout << "Starting UmapyoiEngine..." << std::endl;
+
     // Create window
     UmapyoiEngine::Window window(800, 600, "UmapyoiEngine");
-    
-    // Initialize the engine
-    if (!window.Initialize()) 
+
+    // Initialize the window
+    if (!window.Initialize())
     {
         std::cerr << "Failed to initialize window" << std::endl;
         return -1;
     }
 
+    // Initialize graphics system
+    UmapyoiEngine::Graphics graphics;
+    if (!graphics.Initialize())
+    {
+        std::cerr << "Failed to initialize graphics system" << std::endl;
+        return -1;
+    }
+
     // Initialize input system
     UmapyoiEngine::Input::Initialize(window.GetGLFWWindow());
-    
+
+    std::cout << "All systems initialized successfully!" << std::endl;
+
     // Game loop
-    while (!window.ShouldClose()) 
+    while (!window.ShouldClose())
     {
-        // Update window
-        window.Update();
+        // Update input
+        UmapyoiEngine::Input::Update();
 
         // Close if ESC key is pressed
         if (UmapyoiEngine::Input::KeyPressed(GLFW_KEY_ESCAPE))
@@ -30,10 +43,13 @@ int main()
             window.Close();
         }
 
-        UmapyoiEngine::Input::Update();
+        // Rendering
+        graphics.ClearBackground();
+
+        // Update window
+        window.Update();
     }
-    
-    // Shut down when window goes out of scope
+
     std::cout << "Game closed" << std::endl;
     return 0;
 }

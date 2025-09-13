@@ -1,5 +1,12 @@
-# Collect all source files in the Engine directory and subdirectories
-file(GLOB_RECURSE ENGINE_SOURCES
+# Create GLAD library from local files
+set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
+add_library(glad STATIC
+    ${GLAD_DIR}/src/glad.c
+)
+target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
+
+# Collect all source files in the Engine directory (excluding GLAD subdirectory)
+file(GLOB ENGINE_SOURCES
     "*.cpp"
     "*.hpp"
 )
@@ -14,14 +21,16 @@ add_library(UmapyoiEngine STATIC ${ENGINE_SOURCES})
 target_link_libraries(UmapyoiEngine 
     PUBLIC 
         glfw
-        OpenGL::GL  # Cross-platform OpenGL linking
+        glad
+        OpenGL::GL
 )
 
-# Include GLM headers
+# Include directories
 target_include_directories(UmapyoiEngine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${glm_SOURCE_DIR}  # Add GLM include directory
+        ${glm_SOURCE_DIR}
+        ${stb_SOURCE_DIR}
 )
 
 # Set C++ standard for this target

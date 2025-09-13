@@ -1,18 +1,20 @@
-# Collect all source files in the Game directory and subdirectories
-file(GLOB_RECURSE GAME_SOURCES
+# Collect all source files in the Game directory
+file(GLOB GAME_SOURCES
     "*.cpp"
     "*.hpp"
 )
 
-# Force CMake to reconfigure when source files are added/removed
-set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
-
-# Create the Game executable
+# Create the executable
 add_executable(UmapyoiGame ${GAME_SOURCES})
 
-# Link against the UmapyoiEngine library
-# Since UmapyoiEngine is linked as PUBLIC, this automatically includes GLFW, GLM, and OpenGL
+# Link against the Engine library
 target_link_libraries(UmapyoiGame 
     PRIVATE 
         UmapyoiEngine
 )
+
+# Set C++ standard
+target_compile_features(UmapyoiGame PUBLIC cxx_std_20)
+
+# Set as startup project in Visual Studio
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT UmapyoiGame)

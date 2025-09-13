@@ -28,6 +28,17 @@ FetchContent_Declare(
 set(GLM_TEST_ENABLE OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glm)
 
+# We'll include GLAD manually in the Engine directory
+# No FetchContent needed for GLAD
+
+# Download stb (stb_image is header-only)
+FetchContent_Declare(
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(stb)
+
 # Build Engine first, then Game
 add_subdirectory(Engine)
 add_subdirectory(Game)
