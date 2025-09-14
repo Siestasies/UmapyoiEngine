@@ -88,9 +88,6 @@ void main()
 
     void Graphics::Update(float dt)
     {
-        // Graphics system doesn't need per-frame updates typically
-        // This could be used for animations, shader parameter updates, etc.
-
         // Handle window resize if needed
         if (mWindow)
         {
