@@ -48,28 +48,40 @@ namespace UmapyoiEngine
         // Only process input if window is set
         if (!mWindow) return;
 
-        // Optional: Print input state changes (you may want to remove this in production)
-        
+        // Check each key for state changes
         for (int i = 0; i <= GLFW_KEY_LAST; ++i) {
             const char* name = GetKeyName(i);
-            if (name && strcmp(name, "UNKNOWN") != 0) {
+            if (name) {
+                // Just pressed
                 if (sKeys[i] && !sKeysPrevFrame[i]) {
                     std::cout << name << " pressed" << std::endl;
                 }
+                // Just released
                 else if (!sKeys[i] && sKeysPrevFrame[i]) {
                     std::cout << name << " released" << std::endl;
+                }
+                // Held down
+                else if (sKeys[i] && sKeysPrevFrame[i]) {
+                    std::cout << name << " held" << std::endl;
                 }
             }
         }
 
+        // Check mouse buttons
         for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i) {
             const char* name = (i == 0) ? "LEFT_MOUSE" : (i == 1) ? "RIGHT_MOUSE" : (i == 2) ? "MIDDLE_MOUSE" : nullptr;
             if (name) {
+                // Just pressed
                 if (sMouseButtons[i] && !sMouseButtonsPrevFrame[i]) {
                     std::cout << name << " pressed" << std::endl;
                 }
+                // Just released
                 else if (!sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
                     std::cout << name << " released" << std::endl;
+                }
+                // Held down
+                else if (sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
+                    std::cout << name << " held" << std::endl;
                 }
             }
         }
@@ -126,52 +138,17 @@ namespace UmapyoiEngine
         std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
     }
 
-    // Static input query methods
-    bool InputSystem::KeyDown(int key)
-    {
-        return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false;
-    }
+    bool InputSystem::KeyDown(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false; }
+    bool InputSystem::KeyPressed(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] && !sKeysPrevFrame[key] : false; }
+    bool InputSystem::KeyReleased(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? !sKeys[key] && sKeysPrevFrame[key] : false; }
 
-    bool InputSystem::KeyPressed(int key)
-    {
-        return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] && !sKeysPrevFrame[key] : false;
-    }
+    bool InputSystem::MouseButtonDown(int button) { return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? sMouseButtons[button] : false; }
+    bool InputSystem::MouseButtonPressed(int button) { return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? sMouseButtons[button] && !sMouseButtonsPrevFrame[button] : false; }
+    bool InputSystem::MouseButtonReleased(int button) { return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? !sMouseButtons[button] && sMouseButtonsPrevFrame[button] : false; }
 
-    bool InputSystem::KeyReleased(int key)
-    {
-        return (key >= 0 && key <= GLFW_KEY_LAST) ? !sKeys[key] && sKeysPrevFrame[key] : false;
-    }
-
-    bool InputSystem::MouseButtonDown(int button)
-    {
-        return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? sMouseButtons[button] : false;
-    }
-
-    bool InputSystem::MouseButtonPressed(int button)
-    {
-        return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? sMouseButtons[button] && !sMouseButtonsPrevFrame[button] : false;
-    }
-
-    bool InputSystem::MouseButtonReleased(int button)
-    {
-        return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? !sMouseButtons[button] && sMouseButtonsPrevFrame[button] : false;
-    }
-
-    void InputSystem::GetMousePosition(double& x, double& y)
-    {
-        x = sMouseX;
-        y = sMouseY;
-    }
-
-    double InputSystem::GetMouseX()
-    {
-        return sMouseX;
-    }
-
-    double InputSystem::GetMouseY()
-    {
-        return sMouseY;
-    }
+    void InputSystem::GetMousePosition(double& x, double& y) { x = sMouseX; y = sMouseY; }
+    double InputSystem::GetMouseX() { return sMouseX; }
+    double InputSystem::GetMouseY() { return sMouseY; }
 
     const char* InputSystem::GetKeyName(int key)
     {
