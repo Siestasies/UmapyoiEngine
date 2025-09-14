@@ -14,7 +14,7 @@ namespace UmapyoiEngine
         template <typename T>
         T* RegisterSystem()
         {
-            static_assert(std::is_base_of<ISystem, T>::value, "T must inherit from ISystem.");
+            static_assert(std::is_base_of<EngineSystem::ISystem, T>::value, "T must inherit from ISystem.");
             auto system = std::make_unique<T>();
             T* ptr = system.get();
             systems.push_back(std::move(system));
@@ -36,7 +36,7 @@ namespace UmapyoiEngine
             for (auto& system : systems)
             {
                 // Check if system implements IWindowSystem
-                if (auto windowSystem = dynamic_cast<IWindowSystem*>(system.get()))
+                if (auto windowSystem = dynamic_cast<EngineSystem::IWindowSystem*>(system.get()))
                 {
                     windowSystem->SetWindow(window);
                 }
@@ -76,6 +76,6 @@ namespace UmapyoiEngine
         }
 
     private:
-        std::vector<std::unique_ptr<ISystem>> systems;
+        std::vector<std::unique_ptr<EngineSystem::ISystem>> systems;
     };
 }

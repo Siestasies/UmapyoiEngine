@@ -5,7 +5,7 @@
 
 namespace UmapyoiEngine
 {
-    class InputSystem : public ISystem, public IWindowSystem
+    class InputSystem : public EngineSystem::ISystem, public EngineSystem::IWindowSystem
     {
     public:
         InputSystem();
