@@ -3,36 +3,54 @@
 #include <GLFW/glfw3.h>
 #include "Input.hpp"
 
-int main() 
+#include "Core/SystemManager.h"
+#include "InputSystem.h" 
+
+int main()
 {
     // Create window
     UmapyoiEngine::Window window(800, 600, "UmapyoiEngine");
-    
+
     // Initialize the engine
-    if (!window.Initialize()) 
+    if (!window.Initialize())
     {
         std::cerr << "Failed to initialize window" << std::endl;
         return -1;
     }
 
-    // Initialize input system
-    UmapyoiEngine::Input::Initialize(window.GetGLFWWindow());
-    
+    // Create a systems manager
+    UmapyoiEngine::SystemManager systemManager;
+
+    // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
+    systemManager.RegisterSystem<UmapyoiEngine::InputSystem>();
+
+    // Initialize all registered systems
+    systemManager.Init();
+    systemManager.SetWindow(window.GetGLFWWindow());
+
     // Game loop
-    while (!window.ShouldClose()) 
+    float lastFrame = 0.0f;
+    while (!window.ShouldClose())
     {
+        // Calculate deltaTime
+        float currentFrame = (float)glfwGetTime();
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         // Update window
         window.Update();
 
         // Close if ESC key is pressed
-        if (UmapyoiEngine::Input::KeyPressed(GLFW_KEY_ESCAPE))
+        if (UmapyoiEngine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
-            window.Close();
+            glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
 
-        UmapyoiEngine::Input::Update();
+        // Pass deltaTime to systems update (example: physics, rendering, input)
+        systemManager.Update(deltaTime);
     }
-    
+
+    systemManager.Shutdown();
     // Shut down when window goes out of scope
     std::cout << "Game closed" << std::endl;
     return 0;

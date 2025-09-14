@@ -8,7 +8,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
 set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 
 # Create the UmapyoiEngine library
-add_library(UmapyoiEngine STATIC ${ENGINE_SOURCES} "Core/SystemType.h")
+add_library(UmapyoiEngine STATIC ${ENGINE_SOURCES} "Core/SystemType.h"  "Core/SystemManager.h" "InputSystem.cpp" "InputSystem.h")
 
 # Link libraries
 target_link_libraries(UmapyoiEngine 
