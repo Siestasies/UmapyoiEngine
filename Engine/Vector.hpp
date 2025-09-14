@@ -14,9 +14,8 @@ namespace Uma_Math
 	class Vector2D
 	{
 	public:
-
 		// Core constructors and Rule of 5
-		constexpr Vector2D(T x = T{}, T y = T{}) : data{ x, y } {}
+		constexpr Vector2D(T x = T{}, T y = T{}) : pData{x, y} {}
 		constexpr Vector2D(const Vector2D& other) = default;
 		constexpr Vector2D(Vector2D&& other) noexcept = default;
 		constexpr Vector2D& operator=(const Vector2D& other) = default;
@@ -25,49 +24,49 @@ namespace Uma_Math
 
 		// Template conversion constructor
 		template<typename U>
-		constexpr explicit Vector2D(const Vector2D<U>& other) : data{ static_cast<T>(other.x()), static_cast<T>(other.y()) } {}
+		constexpr explicit Vector2D(const Vector2D<U>& other) : pData{static_cast<T>(other.x()), static_cast<T>(other.y())} {}
 
 		// Basic accessors
-		constexpr T x() const { return data[0]; }
-		constexpr T y() const { return data[1]; }
-		constexpr void setX(T x) { data[0] = x; }
-		constexpr void setY(T y) { data[1] = y; }
+		constexpr T x() const { return pData[0]; }
+		constexpr T y() const { return pData[1]; }
+		constexpr void setX(T x) { pData[0] = x; }
+		constexpr void setY(T y) { pData[1] = y; }
 
 		// Array-style access
-		constexpr T& operator[](std::size_t index) { return data[index]; }
-		constexpr const T& operator[](std::size_t index) const { return data[index]; }
+		constexpr T& operator[](std::size_t index) { return pData[index]; }
+		constexpr const T& operator[](std::size_t index) const { return pData[index]; }
 
 		// Size information
-		constexpr std::size_t size() const { return data.size(); }
+		constexpr std::size_t size() const { return pData.size(); }
 
 		// Compound assignment operators
 		constexpr Vector2D& operator+=(const Vector2D& other)
 		{
-			data[0] += other.x();
-			data[1] += other.y();
+			pData[0] += other.x();
+			pData[1] += other.y();
 			return *this;
 		}
 
 		constexpr Vector2D& operator-=(const Vector2D& other)
 		{
-			data[0] -= other.x();
-			data[1] -= other.y();
+			pData[0] -= other.x();
+			pData[1] -= other.y();
 			return *this;
 		}
 
 		template<typename U>
 		constexpr Vector2D& operator*=(U scalar)
 		{
-			data[0] *= scalar;
-			data[1] *= scalar;
+			pData[0] *= scalar;
+			pData[1] *= scalar;
 			return *this;
 		}
 
 		template<typename U>
 		constexpr Vector2D& operator/=(U scalar)
 		{
-			data[0] /= scalar;
-			data[1] /= scalar;
+			pData[0] /= scalar;
+			pData[1] /= scalar;
 			return *this;
 		}
 
@@ -80,19 +79,23 @@ namespace Uma_Math
 			{
 				if constexpr (std::is_integral_v<T>)
 				{
-					data[0] = static_cast<T>(static_cast<double>(data[0]) / mag);
-					data[1] = static_cast<T>(static_cast<double>(data[1]) / mag);
+					pData[0] = static_cast<T>(static_cast<double>(pData[0]) / mag);
+					pData[1] = static_cast<T>(static_cast<double>(pData[1]) / mag);
 				}
 				else
 				{
-					data[0] /= mag;
-					data[1] /= mag;
+					pData[0] /= mag;
+					pData[1] /= mag;
 				}
 			}
 		}
 
 	private:
-		std::array<T, 2> data;
+		union
+		{
+			std::array<T, 2> pData;
+			struct { T mX, mY; };
+		};
 
 	};
 
@@ -101,7 +104,7 @@ namespace Uma_Math
 	{
 	public:
 		// Core constructors and Rule of 5
-		constexpr Vector3D(T x = T{}, T y = T{}, T z = T{}) : data{ x, y, z } {}
+		constexpr Vector3D(T x = T{}, T y = T{}, T z = T{}) : pData{ x, y, z } {}
 		constexpr Vector3D(const Vector3D& other) = default;
 		constexpr Vector3D(Vector3D&& other) noexcept = default;
 		constexpr Vector3D& operator=(const Vector3D& other) = default;
@@ -110,55 +113,55 @@ namespace Uma_Math
 
 		// Template conversion constructor
 		template<typename U>
-		constexpr explicit Vector3D(const Vector3D<U>& other) : data{ static_cast<T>(other.x()), static_cast<T>(other.y()), static_cast<T>(other.z()) } {}
+		constexpr explicit Vector3D(const Vector3D<U>& other) : pData{static_cast<T>(other.x()), static_cast<T>(other.y()), static_cast<T>(other.z())} {}
 
 		// Basic accessors
-		constexpr T x() const { return data[0]; }
-		constexpr T y() const { return data[1]; }
-		constexpr T z() const { return data[2]; }
-		constexpr void setX(T x) { data[0] = x; }
-		constexpr void setY(T y) { data[1] = y; }
-		constexpr void setZ(T z) { data[2] = z; }
+		constexpr T x() const { return pData[0]; }
+		constexpr T y() const { return pData[1]; }
+		constexpr T z() const { return pData[2]; }
+		constexpr void setX(T x) { pData[0] = x; }
+		constexpr void setY(T y) { pData[1] = y; }
+		constexpr void setZ(T z) { pData[2] = z; }
 
 		// Array-style access
-		constexpr T& operator[](std::size_t index) { return data[index]; }
-		constexpr const T& operator[](std::size_t index) const { return data[index]; }
+		constexpr T& operator[](std::size_t index) { return pData[index]; }
+		constexpr const T& operator[](std::size_t index) const { return pData[index]; }
 
 		// Size information
-		constexpr std::size_t size() const { return data.size(); }
+		constexpr std::size_t size() const { return pData.size(); }
 
 		// Compound assignment operators
 		constexpr Vector3D& operator+=(const Vector3D& other)
 		{
-			data[0] += other.x();
-			data[1] += other.y();
-			data[2] += other.z();
+			pData[0] += other.x();
+			pData[1] += other.y();
+			pData[2] += other.z();
 			return *this;
 		}
 
 		constexpr Vector3D& operator-=(const Vector3D& other)
 		{
-			data[0] -= other.x();
-			data[1] -= other.y();
-			data[2] -= other.z();
+			pData[0] -= other.x();
+			pData[1] -= other.y();
+			pData[2] -= other.z();
 			return *this;
 		}
 
 		template<typename U>
 		constexpr Vector3D& operator*=(U scalar)
 		{
-			data[0] *= scalar;
-			data[1] *= scalar;
-			data[2] *= scalar;
+			pData[0] *= scalar;
+			pData[1] *= scalar;
+			pData[2] *= scalar;
 			return *this;
 		}
 
 		template<typename U>
 		constexpr Vector3D& operator/=(U scalar)
 		{
-			data[0] /= scalar;
-			data[1] /= scalar;
-			data[2] /= scalar;
+			pData[0] /= scalar;
+			pData[1] /= scalar;
+			pData[2] /= scalar;
 			return *this;
 		}
 
@@ -171,21 +174,25 @@ namespace Uma_Math
 			{
 				if constexpr (std::is_integral_v<T>)
 				{
-					data[0] = static_cast<T>(static_cast<double>(data[0]) / mag);
-					data[1] = static_cast<T>(static_cast<double>(data[1]) / mag);
-					data[2] = static_cast<T>(static_cast<double>(data[2]) / mag);
+					pData[0] = static_cast<T>(static_cast<double>(pData[0]) / mag);
+					pData[1] = static_cast<T>(static_cast<double>(pData[1]) / mag);
+					pData[2] = static_cast<T>(static_cast<double>(pData[2]) / mag);
 				}
 				else
 				{
-					data[0] /= mag;
-					data[1] /= mag;
-					data[2] /= mag;
+					pData[0] /= mag;
+					pData[1] /= mag;
+					pData[2] /= mag;
 				}
 			}
 		}
 
 	private:
-		std::array<T, 3> data;
+		union
+		{
+			std::array<T, 3> pData;
+			struct { T mX, mY, mZ; };
+		};
 	};
 
 	// Arithmetic operators
@@ -200,7 +207,7 @@ namespace Uma_Math
 	{
 		return Vector2D<T>(lhs.x() - rhs.x(), lhs.y() - rhs.y());
 	}
-
+	
 	template<typename T, typename U>
 	constexpr Vector2D<T> operator*(const Vector2D<T>& vec, U scalar)
 	{
@@ -457,7 +464,7 @@ namespace Uma_Math
 		auto magnitudes = magnitude(lhs) * magnitude(rhs);
 		if (magnitudes > T{})
 		{
-			return std::acos(std::clamp(dot_product / magnitudes, T{ -1 }, T{ 1 }));
+			return std::acos(std::clamp(dot_product / magnitudes, T{-1}, T{1}));
 		}
 		return T{};
 	}
@@ -469,7 +476,7 @@ namespace Uma_Math
 		auto magnitudes = magnitude(lhs) * magnitude(rhs);
 		if (magnitudes > T{})
 		{
-			return std::acos(std::clamp(dot_product / magnitudes, T{ -1 }, T{ 1 }));
+			return std::acos(std::clamp(dot_product / magnitudes, T{-1}, T{1}));
 		}
 		return T{};
 	}
