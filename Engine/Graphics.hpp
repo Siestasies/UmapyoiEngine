@@ -5,18 +5,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <map>
+#include "Core/SystemType.h" // Include the system interface
 
 namespace Uma_Engine
 {
-    class Graphics
+    class Graphics : public ISystem, public IWindowSystem
     {
     public:
         Graphics();
         ~Graphics();
 
-        // Initialize/Shutdown graphics system
-        bool Initialize();
-        void Shutdown();
+        // ISystem interface implementation
+        void Init() override;
+        void Update(float dt) override;
+        void Shutdown() override;
+
+        // IWindowSystem interface implementation
+        void SetWindow(GLFWwindow* window) override;
 
         // Background operations
         void ClearBackground(float r = 0.0f, float g = 0.0f, float b = 0.0f);
@@ -42,6 +47,7 @@ namespace Uma_Engine
 
     private:
         bool mInitialized;
+        GLFWwindow* mWindow; // Store window reference
 
         // Rendering resources
         GLuint mVAO, mVBO;
@@ -58,5 +64,10 @@ namespace Uma_Engine
         void ShutdownRenderer();
         GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
         void CheckOpenGLVersion();
+
+        // Window resize callback (used by GLFW)
+        void OnWindowResize(int width, int height);
+        // Static callback function for GLFW
+        static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
     };
 }

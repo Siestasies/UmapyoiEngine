@@ -38,27 +38,28 @@ void main()
 }
 )";
 
-    Graphics::Graphics() : mInitialized(false), mVAO(0), mVBO(0), mShaderProgram(0),
-        mViewportWidth(800), mViewportHeight(600) {}
+    Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
+        mShaderProgram(0), mViewportWidth(800), mViewportHeight(600) {}
 
     Graphics::~Graphics()
     {
         Shutdown();
     }
 
-    bool Graphics::Initialize()
+    // ISystem interface implementation
+    void Graphics::Init()
     {
         if (mInitialized)
         {
             std::cout << "Graphics already initialized!" << std::endl;
-            return true;
+            return;
         }
 
         // Check if OpenGL context is available
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cerr << "GLAD not initialized! Make sure Window::Initialize() was called first." << std::endl;
-            return false;
+            std::cerr << "GLAD not initialized! Make sure Window is initialized first." << std::endl;
+            return;
         }
 
         // Check OpenGL version
@@ -78,13 +79,29 @@ void main()
         if (!InitializeRenderer())
         {
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
-            return false;
+            return;
         }
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
-
         mInitialized = true;
-        return true;
+    }
+
+    void Graphics::Update(float dt)
+    {
+        // Graphics system doesn't need per-frame updates typically
+        // This could be used for animations, shader parameter updates, etc.
+
+        // Handle window resize if needed
+        if (mWindow)
+        {
+            int width, height;
+            glfwGetFramebufferSize(mWindow, &width, &height);
+
+            if (width != mViewportWidth || height != mViewportHeight)
+            {
+                SetViewport(width, height);
+            }
+        }
     }
 
     void Graphics::Shutdown()
@@ -103,6 +120,27 @@ void main()
 
             ShutdownRenderer();
             mInitialized = false;
+        }
+    }
+
+    // IWindowSystem interface implementation
+    void Graphics::SetWindow(GLFWwindow* window)
+    {
+        mWindow = window;
+
+        if (window)
+        {
+            // Get initial window size
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            mViewportWidth = width;
+            mViewportHeight = height;
+
+            // Set this Graphics instance as user pointer
+            glfwSetWindowUserPointer(window, this);
+
+            // Set the framebuffer size callback
+            glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
         }
     }
 
@@ -235,16 +273,16 @@ void main()
 
         // Set up quad vertices
         float vertices[] = {
-           // pos             // tex
-           // Triangle 1
-           -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-            0.5f, -0.5f,      1.0f, 0.0f,  // Bottom-right
-           -0.5f, -0.5f,      0.0f, 0.0f,  // Bottom-left
+            // pos             // tex
+            // Triangle 1
+            -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
+             0.5f, -0.5f,      1.0f, 0.0f,  // Bottom-right
+            -0.5f, -0.5f,      0.0f, 0.0f,  // Bottom-left
 
-           // Triangle 2
-          -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-           0.5f,  0.5f,      1.0f, 1.0f,  // Top-right
-           0.5f, -0.5f,      1.0f, 0.0f   // Bottom-right
+            // Triangle 2
+           -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
+            0.5f,  0.5f,      1.0f, 1.0f,  // Top-right
+            0.5f, -0.5f,      1.0f, 0.0f   // Bottom-right
         };
 
         glGenVertexArrays(1, &mVAO);
@@ -361,5 +399,21 @@ void main()
         glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+    }
+
+    void Graphics::OnWindowResize(int width, int height)
+    {
+        if (!mInitialized) return;
+        SetViewport(width, height);
+    }
+
+    void Graphics::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+    {
+        // Get the Graphics instance from the window user pointer
+        Graphics* graphics = static_cast<Graphics*>(glfwGetWindowUserPointer(window));
+        if (graphics)
+        {
+            graphics->OnWindowResize(width, height);
+        }
     }
 }

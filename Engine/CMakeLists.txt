@@ -9,6 +9,8 @@ target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 file(GLOB ENGINE_SOURCES
     "*.cpp"
     "*.hpp"
+    "Systems/*.cpp"
+    "Systems/*.hpp"
 )
 
 # Force CMake to reconfigure when source files are added/removed
