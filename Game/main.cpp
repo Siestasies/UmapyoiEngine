@@ -4,6 +4,7 @@
 
 #include "Core/SystemManager.h"
 #include "Systems/InputSystem.h" 
+#include "WIP_Scripts/Test_Ecs_System.h"
 
 int main()
 {
@@ -22,6 +23,7 @@ int main()
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
     systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+    systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
 
     // Initialize all registered systems
     systemManager.Init();

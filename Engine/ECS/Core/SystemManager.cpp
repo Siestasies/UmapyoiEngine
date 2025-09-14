@@ -1,27 +1,5 @@
-#include "SystemManager.h"
-
-template<typename T>
-std::shared_ptr<T> Uma_ECS::SystemManager::RegisterSystem()
-{
-    std::string type_name = std::string(typeid(T).name());
-
-    assert(aSystems.find(type_name) == aSystems.end() && "Error : Registering the system more than once.");
-
-    // Create a pointer to the system and return it, so that it can be used externally
-    auto system = std::make_shared<T>();
-    aSystems.insert({ type_name, system });
-    return system;
-}
-
-template<typename T>
-void Uma_ECS::SystemManager::SetSignature(Signature signature)
-{
-    std::string type_name = std::string(typeid(T).name());
-
-    assert(aSystems.find(type_name) != aSystems && "Error : setting the signature of the system before registering.");
-
-    aSignatures.insert({ type_name, signature });
-}
+#include "SystemManager.hpp"
+#include "System.hpp"
 
 void Uma_ECS::SystemManager::EntityDestroyed(Entity entity)
 {

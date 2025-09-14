@@ -2,10 +2,11 @@
 file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
     "*.hpp"
+    "*.h"
 )
 
 # Force CMake to reconfigure when source files are added/removed
-set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
+set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp" "*.h")
 
 # Create the Uma_Engine library
 add_library(Uma_Engine STATIC ${ENGINE_SOURCES} "Core/SystemType.h"  "Core/SystemManager.h" "Systems/InputSystem.cpp" "Systems/InputSystem.h" "WIP_Scripts/Test_Ecs_System.h" "WIP_Scripts/Test_Ecs_System.cpp")

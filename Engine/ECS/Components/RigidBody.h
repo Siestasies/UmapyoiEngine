@@ -5,10 +5,9 @@
 namespace Uma_ECS
 {
     // currently in 2d
-    struct Transform
+    struct RigidBody
     {
-        Vec2 position;
-        Vec2 rotation;
-        Vec2 scale;
+        Vec2 velocity;
+        Vec2 acceleration;
     };
 }

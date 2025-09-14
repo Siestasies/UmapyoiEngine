@@ -1,5 +1,5 @@
 //#include "Precompiled.h"
-#include "EntityManager.h"
+#include "EntityManager.hpp"
 
 #include <iostream>
 #include <cassert>
