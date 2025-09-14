@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/SystemManager.h"
-#include "InputSystem.h" 
+#include "Systems/InputSystem.h" 
 
 int main()
 {
