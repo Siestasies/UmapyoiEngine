@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     class Graphics
     {

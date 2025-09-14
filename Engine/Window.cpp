@@ -1,7 +1,7 @@
 #include "Window.hpp"
 #include <iostream>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     Window::Window(int width, int height, const std::string& title)
         : mWindow(nullptr), mWidth(width), mHeight(height), mTitle(title), mInitialized(false) {}
@@ -13,8 +13,8 @@ namespace UmapyoiEngine
 
     bool Window::Initialize()
     {
-        std::cout << "Initializing GLFW..." << std::endl;
-
+        std::cout << "Initializing Uma_Engine..." << std::endl;
+        
         // Initialize GLFW
         if (!glfwInit())
         {
@@ -88,9 +88,9 @@ namespace UmapyoiEngine
     {
         if (mInitialized)
         {
-            std::cout << "Shutting down window..." << std::endl;
-
-            if (mWindow)
+            std::cout << "Shutting down Uma_Engine..." << std::endl;
+            
+            if (mWindow) 
             {
                 glfwDestroyWindow(mWindow);
                 mWindow = nullptr;

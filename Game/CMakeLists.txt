@@ -10,7 +10,7 @@ add_executable(UmapyoiGame ${GAME_SOURCES})
 # Link against the Engine library
 target_link_libraries(UmapyoiGame 
     PRIVATE 
-        UmapyoiEngine
+        Uma_Engine
 )
 
 # Set C++ standard

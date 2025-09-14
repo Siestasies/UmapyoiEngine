@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     // Vertex shader for 2D sprite rendering
     const std::string vertexShaderSource = R"(

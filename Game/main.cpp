@@ -1,118 +1,56 @@
 #include "Window.hpp"
-#include "Graphics.hpp"
-#include "Input.hpp"
 #include <iostream>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <iostream>
+
+#include "Core/SystemManager.h"
+#include "Systems/InputSystem.h" 
 
 int main()
 {
-    std::cout << "Starting UmapyoiEngine with OpenGL 4.5..." << std::endl;
+    // Create window
+    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
 
-    // Create and initialize window
-    UmapyoiEngine::Window window(800, 600, "UmapyoiEngine");
+    // Initialize the engine
     if (!window.Initialize())
     {
         std::cerr << "Failed to initialize window!" << std::endl;
         return -1;
     }
 
-    // Create and initialize graphics system
-    UmapyoiEngine::Graphics graphics;
-    if (!graphics.Initialize())
-    {
-        std::cerr << "Failed to initialize graphics!" << std::endl;
-        return -1;
-    }
+    // Create a systems manager
+    Uma_Engine::SystemManager systemManager;
 
-    // Initialize input system
-    UmapyoiEngine::Input::Initialize(window.GetGLFWWindow());
+    // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
+    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
 
-    // Load textures
-    unsigned int backgroundTexture = graphics.LoadTexture("Assets/background.jpg");
-    unsigned int playerTexture = graphics.LoadTexture("Assets/sprite.jpg");
-
-    // Validate texture loading
-    if (backgroundTexture == 0)
-    {
-        std::cout << "Warning: Could not load background" << std::endl;
-    }
-    if (playerTexture == 0)
-    {
-        std::cout << "Warning: Could not load sprite" << std::endl;
-    }
-
-    // Enable VSync
-    graphics.SetVSync(true);
-
-    // Game state variables
-    glm::vec2 playerPos(400.0f, 300.0f); // Center of screen
-    glm::vec2 playerScale(0.25f, 0.25f);
-    float playerRotation = 0.0f;
-
-    // For delta time calculation
-    float lastFrameTime = 0.0f;
+    // Initialize all registered systems
+    systemManager.Init();
+    systemManager.SetWindow(window.GetGLFWWindow());
 
     // Game loop
+    float lastFrame = 0.0f;
     while (!window.ShouldClose())
     {
-        // Calculate delta time
-        float currentFrameTime = static_cast<float>(glfwGetTime());
-        float deltaTime = currentFrameTime - lastFrameTime;
-        lastFrameTime = currentFrameTime;
+        // Calculate deltaTime
+        float currentFrame = (float)glfwGetTime();
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
-        // Handle input
-        UmapyoiEngine::Input::Update();
-
-        // Exit on ESC
-        if (UmapyoiEngine::Input::KeyPressed(GLFW_KEY_ESCAPE))
-        {
-            window.Close();
-        }
-
-        if (UmapyoiEngine::Input::KeyDown(GLFW_KEY_1))
-        {
-            playerScale += 0.5f * deltaTime;
-        }
-        if (UmapyoiEngine::Input::KeyDown(GLFW_KEY_2))
-        {
-            playerScale -= 0.5f * deltaTime;
-        }
-
-        if (UmapyoiEngine::Input::KeyDown(GLFW_KEY_Q))
-        {
-            playerRotation += 180.0f * deltaTime;
-        }
-        if (UmapyoiEngine::Input::KeyDown(GLFW_KEY_E))
-        {
-            playerRotation -= 180.0f * deltaTime;
-        }
-
-        // Clear screen with dark blue background
-        graphics.ClearBackground(0.1f, 0.2f, 0.4f);
-
-        // Draw background
-        if (backgroundTexture != 0)
-        {
-            graphics.DrawBackground(backgroundTexture);
-        }
-
-        // Draw player sprite
-        if (playerTexture != 0)
-        {
-            graphics.DrawSprite(playerTexture, playerPos, playerScale, playerRotation);
-        }
-
-        // Update the frame
+        // Update window
         window.Update();
+
+        // Close if ESC key is pressed
+        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        {
+            glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
+        }
+
+        // Pass deltaTime to systems update (example: physics, rendering, input)
+        systemManager.Update(deltaTime);
     }
 
-    // Cleanup
-    std::cout << "Cleaning up resources..." << std::endl;
-    if (backgroundTexture != 0) graphics.UnloadTexture(backgroundTexture);
-    if (playerTexture != 0) graphics.UnloadTexture(playerTexture);
-
-    std::cout << "UmapyoiEngine closed successfully!" << std::endl;
+    systemManager.Shutdown();
+    // Shut down when window goes out of scope
+    std::cout << "Game closed" << std::endl;
     return 0;
 }

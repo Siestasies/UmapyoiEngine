@@ -14,11 +14,11 @@ file(GLOB ENGINE_SOURCES
 # Force CMake to reconfigure when source files are added/removed
 set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 
-# Create the UmapyoiEngine library
-add_library(UmapyoiEngine STATIC ${ENGINE_SOURCES})
+# Create the Uma_Engine library
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} "Core/SystemType.h"  "Core/SystemManager.h" "Systems/InputSystem.cpp" "Systems/InputSystem.h" "WIP_Scripts/Test_Ecs_System.h" "WIP_Scripts/Test_Ecs_System.cpp")
 
 # Link libraries
-target_link_libraries(UmapyoiEngine 
+target_link_libraries(Uma_Engine 
     PUBLIC 
         glfw
         glad
@@ -26,7 +26,7 @@ target_link_libraries(UmapyoiEngine
 )
 
 # Include directories
-target_include_directories(UmapyoiEngine 
+target_include_directories(Uma_Engine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${glm_SOURCE_DIR}
@@ -34,4 +34,4 @@ target_include_directories(UmapyoiEngine
 )
 
 # Set C++ standard for this target
-target_compile_features(UmapyoiEngine PUBLIC cxx_std_20)
+target_compile_features(Uma_Engine PUBLIC cxx_std_20)

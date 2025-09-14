@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     class Window
     {
