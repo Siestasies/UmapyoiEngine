@@ -114,7 +114,6 @@ namespace Uma_Math
         // Friend declarations for non-member functions that need private access
         template<typename U> friend constexpr bool operator==(const Matrix2x2<U>& lhs, const Matrix2x2<U>& rhs);
         template<typename U> friend std::ostream& operator<<(std::ostream& os, const Matrix2x2<U>& mat);
-        template<typename U, typename V> friend constexpr explicit Matrix2x2<U>::Matrix2x2(const Matrix2x2<V>& other);
 	};
 
     template<typename T>
@@ -226,7 +225,6 @@ namespace Uma_Math
         // Friend declarations for non-member functions that need private access
         template<typename U> friend constexpr bool operator==(const Matrix3x3<U>& lhs, const Matrix3x3<U>& rhs);
         template<typename U> friend std::ostream& operator<<(std::ostream& os, const Matrix3x3<U>& mat);
-        template<typename U, typename V> friend constexpr explicit Matrix3x3<U>::Matrix3x3(const Matrix3x3<V>& other);
     };
 
     // Arithmetic operators for Matrix2x2
