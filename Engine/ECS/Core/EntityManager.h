@@ -4,7 +4,7 @@
 #include <queue>
 #include <array>
 
-namespace ECS
+namespace Uma_ECS
 {
     class EntityManager
     {

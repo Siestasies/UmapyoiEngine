@@ -1,7 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     // Base system interface - only requires basic lifecycle methods
     class ISystem

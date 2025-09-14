@@ -1,6 +1,6 @@
 #include "Coordinator.h"
 
-namespace ECS
+namespace Uma_ECS
 {
     void Coordinator::Init()
     {

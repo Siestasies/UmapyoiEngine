@@ -3,7 +3,7 @@
 #include "Coordinator.h"
 
 template<typename T>
-void ECS::ComponentManager::RegisterComponent()
+void Uma_ECS::ComponentManager::RegisterComponent()
 {
     std::string type_name = std::string(typeid(T).name());
 
@@ -19,7 +19,7 @@ void ECS::ComponentManager::RegisterComponent()
 }
 
 template<typename T>
-ECS::ComponentType ECS::ComponentManager::GetComponentType()
+Uma_ECS::ComponentType Uma_ECS::ComponentManager::GetComponentType()
 {
     std::string type_name = std::string(typeid(T).name());
 
@@ -30,27 +30,27 @@ ECS::ComponentType ECS::ComponentManager::GetComponentType()
 }
 
 template<typename T>
-void ECS::ComponentManager::AddComponent(Entity entity, const T& component)
+void Uma_ECS::ComponentManager::AddComponent(Entity entity, const T& component)
 {
     ComponentArray<T>& component_array = GetComponentArray<T>();
     component_array.AddData(entity, component);
 }
 
 template<typename T>
-void ECS::ComponentManager::RemoveComponent(Entity entity)
+void Uma_ECS::ComponentManager::RemoveComponent(Entity entity)
 {
     ComponentArray<T>& component_array = GetComponentArray<T>();
     component_array.RemoveData(entity);
 }
 
 template<typename T>
-T& ECS::ComponentManager::GetComponent(Entity entity)
+T& Uma_ECS::ComponentManager::GetComponent(Entity entity)
 {
     ComponentArray<T>& component_array = GetComponentArray<T>();
     return component_array.GetData(entity);
 }
 
-void ECS::ComponentManager::EntityDestroyed(Entity entity)
+void Uma_ECS::ComponentManager::EntityDestroyed(Entity entity)
 {
     for (auto const& pair : aComponentArrays)
     {

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Core/SystemType.h"
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     class InputSystem : public ISystem, public IWindowSystem
     {

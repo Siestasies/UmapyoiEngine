@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cassert>
 
-ECS::EntityManager::EntityManager()
+Uma_ECS::EntityManager::EntityManager()
 {
     mActiveEntityCnt = 0;
 
@@ -15,7 +15,7 @@ ECS::EntityManager::EntityManager()
     }
 }
 
-ECS::Entity ECS::EntityManager::CreateEntity()
+Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
 {
     // out of range check
     assert(mActiveEntityCnt < MAX_ENTITIES && "ERROR : Too many active entities.");
@@ -29,7 +29,7 @@ ECS::Entity ECS::EntityManager::CreateEntity()
     return new_entity;
 }
 
-void ECS::EntityManager::DestroyEntity(Entity entity)
+void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
 {
     // check if id is valid and whether this entity is active
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
@@ -44,14 +44,14 @@ void ECS::EntityManager::DestroyEntity(Entity entity)
     --mActiveEntityCnt;
 }
 
-void ECS::EntityManager::SetSignature(Entity entity, Signature& const signature)
+void Uma_ECS::EntityManager::SetSignature(Entity entity, Signature& const signature)
 {
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
 
     aSignatures[entity] = signature;
 }
 
-ECS::Signature ECS::EntityManager::GetSignature(Entity entity) const
+Uma_ECS::Signature Uma_ECS::EntityManager::GetSignature(Entity entity) const
 {
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
 

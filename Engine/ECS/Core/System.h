@@ -3,7 +3,7 @@
 #include "Types.h"
 #include <set>
 
-namespace ECS
+namespace Uma_ECS
 {
     class ISystem
     {

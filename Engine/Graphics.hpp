@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     struct Color
     {

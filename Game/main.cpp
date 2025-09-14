@@ -8,7 +8,7 @@
 int main()
 {
     // Create window
-    UmapyoiEngine::Window window(800, 600, "UmapyoiEngine");
+    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
 
     // Initialize the engine
     if (!window.Initialize())
@@ -18,10 +18,10 @@ int main()
     }
 
     // Create a systems manager
-    UmapyoiEngine::SystemManager systemManager;
+    Uma_Engine::SystemManager systemManager;
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
-    systemManager.RegisterSystem<UmapyoiEngine::InputSystem>();
+    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
 
     // Initialize all registered systems
     systemManager.Init();
@@ -40,7 +40,7 @@ int main()
         window.Update();
 
         // Close if ESC key is pressed
-        if (UmapyoiEngine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }

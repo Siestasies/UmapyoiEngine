@@ -2,7 +2,10 @@
 #include <stdexcept>
 #include <iostream>
 
-namespace UmapyoiEngine
+// comment and uncomment this line below to enable/ disable console debug log
+// #define _DEBUG_LOG
+
+namespace Uma_Engine
 {
     // Static member definitions
     std::array<bool, GLFW_KEY_LAST + 1> InputSystem::sKeys;
@@ -24,7 +27,9 @@ namespace UmapyoiEngine
         sMouseButtons.fill(false);
         sMouseButtonsPrevFrame.fill(false);
 
+#ifdef _DEBUG_LOG
         std::cout << "InputSystem initialized" << std::endl;
+#endif // !_DEBUG_LOG
     }
 
     void InputSystem::SetWindow(GLFWwindow* window)
@@ -40,7 +45,9 @@ namespace UmapyoiEngine
         glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
         glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
 
+#ifdef _DEBUG_LOG
         std::cout << "InputSystem window set and callbacks registered" << std::endl;
+#endif // !_DEBUG_LOG
     }
 
     void InputSystem::Update(float dt)
@@ -54,15 +61,21 @@ namespace UmapyoiEngine
             if (name) {
                 // Just pressed
                 if (sKeys[i] && !sKeysPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " pressed" << std::endl;
+#endif // !_DEBUG_LOG
                 }
                 // Just released
                 else if (!sKeys[i] && sKeysPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " released" << std::endl;
+#endif // !_DEBUG_LOG
                 }
                 // Held down
                 else if (sKeys[i] && sKeysPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " held" << std::endl;
+#endif // !_DEBUG_LOG
                 }
             }
         }
@@ -73,15 +86,24 @@ namespace UmapyoiEngine
             if (name) {
                 // Just pressed
                 if (sMouseButtons[i] && !sMouseButtonsPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " pressed" << std::endl;
+#endif // !_DEBUG_LOG
+
                 }
                 // Just released
                 else if (!sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " released" << std::endl;
+
+#endif // !_DEBUG_LOG
                 }
                 // Held down
                 else if (sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
+#ifdef _DEBUG_LOG
                     std::cout << name << " held" << std::endl;
+#endif // !_DEBUG_LOG
+
                 }
             }
         }
@@ -100,7 +122,10 @@ namespace UmapyoiEngine
             glfwSetCursorPosCallback(mWindow, nullptr);
         }
 
+#ifdef _DEBUG_LOG
         std::cout << "InputSystem shut down" << std::endl;
+#endif // !_DEBUG_LOG
+
     }
 
     // Static callback functions
@@ -135,7 +160,11 @@ namespace UmapyoiEngine
     {
         sMouseX = xpos;
         sMouseY = ypos;
+
+#ifdef _DEBUG_LOG
         std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
+#endif // !_DEBUG_LOG
+
     }
 
     bool InputSystem::KeyDown(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false; }

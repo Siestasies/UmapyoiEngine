@@ -1,4 +1,4 @@
-# UmapyoiEngine
+# Uma_Engine
 GAM200
 Make sure you have CMake and git installed, then:
 Step 1: Run build.sh

@@ -7,7 +7,7 @@
 #include <unordered_map>
 #include <memory>
 
-namespace ECS
+namespace Uma_ECS
 {
     class SystemManager
     {

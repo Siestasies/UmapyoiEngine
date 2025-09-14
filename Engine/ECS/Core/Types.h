@@ -1,12 +1,12 @@
 #pragma once
 
-// this whole header file is just to declare the types we are using for ECS
+// this whole header file is just to declare the types we are using for Uma_ECS
 
 #include <bitset>
 
-namespace ECS
+namespace Uma_ECS
 {
-		//ECS Error code 
+		//Uma_ECS Error code 
 		enum class ECSErrorCode 
 		{
 				EC_None = 0,
@@ -17,7 +17,7 @@ namespace ECS
 				EC_Unknown
 		};
     
-    // ECS
+    // Uma_ECS
     using Entity = unsigned int;
     const Entity MAX_ENTITIES = 5000;
     using ComponentType = unsigned int;

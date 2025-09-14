@@ -1,7 +1,7 @@
 #include "Window.hpp"
 #include <iostream>
 
-namespace UmapyoiEngine 
+namespace Uma_Engine
 {
     
     Window::Window(int width, int height, const std::string& title)
@@ -14,7 +14,7 @@ namespace UmapyoiEngine
     
     bool Window::Initialize() 
     {
-        std::cout << "Initializing UmapyoiEngine..." << std::endl;
+        std::cout << "Initializing Uma_Engine..." << std::endl;
         
         // Initialize GLFW
         if (!glfwInit()) 
@@ -35,7 +35,7 @@ namespace UmapyoiEngine
         // Make the window's context current
         glfwMakeContextCurrent(mWindow);
         
-        std::cout << "UmapyoiEngine window created: " << mTitle << " (" << mWidth << "x" << mHeight << ")" << std::endl;
+        std::cout << "Uma_Engine window created: " << mTitle << " (" << mWidth << "x" << mHeight << ")" << std::endl;
         
         mInitialized = true;
         return true;
@@ -60,7 +60,7 @@ namespace UmapyoiEngine
     {
         if (mInitialized)
         {
-            std::cout << "Shutting down UmapyoiEngine..." << std::endl;
+            std::cout << "Shutting down Uma_Engine..." << std::endl;
             
             if (mWindow) 
             {

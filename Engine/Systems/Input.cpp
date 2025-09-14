@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
 	// Static member variables
 	std::array<bool, GLFW_KEY_LAST + 1> Input::sKeys;

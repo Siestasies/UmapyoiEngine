@@ -1,7 +1,7 @@
 #include "SystemManager.h"
 
 template<typename T>
-std::shared_ptr<T> ECS::SystemManager::RegisterSystem()
+std::shared_ptr<T> Uma_ECS::SystemManager::RegisterSystem()
 {
     std::string type_name = std::string(typeid(T).name());
 
@@ -14,7 +14,7 @@ std::shared_ptr<T> ECS::SystemManager::RegisterSystem()
 }
 
 template<typename T>
-void ECS::SystemManager::SetSignature(Signature signature)
+void Uma_ECS::SystemManager::SetSignature(Signature signature)
 {
     std::string type_name = std::string(typeid(T).name());
 
@@ -23,7 +23,7 @@ void ECS::SystemManager::SetSignature(Signature signature)
     aSignatures.insert({ type_name, signature });
 }
 
-void ECS::SystemManager::EntityDestroyed(Entity entity)
+void Uma_ECS::SystemManager::EntityDestroyed(Entity entity)
 {
     // remove the destroyed entity from all systems
     for (auto const& pair : aSystems)
@@ -35,7 +35,7 @@ void ECS::SystemManager::EntityDestroyed(Entity entity)
     }
 }
 
-void ECS::SystemManager::EntitySignatureChanged(Entity entity, Signature entitySiganture)
+void Uma_ECS::SystemManager::EntitySignatureChanged(Entity entity, Signature entitySiganture)
 {
     // Let each systems knows that the entity's signature had changed
     for (auto const& pair : aSystems)

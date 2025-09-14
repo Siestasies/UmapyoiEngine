@@ -7,7 +7,7 @@
 #include "EntityManager.h"
 #include "SystemManager.h"
 
-namespace ECS
+namespace Uma_ECS
 {
     // this whole Corrdinator context is about combining:
     // Entity Manager, System Manager and Entity Manager 

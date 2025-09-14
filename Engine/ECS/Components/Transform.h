@@ -2,7 +2,7 @@
 
 #include "VMath.h"
 
-namespace ECS
+namespace Uma_ECS
 {
     // currently in 2d
     struct Transform

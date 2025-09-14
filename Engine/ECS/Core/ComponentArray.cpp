@@ -4,7 +4,7 @@
 #include <assert.h>
 
 template <typename T>
-ECS::ECSErrorCode ECS::ComponentArray<T>::AddData(Entity entity, const T& component)
+Uma_ECS::ECSErrorCode Uma_ECS::ComponentArray<T>::AddData(Entity entity, const T& component)
 {
 #ifndef NDEBUG
     assert(aEntityToIndex.find(entity) == aEntityToIndex.end() && "ERROR : Same component is being added again.");
@@ -26,7 +26,7 @@ ECS::ECSErrorCode ECS::ComponentArray<T>::AddData(Entity entity, const T& compon
 }
 
 template <typename T>
-ECS::ECSErrorCode ECS::ComponentArray<T>::RemoveData(Entity entity)
+Uma_ECS::ECSErrorCode Uma_ECS::ComponentArray<T>::RemoveData(Entity entity)
 {
 #ifndef NDEBUG
     assert(aEntityToIndex.find(entity) != aEntityToIndex.end() && "ERROR : Component is alr removed.");
@@ -56,7 +56,7 @@ ECS::ECSErrorCode ECS::ComponentArray<T>::RemoveData(Entity entity)
 }
 
 template<typename T>
-T& ECS::ComponentArray<T>::GetData(Entity entity)
+T& Uma_ECS::ComponentArray<T>::GetData(Entity entity)
 {
 #ifndef NDEBUG
     assert(aEntityToIndex.find(entity) != aEntityToIndex.end() && "ERROR : Entity doesnt contain this data.");
@@ -73,7 +73,7 @@ T& ECS::ComponentArray<T>::GetData(Entity entity)
 }
 
 template <typename T>
-void ECS::ComponentArray<T>::DestroyEntity(Entity entity)
+void Uma_ECS::ComponentArray<T>::DestroyEntity(Entity entity)
 {
     if (aEntityToIndex.find(entity) != aEntityToIndex.end())
     {

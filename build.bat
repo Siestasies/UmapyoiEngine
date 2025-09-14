@@ -1,5 +1,5 @@
 @echo off
-echo Building UmapyoiEngine...
+echo Building Uma_Engine...
 
 if exist build rmdir /s /q build
 mkdir build
@@ -13,7 +13,7 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo Building UmapyoiEngine...
+echo Building Uma_Engine...
 cmake --build . --config Debug
 if %errorlevel% neq 0 (
     echo Build failed!

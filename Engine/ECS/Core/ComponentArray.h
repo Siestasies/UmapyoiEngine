@@ -4,7 +4,7 @@
 #include <array>
 #include <unordered_map>
 
-namespace ECS
+namespace Uma_ECS
 {
     class BaseComponentArray
     {

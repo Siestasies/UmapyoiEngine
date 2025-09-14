@@ -10,9 +10,9 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp")
 # Create the Game executable
 add_executable(UmapyoiGame ${GAME_SOURCES})
 
-# Link against the UmapyoiEngine library
-# Since UmapyoiEngine is linked as PUBLIC, this automatically includes GLFW, GLM, and OpenGL
+# Link against the Uma_Engine library
+# Since Uma_Engine is linked as PUBLIC, this automatically includes GLFW, GLM, and OpenGL
 target_link_libraries(UmapyoiGame 
     PRIVATE 
-        UmapyoiEngine
+        Uma_Engine
 )

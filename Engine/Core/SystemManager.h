@@ -5,7 +5,7 @@
 #include <type_traits>
 #include "SystemType.h"
 
-namespace UmapyoiEngine
+namespace Uma_Engine
 {
     class SystemManager
     {

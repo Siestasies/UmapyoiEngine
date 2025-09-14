@@ -7,7 +7,7 @@
 #include <memory>
 #include <cassert>
 
-namespace ECS
+namespace Uma_ECS
 {
     class ComponentManager
     {
