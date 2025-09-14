@@ -1,9 +1,11 @@
 #pragma once
+#include <GLFW/glfw3.h>
 
-namespace Uma_Engine
+namespace UmapyoiEngine
 {
-    namespace Game_System
+    namespace EngineSystem
     {
+        // Base system interface - only requires basic lifecycle methods
         class ISystem
         {
         public:
@@ -26,6 +28,14 @@ namespace Uma_Engine
                 \details Called once at engine shutdown.
             */
             virtual void Shutdown() = 0;
+        };
+
+        // Optional interface for systems that need window access
+        class IWindowSystem
+        {
+        public:
+            virtual ~IWindowSystem() = default;
+            virtual void SetWindow(GLFWwindow* window) = 0;
         };
     }
 }
