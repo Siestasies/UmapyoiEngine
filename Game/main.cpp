@@ -1,5 +1,7 @@
 #include "Window.hpp"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include <GLFW/glfw3.h>
 
 #include "Core/SystemManager.h"
@@ -31,12 +33,32 @@ int main()
 
     // Game loop
     float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
+    float lastTime = 0.0f;
+    float fps = 0.0f;
+    int frameCount = 0;
+    std::stringstream newTitle;
     while (!window.ShouldClose())
     {
-        // Calculate deltaTime
+        // calc dt
         float currentFrame = (float)glfwGetTime();
-        float deltaTime = currentFrame - lastFrame;
+        deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        ++frameCount;
+        // update only after 1 second
+        if (currentFrame - lastTime >= 1.0f)
+        {
+            fps = frameCount / (currentFrame - lastTime);
+            frameCount = 0;
+            lastTime = currentFrame;
+
+            // setting of new title/fps
+            newTitle.str("");
+            newTitle.clear();
+
+            newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
+            window.SetTitle(newTitle.str());
+        }
 
         // Update window
         window.Update();
