@@ -4,7 +4,7 @@
 
 namespace Uma_Engine
 {
-    class Test_Ecs : public ISystem
+    class Test_Graphics : public ISystem
     {
         void Init() override;
         void Update(float dt) override;
