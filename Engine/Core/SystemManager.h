@@ -17,6 +17,7 @@ namespace Uma_Engine
             static_assert(std::is_base_of<ISystem, T>::value, "T must inherit from ISystem.");
             auto system = std::make_unique<T>();
             T* ptr = system.get();
+            ptr->SetSystemManager(this);
             systems.push_back(std::move(system));
             return ptr; // Return pointer for further configuration if needed
         }
