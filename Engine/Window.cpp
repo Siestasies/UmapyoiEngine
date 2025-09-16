@@ -114,4 +114,11 @@ namespace Uma_Engine
         if (!mInitialized || !mWindow) return true;
         return glfwWindowShouldClose(mWindow);
     }
+
+    void Window::SetTitle(std::string newTitle)
+    {
+        glfwSetWindowTitle(mWindow, newTitle.c_str());
+
+        mTitle = newTitle;
+    }
 }

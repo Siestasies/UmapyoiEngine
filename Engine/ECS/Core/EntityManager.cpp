@@ -1,5 +1,5 @@
 //#include "Precompiled.h"
-#include "EntityManager.h"
+#include "EntityManager.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -56,4 +56,9 @@ Uma_ECS::Signature Uma_ECS::EntityManager::GetSignature(Entity entity) const
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
 
     return aSignatures[entity];
+}
+
+int Uma_ECS::EntityManager::GetEntityCount() const
+{
+    return static_cast<int>(mActiveEntityCnt);
 }

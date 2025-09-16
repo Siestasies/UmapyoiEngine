@@ -19,10 +19,10 @@ namespace Uma_ECS
     
     // Uma_ECS
     using Entity = unsigned int;
-    const Entity MAX_ENTITIES = 5000;
+    const Entity MAX_ENTITIES = 3000;
     using ComponentType = unsigned int;
     const ComponentType MAX_COMPONENTS = 32;
 		
 		// this is to track which components an entity has 
-		using Signature = std::bitset<MAX_COMPONENTS>; 
+		using Signature = std::bitset<MAX_COMPONENTS>;
 }

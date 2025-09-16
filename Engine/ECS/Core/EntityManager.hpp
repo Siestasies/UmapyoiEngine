@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Types.h"
+#include "Types.hpp"
 #include <queue>
 #include <array>
 
@@ -16,6 +16,8 @@ namespace Uma_ECS
 
         void SetSignature(Entity entity, Signature& const signature);
         Signature GetSignature(Entity entity) const;
+
+        int GetEntityCount() const;
 
     private:
 

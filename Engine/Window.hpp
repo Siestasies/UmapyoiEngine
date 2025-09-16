@@ -23,6 +23,8 @@ namespace Uma_Engine
 
         GLFWwindow* GetGLFWWindow() const { return mWindow; }
 
+        void SetTitle(std::string newTitle);
+        
     private:
         GLFWwindow* mWindow;
         int mWidth;
