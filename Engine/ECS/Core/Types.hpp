@@ -24,8 +24,5 @@ namespace Uma_ECS
     const ComponentType MAX_COMPONENTS = 32;
 		
 		// this is to track which components an entity has 
-		using Signature = std::bitset<MAX_COMPONENTS>; 
-
-		// 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  0 0 
-		// 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+		using Signature = std::bitset<MAX_COMPONENTS>;
 }
