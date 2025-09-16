@@ -15,6 +15,7 @@ target_link_libraries(Uma_Engine
     PUBLIC 
         glfw
         OpenGL::GL  # Cross-platform OpenGL linking
+	"${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/lib/x64/fmod_vc.lib"   # FMOD main lib
 )
 
 # Include GLM headers
@@ -22,6 +23,7 @@ target_include_directories(Uma_Engine
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${glm_SOURCE_DIR}  # Add GLM include directory
+	${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/inc # FMOD headers
 )
 
 # Set C++ standard for this target
