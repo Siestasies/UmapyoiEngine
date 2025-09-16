@@ -22,6 +22,7 @@ namespace Uma_Engine
         int GetHeight() const { return mHeight; }
 
         GLFWwindow* GetGLFWWindow() const { return mWindow; }
+        void SetTitle(std::string newTitle);
         
     private:
         GLFWwindow* mWindow;
