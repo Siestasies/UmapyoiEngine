@@ -7,6 +7,10 @@
 
 #include <vector>
 #include <random>
+#include <iostream>
+#include <iomanip>
+
+#define _DEBUG_LOG
 
 using Coordinator = Uma_ECS::Coordinator;
 
@@ -34,7 +38,7 @@ void Uma_Engine::Test_Ecs::Init()
     physicsSystem->Init(&gCoordinator);
 
     // entities
-    std::vector<Entity> entities(10);
+    std::vector<Entity> entities(100);
 
     std::default_random_engine generator;
     std::uniform_real_distribution<float> randPosition(-100.0f, 100.0f);
@@ -65,12 +69,45 @@ void Uma_Engine::Test_Ecs::Init()
             });
     }
 
+#ifdef _DEBUG_LOG
+
     physicsSystem->PrintLog();
+
+#endif // _DEBUG_LOG
+
+    // create entity
+
+    Entity en = gCoordinator.CreateEntity();
+    gCoordinator.AddComponent(
+        en, 
+        Transform
+        {
+            .position = Vec2(2,2),
+            .rotation = Vec2(1,1),
+            .scale = Vec2(3,3),
+        });
+
+  /*  gCoordinator.AddComponent(
+        en,
+        RigidBody{
+          .velocity = Vec2(0.0f, 0.0f),
+          .acceleration = Vec2(0.0f, 0.0f)
+        });*/
+
+#ifdef _DEBUG_LOG
+
+    physicsSystem->PrintLog();
+
+#endif // _DEBUG_LOG
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)
 {
     physicsSystem->Update(dt);
+
+    //camera updatye 
+
+    //..update
 }
 
 void Uma_Engine::Test_Ecs::Shutdown()

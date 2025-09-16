@@ -25,4 +25,7 @@ namespace Uma_ECS
 		
 		// this is to track which components an entity has 
 		using Signature = std::bitset<MAX_COMPONENTS>; 
+
+		// 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0  0 0 
+		// 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 }

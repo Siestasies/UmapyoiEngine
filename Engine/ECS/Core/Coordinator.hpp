@@ -18,13 +18,18 @@ namespace Uma_ECS
     public:
         void Init();
 
+        // Entity functions
+
         Entity CreateEntity();
 
         void DestroyEntity(Entity entity);
 
         Signature GetEntitySignature(Entity entity);
 
+        int GetEntityCount() const;
+
         // Components functions
+
         template<typename T>
         void RegisterComponent() 
         {
@@ -95,6 +100,10 @@ namespace Uma_ECS
     private:
         std::unique_ptr<ComponentManager> aComponentManager;
         std::unique_ptr<EntityManager> aEntityManager;
+
+        // we keep track of all entity systems here
+        // so that we can update all systems when 
+        // thr are changes for any entities
         std::unique_ptr<SystemManager> aSystemManager;
     };
 }

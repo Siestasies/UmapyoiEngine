@@ -57,3 +57,8 @@ Uma_ECS::Signature Uma_ECS::EntityManager::GetSignature(Entity entity) const
 
     return aSignatures[entity];
 }
+
+int Uma_ECS::EntityManager::GetEntityCount() const
+{
+    return static_cast<int>(mActiveEntityCnt);
+}

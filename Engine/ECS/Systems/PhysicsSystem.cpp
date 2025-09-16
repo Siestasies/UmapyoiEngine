@@ -4,12 +4,8 @@
 #include "../Components/RigidBody.h"
 #include "../Components/Transform.h"
 
-
-#define _DEBUG_LOG
-
-#ifdef _DEBUG_LOG
 #include <iostream>
-#endif // _DEBUG_LOG
+#include <iomanip>
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
@@ -24,33 +20,11 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
 
 void Uma_ECS::PhysicsSystem::PrintLog()
 {
-//#ifdef _DEBUG_LOG
-//    for (auto const& entity : aEntities)
-//    {
-//        Signature sig = gCoordinator->GetEntitySignature(entity);
-//
-//        std::cout << "Entity [" << entity << "] has components: ";
-//        bool first = true;
-//
-//        // Loop through each bit in the signature
-//        for (size_t i = 0; i < sig.size(); i++)
-//        {
-//            if (sig.test(i)) // entity has this component
-//            {
-//                if (!first) std::cout << ", ";
-//                std::cout << "ComponentType(" << i << ")";
-//                first = false;
-//            }
-//        }
-//
-//        if (first)
-//            std::cout << "None";
-//
-//        std::cout << "\n";
-//    }
-//#endif
 
-#ifdef _DEBUG_LOG
+    std::cout << std::setw(100) << std::setfill('-') << "\n";
+    std::cout << std::setw(100) << std::setfill('-') << "\n";
+
+    int en_cnt = 0;
     for (auto const& entity : aEntities)
     {
         Signature sig = gCoordinator->GetEntitySignature(entity);
@@ -82,6 +56,13 @@ void Uma_ECS::PhysicsSystem::PrintLog()
 
         if (!hasAny)
             std::cout << "  None\n";
+
+        en_cnt++;
     }
-#endif
+    std::cout << "\n";
+    std::cout << "Total entities that are having the same signature as the system : " << en_cnt << "\n";
+    std::cout << "Total entities in the scene : " << gCoordinator->GetEntityCount() << "\n";
+
+    std::cout << std::setw(100) << std::setfill('-') << "\n";
+    std::cout << std::setw(100) << std::setfill('-') << "\n";
 }

@@ -26,4 +26,9 @@ namespace Uma_ECS
         return aEntityManager->GetSignature(entity);
     }
 
+    int Coordinator::GetEntityCount() const
+    {
+        return aEntityManager->GetEntityCount();
+    }
+
 }

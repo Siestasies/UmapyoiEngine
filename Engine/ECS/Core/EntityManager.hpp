@@ -17,6 +17,8 @@ namespace Uma_ECS
         void SetSignature(Entity entity, Signature& const signature);
         Signature GetSignature(Entity entity) const;
 
+        int GetEntityCount() const;
+
     private:
 
         // a queue of all the unused entities id
