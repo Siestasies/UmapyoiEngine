@@ -14,7 +14,9 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
         auto& tf = gCoordinator->GetComponent<Transform>(entity);
 
-        //tf.position += ...
+        tf.position += rb.velocity;
+
+        //std::cout << "physics updating\n";
     }
 }
 

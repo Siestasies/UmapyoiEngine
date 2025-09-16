@@ -38,14 +38,12 @@ void Uma_Engine::Test_Ecs::Init()
     physicsSystem->Init(&gCoordinator);
 
     // entities
-    std::vector<Entity> entities(100);
+    std::vector<Entity> entities(2500);
 
     std::default_random_engine generator;
     std::uniform_real_distribution<float> randPosition(-100.0f, 100.0f);
     std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
     std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
-    std::uniform_real_distribution<float> randColor(0.0f, 1.0f);
-    std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
 
     float scale = randScale(generator);
 
@@ -56,7 +54,7 @@ void Uma_Engine::Test_Ecs::Init()
         gCoordinator.AddComponent(
             entity,
             RigidBody{
-              .velocity = Vec2(0.0f, 0.0f),
+              .velocity = Vec2(0.0f, -1.0f),
               .acceleration = Vec2(0.0f, 0.0f)
             });
 
@@ -71,7 +69,7 @@ void Uma_Engine::Test_Ecs::Init()
 
 #ifdef _DEBUG_LOG
 
-    physicsSystem->PrintLog();
+    //physicsSystem->PrintLog();
 
 #endif // _DEBUG_LOG
 
@@ -96,7 +94,7 @@ void Uma_Engine::Test_Ecs::Init()
 
 #ifdef _DEBUG_LOG
 
-    physicsSystem->PrintLog();
+    //physicsSystem->PrintLog();
 
 #endif // _DEBUG_LOG
 }
