@@ -9,7 +9,7 @@ namespace Uma_ECS
     {
     public:
 
-        void Init(Coordinator* c) { gCoordinator = c; }
+        inline void Init(Coordinator* c) { gCoordinator = c; }
 
         void Update(float dt);
 

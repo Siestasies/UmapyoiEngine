@@ -3,6 +3,9 @@
 
 namespace Uma_Engine
 {
+    // foward declare of System Manager
+    class SystemManager;
+
     // Base system interface - only requires basic lifecycle methods
     class ISystem
     {
@@ -26,6 +29,11 @@ namespace Uma_Engine
             \details Called once at engine shutdown.
         */
         virtual void Shutdown() = 0;
+
+        inline void SetSystemManager(SystemManager* sm) { pSystemManager = sm; }
+
+    protected:
+        SystemManager* pSystemManager = nullptr;
     };
 
     // Optional interface for systems that need window access

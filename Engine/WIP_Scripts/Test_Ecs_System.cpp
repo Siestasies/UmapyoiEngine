@@ -2,8 +2,13 @@
 
 #include "ECS/Core/Coordinator.hpp"
 #include "ECS/Systems/PhysicsSystem.hpp"
+#include "ECS/Systems/PlayerControllerSystem.hpp"
 #include "ECS/Components/Transform.h"
 #include "ECS/Components/RigidBody.h"
+#include "ECS/Components/Player.h"
+
+#include "Systems/InputSystem.h"
+#include "../Core/SystemManager.h"
 
 #include <vector>
 #include <random>
@@ -16,9 +21,13 @@ using Coordinator = Uma_ECS::Coordinator;
 
 Coordinator gCoordinator;
 std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
+std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
+Uma_Engine::InputSystem* pInputSystem;
 
 void Uma_Engine::Test_Ecs::Init()
 {
+    pInputSystem = pSystemManager->GetSystem<InputSystem>();
+
     using namespace Uma_ECS;
 
     gCoordinator.Init();
@@ -26,6 +35,7 @@ void Uma_Engine::Test_Ecs::Init()
     // register components
     gCoordinator.RegisterComponent<Transform>();
     gCoordinator.RegisterComponent<RigidBody>();
+    gCoordinator.RegisterComponent<Player>();
 
     physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
     {
@@ -36,6 +46,18 @@ void Uma_Engine::Test_Ecs::Init()
     }
 
     physicsSystem->Init(&gCoordinator);
+
+    playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
+    {
+        Signature sign;
+        sign.set(gCoordinator.GetComponentType<RigidBody>());
+        sign.set(gCoordinator.GetComponentType<Transform>());
+        sign.set(gCoordinator.GetComponentType<Player>());
+        gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
+    }
+
+
+    playerController->Init(pInputSystem, &gCoordinator);
 
     // entities
     std::vector<Entity> entities(2500);
@@ -85,12 +107,16 @@ void Uma_Engine::Test_Ecs::Init()
             .scale = Vec2(3,3),
         });
 
-  /*  gCoordinator.AddComponent(
+    gCoordinator.AddComponent(
         en,
         RigidBody{
           .velocity = Vec2(0.0f, 0.0f),
           .acceleration = Vec2(0.0f, 0.0f)
-        });*/
+        });
+
+    gCoordinator.AddComponent(
+        en,
+        Player{});
 
 #ifdef _DEBUG_LOG
 
@@ -102,6 +128,8 @@ void Uma_Engine::Test_Ecs::Init()
 void Uma_Engine::Test_Ecs::Update(float dt)
 {
     physicsSystem->Update(dt);
+
+    playerController->Update(dt);
 
     //camera updatye 
 
