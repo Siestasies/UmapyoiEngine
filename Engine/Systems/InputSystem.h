@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
-#include <GLFW/glfw3.h>
+
 #include "Core/SystemType.h"
+#include "Window.hpp"
 
 namespace Uma_Engine
 {

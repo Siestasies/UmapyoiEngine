@@ -21,9 +21,25 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT U
 
 # Copy Assets folder to the build directory where the executable is
 # This works for both Debug and Release builds
-add_custom_command(TARGET UmapyoiGame POST_BUILD
+#add_custom_command(TARGET UmapyoiGame POST_BUILD
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#        "${CMAKE_SOURCE_DIR}/Assets"
+#        "$<TARGET_FILE_DIR:UmapyoiGame>/Assets"
+#    COMMENT "Copying Assets folder to build directory"
+#)
+
+# Define where assets live
+set(ASSET_DIR ${CMAKE_SOURCE_DIR}/Assets)
+
+# Define where to copy them
+set(ASSET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Game/Assets)
+
+# Copy all assets every build
+add_custom_target(copy_assets ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${CMAKE_SOURCE_DIR}/Assets"
-        "$<TARGET_FILE_DIR:UmapyoiGame>/Assets"
-    COMMENT "Copying Assets folder to build directory"
+            ${ASSET_DIR} ${ASSET_OUTPUT_DIR}
+    COMMENT "Copying assets to build folder"
 )
+
+# Make sure your game depends on this step
+add_dependencies(Uma_Engine copy_assets)

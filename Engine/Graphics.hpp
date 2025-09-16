@@ -1,11 +1,12 @@
 #pragma once
 #include <glad/glad.h>
-#include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <string>
 #include <map>
 #include "Core/SystemType.h" // Include the system interface
+#include "Window.hpp"
 
 namespace Uma_Engine
 {

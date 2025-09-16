@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <type_traits>
 #include "SystemType.h"
+#include "Window.hpp"
 
 namespace Uma_Engine
 {

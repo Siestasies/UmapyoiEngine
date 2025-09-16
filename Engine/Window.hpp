@@ -5,6 +5,14 @@
 
 namespace Uma_Engine
 {
+    // Optional interface for systems that need window access
+    class IWindowSystem
+    {
+    public:
+        virtual ~IWindowSystem() = default;
+        virtual void SetWindow(GLFWwindow* window) = 0;
+    };
+
     class Window
     {
     public:

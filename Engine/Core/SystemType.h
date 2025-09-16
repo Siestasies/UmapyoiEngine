@@ -1,5 +1,4 @@
 #pragma once
-#include <GLFW/glfw3.h>
 
 namespace Uma_Engine
 {
@@ -34,13 +33,5 @@ namespace Uma_Engine
 
     protected:
         SystemManager* pSystemManager = nullptr;
-    };
-
-    // Optional interface for systems that need window access
-    class IWindowSystem
-    {
-    public:
-        virtual ~IWindowSystem() = default;
-        virtual void SetWindow(GLFWwindow* window) = 0;
     };
 }

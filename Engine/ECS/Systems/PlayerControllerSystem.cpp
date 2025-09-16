@@ -6,7 +6,7 @@
 
 #include <GLFW/glfw3.h>
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 #ifdef _DEBUG_LOG
 #include <iostream>
