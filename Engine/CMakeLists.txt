@@ -5,20 +5,42 @@ add_library(glad STATIC
 )
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
-# Collect all source files in the Engine directory (excluding GLAD subdirectory)
-file(GLOB ENGINE_SOURCES
+# Collect source files more systematically
+file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
-    "*.hpp"
-    "Systems/*.cpp"
-    "Systems/*.hpp"
-    "*.h"
+    "Systems/*.cpp" 
+    "Core/*.cpp"
+    "ECS/*.cpp"
+    "ECS/Components/*.cpp"
+    "ECS/Systems/*.cpp"
+    "WIP_Scripts/*.cpp"
 )
 
-# Force CMake to reconfigure when source files are added/removed
-set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS "*.cpp" "*.hpp" "*.h")
+file(GLOB_RECURSE ENGINE_HEADERS
+    "*.h"
+    "*.hpp"
+    "Systems/*.h"
+    "Systems/*.hpp"
+    "Core/*.h"
+    "ECS/*.h"
+    "ECS/Components/*.h"
+    "ECS/Systems/*.h" 
+    "WIP_Scripts/*.h"
+)
+
+# Force CMake to reconfigure when source files change
+set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS 
+    "*.cpp" "*.hpp" "*.h"
+    "Systems/*.cpp" "Systems/*.hpp" "Systems/*.h"
+    "Core/*.cpp" "Core/*.hpp" "Core/*.h"
+    "ECS/*.cpp" "ECS/*.hpp" "ECS/*.h"
+    "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
+    "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
+    "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
+)
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} "Core/SystemType.h"  "Core/SystemManager.h" "Systems/InputSystem.cpp" "Systems/InputSystem.h" "WIP_Scripts/Test_Ecs_System.h" "WIP_Scripts/Test_Ecs_System.cpp" "ECS/Components/Player.h" "ECS/Systems/PlayerControllerSystem.cpp")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
 # Link libraries
 target_link_libraries(Uma_Engine 
@@ -32,9 +54,21 @@ target_link_libraries(Uma_Engine
 target_include_directories(Uma_Engine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Core
+        ${CMAKE_CURRENT_SOURCE_DIR}/ECS
+        ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Components
+        ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Systems
+        ${CMAKE_CURRENT_SOURCE_DIR}/Systems
+        ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
         ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
 )
 
-# Set C++ standard for this target
+# Set C++ standard
 target_compile_features(Uma_Engine PUBLIC cxx_std_20)
+
+# Enable verbose output for debugging
+set_target_properties(Uma_Engine PROPERTIES
+    CXX_STANDARD 20
+    CXX_STANDARD_REQUIRED ON
+)
