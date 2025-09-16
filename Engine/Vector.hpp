@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <initializer_list>
@@ -10,12 +11,12 @@
 
 namespace Uma_Math
 {
-	template<typename T>
+	template <typename T = float>
 	class Vector2D
 	{
 	public:
 		// Core constructors and Rule of 5
-		constexpr Vector2D(T x = T{}, T y = T{}) : pData{x, y} {}
+		constexpr Vector2D(T x = T{}, T y = T{}) : m_x{x}, m_y{y} {}
 		constexpr Vector2D(const Vector2D& other) = default;
 		constexpr Vector2D(Vector2D&& other) noexcept = default;
 		constexpr Vector2D& operator=(const Vector2D& other) = default;
@@ -23,50 +24,60 @@ namespace Uma_Math
 		~Vector2D() = default;
 
 		// Template conversion constructor
-		template<typename U>
-		constexpr explicit Vector2D(const Vector2D<U>& other) : pData{static_cast<T>(other.x()), static_cast<T>(other.y())} {}
+		template <typename U>
+		constexpr explicit Vector2D(const Vector2D<U>& other) : m_x{static_cast<T>(other.x())}, m_y{static_cast<T>(other.y())} {}
 
-		// Basic accessors
-		constexpr T x() const { return pData[0]; }
-		constexpr T y() const { return pData[1]; }
-		constexpr void setX(T x) { pData[0] = x; }
-		constexpr void setY(T y) { pData[1] = y; }
+		// Optimized accessors - inline and constexpr
+		constexpr T x() const noexcept { return m_x; }
+		constexpr T y() const noexcept { return m_y; }
+
+		// Optimized mutators - inline and constexpr
+		constexpr void setX(T x) noexcept { m_x = x; }
+		constexpr void setY(T y) noexcept { m_y = y; }
+		constexpr void set(T x, T y) noexcept { m_x = x; m_y = y; }
 
 		// Array-style access
-		constexpr T& operator[](std::size_t index) { return pData[index]; }
-		constexpr const T& operator[](std::size_t index) const { return pData[index]; }
+		constexpr T& operator[](std::size_t index)
+		{
+			return index == 0 ? m_x : m_y;
+		}
+
+		constexpr const T& operator[](std::size_t index) const
+		{
+			return index == 0 ? m_x : m_y;
+		}
 
 		// Size information
-		constexpr std::size_t size() const { return pData.size(); }
+		constexpr std::size_t size() const noexcept { return 2; }
 
 		// Compound assignment operators
-		constexpr Vector2D& operator+=(const Vector2D& other)
+		constexpr Vector2D& operator+=(const Vector2D& other) noexcept
 		{
-			pData[0] += other.x();
-			pData[1] += other.y();
+			m_x += other.m_x;
+			m_y += other.m_y;
 			return *this;
 		}
 
-		constexpr Vector2D& operator-=(const Vector2D& other)
+		constexpr Vector2D& operator-=(const Vector2D& other) noexcept
 		{
-			pData[0] -= other.x();
-			pData[1] -= other.y();
+			m_x -= other.m_x;
+			m_y -= other.m_y;
 			return *this;
 		}
 
-		template<typename U>
-		constexpr Vector2D& operator*=(U scalar)
+		template <typename U>
+		constexpr Vector2D& operator*=(U scalar) noexcept
 		{
-			pData[0] *= scalar;
-			pData[1] *= scalar;
+			m_x *= scalar;
+			m_y *= scalar;
 			return *this;
 		}
 
-		template<typename U>
-		constexpr Vector2D& operator/=(U scalar)
+		template <typename U>
+		constexpr Vector2D& operator/=(U scalar) noexcept
 		{
-			pData[0] /= scalar;
-			pData[1] /= scalar;
+			m_x /= scalar;
+			m_y /= scalar;
 			return *this;
 		}
 
@@ -79,32 +90,27 @@ namespace Uma_Math
 			{
 				if constexpr (std::is_integral_v<T>)
 				{
-					pData[0] = static_cast<T>(static_cast<double>(pData[0]) / mag);
-					pData[1] = static_cast<T>(static_cast<double>(pData[1]) / mag);
+					m_x = static_cast<T>(static_cast<double>(m_x) / mag);
+					m_y = static_cast<T>(static_cast<double>(m_y) / mag);
 				}
 				else
 				{
-					pData[0] /= mag;
-					pData[1] /= mag;
+					m_x /= mag;
+					m_y /= mag;
 				}
 			}
 		}
 
 	private:
-		union
-		{
-			std::array<T, 2> pData;
-			struct { T mX, mY; };
-		};
-
+		T m_x, m_y;
 	};
 
-	template<typename T>
+	template <typename T = float>
 	class Vector3D
 	{
 	public:
 		// Core constructors and Rule of 5
-		constexpr Vector3D(T x = T{}, T y = T{}, T z = T{}) : pData{ x, y, z } {}
+		constexpr Vector3D(T x = T{}, T y = T{}, T z = T{}) : m_x{x}, m_y{y}, m_z{z} {}
 		constexpr Vector3D(const Vector3D& other) = default;
 		constexpr Vector3D(Vector3D&& other) noexcept = default;
 		constexpr Vector3D& operator=(const Vector3D& other) = default;
@@ -112,56 +118,66 @@ namespace Uma_Math
 		~Vector3D() = default;
 
 		// Template conversion constructor
-		template<typename U>
-		constexpr explicit Vector3D(const Vector3D<U>& other) : pData{static_cast<T>(other.x()), static_cast<T>(other.y()), static_cast<T>(other.z())} {}
+		template <typename U>
+		constexpr explicit Vector3D(const Vector3D<U>& other) : m_x{static_cast<T>(other.x())}, m_y{static_cast<T>(other.y())}, m_z{static_cast<T>(other.z())} {}
 
-		// Basic accessors
-		constexpr T x() const { return pData[0]; }
-		constexpr T y() const { return pData[1]; }
-		constexpr T z() const { return pData[2]; }
-		constexpr void setX(T x) { pData[0] = x; }
-		constexpr void setY(T y) { pData[1] = y; }
-		constexpr void setZ(T z) { pData[2] = z; }
+		// Optimized accessors - inline and constexpr
+		constexpr T x() const noexcept { return m_x; }
+		constexpr T y() const noexcept { return m_y; }
+		constexpr T z() const noexcept { return m_z; }
+
+		// Optimized mutators - inline and constexpr
+		constexpr void setX(T x) noexcept { m_x = x; }
+		constexpr void setY(T y) noexcept { m_y = y; }
+		constexpr void setZ(T z) noexcept { m_z = z; }
+		constexpr void set(T x, T y, T z) noexcept { m_x = x; m_y = y; m_z = z; }
 
 		// Array-style access
-		constexpr T& operator[](std::size_t index) { return pData[index]; }
-		constexpr const T& operator[](std::size_t index) const { return pData[index]; }
+		constexpr T& operator[](std::size_t index)
+		{
+			return index == 0 ? m_x : (index == 1 ? m_y : m_z);
+		}
+
+		constexpr const T& operator[](std::size_t index) const
+		{
+			return index == 0 ? m_x : (index == 1 ? m_y : m_z);
+		}
 
 		// Size information
-		constexpr std::size_t size() const { return pData.size(); }
+		constexpr std::size_t size() const noexcept { return 3; }
 
 		// Compound assignment operators
-		constexpr Vector3D& operator+=(const Vector3D& other)
+		constexpr Vector3D& operator+=(const Vector3D& other) noexcept
 		{
-			pData[0] += other.x();
-			pData[1] += other.y();
-			pData[2] += other.z();
+			m_x += other.m_x;
+			m_y += other.m_y;
+			m_z += other.m_z;
 			return *this;
 		}
 
-		constexpr Vector3D& operator-=(const Vector3D& other)
+		constexpr Vector3D& operator-=(const Vector3D& other) noexcept
 		{
-			pData[0] -= other.x();
-			pData[1] -= other.y();
-			pData[2] -= other.z();
+			m_x -= other.m_x;
+			m_y -= other.m_y;
+			m_z -= other.m_z;
 			return *this;
 		}
 
-		template<typename U>
-		constexpr Vector3D& operator*=(U scalar)
+		template <typename U>
+		constexpr Vector3D& operator*=(U scalar) noexcept
 		{
-			pData[0] *= scalar;
-			pData[1] *= scalar;
-			pData[2] *= scalar;
+			m_x *= scalar;
+			m_y *= scalar;
+			m_z *= scalar;
 			return *this;
 		}
 
-		template<typename U>
-		constexpr Vector3D& operator/=(U scalar)
+		template <typename U>
+		constexpr Vector3D& operator/=(U scalar) noexcept
 		{
-			pData[0] /= scalar;
-			pData[1] /= scalar;
-			pData[2] /= scalar;
+			m_x /= scalar;
+			m_y /= scalar;
+			m_z /= scalar;
 			return *this;
 		}
 
@@ -174,140 +190,136 @@ namespace Uma_Math
 			{
 				if constexpr (std::is_integral_v<T>)
 				{
-					pData[0] = static_cast<T>(static_cast<double>(pData[0]) / mag);
-					pData[1] = static_cast<T>(static_cast<double>(pData[1]) / mag);
-					pData[2] = static_cast<T>(static_cast<double>(pData[2]) / mag);
+					m_x = static_cast<T>(static_cast<double>(m_x) / mag);
+					m_y = static_cast<T>(static_cast<double>(m_y) / mag);
+					m_z = static_cast<T>(static_cast<double>(m_z) / mag);
 				}
 				else
 				{
-					pData[0] /= mag;
-					pData[1] /= mag;
-					pData[2] /= mag;
+					m_x /= mag;
+					m_y /= mag;
+					m_z /= mag;
 				}
 			}
 		}
 
 	private:
-		union
-		{
-			std::array<T, 3> pData;
-			struct { T mX, mY, mZ; };
-		};
+		T m_x, m_y, m_z;
 	};
 
-	// Arithmetic operators
-	template<typename T>
+	// Arithmetic operators - using accessor functions
+	template <typename T>
 	constexpr Vector2D<T> operator+(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return Vector2D<T>(lhs.x() + rhs.x(), lhs.y() + rhs.y());
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector2D<T> operator-(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return Vector2D<T>(lhs.x() - rhs.x(), lhs.y() - rhs.y());
 	}
-	
-	template<typename T, typename U>
+
+	template <typename T, typename U>
 	constexpr Vector2D<T> operator*(const Vector2D<T>& vec, U scalar)
 	{
 		return Vector2D<T>(vec.x() * scalar, vec.y() * scalar);
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector2D<T> operator*(U scalar, const Vector2D<T>& vec)
 	{
 		return vec * scalar;
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector2D<T> operator/(const Vector2D<T>& vec, U scalar)
 	{
 		return Vector2D<T>(vec.x() / scalar, vec.y() / scalar);
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector3D<T> operator+(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return Vector3D<T>(lhs.x() + rhs.x(), lhs.y() + rhs.y(), lhs.z() + rhs.z());
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector3D<T> operator-(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return Vector3D<T>(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector3D<T> operator*(const Vector3D<T>& vec, U scalar)
 	{
 		return Vector3D<T>(vec.x() * scalar, vec.y() * scalar, vec.z() * scalar);
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector3D<T> operator*(U scalar, const Vector3D<T>& vec)
 	{
 		return vec * scalar;
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector3D<T> operator/(const Vector3D<T>& vec, U scalar)
 	{
 		return Vector3D<T>(vec.x() / scalar, vec.y() / scalar, vec.z() / scalar);
 	}
 
 	// Unary minus operator
-	template<typename T>
+	template <typename T>
 	constexpr Vector2D<T> operator-(const Vector2D<T>& vec)
 	{
 		return Vector2D<T>(-vec.x(), -vec.y());
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector3D<T> operator-(const Vector3D<T>& vec)
 	{
 		return Vector3D<T>(-vec.x(), -vec.y(), -vec.z());
 	}
 
 	// Comparison operators
-	template<typename T>
+	template <typename T>
 	constexpr bool operator==(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return lhs.x() == rhs.x() && lhs.y() == rhs.y();
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr bool operator!=(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return !(lhs == rhs);
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr bool operator==(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return lhs.x() == rhs.x() && lhs.y() == rhs.y() && lhs.z() == rhs.z();
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr bool operator!=(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return !(lhs == rhs);
 	}
 
 	// Vector operations
-	template<typename T>
+	template <typename T>
 	constexpr T dot(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return lhs.x() * rhs.x() + lhs.y() * rhs.y();
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr T dot(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return lhs.x() * rhs.x() + lhs.y() * rhs.y() + lhs.z() * rhs.z();
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector3D<T> cross(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return Vector3D<T>(
@@ -318,46 +330,46 @@ namespace Uma_Math
 	}
 
 	// Magnitude operations
-	template<typename T>
+	template <typename T>
 	constexpr T magnitudeSquared(const Vector2D<T>& vec)
 	{
 		return vec.x() * vec.x() + vec.y() * vec.y();
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr T magnitudeSquared(const Vector3D<T>& vec)
 	{
 		return vec.x() * vec.x() + vec.y() * vec.y() + vec.z() * vec.z();
 	}
 
 	// Magnitude for floating point types
-	template<typename T>
+	template <typename T>
 	auto magnitude(const Vector2D<T>& vec) -> std::enable_if_t<std::is_floating_point_v<T>, T>
 	{
 		return std::sqrt(magnitudeSquared(vec));
 	}
 
-	template<typename T>
+	template <typename T>
 	auto magnitude(const Vector3D<T>& vec) -> std::enable_if_t<std::is_floating_point_v<T>, T>
 	{
 		return std::sqrt(magnitudeSquared(vec));
 	}
 
 	// Magnitude for integer types (returns double)
-	template<typename T>
+	template <typename T>
 	auto magnitude(const Vector2D<T>& vec) -> std::enable_if_t<std::is_integral_v<T>, double>
 	{
 		return std::sqrt(static_cast<double>(magnitudeSquared(vec)));
 	}
 
-	template<typename T>
+	template <typename T>
 	auto magnitude(const Vector3D<T>& vec) -> std::enable_if_t<std::is_integral_v<T>, double>
 	{
 		return std::sqrt(static_cast<double>(magnitudeSquared(vec)));
 	}
 
 	// Normalization for floating point types
-	template<typename T>
+	template <typename T>
 	auto normalized(const Vector2D<T>& vec) -> std::enable_if_t<std::is_floating_point_v<T>, Vector2D<T>>
 	{
 		auto mag = magnitude(vec);
@@ -368,7 +380,7 @@ namespace Uma_Math
 		return Vector2D<T>(T{}, T{});
 	}
 
-	template<typename T>
+	template <typename T>
 	auto normalized(const Vector3D<T>& vec) -> std::enable_if_t<std::is_floating_point_v<T>, Vector3D<T>>
 	{
 		auto mag = magnitude(vec);
@@ -380,7 +392,7 @@ namespace Uma_Math
 	}
 
 	// Normalization for integer types (returns double vector)
-	template<typename T>
+	template <typename T>
 	auto normalized(const Vector2D<T>& vec) -> std::enable_if_t<std::is_integral_v<T>, Vector2D<double>>
 	{
 		auto mag = magnitude(vec);
@@ -392,7 +404,7 @@ namespace Uma_Math
 		return Vector2D<double>(0.0, 0.0);
 	}
 
-	template<typename T>
+	template <typename T>
 	auto normalized(const Vector3D<T>& vec) -> std::enable_if_t<std::is_integral_v<T>, Vector3D<double>>
 	{
 		auto mag = magnitude(vec);
@@ -406,58 +418,58 @@ namespace Uma_Math
 	}
 
 	// Distance functions
-	template<typename T>
+	template <typename T>
 	auto distance(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return magnitude(lhs - rhs);
 	}
 
-	template<typename T>
+	template <typename T>
 	auto distance(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return magnitude(lhs - rhs);
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr T distanceSquared(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
 	{
 		return magnitudeSquared(lhs - rhs);
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr T distanceSquared(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return magnitudeSquared(lhs - rhs);
 	}
 
 	// Linear interpolation
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector2D<T> lerp(const Vector2D<T>& start, const Vector2D<T>& end, U t)
 	{
 		return start + (end - start) * t;
 	}
 
-	template<typename T, typename U>
+	template <typename T, typename U>
 	constexpr Vector3D<T> lerp(const Vector3D<T>& start, const Vector3D<T>& end, U t)
 	{
 		return start + (end - start) * t;
 	}
 
 	// Reflection
-	template<typename T>
+	template <typename T>
 	constexpr Vector2D<T> reflect(const Vector2D<T>& incident, const Vector2D<T>& normal)
 	{
 		return incident - 2 * dot(incident, normal) * normal;
 	}
 
-	template<typename T>
+	template <typename T>
 	constexpr Vector3D<T> reflect(const Vector3D<T>& incident, const Vector3D<T>& normal)
 	{
 		return incident - 2 * dot(incident, normal) * normal;
 	}
 
 	// Angle between vectors (for floating point types)
-	template<typename T>
+	template <typename T>
 	auto angle(const Vector2D<T>& lhs, const Vector2D<T>& rhs) -> std::enable_if_t<std::is_floating_point_v<T>, T>
 	{
 		auto dot_product = dot(lhs, rhs);
@@ -469,7 +481,7 @@ namespace Uma_Math
 		return T{};
 	}
 
-	template<typename T>
+	template <typename T>
 	auto angle(const Vector3D<T>& lhs, const Vector3D<T>& rhs) -> std::enable_if_t<std::is_floating_point_v<T>, T>
 	{
 		auto dot_product = dot(lhs, rhs);
@@ -482,48 +494,17 @@ namespace Uma_Math
 	}
 
 	// Stream operators
-	template<typename T>
+	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const Vector2D<T>& vec)
 	{
 		os << "(" << vec.x() << ", " << vec.y() << ")";
 		return os;
 	}
 
-	template<typename T>
+	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const Vector3D<T>& vec)
 	{
 		os << "(" << vec.x() << ", " << vec.y() << ", " << vec.z() << ")";
 		return os;
-	}
-
-	// Compile-time constants for different types
-	namespace constants
-	{
-		constexpr Vector2D<float> UNIT_X_2F(1.0f, 0.0f);
-		constexpr Vector2D<float> UNIT_Y_2F(0.0f, 1.0f);
-		constexpr Vector2D<float> ZERO_2F(0.0f, 0.0f);
-
-		constexpr Vector2D<double> UNIT_X_2D(1.0, 0.0);
-		constexpr Vector2D<double> UNIT_Y_2D(0.0, 1.0);
-		constexpr Vector2D<double> ZERO_2D(0.0, 0.0);
-
-		constexpr Vector2D<int> UNIT_X_2I(1, 0);
-		constexpr Vector2D<int> UNIT_Y_2I(0, 1);
-		constexpr Vector2D<int> ZERO_2I(0, 0);
-
-		constexpr Vector3D<float> UNIT_X_3F(1.0f, 0.0f, 0.0f);
-		constexpr Vector3D<float> UNIT_Y_3F(0.0f, 1.0f, 0.0f);
-		constexpr Vector3D<float> UNIT_Z_3F(0.0f, 0.0f, 1.0f);
-		constexpr Vector3D<float> ZERO_3F(0.0f, 0.0f, 0.0f);
-
-		constexpr Vector3D<double> UNIT_X_3D(1.0, 0.0, 0.0);
-		constexpr Vector3D<double> UNIT_Y_3D(0.0, 1.0, 0.0);
-		constexpr Vector3D<double> UNIT_Z_3D(0.0, 0.0, 1.0);
-		constexpr Vector3D<double> ZERO_3D(0.0, 0.0, 0.0);
-
-		constexpr Vector3D<int> UNIT_X_3I(1, 0, 0);
-		constexpr Vector3D<int> UNIT_Y_3I(0, 1, 0);
-		constexpr Vector3D<int> UNIT_Z_3I(0, 0, 1);
-		constexpr Vector3D<int> ZERO_3I(0, 0, 0);
 	}
 }
