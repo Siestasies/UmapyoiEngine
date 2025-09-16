@@ -26,8 +26,8 @@ int main()
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
     systemManager.RegisterSystem<Uma_Engine::InputSystem>();
-    auto* graphics = systemManager.RegisterSystem<Uma_Engine::Graphics>();
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
+    auto* graphics = systemManager.RegisterSystem<Uma_Engine::Graphics>();
 
     // Initialize all registered systems
     systemManager.Init();
