@@ -1,4 +1,4 @@
-#include "ResourcesManager.h"
+#include "ResourcesManager.hpp"
 
 #include "../Systems/Graphics.hpp"
 #include "../../Core/SystemManager.h"

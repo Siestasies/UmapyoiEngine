@@ -9,7 +9,7 @@
 #include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
 #include "Systems/InputSystem.h" 
-#include "Systems/ResourcesManager.h"
+#include "Systems/ResourcesManager.hpp"
 
 #include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
