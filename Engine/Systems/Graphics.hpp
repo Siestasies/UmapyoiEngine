@@ -1,62 +1,53 @@
 #pragma once
-
-#include "Core/SystemType.h" // Include the system interface
+#include "Core/SystemType.h" 
 #include "Window.hpp"
 #include "Math/Math.hpp"
 #include "ResourcesTypes.hpp"
-
 #include <string>
-#include <map>
 
 // Forward declarations
-struct GLFWwindow;          // from <GLFW/glfw3.h>
-using GLuint = unsigned int; // from <glad/glad.h> (GLuint is just a typedef)
-
-// Forward declare glm types you use
-//namespace glm { struct vec2; }
+struct GLFWwindow;
+using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
-
     class Graphics : public ISystem, public IWindowSystem
     {
     public:
         Graphics();
         ~Graphics();
 
-        // ISystem interface implementation
+        // ISystem interface
         void Init() override;
         void Update(float dt) override;
         void Shutdown() override;
 
-        // IWindowSystem interface implementation
+        // IWindowSystem interface
         void SetWindow(GLFWwindow* window) override;
 
         // Background operations
         void ClearBackground(float r = 0.0f, float g = 0.0f, float b = 0.0f);
 
-        // Texture management
-        Texture LoadTexture(const std::string& texturePath);
+        // Texture loading
+        Texture LoadTextureFromFile(const std::string& texturePath);
         void UnloadTexture(unsigned int textureID);
 
         // Sprite rendering
         void DrawSprite(unsigned int textureID,
+            const Vec2& textureSize,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f);
 
-        // Draw background that covers entire viewport
-        void DrawBackground(unsigned int textureID);
-
-        // Get texture dimensions
-        Vec2 GetTextureSize(unsigned int textureID) const;
+        // Draw background image
+        void DrawBackground(unsigned int textureID, const Vec2& textureSize);
 
         void SetVSync(bool enabled);
         void SetViewport(int width, int height);
 
     private:
         bool mInitialized;
-        GLFWwindow* mWindow; // Store window reference
+        GLFWwindow* mWindow;
 
         // Rendering resources
         GLuint mVAO, mVBO;
@@ -64,9 +55,6 @@ namespace Uma_Engine
 
         // Viewport size
         int mViewportWidth, mViewportHeight;
-
-        // Texture size storage
-        //std::map<unsigned int, Vec2> mTextureSizes;
 
         // Helper functions
         bool InitializeRenderer();

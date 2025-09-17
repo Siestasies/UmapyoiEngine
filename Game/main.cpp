@@ -41,6 +41,7 @@ int main()
 
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
     systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+    systemManager.RegisterSystem <Uma_Engine::ResourcesManager>();
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 

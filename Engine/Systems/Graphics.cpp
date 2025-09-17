@@ -6,7 +6,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
-#include <map>
 #include <cassert>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -53,7 +52,6 @@ void main()
         Shutdown();
     }
 
-    // ISystem interface implementation
     void Graphics::Init()
     {
         if (mInitialized)
@@ -65,15 +63,9 @@ void main()
         // Check if OpenGL context is available
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cerr << "GLAD not initialized! Make sure Window is initialized first." << std::endl;
+            std::cerr << "GLAD not initialized" << std::endl;
             return;
         }
-
-        // Check OpenGL version
-        std::cout << "Graphics initializing..." << std::endl;
-        std::cout << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
-        std::cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << std::endl;
-        std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
         // Enable blending for transparency
         glEnable(GL_BLEND);
@@ -110,24 +102,14 @@ void main()
 
     void Graphics::Shutdown()
     {
-        //if (mInitialized)
-        //{
-        //    std::cout << "Shutting down graphics system..." << std::endl;
-
-        //    // Clean up all textures
-        //    for (auto& pair : mTextureSizes)
-        //    {
-        //        GLuint textureID = pair.first;
-        //        glDeleteTextures(1, &textureID);
-        //    }
-        //    mTextureSizes.clear();
-
-        //    ShutdownRenderer();
-        //    mInitialized = false;
-        //}
+        if (mInitialized)
+        {
+            std::cout << "Shutting down graphics system..." << std::endl;
+            ShutdownRenderer();
+            mInitialized = false;
+        }
     }
 
-    // IWindowSystem interface implementation
     void Graphics::SetWindow(GLFWwindow* window)
     {
         mWindow = window;
@@ -156,10 +138,11 @@ void main()
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    Texture Graphics::LoadTexture(const std::string& texturePath)
+    Texture Graphics::LoadTextureFromFile(const std::string& texturePath)
     {
-        //if (!mInitialized) return 0;
-        assert(mInitialized && "Error : Graphics System is not Initialized.");
+        assert(mInitialized && "Error: Graphics System is not initialized.");
+
+        Texture tex = {}; // Initialize to zero
 
         GLuint textureID;
         glGenTextures(1, &textureID);
@@ -172,110 +155,91 @@ void main()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // Load image
-        Texture tex;
         int width, height, nrChannels;
         unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
-        assert(data && "Error : Failed to load texture. ");
+        if (data)
+        {
+            GLenum format = GL_RGB;
+            if (nrChannels == 1)
+                format = GL_RED;
+            else if (nrChannels == 3)
+                format = GL_RGB;
+            else if (nrChannels == 4)
+                format = GL_RGBA;
 
-        GLenum format = GL_RGB;
-        if (nrChannels == 1)
-            format = GL_RED;
-        else if (nrChannels == 3)
-            format = GL_RGB;
-        else if (nrChannels == 4)
-            format = GL_RGBA;
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+            // Fill texture struct
+            tex.tex_id = textureID;
+            tex.tex_size = Vec2(static_cast<float>(width), static_cast<float>(height));
 
-        // Store texture size
-        tex.tex_size = Vec2(width, height);
-        tex.tex_id = textureID;
-
-        std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
-        /*else
+            std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
+        }
+        else
         {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
-            return 0;
-        }*/
+        }
 
         stbi_image_free(data);
-
         return tex;
     }
 
     void Graphics::UnloadTexture(unsigned int textureID)
     {
-       /* if (textureID != 0)
+        if (textureID != 0)
         {
             GLuint id = textureID;
             glDeleteTextures(1, &id);
-            mTextureSizes.erase(textureID);
-        }*/
+        }
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position,
-        const Vec2& scale, float rotation)
-    {
-        //if (!mInitialized || textureID == 0) return;
-
-        //auto it = mTextureSizes.find(textureID);
-        //if (it == mTextureSizes.end()) return;
-
-        //Vec2 size = it->second;
-
-        //// Use shader program
-        //glUseProgram(mShaderProgram);
-
-        //// Create transformation matrix
-        //glm::mat4 model = glm::mat4(1.0f);
-
-        //glm::vec2 pos{ position.x, position.y };
-
-        //model = glm::translate(model, glm::vec3(pos, 0.0f));
-        //model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        //model = glm::scale(model, glm::vec3(size.x * scale.x, size.y * scale.y, 1.0f));
-
-        //// Set model uniform
-        //GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
-        //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
-
-        //// Bind texture and render
-        //glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, textureID);
-        //glBindVertexArray(mVAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
-        //glBindVertexArray(0);
-    }
-
-    void Graphics::DrawBackground(unsigned int textureID)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
+        const Vec2& position, const Vec2& scale, float rotation)
     {
         if (!mInitialized || textureID == 0) return;
 
-        Vec2 texSize = GetTextureSize(textureID);
-        if (texSize.x == 0 || texSize.y == 0) return;
+        // Use shader program
+        glUseProgram(mShaderProgram);
 
-        // Scale sprite
+        // Create transformation matrix
+        glm::mat4 model = glm::mat4(1.0f);
+
+        glm::vec2 pos{ position.x, position.y };
+
+        model = glm::translate(model, glm::vec3(pos, 0.0f));
+        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
+
+        // Set model uniform
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Bind texture and render
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::DrawBackground(unsigned int textureID, const Vec2& textureSize)
+    {
+        if (!mInitialized || textureID == 0) return;
+        if (textureSize.x == 0 || textureSize.y == 0) return;
+
+        // Scale sprite to cover entire viewport
         Vec2 scale = Vec2(
-            (float)mViewportWidth / texSize.x,
-            (float)mViewportHeight / texSize.y
+            (float)mViewportWidth / textureSize.x,
+            (float)mViewportHeight / textureSize.y
         );
 
         // Position the background's center at the viewport's center
         Vec2 position = Vec2(mViewportWidth / 2.0f, mViewportHeight / 2.0f);
 
-        DrawSprite(textureID, position, scale, 0.0f);
-    }
-
-    Vec2 Graphics::GetTextureSize(unsigned int textureID) const
-    {
-        /*auto it = mTextureSizes.find(textureID);
-
-        Vec2 size = (it != mTextureSizes.end()) ? it->second : Vec2(0.0f, 0.0f);
-
-        return Vec2(size.x, size.y);*/
+        DrawSprite(textureID, textureSize, position, scale, 0.0f);
     }
 
     bool Graphics::InitializeRenderer()
@@ -319,7 +283,6 @@ void main()
         // Set texture sampler
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
 
-        std::cout << "2D Renderer initialized!" << std::endl;
         return true;
     }
 
@@ -384,15 +347,6 @@ void main()
         return program;
     }
 
-    void Graphics::CheckOpenGLVersion()
-    {
-        GLint major, minor;
-        glGetIntegerv(GL_MAJOR_VERSION, &major);
-        glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-        std::cout << "Detected OpenGL " << major << "." << minor << std::endl;
-    }
-
     void Graphics::SetVSync(bool enabled)
     {
         if (!mInitialized) return;
@@ -422,7 +376,6 @@ void main()
 
     void Graphics::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
-        // Get the Graphics instance from the window user pointer
         Graphics* graphics = static_cast<Graphics*>(glfwGetWindowUserPointer(window));
         if (graphics)
         {
