@@ -2,10 +2,14 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Window.hpp"
-#include "Graphics.hpp"
-#include "Systems/InputSystem.h" 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include "Systems/Window.hpp"
+#include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
+#include "Systems/InputSystem.h" 
+#include "Systems/ResourcesManager.h"
 
 #include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"

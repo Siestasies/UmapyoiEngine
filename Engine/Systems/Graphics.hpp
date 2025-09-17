@@ -1,12 +1,18 @@
 #pragma once
-#include <glad/glad.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <string>
-#include <map>
 #include "Core/SystemType.h" // Include the system interface
 #include "Window.hpp"
+#include "Math/Math.hpp"
+
+#include <string>
+#include <map>
+
+// Forward declarations
+struct GLFWwindow;          // from <GLFW/glfw3.h>
+using GLuint = unsigned int; // from <glad/glad.h> (GLuint is just a typedef)
+
+// Forward declare glm types you use
+//namespace glm { struct vec2; }
 
 namespace Uma_Engine
 {
@@ -33,15 +39,15 @@ namespace Uma_Engine
 
         // Sprite rendering
         void DrawSprite(unsigned int textureID,
-            const glm::vec2& position,
-            const glm::vec2& scale = glm::vec2(1.0f),
+            const Vec2& position,
+            const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f);
 
         // Draw background that covers entire viewport
         void DrawBackground(unsigned int textureID);
 
         // Get texture dimensions
-        glm::vec2 GetTextureSize(unsigned int textureID) const;
+        Vec2 GetTextureSize(unsigned int textureID) const;
 
         void SetVSync(bool enabled);
         void SetViewport(int width, int height);
@@ -58,7 +64,7 @@ namespace Uma_Engine
         int mViewportWidth, mViewportHeight;
 
         // Texture size storage
-        std::map<unsigned int, glm::vec2> mTextureSizes;
+        std::map<unsigned int, Vec2> mTextureSizes;
 
         // Helper functions
         bool InitializeRenderer();

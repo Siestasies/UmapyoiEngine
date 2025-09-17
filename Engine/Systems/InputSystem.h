@@ -1,5 +1,7 @@
 #pragma once
-#include <array>
+#include <vector>
+
+//#include <GLFW/glfw3.h>   // needed for GLFW_KEY_LAST, GLFW_MOUSE_BUTTON_LAST
 
 #include "Core/SystemType.h"
 #include "Window.hpp"
@@ -39,10 +41,10 @@ namespace Uma_Engine
         static const char* GetKeyName(int key);
 
         // Static state - accessible from callbacks
-        static std::array<bool, GLFW_KEY_LAST + 1> sKeys;
-        static std::array<bool, GLFW_KEY_LAST + 1> sKeysPrevFrame;
-        static std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> sMouseButtons;
-        static std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> sMouseButtonsPrevFrame;
+        static std::vector<bool> sKeys;
+        static std::vector<bool> sKeysPrevFrame;
+        static std::vector<bool> sMouseButtons;
+        static std::vector<bool> sMouseButtonsPrevFrame;
         static double sMouseX, sMouseY;
 
         // Instance data

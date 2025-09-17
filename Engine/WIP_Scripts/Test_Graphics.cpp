@@ -7,6 +7,7 @@
 #include "Math/Math.hpp"
 
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 Uma_Engine::Graphics* gGraphics;
 
@@ -98,8 +99,8 @@ void Uma_Engine::Test_Graphics::Update(float dt)
     // Draw sprite (if loaded)
     if (spriteTexture != 0)
     {
-        glm::vec2 playerPos = { playerPosition.x, playerPosition .y };
-        gGraphics->DrawSprite(spriteTexture, playerPos, glm::vec2(scale), playerRotation);
+        Vec2 playerPos = { playerPosition.x, playerPosition .y };
+        gGraphics->DrawSprite(spriteTexture, playerPos, Vec2(scale), playerRotation);
     }
 }
 

@@ -1,6 +1,9 @@
-#include "Graphics.hpp"
+#include "Systems/Graphics.hpp"
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <map>
@@ -184,7 +187,7 @@ void main()
             glGenerateMipmap(GL_TEXTURE_2D);
 
             // Store texture size
-            mTextureSizes[textureID] = glm::vec2(width, height);
+            mTextureSizes[textureID] = Vec2(width, height);
 
             std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
         }
@@ -209,22 +212,25 @@ void main()
         }
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const glm::vec2& position,
-        const glm::vec2& scale, float rotation)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position,
+        const Vec2& scale, float rotation)
     {
         if (!mInitialized || textureID == 0) return;
 
         auto it = mTextureSizes.find(textureID);
         if (it == mTextureSizes.end()) return;
 
-        glm::vec2 size = it->second;
+        Vec2 size = it->second;
 
         // Use shader program
         glUseProgram(mShaderProgram);
 
         // Create transformation matrix
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(position, 0.0f));
+
+        glm::vec2 pos{ position.x, position.y };
+
+        model = glm::translate(model, glm::vec3(pos, 0.0f));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
         model = glm::scale(model, glm::vec3(size.x * scale.x, size.y * scale.y, 1.0f));
 
@@ -244,25 +250,28 @@ void main()
     {
         if (!mInitialized || textureID == 0) return;
 
-        glm::vec2 texSize = GetTextureSize(textureID);
+        Vec2 texSize = GetTextureSize(textureID);
         if (texSize.x == 0 || texSize.y == 0) return;
 
         // Scale sprite
-        glm::vec2 scale = glm::vec2(
+        Vec2 scale = Vec2(
             (float)mViewportWidth / texSize.x,
             (float)mViewportHeight / texSize.y
         );
 
         // Position the background's center at the viewport's center
-        glm::vec2 position = glm::vec2(mViewportWidth / 2.0f, mViewportHeight / 2.0f);
+        Vec2 position = Vec2(mViewportWidth / 2.0f, mViewportHeight / 2.0f);
 
         DrawSprite(textureID, position, scale, 0.0f);
     }
 
-    glm::vec2 Graphics::GetTextureSize(unsigned int textureID) const
+    Vec2 Graphics::GetTextureSize(unsigned int textureID) const
     {
         auto it = mTextureSizes.find(textureID);
-        return (it != mTextureSizes.end()) ? it->second : glm::vec2(0.0f);
+
+        Vec2 size = (it != mTextureSizes.end()) ? it->second : Vec2(0.0f, 0.0f);
+
+        return Vec2(size.x, size.y);
     }
 
     bool Graphics::InitializeRenderer()
