@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VMath.h"
+#include "../../Math/Math.hpp"
 
 namespace Uma_ECS
 {

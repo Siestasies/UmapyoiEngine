@@ -1,9 +1,14 @@
-#include "Window.hpp"
 #include <iostream>
-#include <GLFW/glfw3.h>
+#include <sstream>
+#include <iomanip>
 
+#include "Window.hpp"
+#include "Graphics.hpp"
+#include "Systems/InputSystem.h" 
 #include "Core/SystemManager.h"
-#include "Systems/InputSystem.h"
+
+#include "WIP_Scripts/Test_Ecs_System.h"
+#include "WIP_Scripts/Test_Graphics.h"
 
 int main()
 {
@@ -13,7 +18,7 @@ int main()
     // Initialize the engine
     if (!window.Initialize())
     {
-        std::cerr << "Failed to initialize window" << std::endl;
+        std::cerr << "Failed to initialize window!" << std::endl;
         return -1;
     }
 
@@ -22,6 +27,9 @@ int main()
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
     systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+    systemManager.RegisterSystem<Uma_Engine::Graphics>();
+    systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
+    systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 
     // Initialize all registered systems
     systemManager.Init();
@@ -29,12 +37,32 @@ int main()
 
     // Game loop
     float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
+    float lastTime = 0.0f;
+    float fps = 0.0f;
+    int frameCount = 0;
+    std::stringstream newTitle;
     while (!window.ShouldClose())
     {
-        // Calculate deltaTime
+        // calc dt
         float currentFrame = (float)glfwGetTime();
-        float deltaTime = currentFrame - lastFrame;
+        deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+        ++frameCount;
+        // update only after 1 second
+        if (currentFrame - lastTime >= 1.0f)
+        {
+            fps = frameCount / (currentFrame - lastTime);
+            frameCount = 0;
+            lastTime = currentFrame;
+
+            // setting of new title/fps
+            newTitle.str("");
+            newTitle.clear();
+
+            newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
+            window.SetTitle(newTitle.str());
+        }
 
         // Update window
         window.Update();
