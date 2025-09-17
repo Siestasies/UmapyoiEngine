@@ -10,8 +10,19 @@
 #include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
 
+#include "Debug/Debugger.hpp"
+#include "Debug/CrashLogger.hpp"
+
+#define DEBUG
+
 int main()
 {
+    // Debug
+    #ifdef DEBUG
+        Uma_Engine::Debugger::Init(true);
+        Uma_Engine::CrashLogger::StartUp();
+    #endif // DEBUG
+
     // Create window
     Uma_Engine::Window window(800, 600, "UmapyoiEngine");
 
@@ -62,6 +73,10 @@ int main()
 
             newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
             window.SetTitle(newTitle.str());
+
+            #ifdef DEBUG
+            //Uma_Engine::Debugger::Update();
+            #endif // DEBUG
         }
 
         // Update window
@@ -78,6 +93,7 @@ int main()
     }
 
     systemManager.Shutdown();
+    Uma_Engine::Debugger::Shutdown();
     // Shut down when window goes out of scope
     std::cout << "Game closed" << std::endl;
     return 0;
