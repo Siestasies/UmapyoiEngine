@@ -30,8 +30,17 @@ int main()
     Uma_Engine::SystemManager systemManager;
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
-    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+
+    /*
+        1. graphics
+        ...
+        n. resources
+    
+        test_system
+    */
+
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
+    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <map>
+#include <cassert>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -109,21 +110,21 @@ void main()
 
     void Graphics::Shutdown()
     {
-        if (mInitialized)
-        {
-            std::cout << "Shutting down graphics system..." << std::endl;
+        //if (mInitialized)
+        //{
+        //    std::cout << "Shutting down graphics system..." << std::endl;
 
-            // Clean up all textures
-            for (auto& pair : mTextureSizes)
-            {
-                GLuint textureID = pair.first;
-                glDeleteTextures(1, &textureID);
-            }
-            mTextureSizes.clear();
+        //    // Clean up all textures
+        //    for (auto& pair : mTextureSizes)
+        //    {
+        //        GLuint textureID = pair.first;
+        //        glDeleteTextures(1, &textureID);
+        //    }
+        //    mTextureSizes.clear();
 
-            ShutdownRenderer();
-            mInitialized = false;
-        }
+        //    ShutdownRenderer();
+        //    mInitialized = false;
+        //}
     }
 
     // IWindowSystem interface implementation
@@ -155,9 +156,10 @@ void main()
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    unsigned int Graphics::LoadTexture(const std::string& texturePath)
+    Texture Graphics::LoadTexture(const std::string& texturePath)
     {
-        if (!mInitialized) return 0;
+        //if (!mInitialized) return 0;
+        assert(mInitialized && "Error : Graphics System is not Initialized.");
 
         GLuint textureID;
         glGenTextures(1, &textureID);
@@ -170,80 +172,82 @@ void main()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         // Load image
+        Texture tex;
         int width, height, nrChannels;
         unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
 
-        if (data)
-        {
-            GLenum format = GL_RGB;
-            if (nrChannels == 1)
-                format = GL_RED;
-            else if (nrChannels == 3)
-                format = GL_RGB;
-            else if (nrChannels == 4)
-                format = GL_RGBA;
+        assert(data && "Error : Failed to load texture. ");
 
-            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+        GLenum format = GL_RGB;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
 
-            // Store texture size
-            mTextureSizes[textureID] = Vec2(width, height);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
 
-            std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
-        }
-        else
+        // Store texture size
+        tex.tex_size = Vec2(width, height);
+        tex.tex_id = textureID;
+
+        std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
+        /*else
         {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
             return 0;
-        }
+        }*/
 
         stbi_image_free(data);
-        return textureID;
+
+        return tex;
     }
 
     void Graphics::UnloadTexture(unsigned int textureID)
     {
-        if (textureID != 0)
+       /* if (textureID != 0)
         {
             GLuint id = textureID;
             glDeleteTextures(1, &id);
             mTextureSizes.erase(textureID);
-        }
+        }*/
     }
 
     void Graphics::DrawSprite(unsigned int textureID, const Vec2& position,
         const Vec2& scale, float rotation)
     {
-        if (!mInitialized || textureID == 0) return;
+        //if (!mInitialized || textureID == 0) return;
 
-        auto it = mTextureSizes.find(textureID);
-        if (it == mTextureSizes.end()) return;
+        //auto it = mTextureSizes.find(textureID);
+        //if (it == mTextureSizes.end()) return;
 
-        Vec2 size = it->second;
+        //Vec2 size = it->second;
 
-        // Use shader program
-        glUseProgram(mShaderProgram);
+        //// Use shader program
+        //glUseProgram(mShaderProgram);
 
-        // Create transformation matrix
-        glm::mat4 model = glm::mat4(1.0f);
+        //// Create transformation matrix
+        //glm::mat4 model = glm::mat4(1.0f);
 
-        glm::vec2 pos{ position.x, position.y };
+        //glm::vec2 pos{ position.x, position.y };
 
-        model = glm::translate(model, glm::vec3(pos, 0.0f));
-        model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(size.x * scale.x, size.y * scale.y, 1.0f));
+        //model = glm::translate(model, glm::vec3(pos, 0.0f));
+        //model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        //model = glm::scale(model, glm::vec3(size.x * scale.x, size.y * scale.y, 1.0f));
 
-        // Set model uniform
-        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+        //// Set model uniform
+        //GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        //glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        // Bind texture and render
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glBindVertexArray(mVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
+        //// Bind texture and render
+        //glActiveTexture(GL_TEXTURE0);
+        //glBindTexture(GL_TEXTURE_2D, textureID);
+        //glBindVertexArray(mVAO);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glBindVertexArray(0);
     }
 
     void Graphics::DrawBackground(unsigned int textureID)
@@ -267,11 +271,11 @@ void main()
 
     Vec2 Graphics::GetTextureSize(unsigned int textureID) const
     {
-        auto it = mTextureSizes.find(textureID);
+        /*auto it = mTextureSizes.find(textureID);
 
         Vec2 size = (it != mTextureSizes.end()) ? it->second : Vec2(0.0f, 0.0f);
 
-        return Vec2(size.x, size.y);
+        return Vec2(size.x, size.y);*/
     }
 
     bool Graphics::InitializeRenderer()

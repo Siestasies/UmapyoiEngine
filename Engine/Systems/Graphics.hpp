@@ -3,6 +3,7 @@
 #include "Core/SystemType.h" // Include the system interface
 #include "Window.hpp"
 #include "Math/Math.hpp"
+#include "ResourcesTypes.hpp"
 
 #include <string>
 #include <map>
@@ -16,6 +17,7 @@ using GLuint = unsigned int; // from <glad/glad.h> (GLuint is just a typedef)
 
 namespace Uma_Engine
 {
+
     class Graphics : public ISystem, public IWindowSystem
     {
     public:
@@ -34,7 +36,7 @@ namespace Uma_Engine
         void ClearBackground(float r = 0.0f, float g = 0.0f, float b = 0.0f);
 
         // Texture management
-        unsigned int LoadTexture(const std::string& texturePath);
+        Texture LoadTexture(const std::string& texturePath);
         void UnloadTexture(unsigned int textureID);
 
         // Sprite rendering
@@ -64,7 +66,7 @@ namespace Uma_Engine
         int mViewportWidth, mViewportHeight;
 
         // Texture size storage
-        std::map<unsigned int, Vec2> mTextureSizes;
+        //std::map<unsigned int, Vec2> mTextureSizes;
 
         // Helper functions
         bool InitializeRenderer();
