@@ -36,7 +36,6 @@ void Uma_Engine::Test_Ecs::Init()
     gCoordinator.RegisterComponent<Transform>();
     gCoordinator.RegisterComponent<RigidBody>();
     gCoordinator.RegisterComponent<Player>();
-    gCoordinator.RegisterComponent<Player>();
 
     physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
     {
