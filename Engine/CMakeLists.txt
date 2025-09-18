@@ -1,8 +1,7 @@
 # Create GLAD library from local files
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_library(glad STATIC
-    ${GLAD_DIR}/src/glad.c
-)
+    ${GLAD_DIR}/src/glad.c)
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 # Collect source files more systematically
@@ -26,6 +25,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "ECS/Components/*.h"
     "ECS/Systems/*.h" 
     "WIP_Scripts/*.h"
+    "WIP_Scripts/*.hpp"
 )
 
 # Force CMake to reconfigure when source files change
@@ -64,6 +64,7 @@ target_include_directories(Uma_Engine
         ${CMAKE_CURRENT_SOURCE_DIR}/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
         ${stb_SOURCE_DIR}
+        ${glfw_SOURCE_DIR}/include        # <-- add this line
 )
 
 # Set C++ standard

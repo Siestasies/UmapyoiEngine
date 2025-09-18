@@ -1,6 +1,9 @@
 #include "Window.hpp"
 #include <iostream>
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 namespace Uma_Engine
 {
     Window::Window(int width, int height, const std::string& title)

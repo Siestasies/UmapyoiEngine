@@ -2,10 +2,14 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Window.hpp"
-#include "Graphics.hpp"
-#include "Systems/InputSystem.h" 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#include "Systems/Window.hpp"
+#include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
+#include "Systems/InputSystem.h" 
+#include "Systems/ResourcesManager.hpp"
 
 #include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
@@ -26,8 +30,21 @@ int main()
     Uma_Engine::SystemManager systemManager;
 
     // Register InputSystem (and potentially other systems like AudioSystem, RenderSystem, etc.)
-    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+
+    /*
+        1. graphics
+        ...
+        n. resources
+    
+        test_system
+    */
+
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
+    // Audio
+    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
+    systemManager.RegisterSystem <Uma_Engine::ResourcesManager>();
+
+    // scene
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 
