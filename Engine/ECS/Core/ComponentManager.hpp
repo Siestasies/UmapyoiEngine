@@ -77,18 +77,6 @@ namespace Uma_ECS
             return component_array.GetData(entity);
         }
 
-        void EntityDestroyed(Entity entity);
-
-    private:
-
-        // Unordered map that maps the name of the component to ComponentType
-        std::unordered_map<std::string, ComponentType> aComponentTypes{};
-
-        // Store polymorphic arrays using shared_ptr instead of unique_ptr
-        std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
-
-        ComponentType mNextComponentType{};
-
         template<typename T>
         ComponentArray<T>& GetComponentArray()
         {
@@ -100,5 +88,17 @@ namespace Uma_ECS
             // Use static_pointer_cast to get the derived type back
             return *std::static_pointer_cast<ComponentArray<T>>(aComponentArrays[type_name]);
         }
+
+        void EntityDestroyed(Entity entity);
+
+    private:
+
+        // Unordered map that maps the name of the component to ComponentType
+        std::unordered_map<std::string, ComponentType> aComponentTypes{};
+
+        // Store polymorphic arrays using shared_ptr instead of unique_ptr
+        std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
+
+        ComponentType mNextComponentType{};
     };
 }

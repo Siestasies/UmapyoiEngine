@@ -1,13 +1,23 @@
 #include "Test_Ecs_System.h"
 
+// ECS Core
 #include "ECS/Core/Coordinator.hpp"
+
+// ECS Systems
 #include "ECS/Systems/PhysicsSystem.hpp"
 #include "ECS/Systems/PlayerControllerSystem.hpp"
+#include "ECS/Systems/RenderingSystem.hpp"
+
+// ECS Components
 #include "ECS/Components/Transform.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/Player.h"
+#include "ECS/Components/SpriteRenderer.h"
 
+// Engine Systems
 #include "Systems/InputSystem.h"
+#include "Systems/Graphics.hpp"
+#include "Systems/ResourcesManager.hpp"
 #include "../Core/SystemManager.h"
 
 #include <vector>
@@ -22,11 +32,35 @@ using Coordinator = Uma_ECS::Coordinator;
 Coordinator gCoordinator;
 std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
+std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
+
 Uma_Engine::InputSystem* pInputSystem;
+Uma_Engine::Graphics* pGraphics;
+Uma_Engine::ResourcesManager* pResourcesManager;
 
 void Uma_Engine::Test_Ecs::Init()
 {
     pInputSystem = pSystemManager->GetSystem<InputSystem>();
+    pGraphics = pSystemManager->GetSystem<Graphics>();
+    pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+
+    // Load textures using ResourcesManager
+    if (!pResourcesManager->LoadTexture("player", "Assets/hello.jpg"))
+    {
+        std::cout << "Warning: Failed to load player sprite texture" << std::endl;
+    }
+
+    if (!pResourcesManager->LoadTexture("enemy", "Assets/white.png"))
+    {
+        std::cout << "Warning: Failed to load player sprite texture" << std::endl;
+    }
+
+    if (!pResourcesManager->LoadTexture("background", "Assets/background.jpg"))
+    {
+        std::cout << "Warning: Failed to load background texture" << std::endl;
+    }
+
+    pResourcesManager->PrintLoadedTextureNames();
 
     using namespace Uma_ECS;
 
@@ -36,7 +70,9 @@ void Uma_Engine::Test_Ecs::Init()
     gCoordinator.RegisterComponent<Transform>();
     gCoordinator.RegisterComponent<RigidBody>();
     gCoordinator.RegisterComponent<Player>();
+    gCoordinator.RegisterComponent<SpriteRenderer>();
 
+    // Physics System
     physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
     {
         Signature sign;
@@ -44,9 +80,9 @@ void Uma_Engine::Test_Ecs::Init()
         sign.set(gCoordinator.GetComponentType<Transform>());
         gCoordinator.SetSystemSignature<PhysicsSystem>(sign);
     }
-
     physicsSystem->Init(&gCoordinator);
 
+    // Player controller
     playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
     {
         Signature sign;
@@ -55,56 +91,68 @@ void Uma_Engine::Test_Ecs::Init()
         sign.set(gCoordinator.GetComponentType<Player>());
         gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
     }
-
-
     playerController->Init(pInputSystem, &gCoordinator);
 
-    // entities
-    std::vector<Entity> entities(2500);
-
-    std::default_random_engine generator;
-    std::uniform_real_distribution<float> randPosition(-100.0f, 100.0f);
-    std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
-    std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
-
-    float scale = randScale(generator);
-
-    for (auto& entity : entities)
+    // Rendering System
+    renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
     {
-        entity = gCoordinator.CreateEntity();
+        Signature sign;
+        sign.set(gCoordinator.GetComponentType<SpriteRenderer>());
+        sign.set(gCoordinator.GetComponentType<Transform>());
+        gCoordinator.SetSystemSignature<RenderingSystem>(sign);
+    }
+    renderingSystem->Init(pGraphics, &gCoordinator);
 
-        gCoordinator.AddComponent(
-            entity,
-            RigidBody{
-              .velocity = Vec2(0.0f, -1.0f),
-              .acceleration = Vec2(0.0f, 0.0f)
-            });
+    // create entities
+    {
+        std::vector<Entity> entities(5000);
 
-        gCoordinator.AddComponent(
-            entity,
-            Transform{
-              .position = Vec2(randPosition(generator), randPosition(generator)),
-              .rotation = Vec2(randRotation(generator), randRotation(generator)),
-              .scale = Vec2(scale, scale)
-            });
+        std::default_random_engine generator;
+        std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
+        std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
+        std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
+        std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
+
+        float scale = randScale(generator);
+
+        for (auto& entity : entities)
+        {
+            entity = gCoordinator.CreateEntity();
+
+            gCoordinator.AddComponent(
+                entity,
+                RigidBody{
+                  .velocity = Vec2(0.0f, -1.0f),
+                  .acceleration = Vec2(0.0f, 0.0f)
+                });
+
+            gCoordinator.AddComponent(
+                entity,
+                Transform{
+                  .position = Vec2(randPositionX(generator), randPositionY(generator)),
+                  .rotation = Vec2(randRotation(generator), randRotation(generator)),
+                  .scale = Vec2(10, 10)
+                });
+
+            gCoordinator.AddComponent(
+                entity,
+                SpriteRenderer{
+                  .texture = pResourcesManager->GetTexture("player"),
+                  .flipX = false,
+                  .flipY = false
+                });
+        }
     }
 
-#ifdef _DEBUG_LOG
-
-    //physicsSystem->PrintLog();
-
-#endif // _DEBUG_LOG
-
-    // create entity
-
+    // create player
     Entity en = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
         en, 
         Transform
         {
-            .position = Vec2(2,2),
+            .position = Vec2(400.0f, 300.0f),
             .rotation = Vec2(1,1),
-            .scale = Vec2(3,3),
+            .scale = Vec2(50,50),
         });
 
     gCoordinator.AddComponent(
@@ -118,11 +166,13 @@ void Uma_Engine::Test_Ecs::Init()
         en,
         Player{});
 
-#ifdef _DEBUG_LOG
-
-    //physicsSystem->PrintLog();
-
-#endif // _DEBUG_LOG
+    gCoordinator.AddComponent(
+        en,
+        SpriteRenderer{
+          .texture = pResourcesManager->GetTexture("player"),
+          .flipX = false,
+          .flipY = false
+        });
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)
@@ -130,6 +180,9 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     physicsSystem->Update(dt);
 
     playerController->Update(dt);
+
+    pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
+    renderingSystem->Update(dt);
 
     //camera updatye 
 

@@ -25,7 +25,7 @@ namespace Uma_Engine
         void UnloadTexture(const std::string& textureName);
 
         // Get texture by name
-        const Texture* GetTexture(const std::string& textureName) const;
+        Texture* GetTexture(const std::string& textureName);
 
         // Check if texture exists
         bool HasTexture(const std::string& textureName) const;

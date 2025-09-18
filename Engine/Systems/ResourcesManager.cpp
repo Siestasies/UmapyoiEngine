@@ -45,7 +45,7 @@ namespace Uma_Engine
         return true;
     }
 
-    const Texture* ResourcesManager::GetTexture(const std::string& textureName) const
+    Texture* ResourcesManager::GetTexture(const std::string& textureName)
     {
         auto it = mTextures.find(textureName);
         return (it != mTextures.end()) ? &it->second : nullptr;

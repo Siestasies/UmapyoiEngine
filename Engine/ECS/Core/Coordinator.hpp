@@ -77,6 +77,12 @@ namespace Uma_ECS
         }
 
         template<typename T>
+        ComponentArray<T>& GetComponentArray()
+        {
+            return aComponentManager->GetComponentArray<T>();
+        }
+
+        template<typename T>
         ComponentType GetComponentType()
         {
             return aComponentManager->GetComponentType<T>();

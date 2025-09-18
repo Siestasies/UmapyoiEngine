@@ -9,14 +9,43 @@
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
-    for (auto const& entity : aEntities)
+
+    // THIS IS OLD METHOD WHICH IS EXPENSIVE
+    // NOT IN USED
     {
-        auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
-        auto& tf = gCoordinator->GetComponent<Transform>(entity);
+    //for (auto const& entity : aEntities)
+    //{
+    //    auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
+    //    auto& tf = gCoordinator->GetComponent<Transform>(entity);
 
-        tf.position += rb.velocity;
+    //    tf.position += rb.velocity;
 
-        //std::cout << "physics updating\n";
+    //    //std::cout << "physics updating\n";
+    //}
+    }
+
+    // Get dense component arrays once
+    auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+
+    // Iterate over the smaller array for efficiency (here, RigidBody)
+    for (size_t i = 0; i < rbArray.Size(); ++i)
+    {
+        Entity e = rbArray.GetEntity(i);
+
+        if (tfArray.Has(e))  // check if Transform exists
+        {
+            auto& rb = rbArray.GetComponentAt(i);
+            auto& tf = tfArray.GetData(e);
+
+            tf.position += rb.velocity * dt * 100;
+
+            // tmp
+            if (tf.position.y <= 0)
+            {
+                tf.position.y += 1080.f;
+            }
+        }
     }
 }
 

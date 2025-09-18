@@ -23,20 +23,19 @@ namespace Uma_ECS
         ECSErrorCode AddData(Entity entity, const T& component)
         {
 #ifndef NDEBUG
-            assert(aEntityToIndex.find(entity) == aEntityToIndex.end() && "ERROR : Same component is being added again.");
+            assert(!Has(entity) && "Error : Same component is being added again.");
 #else
-            if (aEntityToIndex.find(entity) != aEntityToIndex.end())
+            if (Has(entity))
             {
                 return ECSErrorCode::EC_ComponentAlreadyExists;
             }
 #endif
+
             size_t index = mSize;
-
-            aIndexToEntity[index] = entity;
             aEntityToIndex[entity] = index;
+            aIndexToEntity[index] = entity;
             aComponentArray[index] = component;
-
-            mSize++;
+            ++mSize;
 
             return ECSErrorCode::EC_None;
         }
@@ -44,57 +43,66 @@ namespace Uma_ECS
         ECSErrorCode RemoveData(Entity entity)
         {
 #ifndef NDEBUG
-            assert(aEntityToIndex.find(entity) != aEntityToIndex.end() && "ERROR : Component is alr removed.");
+            assert(Has(entity) && "Error : This entity doesn't contain this component.");
 #else
-            if (aEntityToIndex.find(entity) == aEntityToIndex.end())
+            if (!Has(entity))
             {
                 return ECSErrorCode::EC_ComponentNotFound;
             }
 #endif
+            size_t index_to_remove = aEntityToIndex[entity];
+            size_t last_index = mSize - 1;
 
-            // when we removing component of 1 entity
-            // we move the last component into the spot 
-            // that was occupied by the component is getting to be removed
+            // move last to the remove index
+            aComponentArray[index_to_remove] = aComponentArray[last_index];
+            // find last entity
+            Entity last_entity = aIndexToEntity[last_index];
+            // swap their locations
+            aEntityToIndex[last_entity] = index_to_remove;
+            aIndexToEntity[index_to_remove] = last_entity;
 
-            // copy the last component to the index where its gg tobe removed
-            size_t index_of_removed_entity = aEntityToIndex[entity];
-            size_t index_of_last_entity = mSize - 1;
-            aComponentArray[index_of_removed_entity] = aComponentArray[index_of_last_entity];
-
-            // reassign the map so that 
-            Entity entity_of_last_component = aIndexToEntity[index_of_last_entity];
-            aEntityToIndex[entity_of_last_component] = index_of_removed_entity;
-            aIndexToEntity[index_of_removed_entity] = entity_of_last_component;
-
-            aEntityToIndex.erase(entity);
-            aIndexToEntity.erase(index_of_last_entity);
+            --mSize;
 
             return ECSErrorCode::EC_None;
         }
 
         T& GetData(Entity entity)
         {
-#ifndef NDEBUG
-            assert(aEntityToIndex.find(entity) != aEntityToIndex.end() && "ERROR : Entity doesnt contain this data.");
-#else
-            if (it == aEntityToIndex.end())
-            {
-                return nullptr;
-            }
-#endif
+            assert(Has(entity) && "ERROR : Entity doesnt contain this data.");
 
             size_t index = aEntityToIndex[entity];
-
             return aComponentArray[index];
         }
 
         // Destroy of entity
         void DestroyEntity(Entity entity) override
         {
-            if (aEntityToIndex.find(entity) != aEntityToIndex.end())
+            if (Has(entity))
             {
                 RemoveData(entity);
             }
+        }
+
+        // helper functions that directly access the array
+        // This is for optimisation
+        size_t Size() const
+        {
+            return mSize;
+        }
+        Entity GetEntity(size_t index) 
+        {
+            return aIndexToEntity[index];
+        }
+        T& GetComponentAt(size_t index)
+        {
+            return aComponentArray[index];
+        }
+        bool Has(Entity entity) const
+        {
+            if (entity >= MAX_ENTITIES) return false;
+
+            size_t index = aEntityToIndex[entity];
+            return (index < mSize && aIndexToEntity[index] == entity);
         }
 
     private:
@@ -102,8 +110,8 @@ namespace Uma_ECS
         // the container that stores all components of the same type of all entities
         std::array<T, MAX_ENTITIES> aComponentArray{};
 
-        std::unordered_map<size_t, Entity> aIndexToEntity;
-        std::unordered_map<Entity, size_t> aEntityToIndex;
+        std::array<Entity, MAX_ENTITIES> aIndexToEntity;
+        std::array<size_t, MAX_ENTITIES> aEntityToIndex;
 
         size_t mSize = 0; // how many components are currently in use
     };
