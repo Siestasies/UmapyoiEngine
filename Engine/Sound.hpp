@@ -4,6 +4,9 @@
 #include <memory>
 #include <vector>
 
+#include <fmod.h>
+#include <fmod_errors.h>
+
 #include "SystemType.h"
 
 // Forward declarations for FMOD
@@ -12,6 +15,18 @@ struct FMOD_SOUND;
 struct FMOD_CHANNEL;
 
 namespace Uma_Sound {
+
+	enum class SoundType {
+		SFX = 0,
+		BGM,
+		END
+	};
+
+	struct SoundInfo {
+		FMOD_SOUND* sound;
+		FMOD_CHANNEL* channel;
+		SoundType type;
+	};
 
 	class Sound : public Uma_Engine::ISystem {
 	public:
@@ -24,39 +39,33 @@ namespace Uma_Sound {
 		void Update(float dt) override; // Call this every frame
 
 		// Sound loading and management
-		bool loadSound(const std::string& name, const std::string& filePath, bool loop = false);
+		SoundInfo loadSound(const std::string& name, const std::string& filePath, SoundType type);
 		void unloadSound(const std::string& name);
 		void unloadAllSounds();
 
 		// Sound playback
-		bool playSound(const std::string& name, float volume = 1.0f, float pitch = 1.0f);
-		bool playSound3D(const std::string& name, float x, float y, float z, float volume = 1.0f);
-		void stopSound(const std::string& name);
+		FMOD_CHANNEL* playSound(SoundInfo& info, float volume = 1.0f, float pitch = 1.0f);
+		void stopSound(SoundInfo& info);
 		void stopAllSounds();
-		void pauseSound(const std::string& name, bool pause = true);
+		void pauseSound(SoundInfo& info, bool pause = true);
 		void pauseAllSounds(bool pause = true);
 
 		// Volume and pitch control
 		void setMasterVolume(float volume);
-		void setSoundVolume(const std::string& name, float volume);
-		void setSoundPitch(const std::string& name, float pitch);
-
-		// Utility functions
-		bool isSoundLoaded(const std::string& name) const;
-		bool isSoundPlaying(const std::string& name) const;
-		std::vector<std::string> getLoadedSounds() const;
+		void setSoundVolume(SoundInfo& info, float volume);
+		void setSoundPitch(SoundInfo& info, float pitch);
 
 	private:
-		FMOD_SYSTEM* pFmodSystem;
-		std::unordered_map<std::string, FMOD_SOUND*> aSoundListMap;
-		std::unordered_map<std::string, FMOD_CHANNEL*> m_channels;
+		FMOD_SYSTEM* pFmodSystem = nullptr;
+		std::unordered_map<std::string, SoundInfo> aSoundListMap;
 
 		FMOD_CHANNELGROUP* SFX = nullptr;
 		FMOD_CHANNELGROUP* BGM = nullptr;
+		FMOD_CHANNELGROUP* Master = nullptr;
 
 		// Helper functions
 		//std::string getFullPath(const std::string& fileName) const;
-		void checkFMODError(int result, const std::string& operation) const;
+		//void checkFMODError(int result, const std::string& operation) const;
 	};
 }
 

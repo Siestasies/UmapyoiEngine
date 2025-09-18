@@ -3,8 +3,8 @@
 #include <filesystem>
 
 // Include FMOD headers
-#include "fmod.h"
-#include "fmod_errors.h"
+#include <fmod.h>
+#include <fmod_errors.h>
 
 namespace Uma_Sound {
 
@@ -32,8 +32,33 @@ namespace Uma_Sound {
 		}
 		std::cout << "AudioManager initialized successfully" << std::endl;
 
-		FMOD_System_CreateChannelGroup(pFmodSystem, "SFX", SFX);
-		FMOD_System_CreateChannelGroup(pFmodSystem, "BGM", BGM);
+		result = FMOD_System_CreateChannelGroup(pFmodSystem, "SFX", &SFX);
+		if (result != FMOD_OK) {
+			std::cerr << "Failed to create channel sfx: " << FMOD_ErrorString(result) << std::endl;
+			return;
+		}
+		result = FMOD_System_CreateChannelGroup(pFmodSystem, "BGM", &BGM);
+		if (result != FMOD_OK) {
+			std::cerr << "Failed to create channel bgm: " << FMOD_ErrorString(result) << std::endl;
+			return;
+		}
+		result = FMOD_System_CreateChannelGroup(pFmodSystem, "MASTER", &Master);
+		if (result != FMOD_OK) {
+			std::cerr << "Failed to create channel master: " << FMOD_ErrorString(result) << std::endl;
+			return;
+		}
+
+		// Add BGM to Master
+		result = FMOD_ChannelGroup_AddGroup(Master, BGM, true, nullptr);
+		if (result != FMOD_OK) {
+			printf("Error adding BGM to Master: %d\n", result);
+		}
+
+		// Add SFX to Master
+		result = FMOD_ChannelGroup_AddGroup(Master, SFX, true, nullptr);
+		if (result != FMOD_OK) {
+			printf("Error adding SFX to Master: %d\n", result);
+		}
 
 		return;
 	}
@@ -60,15 +85,15 @@ namespace Uma_Sound {
 		}
 	}
 
-	bool Sound::loadSound(const std::string& name, const std::string& filePath, bool loop)
+	SoundInfo Sound::loadSound(const std::string& name, const std::string& filePath, SoundType type)
 	{
-		if (pFmodSystem) {
-			return false;
+		if (!pFmodSystem) {
+			return;
 		}
 
 		if (aSoundListMap.find(name) != aSoundListMap.end()) {
 			std::cout << name << " is loaded\n";
-			return true;
+			return;
 		}
 
 
@@ -77,17 +102,25 @@ namespace Uma_Sound {
 
 		FMOD_RESULT result = FMOD_System_CreateSound(pFmodSystem, filePath.c_str(), mode, nullptr, &sound);
 		if (result != FMOD_OK) {
-			return false;
+			return;
 		}
 
-		aSoundListMap[name] = sound;
-		return true;
+		//adds the sound and type to the name
+		/*aSoundListMap[name].sound = sound;
+		aSoundListMap[name].type = type;*/
+
+		SoundInfo info;
+		info.channel = nullptr;
+		info.sound = sound;
+		info.type = type;
+		return info;
 	}
 
 	void Sound::unloadSound(const std::string& name)
 	{
+		//goes thru the map and looks for the sound file if it is found release it and removes it from the map
 		if (pFmodSystem) {
-			FMOD_SOUND* temp = aSoundListMap.find(name)->second;
+			FMOD_SOUND* temp = aSoundListMap.find(name)->second.sound;
 			if (temp) {
 				FMOD_Sound_Release(temp);
 				aSoundListMap.erase(name);
@@ -97,37 +130,93 @@ namespace Uma_Sound {
 
 	void Sound::unloadAllSounds()
 	{
+		//goes thru the map and releases each sound file then clears the map
 		for (auto it : aSoundListMap) {
-			if (it.second) {
-				FMOD_Sound_Release(it.second);
+			if (it.second.sound) {
+				FMOD_Sound_Release(it.second.sound);
 			}
 		}
 		aSoundListMap.clear();
 	}
 
-	bool Sound::playSound(const std::string& name, float volume, float pitch)
+	FMOD_CHANNEL* Sound::playSound(SoundInfo& info, float volume, float pitch)
 	{
 		if (!pFmodSystem) { //check if fmod has been init
-			return false;
-		}
-		auto it = aSoundListMap.find(name);
-		if (it == aSoundListMap.end()) { //check if the sound is loaded
-			return false;
+			return;
 		}
 
+		//create channel holder
 		FMOD_CHANNEL* channel = nullptr;
-		FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, it->second, nullptr, false, &channel);
+		FMOD_RESULT result;
+		//play in whichever channel group that it was set to
+		if (info.type == SoundType::SFX) {
+			result = FMOD_System_PlaySound(pFmodSystem, info.sound, SFX, false, &channel);
+		}
+		else if (info.type == SoundType::BGM) {
+			result = FMOD_System_PlaySound(pFmodSystem, info.sound, BGM, false, &channel);
+		}
+		else {
+			result = FMOD_System_PlaySound(pFmodSystem, info.sound, nullptr, false, &channel);
+		}
 		if (result != FMOD_OK) {
 			return false;
 		}
+
 		// Set volume and pitch
 		FMOD_Channel_SetVolume(channel, volume);
 		FMOD_Channel_SetPitch(channel, pitch);
 		// Store channel for later control
-		m_channels[name] = channel;
-		return true;
+		info.channel = channel;
+
+		//add the channel to its respective group channel
+		if (info.type == SoundType::SFX) {
+			FMOD_Channel_SetChannelGroup(channel, SFX);
+		}
+		else if (info.type == SoundType::BGM) {
+			FMOD_Channel_SetChannelGroup(channel, BGM);
+		}
+		return channel;
 	}
 
+	void Sound::stopSound(SoundInfo& info)
+	{
+		FMOD_RESULT result = FMOD_Channel_Stop(info.channel);
+		if (result != FMOD_OK) {
+			return;
+		}
+	}
 
+	void Sound::stopAllSounds()
+	{
+		FMOD_RESULT result = FMOD_ChannelGroup_Stop(Master);
+		if (result != FMOD_OK) {
+			return;
+		}
+	}
+
+	void Sound::pauseSound(SoundInfo& info, bool pause)
+	{
+		FMOD_Channel_SetPaused(info.channel, pause);
+	}
+
+	void Sound::pauseAllSounds(bool pause)
+	{
+		FMOD_ChannelGroup_SetPaused(Master, pause);
+	}
+
+	void Sound::setMasterVolume(float volume)
+	{
+		FMOD_ChannelGroup_SetVolume(Master, volume);
+	}
+
+	void Sound::setSoundVolume(SoundInfo& info, float volume)
+	{
+		FMOD_Channel_SetVolume(info.channel, volume);
+	}
+
+	void Sound::setSoundPitch(SoundInfo& info, float pitch)
+	{
+		FMOD_Channel_SetPitch(info.channel, pitch);
+	}
 
 }
