@@ -10,6 +10,8 @@ namespace Uma_Engine
 {
     class Graphics;
 
+    class Sound;
+
     class ResourcesManager : public ISystem
     {
     public:
@@ -36,6 +38,9 @@ namespace Uma_Engine
     private:
         std::unordered_map<std::string, Texture> mTextures;
         Graphics* mGraphics;
+
+        std::unordered_map<std::string, SoundInfo> mSoundList;
+        Sound* mSound;
 
         // Clear all textures
         void UnloadAllTextures();

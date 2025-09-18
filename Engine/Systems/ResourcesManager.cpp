@@ -13,6 +13,8 @@ namespace Uma_Engine
         mGraphics = pSystemManager->GetSystem<Graphics>();
         assert(mGraphics != nullptr && "Error: Graphics system failed to initialize");
         std::cout << "ResourcesManager initialized" << std::endl;
+
+        mSound = pSystemManager->GetSystem<Sound>();
     }
 
     void ResourcesManager::Update(float dt)

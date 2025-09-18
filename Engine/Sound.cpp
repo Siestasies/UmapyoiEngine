@@ -139,7 +139,7 @@ namespace Uma_Sound {
 		aSoundListMap.clear();
 	}
 
-	FMOD_CHANNEL* Sound::playSound(SoundInfo& info, float volume, float pitch)
+	void Sound::playSound(SoundInfo& info, float volume, float pitch)
 	{
 		if (!pFmodSystem) { //check if fmod has been init
 			return;
@@ -159,7 +159,7 @@ namespace Uma_Sound {
 			result = FMOD_System_PlaySound(pFmodSystem, info.sound, nullptr, false, &channel);
 		}
 		if (result != FMOD_OK) {
-			return false;
+			return;
 		}
 
 		// Set volume and pitch
@@ -175,7 +175,7 @@ namespace Uma_Sound {
 		else if (info.type == SoundType::BGM) {
 			FMOD_Channel_SetChannelGroup(channel, BGM);
 		}
-		return channel;
+		return;
 	}
 
 	void Sound::stopSound(SoundInfo& info)

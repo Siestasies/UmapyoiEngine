@@ -44,7 +44,7 @@ namespace Uma_Sound {
 		void unloadAllSounds();
 
 		// Sound playback
-		FMOD_CHANNEL* playSound(SoundInfo& info, float volume = 1.0f, float pitch = 1.0f);
+		void playSound(SoundInfo& info, float volume = 1.0f, float pitch = 1.0f);
 		void stopSound(SoundInfo& info);
 		void stopAllSounds();
 		void pauseSound(SoundInfo& info, bool pause = true);
