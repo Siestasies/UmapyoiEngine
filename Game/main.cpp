@@ -17,6 +17,9 @@
 #include "Debugging/Debugger.hpp"
 #include "Debugging/CrashLogger.hpp"
 
+#include "Systems/SceneType.h"
+#include "Systems/SceneManager.h"
+
 #define DEBUG
 
 int main()
@@ -58,6 +61,9 @@ int main()
     // scene
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
+    
+    systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+
 
     // Initialize all registered systems
     systemManager.Init();
