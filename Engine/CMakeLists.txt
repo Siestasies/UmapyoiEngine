@@ -40,7 +40,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Debug/Debugger.cpp" "Debug/Debugger.hpp" "Debug/CrashLogger.cpp" "Debug/CrashLogger.hpp")
 
 # Link libraries
 target_link_libraries(Uma_Engine 
