@@ -105,7 +105,7 @@ void Uma_Engine::Test_Ecs::Init()
 
     // create entities
     {
-        std::vector<Entity> entities(5000);
+        std::vector<Entity> entities(2500);
 
         std::default_random_engine generator;
         std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
@@ -182,7 +182,9 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     playerController->Update(dt);
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
+    pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);
     renderingSystem->Update(dt);
+
 
     //camera updatye 
 
