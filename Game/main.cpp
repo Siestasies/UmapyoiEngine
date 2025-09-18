@@ -40,8 +40,11 @@ int main()
     */
 
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
+    // Audio
     systemManager.RegisterSystem<Uma_Engine::InputSystem>();
     systemManager.RegisterSystem <Uma_Engine::ResourcesManager>();
+
+    // scene
     systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 
