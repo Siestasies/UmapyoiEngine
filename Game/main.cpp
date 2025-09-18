@@ -14,8 +14,8 @@
 #include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
 
-#include "Debug/Debugger.hpp"
-#include "Debug/CrashLogger.hpp"
+#include "Debugging/Debugger.hpp"
+#include "Debugging/CrashLogger.hpp"
 
 #define DEBUG
 

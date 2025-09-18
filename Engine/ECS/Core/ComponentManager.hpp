@@ -7,6 +7,8 @@
 #include <memory>
 #include <cassert>
 
+#include <Debugging/Debugger.hpp>
+
 namespace Uma_ECS
 {
     class ComponentManager
@@ -19,8 +21,21 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
+            // logging
+            std::string debugLog = "Registered component: " + type_name;
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debugLog);
+
+            // error
+            if (aComponentTypes.find(type_name) != aComponentTypes.end())
+            {
+                debugLog = "Component<" + type_name + "> being registered more than once. ";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, debugLog);
+            }
+
             assert(aComponentTypes.find(type_name) == aComponentTypes.end()
                 && "Error : Component being registered more than once.");
+
+
 
             aComponentTypes.insert({ type_name, mNextComponentType });
 

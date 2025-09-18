@@ -21,7 +21,7 @@ namespace Uma_Engine
     {
     public:
 
-        static void Init(bool console, const std::string& logfile = "../debug.log");
+        static void Init(bool console, const std::string& logfile = "../Logs/debug.log");
         static void Update();
         static void Shutdown();
 

@@ -13,6 +13,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "ECS/Components/*.cpp"
     "ECS/Systems/*.cpp"
     "WIP_Scripts/*.cpp"
+    "Debugging/*.cpp"
 )
 
 file(GLOB_RECURSE ENGINE_HEADERS
@@ -26,6 +27,8 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "ECS/Systems/*.h" 
     "WIP_Scripts/*.h"
     "WIP_Scripts/*.hpp"
+    "Debugging/*.h"
+    "Debugging/*.hpp"
 )
 
 # Force CMake to reconfigure when source files change
@@ -37,10 +40,11 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
     "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
+    "Debugging/*.cpp" "Debugging/*.hpp" "Debugging/*.h"
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Debug/Debugger.cpp" "Debug/Debugger.hpp" "Debug/CrashLogger.cpp" "Debug/CrashLogger.hpp")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} )
 
 # Link libraries
 target_link_libraries(Uma_Engine 
