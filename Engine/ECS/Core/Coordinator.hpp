@@ -102,6 +102,7 @@ namespace Uma_ECS
             aSystemManager->SetSignature<T>(signature);
         }
 
+        Entity DuplicateEntity(Entity src);
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

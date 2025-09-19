@@ -91,12 +91,13 @@ namespace Uma_ECS
 
         void EntityDestroyed(Entity entity);
 
+        void CloneEntityComponents(Entity src, Entity dest);
+
     private:
 
         // Unordered map that maps the name of the component to ComponentType
         std::unordered_map<std::string, ComponentType> aComponentTypes{};
 
-        // Store polymorphic arrays using shared_ptr instead of unique_ptr
         std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
 
         ComponentType mNextComponentType{};

@@ -105,17 +105,56 @@ void Uma_Engine::Test_Ecs::Init()
 
     // create entities
     {
-        std::vector<Entity> entities(2500);
+        //std::vector<Entity> entities(2500);
 
         std::default_random_engine generator;
         std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
         std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
         std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
-        std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
+        std::uniform_real_distribution<float> randScale(5.0f, 15.0f);
 
-        float scale = randScale(generator);
+        Entity enemy;
 
-        for (auto& entity : entities)
+        {
+            enemy = gCoordinator.CreateEntity();
+
+            gCoordinator.AddComponent(
+                enemy,
+                RigidBody{
+                  .velocity = Vec2(0.0f, -1.0f),
+                  .acceleration = Vec2(0.0f, 0.0f)
+                });
+
+            gCoordinator.AddComponent(
+                enemy,
+                Transform{
+                  .position = Vec2(randPositionX(generator), randPositionY(generator)),
+                  .rotation = Vec2(randRotation(generator), randRotation(generator)),
+                  .scale = Vec2(randScale(generator), randScale(generator))
+                });
+
+            gCoordinator.AddComponent(
+                enemy,
+                SpriteRenderer{
+                  .texture = pResourcesManager->GetTexture("player"),
+                  .flipX = false,
+                  .flipY = false
+                });
+        }
+        
+        // using 1 enemy to duplicate 2500 times and rand its transform
+        for (size_t i = 0; i < 2500; i++)
+        {
+            Entity tmp = gCoordinator.DuplicateEntity(enemy);
+
+            Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+            tf.position = Vec2(randPositionX(generator), randPositionY(generator));
+            tf.rotation = Vec2(randRotation(generator), randRotation(generator));
+            tf.scale = Vec2(randScale(generator), randScale(generator));
+        }
+
+        /*for (auto& entity : entities)
         {
             entity = gCoordinator.CreateEntity();
 
@@ -131,7 +170,7 @@ void Uma_Engine::Test_Ecs::Init()
                 Transform{
                   .position = Vec2(randPositionX(generator), randPositionY(generator)),
                   .rotation = Vec2(randRotation(generator), randRotation(generator)),
-                  .scale = Vec2(10, 10)
+                  .scale = Vec2(scale, scale)
                 });
 
             gCoordinator.AddComponent(
@@ -141,7 +180,7 @@ void Uma_Engine::Test_Ecs::Init()
                   .flipX = false,
                   .flipY = false
                 });
-        }
+        }*/
     }
 
     // create player

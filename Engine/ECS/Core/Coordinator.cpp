@@ -31,4 +31,12 @@ namespace Uma_ECS
         return aEntityManager->GetEntityCount();
     }
 
+    Entity Coordinator::DuplicateEntity(Entity src)
+    {
+        Entity newEntity = CreateEntity();
+        aComponentManager->CloneEntityComponents(src, newEntity);
+
+        return newEntity;
+    }
+
 }

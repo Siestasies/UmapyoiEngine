@@ -12,6 +12,9 @@ namespace Uma_ECS
     public:
         virtual ~BaseComponentArray() = default;
         virtual void DestroyEntity(Entity entity) = 0; // detroy of entity shd be handled by the child
+
+        virtual bool Has(Entity entity) const = 0;
+        virtual void CloneComponent(Entity src, Entity dest) = 0;
     };
 
     template <typename T>
@@ -89,20 +92,31 @@ namespace Uma_ECS
         {
             return mSize;
         }
+
         Entity GetEntity(size_t index) 
         {
             return aIndexToEntity[index];
         }
+
         T& GetComponentAt(size_t index)
         {
             return aComponentArray[index];
         }
-        bool Has(Entity entity) const
+
+        bool Has(Entity entity) const override
         {
             if (entity >= MAX_ENTITIES) return false;
 
             size_t index = aEntityToIndex[entity];
             return (index < mSize && aIndexToEntity[index] == entity);
+        }
+
+        void CloneComponent(Entity src, Entity dest) override
+        {
+            assert(Has(src) && "Error : src entity doesn't contain this component type.");
+
+            T component = GetData(src);
+            AddData(dest, component);
         }
 
     private:
