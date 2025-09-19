@@ -64,6 +64,7 @@ target_include_directories(Uma_Engine
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
+        ${CMAKE_CURRENT_SOURCE_DIR}/RapidJSON
         ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
         ${glfw_SOURCE_DIR}/include        # <-- add this line

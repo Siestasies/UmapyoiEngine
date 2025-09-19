@@ -46,12 +46,14 @@ namespace Uma_Engine
                 }
 
                 static float fulltime = 0.f;
-                fulltime += dt;
-
+                static bool stop = false;
+                if (!stop)
+                    fulltime += dt;
                 if (fulltime > 5.f)
                 {
                     SetActiveScene("testScene2");
                     fulltime = 0.f;
+                    stop = true;
                 }
             }
             void Shutdown() override

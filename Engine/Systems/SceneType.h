@@ -1,4 +1,7 @@
 #pragma once
+#include <RapidJSON/document.h>
+#include <RapidJSON/writer.h>
+#include <RapidJSON/stringbuffer.h>
 
 namespace Uma_Engine
 {

@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneType.h"
+
 #include <iostream>
 
 namespace Uma_Engine
@@ -10,6 +11,22 @@ namespace Uma_Engine
 		{
 			// parse files here
 			std::cout << "Test Scene 1: LOADED" << std::endl;
+			const char* json = R"({
+							"hello":"world",
+							"t":true,
+							"f":false,
+							"n":null,
+							"i":123,
+							"pi":3.1416
+						})";
+			rapidjson::Document doc;
+			doc.Parse(json);
+
+			if (doc.HasMember("hello"))
+			{
+				std::cout << "RAPIDJSON WORKING: " << doc["pi"].GetDouble() << std::endl;
+			}
+
 		}
 		void OnUnload() override
 		{
