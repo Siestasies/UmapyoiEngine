@@ -17,14 +17,16 @@ namespace Uma_Engine
 							"f":false,
 							"n":null,
 							"i":123,
-							"pi":3.1416
+							"pi":3.1416,
+							"working": "YES"
 						})";
 			rapidjson::Document doc;
 			doc.Parse(json);
 
-			if (doc.HasMember("hello"))
+			if (doc.HasMember("working"))
 			{
-				std::cout << "RAPIDJSON WORKING: " << doc["pi"].GetDouble() << std::endl;
+				std::cout << "IS RAPIDJSON WORKING: "
+					<< doc["working"].GetString() << std::endl;
 			}
 
 		}
