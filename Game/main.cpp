@@ -50,9 +50,9 @@ int main()
         test_system
     */
 
+    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
     // Audio
-    systemManager.RegisterSystem<Uma_Engine::InputSystem>();
     systemManager.RegisterSystem <Uma_Engine::ResourcesManager>();
 
     // scene

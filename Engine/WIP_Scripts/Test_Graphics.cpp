@@ -61,6 +61,21 @@ namespace Uma_Engine
     {
         float deltaTime = dt;
 
+        Vec2 mouseScreen{ static_cast<float>(Uma_Engine::InputSystem::GetMouseX()),
+            static_cast<float>(Uma_Engine::InputSystem::GetMouseY()) };
+        Vec2 mouseWorld = graphics->ScreenToWorld(mouseScreen);
+        Vec2 mouseScreenConverted = graphics->WorldToScreen(mouseWorld);
+
+        if (Uma_Engine::InputSystem::MouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+        {
+            std::cout << "=== Mouse Coordinate Test ===" << std::endl;
+            std::cout << "Screen pos: (" << mouseScreen.x << ", " << mouseScreen.y << ")" << std::endl;
+            std::cout << "World pos:  (" << mouseWorld.x << ", " << mouseWorld.y << ")" << std::endl;
+            std::cout << "Back to screen: (" << mouseScreenConverted.x << ", " << mouseScreenConverted.y << ")" << std::endl;
+            std::cout << "Player world pos: (" << playerPosition.x << ", " << playerPosition.y << ")" << std::endl;
+            std::cout << "=========================" << std::endl;
+        }
+
         // Handle input for sprite movement
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_W) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_UP))
         {

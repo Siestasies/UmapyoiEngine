@@ -18,9 +18,7 @@ namespace Uma_Engine
     double InputSystem::sMouseX = 0.0;
     double InputSystem::sMouseY = 0.0;
 
-    InputSystem::InputSystem() : mWindow(nullptr)
-    {
-    }
+    InputSystem::InputSystem() : mWindow(nullptr) {}
 
     void InputSystem::Init()
     {
