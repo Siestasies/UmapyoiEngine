@@ -17,8 +17,8 @@ namespace Uma_Math
 		public:
 				// Core constructors and Rule of 5
 				constexpr Vector2D() : x{}, y{} {}
-				constexpr Vector2D(T v) : x{ v }, y{ v } {}
-				constexpr Vector2D(T x, T y) : x{ x }, y{ y } {}
+				constexpr Vector2D(T scalar) : x{scalar}, y{scalar} {}
+				constexpr Vector2D(T x, T y) : x{x}, y{y} {}
 				constexpr Vector2D(const Vector2D& other) = default;
 				constexpr Vector2D(Vector2D&& other) noexcept = default;
 				constexpr Vector2D& operator=(const Vector2D& other) = default;
@@ -108,8 +108,8 @@ namespace Uma_Math
 		public:
 				// Core constructors and Rule of 5
 				constexpr Vector3D() : x{}, y{}, z{} {}
-				constexpr Vector3D(T v) : x{ v }, y{ v }, z{ v } {}
-				constexpr Vector3D(T x, T y, T z) : x{ x }, y{ y }, z{ z } {}
+				constexpr Vector3D(T scalar) : x{scalar}, y{scalar}, z{scalar} {}
+				constexpr Vector3D(T x, T y, T z) : x{x}, y{y}, z{z} {}
 				constexpr Vector3D(const Vector3D& other) = default;
 				constexpr Vector3D(Vector3D&& other) noexcept = default;
 				constexpr Vector3D& operator=(const Vector3D& other) = default;
