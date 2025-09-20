@@ -50,7 +50,7 @@ void Uma_Engine::Test_Ecs::Init()
         std::cout << "Warning: Failed to load player sprite texture" << std::endl;
     }
 
-    if (!pResourcesManager->LoadTexture("enemy", "Assets/white.png"))
+    if (!pResourcesManager->LoadTexture("enemy", "Assets/sprite.jpg"))
     {
         std::cout << "Warning: Failed to load player sprite texture" << std::endl;
     }
@@ -136,7 +136,7 @@ void Uma_Engine::Test_Ecs::Init()
             gCoordinator.AddComponent(
                 enemy,
                 SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("player"),
+                  .texture = pResourcesManager->GetTexture("enemy"),
                   .flipX = false,
                   .flipY = false
                 });

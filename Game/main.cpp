@@ -56,8 +56,8 @@ int main()
     systemManager.RegisterSystem <Uma_Engine::ResourcesManager>();
 
     // scene
-    systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
-    //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
+    //systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
+    systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 
     // Initialize all registered systems
     systemManager.Init();
