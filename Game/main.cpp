@@ -249,26 +249,3 @@ int main()
     std::cout << "Event test finished!\n";
     return 0;
 }
-
-/*
-WHAT THIS SIMPLE TEST SHOWS:
-
-INPUT FLOW:
-User Input ? GLFW Callbacks ? Your InputSystem ? EventInputSystem ? EventSystem ? TestEventListener
-
-EXPECTED CONSOLE OUTPUT:
-1. System registration messages
-2. Event listener counts
-3. When you press a key: "Dispatching KeyPress event for key X" followed by "TestEventListener received KeyPress: key=X"
-4. When you release a key: Similar for KeyRelease
-5. When you click: MouseButton events with coordinates
-6. When you move mouse: MouseMove events with deltas
-
-TRY THIS:
-- Press a few keys and watch events being dispatched and received
-- Click mouse buttons and see the coordinates
-- Move mouse around and see movement tracking
-- Press ESC to quit
-
-This proves your Event System and InputSystem work together!
-*/
