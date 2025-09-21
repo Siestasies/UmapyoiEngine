@@ -1,7 +1,7 @@
 #pragma once
 #include "Core/SystemType.h" 
 #include "Window.hpp"
-#include "Math/Math.hpp"
+#include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
 

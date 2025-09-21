@@ -3,7 +3,7 @@
 #include "InputSystem.h"
 #include "ResourcesManager.hpp"
 #include "../Core/SystemManager.h"
-#include "Math/Math.hpp"
+#include "Math/Math.h"
 
 #include <iostream>
 #include <GLFW/glfw3.h>

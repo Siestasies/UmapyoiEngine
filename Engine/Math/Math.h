@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Vector.hpp"
-#include "Matrix.hpp"
+#include "Vector.h"
+#include "Matrix.h"
 
 using namespace Uma_Math;
 

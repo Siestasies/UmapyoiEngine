@@ -1,7 +1,7 @@
 # Create GLAD library from local files
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_library(glad STATIC
-    ${GLAD_DIR}/src/glad.c)
+    ${GLAD_DIR}/src/glad.c "Core/EventSystem.h"   "WIP_Scripts/Test_Input_Events.h")
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 # Collect source files more systematically
@@ -44,7 +44,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} )
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS}  "Core/EventSystem.h"   "WIP_Scripts/Test_Input_Events.h")
 
 # Link libraries
 target_link_libraries(Uma_Engine 
