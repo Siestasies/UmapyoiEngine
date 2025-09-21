@@ -32,7 +32,7 @@ namespace Uma_ECS
         if (pInputSystem->KeyPressed(GLFW_KEY_W) ||
             pInputSystem->KeyDown(GLFW_KEY_W))
         {
-            velocity.y -= 1;
+            velocity.y += 1;
         }
         if (pInputSystem->KeyPressed(GLFW_KEY_A) ||
             pInputSystem->KeyDown(GLFW_KEY_A))
@@ -42,7 +42,7 @@ namespace Uma_ECS
         if (pInputSystem->KeyPressed(GLFW_KEY_S) ||
             pInputSystem->KeyDown(GLFW_KEY_S))
         {
-            velocity.y += 1;
+            velocity.y -= 1;
         }
         if (pInputSystem->KeyPressed(GLFW_KEY_D) ||
             pInputSystem->KeyDown(GLFW_KEY_D))

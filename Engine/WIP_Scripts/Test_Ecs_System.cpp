@@ -41,6 +41,8 @@ Uma_Engine::Graphics* pGraphics;
 Uma_Engine::ResourcesManager* pResourcesManager;
 Uma_Engine::EventSystem* pEventSystem;
 
+Uma_ECS::Entity player;
+
 
 void Uma_Engine::Test_Ecs::Init()
 {
@@ -126,7 +128,7 @@ void Uma_Engine::Test_Ecs::Init()
             gCoordinator.AddComponent(
                 enemy,
                 RigidBody{
-                  .velocity = Vec2(0.0f, -1.0f),
+                  .velocity = Vec2(0.0f, 0.0f),
                   .acceleration = Vec2(0.0f, 0.0f)
                 });
 
@@ -141,7 +143,7 @@ void Uma_Engine::Test_Ecs::Init()
             gCoordinator.AddComponent(
                 enemy,
                 SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("enemy"),
+                  .texture = pResourcesManager->GetTexture("player"),
                   .flipX = false,
                   .flipY = false
                 });
@@ -189,9 +191,9 @@ void Uma_Engine::Test_Ecs::Init()
     }
 
     // create player
-    Entity en = gCoordinator.CreateEntity();
+    player = gCoordinator.CreateEntity();
     gCoordinator.AddComponent(
-        en, 
+        player,
         Transform
         {
             .position = Vec2(400.0f, 300.0f),
@@ -200,18 +202,18 @@ void Uma_Engine::Test_Ecs::Init()
         });
 
     gCoordinator.AddComponent(
-        en,
+        player,
         RigidBody{
           .velocity = Vec2(0.0f, 0.0f),
           .acceleration = Vec2(0.0f, 0.0f)
         });
 
     gCoordinator.AddComponent(
-        en,
+        player,
         Player{});
 
     gCoordinator.AddComponent(
-        en,
+        player,
         SpriteRenderer{
           .texture = pResourcesManager->GetTexture("player"),
           .flipX = false,
@@ -224,6 +226,13 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     physicsSystem->Update(dt);
 
     playerController->Update(dt);
+
+    // Update camera
+
+    Uma_ECS::Transform& tf = gCoordinator.GetComponent<Uma_ECS::Transform>(player);
+
+    pGraphics->GetCamera().SetPosition(tf.position);
+    pGraphics->GetCamera().SetZoom(1.f);
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
     pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);
