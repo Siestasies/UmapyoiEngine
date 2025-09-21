@@ -2,16 +2,25 @@
 
 namespace Uma_ECS
 {
-    void Coordinator::Init()
+    void Coordinator::Init(Uma_Engine::EventSystem* eventSystem)
     {
         aComponentManager = std::make_unique<ComponentManager>();
         aEntityManager = std::make_unique<EntityManager>();
         aSystemManager = std::make_unique<SystemManager>();
+
+        pEventSystem = eventSystem;
     }
 
     Entity Coordinator::CreateEntity()
     {
-        return aEntityManager->CreateEntity();
+        Entity en = aEntityManager->CreateEntity();
+
+        if (en >= 0) // entity is created
+        {
+            pEventSystem->Emit<Uma_Engine::Events::EntityCreatedEvent>(en);
+        }
+
+        return en;
     }
 
     void Coordinator::DestroyEntity(Entity entity)

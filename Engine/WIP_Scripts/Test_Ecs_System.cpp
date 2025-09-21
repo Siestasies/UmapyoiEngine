@@ -19,6 +19,8 @@
 #include "Systems/Graphics.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "../Core/SystemManager.h"
+#include "../Core/EventSystem.h"
+#include "../Core/EventTypes.h"
 
 #include <vector>
 #include <random>
@@ -37,34 +39,37 @@ std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 Uma_Engine::InputSystem* pInputSystem;
 Uma_Engine::Graphics* pGraphics;
 Uma_Engine::ResourcesManager* pResourcesManager;
+Uma_Engine::EventSystem* pEventSystem;
+
 
 void Uma_Engine::Test_Ecs::Init()
 {
     pInputSystem = pSystemManager->GetSystem<InputSystem>();
     pGraphics = pSystemManager->GetSystem<Graphics>();
     pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+    pEventSystem = pSystemManager->GetSystem<EventSystem>();
+
+    // event system stuff
+
+    //subscribe to events
+    pEventSystem->Subscribe<Uma_Engine::Events::EntityCreatedEvent>(
+        [](const Uma_Engine::Events::EntityCreatedEvent& e) {
+            std::cout << "Entity created: " << e.entityId << std::endl;
+            // e.handled = true;
+        });
+
 
     // Load textures using ResourcesManager
-    if (!pResourcesManager->LoadTexture("player", "Assets/hello.jpg"))
-    {
-        std::cout << "Warning: Failed to load player sprite texture" << std::endl;
-    }
-
-    if (!pResourcesManager->LoadTexture("enemy", "Assets/white.png"))
-    {
-        std::cout << "Warning: Failed to load player sprite texture" << std::endl;
-    }
-
-    if (!pResourcesManager->LoadTexture("background", "Assets/background.jpg"))
-    {
-        std::cout << "Warning: Failed to load background texture" << std::endl;
-    }
-
+    pResourcesManager->LoadTexture("player", "Assets/hello.jpg");
+    pResourcesManager->LoadTexture("enemy", "Assets/white.png");
+    pResourcesManager->LoadTexture("background", "Assets/background.jpg");
     pResourcesManager->PrintLoadedTextureNames();
 
+
+    // Ecs stuff
     using namespace Uma_ECS;
 
-    gCoordinator.Init();
+    gCoordinator.Init(pEventSystem);
 
     // register components
     gCoordinator.RegisterComponent<Transform>();
