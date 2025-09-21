@@ -18,6 +18,7 @@ namespace
     float rotationSpeed;
     float moveSpeed;
     float scale;
+    float zoom;
 }
 
 namespace Uma_Engine
@@ -38,6 +39,11 @@ namespace Uma_Engine
             std::cout << "Warning: Failed to load background texture" << std::endl;
         }
 
+        if (!resourcesManager->LoadTexture("enemy", "Assets/sprite.jpg"))
+        {
+            std::cout << "Warning: Failed to load enemy texture" << std::endl;
+        }
+
         resourcesManager->PrintLoadedTextureNames();
 
         // Initialize game variables
@@ -45,7 +51,8 @@ namespace Uma_Engine
         playerRotation = 0.0f;
         rotationSpeed = 45.0f;
         moveSpeed = 200.0f;
-        scale = 0.5f;
+        scale = 0.3f;
+        zoom = 1.0f;
 
         std::cout << "Test_Graphics initialized successfully!" << std::endl;
     }
@@ -57,11 +64,11 @@ namespace Uma_Engine
         // Handle input for sprite movement
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_W) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_UP))
         {
-            playerPosition.y -= moveSpeed * deltaTime;
+            playerPosition.y += moveSpeed * deltaTime;
         }
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_S) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_DOWN))
         {
-            playerPosition.y += moveSpeed * deltaTime;
+            playerPosition.y -= moveSpeed * deltaTime;
         }
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_A) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_LEFT))
         {
@@ -70,6 +77,16 @@ namespace Uma_Engine
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_D) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_RIGHT))
         {
             playerPosition.x += moveSpeed * deltaTime;
+        }
+
+        // Camera zoom
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_1))
+        {
+            zoom += 1 * dt;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_2))
+        {
+            zoom -= 1 * dt;
         }
 
         // Rotate sprite
@@ -94,6 +111,10 @@ namespace Uma_Engine
             if (scale > 3.0f) scale = 3.0f;
         }
 
+        // Update camera
+        graphics->GetCamera().SetPosition(playerPosition);
+        graphics->GetCamera().SetZoom(zoom);
+
         // Clear the background
         graphics->ClearBackground(0.2f, 0.3f, 0.3f);
 
@@ -102,6 +123,19 @@ namespace Uma_Engine
         if (backgroundTexture != nullptr)
         {
             graphics->DrawBackground(backgroundTexture->tex_id, backgroundTexture->tex_size);
+        }
+
+        const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+        if (enemyTexture != nullptr)
+        {
+            Vec2 scale{ .2f, .2f };
+            // Draw enemies at fixed world positions
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(100, 100), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(600, 200), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(800, 500), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(200, 700), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1000, 300), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1200, 600), scale);
         }
 
         // Draw sprite

@@ -74,6 +74,9 @@ void main()
         // Set viewport
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
+        // Set camera
+        mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
+
         // Initialize 2D renderer
         if (!InitializeRenderer())
         {
@@ -98,6 +101,7 @@ void main()
                 SetViewport(width, height);
             }
         }
+        UpdateProjectionMatrix();
     }
 
     void Graphics::Shutdown()
@@ -228,18 +232,30 @@ void main()
     void Graphics::DrawBackground(unsigned int textureID, const Vec2& textureSize)
     {
         if (!mInitialized || textureID == 0) return;
-        if (textureSize.x == 0 || textureSize.y == 0) return;
 
-        // Scale sprite to cover entire viewport
-        Vec2 scale = Vec2(
-            (float)mViewportWidth / textureSize.x,
-            (float)mViewportHeight / textureSize.y
-        );
+        glUseProgram(mShaderProgram);
 
-        // Position the background's center at the viewport's center
-        Vec2 position = Vec2(mViewportWidth / 2.0f, mViewportHeight / 2.0f);
+        // Scale and flip Y to match NDC properly
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f));
 
-        DrawSprite(textureID, textureSize, position, scale, 0.0f);
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Projection matrix: identity for NDC
+        glm::mat4 identity = glm::mat4(1.0f);
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &identity[0][0]);
+
+        // Render
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Restore camera projection
+        UpdateProjectionMatrix();
     }
 
     bool Graphics::InitializeRenderer()
@@ -252,14 +268,14 @@ void main()
         float vertices[] = {
             // pos             // tex
             // Triangle 1
-            -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-             0.5f, -0.5f,      1.0f, 0.0f,  // Bottom-right
-            -0.5f, -0.5f,      0.0f, 0.0f,  // Bottom-left
+            -0.5f,  0.5f,      0.0f, 0.0f,  // Top-left
+             0.5f, -0.5f,      1.0f, 1.0f,  // Bottom-right
+            -0.5f, -0.5f,      0.0f, 1.0f,  // Bottom-left
 
             // Triangle 2
-           -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-            0.5f,  0.5f,      1.0f, 1.0f,  // Top-right
-            0.5f, -0.5f,      1.0f, 0.0f   // Bottom-right
+           -0.5f,  0.5f,      0.0f, 0.0f,  // Top-left
+            0.5f,  0.5f,      1.0f, 0.0f,  // Top-right
+            0.5f, -0.5f,      1.0f, 1.0f   // Bottom-right
         };
 
         glGenVertexArrays(1, &mVAO);
@@ -276,9 +292,7 @@ void main()
 
         // Set projection matrix
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = glm::ortho(0.0f, (float)mViewportWidth, (float)mViewportHeight, 0.0f, -1.0f, 1.0f);
-        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        UpdateProjectionMatrix();
 
         // Set texture sampler
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
@@ -363,9 +377,8 @@ void main()
 
         // Update projection matrix
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
-        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
+        UpdateProjectionMatrix();
     }
 
     void Graphics::OnWindowResize(int width, int height)
@@ -381,5 +394,41 @@ void main()
         {
             graphics->OnWindowResize(width, height);
         }
+    }
+
+    void Graphics::UpdateProjectionMatrix()
+    {
+        if (!mInitialized) return;
+
+        glUseProgram(mShaderProgram);
+        glm::mat4 projection = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+    }
+
+    Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
+    {
+        float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
+        float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
+
+        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 invViewProjMatrix = glm::inverse(viewProjMatrix);
+
+        glm::vec4 worldPos = invViewProjMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+        return Vec2(worldPos.x, worldPos.y);
+    }
+
+    Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
+    {
+        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::vec4 clipPos = viewProjMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+
+        float ndcX = clipPos.x / clipPos.w;
+        float ndcY = clipPos.y / clipPos.w;
+
+        float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
+        float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
+
+        return Vec2(screenX, screenY);
     }
 }

@@ -141,7 +141,7 @@ void Uma_Engine::Test_Ecs::Init()
             gCoordinator.AddComponent(
                 enemy,
                 SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("player"),
+                  .texture = pResourcesManager->GetTexture("enemy"),
                   .flipX = false,
                   .flipY = false
                 });

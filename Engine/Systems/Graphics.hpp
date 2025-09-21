@@ -4,6 +4,7 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
+#include "Systems/Camera.hpp"
 
 // Forward declarations
 struct GLFWwindow;
@@ -13,6 +14,33 @@ namespace Uma_Engine
 {
     class Graphics : public ISystem, public IWindowSystem
     {
+    private:
+        bool mInitialized;
+        GLFWwindow* mWindow;
+
+        // Camera
+        Camera2D mCamera;
+
+        // Rendering resources
+        GLuint mVAO, mVBO;
+        GLuint mShaderProgram;
+
+        // Viewport size
+        int mViewportWidth, mViewportHeight;
+
+        // Helper functions
+        bool InitializeRenderer();
+        void ShutdownRenderer();
+        GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
+        void CheckOpenGLVersion();
+
+        // Window resize callback (used by GLFW)
+        void OnWindowResize(int width, int height);
+        // Static callback function for GLFW
+        static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+
+        void UpdateProjectionMatrix();
+
     public:
         Graphics();
         ~Graphics();
@@ -41,30 +69,15 @@ namespace Uma_Engine
 
         // Draw background image
         void DrawBackground(unsigned int textureID, const Vec2& textureSize);
-
         void SetVSync(bool enabled);
         void SetViewport(int width, int height);
 
-    private:
-        bool mInitialized;
-        GLFWwindow* mWindow;
+        // Camera access
+        Camera2D& GetCamera() { return mCamera; }
+        const Camera2D& GetCamera() const { return mCamera; }
 
-        // Rendering resources
-        GLuint mVAO, mVBO;
-        GLuint mShaderProgram;
-
-        // Viewport size
-        int mViewportWidth, mViewportHeight;
-
-        // Helper functions
-        bool InitializeRenderer();
-        void ShutdownRenderer();
-        GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
-        void CheckOpenGLVersion();
-
-        // Window resize callback (used by GLFW)
-        void OnWindowResize(int width, int height);
-        // Static callback function for GLFW
-        static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
+        // Coordinate conversion
+        Vec2 ScreenToWorld(const Vec2& screenPos) const;
+        Vec2 WorldToScreen(const Vec2& worldPos) const;
     };
 }
