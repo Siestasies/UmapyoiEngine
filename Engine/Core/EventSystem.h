@@ -1,13 +1,11 @@
 #pragma once
-
 #include <functional>
 #include <unordered_map>
 #include <vector>
 #include <typeindex>
 #include <memory>
-#include <queue>
+#include <algorithm>
 #include "EventTypes.h"
-#include "SystemManager.h"
 #include "SystemType.h"
 
 namespace Uma_Engine
@@ -37,7 +35,7 @@ namespace Uma_Engine
         EventCallback callback;
     };
 
-    // Event System - manages event dispatch and listener registration
+    // Hybrid Event System - supports both immediate and queued processing
     class EventSystem : public ISystem
     {
     public:
@@ -49,7 +47,9 @@ namespace Uma_Engine
         void Update(float dt) override;
         void Shutdown() override;
 
-        // Subscribe to an event type
+        // === SUBSCRIPTION API ===
+
+        // Subscribe to an event type with callback
         template<typename T>
         void Subscribe(std::function<void(const T&)> callback)
         {
@@ -66,15 +66,122 @@ namespace Uma_Engine
         {
             std::type_index typeIndex = std::type_index(typeid(T));
             auto& listenerList = listeners[typeIndex];
-            listenerList.erase(std::remove(listenerList.begin(), listenerList.end(), listener),listenerList.end());
+            listenerList.erase(std::remove(listenerList.begin(), listenerList.end(), listener), listenerList.end());
         }
 
-        // Immediately dispatch an event
+        // Immediately dispatch an event for critical/real-time events
         template<typename T>
         void Dispatch(const T& event)
         {
             static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+            DispatchImmediate(event);
+        }
 
+        // Emit an event to be processed later (safer, use for most game events)
+        template<typename T>
+        void Emit(const T& event)
+        {
+            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+
+            // Critical events are always processed immediately
+            if (event.priority == Event::Priority::Critical)
+            {
+                DispatchImmediate(event);
+                return;
+            }
+
+            // Queue non-critical events
+            auto wrapper = std::make_shared<EventWrapper<T>>(event);
+
+            // Insert by priority (higher priority first)
+            auto insertPos = eventQueue.end();
+            for (auto it = eventQueue.begin(); it != eventQueue.end(); it++)
+            {
+                if ((*it)->GetPriority() < event.priority)
+                {
+                    insertPos = it;
+                    break;
+                }
+            }
+            eventQueue.insert(insertPos, wrapper);
+        }
+
+        // Emit with perfect forwarding
+        template<typename T, typename... Args>
+        void Emit(Args&&... args)
+        {
+            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+            T event(std::forward<Args>(args)...);
+            Emit(event);
+        }
+
+        // Process all queued events (call this at frame boundaries)
+        void ProcessEvents();
+
+        // Process only high priority events
+        void ProcessHighPriorityEvents();
+
+        // Process a limited number of events
+        void ProcessEvents(size_t maxEvents);
+
+        // Clear all listeners for a specific event type
+        template<typename T>
+        void ClearListeners()
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+            listeners.erase(typeIndex);
+        }
+
+        // Clear all listeners and queued events
+        void ClearAll();
+
+        // Get number of listeners for an event type
+        template<typename T>
+        size_t GetListenerCount() const
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+            auto it = listeners.find(typeIndex);
+            return (it != listeners.end()) ? it->second.size() : 0;
+        }
+
+        // Get number of queued events
+        size_t GetQueuedEventCount() const;
+
+        // Check if there are any high priority events queued
+        bool HasHighPriorityEvents() const;
+
+    private:
+        // Type-erased event wrapper for queuing
+        struct IEventWrapper
+        {
+            virtual ~IEventWrapper() = default;
+            virtual std::type_index GetType() const = 0;
+            virtual const void* GetData() const = 0;
+            virtual Event::Priority GetPriority() const = 0;
+            virtual void Dispatch(EventSystem* system) const = 0;
+        };
+
+        template<typename T>
+        struct EventWrapper : IEventWrapper
+        {
+            EventWrapper(const T& e) : event(e) {}
+
+            std::type_index GetType() const override { return std::type_index(typeid(T)); }
+            const void* GetData() const override { return &event; }
+            Event::Priority GetPriority() const override { return event.priority; }
+
+            void Dispatch(EventSystem* system) const override
+            {
+                system->DispatchImmediate(event);
+            }
+
+            T event;
+        };
+
+        // Immediate dispatch implementation
+        template<typename T>
+        void DispatchImmediate(const T& event)
+        {
             std::type_index typeIndex = std::type_index(typeid(T));
             auto it = listeners.find(typeIndex);
             if (it != listeners.end())
@@ -90,68 +197,12 @@ namespace Uma_Engine
             }
         }
 
-        // Queue an event for processing in the next update
-        template<typename T>
-        void QueueEvent(std::unique_ptr<T> event)
-        {
-            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
-
-            // Store dispatch function with the event for type-safe queued dispatch
-            auto dispatchFunc = [this, event = event.get()]()
-            {
-                this->Dispatch(*static_cast<T*>(event));
-            };
-
-            queuedEvents.emplace(std::move(event), dispatchFunc);
-        }
-
-        // Queue an event using perfect forwarding
-        template<typename T, typename... Args>
-        void QueueEvent(Args&&... args)
-        {
-            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
-            auto event = std::make_unique<T>(std::forward<Args>(args)...);
-            QueueEvent(std::move(event));
-        }
-
-        // Clear all listeners for a specific event type
-        template<typename T>
-        void ClearListeners()
-        {
-            std::type_index typeIndex = std::type_index(typeid(T));
-            listeners.erase(typeIndex);
-        }
-
-        // Clear all listeners
-        void ClearAllListeners();
-
-        // Get number of listeners for an event type
-        template<typename T>
-        size_t GetListenerCount() const
-        {
-            std::type_index typeIndex = std::type_index(typeid(T));
-            auto it = listeners.find(typeIndex);
-            return (it != listeners.end()) ? it->second.size() : 0;
-        }
-
     private:
-        void ProcessQueuedEvents();
-
         std::unordered_map<std::type_index, std::vector<std::shared_ptr<IEventListener>>> listeners;
-
-        // Queued events storage for type-safe dispatch
-        struct QueuedEvent
-        {
-            std::unique_ptr<Event> event;
-            std::function<void()> dispatchFunc;
-
-            QueuedEvent(std::unique_ptr<Event> e, std::function<void()> f) : event(std::move(e)), dispatchFunc(f) {}
-        };
-
-        std::queue<QueuedEvent> queuedEvents;
+        std::vector<std::shared_ptr<IEventWrapper>> eventQueue;
     };
 
-    // Helper class for systems that want to listen to events
+    // Helper base class for systems that listen to events
     class EventListenerSystem : public ISystem
     {
     public:
@@ -163,6 +214,7 @@ namespace Uma_Engine
         virtual void RegisterEventListeners() = 0;
         EventSystem* eventSystem = nullptr;
 
+        // Helper method to subscribe to events
         template<typename T>
         void SubscribeToEvent(std::function<void(const T&)> callback)
         {

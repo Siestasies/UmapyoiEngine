@@ -166,7 +166,7 @@ int main()
 
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
     std::cout << "Registering EventInputSystem (InputSystem + Events)...\n";
-    EventInputSystem* inputSystem = systemManager.RegisterSystem<EventInputSystem>();
+    HybridInputSystem* inputSystem = systemManager.RegisterSystem<HybridInputSystem>();
 
     // Register SIMPLE EVENT LISTENER (just logs events)
     std::cout << "Registering TestEventListener...\n";
@@ -248,4 +248,4 @@ int main()
 
     std::cout << "Event test finished!\n";
     return 0;
-}
+} 
