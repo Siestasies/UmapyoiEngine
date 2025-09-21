@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <typeindex>
 
+#include "../ECS/Core/Types.hpp"
+
 namespace Uma_Engine
 {
     // Base Event class, all events must inherit from this
@@ -168,12 +170,12 @@ namespace Uma_Engine
         class EntityCreatedEvent : public Event
         {
         public:
-            EntityCreatedEvent(uint32_t entityId) : entityId(entityId)
+            EntityCreatedEvent(Uma_ECS::Entity entityId) : entityId(entityId)
             {
                 priority = Priority::Normal; // Safe to queue
             }
 
-            uint32_t entityId;
+            Uma_ECS::Entity entityId;
         };
 
         class EntityDestroyedEvent : public Event

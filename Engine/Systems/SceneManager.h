@@ -6,8 +6,8 @@
 #include <memory>
 #include <iostream>
 
-#include "TestScene.h"
-#include "TestScene2.h"
+#include "WIP_Scripts/TestScene.h"
+#include "WIP_Scripts/TestScene2.h"
 
 namespace Uma_Engine
 {
