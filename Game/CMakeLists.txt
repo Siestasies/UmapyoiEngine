@@ -41,5 +41,21 @@ add_custom_target(copy_assets ALL
     COMMENT "Copying assets to build folder"
 )
 
+# FMOD runtime DLL (Windows only)
+set(FMOD_DLL ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll)
+
+# Where to copy FMOD DLL (next to your game exe)
+set(FMOD_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Game)
+
+# Copy FMOD runtime DLL after build
+add_custom_target(copy_fmod ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${FMOD_DLL} ${FMOD_OUTPUT_DIR}
+    COMMENT "Copying fmod.dll to build folder"
+)
+
+
 # Make sure your game depends on this step
 add_dependencies(Uma_Engine copy_assets)
+
+add_dependencies(Uma_Engine copy_fmod)

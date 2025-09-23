@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
-#include <map>
+#include <cassert>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -52,7 +52,6 @@ void main()
         Shutdown();
     }
 
-    // ISystem interface implementation
     void Graphics::Init()
     {
         if (mInitialized)
@@ -64,15 +63,9 @@ void main()
         // Check if OpenGL context is available
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cerr << "GLAD not initialized! Make sure Window is initialized first." << std::endl;
+            std::cerr << "GLAD not initialized" << std::endl;
             return;
         }
-
-        // Check OpenGL version
-        std::cout << "Graphics initializing..." << std::endl;
-        std::cout << "OpenGL Vendor: " << glGetString(GL_VENDOR) << std::endl;
-        std::cout << "OpenGL Renderer: " << glGetString(GL_RENDERER) << std::endl;
-        std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
         // Enable blending for transparency
         glEnable(GL_BLEND);
@@ -80,6 +73,9 @@ void main()
 
         // Set viewport
         glViewport(0, 0, mViewportWidth, mViewportHeight);
+
+        // Set camera
+        mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
 
         // Initialize 2D renderer
         if (!InitializeRenderer())
@@ -105,6 +101,7 @@ void main()
                 SetViewport(width, height);
             }
         }
+        UpdateProjectionMatrix();
     }
 
     void Graphics::Shutdown()
@@ -112,21 +109,11 @@ void main()
         if (mInitialized)
         {
             std::cout << "Shutting down graphics system..." << std::endl;
-
-            // Clean up all textures
-            for (auto& pair : mTextureSizes)
-            {
-                GLuint textureID = pair.first;
-                glDeleteTextures(1, &textureID);
-            }
-            mTextureSizes.clear();
-
             ShutdownRenderer();
             mInitialized = false;
         }
     }
 
-    // IWindowSystem interface implementation
     void Graphics::SetWindow(GLFWwindow* window)
     {
         mWindow = window;
@@ -155,9 +142,11 @@ void main()
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    unsigned int Graphics::LoadTexture(const std::string& texturePath)
+    Texture Graphics::LoadTextureFromFile(const std::string& texturePath)
     {
-        if (!mInitialized) return 0;
+        assert(mInitialized && "Error: Graphics System is not initialized.");
+
+        Texture tex = {}; // Initialize to zero
 
         GLuint textureID;
         glGenTextures(1, &textureID);
@@ -186,8 +175,9 @@ void main()
             glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
 
-            // Store texture size
-            mTextureSizes[textureID] = Vec2(width, height);
+            // Fill texture struct
+            tex.tex_id = textureID;
+            tex.tex_size = Vec2(static_cast<float>(width), static_cast<float>(height));
 
             std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
         }
@@ -195,11 +185,10 @@ void main()
         {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
-            return 0;
         }
 
         stbi_image_free(data);
-        return textureID;
+        return tex;
     }
 
     void Graphics::UnloadTexture(unsigned int textureID)
@@ -208,19 +197,13 @@ void main()
         {
             GLuint id = textureID;
             glDeleteTextures(1, &id);
-            mTextureSizes.erase(textureID);
         }
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position,
-        const Vec2& scale, float rotation)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
+        const Vec2& position, const Vec2& scale, float rotation)
     {
         if (!mInitialized || textureID == 0) return;
-
-        auto it = mTextureSizes.find(textureID);
-        if (it == mTextureSizes.end()) return;
-
-        Vec2 size = it->second;
 
         // Use shader program
         glUseProgram(mShaderProgram);
@@ -232,7 +215,7 @@ void main()
 
         model = glm::translate(model, glm::vec3(pos, 0.0f));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(size.x * scale.x, size.y * scale.y, 1.0f));
+        model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
 
         // Set model uniform
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
@@ -246,32 +229,33 @@ void main()
         glBindVertexArray(0);
     }
 
-    void Graphics::DrawBackground(unsigned int textureID)
+    void Graphics::DrawBackground(unsigned int textureID, const Vec2& textureSize)
     {
         if (!mInitialized || textureID == 0) return;
 
-        Vec2 texSize = GetTextureSize(textureID);
-        if (texSize.x == 0 || texSize.y == 0) return;
+        glUseProgram(mShaderProgram);
 
-        // Scale sprite
-        Vec2 scale = Vec2(
-            (float)mViewportWidth / texSize.x,
-            (float)mViewportHeight / texSize.y
-        );
+        // Scale and flip Y to match NDC properly
+        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f));
 
-        // Position the background's center at the viewport's center
-        Vec2 position = Vec2(mViewportWidth / 2.0f, mViewportHeight / 2.0f);
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        DrawSprite(textureID, position, scale, 0.0f);
-    }
+        // Projection matrix: identity for NDC
+        glm::mat4 identity = glm::mat4(1.0f);
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &identity[0][0]);
 
-    Vec2 Graphics::GetTextureSize(unsigned int textureID) const
-    {
-        auto it = mTextureSizes.find(textureID);
+        // Render
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-        Vec2 size = (it != mTextureSizes.end()) ? it->second : Vec2(0.0f, 0.0f);
-
-        return Vec2(size.x, size.y);
+        // Restore camera projection
+        UpdateProjectionMatrix();
     }
 
     bool Graphics::InitializeRenderer()
@@ -284,14 +268,14 @@ void main()
         float vertices[] = {
             // pos             // tex
             // Triangle 1
-            -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-             0.5f, -0.5f,      1.0f, 0.0f,  // Bottom-right
-            -0.5f, -0.5f,      0.0f, 0.0f,  // Bottom-left
+            -0.5f,  0.5f,      0.0f, 0.0f,  // Top-left
+             0.5f, -0.5f,      1.0f, 1.0f,  // Bottom-right
+            -0.5f, -0.5f,      0.0f, 1.0f,  // Bottom-left
 
             // Triangle 2
-           -0.5f,  0.5f,      0.0f, 1.0f,  // Top-left
-            0.5f,  0.5f,      1.0f, 1.0f,  // Top-right
-            0.5f, -0.5f,      1.0f, 0.0f   // Bottom-right
+           -0.5f,  0.5f,      0.0f, 0.0f,  // Top-left
+            0.5f,  0.5f,      1.0f, 0.0f,  // Top-right
+            0.5f, -0.5f,      1.0f, 1.0f   // Bottom-right
         };
 
         glGenVertexArrays(1, &mVAO);
@@ -308,14 +292,11 @@ void main()
 
         // Set projection matrix
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = glm::ortho(0.0f, (float)mViewportWidth, (float)mViewportHeight, 0.0f, -1.0f, 1.0f);
-        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        UpdateProjectionMatrix();
 
         // Set texture sampler
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
 
-        std::cout << "2D Renderer initialized!" << std::endl;
         return true;
     }
 
@@ -380,15 +361,6 @@ void main()
         return program;
     }
 
-    void Graphics::CheckOpenGLVersion()
-    {
-        GLint major, minor;
-        glGetIntegerv(GL_MAJOR_VERSION, &major);
-        glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-        std::cout << "Detected OpenGL " << major << "." << minor << std::endl;
-    }
-
     void Graphics::SetVSync(bool enabled)
     {
         if (!mInitialized) return;
@@ -405,9 +377,8 @@ void main()
 
         // Update projection matrix
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
-        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
+        UpdateProjectionMatrix();
     }
 
     void Graphics::OnWindowResize(int width, int height)
@@ -418,11 +389,46 @@ void main()
 
     void Graphics::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
     {
-        // Get the Graphics instance from the window user pointer
         Graphics* graphics = static_cast<Graphics*>(glfwGetWindowUserPointer(window));
         if (graphics)
         {
             graphics->OnWindowResize(width, height);
         }
+    }
+
+    void Graphics::UpdateProjectionMatrix()
+    {
+        if (!mInitialized) return;
+
+        glUseProgram(mShaderProgram);
+        glm::mat4 projection = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+    }
+
+    Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
+    {
+        float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
+        float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
+
+        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 invViewProjMatrix = glm::inverse(viewProjMatrix);
+
+        glm::vec4 worldPos = invViewProjMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+        return Vec2(worldPos.x, worldPos.y);
+    }
+
+    Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
+    {
+        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::vec4 clipPos = viewProjMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+
+        float ndcX = clipPos.x / clipPos.w;
+        float ndcY = clipPos.y / clipPos.w;
+
+        float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
+        float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
+
+        return Vec2(screenX, screenY);
     }
 }

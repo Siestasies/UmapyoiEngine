@@ -1,110 +1,154 @@
-#include "Graphics.hpp"
-
 #include "Test_Graphics.h"
+#include "Graphics.hpp"
 #include "InputSystem.h"
+#include "ResourcesManager.hpp"
 #include "../Core/SystemManager.h"
-
-#include "Math/Math.hpp"
+#include "Math/Math.h"
 
 #include <iostream>
 #include <GLFW/glfw3.h>
 
-Uma_Engine::Graphics* gGraphics;
-
-Vec2  playerPosition;
-float playerRotation;
-float rotationSpeed;
-float moveSpeed;
-float scale;
-
-unsigned int spriteTexture;
-unsigned int backgroundTexture;
-
-void Uma_Engine::Test_Graphics::Init()
+namespace
 {
-    gGraphics = pSystemManager->GetSystem<Graphics>();
+    Uma_Engine::Graphics* graphics;
+    Uma_Engine::ResourcesManager* resourcesManager;
 
-    spriteTexture      = gGraphics->LoadTexture("Assets/hello.jpg");
-    backgroundTexture  = gGraphics->LoadTexture("Assets/background.jpg");
-
-    // Check if textures loaded
-    if (spriteTexture == 0) {
-        std::cout << "Warning: Failed to load sprite texture" << std::endl;
-    }
-    if (backgroundTexture == 0) {
-        std::cout << "Warning: Failed to load background texture" << std::endl;
-    }
-
-    // Temp game variables to test
-    playerPosition = { 400.0f, 300.0f };
-    playerRotation = 0.0f;
-    rotationSpeed = 45.0f;
-    moveSpeed = 200.0f;
-    scale = 0.5f;
+    Uma_Math::Vec2 playerPosition;
+    float playerRotation;
+    float rotationSpeed;
+    float moveSpeed;
+    float scale;
+    float zoom;
 }
 
-void Uma_Engine::Test_Graphics::Update(float dt)
+namespace Uma_Engine
 {
-    float deltaTime = dt;
+    void Test_Graphics::Init()
+    {
+        graphics = pSystemManager->GetSystem<Graphics>();
+        resourcesManager = pSystemManager->GetSystem<ResourcesManager>();
 
-    // Handle input for sprite movement
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_W) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_UP))
-    {
-        playerPosition.y -= moveSpeed * deltaTime;
-    }
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_S) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_DOWN))
-    {
-        playerPosition.y += moveSpeed * deltaTime;
-    }
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_A) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_LEFT))
-    {
-        playerPosition.x -= moveSpeed * deltaTime;
-    }
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_D) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_RIGHT))
-    {
-        playerPosition.x += moveSpeed * deltaTime;
-    }
+        // Load textures using ResourcesManager
+        if (!resourcesManager->LoadTexture("player_sprite", "Assets/hello.jpg"))
+        {
+            std::cout << "Warning: Failed to load player sprite texture" << std::endl;
+        }
 
-    // Rotate sprite
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Q))
-    {
-        playerRotation -= rotationSpeed * deltaTime;
-    }
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_E))
-    {
-        playerRotation += rotationSpeed * deltaTime;
-    }
+        if (!resourcesManager->LoadTexture("background", "Assets/background.jpg"))
+        {
+            std::cout << "Warning: Failed to load background texture" << std::endl;
+        }
 
-    // Scale sprite
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Z))
-    {
-        scale -= 1.0f * deltaTime;
-        if (scale < 0.1f) scale = 0.1f;
-    }
-    if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_X))
-    {
-        scale += 1.0f * deltaTime;
-        if (scale > 3.0f) scale = 3.0f;
+        if (!resourcesManager->LoadTexture("enemy", "Assets/sprite.jpg"))
+        {
+            std::cout << "Warning: Failed to load enemy texture" << std::endl;
+        }
+
+        resourcesManager->PrintLoadedTextureNames();
+
+        // Initialize game variables
+        playerPosition = { 400.0f, 300.0f };
+        playerRotation = 0.0f;
+        rotationSpeed = 45.0f;
+        moveSpeed = 200.0f;
+        scale = 0.3f;
+        zoom = 1.0f;
+
+        std::cout << "Test_Graphics initialized successfully!" << std::endl;
     }
 
-    // Clear the background
-    gGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
-
-    // Draw background (if loaded)
-    if (backgroundTexture != 0)
+    void Test_Graphics::Update(float dt)
     {
-        gGraphics->DrawBackground(backgroundTexture);
+        float deltaTime = dt;
+
+        // Handle input for sprite movement
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_W) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_UP))
+        {
+            playerPosition.y += moveSpeed * deltaTime;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_S) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_DOWN))
+        {
+            playerPosition.y -= moveSpeed * deltaTime;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_A) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_LEFT))
+        {
+            playerPosition.x -= moveSpeed * deltaTime;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_D) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_RIGHT))
+        {
+            playerPosition.x += moveSpeed * deltaTime;
+        }
+
+        // Camera zoom
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_1))
+        {
+            zoom += 1 * dt;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_2))
+        {
+            zoom -= 1 * dt;
+        }
+
+        // Rotate sprite
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Q))
+        {
+            playerRotation -= rotationSpeed * deltaTime;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_E))
+        {
+            playerRotation += rotationSpeed * deltaTime;
+        }
+
+        // Scale sprite
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Z))
+        {
+            scale -= 1.0f * deltaTime;
+            if (scale < 0.1f) scale = 0.1f;
+        }
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_X))
+        {
+            scale += 1.0f * deltaTime;
+            if (scale > 3.0f) scale = 3.0f;
+        }
+
+        // Update camera
+        graphics->GetCamera().SetPosition(playerPosition);
+        graphics->GetCamera().SetZoom(zoom);
+
+        // Clear the background
+        graphics->ClearBackground(0.2f, 0.3f, 0.3f);
+
+        // Draw background
+        const Texture* backgroundTexture = resourcesManager->GetTexture("background");
+        if (backgroundTexture != nullptr)
+        {
+            graphics->DrawBackground(backgroundTexture->tex_id, backgroundTexture->tex_size);
+        }
+
+        const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+        if (enemyTexture != nullptr)
+        {
+            Vec2 scale{ .2f, .2f };
+            // Draw enemies at fixed world positions
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(100, 100), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(600, 200), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(800, 500), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(200, 700), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1000, 300), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1200, 600), scale);
+        }
+
+        // Draw sprite
+        const Texture* playerTexture = resourcesManager->GetTexture("player_sprite");
+        if (playerTexture != nullptr)
+        {
+            Vec2 playerPos = { playerPosition.x, playerPosition.y };
+            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(scale), playerRotation);
+        }
     }
 
-    // Draw sprite (if loaded)
-    if (spriteTexture != 0)
+    void Test_Graphics::Shutdown()
     {
-        Vec2 playerPos = { playerPosition.x, playerPosition .y };
-        gGraphics->DrawSprite(spriteTexture, playerPos, Vec2(scale), playerRotation);
+        // EMPTY
     }
-}
-
-void Uma_Engine::Test_Graphics::Shutdown()
-{
-
 }

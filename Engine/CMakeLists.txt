@@ -13,6 +13,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "ECS/Components/*.cpp"
     "ECS/Systems/*.cpp"
     "WIP_Scripts/*.cpp"
+    "Debugging/*.cpp"
 )
 
 file(GLOB_RECURSE ENGINE_HEADERS
@@ -26,6 +27,8 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "ECS/Systems/*.h" 
     "WIP_Scripts/*.h"
     "WIP_Scripts/*.hpp"
+    "Debugging/*.h"
+    "Debugging/*.hpp"
 )
 
 # Force CMake to reconfigure when source files change
@@ -37,29 +40,41 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
     "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
+    "Debugging/*.cpp" "Debugging/*.hpp" "Debugging/*.h"
 )
 
 # Create the Uma_Engine library
 add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
+set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
+
+add_library(fmod STATIC IMPORTED)
+set_target_properties(fmod PROPERTIES
+    IMPORTED_LOCATION "${FMOD_DIR}/lib/x64/fmod_vc.lib"
+)
+
 # Link libraries
 target_link_libraries(Uma_Engine 
     PUBLIC 
         glfw
+        OpenGL::GL  # Cross-platform OpenGL linking
+	      fmod
         glad
-        OpenGL::GL
 )
 
 # Include directories
 target_include_directories(Uma_Engine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${glm_SOURCE_DIR}  # Add GLM include directory
+	      ${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/inc # FMOD headers
         ${CMAKE_CURRENT_SOURCE_DIR}/Core
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Components
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
+        ${CMAKE_CURRENT_SOURCE_DIR}/RapidJSON
         ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
         ${glfw_SOURCE_DIR}/include        # <-- add this line

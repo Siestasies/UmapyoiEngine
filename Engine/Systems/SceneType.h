@@ -1,0 +1,16 @@
+#pragma once
+#include <RapidJSON/document.h>
+#include <RapidJSON/writer.h>
+#include <RapidJSON/stringbuffer.h>
+
+namespace Uma_Engine
+{
+    class Scene
+    {
+        public:
+            virtual void OnLoad() {}      // Load resources, setup entities
+            virtual void OnUnload() {}    // Cleanup
+            virtual void Update(float dt) = 0;
+            virtual void Render() = 0;
+    };
+}
