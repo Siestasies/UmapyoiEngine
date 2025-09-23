@@ -23,8 +23,8 @@ namespace Uma_Engine
                 std::cout << "Scene Manager INIT" << std::endl;
 
                 // Create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<TestScene> testScene1 = std::make_unique<TestScene>();
-                std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>();
+                std::unique_ptr<TestScene> testScene1 = std::make_unique<TestScene>(pSystemManager);
+                std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>(pSystemManager);
 
                 // Add TestScene as a unique_ptr<Scene> to the scenes map
                 AddScene("testScene1", std::move(testScene1));
@@ -45,20 +45,30 @@ namespace Uma_Engine
                     std::cout << "Scene Manager MAP is EMPTY" << std::endl;
                 }
 
-                static float fulltime = 0.f;
-                static bool stop = false;
-                if (!stop)
-                    fulltime += dt;
-                if (fulltime > 5.f)
-                {
-                    SetActiveScene("testScene2");
-                    fulltime = 0.f;
-                    stop = true;
-                }
+                //static float fulltime = 0.f;
+                //static bool stop = false;
+                //if (!stop)
+                //    fulltime += dt;
+                //if (fulltime > 5.f)
+                //{
+                //    SetActiveScene("testScene2");
+                //    fulltime = 0.f;
+                //    stop = true;
+                //}
             }
             void Shutdown() override
             {
                 std::cout << "Scene Manager SHUTDOWN" << std::endl;
+                
+                // Unload the active scene
+                // other scenes should already be unloaded
+                if (activeScene)
+                {
+                    activeScene->OnUnload();
+                    activeScene = nullptr;
+                }
+                // clear scenes map
+                scenes.clear();
             }
 
         public:
