@@ -17,6 +17,7 @@
 // Engine Systems
 #include "Systems/InputSystem.h"
 #include "Systems/Graphics.hpp"
+#include "Systems/Sound.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
@@ -26,6 +27,8 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
+
+#include <GLFW/glfw3.h>
 
 #define _DEBUG_LOG
 
@@ -38,6 +41,7 @@ std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 
 Uma_Engine::InputSystem* pInputSystem;
 Uma_Engine::Graphics* pGraphics;
+Uma_Engine::Sound* pSound;
 Uma_Engine::ResourcesManager* pResourcesManager;
 Uma_Engine::EventSystem* pEventSystem;
 
@@ -50,9 +54,9 @@ void Uma_Engine::Test_Ecs::Init()
     pGraphics = pSystemManager->GetSystem<Graphics>();
     pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
     pEventSystem = pSystemManager->GetSystem<EventSystem>();
+    pSound = pSystemManager->GetSystem<Sound>();
 
-    // event system stuff
-
+    // event system stuffs
     //subscribe to events
     pEventSystem->Subscribe<Uma_Engine::Events::EntityCreatedEvent>(
         [](const Uma_Engine::Events::EntityCreatedEvent& e) {
@@ -233,6 +237,12 @@ void Uma_Engine::Test_Ecs::Update(float dt)
 
     pGraphics->GetCamera().SetPosition(tf.position);
     pGraphics->GetCamera().SetZoom(1.f);
+
+    // play sound
+    if (pInputSystem->KeyPressed(GLFW_KEY_9))
+    {
+        // moo moo
+    }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
     pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);

@@ -1,5 +1,6 @@
 #include "ResourcesManager.hpp"
 #include "../Systems/Graphics.hpp"
+#include "../Systems/Sound.hpp"
 #include "../../Core/SystemManager.h"
 
 #include <cassert>
@@ -11,10 +12,12 @@ namespace Uma_Engine
     void ResourcesManager::Init()
     {
         mGraphics = pSystemManager->GetSystem<Graphics>();
-        assert(mGraphics != nullptr && "Error: Graphics system failed to initialize");
-        std::cout << "ResourcesManager initialized" << std::endl;
-
         mSound = pSystemManager->GetSystem<Sound>();
+
+        assert(mGraphics != nullptr && "Error: Graphics system failed to initialize");
+        assert(mSound != nullptr && "Error: Sound system failed to initialize");
+
+        std::cout << "ResourcesManager initialized" << std::endl;
     }
 
     void ResourcesManager::Update(float dt)

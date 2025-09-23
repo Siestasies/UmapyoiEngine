@@ -3,10 +3,10 @@
 #include <filesystem>
 
 // Include FMOD headers
-#include <fmod.h>
-#include <fmod_errors.h>
+#include <../fmod/inc/fmod.h>
+#include <../fmod/inc/fmod_errors.h>
 
-namespace Uma_Sound {
+namespace Uma_Engine {
 
 	Sound::Sound() : pFmodSystem(nullptr) {
 
@@ -87,13 +87,15 @@ namespace Uma_Sound {
 
 	SoundInfo Sound::loadSound(const std::string& name, const std::string& filePath, SoundType type)
 	{
+			SoundInfo info;
+
 		if (!pFmodSystem) {
-			return;
+			return info;
 		}
 
 		if (aSoundListMap.find(name) != aSoundListMap.end()) {
 			std::cout << name << " is loaded\n";
-			return;
+			return info;
 		}
 
 
@@ -102,14 +104,14 @@ namespace Uma_Sound {
 
 		FMOD_RESULT result = FMOD_System_CreateSound(pFmodSystem, filePath.c_str(), mode, nullptr, &sound);
 		if (result != FMOD_OK) {
-			return;
+			return info;
 		}
 
 		//adds the sound and type to the name
 		/*aSoundListMap[name].sound = sound;
 		aSoundListMap[name].type = type;*/
 
-		SoundInfo info;
+
 		info.channel = nullptr;
 		info.sound = sound;
 		info.type = type;

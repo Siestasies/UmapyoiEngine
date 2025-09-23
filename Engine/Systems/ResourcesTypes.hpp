@@ -1,5 +1,12 @@
 #pragma once
 
+#include "Math/Math.h"
+
+// forward declare
+struct FMOD_SYSTEM;
+struct FMOD_SOUND;
+struct FMOD_CHANNEL;
+
 namespace Uma_Engine
 {
     struct Texture
@@ -13,10 +20,6 @@ namespace Uma_Engine
 		BGM,
 		END
 	};
-
-	struct FMOD_SYSTEM;
-	struct FMOD_SOUND;
-	struct FMOD_CHANNEL;
 
 	struct SoundInfo {
 		FMOD_SOUND* sound;
