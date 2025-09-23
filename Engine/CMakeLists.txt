@@ -50,14 +50,17 @@ add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_link_libraries(Uma_Engine 
     PUBLIC 
         glfw
+        OpenGL::GL  # Cross-platform OpenGL linking
+	    "${CMAKE_CURRENT_LIST_DIR}/fmod/lib/x64/fmod_vc.lib"   # FMOD main lib
         glad
-        OpenGL::GL
 )
 
 # Include directories
 target_include_directories(Uma_Engine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${glm_SOURCE_DIR}  # Add GLM include directory
+	    ${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/inc # FMOD headers
         ${CMAKE_CURRENT_SOURCE_DIR}/Core
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Components
