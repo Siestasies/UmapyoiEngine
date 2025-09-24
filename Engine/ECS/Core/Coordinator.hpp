@@ -9,7 +9,7 @@
 
 // Event system
 #include <../Core/EventSystem.h>
-#include <../Core/EventTypes.h>
+#include <../Core/ECSEvents.h>
 
 namespace Uma_ECS
 {
@@ -27,6 +27,8 @@ namespace Uma_ECS
         Entity CreateEntity();
 
         void DestroyEntity(Entity entity);
+
+        bool HasActiveEntity(Entity entity) const;
 
         Signature GetEntitySignature(Entity entity);
 

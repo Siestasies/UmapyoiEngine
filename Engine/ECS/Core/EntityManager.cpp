@@ -44,6 +44,11 @@ void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
     --mActiveEntityCnt;
 }
 
+bool Uma_ECS::EntityManager::HasActiveEntity(Entity entity) const
+{
+    return aEntityActive[entity];
+}
+
 void Uma_ECS::EntityManager::SetSignature(Entity entity, Signature& const signature)
 {
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
