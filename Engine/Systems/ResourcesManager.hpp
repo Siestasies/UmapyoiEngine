@@ -35,6 +35,15 @@ namespace Uma_Engine
         // Print all loaded texture names (for debug)
         void PrintLoadedTextureNames() const;
 
+        //sound
+        bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
+
+        void UnloadSound(const std::string& name);
+
+        bool HasSound(const std::string& name);
+
+        SoundInfo& GetSound(const std::string& name);
+
     private:
         std::unordered_map<std::string, Texture> mTextures;
         Graphics* mGraphics;
@@ -44,5 +53,7 @@ namespace Uma_Engine
 
         // Clear all textures
         void UnloadAllTextures();
+
+        void UnloadAllSound(std::unordered_map<std::string, SoundInfo>& mSoundList);
     };
 }

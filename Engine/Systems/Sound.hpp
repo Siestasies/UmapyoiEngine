@@ -32,12 +32,12 @@ namespace Uma_Engine
 				void Update(float dt) override; // Call this every frame
 
 				// Sound loading and management
-				SoundInfo loadSound(const std::string& name, const std::string& filePath, SoundType type);
-				void unloadSound(const std::string& name);
-				void unloadAllSounds();
+				SoundInfo& loadSound(const std::string& filePath, SoundType type);
+				void unloadSound(FMOD_SOUND* sound);
+				void unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList);
 
 				// Sound playback
-				void playSound(SoundInfo& info, float volume = 1.0f, float pitch = 1.0f);
+				void playSound(SoundInfo& info, float volume = 1.0f, float pitch = 1.0f,int loopCount = 0);
 				void stopSound(SoundInfo& info);
 				void stopAllSounds();
 				void pauseSound(SoundInfo& info, bool pause = true);
@@ -50,11 +50,13 @@ namespace Uma_Engine
 
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
-				std::unordered_map<std::string, SoundInfo> aSoundListMap;
+				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
 
 				FMOD_CHANNELGROUP* SFX = nullptr;
 				FMOD_CHANNELGROUP* BGM = nullptr;
 				FMOD_CHANNELGROUP* Master = nullptr;
+
+				FMOD_SOUNDGROUP* SFX_SG = nullptr;
 
 				// Helper functions
 				//std::string getFullPath(const std::string& fileName) const;

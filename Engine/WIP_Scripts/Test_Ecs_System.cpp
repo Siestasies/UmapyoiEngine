@@ -71,6 +71,7 @@ void Uma_Engine::Test_Ecs::Init()
     pResourcesManager->LoadTexture("background", "Assets/background.jpg");
     pResourcesManager->PrintLoadedTextureNames();
 
+    pResourcesManager->LoadSound("explosion", "Assets/sounds/explosion.mp3",SoundType::SFX);
 
     // Ecs stuff
     using namespace Uma_ECS;
@@ -231,6 +232,8 @@ void Uma_Engine::Test_Ecs::Update(float dt)
 
     playerController->Update(dt);
 
+    pSound->Update(dt);
+
     // Update camera
 
     Uma_ECS::Transform& tf = gCoordinator.GetComponent<Uma_ECS::Transform>(player);
@@ -238,10 +241,13 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     pGraphics->GetCamera().SetPosition(tf.position);
     pGraphics->GetCamera().SetZoom(1.f);
 
+    //pSound->playSound(pResourcesManager->GetSound("explosion"));
     // play sound
-    if (pInputSystem->KeyPressed(GLFW_KEY_9))
+    if (pInputSystem->KeyPressed(GLFW_KEY_P))
     {
         // moo moo
+        pSound->playSound(pResourcesManager->GetSound("explosion"));
+        std::cout << "playing";
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);

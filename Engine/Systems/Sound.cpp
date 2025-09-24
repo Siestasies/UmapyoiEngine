@@ -60,6 +60,11 @@ namespace Uma_Engine {
 			printf("Error adding SFX to Master: %d\n", result);
 		}
 
+		FMOD_System_CreateSoundGroup(pFmodSystem, "SFX_SG", &SFX_SG);
+
+		FMOD_SoundGroup_SetMaxAudible(SFX_SG, 1);
+		FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
+
 		return;
 	}
 
@@ -69,7 +74,7 @@ namespace Uma_Engine {
 			//stop all the sound
 			stopAllSounds();
 			//release all the sound
-			unloadAllSounds();
+			//unloadAllSounds();
 			
 			//release the system
 			FMOD_System_Close(pFmodSystem);
@@ -85,63 +90,60 @@ namespace Uma_Engine {
 		}
 	}
 
-	SoundInfo Sound::loadSound(const std::string& name, const std::string& filePath, SoundType type)
+	SoundInfo& Sound::loadSound(const std::string& filePath, SoundType type)
 	{
-			SoundInfo info;
+		SoundInfo info;
+		info.channel = nullptr;
+		info.sound = nullptr;
+		info.type = SoundType::END;
 
 		if (!pFmodSystem) {
+			std::cout << "system not init\n";
 			return info;
 		}
 
-		if (aSoundListMap.find(name) != aSoundListMap.end()) {
-			std::cout << name << " is loaded\n";
-			return info;
-		}
-
-
-		FMOD_SOUND* sound = nullptr;
 		FMOD_MODE mode = FMOD_LOOP_NORMAL;
 
-		FMOD_RESULT result = FMOD_System_CreateSound(pFmodSystem, filePath.c_str(), mode, nullptr, &sound);
-		if (result != FMOD_OK) {
-			return info;
+		if (type == SoundType::SFX) {
+			FMOD_RESULT result = FMOD_System_CreateSound(pFmodSystem, filePath.c_str(), mode, nullptr, &info.sound);
+			if (result != FMOD_OK) {
+				std::cout << FMOD_ErrorString(result) << "sound not loaded\n";
+				return info;
+			}
+			FMOD_Sound_SetSoundGroup(info.sound, SFX_SG);
 		}
-
-		//adds the sound and type to the name
-		/*aSoundListMap[name].sound = sound;
-		aSoundListMap[name].type = type;*/
-
-
-		info.channel = nullptr;
-		info.sound = sound;
-		info.type = type;
+		else if (type == SoundType::BGM) {
+			mode = FMOD_LOOP_NORMAL | FMOD_CREATESTREAM;
+			FMOD_RESULT result = FMOD_System_CreateSound(pFmodSystem, filePath.c_str(), mode, nullptr, &info.sound);
+			if (result != FMOD_OK) {
+				std::cout << FMOD_ErrorString(result) << "sound not loaded\n";
+				return info;
+			}
+		}
+		
 		return info;
 	}
 
-	void Sound::unloadSound(const std::string& name)
+	void Sound::unloadSound(FMOD_SOUND* sound)
 	{
 		//goes thru the map and looks for the sound file if it is found release it and removes it from the map
 		if (pFmodSystem) {
-			FMOD_SOUND* temp = aSoundListMap.find(name)->second.sound;
-			if (temp) {
-				FMOD_Sound_Release(temp);
-				aSoundListMap.erase(name);
-			}
+			FMOD_Sound_Release(sound);
 		}
 	}
 
-	void Sound::unloadAllSounds()
+	void Sound::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
 	{
 		//goes thru the map and releases each sound file then clears the map
-		for (auto it : aSoundListMap) {
+		for (auto it : mSoundList) {
 			if (it.second.sound) {
 				FMOD_Sound_Release(it.second.sound);
 			}
 		}
-		aSoundListMap.clear();
+		mSoundList.clear();
 	}
 
-	void Sound::playSound(SoundInfo& info, float volume, float pitch)
+	void Sound::playSound(SoundInfo& info, float volume, float pitch ,int loopCount)
 	{
 		if (!pFmodSystem) { //check if fmod has been init
 			return;
@@ -150,6 +152,7 @@ namespace Uma_Engine {
 		//create channel holder
 		FMOD_CHANNEL* channel = nullptr;
 		FMOD_RESULT result;
+
 		//play in whichever channel group that it was set to
 		if (info.type == SoundType::SFX) {
 			result = FMOD_System_PlaySound(pFmodSystem, info.sound, SFX, false, &channel);
@@ -169,6 +172,7 @@ namespace Uma_Engine {
 		FMOD_Channel_SetPitch(channel, pitch);
 		// Store channel for later control
 		info.channel = channel;
+		FMOD_Sound_SetLoopCount(info.sound, loopCount);
 
 		//add the channel to its respective group channel
 		if (info.type == SoundType::SFX) {
