@@ -163,13 +163,13 @@ int main()
     // Create a systems manager
     Uma_Engine::SystemManager systemManager;
 
-    // Register EVENT SYSTEM FIRST
-    std::cout << "Registering EventSystem...\n";
-    Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
-
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
     std::cout << "Registering EventInputSystem (InputSystem + Events)...\n";
     HybridInputSystem* inputSystem = systemManager.RegisterSystem<HybridInputSystem>();
+
+    // Register EVENT SYSTEM FIRST
+    std::cout << "Registering EventSystem...\n";
+    Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
 
     // Register SIMPLE EVENT LISTENER (just logs events)
     std::cout << "Registering TestEventListener...\n";
@@ -237,8 +237,11 @@ int main()
 #endif // DEBUG
         }
 
+        Uma_Engine::InputSystem::UpdatePreviousFrameState();
+
         // Update window (processes GLFW events -> triggers your InputSystem callbacks)
         window.Update();
+
 
         // Check for ESC to quit (using your original InputSystem method)
         if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))

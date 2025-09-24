@@ -105,6 +105,8 @@ namespace Uma_Engine
         static bool spacePressed = false;
         static bool f1Pressed = false;
 
+        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_0)) std::cout << "0 PRESSED\n";
+
         // Toggle demo with SPACE key
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_SPACE))
         {
