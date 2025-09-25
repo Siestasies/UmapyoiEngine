@@ -6,6 +6,8 @@
 #include <../fmod/inc/fmod.h>
 #include <../fmod/inc/fmod_errors.h>
 
+#define DEBUG
+
 namespace Uma_Engine {
 
 	Sound::Sound() : pFmodSystem(nullptr) {
@@ -14,7 +16,7 @@ namespace Uma_Engine {
 
 	Sound::~Sound()
 	{
-		Shutdown();
+		//Shutdown();
 	}
 
 	void Sound::Init()
@@ -42,7 +44,7 @@ namespace Uma_Engine {
 			std::cerr << "Failed to create channel bgm: " << FMOD_ErrorString(result) << std::endl;
 			return;
 		}
-		result = FMOD_System_CreateChannelGroup(pFmodSystem, "MASTER", &Master);
+		result = FMOD_System_GetMasterChannelGroup(pFmodSystem, &Master);
 		if (result != FMOD_OK) {
 			std::cerr << "Failed to create channel master: " << FMOD_ErrorString(result) << std::endl;
 			return;
@@ -70,17 +72,9 @@ namespace Uma_Engine {
 
 	void Sound::Shutdown()
 	{
-		if (pFmodSystem) {
-			//stop all the sound
-			stopAllSounds();
-			//release all the sound
-			//unloadAllSounds();
-			
-			//release the system
-			FMOD_System_Close(pFmodSystem);
-			FMOD_System_Release(pFmodSystem);
-			pFmodSystem = nullptr;
-		}
+#ifdef DEBUG
+		std::cout << "sound shutdown\n";
+#endif // DEBUG
 	}
 
 	void Sound::Update(float dt)
@@ -93,8 +87,6 @@ namespace Uma_Engine {
 	SoundInfo Sound::loadSound(const std::string& filePath, SoundType type)
 	{
 		SoundInfo info;
-		info.channel = nullptr;
-		info.sound = nullptr;
 		info.type = type;
 
 		if (!pFmodSystem) {
@@ -134,13 +126,36 @@ namespace Uma_Engine {
 
 	void Sound::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
 	{
+		if (!pFmodSystem) return;
+		stopAllSounds();
 		//goes thru the map and releases each sound file then clears the map
-		for (auto it : mSoundList) {
+		for (auto& it : mSoundList) {
 			if (it.second.sound) {
-				FMOD_Sound_Release(it.second.sound);
+				FMOD_RESULT result = FMOD_Sound_Release(it.second.sound);
+				if (result != FMOD_OK) {
+					std::cerr << "FMOD_Sound_Release failed: "
+						<< FMOD_ErrorString(result) << std::endl;
+				}
+				it.second.sound = nullptr;
 			}
 		}
 		mSoundList.clear();
+	}
+
+	void Sound::releaseSounds() {
+		if (!pFmodSystem) return;
+		stopAllSounds();
+		if (SFX) {
+			FMOD_ChannelGroup_Release(SFX);
+			SFX = nullptr;
+		}
+		if (BGM) {
+			FMOD_ChannelGroup_Release(BGM);
+			BGM = nullptr;
+		}
+		FMOD_System_Close(pFmodSystem);
+		FMOD_System_Release(pFmodSystem);
+		pFmodSystem = nullptr;
 	}
 
 	void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)

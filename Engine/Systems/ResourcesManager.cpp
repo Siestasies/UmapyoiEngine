@@ -32,6 +32,7 @@ namespace Uma_Engine
         UnloadAllTextures();
 
         UnloadAllSound(mSoundList);
+        
     }
 
     bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
@@ -103,7 +104,9 @@ namespace Uma_Engine
 
     bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type) {
         if (!HasSound(name)) {
-            mSoundList[name] = mSound->loadSound(path, type);
+            SoundInfo temp = mSound->loadSound(path, type);
+            if (temp.sound == nullptr) return false;
+            mSoundList[name] = temp;
             return true;
         }
         return false;
@@ -115,6 +118,7 @@ namespace Uma_Engine
 
     void ResourcesManager::UnloadAllSound(std::unordered_map<std::string, SoundInfo>& mSoundList) {
         mSound->unloadAllSounds(mSoundList);
+        mSound->releaseSounds();
     }
 
     bool ResourcesManager::HasSound(const std::string& name) {

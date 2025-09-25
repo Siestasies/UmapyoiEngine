@@ -246,7 +246,6 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     pGraphics->GetCamera().SetPosition(tf.position);
     pGraphics->GetCamera().SetZoom(1.f);
 
-    //pSound->playSound(pResourcesManager->GetSound("explosion"));
     // play sound
     if (pInputSystem->KeyPressed(GLFW_KEY_P))
     {
@@ -260,8 +259,10 @@ void Uma_Engine::Test_Ecs::Update(float dt)
         }
     }
     if (pInputSystem->KeyPressed(GLFW_KEY_O)) {
-        pSound->pauseAllSounds(paused);
-        paused = !paused;
+        /*pSound->pauseAllSounds(paused);
+        paused = !paused;*/
+
+        pSound->stopAllSounds();
     }
     if (pInputSystem->KeyPressed(GLFW_KEY_9)) {
         volume += dt * 10;

@@ -36,6 +36,8 @@ namespace Uma_Engine
 				void unloadSound(FMOD_SOUND* sound);
 				void unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList);
 
+				void releaseSounds();
+
 				// Sound playback
 				void playSound(SoundInfo& info,int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 				void stopSound(SoundInfo& info);
