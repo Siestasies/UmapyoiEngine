@@ -87,6 +87,17 @@ void Uma_Engine::Test_Ecs::Init()
     gCoordinator.RegisterComponent<Collider>();
     gCoordinator.RegisterComponent<SpriteRenderer>();
 
+    // Player controller
+    playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
+    {
+        Signature sign;
+        sign.set(gCoordinator.GetComponentType<RigidBody>());
+        sign.set(gCoordinator.GetComponentType<Transform>());
+        sign.set(gCoordinator.GetComponentType<Player>());
+        gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
+    }
+    playerController->Init(pInputSystem, &gCoordinator);
+
     // Physics System
     physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
     {
@@ -108,16 +119,6 @@ void Uma_Engine::Test_Ecs::Init()
     }
     collisionSystem->Init(&gCoordinator);
 
-    // Player controller
-    playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
-    {
-        Signature sign;
-        sign.set(gCoordinator.GetComponentType<RigidBody>());
-        sign.set(gCoordinator.GetComponentType<Transform>());
-        sign.set(gCoordinator.GetComponentType<Player>());
-        gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
-    }
-    playerController->Init(pInputSystem, &gCoordinator);
 
     // Rendering System
     renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();

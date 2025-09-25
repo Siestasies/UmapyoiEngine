@@ -77,6 +77,9 @@ void main()
         // Set camera
         mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
 
+        // V sync 
+        //SetVSync(true);
+
         // Initialize 2D renderer
         if (!InitializeRenderer())
         {
