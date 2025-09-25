@@ -96,6 +96,14 @@ namespace Uma_Engine
 
                         eventSystem->Dispatch(KeyPressEvent(key, GLFW_PRESS, 0)); // High priority
                     }
+                    if (KeyReleased(key))
+                    {
+#ifdef _DEBUG_LOG
+                        std::cout << "HybridInputSystem: Movement key " << key << " released - EMITTING to queue (Normal priority)" << std::endl;
+#endif
+
+                        eventSystem->Emit(KeyReleaseEvent(key, 0)); // High priority (immediate)
+                    }
                 }
             }
 
@@ -132,6 +140,14 @@ namespace Uma_Engine
 #endif
 
                     eventSystem->Dispatch(KeyPressEvent(key, GLFW_PRESS, 0)); // High priority
+                }
+                if (KeyReleased(key))
+                {
+#ifdef _DEBUG_LOG
+                    std::cout << "HybridInputSystem: Movement key " << key << " released - EMITTING to queue (Normal priority)" << std::endl;
+#endif
+
+                    eventSystem->Emit(KeyReleaseEvent(key, 0)); // High priority (immediate)
                 }
             }
 

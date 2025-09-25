@@ -109,7 +109,7 @@ void Uma_Engine::Test_Ecs::Init()
         sign.set(gCoordinator.GetComponentType<Player>());
         gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
     }
-    playerController->Init(pInputSystem, &gCoordinator);
+    playerController->Init(pSystemManager, pInputSystem, &gCoordinator);
 
     // Rendering System
     renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
@@ -229,6 +229,14 @@ void Uma_Engine::Test_Ecs::Init()
           .flipX = false,
           .flipY = false
         });
+
+#ifdef _DEBUG_LOG
+    std::cout << "\nEvent listener counts:\n";
+    std::cout << "KeyPress listeners: " << pEventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
+    std::cout << "KeyRelease listeners: " << pEventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
+    std::cout << "MouseButton listeners: " << pEventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
+    std::cout << "MouseMove listeners: " << pEventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+#endif
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)

@@ -69,11 +69,10 @@ int main()
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
-    // IMPORTANT: Connect InputSystem to EventSystem
+    // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
 
 #ifdef DEBUG
-    // Show what we're listening for
     std::cout << "\nEvent listener counts:\n";
     std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
     std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
@@ -116,16 +115,13 @@ int main()
 
         Uma_Engine::InputSystem::UpdatePreviousFrameState();
 
-        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
         window.Update();
 
-        // Check for ESC to quit (using your original InputSystem method)
         if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
 
-        // Update all systems (this will trigger event dispatching!)
         systemManager.Update(deltaTime);
     }
 

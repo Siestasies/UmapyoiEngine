@@ -4,8 +4,7 @@ namespace Uma_ECS
 {
     struct Player
     {
-        // currently empty, just to let coordinator to 
-        // identify entity with this component to be the player
+        float mSpeed = 1.f;
     };
 }
 

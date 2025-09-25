@@ -1,42 +1,43 @@
 #pragma once
 
 #include "EventType.h"
+#include "../ECS/Core/Types.hpp"
 
 namespace Uma_Engine
 {
     class CollisionBeginEvent : public Event
     {
     public:
-        CollisionBeginEvent(uint32_t entityA, uint32_t entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
+        CollisionBeginEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
 
     public:
-        uint32_t entityA, entityB;
+        Uma_ECS::Entity entityA, entityB;
     };
 
     class CollisionEndEvent : public Event
     {
     public:
-        CollisionEndEvent(uint32_t entityA, uint32_t entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
+        CollisionEndEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
 
     public:
-        uint32_t entityA, entityB;
+        Uma_ECS::Entity entityA, entityB;
     };
 
     class TriggerEnterEvent : public Event
     {
     public:
-        TriggerEnterEvent(uint32_t trigger, uint32_t entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
+        TriggerEnterEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
 
     public:
-        uint32_t trigger, entity;
+        Uma_ECS::Entity trigger, entity;
     };
 
     class TriggerExitEvent : public Event
     {
     public:
-        TriggerExitEvent(uint32_t trigger, uint32_t entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
+        TriggerExitEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
 
     public:
-        uint32_t trigger, entity;
+        Uma_ECS::Entity trigger, entity;
     };
 }
