@@ -110,6 +110,10 @@ namespace Uma_Engine
                 }
             }
         }
+        
+        // Update previous frame state
+        // sKeysPrevFrame = sKeys;
+        // sMouseButtonsPrevFrame = sMouseButtons;
     }
 
     void InputSystem::Shutdown()
@@ -166,6 +170,12 @@ namespace Uma_Engine
 
     }
 
+    void InputSystem::UpdatePreviousFrameState()
+    {
+        sKeysPrevFrame = sKeys;
+        sMouseButtonsPrevFrame = sMouseButtons;
+    }
+
     bool InputSystem::KeyDown(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false; }
     bool InputSystem::KeyPressed(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] && !sKeysPrevFrame[key] : false; }
     bool InputSystem::KeyReleased(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? !sKeys[key] && sKeysPrevFrame[key] : false; }
@@ -177,12 +187,6 @@ namespace Uma_Engine
     void InputSystem::GetMousePosition(double& x, double& y) { x = sMouseX; y = sMouseY; }
     double InputSystem::GetMouseX() { return sMouseX; }
     double InputSystem::GetMouseY() { return sMouseY; }
-
-    void InputSystem::UpdatePreviousFrameState()
-    {
-        sKeysPrevFrame = sKeys;
-        sMouseButtonsPrevFrame = sMouseButtons;
-    }
 
     const char* InputSystem::GetKeyName(int key)
     {

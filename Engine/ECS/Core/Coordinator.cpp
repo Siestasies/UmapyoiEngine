@@ -17,7 +17,7 @@ namespace Uma_ECS
 
         if (en >= 0) // entity is created
         {
-            pEventSystem->Emit<Uma_Engine::Events::EntityCreatedEvent>(en);
+            pEventSystem->Emit<Uma_Engine::EntityCreatedEvent>(en);
         }
 
         return en;
@@ -25,9 +25,15 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntity(Entity entity)
     {
+        pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(entity);
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
         aSystemManager->EntityDestroyed(entity);
+    }
+
+    bool Coordinator::HasActiveEntity(Entity entity) const
+    {
+        return aEntityManager->HasActiveEntity(entity);
     }
 
     Signature Coordinator::GetEntitySignature(Entity entity)
