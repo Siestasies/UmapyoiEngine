@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
-#include "Systems/Camera.hpp"
+#include "Systems/CameraSystem.hpp"
 
 // Forward declarations
 struct GLFWwindow;
@@ -79,5 +79,11 @@ namespace Uma_Engine
         // Coordinate conversion
         Vec2 ScreenToWorld(const Vec2& screenPos) const;
         Vec2 WorldToScreen(const Vec2& worldPos) const;
+
+        // Debug drawing
+        void DrawDebugPoint(const Vec2& position, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+        void DrawDebugLine(const Vec2& start, const Vec2& end, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+        void DrawDebugRect(const Vec2& center, const Vec2& size, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+        void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
     };
 }

@@ -1,4 +1,4 @@
-#include "Systems/Camera.hpp"
+#include "Systems/CameraSystem.hpp"
 #include <algorithm>
 
 namespace Uma_Engine

@@ -37,10 +37,16 @@ in vec2 TexCoords;
 out vec4 color;
 
 uniform sampler2D image;
+uniform vec3 debugColor;
+uniform int useDebugColor;
 
 void main()
 {
-    color = texture(image, TexCoords);
+    if (useDebugColor == 1) {
+        color = vec4(debugColor, 1.0);
+    } else {
+        color = texture(image, TexCoords);
+    }
 }
 )";
 
@@ -297,8 +303,9 @@ void main()
         glUseProgram(mShaderProgram);
         UpdateProjectionMatrix();
 
-        // Set texture sampler
+        // Set uniforms
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
 
         return true;
     }
@@ -433,5 +440,102 @@ void main()
         float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
 
         return Vec2(screenX, screenY);
+    }
+
+    void Graphics::DrawDebugPoint(const Vec2& position, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        glUseProgram(mShaderProgram);
+
+        // Enable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
+        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
+
+        // Draw a small quad as point
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+        model = glm::scale(model, glm::vec3(6.0f, 6.0f, 1.0f)); // 6x6 pixel point
+
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Draw using existing VAO
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // Disable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
+    }
+
+    void Graphics::DrawDebugLine(const Vec2& start, const Vec2& end, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        // Calculate line properties
+        float dx = end.x - start.x;
+        float dy = end.y - start.y;
+        float length = sqrtf(dx * dx + dy * dy);
+        if (length < 0.001f) return;
+
+        float angle = atan2f(dy, dx) * 180.0f / 3.14159265f;
+        Vec2 center = Vec2((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f);
+
+        glUseProgram(mShaderProgram);
+
+        // Enable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
+        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
+
+        // Draw line as thin rectangle
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(length, 2.0f, 1.0f)); // 2 pixel thick line
+
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // Disable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
+    }
+
+    void Graphics::DrawDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        float halfW = size.x * 0.5f;
+        float halfH = size.y * 0.5f;
+
+        // Draw 4 lines
+        DrawDebugLine(Vec2(center.x - halfW, center.y - halfH), Vec2(center.x + halfW, center.y - halfH), r, g, b); // Bottom
+        DrawDebugLine(Vec2(center.x + halfW, center.y - halfH), Vec2(center.x + halfW, center.y + halfH), r, g, b); // Right
+        DrawDebugLine(Vec2(center.x + halfW, center.y + halfH), Vec2(center.x - halfW, center.y + halfH), r, g, b); // Top
+        DrawDebugLine(Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), r, g, b); // Left
+    }
+
+    void Graphics::DrawDebugCircle(const Vec2& center, float radius, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        const int segments = 24;
+        const float angleStep = 2.0f * 3.14159f / segments;
+
+        // Draw circle as connected lines
+        for (int i = 0; i < segments; ++i)
+        {
+            float angle1 = i * angleStep;
+            float angle2 = (i + 1) * angleStep;
+
+            Vec2 p1 = Vec2(center.x + cosf(angle1) * radius, center.y + sinf(angle1) * radius);
+            Vec2 p2 = Vec2(center.x + cosf(angle2) * radius, center.y + sinf(angle2) * radius);
+
+            DrawDebugLine(p1, p2, r, g, b);
+        }
     }
 }

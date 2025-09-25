@@ -120,6 +120,8 @@ int main()
 #endif // DEBUG
         }
 
+        Uma_Engine::InputSystem::UpdatePreviousFrameState();
+
         // Update window (processes GLFW events -> triggers your InputSystem callbacks)
         window.Update();
 
