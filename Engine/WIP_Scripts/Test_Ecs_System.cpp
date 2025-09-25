@@ -27,6 +27,7 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
+#include <stdexcept>
 
 #include <GLFW/glfw3.h>
 
@@ -47,6 +48,9 @@ Uma_Engine::EventSystem* pEventSystem;
 
 Uma_ECS::Entity player;
 
+//testing sound remove later
+bool paused = true;
+float volume = 0.f;
 
 void Uma_Engine::Test_Ecs::Init()
 {
@@ -71,7 +75,8 @@ void Uma_Engine::Test_Ecs::Init()
     pResourcesManager->LoadTexture("background", "Assets/background.jpg");
     pResourcesManager->PrintLoadedTextureNames();
 
-    pResourcesManager->LoadSound("explosion", "Assets/sounds/explosion.mp3",SoundType::SFX);
+    pResourcesManager->LoadSound("explosion", "Assets/sounds/explosion.mp3", SoundType::SFX);
+    pResourcesManager->LoadSound("cave", "Assets/sounds/cave.mp3", SoundType::BGM);
 
     // Ecs stuff
     using namespace Uma_ECS;
@@ -246,8 +251,27 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     if (pInputSystem->KeyPressed(GLFW_KEY_P))
     {
         // moo moo
-        pSound->playSound(pResourcesManager->GetSound("explosion"));
-        std::cout << "playing";
+        try{
+            //pSound->playSound(pResourcesManager->GetSound("explosion"), -1);
+            pSound->playSound(pResourcesManager->GetSound("cave"));
+        }
+        catch (const std::invalid_argument& e) {
+            std::cout << e.what() << "\n";
+        }
+    }
+    if (pInputSystem->KeyPressed(GLFW_KEY_O)) {
+        pSound->pauseAllSounds(paused);
+        paused = !paused;
+    }
+    if (pInputSystem->KeyPressed(GLFW_KEY_9)) {
+        volume += dt * 10;
+        if (volume > 1) volume = 1;
+        pSound->setChannelGroupVolume(volume ,SoundType::BGM);
+    }
+    if (pInputSystem->KeyPressed(GLFW_KEY_0)) {
+        volume -= dt * 10;
+        if (volume < 0) volume = 0;
+        pSound->setChannelGroupVolume(volume, SoundType::BGM);
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);

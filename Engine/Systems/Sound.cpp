@@ -90,12 +90,12 @@ namespace Uma_Engine {
 		}
 	}
 
-	SoundInfo& Sound::loadSound(const std::string& filePath, SoundType type)
+	SoundInfo Sound::loadSound(const std::string& filePath, SoundType type)
 	{
 		SoundInfo info;
 		info.channel = nullptr;
 		info.sound = nullptr;
-		info.type = SoundType::END;
+		info.type = type;
 
 		if (!pFmodSystem) {
 			std::cout << "system not init\n";
@@ -143,7 +143,7 @@ namespace Uma_Engine {
 		mSoundList.clear();
 	}
 
-	void Sound::playSound(SoundInfo& info, float volume, float pitch ,int loopCount)
+	void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
 	{
 		if (!pFmodSystem) { //check if fmod has been init
 			return;
@@ -153,6 +153,9 @@ namespace Uma_Engine {
 		FMOD_CHANNEL* channel = nullptr;
 		FMOD_RESULT result;
 
+		if (loopCount >= 0) {
+			FMOD_Sound_SetLoopCount(info.sound, loopCount);
+		}
 		//play in whichever channel group that it was set to
 		if (info.type == SoundType::SFX) {
 			result = FMOD_System_PlaySound(pFmodSystem, info.sound, SFX, false, &channel);
@@ -210,11 +213,6 @@ namespace Uma_Engine {
 		FMOD_ChannelGroup_SetPaused(Master, pause);
 	}
 
-	void Sound::setMasterVolume(float volume)
-	{
-		FMOD_ChannelGroup_SetVolume(Master, volume);
-	}
-
 	void Sound::setSoundVolume(SoundInfo& info, float volume)
 	{
 		FMOD_Channel_SetVolume(info.channel, volume);
@@ -225,4 +223,15 @@ namespace Uma_Engine {
 		FMOD_Channel_SetPitch(info.channel, pitch);
 	}
 
+	void Sound::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {
+		if (type == SoundType::SFX) {
+			FMOD_ChannelGroup_SetVolume(SFX, volume);
+		}
+		else if (type == SoundType::BGM) {
+			FMOD_ChannelGroup_SetVolume(BGM, volume);
+		}
+		else {
+			FMOD_ChannelGroup_SetVolume(Master, volume);
+		}
+	}
 }

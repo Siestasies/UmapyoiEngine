@@ -37,6 +37,8 @@ namespace Uma_Engine
         static double GetMouseX();
         static double GetMouseY();
 
+        static void UpdatePreviousFrameState();
+
     private:
         static const char* GetKeyName(int key);
 

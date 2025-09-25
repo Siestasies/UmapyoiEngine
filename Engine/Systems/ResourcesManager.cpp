@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 namespace Uma_Engine
 {
@@ -123,7 +124,9 @@ namespace Uma_Engine
     }
 
     SoundInfo& ResourcesManager::GetSound(const std::string& name) {
-        if(HasSound(name))
+        if (HasSound(name))
             return mSoundList.find(name)->second;
+        else
+            throw std::invalid_argument("Sound not found");
     }
 }
