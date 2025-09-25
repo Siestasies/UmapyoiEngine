@@ -10,5 +10,6 @@ namespace Uma_ECS
         Vec2 position;
         Vec2 rotation;
         Vec2 scale;
+        Vec2 prevPos; // shdnt edit this value manually
     };
 }

@@ -10,5 +10,8 @@ namespace Uma_ECS
     {
         Vec2 velocity{};
         Vec2 acceleration{};
+
+        float accel_strength;   // acceleration (for tweak)
+        float fric_coeff;       // friction
     };
 }

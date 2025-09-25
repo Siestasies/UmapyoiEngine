@@ -7,12 +7,14 @@
 #include "ECS/Systems/PhysicsSystem.hpp"
 #include "ECS/Systems/PlayerControllerSystem.hpp"
 #include "ECS/Systems/RenderingSystem.hpp"
+#include "ECS/Systems/CollisionSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/Player.h"
 #include "ECS/Components/SpriteRenderer.h"
+#include "ECS/Components/Collider.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
@@ -36,6 +38,7 @@ using Coordinator = Uma_ECS::Coordinator;
 
 Coordinator gCoordinator;
 std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
+std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 
@@ -81,6 +84,7 @@ void Uma_Engine::Test_Ecs::Init()
     gCoordinator.RegisterComponent<Transform>();
     gCoordinator.RegisterComponent<RigidBody>();
     gCoordinator.RegisterComponent<Player>();
+    gCoordinator.RegisterComponent<Collider>();
     gCoordinator.RegisterComponent<SpriteRenderer>();
 
     // Physics System
@@ -92,6 +96,17 @@ void Uma_Engine::Test_Ecs::Init()
         gCoordinator.SetSystemSignature<PhysicsSystem>(sign);
     }
     physicsSystem->Init(&gCoordinator);
+
+    // Collision System
+    collisionSystem = gCoordinator.RegisterSystem<CollisionSystem>();
+    {
+        Signature sign;
+        sign.set(gCoordinator.GetComponentType<RigidBody>());
+        sign.set(gCoordinator.GetComponentType<Transform>());
+        sign.set(gCoordinator.GetComponentType<Collider>());
+        gCoordinator.SetSystemSignature<CollisionSystem>(sign);
+    }
+    collisionSystem->Init(&gCoordinator);
 
     // Player controller
     playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -122,7 +137,7 @@ void Uma_Engine::Test_Ecs::Init()
         std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
         std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
         std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
-        std::uniform_real_distribution<float> randScale(5.0f, 15.0f);
+        std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
         Entity enemy;
 
@@ -133,7 +148,9 @@ void Uma_Engine::Test_Ecs::Init()
                 enemy,
                 RigidBody{
                   .velocity = Vec2(0.0f, 0.0f),
-                  .acceleration = Vec2(0.0f, 0.0f)
+                  .acceleration = Vec2(0.0f, 0.0f),
+                  .accel_strength = 200,
+                  .fric_coeff = 100
                 });
 
             gCoordinator.AddComponent(
@@ -147,9 +164,16 @@ void Uma_Engine::Test_Ecs::Init()
             gCoordinator.AddComponent(
                 enemy,
                 SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("player"),
+                  .texture = pResourcesManager->GetTexture("enemy"),
                   .flipX = false,
                   .flipY = false
+                });
+
+            gCoordinator.AddComponent(
+                enemy,
+                Collider{
+                  .layer = CollisionLayer::CL_ENEMY,
+                  .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                 });
         }
         
@@ -196,41 +220,56 @@ void Uma_Engine::Test_Ecs::Init()
 
     // create player
     player = gCoordinator.CreateEntity();
-    gCoordinator.AddComponent(
-        player,
-        Transform
-        {
-            .position = Vec2(400.0f, 300.0f),
-            .rotation = Vec2(1,1),
-            .scale = Vec2(50,50),
-        });
 
-    gCoordinator.AddComponent(
-        player,
-        RigidBody{
-          .velocity = Vec2(0.0f, 0.0f),
-          .acceleration = Vec2(0.0f, 0.0f)
-        });
+    {
+        gCoordinator.AddComponent(
+            player,
+            Transform
+            {
+                .position = Vec2(400.0f, 300.0f),
+                .rotation = Vec2(1,1),
+                .scale = Vec2(50,50),
+            });
 
-    gCoordinator.AddComponent(
-        player,
-        Player{});
+        gCoordinator.AddComponent(
+            player,
+            RigidBody{
+              .velocity = Vec2(0.0f, 0.0f),
+              .acceleration = Vec2(0.0f, 0.0f),
+              .accel_strength = 2500,
+              .fric_coeff = 5
+            });
 
-    gCoordinator.AddComponent(
-        player,
-        SpriteRenderer{
-          .texture = pResourcesManager->GetTexture("player"),
-          .flipX = false,
-          .flipY = false
-        });
+        gCoordinator.AddComponent(
+            player,
+            Player{});
+
+        gCoordinator.AddComponent(
+            player,
+            SpriteRenderer{
+              .texture = pResourcesManager->GetTexture("player"),
+              .flipX = false,
+              .flipY = false
+            });
+
+        gCoordinator.AddComponent(
+            player,
+            Collider{
+              .layer = CollisionLayer::CL_PLAYER,
+              .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+            });
+    }
+    
+
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)
 {
-    physicsSystem->Update(dt);
-
     playerController->Update(dt);
 
+    physicsSystem->Update(dt);
+
+    collisionSystem->Update(dt);
     // Update camera
 
     Uma_ECS::Transform& tf = gCoordinator.GetComponent<Uma_ECS::Transform>(player);
@@ -245,7 +284,7 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
-    pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);
+    //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);
     renderingSystem->Update(dt);
 
 

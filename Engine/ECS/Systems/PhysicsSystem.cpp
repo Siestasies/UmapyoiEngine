@@ -38,13 +38,22 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
             auto& rb = rbArray.GetComponentAt(i);
             auto& tf = tfArray.GetData(e);
 
-            tf.position += rb.velocity * dt * 100;
+            // set prev pos
+            tf.prevPos = tf.position;
+
+            rb.velocity += rb.acceleration * dt;
+
+            rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+
+            tf.position += rb.velocity * dt;
+
+            rb.acceleration = { 0,0 };
 
             // tmp
-            if (tf.position.y <= 0)
+            /*if (tf.position.y <= 0)
             {
                 tf.position.y += 1080.f;
-            }
+            }*/
         }
     }
 }
