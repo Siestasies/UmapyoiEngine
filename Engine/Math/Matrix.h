@@ -12,12 +12,49 @@
 
 namespace Uma_Math
 {
+    // Column proxy for matrix[col][row] access
+    template <typename T, std::size_t Rows>
+    class ColumnProxy
+    {
+    public:
+        constexpr ColumnProxy(T* data) : m_data(data) {}
+
+        constexpr T& operator[](std::size_t row) noexcept
+        {
+            return m_data[row];
+        }
+
+        constexpr const T& operator[](std::size_t row) const noexcept
+        {
+            return m_data[row];
+        }
+
+    private:
+        T* m_data;
+    };
+
+    template <typename T, std::size_t Rows>
+    class ConstColumnProxy
+    {
+    public:
+        constexpr ConstColumnProxy(const T* data) : m_data(data) {}
+
+        constexpr const T& operator[](std::size_t row) const noexcept
+        {
+            return m_data[row];
+        }
+
+    private:
+        const T* m_data;
+    };
+
     template <typename T = float>
     class Matrix2x2
     {
     public:
         // Core constructors and Rule of 5
-        constexpr Matrix2x2(T m00 = T{}, T m01 = T{}, T m10 = T{}, T m11 = T{}) : m_data{m00, m01, m10, m11} {}
+        constexpr Matrix2x2(T m00 = T{}, T m01 = T{}, T m10 = T{}, T m11 = T{}) : m_data{m00, m10, m01, m11} {}
+        constexpr Matrix2x2(const Vector2D<T>& col0, const Vector2D<T>& col1) : m_data{col0.x, col0.y, col1.x, col1.y} {}
         constexpr Matrix2x2(const Matrix2x2& other) = default;
         constexpr Matrix2x2(Matrix2x2&& other) noexcept = default;
         constexpr Matrix2x2& operator=(const Matrix2x2& other) = default;
@@ -31,21 +68,32 @@ namespace Uma_Math
                      static_cast<T>(other.get(2)), static_cast<T>(other.get(3))} {
         }
 
+        // GLM-style column access: matrix[col][row]
+        constexpr ColumnProxy<T, 2> operator[](std::size_t col) noexcept { return ColumnProxy<T, 2>(&m_data[col * 2]); }
+        constexpr ConstColumnProxy<T, 2> operator[](std::size_t col) const noexcept { return ConstColumnProxy<T, 2>(&m_data[col * 2]); }
+
         // Optimized element accessors
-        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[row * 2 + col]; }
+        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[col * 2 + row]; }
         constexpr T get(std::size_t index) const noexcept { return m_data[index]; }
 
         // Optimized element mutators
-        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[row * 2 + col] = value; }
+        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[col * 2 + row] = value; }
         constexpr void set(std::size_t index, T value) noexcept { m_data[index] = value; }
 
         // Element access (row, column) - for backward compatibility
-        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[row * 2 + col]; }
-        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[row * 2 + col]; }
+        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[col * 2 + row]; }
+        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[col * 2 + row]; }
 
-        // Linear array-style access - for backward compatibility
-        constexpr T& operator[](std::size_t index) noexcept { return m_data[index]; }
-        constexpr const T& operator[](std::size_t index) const noexcept { return m_data[index]; }
+        // GLM-style column access functions
+        constexpr Vector2D<T> column(std::size_t col) const noexcept { return Vector2D<T>(m_data[col * 2], m_data[col * 2 + 1]); }
+        constexpr void setColumn(std::size_t col, const Vector2D<T>& column) noexcept
+        {
+            m_data[col * 2] = column.x;
+            m_data[col * 2 + 1] = column.y;
+        }
+
+        // GLM-style row access functions
+        constexpr Vector2D<T> row(std::size_t row) const noexcept { return Vector2D<T>(m_data[row], m_data[2 + row]); }
 
         // Size information
         constexpr std::size_t size() const noexcept { return 4; }
@@ -69,6 +117,12 @@ namespace Uma_Math
             return *this;
         }
 
+        constexpr Matrix2x2& operator*=(const Matrix2x2& other)
+        {
+            *this = *this * other;  // Uses non-member operator*
+            return *this;
+        }
+
         template <typename U>
         constexpr Matrix2x2& operator*=(U scalar) noexcept
         {
@@ -89,12 +143,6 @@ namespace Uma_Math
             return *this;
         }
 
-        constexpr Matrix2x2& operator*=(const Matrix2x2& other)
-        {
-            *this = *this * other;  // Uses non-member operator*
-            return *this;
-        }
-
         // Matrix operations
         constexpr T determinant() const noexcept
         {
@@ -103,7 +151,7 @@ namespace Uma_Math
 
         constexpr Matrix2x2 transpose() const noexcept
         {
-            return Matrix2x2(m_data[0], m_data[2], m_data[1], m_data[3]);
+            return Matrix2x2(m_data[0], m_data[1], m_data[2], m_data[3]);
         }
 
         // Static factory methods
@@ -131,9 +179,12 @@ namespace Uma_Math
     public:
         // Core constructors and Rule of 5
         constexpr Matrix3x3(T m00 = T{}, T m01 = T{}, T m02 = T{},
-            T m10 = T{}, T m11 = T{}, T m12 = T{},
-            T m20 = T{}, T m21 = T{}, T m22 = T{})
-            : m_data{m00, m01, m02, m10, m11, m12, m20, m21, m22} {
+                            T m10 = T{}, T m11 = T{}, T m12 = T{},
+                            T m20 = T{}, T m21 = T{}, T m22 = T{})
+            : m_data{m00, m10, m20, m01, m11, m21, m02, m12, m22} {
+        }
+        constexpr Matrix3x3(const Vector3D<T>& col0, const Vector3D<T>& col1, const Vector3D<T>& col2)
+            : m_data{col0.x, col0.y, col0.z, col1.x, col1.y, col1.z, col2.x, col2.y, col2.z} {
         }
         constexpr Matrix3x3(const Matrix3x3& other) = default;
         constexpr Matrix3x3(Matrix3x3&& other) noexcept = default;
@@ -149,21 +200,41 @@ namespace Uma_Math
                      static_cast<T>(other.get(6)), static_cast<T>(other.get(7)), static_cast<T>(other.get(8))} {
         }
 
+        // GLM-style column access: matrix[col][row]
+        constexpr ColumnProxy<T, 3> operator[](std::size_t col) noexcept
+        {
+            return ColumnProxy<T, 3>(&m_data[col * 3]);
+        }
+
+        constexpr ConstColumnProxy<T, 3> operator[](std::size_t col) const noexcept
+        {
+            return ConstColumnProxy<T, 3>(&m_data[col * 3]);
+        }
+
         // Optimized element accessors
-        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[row * 3 + col]; }
+        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[col * 3 + row]; }
         constexpr T get(std::size_t index) const noexcept { return m_data[index]; }
 
         // Optimized element mutators
-        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[row * 3 + col] = value; }
+        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[col * 3 + row] = value; }
         constexpr void set(std::size_t index, T value) noexcept { m_data[index] = value; }
 
         // Element access (row, column) - for backward compatibility
-        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[row * 3 + col]; }
-        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[row * 3 + col]; }
+        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[col * 3 + row]; }
+        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[col * 3 + row]; }
 
-        // Linear array-style access - for backward compatibility
-        constexpr T& operator[](std::size_t index) noexcept { return m_data[index]; }
-        constexpr const T& operator[](std::size_t index) const noexcept { return m_data[index]; }
+        // GLM-style column access functions
+        constexpr Vector3D<T> column(std::size_t col) const noexcept { return Vector3D<T>(m_data[col * 3], m_data[col * 3 + 1], m_data[col * 3 + 2]); }
+
+        constexpr void setColumn(std::size_t col, const Vector3D<T>& column) noexcept
+        {
+            m_data[col * 3] = column.x;
+            m_data[col * 3 + 1] = column.y;
+            m_data[col * 3 + 2] = column.z;
+        }
+
+        // GLM-style row access functions
+        constexpr Vector3D<T> row(std::size_t row) const noexcept { return Vector3D<T>(m_data[row], m_data[3 + row], m_data[6 + row]); }
 
         // Size information
         constexpr std::size_t size() const noexcept { return 9; }
@@ -187,6 +258,12 @@ namespace Uma_Math
             return *this;
         }
 
+        constexpr Matrix3x3& operator*=(const Matrix3x3& other)
+        {
+            *this = *this * other;  // Uses non-member operator*
+            return *this;
+        }
+
         template <typename U>
         constexpr Matrix3x3& operator*=(U scalar) noexcept
         {
@@ -207,25 +284,19 @@ namespace Uma_Math
             return *this;
         }
 
-        constexpr Matrix3x3& operator*=(const Matrix3x3& other)
-        {
-            *this = *this * other;  // Uses non-member operator*
-            return *this;
-        }
-
         // Matrix operations
         constexpr T determinant() const noexcept
         {
             return m_data[0] * (m_data[4] * m_data[8] - m_data[5] * m_data[7]) -
-                    m_data[1] * (m_data[3] * m_data[8] - m_data[5] * m_data[6]) +
-                    m_data[2] * (m_data[3] * m_data[7] - m_data[4] * m_data[6]);
+                   m_data[3] * (m_data[1] * m_data[8] - m_data[2] * m_data[7]) +
+                   m_data[6] * (m_data[1] * m_data[5] - m_data[2] * m_data[4]);
         }
 
         constexpr Matrix3x3 transpose() const noexcept
         {
             return Matrix3x3(m_data[0], m_data[3], m_data[6],
-                            m_data[1], m_data[4], m_data[7],
-                            m_data[2], m_data[5], m_data[8]);
+                             m_data[1], m_data[4], m_data[7],
+                             m_data[2], m_data[5], m_data[8]);
         }
 
         // Static factory methods
@@ -256,7 +327,13 @@ namespace Uma_Math
                             T m10 = T{}, T m11 = T{}, T m12 = T{}, T m13 = T{},
                             T m20 = T{}, T m21 = T{}, T m22 = T{}, T m23 = T{},
                             T m30 = T{}, T m31 = T{}, T m32 = T{}, T m33 = T{})
-            : m_data{m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33} {
+            : m_data{m00, m10, m20, m30, m01, m11, m21, m31, 
+                     m02, m12, m22, m32, m03, m13, m23, m33} {
+        }
+        constexpr Matrix4x4(const Vector4D<T>& col0, const Vector4D<T>& col1, 
+                            const Vector4D<T>& col2, const Vector4D<T>& col3)
+            : m_data{col0.x, col0.y, col0.z, col0.w, col1.x, col1.y, col1.z, col1.w,
+                     col2.x, col2.y, col2.z, col2.w, col3.x, col3.y, col3.z, col3.w} {
         }
         constexpr Matrix4x4(const Matrix4x4& other) = default;
         constexpr Matrix4x4(Matrix4x4&& other) noexcept = default;
@@ -273,21 +350,42 @@ namespace Uma_Math
                      static_cast<T>(other.get(12)), static_cast<T>(other.get(13)), static_cast<T>(other.get(14)), static_cast<T>(other.get(15))} {
         }
 
+        // GLM-style column access: matrix[col][row]
+        constexpr ColumnProxy<T, 4> operator[](std::size_t col) noexcept
+        {
+            return ColumnProxy<T, 4>(&m_data[col * 4]);
+        }
+
+        constexpr ConstColumnProxy<T, 4> operator[](std::size_t col) const noexcept
+        {
+            return ConstColumnProxy<T, 4>(&m_data[col * 4]);
+        }
+
         // Optimized element accessors
-        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[row * 4 + col]; }
+        constexpr T get(std::size_t row, std::size_t col) const noexcept { return m_data[col * 4 + row]; }
         constexpr T get(std::size_t index) const noexcept { return m_data[index]; }
 
         // Optimized element mutators
-        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[row * 4 + col] = value; }
+        constexpr void set(std::size_t row, std::size_t col, T value) noexcept { m_data[col * 4 + row] = value; }
         constexpr void set(std::size_t index, T value) noexcept { m_data[index] = value; }
 
         // Element access (row, column) - for backward compatibility
-        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[row * 4 + col]; }
-        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[row * 4 + col]; }
+        constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[col * 4 + row]; }
+        constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[col * 4 + row]; }
 
-        // Linear array-style access - for backward compatibility
-        constexpr T& operator[](std::size_t index) noexcept { return m_data[index]; }
-        constexpr const T& operator[](std::size_t index) const noexcept { return m_data[index]; }
+        // GLM-style column access functions
+        constexpr Vector4D<T> column(std::size_t col) const noexcept { return Vector4D<T>(m_data[col * 4], m_data[col * 4 + 1], m_data[col * 4 + 2], m_data[col * 4 + 3]); }
+
+        constexpr void setColumn(std::size_t col, const Vector4D<T>& column) noexcept
+        {
+            m_data[col * 4] = column.x;
+            m_data[col * 4 + 1] = column.y;
+            m_data[col * 4 + 2] = column.z;
+            m_data[col * 4 + 3] = column.w;
+        }
+
+        // GLM-style row access functions
+        constexpr Vector4D<T> row(std::size_t row) const noexcept { return Vector4D<T>(m_data[row], m_data[4 + row], m_data[8 + row], m_data[12 + row]); }
 
         // Size information
         constexpr std::size_t size() const noexcept { return 16; }
@@ -311,6 +409,12 @@ namespace Uma_Math
             return *this;
         }
 
+        constexpr Matrix4x4& operator*=(const Matrix4x4& other)
+        {
+            *this = *this * other;  // Uses non-member operator*
+            return *this;
+        }
+
         template <typename U>
         constexpr Matrix4x4& operator*=(U scalar) noexcept
         {
@@ -328,12 +432,6 @@ namespace Uma_Math
             {
                 element /= scalar;
             }
-            return *this;
-        }
-
-        constexpr Matrix4x4& operator*=(const Matrix4x4& other)
-        {
-            *this = *this * other;  // Uses non-member operator*
             return *this;
         }
 
