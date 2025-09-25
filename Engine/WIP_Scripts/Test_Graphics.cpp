@@ -197,8 +197,8 @@ namespace Uma_Engine
         }
 
         // Update camera
-        graphics->GetCamera().SetPosition(playerPosition);
-        graphics->GetCamera().SetZoom(zoom);
+        //graphics->GetCamera().SetPosition(playerPosition);
+        //graphics->GetCamera().SetZoom(zoom);
 
         // Clear the background
         graphics->ClearBackground(0.2f, 0.3f, 0.3f);

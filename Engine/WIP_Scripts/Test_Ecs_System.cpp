@@ -15,12 +15,14 @@
 #include "ECS/Components/Player.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/Collider.h"
+#include "ECS/Components/Camera.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/Sound.hpp"
 #include "Systems/ResourcesManager.hpp"
+#include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Core/EventTypes.h"
@@ -41,6 +43,7 @@ std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
 std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
+std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
 
 Uma_Engine::InputSystem* pInputSystem;
 Uma_Engine::Graphics* pGraphics;
@@ -49,6 +52,7 @@ Uma_Engine::ResourcesManager* pResourcesManager;
 Uma_Engine::EventSystem* pEventSystem;
 
 Uma_ECS::Entity player;
+Uma_ECS::Entity cam;
 
 
 void Uma_Engine::Test_Ecs::Init()
@@ -63,7 +67,7 @@ void Uma_Engine::Test_Ecs::Init()
     //subscribe to events
     pEventSystem->Subscribe<Uma_Engine::Events::EntityCreatedEvent>(
         [](const Uma_Engine::Events::EntityCreatedEvent& e) {
-            std::cout << "Entity created: " << e.entityId << std::endl;
+            //std::cout << "Entity created: " << e.entityId << std::endl;
             // e.handled = true;
         });
 
@@ -86,6 +90,7 @@ void Uma_Engine::Test_Ecs::Init()
     gCoordinator.RegisterComponent<Player>();
     gCoordinator.RegisterComponent<Collider>();
     gCoordinator.RegisterComponent<SpriteRenderer>();
+    gCoordinator.RegisterComponent<Camera>();
 
     // Player controller
     playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -129,6 +134,15 @@ void Uma_Engine::Test_Ecs::Init()
         gCoordinator.SetSystemSignature<RenderingSystem>(sign);
     }
     renderingSystem->Init(pGraphics, &gCoordinator);
+
+    cameraSystem = gCoordinator.RegisterSystem<CameraSystem>();
+    {
+        Signature sign;
+        sign.set(gCoordinator.GetComponentType<Camera>());
+        sign.set(gCoordinator.GetComponentType<Transform>());
+        gCoordinator.SetSystemSignature<CameraSystem>(sign);
+    }
+    cameraSystem->Init(&gCoordinator);
 
     // create entities
     {
@@ -189,34 +203,6 @@ void Uma_Engine::Test_Ecs::Init()
             tf.rotation = Vec2(randRotation(generator), randRotation(generator));
             tf.scale = Vec2(randScale(generator), randScale(generator));
         }
-
-        /*for (auto& entity : entities)
-        {
-            entity = gCoordinator.CreateEntity();
-
-            gCoordinator.AddComponent(
-                entity,
-                RigidBody{
-                  .velocity = Vec2(0.0f, -1.0f),
-                  .acceleration = Vec2(0.0f, 0.0f)
-                });
-
-            gCoordinator.AddComponent(
-                entity,
-                Transform{
-                  .position = Vec2(randPositionX(generator), randPositionY(generator)),
-                  .rotation = Vec2(randRotation(generator), randRotation(generator)),
-                  .scale = Vec2(scale, scale)
-                });
-
-            gCoordinator.AddComponent(
-                entity,
-                SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("player"),
-                  .flipX = false,
-                  .flipY = false
-                });
-        }*/
     }
 
     // create player
@@ -261,7 +247,26 @@ void Uma_Engine::Test_Ecs::Init()
             });
     }
     
+    // create camera
+    cam = gCoordinator.CreateEntity();
+    {
+        gCoordinator.AddComponent(
+            cam,
+            Transform
+            {
+                .position = Vec2(400.0f, 300.0f),
+                .rotation = Vec2(0,0),
+                .scale = Vec2(1,1),
+            });
 
+        gCoordinator.AddComponent(
+            player,
+            Camera
+            {
+                .mZoom = 1.f,
+                .followPlayer = true
+            });
+    }
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)
@@ -271,12 +276,8 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     physicsSystem->Update(dt);
 
     collisionSystem->Update(dt);
-    // Update camera
 
-    Uma_ECS::Transform& tf = gCoordinator.GetComponent<Uma_ECS::Transform>(player);
-
-    pGraphics->GetCamera().SetPosition(tf.position);
-    pGraphics->GetCamera().SetZoom(1.f);
+    cameraSystem->Update(dt);
 
     // play sound
     if (pInputSystem->KeyPressed(GLFW_KEY_9))

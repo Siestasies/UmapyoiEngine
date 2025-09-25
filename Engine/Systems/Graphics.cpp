@@ -81,7 +81,7 @@ void main()
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
         // Set camera
-        mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
+        //mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
 
         // V sync 
         //SetVSync(true);
@@ -92,6 +92,12 @@ void main()
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
             return;
         }
+
+        // init cam info
+        cam = {
+            .pos = {0,0},
+            .zoom = 1.f
+        };
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
@@ -207,6 +213,12 @@ void main()
             GLuint id = textureID;
             glDeleteTextures(1, &id);
         }
+    }
+
+    void Graphics::SetCamInfo(const Vec2& pos, float zoom)
+    {
+        cam.pos = pos;
+        cam.zoom = zoom;
     }
 
     void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
@@ -387,7 +399,7 @@ void main()
 
         // Update projection matrix
         glUseProgram(mShaderProgram);
-        mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
+        //mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
         UpdateProjectionMatrix();
     }
 
@@ -410,8 +422,19 @@ void main()
     {
         if (!mInitialized) return;
 
+        // testing
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+
+        glm::mat4 projMat =  glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 projection = projMat;
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
     }
@@ -421,7 +444,7 @@ void main()
         float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
         float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
 
-        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 viewProjMatrix = glm::mat4(0);
         glm::mat4 invViewProjMatrix = glm::inverse(viewProjMatrix);
 
         glm::vec4 worldPos = invViewProjMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
@@ -430,7 +453,7 @@ void main()
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
-        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 viewProjMatrix = glm::mat4(0);
         glm::vec4 clipPos = viewProjMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
 
         float ndcX = clipPos.x / clipPos.w;

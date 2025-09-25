@@ -6,7 +6,9 @@ namespace Uma_ECS
 {
     struct Camera
     {
-        Vec2 mPosition{};
-        float mZoom{1.0f};
+        float mZoom; // default to 1.0f
+        bool followPlayer;
+        //float viewportWidth;
+        //float viewportHeight;
     };
 }

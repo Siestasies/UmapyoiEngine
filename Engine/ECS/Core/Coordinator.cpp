@@ -45,6 +45,8 @@ namespace Uma_ECS
         Entity newEntity = CreateEntity();
         aComponentManager->CloneEntityComponents(src, newEntity);
 
+        aSystemManager->EntitySignatureChanged(newEntity, GetEntitySignature(src));
+
         return newEntity;
     }
 

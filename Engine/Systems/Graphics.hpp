@@ -4,7 +4,9 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
-#include "Systems/CameraSystem.hpp"
+//#include "Systems/TMP_CameraSystem.hpp"
+
+#include "Core/Coordinator.hpp"
 
 // Forward declarations
 struct GLFWwindow;
@@ -12,14 +14,22 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    struct Cam_Info
+    {
+        Vec2 pos;
+        float zoom;
+    };
+
     class Graphics : public ISystem, public IWindowSystem
     {
     private:
         bool mInitialized;
         GLFWwindow* mWindow;
 
-        // Camera
-        Camera2D mCamera;
+        // gCoordinator
+        //Camera2D mCamera;
+        //mat4 mprojectionMatrix;
+        Cam_Info cam;
 
         // Rendering resources
         GLuint mVAO, mVBO;
@@ -32,7 +42,7 @@ namespace Uma_Engine
         bool InitializeRenderer();
         void ShutdownRenderer();
         GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
-        void CheckOpenGLVersion();
+        //void CheckOpenGLVersion();
 
         // Window resize callback (used by GLFW)
         void OnWindowResize(int width, int height);
@@ -60,6 +70,9 @@ namespace Uma_Engine
         Texture LoadTextureFromFile(const std::string& texturePath);
         void UnloadTexture(unsigned int textureID);
 
+        // setting cam info
+        void SetCamInfo(const Vec2& pos, float zoom);
+
         // Sprite rendering
         void DrawSprite(unsigned int textureID,
             const Vec2& textureSize,
@@ -73,8 +86,8 @@ namespace Uma_Engine
         void SetViewport(int width, int height);
 
         // Camera access
-        Camera2D& GetCamera() { return mCamera; }
-        const Camera2D& GetCamera() const { return mCamera; }
+        /*Camera2D& GetCamera() { return mCamera; }
+        const Camera2D& GetCamera() const { return mCamera; }*/
 
         // Coordinate conversion
         Vec2 ScreenToWorld(const Vec2& screenPos) const;
