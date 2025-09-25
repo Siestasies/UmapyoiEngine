@@ -2,16 +2,19 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <GLFW/glfw3.h>
+
 // comment and uncomment this line below to enable/ disable console debug log
 // #define _DEBUG_LOG
 
 namespace Uma_Engine
 {
     // Static member definitions
-    std::array<bool, GLFW_KEY_LAST + 1> InputSystem::sKeys;
-    std::array<bool, GLFW_KEY_LAST + 1> InputSystem::sKeysPrevFrame;
-    std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> InputSystem::sMouseButtons;
-    std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> InputSystem::sMouseButtonsPrevFrame;
+    std::vector<bool> Uma_Engine::InputSystem::sKeys(GLFW_KEY_LAST + 1);
+    std::vector<bool> Uma_Engine::InputSystem::sKeysPrevFrame(GLFW_KEY_LAST + 1);
+    std::vector<bool> Uma_Engine::InputSystem::sMouseButtons(GLFW_MOUSE_BUTTON_LAST + 1);
+    std::vector<bool> Uma_Engine::InputSystem::sMouseButtonsPrevFrame(GLFW_MOUSE_BUTTON_LAST + 1);
+
     double InputSystem::sMouseX = 0.0;
     double InputSystem::sMouseY = 0.0;
 
@@ -22,10 +25,10 @@ namespace Uma_Engine
     void InputSystem::Init()
     {
         // Initialize arrays
-        sKeys.fill(false);
-        sKeysPrevFrame.fill(false);
-        sMouseButtons.fill(false);
-        sMouseButtonsPrevFrame.fill(false);
+        sKeys.assign(GLFW_KEY_LAST + 1, false);
+        sKeysPrevFrame.assign(GLFW_KEY_LAST + 1, false);
+        sMouseButtons.assign(GLFW_MOUSE_BUTTON_LAST + 1, false);
+        sMouseButtonsPrevFrame.assign(GLFW_MOUSE_BUTTON_LAST + 1, false);
 
 #ifdef _DEBUG_LOG
         std::cout << "InputSystem initialized" << std::endl;
@@ -107,10 +110,6 @@ namespace Uma_Engine
                 }
             }
         }
-        
-        // Update previous frame state
-        sKeysPrevFrame = sKeys;
-        sMouseButtonsPrevFrame = sMouseButtons;
     }
 
     void InputSystem::Shutdown()
@@ -178,6 +177,12 @@ namespace Uma_Engine
     void InputSystem::GetMousePosition(double& x, double& y) { x = sMouseX; y = sMouseY; }
     double InputSystem::GetMouseX() { return sMouseX; }
     double InputSystem::GetMouseY() { return sMouseY; }
+
+    void InputSystem::UpdatePreviousFrameState()
+    {
+        sKeysPrevFrame = sKeys;
+        sMouseButtonsPrevFrame = sMouseButtons;
+    }
 
     const char* InputSystem::GetKeyName(int key)
     {

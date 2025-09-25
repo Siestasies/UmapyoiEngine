@@ -26,32 +26,32 @@ namespace Uma_ECS
         auto& tf = pCoordinator->GetComponent<Transform>(player);
         auto& p = pCoordinator->GetComponent<Player>(player);
 
-        Vec2& velocity = rb.velocity;
-        velocity = { 0, 0 };
+        Vec2& accel = rb.acceleration;
+        accel = { 0, 0 };
 
         if (pInputSystem->KeyPressed(GLFW_KEY_W) ||
             pInputSystem->KeyDown(GLFW_KEY_W))
         {
-            velocity.y += 1;
+            accel.y += rb.accel_strength;
         }
         if (pInputSystem->KeyPressed(GLFW_KEY_A) ||
             pInputSystem->KeyDown(GLFW_KEY_A))
         {
-            velocity.x -= 1;
+            accel.x -= rb.accel_strength;
         }
         if (pInputSystem->KeyPressed(GLFW_KEY_S) ||
             pInputSystem->KeyDown(GLFW_KEY_S))
         {
-            velocity.y -= 1;
+            accel.y -= rb.accel_strength;
         }
         if (pInputSystem->KeyPressed(GLFW_KEY_D) ||
             pInputSystem->KeyDown(GLFW_KEY_D))
         {
-            velocity.x += 1;
+            accel.x += rb.accel_strength;
         }
 
 #ifdef _DEBUG_LOG
-        std::cout << "Player : ( " << velocity.x << " , " << velocity.y << " )\n";
+        std::cout << "Player : ( " << accel.x << " , " << accel.y << " )\n";
 #endif // _DEBUG_LOG
 
     }

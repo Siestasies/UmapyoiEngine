@@ -7,6 +7,10 @@
 #include "EntityManager.hpp"
 #include "SystemManager.hpp"
 
+// Event system
+#include <../Core/EventSystem.h>
+#include <../Core/EventTypes.h>
+
 namespace Uma_ECS
 {
     // this whole Corrdinator context is about combining:
@@ -16,7 +20,7 @@ namespace Uma_ECS
     class Coordinator
     {
     public:
-        void Init();
+        void Init(Uma_Engine::EventSystem* eventSystem);
 
         // Entity functions
 
@@ -77,6 +81,12 @@ namespace Uma_ECS
         }
 
         template<typename T>
+        ComponentArray<T>& GetComponentArray()
+        {
+            return aComponentManager->GetComponentArray<T>();
+        }
+
+        template<typename T>
         ComponentType GetComponentType()
         {
             return aComponentManager->GetComponentType<T>();
@@ -96,6 +106,7 @@ namespace Uma_ECS
             aSystemManager->SetSignature<T>(signature);
         }
 
+        Entity DuplicateEntity(Entity src);
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;
@@ -105,6 +116,8 @@ namespace Uma_ECS
         // so that we can update all systems when 
         // thr are changes for any entities
         std::unique_ptr<SystemManager> aSystemManager;
+
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
     };
 }
 

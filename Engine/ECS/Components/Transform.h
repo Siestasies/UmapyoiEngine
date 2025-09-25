@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Math/Math.hpp"
+#include "../../Math/Math.h"
 
 namespace Uma_ECS
 {
@@ -10,5 +10,6 @@ namespace Uma_ECS
         Vec2 position;
         Vec2 rotation;
         Vec2 scale;
+        Vec2 prevPos; // shdnt edit this value manually
     };
 }

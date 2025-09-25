@@ -7,6 +7,8 @@
 #include <memory>
 #include <cassert>
 
+#include <Debugging/Debugger.hpp>
+
 namespace Uma_ECS
 {
     class ComponentManager
@@ -19,8 +21,21 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
+            // logging
+            std::string debugLog = "Registered component: " + type_name;
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debugLog);
+
+            // error
+            if (aComponentTypes.find(type_name) != aComponentTypes.end())
+            {
+                debugLog = "Component<" + type_name + "> being registered more than once. ";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, debugLog);
+            }
+
             assert(aComponentTypes.find(type_name) == aComponentTypes.end()
                 && "Error : Component being registered more than once.");
+
+
 
             aComponentTypes.insert({ type_name, mNextComponentType });
 
@@ -62,18 +77,6 @@ namespace Uma_ECS
             return component_array.GetData(entity);
         }
 
-        void EntityDestroyed(Entity entity);
-
-    private:
-
-        // Unordered map that maps the name of the component to ComponentType
-        std::unordered_map<std::string, ComponentType> aComponentTypes{};
-
-        // Store polymorphic arrays using shared_ptr instead of unique_ptr
-        std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
-
-        ComponentType mNextComponentType{};
-
         template<typename T>
         ComponentArray<T>& GetComponentArray()
         {
@@ -85,5 +88,18 @@ namespace Uma_ECS
             // Use static_pointer_cast to get the derived type back
             return *std::static_pointer_cast<ComponentArray<T>>(aComponentArrays[type_name]);
         }
+
+        void EntityDestroyed(Entity entity);
+
+        void CloneEntityComponents(Entity src, Entity dest);
+
+    private:
+
+        // Unordered map that maps the name of the component to ComponentType
+        std::unordered_map<std::string, ComponentType> aComponentTypes{};
+
+        std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
+
+        ComponentType mNextComponentType{};
     };
 }
