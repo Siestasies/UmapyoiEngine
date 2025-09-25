@@ -4,7 +4,7 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
-#include "Systems/Camera.hpp"
+#include "Systems/CameraSystem.hpp"
 
 // Forward declarations
 struct GLFWwindow;
