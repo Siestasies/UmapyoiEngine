@@ -242,6 +242,7 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     if (pInputSystem->KeyPressed(GLFW_KEY_9))
     {
         // moo moo
+        std::cout << "HELLO\n";
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
