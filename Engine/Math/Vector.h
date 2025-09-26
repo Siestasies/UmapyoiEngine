@@ -27,13 +27,7 @@ namespace Uma_Math
 
 		// Template conversion constructor
 		template <typename U>
-		constexpr explicit Vector2D(const Vector2D<U>& other) : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) } {}
-
-        // GLM-style accessors
-        constexpr T& x() noexcept { return x; }
-        constexpr const T& x() const noexcept { return x; }
-        constexpr T& y() noexcept { return y; }
-        constexpr const T& y() const noexcept { return y; }
+		constexpr explicit Vector2D(const Vector2D<U>& other) : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)} {}
 
         // GLM-style color accessors
         constexpr T& r() noexcept { return x; }
@@ -153,15 +147,7 @@ namespace Uma_Math
 
 		// Template conversion constructor
 		template <typename U>
-		constexpr explicit Vector3D(const Vector3D<U>& other) : x{ static_cast<T>(other.x) }, y{ static_cast<T>(other.y) }, z{ static_cast<T>(other.z) } {}
-
-        // GLM-style accessors
-        constexpr T& x() noexcept { return x; }
-        constexpr const T& x() const noexcept { return x; }
-        constexpr T& y() noexcept { return y; }
-        constexpr const T& y() const noexcept { return y; }
-        constexpr T& z() noexcept { return z; }
-        constexpr const T& z() const noexcept { return z; }
+		constexpr explicit Vector3D(const Vector3D<U>& other) : x{static_cast<T>(other.x)}, y{static_cast<T>(other.y)}, z{static_cast<T>(other.z)} {}
         
         // GLM-style color accessors
         constexpr T& r() noexcept { return x; }

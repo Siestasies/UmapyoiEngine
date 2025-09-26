@@ -165,7 +165,7 @@ namespace Uma_Math
             return Matrix2x2();
         }
 
-    private:
+    public:
         std::array<T, 4> m_data;
 
         // Friend declarations for non-member functions that need private access
@@ -311,7 +311,7 @@ namespace Uma_Math
             return Matrix3x3();
         }
 
-    private:
+    public:
         std::array<T, 9> m_data;
 
         // Friend declarations for non-member functions that need private access
@@ -330,11 +330,6 @@ namespace Uma_Math
                             T m30 = T{}, T m31 = T{}, T m32 = T{}, T m33 = T{})
             : m_data{m00, m10, m20, m30, m01, m11, m21, m31, 
                      m02, m12, m22, m32, m03, m13, m23, m33} {
-        }
-        constexpr Matrix4x4(const Vector4D<T>& col0, const Vector4D<T>& col1, 
-                            const Vector4D<T>& col2, const Vector4D<T>& col3)
-            : m_data{col0.x, col0.y, col0.z, col0.w, col1.x, col1.y, col1.z, col1.w,
-                     col2.x, col2.y, col2.z, col2.w, col3.x, col3.y, col3.z, col3.w} {
         }
         constexpr Matrix4x4(const Matrix4x4& other) = default;
         constexpr Matrix4x4(Matrix4x4&& other) noexcept = default;
@@ -373,20 +368,6 @@ namespace Uma_Math
         // Element access (row, column) - for backward compatibility
         constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[col * 4 + row]; }
         constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[col * 4 + row]; }
-
-        // GLM-style column access functions
-        constexpr Vector4D<T> column(std::size_t col) const noexcept { return Vector4D<T>(m_data[col * 4], m_data[col * 4 + 1], m_data[col * 4 + 2], m_data[col * 4 + 3]); }
-
-        constexpr void setColumn(std::size_t col, const Vector4D<T>& column) noexcept
-        {
-            m_data[col * 4] = column.x;
-            m_data[col * 4 + 1] = column.y;
-            m_data[col * 4 + 2] = column.z;
-            m_data[col * 4 + 3] = column.w;
-        }
-
-        // GLM-style row access functions
-        constexpr Vector4D<T> row(std::size_t row) const noexcept { return Vector4D<T>(m_data[row], m_data[4 + row], m_data[8 + row], m_data[12 + row]); }
 
         // Size information
         constexpr std::size_t size() const noexcept { return 16; }
@@ -477,7 +458,7 @@ namespace Uma_Math
             return Matrix4x4();
         }
 
-    private:
+    public:
         std::array<T, 16> m_data;
 
         // Friend declarations for non-member functions that need private access
@@ -508,12 +489,12 @@ namespace Uma_Math
 
         return Matrix2x2<T>(
             // Column 0
-            l[0] * r[0] + l[2] * r[1], // [0,0]
-            l[1] * r[0] + l[3] * r[1], // [1,0]
+            l[0] * r[0] + l[2] * r[1],  // [0,0]
+            l[1] * r[0] + l[3] * r[1],  // [1,0]
 
             // Column 1
-            l[0] * r[2] + l[2] * r[3], // [0,1]
-            l[1] * r[2] + l[3] * r[3]  // [1,1]
+            l[0] * r[2] + l[2] * r[3],  // [0,1]
+            l[1] * r[2] + l[3] * r[3]   // [1,1]
         );
     }
 
@@ -568,19 +549,19 @@ namespace Uma_Math
 
         return Matrix3x3<T>(
             // Column 0
-            l[0] * r[0] + l[3] * r[1] + l[6] * r[2], // [0,0]
-            l[1] * r[0] + l[4] * r[1] + l[7] * r[2], // [1,0]
-            l[2] * r[0] + l[5] * r[1] + l[8] * r[2], // [2,0]
+            l[0] * r[0] + l[3] * r[1] + l[6] * r[2],    // [0,0]
+            l[1] * r[0] + l[4] * r[1] + l[7] * r[2],    // [1,0]
+            l[2] * r[0] + l[5] * r[1] + l[8] * r[2],    // [2,0]
 
             // Column 1
-            l[0] * r[3] + l[3] * r[4] + l[6] * r[5], // [0,1]
-            l[1] * r[3] + l[4] * r[4] + l[7] * r[5], // [1,1]
-            l[2] * r[3] + l[5] * r[4] + l[8] * r[5], // [2,1]
+            l[0] * r[3] + l[3] * r[4] + l[6] * r[5],    // [0,1]
+            l[1] * r[3] + l[4] * r[4] + l[7] * r[5],    // [1,1]
+            l[2] * r[3] + l[5] * r[4] + l[8] * r[5],    // [2,1]
 
             // Column 2
-            l[0] * r[6] + l[3] * r[7] + l[6] * r[8], // [0,2]
-            l[1] * r[6] + l[4] * r[7] + l[7] * r[8], // [1,2]
-            l[2] * r[6] + l[5] * r[7] + l[8] * r[8]  // [2,2]
+            l[0] * r[6] + l[3] * r[7] + l[6] * r[8],    // [0,2]
+            l[1] * r[6] + l[4] * r[7] + l[7] * r[8],    // [1,2]
+            l[2] * r[6] + l[5] * r[7] + l[8] * r[8]     // [2,2]
         );
     }
 
@@ -670,29 +651,29 @@ namespace Uma_Math
         const auto& r = rhs.m_data;
 
         return Matrix4x4<T>(
-            // Column 0 (elements 0-3)
-            l[0] * r[0] + l[4] * r[1] + l[8] * r[2] + l[12] * r[3],   // [0,0]
-            l[1] * r[0] + l[5] * r[1] + l[9] * r[2] + l[13] * r[3],   // [1,0]
-            l[2] * r[0] + l[6] * r[1] + l[10] * r[2] + l[14] * r[3],  // [2,0]
-            l[3] * r[0] + l[7] * r[1] + l[11] * r[2] + l[15] * r[3],  // [3,0]
+            // Column 0
+            l[0] * r[0] + l[4] * r[1] + l[8] * r[2] + l[12] * r[3],         // [0,0]
+            l[1] * r[0] + l[5] * r[1] + l[9] * r[2] + l[13] * r[3],         // [1,0]
+            l[2] * r[0] + l[6] * r[1] + l[10] * r[2] + l[14] * r[3],        // [2,0]
+            l[3] * r[0] + l[7] * r[1] + l[11] * r[2] + l[15] * r[3],        // [3,0]
 
-            // Column 1 (elements 4-7)
-            l[0] * r[4] + l[4] * r[5] + l[8] * r[6] + l[12] * r[7],   // [0,1]
-            l[1] * r[4] + l[5] * r[5] + l[9] * r[6] + l[13] * r[7],   // [1,1]
-            l[2] * r[4] + l[6] * r[5] + l[10] * r[6] + l[14] * r[7],  // [2,1]
-            l[3] * r[4] + l[7] * r[5] + l[11] * r[6] + l[15] * r[7],  // [3,1]
+            // Column 1
+            l[0] * r[4] + l[4] * r[5] + l[8] * r[6] + l[12] * r[7],         // [0,1]
+            l[1] * r[4] + l[5] * r[5] + l[9] * r[6] + l[13] * r[7],         // [1,1]
+            l[2] * r[4] + l[6] * r[5] + l[10] * r[6] + l[14] * r[7],        // [2,1]
+            l[3] * r[4] + l[7] * r[5] + l[11] * r[6] + l[15] * r[7],        // [3,1]
 
-            // Column 2 (elements 8-11)
-            l[0] * r[8] + l[4] * r[9] + l[8] * r[10] + l[12] * r[11], // [0,2]
-            l[1] * r[8] + l[5] * r[9] + l[9] * r[10] + l[13] * r[11], // [1,2]
-            l[2] * r[8] + l[6] * r[9] + l[10] * r[10] + l[14] * r[11], // [2,2]
-            l[3] * r[8] + l[7] * r[9] + l[11] * r[10] + l[15] * r[11], // [3,2]
+            // Column 2
+            l[0] * r[8] + l[4] * r[9] + l[8] * r[10] + l[12] * r[11],       // [0,2]
+            l[1] * r[8] + l[5] * r[9] + l[9] * r[10] + l[13] * r[11],       // [1,2]
+            l[2] * r[8] + l[6] * r[9] + l[10] * r[10] + l[14] * r[11],      // [2,2]
+            l[3] * r[8] + l[7] * r[9] + l[11] * r[10] + l[15] * r[11],      // [3,2]
 
-            // Column 3 (elements 12-15)
-            l[0] * r[12] + l[4] * r[13] + l[8] * r[14] + l[12] * r[15], // [0,3]
-            l[1] * r[12] + l[5] * r[13] + l[9] * r[14] + l[13] * r[15], // [1,3]
-            l[2] * r[12] + l[6] * r[13] + l[10] * r[14] + l[14] * r[15], // [2,3]
-            l[3] * r[12] + l[7] * r[13] + l[11] * r[14] + l[15] * r[15]  // [3,3]
+            // Column 3
+            l[0] * r[12] + l[4] * r[13] + l[8] * r[14] + l[12] * r[15],     // [0,3]
+            l[1] * r[12] + l[5] * r[13] + l[9] * r[14] + l[13] * r[15],     // [1,3]
+            l[2] * r[12] + l[6] * r[13] + l[10] * r[14] + l[14] * r[15],    // [2,3]
+            l[3] * r[12] + l[7] * r[13] + l[11] * r[14] + l[15] * r[15]     // [3,3]
         );
     }
 
@@ -772,8 +753,8 @@ namespace Uma_Math
     constexpr Vector2D<T> operator*(const Matrix2x2<T>& mat, const Vector2D<T>& vec)
     {
         return Vector2D<T>(
-            mat.get(0, 0) * vec.x() + mat.get(0, 1) * vec.y(),
-            mat.get(1, 0) * vec.x() + mat.get(1, 1) * vec.y()
+            mat.get(0, 0) * vec.x + mat.get(0, 1) * vec.y,
+            mat.get(1, 0) * vec.x + mat.get(1, 1) * vec.y
         );
     }
 
@@ -781,9 +762,9 @@ namespace Uma_Math
     constexpr Vector3D<T> operator*(const Matrix3x3<T>& mat, const Vector3D<T>& vec)
     {
         return Vector3D<T>(
-            mat.get(0, 0) * vec.x() + mat.get(0, 1) * vec.y() + mat.get(0, 2) * vec.z(),
-            mat.get(1, 0) * vec.x() + mat.get(1, 1) * vec.y() + mat.get(1, 2) * vec.z(),
-            mat.get(2, 0) * vec.x() + mat.get(2, 1) * vec.y() + mat.get(2, 2) * vec.z()
+            mat.get(0, 0) * vec.x + mat.get(0, 1) * vec.y + mat.get(0, 2) * vec.z,
+            mat.get(1, 0) * vec.x + mat.get(1, 1) * vec.y + mat.get(1, 2) * vec.z,
+            mat.get(2, 0) * vec.x + mat.get(2, 1) * vec.y + mat.get(2, 2) * vec.z
         );
     }
 

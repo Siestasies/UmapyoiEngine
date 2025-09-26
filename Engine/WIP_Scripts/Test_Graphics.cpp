@@ -17,7 +17,7 @@ namespace
     float playerRotation;
     float rotationSpeed;
     float moveSpeed;
-    float scale;
+    float fScale;
     float zoom;
 }
 
@@ -51,7 +51,7 @@ namespace Uma_Engine
         playerRotation = 0.0f;
         rotationSpeed = 45.0f;
         moveSpeed = 200.0f;
-        scale = 0.3f;
+        fScale = 0.3f;
         zoom = 1.0f;
 
         std::cout << "Test_Graphics initialized successfully!" << std::endl;
@@ -102,13 +102,13 @@ namespace Uma_Engine
         // Scale sprite
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Z))
         {
-            scale -= 1.0f * deltaTime;
-            if (scale < 0.1f) scale = 0.1f;
+            fScale -= 1.0f * deltaTime;
+            if (fScale < 0.1f) fScale = 0.1f;
         }
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_X))
         {
-            scale += 1.0f * deltaTime;
-            if (scale > 3.0f) scale = 3.0f;
+            fScale += 1.0f * deltaTime;
+            if (fScale > 3.0f) fScale = 3.0f;
         }
 
         // Update camera
@@ -128,14 +128,14 @@ namespace Uma_Engine
         const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
         if (enemyTexture != nullptr)
         {
-            Vec2 scale{ .2f, .2f };
+            Vec2 fScale{ .2f, .2f };
             // Draw enemies at fixed world positions
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(100, 100), scale);
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(600, 200), scale);
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(800, 500), scale);
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(200, 700), scale);
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1000, 300), scale);
-            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1200, 600), scale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(100, 100), fScale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(600, 200), fScale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(800, 500), fScale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(200, 700), fScale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1000, 300), fScale);
+            graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, Vec2(1200, 600), fScale);
         }
 
         // Draw sprite
@@ -143,7 +143,7 @@ namespace Uma_Engine
         if (playerTexture != nullptr)
         {
             Vec2 playerPos = { playerPosition.x, playerPosition.y };
-            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(scale), playerRotation);
+            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(fScale), playerRotation);
         }
     }
 

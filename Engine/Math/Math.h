@@ -9,14 +9,24 @@ namespace Uma_Math
 {
 	using Vec2 = Vector2D<float>;
 	using Vec3 = Vector3D<float>;
+	
 	using Vec2d = Vector2D<double>;
 	using Vec3d = Vector3D<double>;
+	
 	using Vec2i = Vector2D<int>;
 	using Vec3i = Vector3D<int>;
 
-	using Mat2x2 = Matrix2x2<float>;
-	using Mat3x3 = Matrix3x3<float>;
-	using Mat4x4 = Matrix4x4<float>;
+	using Mat2 = Matrix2x2<float>;
+	using Mat3 = Matrix3x3<float>;
+	using Mat4 = Matrix4x4<float>;
+
+	using Mat2d = Matrix2x2<double>;
+	using Mat3d = Matrix3x3<double>;
+	using Mat4d = Matrix4x4<double>;
+	
+	using Mat2i = Matrix2x2<int>;
+	using Mat3i = Matrix3x3<int>;
+	using Mat4i = Matrix4x4<int>;
 }
 
 // Compile-time constants for different types, nice to have
