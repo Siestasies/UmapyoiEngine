@@ -9,6 +9,8 @@
 
 #include <Debugging/Debugger.hpp>
 
+#include "rapidjson/document.h"		// rapidjson's DOM-style API
+
 namespace Uma_ECS
 {
     class ComponentManager
@@ -92,6 +94,22 @@ namespace Uma_ECS
         void EntityDestroyed(Entity entity);
 
         void CloneEntityComponents(Entity src, Entity dest);
+
+        void SerializeAll(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) 
+        {
+            for (auto const& pair : aComponentArrays) 
+            {
+                pair.second->Serialize(entity, comps, allocator);
+            }
+        }
+
+        void DeserializeAll(Entity entity, const rapidjson::Value& comps) 
+        {
+            for (auto const& pair : aComponentArrays) 
+            {
+                pair.second->Deserialize(entity, comps);
+            }
+        }
 
     private:
 

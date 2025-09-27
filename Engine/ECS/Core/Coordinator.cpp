@@ -1,5 +1,11 @@
 #include "Coordinator.hpp"
 
+#include <fstream>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/istreamwrapper.h>
+#include <rapidjson/prettywriter.h>   // pretty JSON output
+
 namespace Uma_ECS
 {
     void Coordinator::Init(Uma_Engine::EventSystem* eventSystem)
@@ -48,6 +54,59 @@ namespace Uma_ECS
         aSystemManager->EntitySignatureChanged(newEntity, GetEntitySignature(src));
 
         return newEntity;
+    }
+
+    void Coordinator::SerializeAllEntities(const std::string& filename)
+    {
+        rapidjson::Document doc;
+        doc.SetObject();
+        auto& allocator = doc.GetAllocator();
+
+        rapidjson::Value entities(rapidjson::kArrayType);
+
+        // loop thru all entities
+        for (const Entity& en : aEntityManager->GetAllEntites())
+        {
+            if (!aEntityManager->IsEntityActive(en)) continue;
+
+            rapidjson::Value entityObj(rapidjson::kObjectType);
+            entityObj.AddMember("id", en, allocator);
+
+            rapidjson::Value comps(rapidjson::kObjectType);
+            aComponentManager->SerializeAll(en, comps, allocator);
+            entityObj.AddMember("components", comps, allocator);
+
+            entities.PushBack(entityObj, allocator);
+        }
+
+        doc.AddMember("entities", entities, allocator);
+
+        // write to file
+        rapidjson::StringBuffer buffer;
+        rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
+        writer.SetIndent(' ', 4); // 4 spaces per indent
+        doc.Accept(writer);
+
+        std::ofstream ofs(filename);
+        ofs << buffer.GetString();
+        ofs.close();
+    }
+    void Coordinator::DeserializeWorld(const std::string& filename)
+    {
+        std::ifstream ifs(filename);
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document doc;
+        doc.ParseStream(isw);
+        ifs.close();
+
+        const auto& entities = doc["entities"];
+        for (auto& entityVal : entities.GetArray())
+        {
+            Entity entity = aEntityManager->CreateEntity(); // new ID
+
+            const auto& comps = entityVal["components"];
+            aComponentManager->DeserializeAll(entity, comps);
+        }
     }
 
 }

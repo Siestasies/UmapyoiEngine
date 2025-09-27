@@ -3,6 +3,7 @@
 #include "Types.hpp"
 #include <queue>
 #include <array>
+#include <vector>
 
 namespace Uma_ECS
 {
@@ -18,6 +19,10 @@ namespace Uma_ECS
         Signature GetSignature(Entity entity) const;
 
         int GetEntityCount() const;
+
+        std::vector<Entity> GetAllEntites() const;
+
+        inline bool IsEntityActive(Entity en) { return aEntityActive[en]; }
 
     private:
 

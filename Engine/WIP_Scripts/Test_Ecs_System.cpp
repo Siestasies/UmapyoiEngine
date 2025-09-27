@@ -176,13 +176,16 @@ void Uma_Engine::Test_Ecs::Init()
                   .scale = Vec2(randScale(generator), randScale(generator))
                 });
 
+            std::string texName = "enemy";
             gCoordinator.AddComponent(
                 enemy,
                 SpriteRenderer{
-                  .texture = pResourcesManager->GetTexture("enemy"),
+                  .textureName = texName,
                   .flipX = false,
-                  .flipY = false
+                  .flipY = false,
+                  .texture = pResourcesManager->GetTexture(texName),
                 });
+
 
             gCoordinator.AddComponent(
                 enemy,
@@ -231,12 +234,14 @@ void Uma_Engine::Test_Ecs::Init()
             player,
             Player{});
 
+        std::string texName = "player";
         gCoordinator.AddComponent(
             player,
             SpriteRenderer{
-              .texture = pResourcesManager->GetTexture("player"),
+              .textureName = texName,
               .flipX = false,
-              .flipY = false
+              .flipY = false,
+              .texture = pResourcesManager->GetTexture(texName),
             });
 
         gCoordinator.AddComponent(
@@ -267,6 +272,9 @@ void Uma_Engine::Test_Ecs::Init()
                 .followPlayer = true
             });
     }
+
+    // serialize to file
+    gCoordinator.SerializeAllEntities("Assets/Scenes/data.json");
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)

@@ -108,6 +108,11 @@ namespace Uma_ECS
 
         Entity DuplicateEntity(Entity src);
 
+        //Serialization
+
+        void SerializeAllEntities(const std::string& filename);
+        void DeserializeWorld(const std::string& filename);
+
     private:
         std::unique_ptr<ComponentManager> aComponentManager;
         std::unique_ptr<EntityManager> aEntityManager;

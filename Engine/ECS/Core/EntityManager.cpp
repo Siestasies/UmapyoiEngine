@@ -62,3 +62,19 @@ int Uma_ECS::EntityManager::GetEntityCount() const
 {
     return static_cast<int>(mActiveEntityCnt);
 }
+
+std::vector<Uma_ECS::Entity> Uma_ECS::EntityManager::GetAllEntites() const
+{
+    std::vector<Entity> allEntities;
+
+    allEntities.reserve(mActiveEntityCnt);
+
+    for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+    {
+        if (aEntityActive[entity])
+        {
+            allEntities.push_back(entity);
+        }
+    }
+    return allEntities;
+}
