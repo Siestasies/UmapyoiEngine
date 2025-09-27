@@ -17,6 +17,13 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
 
+        if (pArray.Size() == 0 ||
+            camArray.Size() == 0 ||
+            tfArray.Size() == 0)
+        {
+            return;
+        }
+
         // one camera for now
         Entity camera = camArray.GetEntity(0);
         auto& cam_tf = tfArray.GetData(camera);

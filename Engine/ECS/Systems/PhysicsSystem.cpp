@@ -28,6 +28,12 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
+    if (rbArray.Size() == 0 ||
+        tfArray.Size() == 0)
+    {
+        return;
+    }
+
     // Iterate over the smaller array for efficiency (here, RigidBody)
     for (size_t i = 0; i < rbArray.Size(); ++i)
     {

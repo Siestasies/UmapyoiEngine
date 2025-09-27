@@ -78,3 +78,12 @@ std::vector<Uma_ECS::Entity> Uma_ECS::EntityManager::GetAllEntites() const
     }
     return allEntities;
 }
+
+void Uma_ECS::EntityManager::DestroyAllEntities()
+{
+    //std::vector<Entity> entityList = GetAllEntites();
+    //for (auto const& entity : entityList)
+    //{
+    //    DestroyEntity(entity);
+    //}
+}

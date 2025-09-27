@@ -32,6 +32,8 @@ namespace Uma_ECS
 
         int GetEntityCount() const;
 
+        void DestroyAllEntities();
+
         // Components functions
 
         template<typename T>
@@ -111,7 +113,7 @@ namespace Uma_ECS
         //Serialization
 
         void SerializeAllEntities(const std::string& filename);
-        void DeserializeWorld(const std::string& filename);
+        void DeserializeAllEntities(const std::string& filename);
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

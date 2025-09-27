@@ -40,6 +40,24 @@ add_custom_target(copy_assets ALL
             ${ASSET_DIR} ${ASSET_OUTPUT_DIR}
     COMMENT "Copying assets to build folder"
 )
+# Make sure your game depends on this step
+add_dependencies(Uma_Engine copy_assets)
+
+# Define where assets live
+set(LOGS_DIR ${CMAKE_SOURCE_DIR}/Logs)
+
+# Define where to copy them
+set(LOGS_DIR_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Logs)
+
+# Copy all assets every build
+add_custom_target(copy_logs ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${LOGS_DIR} ${LOGS_DIR_OUTPUT_DIR}
+    COMMENT "Copying logs to build folder"
+)
+# Make sure your game depends on this step
+add_dependencies(Uma_Engine copy_logs)
+
 
 # FMOD runtime DLL (Windows only)
 set(FMOD_DLL ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll)
@@ -55,7 +73,5 @@ add_custom_target(copy_fmod ALL
 )
 
 
-# Make sure your game depends on this step
-add_dependencies(Uma_Engine copy_assets)
 
 add_dependencies(Uma_Engine copy_fmod)

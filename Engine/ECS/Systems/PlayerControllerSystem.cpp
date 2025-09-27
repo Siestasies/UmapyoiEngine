@@ -16,11 +16,18 @@ namespace Uma_ECS
 {
     void PlayerControllerSystem::Update(float dt)
     {
-        if (aEntities.empty()) return;
+        //if (aEntities.empty()) return;
 
         // by right shd only have 1 player
 
-        Entity player = *(aEntities.begin());
+        auto& pArray = pCoordinator->GetComponentArray<Player>();
+
+        if (pArray.Size() == 0)
+        {
+            return;
+        }
+
+        Entity player = pArray.GetEntity(0);
 
         auto& rb = pCoordinator->GetComponent<RigidBody>(player);
         auto& tf = pCoordinator->GetComponent<Transform>(player);

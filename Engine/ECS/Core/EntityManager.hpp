@@ -24,6 +24,8 @@ namespace Uma_ECS
 
         inline bool IsEntityActive(Entity en) { return aEntityActive[en]; }
 
+        void DestroyAllEntities();
+
     private:
 
         // a queue of all the unused entities id

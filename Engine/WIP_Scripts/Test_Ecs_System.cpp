@@ -27,10 +27,14 @@
 #include "../Core/EventSystem.h"
 #include "../Core/EventTypes.h"
 
+// debug
+#include "Debugging/Debugger.hpp"
+
 #include <vector>
 #include <random>
 #include <iostream>
 #include <iomanip>
+#include<sstream>
 
 #include <GLFW/glfw3.h>
 
@@ -133,7 +137,7 @@ void Uma_Engine::Test_Ecs::Init()
         sign.set(gCoordinator.GetComponentType<Transform>());
         gCoordinator.SetSystemSignature<RenderingSystem>(sign);
     }
-    renderingSystem->Init(pGraphics, &gCoordinator);
+    renderingSystem->Init(pGraphics, pResourcesManager, &gCoordinator);
 
     cameraSystem = gCoordinator.RegisterSystem<CameraSystem>();
     {
@@ -144,137 +148,13 @@ void Uma_Engine::Test_Ecs::Init()
     }
     cameraSystem->Init(&gCoordinator);
 
-    // create entities
-    {
-        //std::vector<Entity> entities(2500);
+    //deserialize and spawn all the entities
+    gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
 
-        std::default_random_engine generator;
-        std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
-        std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
-        std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
-        std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
-
-        Entity enemy;
-
-        {
-            enemy = gCoordinator.CreateEntity();
-
-            gCoordinator.AddComponent(
-                enemy,
-                RigidBody{
-                  .velocity = Vec2(0.0f, 0.0f),
-                  .acceleration = Vec2(0.0f, 0.0f),
-                  .accel_strength = 200,
-                  .fric_coeff = 100
-                });
-
-            gCoordinator.AddComponent(
-                enemy,
-                Transform{
-                  .position = Vec2(randPositionX(generator), randPositionY(generator)),
-                  .rotation = Vec2(randRotation(generator), randRotation(generator)),
-                  .scale = Vec2(randScale(generator), randScale(generator))
-                });
-
-            std::string texName = "enemy";
-            gCoordinator.AddComponent(
-                enemy,
-                SpriteRenderer{
-                  .textureName = texName,
-                  .flipX = false,
-                  .flipY = false,
-                  .texture = pResourcesManager->GetTexture(texName),
-                });
-
-
-            gCoordinator.AddComponent(
-                enemy,
-                Collider{
-                  .layer = CollisionLayer::CL_ENEMY,
-                  .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
-                });
-        }
-        
-        // using 1 enemy to duplicate 2500 times and rand its transform
-        for (size_t i = 0; i < 2500; i++)
-        {
-            Entity tmp = gCoordinator.DuplicateEntity(enemy);
-
-            Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
-
-            tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-            tf.rotation = Vec2(randRotation(generator), randRotation(generator));
-            tf.scale = Vec2(randScale(generator), randScale(generator));
-        }
-    }
-
-    // create player
-    player = gCoordinator.CreateEntity();
-
-    {
-        gCoordinator.AddComponent(
-            player,
-            Transform
-            {
-                .position = Vec2(400.0f, 300.0f),
-                .rotation = Vec2(1,1),
-                .scale = Vec2(50,50),
-            });
-
-        gCoordinator.AddComponent(
-            player,
-            RigidBody{
-              .velocity = Vec2(0.0f, 0.0f),
-              .acceleration = Vec2(0.0f, 0.0f),
-              .accel_strength = 2500,
-              .fric_coeff = 5
-            });
-
-        gCoordinator.AddComponent(
-            player,
-            Player{});
-
-        std::string texName = "player";
-        gCoordinator.AddComponent(
-            player,
-            SpriteRenderer{
-              .textureName = texName,
-              .flipX = false,
-              .flipY = false,
-              .texture = pResourcesManager->GetTexture(texName),
-            });
-
-        gCoordinator.AddComponent(
-            player,
-            Collider{
-              .layer = CollisionLayer::CL_PLAYER,
-              .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
-            });
-    }
     
-    // create camera
-    cam = gCoordinator.CreateEntity();
-    {
-        gCoordinator.AddComponent(
-            cam,
-            Transform
-            {
-                .position = Vec2(400.0f, 300.0f),
-                .rotation = Vec2(0,0),
-                .scale = Vec2(1,1),
-            });
-
-        gCoordinator.AddComponent(
-            player,
-            Camera
-            {
-                .mZoom = 1.f,
-                .followPlayer = true
-            });
-    }
 
     // serialize to file
-    gCoordinator.SerializeAllEntities("Assets/Scenes/data.json");
+    //gCoordinator.SerializeAllEntities("Assets/Scenes/data.json");
 }
 
 void Uma_Engine::Test_Ecs::Update(float dt)
@@ -287,10 +167,204 @@ void Uma_Engine::Test_Ecs::Update(float dt)
 
     cameraSystem->Update(dt);
 
-    // play sound
-    if (pInputSystem->KeyPressed(GLFW_KEY_9))
+    // save to file
+    if (pInputSystem->KeyPressed(GLFW_KEY_1))
     {
         // moo moo
+
+        std::cout << "saving to file\n";
+
+        std::string filepath;
+
+#if defined(_DEBUG)
+
+        filepath = "../../../../Assets/Scenes/data.json";
+
+        gCoordinator.SerializeAllEntities("../../../../Assets/Scenes/data.json");
+#else
+
+        filepath = "Assets/Scenes/data.json";
+
+        gCoordinator.SerializeAllEntities(filepath);
+#endif
+
+        std::string log;
+        std::stringstream ss(log);
+
+        ss << "Saved to file : " << filepath;
+
+        Debugger::Log(WarningLevel::eInfo, ss.str());
+    }
+
+    // load from file
+    if (pInputSystem->KeyPressed(GLFW_KEY_2))
+    {
+        // moo moo
+
+        std::cout << "laoding from file\n";
+
+        std::string filepath;
+
+        gCoordinator.DestroyAllEntities();
+
+#if defined(_DEBUG)
+
+        filepath = "../../../../Assets/Scenes/data.json";
+
+        gCoordinator.DeserializeAllEntities(filepath);
+#else
+
+        filepath = "Assets/Scenes/data.json";
+
+        gCoordinator.DeserializeAllEntities(filepath);
+#endif
+
+        std::string log;
+        std::stringstream ss(log);
+
+        ss << "Load from file : " << filepath;
+
+        Debugger::Log(WarningLevel::eInfo, ss.str());
+    }
+
+    // reset
+    if (pInputSystem->KeyPressed(GLFW_KEY_3))
+    {
+        // moo moo
+
+        std::cout << "reset\n";
+
+        gCoordinator.DestroyAllEntities();
+
+        using namespace Uma_ECS;
+
+        // create entities
+        {
+           std::default_random_engine generator;
+           std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
+           std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
+           std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
+           std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+
+           Entity enemy;
+
+           {
+               enemy = gCoordinator.CreateEntity();
+
+               gCoordinator.AddComponent(
+                   enemy,
+                   RigidBody{
+                     .velocity = Vec2(0.0f, 0.0f),
+                     .acceleration = Vec2(0.0f, 0.0f),
+                     .accel_strength = 200,
+                     .fric_coeff = 100
+                   });
+
+               gCoordinator.AddComponent(
+                   enemy,
+                   Transform{
+                     .position = Vec2(randPositionX(generator), randPositionY(generator)),
+                     .rotation = Vec2(randRotation(generator), randRotation(generator)),
+                     .scale = Vec2(randScale(generator), randScale(generator))
+                   });
+
+               std::string texName = "enemy";
+               gCoordinator.AddComponent(
+                   enemy,
+                   SpriteRenderer{
+                     .textureName = texName,
+                     .flipX = false,
+                     .flipY = false,
+                     .texture = pResourcesManager->GetTexture(texName),
+                   });
+
+
+               gCoordinator.AddComponent(
+                   enemy,
+                   Collider{
+                     .layer = CollisionLayer::CL_ENEMY,
+                     .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                   });
+           }
+       
+           // using 1 enemy to duplicate 2500 times and rand its transform
+           for (size_t i = 0; i < 2500; i++)
+           {
+               Entity tmp = gCoordinator.DuplicateEntity(enemy);
+
+               Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+               tf.position = Vec2(randPositionX(generator), randPositionY(generator));
+               tf.rotation = Vec2(randRotation(generator), randRotation(generator));
+               tf.scale = Vec2(randScale(generator), randScale(generator));
+           }
+        }
+
+        // create player
+        player = gCoordinator.CreateEntity();
+        {
+           gCoordinator.AddComponent(
+               player,
+               Transform
+               {
+                   .position = Vec2(400.0f, 300.0f),
+                   .rotation = Vec2(1,1),
+                   .scale = Vec2(50,50),
+               });
+
+           gCoordinator.AddComponent(
+               player,
+               RigidBody{
+                 .velocity = Vec2(0.0f, 0.0f),
+                 .acceleration = Vec2(0.0f, 0.0f),
+                 .accel_strength = 2500,
+                 .fric_coeff = 5
+               });
+
+           gCoordinator.AddComponent(
+               player,
+               Player{});
+
+           std::string texName = "player";
+           gCoordinator.AddComponent(
+               player,
+               SpriteRenderer{
+                 .textureName = texName,
+                 .flipX = false,
+                 .flipY = false,
+                 .texture = pResourcesManager->GetTexture(texName),
+               });
+
+           gCoordinator.AddComponent(
+               player,
+               Collider{
+                 .layer = CollisionLayer::CL_PLAYER,
+                 .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+               });
+        }
+   
+        // create camera
+        cam = gCoordinator.CreateEntity();
+        {
+           gCoordinator.AddComponent(
+               cam,
+               Transform
+               {
+                   .position = Vec2(400.0f, 300.0f),
+                   .rotation = Vec2(0,0),
+                   .scale = Vec2(1,1),
+               });
+
+           gCoordinator.AddComponent(
+               player,
+               Camera
+               {
+                   .mZoom = 1.f,
+                   .followPlayer = true
+               });
+        }
+
+        std::cout << "reset DONE!\n";
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);

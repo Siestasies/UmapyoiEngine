@@ -9,6 +9,7 @@ namespace Uma_ECS
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
+            value.SetObject();
         }
 
         // Deserialize from JSON

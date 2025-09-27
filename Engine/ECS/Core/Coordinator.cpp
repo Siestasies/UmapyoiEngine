@@ -84,14 +84,15 @@ namespace Uma_ECS
         // write to file
         rapidjson::StringBuffer buffer;
         rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-        writer.SetIndent(' ', 4); // 4 spaces per indent
+        //writer.SetIndent(' ', 4); // 4 spaces per indent
+        writer.SetMaxDecimalPlaces(3);
         doc.Accept(writer);
 
         std::ofstream ofs(filename);
         ofs << buffer.GetString();
         ofs.close();
     }
-    void Coordinator::DeserializeWorld(const std::string& filename)
+    void Coordinator::DeserializeAllEntities(const std::string& filename)
     {
         std::ifstream ifs(filename);
         rapidjson::IStreamWrapper isw(ifs);
@@ -109,4 +110,13 @@ namespace Uma_ECS
         }
     }
 
+    void Coordinator::DestroyAllEntities()
+    {
+        std::vector<Entity> enList = aEntityManager->GetAllEntites();
+
+        for (auto const& en : enList)
+        {
+            DestroyEntity(en);
+        }
+    }
 }

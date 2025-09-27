@@ -61,6 +61,13 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
 
+    if (rbArray.Size() == 0 ||
+        cArray.Size() == 0 ||
+        tfArray.Size() == 0)
+    {
+        return;
+    }
+
     // split entities into list of entities in grid (spatial hash buckets)
     // this idea is to prevent situation that we are checking collison of 
     // all entities with one another at one shot, this is way too expensive and

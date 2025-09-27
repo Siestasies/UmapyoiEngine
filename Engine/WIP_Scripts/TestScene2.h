@@ -14,7 +14,6 @@ namespace Uma_Engine
 		void OnUnload() override
 		{
 			std::cout << "Test Scene 2: UNloaded" << std::endl;
-
 		}
 		void Update(float dt) override
 		{
