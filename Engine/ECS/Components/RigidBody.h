@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Math/Math.hpp"
+#include "../../Math/Math.h"
 //#include "../../Math/Vector.hpp"
 
 namespace Uma_ECS
@@ -10,5 +10,8 @@ namespace Uma_ECS
     {
         Vec2 velocity{};
         Vec2 acceleration{};
+
+        float accel_strength;   // acceleration (for tweak)
+        float fric_coeff;       // friction
     };
 }

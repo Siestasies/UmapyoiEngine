@@ -3,7 +3,7 @@
 
 //#include <GLFW/glfw3.h>   // needed for GLFW_KEY_LAST, GLFW_MOUSE_BUTTON_LAST
 
-#include "Core/SystemType.h"
+#include "../Core/SystemType.h"
 #include "Window.hpp"
 
 namespace Uma_Engine
@@ -36,6 +36,8 @@ namespace Uma_Engine
         static void GetMousePosition(double& x, double& y);
         static double GetMouseX();
         static double GetMouseY();
+
+        static void UpdatePreviousFrameState();
 
     private:
         static const char* GetKeyName(int key);

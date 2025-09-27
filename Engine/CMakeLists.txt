@@ -44,26 +44,37 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS}  "MemoryManager/MemoryManager.hpp" "MemoryManager/MemoryManager.cpp")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
+
+set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
+
+add_library(fmod STATIC IMPORTED)
+set_target_properties(fmod PROPERTIES
+    IMPORTED_LOCATION "${FMOD_DIR}/lib/x64/fmod_vc.lib"
+)
 
 # Link libraries
 target_link_libraries(Uma_Engine 
     PUBLIC 
         glfw
+        OpenGL::GL  # Cross-platform OpenGL linking
+	      fmod
         glad
-        OpenGL::GL
 )
 
 # Include directories
 target_include_directories(Uma_Engine 
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}
+        ${glm_SOURCE_DIR}  # Add GLM include directory
+	      ${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/inc # FMOD headers
         ${CMAKE_CURRENT_SOURCE_DIR}/Core
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Components
         ${CMAKE_CURRENT_SOURCE_DIR}/ECS/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
+        ${CMAKE_CURRENT_SOURCE_DIR}/RapidJSON
         ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
         ${glfw_SOURCE_DIR}/include        # <-- add this line

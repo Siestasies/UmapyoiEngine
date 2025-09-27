@@ -1,6 +1,6 @@
 #pragma once
 #include "../Core/SystemType.h"
-#include "Math/Math.hpp"
+#include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 
 #include <string>
@@ -9,6 +9,8 @@
 namespace Uma_Engine
 {
     class Graphics;
+
+    class Sound;
 
     class ResourcesManager : public ISystem
     {
@@ -25,7 +27,7 @@ namespace Uma_Engine
         void UnloadTexture(const std::string& textureName);
 
         // Get texture by name
-        const Texture* GetTexture(const std::string& textureName) const;
+        Texture* GetTexture(const std::string& textureName);
 
         // Check if texture exists
         bool HasTexture(const std::string& textureName) const;
@@ -36,6 +38,9 @@ namespace Uma_Engine
     private:
         std::unordered_map<std::string, Texture> mTextures;
         Graphics* mGraphics;
+
+        std::unordered_map<std::string, SoundInfo> mSoundList;
+        Sound* mSound;
 
         // Clear all textures
         void UnloadAllTextures();
