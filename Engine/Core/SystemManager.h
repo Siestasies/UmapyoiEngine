@@ -52,39 +52,36 @@ namespace Uma_Engine
         {
             using namespace std::chrono;
 
-            static double timeAccumulator = 0.0;
+            static double timeCheck = 0.0;
             static int frameCounter = 0;
 
-            timeAccumulator += dt;
+            timeCheck += dt;
             frameCounter++;
 
-            // Only update timings once per second
-            if (timeAccumulator >= 1.0)
+            if (timeCheck >= 1.0)
             {
                 double totalTime = 0.0;
 
                 for (size_t i = 0; i < systems.size(); ++i)
                 {
                     auto& system = systems[i];
-
+                    // calc timing per system
                     auto start = high_resolution_clock::now();
-                    system->Update(dt); // still call Update every frame!
+                    system->Update(dt);
                     auto end = high_resolution_clock::now();
 
                     double elapsed = duration<double, std::milli>(end - start).count();
                     timings[i] = elapsed;
                     totalTime += elapsed;
                 }
-
                 lastTotalTime = totalTime;
 
-                // Reset accumulator
-                timeAccumulator = 0.0;
+                // reset
+                timeCheck = 0.0;
                 frameCounter = 0;
             }
             else
             {
-                // Still call system updates every frame!
                 for (auto& system : systems)
                 {
                     system->Update(dt);
