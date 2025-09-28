@@ -112,7 +112,7 @@ void Uma_Engine::Test_Ecs::Init()
         sign.set(gCoordinator.GetComponentType<Player>());
         gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
     }
-    playerController->Init(pSystemManager, pInputSystem, &gCoordinator);
+    playerController->Init(pEventSystem, pInputSystem, &gCoordinator);
 
     // Physics System
     physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();

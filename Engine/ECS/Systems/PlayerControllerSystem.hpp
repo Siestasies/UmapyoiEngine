@@ -12,22 +12,21 @@
 
 namespace Uma_ECS
 {
-    class PlayerControllerSystem : public ECSSystem, Uma_Engine::EventListenerSystem
+    class PlayerControllerSystem : public ECSSystem
     {
     public:
-        inline void Init(Uma_Engine::SystemManager* sm, Uma_Engine::HybridInputSystem* is, Coordinator* c)
-        { 
-            pSystemManager = sm;
-            pInputSystem = is;
+        inline void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c)
+        {
+            pEventSystem = es;
+            pHybridInputSystem = is;
             pCoordinator = c;
 
-            EventListenerSystem::Init();
+            pEventSystem->Subscribe<Uma_Engine::KeyPressEvent>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
+            pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
+            pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
         }
         
         void Update(float dt);
-    protected:
-        void RegisterEventListeners() override;
-
     private:
         void OnKeyPress(const Uma_Engine::KeyPressEvent& event);
         void OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event);
@@ -35,7 +34,6 @@ namespace Uma_ECS
 
         void HandleMovementInput(float dt);
         void HandleActionInput();
-        //void UpdatePlayerMovement(Entity player, float velocityX, float velocityY);
 
     private:
         struct InputState
@@ -50,7 +48,8 @@ namespace Uma_ECS
             bool dashPressed = false;
         } inputState;
 
-        Uma_Engine::HybridInputSystem* pInputSystem = nullptr;
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
+        Uma_Engine::HybridInputSystem* pHybridInputSystem = nullptr;
         Coordinator* pCoordinator = nullptr;
     };
 }

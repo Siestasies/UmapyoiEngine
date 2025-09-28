@@ -115,7 +115,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<Player>());
                 gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
             }
-            playerController->Init(pSystemManager, pHybridInputSystem, &gCoordinator);
+            playerController->Init(pEventSystem, pHybridInputSystem, &gCoordinator);
 
             // Physics System
             physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
