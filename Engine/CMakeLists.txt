@@ -4,6 +4,31 @@ add_library(glad STATIC
     ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h")
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
+# Add ImGui (INSERT HERE - before ENGINE_SOURCES)
+set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/imgui")
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+set(IMGUI_HEADERS
+    ${IMGUI_DIR}/imgui.h
+    ${IMGUI_DIR}/imconfig.h
+    ${IMGUI_DIR}/imgui_internal.h
+    ${IMGUI_DIR}/imstb_rectpack.h
+    ${IMGUI_DIR}/imstb_textedit.h
+    ${IMGUI_DIR}/imstb_truetype.h
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.h
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.h
+)
+add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
+target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
+target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
+
 # Collect source files more systematically
 file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
@@ -15,6 +40,9 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "WIP_Scripts/*.cpp"
     "Debugging/*.cpp"
 )
+
+# Remove any ImGui files that might have been picked up by GLOB_RECURSE
+list(FILTER ENGINE_SOURCES EXCLUDE REGEX "imgui/.*")
 
 file(GLOB_RECURSE ENGINE_HEADERS
     "*.h"
@@ -60,6 +88,7 @@ target_link_libraries(Uma_Engine
         OpenGL::GL  # Cross-platform OpenGL linking
 	      fmod
         glad
+	imgui
 )
 
 # Include directories
@@ -78,6 +107,8 @@ target_include_directories(Uma_Engine
         ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
         ${glfw_SOURCE_DIR}/include        # <-- add this line
+        ${IMGUI_DIR}              # <-- Add this
+        ${IMGUI_DIR}/backends     # <-- Add this
 )
 
 # Set C++ standard

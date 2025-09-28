@@ -24,6 +24,8 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#include "WIP_Scripts/ImguiManager.h"
+
 #define DEBUG
 
 
@@ -54,6 +56,10 @@ int main()
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
     Uma_Engine::HybridInputSystem* inputSystem = systemManager.RegisterSystem<Uma_Engine::HybridInputSystem>();
 
+    // Register EVENT SYSTEM FIRST
+    std::cout << "Registering EventSystem...\n";
+    Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
+
     // Register SIMPLE EVENT LISTENER (just logs events)
     systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
@@ -66,7 +72,8 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::SceneManager>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-
+    Uma_Engine::ImguiManager* imguiHandler = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    imguiHandler->SetSystemManager(&systemManager);
 
     // Initialize all systems
     systemManager.Init();
@@ -134,7 +141,7 @@ int main()
     Uma_Engine::Debugger::Shutdown();
 
     return 0;
-} 
+}
 
 // JED FALLBACK PLAN
 //#include <iostream>

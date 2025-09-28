@@ -3,6 +3,8 @@
 #include <memory>
 #include <algorithm>
 #include <type_traits>
+#include <chrono>
+#include <iostream>
 #include "SystemType.h"
 #include "../Systems/Window.hpp"
 
@@ -20,7 +22,8 @@ namespace Uma_Engine
             T* ptr = system.get();
             ptr->SetSystemManager(this);
             systems.push_back(std::move(system));
-            return ptr; // Return pointer for further configuration if needed
+            timings.push_back(0.0); // keep timings vector in sync
+            return ptr;
         }
 
         // Initialize all systems
@@ -37,7 +40,6 @@ namespace Uma_Engine
         {
             for (auto& system : systems)
             {
-                // Check if system implements IWindowSystem
                 if (auto windowSystem = dynamic_cast<IWindowSystem*>(system.get()))
                 {
                     windowSystem->SetWindow(window);
@@ -45,12 +47,45 @@ namespace Uma_Engine
             }
         }
 
-        // Update all systems
+        // Update all systems with profiling
         void Update(float dt)
         {
-            for (auto& system : systems)
+            using namespace std::chrono;
+
+            static double timeCheck = 0.0;
+            static int frameCounter = 0;
+
+            timeCheck += dt;
+            frameCounter++;
+
+            if (timeCheck >= 1.0)
             {
-                system->Update(dt);
+                double totalTime = 0.0;
+
+                for (size_t i = 0; i < systems.size(); ++i)
+                {
+                    auto& system = systems[i];
+                    // calc timing per system
+                    auto start = high_resolution_clock::now();
+                    system->Update(dt);
+                    auto end = high_resolution_clock::now();
+
+                    double elapsed = duration<double, std::milli>(end - start).count();
+                    timings[i] = elapsed;
+                    totalTime += elapsed;
+                }
+                lastTotalTime = totalTime;
+
+                // reset
+                timeCheck = 0.0;
+                frameCounter = 0;
+            }
+            else
+            {
+                for (auto& system : systems)
+                {
+                    system->Update(dt);
+                }
             }
         }
 
@@ -77,7 +112,13 @@ namespace Uma_Engine
             return nullptr;
         }
 
+        // Access profiling info
+        double GetLastTotalTime() const { return lastTotalTime; }
+        const std::vector<double>& GetLastTimings() const { return timings; }
+
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
+        std::vector<double> timings;   // per-system timings (ms)
+        double lastTotalTime = 0.0;    // total update time (ms)
     };
 }
