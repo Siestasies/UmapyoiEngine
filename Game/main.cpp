@@ -22,10 +22,13 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#define DEBUG
+
+#ifdef DEBUG
 #define DEBUG_MEM
 #include "MemoryManager/MemoryManager.hpp"
+#endif // DEBUG
 
-#define DEBUG
 
 int main()
 {
@@ -140,10 +143,9 @@ int main()
         systemManager.Update(deltaTime);
     }
 
-    int* test = new int;
+    Uma_Engine::Debugger::Shutdown();
     std::cout << "\n=== Event System Test Complete ===\n";
     systemManager.Shutdown();
-    Uma_Engine::Debugger::Shutdown();
     std::cout << "Event test finished!\n";
 
 #ifdef DEBUG

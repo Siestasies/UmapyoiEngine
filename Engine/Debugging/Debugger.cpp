@@ -12,7 +12,7 @@ namespace Uma_Engine
 		consoleLog = console;
 		sLogFile.open(filename, std::ios::out | std::ios::trunc);
 		sLogFile << std::unitbuf; // immediately write
-		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~Debug~~~~~~~~~~~~~~~~~~~~~~");
+		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~DEBUG_START~~~~~~~~~~~~~~~~~~~");
 	}
 
 	void Debugger::Update()
@@ -24,7 +24,7 @@ namespace Uma_Engine
 
 	void Debugger::Shutdown()
 	{
-		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~~End~~~~~~~~~~~~~~~~~~~~~~~");
+		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~DEBUG_END~~~~~~~~~~~~~~~~~~~~");
 		sLogFile.close();
 	}
 
