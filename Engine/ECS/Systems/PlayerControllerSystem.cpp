@@ -24,12 +24,7 @@ namespace Uma_ECS
         HandleMovementInput(dt);
         HandleActionInput();
     }
-    void PlayerControllerSystem::RegisterEventListeners()
-    {
-        SubscribeToEvent<Uma_Engine::KeyPressEvent>([this](const Uma_Engine::KeyPressEvent& event) { OnKeyPress(event); });
-        SubscribeToEvent<Uma_Engine::KeyReleaseEvent>([this](const Uma_Engine::KeyReleaseEvent& event) { OnKeyRelease(event); });
-        SubscribeToEvent<Uma_Engine::KeyRepeatEvent>([this](const Uma_Engine::KeyRepeatEvent& event) { OnKeyRepeat(event); });
-    }
+
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
     {
         switch (event.key)
@@ -114,7 +109,7 @@ namespace Uma_ECS
 
         if (magnitude(rb.velocity) > 0.1f)
         {
-            if (eventSystem)
+            if (pEventSystem)
             {
                 //eventSystem->Emit<Uma_Engine::PlayerMoveEvent>(player, rb.velocity.x, rb.velocity.y);
             }
@@ -155,9 +150,9 @@ namespace Uma_ECS
 
         if (inputState.attackPressed && !lastAttackState)
         {
-            if (eventSystem)
+            if (pEventSystem)
             {
-                eventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Attack);
+                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Attack);
             }
 #ifdef _DEBUG_LOG
             std::cout << "Player Attack Action" << std::endl;
@@ -166,9 +161,9 @@ namespace Uma_ECS
 
         if (inputState.interactPressed && !lastInteractState)
         {
-            if (eventSystem)
+            if (pEventSystem)
             {
-                eventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Interact);
+                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Interact);
             }
 #ifdef _DEBUG_LOG
             std::cout << "Player Interact Action" << std::endl;
@@ -177,9 +172,9 @@ namespace Uma_ECS
 
         if (inputState.dashPressed && !lastDashState)
         {
-            if (eventSystem)
+            if (pEventSystem)
             {
-                eventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Dash);
+                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Dash);
             }
 #ifdef _DEBUG_LOG
             std::cout << "Player Dash Action" << std::endl;
