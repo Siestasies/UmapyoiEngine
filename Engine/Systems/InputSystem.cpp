@@ -8,7 +8,7 @@
 #include "imgui.h"
 
 // comment and uncomment this line below to enable/ disable console debug log
-// #define _DEBUG_LOG
+ #define _DEBUG_LOG
 
 namespace Uma_Engine
 {
@@ -46,19 +46,11 @@ namespace Uma_Engine
 
         mWindow = window;
 
-        // IMPORTANT: Don't set callbacks here if ImGui is using them
-        // Instead, we'll poll input directly or chain callbacks
-        // Comment out these lines to let ImGui handle input first:
+        // set callbacks for inputs
 
-        // glfwSetKeyCallback(mWindow, KeyCallback);
-        // glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
-        // glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
-
-        // Instead, we'll use polling in Update() method
-
-#ifdef _DEBUG_LOG
-        std::cout << "InputSystem window set (using polling mode for ImGui compatibility)" << std::endl;
-#endif // !_DEBUG_LOG
+        glfwSetKeyCallback(mWindow, KeyCallback);
+        glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
+        glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
     }
 
     void InputSystem::Update(float dt)
@@ -67,79 +59,13 @@ namespace Uma_Engine
         if (!mWindow) return;
 
         // Get ImGui IO to check if ImGui wants input
-        ImGuiIO& io = ImGui::GetIO();
+        //ImGuiIO& io = ImGui::GetIO();
 
         // Update mouse position
         double xpos, ypos;
         glfwGetCursorPos(mWindow, &xpos, &ypos);
         sMouseX = xpos;
         sMouseY = ypos;
-
-        // Only process keyboard input if ImGui doesn't want it
-        if (!io.WantCaptureKeyboard) {
-            // Poll keyboard state directly
-            for (int i = 0; i <= GLFW_KEY_LAST; ++i) {
-                int state = glfwGetKey(mWindow, i);
-                bool isPressed = (state == GLFW_PRESS || state == GLFW_REPEAT);
-
-                const char* name = GetKeyName(i);
-                if (name) {
-                    // Just pressed
-                    if (isPressed && !sKeys[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " pressed" << std::endl;
-#endif
-                    }
-                    // Just released
-                    else if (!isPressed && sKeys[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " released" << std::endl;
-#endif
-                    }
-                    // Held down
-                    else if (isPressed && sKeys[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " held" << std::endl;
-#endif
-                    }
-                }
-
-                sKeys[i] = isPressed;
-            }
-        }
-
-        // Only process mouse input if ImGui doesn't want it
-        if (!io.WantCaptureMouse) {
-            // Poll mouse button state directly
-            for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i) {
-                int state = glfwGetMouseButton(mWindow, i);
-                bool isPressed = (state == GLFW_PRESS);
-
-                const char* name = (i == 0) ? "LEFT_MOUSE" : (i == 1) ? "RIGHT_MOUSE" : (i == 2) ? "MIDDLE_MOUSE" : nullptr;
-                if (name) {
-                    // Just pressed
-                    if (isPressed && !sMouseButtons[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " pressed" << std::endl;
-#endif
-                    }
-                    // Just released
-                    else if (!isPressed && sMouseButtons[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " released" << std::endl;
-#endif
-                    }
-                    // Held down
-                    else if (isPressed && sMouseButtons[i]) {
-#ifdef _DEBUG_LOG
-                        std::cout << name << " held" << std::endl;
-#endif
-                    }
-                }
-
-                sMouseButtons[i] = isPressed;
-            }
-        }
         
         // Update previous frame state
         // sKeysPrevFrame = sKeys;

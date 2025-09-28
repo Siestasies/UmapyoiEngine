@@ -56,10 +56,6 @@ int main()
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
     Uma_Engine::HybridInputSystem* inputSystem = systemManager.RegisterSystem<Uma_Engine::HybridInputSystem>();
 
-    // Register EVENT SYSTEM FIRST
-    std::cout << "Registering EventSystem...\n";
-    Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
-
     // Register SIMPLE EVENT LISTENER (just logs events)
     systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
@@ -123,13 +119,13 @@ int main()
             window.SetTitle(newTitle.str());
         }
 
-        Uma_Engine::InputSystem::UpdatePreviousFrameState();
+        Uma_Engine::HybridInputSystem::UpdatePreviousFrameState();
 
         // Update window (processes GLFW events -> triggers your InputSystem callbacks)
         // always update before systemmanager updates
         window.Update();
 
-        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }

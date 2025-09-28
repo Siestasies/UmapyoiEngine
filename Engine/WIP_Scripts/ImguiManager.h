@@ -331,7 +331,7 @@ namespace Uma_Engine
                         {
                             double ms = timings[i];
                             double percent = (ms / total) * 100.0;
-                            ImGui::Text("System %zu: %.1f ms (%.1f%%)", i, ms, percent);
+                            ImGui::Text("System %s: %.1f ms (%.1f%%)", m_systemManager->GetSystemName(i).c_str(), ms, percent);
                         }
 
                         ImGui::Separator();

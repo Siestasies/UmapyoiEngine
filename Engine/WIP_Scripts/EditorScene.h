@@ -375,7 +375,7 @@ namespace Uma_Engine
             }
 
             // destroy all
-            if (pHybridInputSystem->KeyPressed(GLFW_KEY_4))
+            if (HybridInputSystem::KeyPressed(GLFW_KEY_4))
             {
                 std::cout << "Destroy all entities\n";
 

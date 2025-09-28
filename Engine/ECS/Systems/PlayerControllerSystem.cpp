@@ -108,9 +108,9 @@ namespace Uma_ECS
         Vec2 targetAccel = { 0, 0 };
 
         if (inputState.moveRight)   targetAccel.x += rb.accel_strength;
-        if (inputState.moveLeft)    targetAccel.x -= rb.accel_strength;
-        if (inputState.moveUp)      targetAccel.y += rb.accel_strength;
-        if (inputState.moveDown)    targetAccel.y -= rb.accel_strength;
+        if (inputState.moveLeft )   targetAccel.x -= rb.accel_strength;
+        if (inputState.moveUp   )   targetAccel.y += rb.accel_strength;
+        if (inputState.moveDown )   targetAccel.y -= rb.accel_strength;
 
         if (magnitude(rb.velocity) > 0.1f)
         {

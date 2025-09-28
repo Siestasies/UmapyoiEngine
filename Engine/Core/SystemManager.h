@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <chrono>
+#include <string>
 #include <iostream>
 #include "SystemType.h"
 #include "../Systems/Window.hpp"
@@ -115,6 +116,11 @@ namespace Uma_Engine
         // Access profiling info
         double GetLastTotalTime() const { return lastTotalTime; }
         const std::vector<double>& GetLastTimings() const { return timings; }
+
+        std::string GetSystemName(size_t index)
+        {
+            return typeid(*systems[index].get()).name();
+        }
 
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
