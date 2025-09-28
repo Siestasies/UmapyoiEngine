@@ -1,11 +1,14 @@
 #pragma once
+
+#include <algorithm>
 #include <functional>
+#include <memory>
+#include <typeindex>
 #include <unordered_map>
 #include <vector>
-#include <typeindex>
-#include <memory>
-#include <algorithm>
-#include "EventTypes.h"
+
+#include "EventType.h"
+#include "SystemManager.h"
 #include "SystemType.h"
 
 namespace Uma_Engine
@@ -46,8 +49,6 @@ namespace Uma_Engine
         void Init() override;
         void Update(float dt) override;
         void Shutdown() override;
-
-        // === SUBSCRIPTION API ===
 
         // Subscribe to an event type with callback
         template<typename T>

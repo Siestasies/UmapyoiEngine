@@ -19,7 +19,7 @@ namespace
     float playerRotation;
     float rotationSpeed;
     float moveSpeed;
-    float scale;
+    float fScale;
     float zoom;
 
     // Demo objects
@@ -67,7 +67,7 @@ namespace Uma_Engine
         playerRotation = 0.0f;
         rotationSpeed = 45.0f;
         moveSpeed = 200.0f;
-        scale = 0.3f;
+        fScale = 0.3f;
         zoom = 1.0f;
 
         // Pre-generate demo objects
@@ -178,13 +178,13 @@ namespace Uma_Engine
         // Scale sprite
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_Z))
         {
-            scale -= 1.0f * deltaTime;
-            if (scale < 0.1f) scale = 0.1f;
+            fScale -= 1.0f * deltaTime;
+            if (fScale < 0.1f) fScale = 0.1f;
         }
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_X))
         {
-            scale += 1.0f * deltaTime;
-            if (scale > 3.0f) scale = 3.0f;
+            fScale += 1.0f * deltaTime;
+            if (fScale > 3.0f) fScale = 3.0f;
         }
 
         // Update demo object rotations
@@ -264,7 +264,7 @@ namespace Uma_Engine
         if (playerTexture != nullptr)
         {
             Vec2 playerPos = { playerPosition.x, playerPosition.y };
-            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(scale), playerRotation);
+            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(fScale), playerRotation);
         }
 
         // Draw debug info

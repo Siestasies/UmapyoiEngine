@@ -110,6 +110,10 @@ namespace Uma_Engine
                 }
             }
         }
+        
+        // Update previous frame state
+        // sKeysPrevFrame = sKeys;
+        // sMouseButtonsPrevFrame = sMouseButtons;
     }
 
     void InputSystem::Shutdown()
@@ -164,6 +168,12 @@ namespace Uma_Engine
         std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
 #endif // !_DEBUG_LOG
 
+    }
+
+    void InputSystem::UpdatePreviousFrameState()
+    {
+        sKeysPrevFrame = sKeys;
+        sMouseButtonsPrevFrame = sMouseButtons;
     }
 
     bool InputSystem::KeyDown(int key) { return (key >= 0 && key <= GLFW_KEY_LAST) ? sKeys[key] : false; }

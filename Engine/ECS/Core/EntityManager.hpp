@@ -15,6 +15,8 @@ namespace Uma_ECS
         Entity CreateEntity();
         void DestroyEntity(Entity entity);
 
+        bool HasActiveEntity(Entity entity) const;
+
         void SetSignature(Entity entity, Signature& const signature);
         Signature GetSignature(Entity entity) const;
 

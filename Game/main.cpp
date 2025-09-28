@@ -36,7 +36,7 @@ int main()
 #endif // DEBUG
 
     // Create window
-    Uma_Engine::Window window(800, 600, "UmapyoiEngine - Event System Test");
+    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
 
     // Initialize the engine
     if (!window.Initialize())
@@ -45,22 +45,17 @@ int main()
         return -1;
     }
 
-    std::cout << "\n=== TESTING EVENT SYSTEM + INPUT SYSTEM ===\n";
-
     // Create a systems manager
     Uma_Engine::SystemManager systemManager;
 
     // Register EVENT SYSTEM FIRST
-    std::cout << "Registering EventSystem...\n";
     Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
 
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
-    std::cout << "Registering EventInputSystem (InputSystem + Events)...\n";
-    HybridInputSystem* inputSystem = systemManager.RegisterSystem<HybridInputSystem>();
+    Uma_Engine::HybridInputSystem* inputSystem = systemManager.RegisterSystem<Uma_Engine::HybridInputSystem>();
 
     // Register SIMPLE EVENT LISTENER (just logs events)
-    std::cout << "Registering TestEventListener...\n";
-    systemManager.RegisterSystem<TestEventListener>();
+    systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
     // Register your other systems normally
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
@@ -74,19 +69,91 @@ int main()
 
 
     // Initialize all systems
-    std::cout << "\nInitializing all systems...\n";
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
-    // IMPORTANT: Connect InputSystem to EventSystem
+    // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
 
-    // Show what we're listening for
+#ifdef DEBUG
     std::cout << "\nEvent listener counts:\n";
-    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Events::KeyPressEvent>() << "\n";
-    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Events::KeyReleaseEvent>() << "\n";
-    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Events::MouseButtonEvent>() << "\n";
-    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Events::MouseMoveEvent>() << "\n";
+    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
+    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
+    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
+    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+#endif
+
+    // Test GLM-compatibility
+    Matrix4x4<float> K(
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    );
+
+
+    glm::mat4 G(
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    );
+
+    std::cout << "Your Matrix K:\n" << K << "\n";
+    std::cout << "GLM Matrix G:\n" << G << "\n";
+
+    auto KplusK = K + K;
+    auto GplusG = G + G;
+    std::cout << "K + K:\n" << KplusK << "\n";
+    std::cout << "G + G:\n" << GplusG << "\n";
+
+
+    // 1. Construct identity and zero matrices
+    Matrix4x4<float> I = Matrix4x4<float>::identity();
+    Matrix4x4<float> Z = Matrix4x4<float>::zero();
+
+    std::cout << "Identity matrix:\n" << I << "\n\n";
+    std::cout << "Zero matrix:\n" << Z << "\n\n";
+
+    // 2. Construct a custom matrix
+    Matrix4x4<float> A(
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16
+    );
+
+    std::cout << "Matrix A:\n" << A << "\n\n";
+
+    // 3. Test addition and subtraction
+    Matrix4x4<float> B = A + I;
+    Matrix4x4<float> C = A - I;
+
+    std::cout << "A + I:\n" << B << "\n\n";
+    std::cout << "A - I:\n" << C << "\n\n";
+
+    // 4. Scalar multiplication/division
+    Matrix4x4<float> D = A * 2.0f;
+    Matrix4x4<float> E = A / 2.0f;
+
+    std::cout << "A * 2:\n" << D << "\n\n";
+    std::cout << "A / 2:\n" << E << "\n\n";
+
+    // 5. Matrix multiplication (I * A = A)
+    Matrix4x4<float> F = I * A;
+    std::cout << "I * A (should equal A):\n" << F << "\n\n";
+
+    // 6. Transpose
+    Matrix4x4<float> At = A.transpose();
+    std::cout << "Transpose of A:\n" << At << "\n\n";
+
+    // 7. Determinant (Note: current determinant implementation is only 3x3 placeholder in your code)
+    std::cout << "Determinant of A (currently 3x3 placeholder logic): "
+        << A.determinant() << "\n\n";
+
+    // 8. Equality check
+    std::cout << "A == F ? " << (A == F ? "true" : "false") << "\n";
+    std::cout << "A == B ? " << (A == B ? "true" : "false") << "\n";
 
     // Game loop
     float lastFrame = 0.0f;
@@ -96,8 +163,6 @@ int main()
     int frameCount = 0;
 
     std::stringstream newTitle;
-
-    std::cout << "Starting event test loop...\n\n";
 
     while (!window.ShouldClose())
     {
@@ -133,24 +198,19 @@ int main()
         // always update before systemmanager updates
         window.Update();
 
-        // Check for ESC to quit (using your original InputSystem method)
         if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
-            std::cout << "\nESC pressed - quitting event test\n";
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
 
-        // Update all systems (this will trigger event dispatching!)
         systemManager.Update(deltaTime);
         //std::cout << "delta time : " << deltaTime << std::endl;
 
     }
 
-    std::cout << "\n=== Event System Test Complete ===\n";
     systemManager.Shutdown();
     Uma_Engine::Debugger::Shutdown();
 
-    std::cout << "Event test finished!\n";
     return 0;
 } 
 
