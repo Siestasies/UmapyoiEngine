@@ -1,4 +1,6 @@
 #include "Debugger.hpp"
+#include <ctime>
+
 namespace Uma_Engine
 {
 	bool			Debugger::consoleLog = false;
@@ -16,8 +18,8 @@ namespace Uma_Engine
 	void Debugger::Update()
 	{
 		// Crash Test
-		/*int* p = nullptr;
-		*p = 42;*/
+		int* p = nullptr;
+		*p = 42;
 	}
 
 	void Debugger::Shutdown()
@@ -30,23 +32,30 @@ namespace Uma_Engine
 	{
 		std::lock_guard<std::mutex> lock(sLogMutex);
 
-		std::string finalMsg;
+		std::time_t now = std::time(nullptr);
+		std::tm localTime;
+		localtime_s(&localTime, &now);
+
+		char buffer[16];
+		std::strftime(buffer, sizeof(buffer), "%H:%M:%S", &localTime);
+
+		std::string finalMsg = "[" + std::string(buffer) + "] ";
 		switch (level)
 		{
 		case WarningLevel::eInfo:
-			finalMsg = "[Log]Info: <";
+			finalMsg += "[Log]Info: <";
 			break;
 		case WarningLevel::eWarning:
-			finalMsg = "[Log]Warning: <";
+			finalMsg += "[Log]Warning: <";
 			break;
 		case WarningLevel::eError:
-			finalMsg = "[Log]Error: <";
+			finalMsg += "[Log]Error: <";
 			break;
 		case WarningLevel::eCritical:
-			finalMsg = "[Log]Critical: <";
+			finalMsg += "[Log]Critical: <";
 			break;
 		default:
-			finalMsg = "<";
+			finalMsg += "<";
 			break;
 		}
 
