@@ -22,16 +22,11 @@ namespace Uma_ECS
 
     void RenderingSystem::Update(float dt)
     {
+        if (!aEntities.size()) return;
+
         auto& srArray = pCoordinator->GetComponentArray<SpriteRenderer>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
-
-        if (srArray.Size() == 0 ||
-            tfArray.Size() == 0 ||
-            camArray.Size() == 0)
-        {
-            return;
-        }
 
         // one camera for now
         Entity camera = camArray.GetEntity(0);
@@ -41,30 +36,28 @@ namespace Uma_ECS
         pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
-        for (size_t i = 0; i < srArray.Size(); ++i)
+
+        for (const auto& entity : aEntities)
         {
-            Entity e = srArray.GetEntity(i);
+            auto& sr = srArray.GetData(entity);
+            auto& tf = tfArray.GetData(entity);
 
-            if (tfArray.Has(e))  // check if Transform exists
+            if (!sr.texture)
             {
-                auto& sr = srArray.GetComponentAt(i);
-                auto& tf = tfArray.GetData(e);
-
-                if (!sr.texture)
-                {
-                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
-                }
-
+                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+            }
+            else
+            {
                 if (sr.texture->tex_id == 0)
                 {
                     std::stringstream log;
-                    log << "Entity(" << e << ") texture is not valid.";
+                    log << "Entity(" << entity << ") texture is not valid.";
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                     continue;
                 }
 
                 pGraphics->DrawSprite(sr.texture->tex_id, tf.scale, tf.position);
             }
-        }
+       }
     }
 }

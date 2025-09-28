@@ -91,10 +91,10 @@ void Uma_Engine::Test_Ecs::Init()
     // register components
     gCoordinator.RegisterComponent<Transform>();
     gCoordinator.RegisterComponent<RigidBody>();
-    gCoordinator.RegisterComponent<Player>();
     gCoordinator.RegisterComponent<Collider>();
     gCoordinator.RegisterComponent<SpriteRenderer>();
     gCoordinator.RegisterComponent<Camera>();
+    gCoordinator.RegisterComponent<Player>();
 
     // Player controller
     playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -365,6 +365,14 @@ void Uma_Engine::Test_Ecs::Update(float dt)
         }
 
         std::cout << "reset DONE!\n";
+    }
+
+    // destroy all
+    if (pInputSystem->KeyPressed(GLFW_KEY_4))
+    {
+        std::cout << "Destroy all entities\n";
+
+        gCoordinator.DestroyAllEntities();
     }
 
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);

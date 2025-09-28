@@ -18,55 +18,45 @@ void Uma_ECS::CollisionSystem::Update(float dt)
 
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
+    if (!aEntities.size()) return;
+
     // Get dense component arrays once
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
     // Iterate over the smaller array for efficiency (here, RigidBody)
-    for (size_t i = 0; i < cArray.Size(); ++i)
+    for (auto const& entity : aEntities)
     {
-        Entity e = cArray.GetEntity(i);
+        auto& c = cArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
 
-        if (tfArray.Has(e))  // check if Transform exists
-        {
-            auto& c = cArray.GetComponentAt(i);
-            auto& tf = tfArray.GetData(e);
+        // skip none layer
+        if ((c.layer & CollisionLayer::CL_NONE)) continue;
 
-            // skip none layer
-            if ((c.layer & CollisionLayer::CL_NONE)) continue;
+        float halfWidth = (1.f / 2.0f) * tf.scale.x;
+        float halfHeight = (1.f / 2.0f) * tf.scale.y;
 
-            float halfWidth = (1.f / 2.0f) * tf.scale.x;
-            float halfHeight = (1.f / 2.0f) * tf.scale.y;
+        // update Bounding box
+        c.boundingBox.min = {
+            tf.prevPos.x - halfWidth,
+            tf.prevPos.y - halfHeight
+        };
 
-            // update Bounding box
-            c.boundingBox.min = {
-                tf.prevPos.x - halfWidth,
-                tf.prevPos.y - halfHeight
-            };
-
-            c.boundingBox.max = {
-                tf.prevPos.x + halfWidth,
-                tf.prevPos.y + halfHeight
-            };
-
-            //std::cout << "entity " << e << " : " << c.boundingBox.max << " " << c.boundingBox.min << std::endl;
-        }
+        c.boundingBox.max = {
+            tf.prevPos.x + halfWidth,
+            tf.prevPos.y + halfHeight
+        };
     }
 }
 
 void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 {
+    if (!aEntities.size()) return;
+
     // Get dense component arrays once
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
-
-    if (rbArray.Size() == 0 ||
-        cArray.Size() == 0 ||
-        tfArray.Size() == 0)
-    {
-        return;
-    }
 
     // split entities into list of entities in grid (spatial hash buckets)
     // this idea is to prevent situation that we are checking collison of 

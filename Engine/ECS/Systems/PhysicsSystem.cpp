@@ -9,59 +9,67 @@
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
-
-    // THIS IS OLD METHOD WHICH IS EXPENSIVE
-    // NOT IN USED
-    {
-    //for (auto const& entity : aEntities)
-    //{
-    //    auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
-    //    auto& tf = gCoordinator->GetComponent<Transform>(entity);
-
-    //    tf.position += rb.velocity;
-
-    //    //std::cout << "physics updating\n";
-    //}
-    }
-
     // Get dense component arrays once
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-    if (rbArray.Size() == 0 ||
-        tfArray.Size() == 0)
+    // the entity list is being updated when new entity with the 
+    // same signature is being added / removed
+    for (auto const& entity : aEntities) 
     {
-        return;
+        auto& rb = rbArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
+
+        // set prev pos
+        tf.prevPos = tf.position;
+
+        rb.velocity += rb.acceleration * dt;
+
+        rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+
+        tf.position += rb.velocity * dt;
+
+        rb.acceleration = { 0,0 };
     }
 
-    // Iterate over the smaller array for efficiency (here, RigidBody)
-    for (size_t i = 0; i < rbArray.Size(); ++i)
-    {
-        Entity e = rbArray.GetEntity(i);
+    //// Get dense component arrays once
+    //auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    //auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-        if (tfArray.Has(e))  // check if Transform exists
-        {
-            auto& rb = rbArray.GetComponentAt(i);
-            auto& tf = tfArray.GetData(e);
+    //if (rbArray.Size() == 0 ||
+    //    tfArray.Size() == 0)
+    //{
+    //    return;
+    //}
 
-            // set prev pos
-            tf.prevPos = tf.position;
+    //// Iterate over the smaller array for efficiency (here, RigidBody)
+    //for (size_t i = 0; i < rbArray.Size(); ++i)
+    //{
+    //    Entity e = rbArray.GetEntity(i);
 
-            rb.velocity += rb.acceleration * dt;
+    //    if (tfArray.Has(e))  // check if Transform exists
+    //    {
+    //        auto& rb = rbArray.GetComponentAt(i);
+    //        auto& tf = tfArray.GetData(e);
 
-            rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+    //        // set prev pos
+    //        tf.prevPos = tf.position;
 
-            tf.position += rb.velocity * dt;
+    //        rb.velocity += rb.acceleration * dt;
 
-            rb.acceleration = { 0,0 };
+    //        rb.velocity -= rb.velocity * rb.fric_coeff * dt;
 
-            // tmp
-            /*if (tf.position.y <= 0)
-            {
-                tf.position.y += 1080.f;
-            }*/
-        }
-    }
+    //        tf.position += rb.velocity * dt;
+
+    //        rb.acceleration = { 0,0 };
+
+    //        // tmp
+    //        /*if (tf.position.y <= 0)
+    //        {
+    //            tf.position.y += 1080.f;
+    //        }*/
+    //    }
+    //}
 }
 
 void Uma_ECS::PhysicsSystem::PrintLog()

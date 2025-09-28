@@ -58,6 +58,14 @@ namespace Uma_ECS
             return aComponentTypes[type_name];
         }
 
+        ComponentType GetComponentType(const std::string& compType)
+        {
+            assert(aComponentTypes.find(compType) != aComponentTypes.end()
+                && "Error : Component is not registered.");
+
+            return aComponentTypes[compType];
+        }
+
         template<typename T>
         void AddComponent(Entity entity, const T& component)
         {
@@ -103,12 +111,20 @@ namespace Uma_ECS
             }
         }
 
-        void DeserializeAll(Entity entity, const rapidjson::Value& comps) 
+        Signature DeserializeAll(Entity entity, const rapidjson::Value& comps) 
         {
+            Signature sign;
             for (auto const& pair : aComponentArrays) 
             {
-                pair.second->Deserialize(entity, comps);
+                std::string compType = pair.second->Deserialize(entity, comps); // ""
+
+                if (!compType.empty())
+                {
+                    ComponentType typeIndex = GetComponentType(compType); // returns int
+                    sign.set(typeIndex);  // << set the bit
+                }
             }
+            return sign;
         }
 
     private:

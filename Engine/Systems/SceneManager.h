@@ -6,7 +6,7 @@
 #include <memory>
 #include <iostream>
 
-#include "WIP_Scripts/TestScene.h"
+#include "WIP_Scripts/EditorScene.h"
 #include "WIP_Scripts/TestScene2.h"
 
 namespace Uma_Engine
@@ -23,7 +23,7 @@ namespace Uma_Engine
                 std::cout << "Scene Manager INIT" << std::endl;
 
                 // Create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<TestScene> testScene1 = std::make_unique<TestScene>();
+                std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>();
                 std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>();
 
                 // Add TestScene as a unique_ptr<Scene> to the scenes map

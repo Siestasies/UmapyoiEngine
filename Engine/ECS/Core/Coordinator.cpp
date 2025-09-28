@@ -106,7 +106,11 @@ namespace Uma_ECS
             Entity entity = aEntityManager->CreateEntity(); // new ID
 
             const auto& comps = entityVal["components"];
-            aComponentManager->DeserializeAll(entity, comps);
+            Signature sign = aComponentManager->DeserializeAll(entity, comps);
+
+            aEntityManager->SetSignature(entity, sign);
+
+            aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
         }
     }
 
