@@ -22,6 +22,9 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#define DEBUG_MEM
+#include "MemoryManager/MemoryManager.hpp"
+
 #define DEBUG
 
 int main()
@@ -30,6 +33,7 @@ int main()
 #ifdef DEBUG
     Uma_Engine::Debugger::Init(true);
     Uma_Engine::CrashLogger::StartUp();
+    Uma_Engine::MemoryManager::Enable();
 #endif // DEBUG
 
     // Create window
@@ -136,13 +140,18 @@ int main()
         systemManager.Update(deltaTime);
     }
 
+    int* test = new int;
     std::cout << "\n=== Event System Test Complete ===\n";
     systemManager.Shutdown();
     Uma_Engine::Debugger::Shutdown();
-
     std::cout << "Event test finished!\n";
+
+#ifdef DEBUG
+    Uma_Engine::MemoryManager::Disable();
+    Uma_Engine::MemoryManager::ReportLeaks();
+#endif // DEBUG
     return 0;
-} 
+}
 
 // JED FALLBACK PLAN
 //#include <iostream>
