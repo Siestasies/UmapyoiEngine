@@ -188,12 +188,6 @@ namespace Uma_Engine
     double InputSystem::GetMouseX() { return sMouseX; }
     double InputSystem::GetMouseY() { return sMouseY; }
 
-    void InputSystem::UpdatePreviousFrameState()
-    {
-        sKeysPrevFrame = sKeys;
-        sMouseButtonsPrevFrame = sMouseButtons;
-    }
-
     const char* InputSystem::GetKeyName(int key)
     {
         switch (key) {

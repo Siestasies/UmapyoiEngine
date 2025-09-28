@@ -20,13 +20,14 @@
 
 // Engine Systems
 #include "Systems/InputSystem.h"
+#include "WIP_Scripts/Test_Input_Events.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/Sound.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
-#include "../Core/EventTypes.h"
+#include "../Core/ECSEvents.h"
 
 // debug
 #include "Debugging/Debugger.hpp"
@@ -47,7 +48,8 @@ std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
 
-Uma_Engine::InputSystem* pInputSystem;
+//Uma_Engine::InputSystem* pInputSystem;
+Uma_Engine::HybridInputSystem* pHybridInputSystem;
 Uma_Engine::Graphics* pGraphics;
 Uma_Engine::Sound* pSound;
 Uma_Engine::ResourcesManager* pResourcesManager;
@@ -68,7 +70,8 @@ namespace Uma_Engine
 
 		    void OnLoad() override
 		    {
-            pInputSystem = pSystemManager->GetSystem<InputSystem>();
+            //pInputSystem = pSystemManager->GetSystem<InputSystem>();
+            pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
             pGraphics = pSystemManager->GetSystem<Graphics>();
             pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
             pEventSystem = pSystemManager->GetSystem<EventSystem>();
@@ -76,8 +79,8 @@ namespace Uma_Engine
 
             // event system stuffs
             //subscribe to events
-            pEventSystem->Subscribe<Uma_Engine::Events::EntityCreatedEvent>(
-                [](const Uma_Engine::Events::EntityCreatedEvent& e) {
+            pEventSystem->Subscribe<Uma_Engine::EntityCreatedEvent>(
+                [](const Uma_Engine::EntityCreatedEvent& e) {
                     //std::cout << "Entity created: " << e.entityId << std::endl;
                     // e.handled = true;
                 });
@@ -112,7 +115,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<Player>());
                 gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
             }
-            playerController->Init(pInputSystem, &gCoordinator);
+            playerController->Init(pSystemManager, pHybridInputSystem, &gCoordinator);
 
             // Physics System
             physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
@@ -185,7 +188,7 @@ namespace Uma_Engine
             cameraSystem->Update(dt);
 
             // save to file
-            if (pInputSystem->KeyPressed(GLFW_KEY_1))
+            if (pHybridInputSystem->KeyPressed(GLFW_KEY_1))
             {
                 std::string filepath;
 
@@ -210,7 +213,7 @@ namespace Uma_Engine
             }
 
             // load from file
-            if (pInputSystem->KeyPressed(GLFW_KEY_2))
+            if (pHybridInputSystem->KeyPressed(GLFW_KEY_2))
             {
                 std::string filepath;
 
@@ -237,7 +240,7 @@ namespace Uma_Engine
             }
 
             // reset
-            if (pInputSystem->KeyPressed(GLFW_KEY_3))
+            if (pHybridInputSystem->KeyPressed(GLFW_KEY_3))
             {
                 gCoordinator.DestroyAllEntities();
 
@@ -372,7 +375,7 @@ namespace Uma_Engine
             }
 
             // destroy all
-            if (pInputSystem->KeyPressed(GLFW_KEY_4))
+            if (pHybridInputSystem->KeyPressed(GLFW_KEY_4))
             {
                 std::cout << "Destroy all entities\n";
 

@@ -6,7 +6,7 @@
 #include "Core/WindowEvents.h"
 #include "Systems/InputSystem.h"
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 namespace Uma_Engine
 {

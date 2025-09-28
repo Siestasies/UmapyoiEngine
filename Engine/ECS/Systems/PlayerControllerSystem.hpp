@@ -35,7 +35,7 @@ namespace Uma_ECS
 
         void HandleMovementInput(float dt);
         void HandleActionInput();
-        void UpdatePlayerMovement(Entity player, float velocityX, float velocityY);
+        //void UpdatePlayerMovement(Entity player, float velocityX, float velocityY);
 
     private:
         struct InputState
