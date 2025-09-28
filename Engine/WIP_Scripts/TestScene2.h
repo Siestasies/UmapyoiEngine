@@ -6,6 +6,11 @@ namespace Uma_Engine
 {
 	class TestScene2 : public Scene
 	{
+		private:
+			SystemManager* pSystemManagerRef;
+
+		public:
+			TestScene2(SystemManager* sm) : pSystemManagerRef(sm) {}
 		void OnLoad() override
 		{
 			// parse files here
