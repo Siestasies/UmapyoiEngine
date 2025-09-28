@@ -23,7 +23,7 @@ namespace Uma_Engine
                 std::cout << "Scene Manager INIT" << std::endl;
 
                 // Create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<TestScene> testScene1 = std::make_unique<TestScene>(pSystemManager);
+                std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>(pSystemManager);
                 std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>(pSystemManager);
 
                 // Add TestScene as a unique_ptr<Scene> to the scenes map

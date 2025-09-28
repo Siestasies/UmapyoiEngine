@@ -9,27 +9,27 @@
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
-    // Get dense component arrays once
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-    // the entity list is being updated when new entity with the 
-    // same signature is being added / removed
-    for (auto const& entity : aEntities) 
+    for (auto const& entity : aEntities)
     {
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
-        // set prev pos
         tf.prevPos = tf.position;
 
+        // Apply acceleration
         rb.velocity += rb.acceleration * dt;
 
-        rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+        // Apply smooth friction
+        rb.velocity *= std::exp(-rb.fric_coeff * dt);
+
+        const float epsilon = 0.01f;
+        if (std::abs(rb.velocity.x) < epsilon) rb.velocity.x = 0.f;
+        if (std::abs(rb.velocity.y) < epsilon) rb.velocity.y = 0.f;
 
         tf.position += rb.velocity * dt;
-
-        rb.acceleration = { 0,0 };
     }
 
     //// Get dense component arrays once

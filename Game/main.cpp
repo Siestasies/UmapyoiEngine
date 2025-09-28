@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -5,6 +6,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define NOMINMAX
 #include "Systems/Window.hpp"
 #include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
@@ -23,6 +25,7 @@
 #include "Systems/SceneManager.h"
 
 #define DEBUG
+
 
 int main()
 {
@@ -91,6 +94,7 @@ int main()
     float lastTime = 0.0f;
     float fps = 0.0f;
     int frameCount = 0;
+
     std::stringstream newTitle;
 
     std::cout << "Starting event test loop...\n\n";
@@ -98,9 +102,12 @@ int main()
     while (!window.ShouldClose())
     {
         // calc dt
-        float currentFrame = (float)glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        deltaTime = std::min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
+
         ++frameCount;
 
         // update only after 1 second
@@ -122,8 +129,6 @@ int main()
 
         Uma_Engine::InputSystem::UpdatePreviousFrameState();
 
-        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
-        window.Update();
 
         // Check for ESC to quit (using your original InputSystem method)
         if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
@@ -134,6 +139,10 @@ int main()
 
         // Update all systems (this will trigger event dispatching!)
         systemManager.Update(deltaTime);
+        //std::cout << "delta time : " << deltaTime << std::endl;
+
+        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
+        window.Update();
     }
 
     std::cout << "\n=== Event System Test Complete ===\n";

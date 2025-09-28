@@ -25,34 +25,20 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
 
         Entity player = aEntities[0];
+        auto& rb = pCoordinator->GetComponent<RigidBody>(player);
 
-        auto& rb = rbArray.GetData(player);
-        auto& tf = tfArray.GetData(player);
-        auto& p = pArray.GetData(player);
+        Vec2 targetAccel = { 0, 0 };
 
-        Vec2& accel = rb.acceleration;
-        accel = { 0, 0 };
+        if (pInputSystem->KeyDown(GLFW_KEY_W)) targetAccel.y += rb.accel_strength;
+        if (pInputSystem->KeyDown(GLFW_KEY_S)) targetAccel.y -= rb.accel_strength;
+        if (pInputSystem->KeyDown(GLFW_KEY_D)) targetAccel.x += rb.accel_strength;
+        if (pInputSystem->KeyDown(GLFW_KEY_A)) targetAccel.x -= rb.accel_strength;
 
-        if (pInputSystem->KeyPressed(GLFW_KEY_W) ||
-            pInputSystem->KeyDown(GLFW_KEY_W))
-        {
-            accel.y += rb.accel_strength;
-        }
-        if (pInputSystem->KeyPressed(GLFW_KEY_A) ||
-            pInputSystem->KeyDown(GLFW_KEY_A))
-        {
-            accel.x -= rb.accel_strength;
-        }
-        if (pInputSystem->KeyPressed(GLFW_KEY_S) ||
-            pInputSystem->KeyDown(GLFW_KEY_S))
-        {
-            accel.y -= rb.accel_strength;
-        }
-        if (pInputSystem->KeyPressed(GLFW_KEY_D) ||
-            pInputSystem->KeyDown(GLFW_KEY_D))
-        {
-            accel.x += rb.accel_strength;
-        }
+        // Smooth acceleration to prevent jerk
+        const float accelSmoothFactor = 15.f; // tweak for responsiveness
+        rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
+
+        std::cout << "Player : ( " << magnitude(rb.velocity) << " )\n";
 
 #ifdef _DEBUG_LOG
         std::cout << "Player : ( " << accel.x << " , " << accel.y << " )\n";
