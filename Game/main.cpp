@@ -129,6 +129,9 @@ int main()
 
         Uma_Engine::InputSystem::UpdatePreviousFrameState();
 
+        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
+        // always update before systemmanager updates
+        window.Update();
 
         // Check for ESC to quit (using your original InputSystem method)
         if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
@@ -141,8 +144,6 @@ int main()
         systemManager.Update(deltaTime);
         //std::cout << "delta time : " << deltaTime << std::endl;
 
-        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
-        window.Update();
     }
 
     std::cout << "\n=== Event System Test Complete ===\n";

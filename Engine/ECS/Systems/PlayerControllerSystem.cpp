@@ -38,8 +38,6 @@ namespace Uma_ECS
         const float accelSmoothFactor = 15.f; // tweak for responsiveness
         rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
 
-        std::cout << "Player : ( " << magnitude(rb.velocity) << " )\n";
-
 #ifdef _DEBUG_LOG
         std::cout << "Player : ( " << accel.x << " , " << accel.y << " )\n";
 #endif // _DEBUG_LOG
