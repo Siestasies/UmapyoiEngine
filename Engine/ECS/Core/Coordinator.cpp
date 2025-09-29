@@ -2,9 +2,6 @@
 
 #include <fstream>
 #include <rapidjson/document.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/istreamwrapper.h>
-#include <rapidjson/prettywriter.h>   // pretty JSON output
 
 namespace Uma_ECS
 {
@@ -62,13 +59,19 @@ namespace Uma_ECS
         return newEntity;
     }
 
-    void Coordinator::SerializeAllEntities(const std::string& filename)
+    void Coordinator::DestroyAllEntities()
     {
-        rapidjson::Document doc;
-        doc.SetObject();
-        auto& allocator = doc.GetAllocator();
+        std::vector<Entity> enList = aEntityManager->GetAllEntites();
 
-        rapidjson::Value entities(rapidjson::kArrayType);
+        for (auto const& en : enList)
+        {
+            DestroyEntity(en);
+        }
+    }
+
+    void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
+    {
+        out.SetArray();
 
         // loop thru all entities
         for (const Entity& en : aEntityManager->GetAllEntites())
@@ -82,51 +85,22 @@ namespace Uma_ECS
             aComponentManager->SerializeAll(en, comps, allocator);
             entityObj.AddMember("components", comps, allocator);
 
-            entities.PushBack(entityObj, allocator);
+            out.PushBack(entityObj, allocator);
         }
-
-        doc.AddMember("entities", entities, allocator);
-
-        // write to file
-        rapidjson::StringBuffer buffer;
-        rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(buffer);
-        //writer.SetIndent(' ', 4); // 4 spaces per indent
-        writer.SetMaxDecimalPlaces(3);
-        doc.Accept(writer);
-
-        std::ofstream ofs(filename);
-        ofs << buffer.GetString();
-        ofs.close();
     }
-    void Coordinator::DeserializeAllEntities(const std::string& filename)
-    {
-        std::ifstream ifs(filename);
-        rapidjson::IStreamWrapper isw(ifs);
-        rapidjson::Document doc;
-        doc.ParseStream(isw);
-        ifs.close();
 
-        const auto& entities = doc["entities"];
-        for (auto& entityVal : entities.GetArray())
+    void Coordinator::Deserialize(const rapidjson::Value& in)
+    {
+        assert(in.IsArray());
+
+        for (auto& entityVal : in.GetArray())
         {
             Entity entity = aEntityManager->CreateEntity(); // new ID
-
             const auto& comps = entityVal["components"];
             Signature sign = aComponentManager->DeserializeAll(entity, comps);
-
             aEntityManager->SetSignature(entity, sign);
-
             aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
         }
-    }
 
-    void Coordinator::DestroyAllEntities()
-    {
-        std::vector<Entity> enList = aEntityManager->GetAllEntites();
-
-        for (auto const& en : enList)
-        {
-            DestroyEntity(en);
-        }
     }
 }

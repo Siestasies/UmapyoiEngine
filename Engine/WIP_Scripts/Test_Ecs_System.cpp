@@ -156,7 +156,7 @@ void Uma_Engine::Test_Ecs::Init()
     cameraSystem->Init(&gCoordinator);
 
     //deserialize and spawn all the entities
-    gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
+    //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
 
     // serialize to file
     //gCoordinator.SerializeAllEntities("Assets/Scenes/data.json");
@@ -211,12 +211,12 @@ void Uma_Engine::Test_Ecs::Update(float dt)
 
         filepath = "../../../../Assets/Scenes/data.json";
 
-        gCoordinator.SerializeAllEntities("../../../../Assets/Scenes/data.json");
+        //gCoordinator.SerializeAllEntities("../../../../Assets/Scenes/data.json");
 #else
 
         filepath = "Assets/Scenes/data.json";
 
-        gCoordinator.SerializeAllEntities(filepath);
+        //gCoordinator.SerializeAllEntities(filepath);
 #endif
 
         std::string log;
@@ -242,12 +242,12 @@ void Uma_Engine::Test_Ecs::Update(float dt)
 
         filepath = "../../../../Assets/Scenes/data.json";
 
-        gCoordinator.DeserializeAllEntities(filepath);
+        //gCoordinator.DeserializeAllEntities(filepath);
 #else
 
         filepath = "Assets/Scenes/data.json";
 
-        gCoordinator.DeserializeAllEntities(filepath);
+        //gCoordinator.DeserializeAllEntities(filepath);
 #endif
 
         std::string log;

@@ -3,6 +3,8 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 
+#include "Core/BaseSerializer.h"
+
 #include <string>
 #include <unordered_map>
 
@@ -12,7 +14,7 @@ namespace Uma_Engine
 
     class Sound;
 
-    class ResourcesManager : public ISystem
+    class ResourcesManager : public ISystem, public ISerializer
     {
     public:
         // ISystem virtual functions
@@ -34,6 +36,10 @@ namespace Uma_Engine
 
         // Print all loaded texture names (for debug)
         void PrintLoadedTextureNames() const;
+
+        const char* GetSectionName() const override { return "resources"; };  // e.g. "entities", "resources"
+        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void Deserialize(const rapidjson::Value& in) override;
 
     private:
         std::unordered_map<std::string, Texture> mTextures;

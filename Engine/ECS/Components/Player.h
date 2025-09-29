@@ -11,11 +11,14 @@ namespace Uma_ECS
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
+
+            value.AddMember("mSpeed", mSpeed, allocator);
         }
 
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
+            mSpeed = value["mSpeed"].GetFloat();
         }
     };
 }

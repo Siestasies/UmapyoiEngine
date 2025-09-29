@@ -7,9 +7,11 @@
 #include "EntityManager.hpp"
 #include "SystemManager.hpp"
 
+#include "Core/BaseSerializer.h"
+
 // Event system
-#include <../Core/EventSystem.h>
-#include <../Core/ECSEvents.h>
+#include "Core/EventSystem.h"
+#include "Core/ECSEvents.h"
 
 namespace Uma_ECS
 {
@@ -17,7 +19,7 @@ namespace Uma_ECS
     // Entity Manager, System Manager and Entity Manager 
     // into a single coordinator that can handles everything 
     // within this class
-    class Coordinator
+    class Coordinator : public Uma_Engine::ISerializer
     {
     public:
         void Init(Uma_Engine::EventSystem* eventSystem);
@@ -114,8 +116,12 @@ namespace Uma_ECS
 
         //Serialization
 
-        void SerializeAllEntities(const std::string& filename);
-        void DeserializeAllEntities(const std::string& filename);
+        //void SerializeAllEntities(const std::string& filename);
+        //void DeserializeAllEntities(const std::string& filename);
+
+        const char* GetSectionName() const override { return "entities"; };  // e.g. "entities", "resources"
+        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void Deserialize(const rapidjson::Value& in) override;
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

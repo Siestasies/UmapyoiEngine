@@ -29,6 +29,9 @@
 #include "../Core/EventSystem.h"
 #include "../Core/ECSEvents.h"
 
+// Serializer
+#include "Core/GameSerializer.h"
+
 // debug
 #include "Debugging/Debugger.hpp"
 
@@ -39,24 +42,27 @@
 
 #include <GLFW/glfw3.h>
 
-using Coordinator = Uma_ECS::Coordinator;
 
-Coordinator gCoordinator;
-std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
-std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
-std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
-std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
-std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
-
-//Uma_Engine::InputSystem* pInputSystem;
+// Engine Systems
 Uma_Engine::HybridInputSystem* pHybridInputSystem;
 Uma_Engine::Graphics* pGraphics;
 Uma_Engine::Sound* pSound;
 Uma_Engine::ResourcesManager* pResourcesManager;
 Uma_Engine::EventSystem* pEventSystem;
 
+// ECS related
+using Coordinator = Uma_ECS::Coordinator;
+Coordinator gCoordinator;
+std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
+std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
+std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
+std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
+std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
 Uma_ECS::Entity player;
 Uma_ECS::Entity cam;
+
+// Scene Specific
+Uma_Engine::GameSerializer gGameSerializer;
 
 namespace Uma_Engine
 {
@@ -70,7 +76,6 @@ namespace Uma_Engine
 
 		    void OnLoad() override
 		    {
-            //pInputSystem = pSystemManager->GetSystem<InputSystem>();
             pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
             pGraphics = pSystemManager->GetSystem<Graphics>();
             pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -81,7 +86,7 @@ namespace Uma_Engine
             //subscribe to events
             pEventSystem->Subscribe<Uma_Engine::EntityCreatedEvent>(
                 [](const Uma_Engine::EntityCreatedEvent& e) {
-                    //std::cout << "Entity created: " << e.entityId << std::endl;
+                    std::cout << "Entity created: " << e.entityId << std::endl;
                     // e.handled = true;
                 });
 
@@ -158,8 +163,14 @@ namespace Uma_Engine
             }
             cameraSystem->Init(&gCoordinator);
 
+            // Init the game serializer
+            gGameSerializer.Register(&gCoordinator);
+
+
             //deserialize and spawn all the entities
-            gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
+            //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
+            gGameSerializer.load("Assets/Scenes/data.json");
+
 		    }
 		    void OnUnload() override
 		    {
@@ -196,12 +207,12 @@ namespace Uma_Engine
 
                 filepath = "../../../../Assets/Scenes/data.json";
 
-                gCoordinator.SerializeAllEntities("../../../../Assets/Scenes/data.json");
+                gGameSerializer.save(filepath);
 #else
 
                 filepath = "Assets/Scenes/data.json";
 
-                gCoordinator.SerializeAllEntities(filepath);
+                gGameSerializer.save(filepath);
 #endif
 
                 std::string log;
@@ -223,12 +234,12 @@ namespace Uma_Engine
 
                 filepath = "../../../../Assets/Scenes/data.json";
 
-                gCoordinator.DeserializeAllEntities(filepath);
+                gGameSerializer.load(filepath);
 #else
 
                 filepath = "Assets/Scenes/data.json";
 
-                gCoordinator.DeserializeAllEntities(filepath);
+                gGameSerializer.load(filepath);
 #endif
 
                 std::string log;

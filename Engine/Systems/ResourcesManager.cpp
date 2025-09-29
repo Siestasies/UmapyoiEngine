@@ -97,4 +97,14 @@ namespace Uma_Engine
         mTextures.clear();
         std::cout << "All textures unloaded" << std::endl;
     }
+
+    void ResourcesManager::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
+    {
+
+    }
+
+    void ResourcesManager::Deserialize(const rapidjson::Value& in)
+    {
+
+    }
 }
