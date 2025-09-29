@@ -22,8 +22,8 @@ namespace Uma_Engine
 	};
 
 	struct SoundInfo {
-		FMOD_SOUND* sound;
-		FMOD_CHANNEL* channel;
-		SoundType type;
+		FMOD_SOUND* sound = nullptr;
+		FMOD_CHANNEL* channel = nullptr;
+		SoundType type = SoundType::END;
 	};
 }

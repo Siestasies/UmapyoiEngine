@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 namespace Uma_Engine
 {
@@ -29,6 +30,9 @@ namespace Uma_Engine
     {
         std::cout << "ResourcesManager: Unloading all textures" << std::endl;
         UnloadAllTextures();
+
+        UnloadAllSound(mSoundList);
+        
     }
 
     bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
@@ -106,5 +110,35 @@ namespace Uma_Engine
     void ResourcesManager::Deserialize(const rapidjson::Value& in)
     {
 
+    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type) {
+        if (!HasSound(name)) {
+            SoundInfo temp = mSound->loadSound(path, type);
+            if (temp.sound == nullptr) return false;
+            mSoundList[name] = temp;
+            return true;
+        }
+        return false;
+    }
+
+    void ResourcesManager::UnloadSound(const std::string& name) {
+        mSound->unloadSound(mSoundList.find(name)->second.sound);
+    }
+
+    void ResourcesManager::UnloadAllSound(std::unordered_map<std::string, SoundInfo>& mSoundList) {
+        mSound->unloadAllSounds(mSoundList);
+        mSound->releaseSounds();
+    }
+
+    bool ResourcesManager::HasSound(const std::string& name) {
+        if (mSoundList.find(name) != mSoundList.end())
+            return true;
+        return false;
+    }
+
+    SoundInfo& ResourcesManager::GetSound(const std::string& name) {
+        if (HasSound(name))
+            return mSoundList.find(name)->second;
+        else
+            throw std::invalid_argument("Sound not found");
     }
 }

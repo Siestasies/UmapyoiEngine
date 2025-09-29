@@ -36,7 +36,8 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
-#include<sstream>
+#include <sstream>
+#include <stdexcept>
 
 #include <GLFW/glfw3.h>
 
@@ -61,6 +62,9 @@ Uma_ECS::Entity player;
 Uma_ECS::Entity cam;
 Uma_ECS::Entity enemy;
 
+//testing sound remove later
+bool paused = true;
+float volume = 0.f;
 
 void Uma_Engine::Test_Ecs::Init()
 {
@@ -89,6 +93,8 @@ void Uma_Engine::Test_Ecs::Init()
     pResourcesManager->LoadTexture("background", "Assets/background.jpg");
     pResourcesManager->PrintLoadedTextureNames();
 
+    pResourcesManager->LoadSound("explosion", "Assets/sounds/explosion.mp3", SoundType::SFX);
+    pResourcesManager->LoadSound("cave", "Assets/sounds/cave.mp3", SoundType::BGM);
 
     // Ecs stuff
     using namespace Uma_ECS;
