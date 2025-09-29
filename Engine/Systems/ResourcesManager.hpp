@@ -29,12 +29,14 @@ namespace Uma_Engine
         Texture* GetTexture(const std::string& textureName);
         bool HasTexture(const std::string& textureName) const;
         void PrintLoadedTextureNames() const; // Print all loaded texture names (for debug)
+        void UnloadAllTextures();
         
         // Audio
         bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
         void UnloadSound(const std::string& name);
         bool HasSound(const std::string& name);
         SoundInfo& GetSound(const std::string& name);
+        void UnloadAllSound();
         
         // serializer
         const char* GetSectionName() const override { return "resources"; };  // e.g. "entities", "resources"
@@ -47,10 +49,5 @@ namespace Uma_Engine
 
         std::unordered_map<std::string, SoundInfo> mSoundList;
         Sound* mSound;
-
-        // Clear all textures
-        void UnloadAllTextures();
-
-        void UnloadAllSound(std::unordered_map<std::string, SoundInfo>& mSoundList);
     };
 }

@@ -426,11 +426,6 @@ void Uma_Engine::Test_Ecs::Update(float dt)
     pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
     //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id, pResourcesManager->GetTexture("background")->tex_size);
     renderingSystem->Update(dt);
-
-
-    //camera updatye 
-
-    //..update
 }
 
 void Uma_Engine::Test_Ecs::Shutdown()

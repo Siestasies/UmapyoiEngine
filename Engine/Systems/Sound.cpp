@@ -88,6 +88,7 @@ namespace Uma_Engine {
 	{
 		SoundInfo info;
 		info.type = type;
+		info.filePath = filePath;
 
 		if (!pFmodSystem) {
 			std::cout << "system not init\n";

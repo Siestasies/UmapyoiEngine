@@ -92,10 +92,13 @@ namespace Uma_Engine
 
 
             // Load textures using ResourcesManager
-            pResourcesManager->LoadTexture("player", "Assets/hello.jpg");
-            pResourcesManager->LoadTexture("enemy", "Assets/white.png");
-            pResourcesManager->LoadTexture("background", "Assets/background.jpg");
-            pResourcesManager->PrintLoadedTextureNames();
+            //pResourcesManager->LoadTexture("player", "Assets/hello.jpg");
+            //pResourcesManager->LoadTexture("enemy", "Assets/white.png");
+            //pResourcesManager->LoadTexture("background", "Assets/background.jpg");
+            //pResourcesManager->PrintLoadedTextureNames();
+
+            //pResourcesManager->LoadSound("explosion", "Assets/sounds/explosion.mp3", SoundType::SFX);
+            //pResourcesManager->LoadSound("cave", "Assets/sounds/cave.mp3", SoundType::BGM);
 
 
             // Ecs stuff
@@ -164,6 +167,7 @@ namespace Uma_Engine
             cameraSystem->Init(&gCoordinator);
 
             // Init the game serializer
+            gGameSerializer.Register(pResourcesManager);
             gGameSerializer.Register(&gCoordinator);
 
 
@@ -174,9 +178,11 @@ namespace Uma_Engine
 		    }
 		    void OnUnload() override
 		    {
-			      std::cout << "Test Scene 1: UN LOADED" << std::endl;
+			      std::cout << "Test Scene 1: UNLOADED" << std::endl;
 
             // resources unload
+            pResourcesManager->UnloadAllTextures();
+            pResourcesManager->UnloadAllSound();
 		    }
 		    void Update(float dt) override
 		    {
@@ -296,7 +302,6 @@ namespace Uma_Engine
                               .texture = pResourcesManager->GetTexture(texName),
                             });
 
-
                         gCoordinator.AddComponent(
                             enemy,
                             Collider{
@@ -306,7 +311,7 @@ namespace Uma_Engine
                     }
 
                     // using 1 enemy to duplicate 2500 times and rand its transform
-                    for (size_t i = 0; i < 2500; i++)
+                    for (size_t i = 0; i < 5000; i++)
                     {
                         Entity tmp = gCoordinator.DuplicateEntity(enemy);
 
@@ -391,6 +396,11 @@ namespace Uma_Engine
                 std::cout << "Destroy all entities\n";
 
                 gCoordinator.DestroyAllEntities();
+            }
+
+            if (HybridInputSystem::KeyPressed(GLFW_KEY_P))
+            {
+                pSound->playSound(pResourcesManager->GetSound("explosion"));
             }
 
             pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);

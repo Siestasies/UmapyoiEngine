@@ -193,6 +193,7 @@ void main()
             // Fill texture struct
             tex.tex_id = textureID;
             tex.tex_size = Vec2(static_cast<float>(width), static_cast<float>(height));
+            tex.filePath = texturePath;
 
             std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
         }
