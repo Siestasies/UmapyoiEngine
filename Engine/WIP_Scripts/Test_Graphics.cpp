@@ -236,6 +236,18 @@ namespace Uma_Engine
             if (scale > 3.0f) scale = 3.0f;
         }
 
+        // World-to-screen & screen-to-world
+        if (Uma_Engine::InputSystem::MouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+        {
+            Vec2 mouseScreen{ static_cast<float>(Uma_Engine::InputSystem::GetMouseX()), static_cast<float>(Uma_Engine::InputSystem::GetMouseY())};
+            Vec2 mouseWorld = graphics->ScreenToWorld(mouseScreen);
+            Vec2 backToScreen = graphics->WorldToScreen(mouseWorld);
+
+            std::cout << "Screen: (" << mouseScreen.x << ", " << mouseScreen.y << ")" << std::endl;
+            std::cout << "World:  (" << mouseWorld.x << ", " << mouseWorld.y << ")" << std::endl;
+            std::cout << "Back:   (" << backToScreen.x << ", " << backToScreen.y << ")" << std::endl;
+        }
+
         // Update camera position
         if (cameraFollowPlayer)
         {
@@ -293,21 +305,51 @@ namespace Uma_Engine
             }
         }
 
-        // Draw all 2500 demo objects with random scales and rotation speeds
-        if (showDemo)
+        if (showDemo && !demoObjects.empty())
         {
             const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
             if (enemyTexture != nullptr)
             {
+                // Prepare vectors for instanced rendering
+                std::vector<Vec2> positions;
+                std::vector<Vec2> scales;
+                std::vector<float> rotations;
+
+                positions.reserve(demoObjects.size());
+                scales.reserve(demoObjects.size());
+                rotations.reserve(demoObjects.size());
+
+                // Collect all instance data
                 for (const auto& obj : demoObjects)
                 {
-                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size,
-                        obj.position, obj.scale, obj.rotation);
+                    positions.push_back(obj.position);
+                    scales.push_back(obj.scale);
+                    rotations.push_back(obj.rotation);
+                }
 
-                    if (debugDrawingEnabled)
-                    {
-                        enemyPositions.push_back(obj.position);
-                    }
+                graphics->DrawSpritesInstanced(
+                    enemyTexture->tex_id,
+                    enemyTexture->tex_size,
+                    positions,
+                    scales,
+                    rotations
+                );
+            }
+        }
+        else
+        {
+            const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+            if (enemyTexture != nullptr)
+            {
+                Vec2 enemyScale{ .2f, .2f };
+                Vec2 positions[] = {
+                    Vec2(100, 100), Vec2(600, 200), Vec2(800, 500),
+                    Vec2(200, 700), Vec2(1000, 300), Vec2(1200, 600)
+                };
+
+                for (const Vec2& pos : positions)
+                {
+                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, pos, enemyScale);
                 }
             }
         }
