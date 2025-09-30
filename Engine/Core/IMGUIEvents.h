@@ -25,7 +25,7 @@ namespace Uma_Engine
 	class CloneEntityRequestEvent : public Event
 	{
 	public:
-		CloneEntityRequestEvent(Uma_ECS::Entity entityId) : entityId(entityId) { priority = Priority::Normal; }
+		CloneEntityRequestEvent(Uma_ECS::Entity entityId) : entityId(entityId) { priority = Priority::High; }
 	public:
 		Uma_ECS::Entity entityId;
 	};

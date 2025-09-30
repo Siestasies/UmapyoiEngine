@@ -46,37 +46,32 @@ namespace Uma_Engine
             // isystem stuff
             void Init() override
             {
-                std::cout << "ImGuiSystem: Initializing..." << std::endl;
-
                 if (m_initialized)
                 {
-                    std::cout << "ImGuiSystem: Already initialized!" << std::endl;
                     return;
                 }
 
                 if (!m_window)
                 {
-                    std::cout << "ImGuiSystem: Warning - No window set during Init(). Will initialize when window is set." << std::endl;
                     return;
                 }
 
-                // Setup Dear ImGui context
                 IMGUI_CHECKVERSION();
                 ImGui::CreateContext();
                 ImGuiIO& io = ImGui::GetIO(); (void)io;
-                io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-                io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-                // Note: Docking and Viewports might not be available in all ImGui versions
-                // Uncomment these lines if your ImGui version supports them:
-                 io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
-                 //io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+                io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+                io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+                io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-                // Setup Dear ImGui style
                 ImGui::StyleColorsDark();
-                // ImGui::StyleColorsLight();
 
-                // Setup Platform/Renderer backends
+                // set font and font size
+                float fontSize = 20.0f;
+                io.Fonts->AddFontDefault();
+                io.FontDefault = io.Fonts->AddFontFromFileTTF("../../../../Assets/Roboto-Medium.ttf", fontSize);
+
+                // set up backend stuff
                 ImGui_ImplGlfw_InitForOpenGL(m_window, true);
                 const char* glsl_version = "#version 130";
                 ImGui_ImplOpenGL3_Init(glsl_version);
@@ -173,6 +168,7 @@ namespace Uma_Engine
                     CreateSystemsWindow();
                     CreateEntityDebugWindow();
                     CreateConsoleWindow();
+                    CreateSerializationDebugWindow();
                 }
 
                 if (m_showDemoWindow)
@@ -201,22 +197,8 @@ namespace Uma_Engine
 
                 ImGui::Begin("Engine Debug", &m_showEngineDebug);
 
-                // Menu bar for window options
-                if (ImGui::BeginMenuBar())
-                {
-                    if (ImGui::BeginMenu("Windows"))
-                    {
-                        ImGui::MenuItem("Performance", nullptr, &m_showPerformanceWindow);
-                        ImGui::MenuItem("Systems", nullptr, &m_showSystemsWindow);
-                        ImGui::MenuItem("Event Debug", nullptr, &m_showEventDebug);
-                        ImGui::MenuItem("Demo Window", nullptr, &m_showDemoWindow);
-                        ImGui::EndMenu();
-                    }
-                    ImGui::EndMenuBar();
-                }
-
-                // Performance stats
-                ImGui::Text("Performance Overview");
+                // some stats
+                ImGui::Text("Performance Stats");
                 ImGui::Separator();
                 ImGui::Text("FPS: %.1f", fps);
                 ImGui::Text("Frame Time: %.3f ms", deltaTime * 1000.0f);
@@ -224,7 +206,7 @@ namespace Uma_Engine
 
                 ImGui::Spacing();
 
-                // OpenGL info
+                // onpengl info
                 ImGui::Text("Graphics Information");
                 ImGui::Separator();
                 ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
@@ -248,12 +230,7 @@ namespace Uma_Engine
 
                 // Frame time graph
                 ImGui::PlotLines("Frame Time (ms)", m_frametimeHistory, 120, m_historyOffset, nullptr, 0.0f, 50.0f, ImVec2(0, 80));
-
-                // Current stats
-                ImGui::Separator();
-                float frametime_ms = deltaTime * 1000.0f;
-                ImGui::Text("Current: %.1f FPS (%.3f ms)", fps, frametime_ms);
-
+                
                 ImGui::End();
             }
 
@@ -286,16 +263,7 @@ namespace Uma_Engine
                         ImGui::Separator();
                         ImGui::Text("Total Update Time: %.3f ms", total);
                     }
-                    else
-                    {
-                        ImGui::Text("No timing data available yet.");
-                    }
                 }
-                else
-                {
-                    ImGui::Text("System Manager not attached!");
-                }
-
                 ImGui::End();
             }
 
@@ -304,11 +272,10 @@ namespace Uma_Engine
                 bool b = true;
                 ImGui::Begin("Entity Debug", &b);
 
-                //Uma_ECS::Coordinator* coordRef = m_systemManager->GetSystem<Uma_ECS::Coordinator>();
-                //std::cout << coordRef->GetEntityCount() << std::endl;
-                // 
                 // get entity count here
-                //ImGui::Text("Entity Count: %i", coordRef->GetEntityCount());
+                QueryActiveEntitiesEvent query;
+                pEventSystem->Dispatch(query);
+                ImGui::Text("Entity Count: %i", query.mActiveEntityCnt);
 
                 ImGui::Separator();
 
@@ -316,16 +283,56 @@ namespace Uma_Engine
                 {
                     // do spawning here
                     std::cout << "Entity spawned" << std::endl;
-                    pEventSystem->Emit<CloneEntityRequestEvent>(200);
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    std::default_random_engine generator;
+                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    Uma_ECS::Entity rand = distribution(generator);
+
+                    pEventSystem->Emit<CloneEntityRequestEvent>(rand);
                 }
-                //ImGui::SetCursorPos({5, 100});
                 if (ImGui::Button("Destroy Entity", { 100, 50 }))
                 {
                     // do spawning here
                     std::cout << "Entity destroyed" << std::endl;
-                    pEventSystem->Emit<DestroyEntityRequestEvent>(200);
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    std::default_random_engine generator;
+                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    Uma_ECS::Entity rand = distribution(generator);
+
+                    pEventSystem->Emit<DestroyEntityRequestEvent>(rand);
                 }
                 
+                ImGui::End();
+            }
+
+            void CreateSerializationDebugWindow()
+            {
+                bool b = true;
+                ImGui::Begin("Serialization Debug", &b);
+
+                // get entity count here
+                ImGui::Separator();
+
+                if (ImGui::Button("Load Scene", { 100, 50 }))
+                {
+                    // load scene from this file
+                    pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+                }
+                if (ImGui::Button("Save Scene", { 100, 50 }))
+                {
+                    // save scene into this file
+                    pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+                }
+                if (ImGui::Button("Destroy All", { 100, 50 }))
+                {
+                    // destroy entities within the scene lol
+                    pEventSystem->Emit<ClearSceneRequestEvent>();
+                }
+
                 ImGui::End();
             }
 
@@ -367,7 +374,6 @@ namespace Uma_Engine
                 if (logsVec.size() > 100)
                     logsVec.erase(logsVec.begin());
             }
-
 
             bool m_initialized;
             GLFWwindow* m_window;
