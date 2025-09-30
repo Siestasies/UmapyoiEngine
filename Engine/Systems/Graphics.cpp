@@ -110,6 +110,13 @@ void main()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Set viewport
+        if (mWindow)
+        {
+            int width, height;
+            glfwGetFramebufferSize(mWindow, &width, &height);
+            mViewportWidth = width;
+            mViewportHeight = height;
+        }
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
         // Set camera
@@ -185,6 +192,12 @@ void main()
 
             // Set the framebuffer size callback
             glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+
+            // Update viewport if graphics is initialised
+            if (mInitialized)
+            {
+                SetViewport(width, height);
+            }
         }
     }
 
