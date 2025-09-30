@@ -33,5 +33,45 @@ namespace Uma_ECS
         BoundingBox boundingBox;
         LayerMask layer; // the layer it is in
         LayerMask colliderMask; // the layer it can collide with
+
+        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
+        {
+            value.SetObject();
+
+            // Bounding box
+            rapidjson::Value bbox(rapidjson::kObjectType);
+
+            rapidjson::Value minVal(rapidjson::kObjectType);
+            minVal.AddMember("x", boundingBox.min.x, allocator);
+            minVal.AddMember("y", boundingBox.min.y, allocator);
+
+            rapidjson::Value maxVal(rapidjson::kObjectType);
+            maxVal.AddMember("x", boundingBox.max.x, allocator);
+            maxVal.AddMember("y", boundingBox.max.y, allocator);
+
+            bbox.AddMember("min", minVal, allocator);
+            bbox.AddMember("max", maxVal, allocator);
+
+            value.AddMember("boundingBox", bbox, allocator);
+
+            // Layer + mask as raw integers (bitmasks)
+            value.AddMember("layer", layer, allocator);
+            value.AddMember("colliderMask", colliderMask, allocator);
+        }
+
+        // Deserialize from JSON
+        void Deserialize(const rapidjson::Value& value) //override
+        {
+            const auto& bbox = value["boundingBox"];
+
+            boundingBox.min.x = bbox["min"]["x"].GetFloat();
+            boundingBox.min.y = bbox["min"]["y"].GetFloat();
+
+            boundingBox.max.x = bbox["max"]["x"].GetFloat();
+            boundingBox.max.y = bbox["max"]["y"].GetFloat();
+
+            layer = value["layer"].GetUint();
+            colliderMask = value["colliderMask"].GetUint();
+        }
     };
 }

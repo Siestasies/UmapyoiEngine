@@ -13,37 +13,16 @@
 
 namespace Uma_ECS
 {
-    void RenderingSystem::Init(Uma_Engine::Graphics* g, Coordinator* c)
+    void RenderingSystem::Init(Uma_Engine::Graphics* g, Uma_Engine::ResourcesManager* rm, Coordinator* c)
     {
         pCoordinator = c;
         pGraphics = g;
+        pResourcesManager = rm;
     }
 
     void RenderingSystem::Update(float dt)
     {
-        // OLD METHOD TO ITERATE THRU EVERY ENTITIES
-        // NOT IN USED, THIS IS EXPENSIVE
-        // ACCESSING THE ARRAY DIRECTLY
-        // IS FASTER
-
-        //std::cout << "en size : " << aEntities.size() << std::endl;
-
-        //for (auto const& entity : aEntities)
-        //{
-        //    auto const& sr = pCoordinator->GetComponent<SpriteRenderer>(entity);
-        //    auto const& tf = pCoordinator->GetComponent<Transform>(entity);
-
-        //    // check if texture is valid
-        //    if (sr.texture->tex_id == 0)
-        //    {
-        //        std::stringstream log;
-        //        log << "Entity(" << entity << ") texture is not valid.";
-        //        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-        //        continue;
-        //    }
-
-        //    pGraphics->DrawSprite(sr.texture->tex_id, tf.scale, tf.position);
-        //}
+        if (!aEntities.size()) return;
 
         auto& srArray = pCoordinator->GetComponentArray<SpriteRenderer>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
@@ -57,25 +36,64 @@ namespace Uma_ECS
         pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
-        for (size_t i = 0; i < srArray.Size(); ++i)
+
+        std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
+
+        for (const auto& entity : aEntities)
         {
-            Entity e = srArray.GetEntity(i);
+            auto& sr = srArray.GetData(entity);
+            auto& tf = tfArray.GetData(entity);
 
-            if (tfArray.Has(e))  // check if Transform exists
+           if (!sr.texture)
+           {
+               sr.texture = pResourcesManager->GetTexture(sr.textureName);
+
+               if (sr.texture->tex_id == 0)
+               {
+                   std::stringstream log;
+                   log << "Entity(" << entity << ") texture is not valid.";
+                   Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                   continue;
+               }
+           }
+
+            sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
+                {
+                    .tex_id = sr.texture->tex_id,
+                    .tex_size = sr.texture->tex_size,
+                    .pos = tf.position,
+                    .scale = tf.scale,
+                    .rot = tf.rotation.x,
+                    .rot_speed = tf.rotation.y
+                });
+
+            /*if (!sr.texture)
             {
-                auto& sr = srArray.GetComponentAt(i);
-                auto& tf = tfArray.GetData(e);
-
+                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+            }
+            else
+            {
                 if (sr.texture->tex_id == 0)
                 {
                     std::stringstream log;
-                    log << "Entity(" << e << ") texture is not valid.";
+                    log << "Entity(" << entity << ") texture is not valid.";
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                     continue;
                 }
 
                 pGraphics->DrawSprite(sr.texture->tex_id, tf.scale, tf.position);
-            }
+            }*/
+        }
+
+        for (const auto& pair : sorted_sprites)
+        {
+            const std::vector<Uma_Engine::Sprite_Info>& sprites = pair.second;
+
+            pGraphics->DrawSpritesInstanced(
+                pair.first,
+                sprites[0].tex_size,
+                sprites
+            );
         }
     }
 }

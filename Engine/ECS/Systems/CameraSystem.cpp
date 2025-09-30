@@ -13,12 +13,14 @@ namespace Uma_ECS
 {
     void CameraSystem::Update(float dt)
     {
+        if (aEntities.size() == 0) return;
+
         auto& pArray = pCoordinator->GetComponentArray<Player>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
 
         // one camera for now
-        Entity camera = camArray.GetEntity(0);
+        Entity camera = aEntities[0];
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 

@@ -2,6 +2,8 @@
 
 #include "Math/Math.h"
 
+#include <string>
+
 // forward declare
 struct FMOD_SYSTEM;
 struct FMOD_SOUND;
@@ -13,6 +15,7 @@ namespace Uma_Engine
     {
         unsigned int tex_id;
         Vec2 tex_size;
+				std::string filePath;
     };
 
 	enum class SoundType {
@@ -22,8 +25,9 @@ namespace Uma_Engine
 	};
 
 	struct SoundInfo {
-		FMOD_SOUND* sound;
-		FMOD_CHANNEL* channel;
-		SoundType type;
+		FMOD_SOUND* sound = nullptr;
+		FMOD_CHANNEL* channel = nullptr;
+		SoundType type = SoundType::END;
+		std::string filePath;
 	};
 }

@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 namespace Uma_Engine
 {
@@ -29,6 +30,7 @@ namespace Uma_Engine
     {
         std::cout << "ResourcesManager: Unloading all textures" << std::endl;
         UnloadAllTextures();
+        UnloadAllSound();
     }
 
     bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
@@ -96,5 +98,129 @@ namespace Uma_Engine
         }
         mTextures.clear();
         std::cout << "All textures unloaded" << std::endl;
+    }
+
+    void ResourcesManager::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
+    {
+        out.SetObject();
+
+        rapidjson::Value texturesArr(rapidjson::kArrayType);
+        for (const auto& tex : mTextures)
+        {
+            rapidjson::Value textureObj(rapidjson::kObjectType);
+
+            // Name
+            rapidjson::Value nameVal;
+            nameVal.SetString(tex.first.c_str(), static_cast<rapidjson::SizeType>(tex.first.size()), allocator);
+            textureObj.AddMember("name", nameVal, allocator);
+
+            // Path
+            rapidjson::Value pathVal;
+            pathVal.SetString(tex.second.filePath.c_str(),
+                static_cast<rapidjson::SizeType>(tex.second.filePath.size()),
+                allocator);
+            textureObj.AddMember("path", pathVal, allocator);
+
+            texturesArr.PushBack(textureObj, allocator);
+        }
+        out.AddMember("textures", texturesArr, allocator);
+
+        // sound
+        rapidjson::Value audioArr(rapidjson::kArrayType);
+        for (const auto& sound : mSoundList)
+        {
+            rapidjson::Value soundObj(rapidjson::kObjectType);
+
+            // Name
+            rapidjson::Value nameVal;
+            nameVal.SetString(sound.first.c_str(), static_cast<rapidjson::SizeType>(sound.first.size()), allocator);
+            soundObj.AddMember("name", nameVal, allocator);
+
+            // Path
+            rapidjson::Value pathVal;
+            pathVal.SetString(sound.second.filePath.c_str(),
+                static_cast<rapidjson::SizeType>(sound.second.filePath.size()),
+                allocator);
+            soundObj.AddMember("path", pathVal, allocator);
+
+            // type
+            rapidjson::Value typeVal;
+            typeVal.SetInt(static_cast<int>(sound.second.type));
+            soundObj.AddMember("type", typeVal, allocator);
+
+            audioArr.PushBack(soundObj, allocator);
+        }
+        out.AddMember("sounds", audioArr, allocator);
+    }
+
+    void ResourcesManager::Deserialize(const rapidjson::Value& in)
+    {
+        assert(in.IsObject());
+
+        if (in.HasMember("textures") && in["textures"].IsArray())
+        {
+            for (const auto& texVal : in["textures"].GetArray())
+            {
+                if (texVal.HasMember("name") && texVal.HasMember("path"))
+                {
+                    std::string name = texVal["name"].GetString();
+                    std::string path = texVal["path"].GetString();
+
+                    LoadTexture(name, path); // reuse your existing loader
+                }
+            }
+        }
+
+        if (in.HasMember("sounds") && in["sounds"].IsArray())
+        {
+            for (const auto& sndVal : in["sounds"].GetArray())
+            {
+                if (sndVal.HasMember("name") && sndVal.HasMember("path"))
+                {
+                    std::string name = sndVal["name"].GetString();
+                    std::string path = sndVal["path"].GetString();
+                    SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
+
+                    LoadSound(name, path, type);
+                }
+            }
+        }
+    }
+
+    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type) 
+    {
+        if (!HasSound(name)) {
+            SoundInfo temp = mSound->loadSound(path, type);
+            if (temp.sound == nullptr) return false;
+            mSoundList[name] = temp;
+            return true;
+        }
+        return false;
+    }
+
+    void ResourcesManager::UnloadSound(const std::string& name) 
+    {
+        mSound->unloadSound(mSoundList.find(name)->second.sound);
+    }
+
+    void ResourcesManager::UnloadAllSound() 
+    {
+        mSound->unloadAllSounds(mSoundList);
+        mSound->releaseSounds();
+    }
+
+    bool ResourcesManager::HasSound(const std::string& name) 
+    {
+        if (mSoundList.find(name) != mSoundList.end())
+            return true;
+        return false;
+    }
+
+    SoundInfo& ResourcesManager::GetSound(const std::string& name) 
+    {
+        if (HasSound(name))
+            return mSoundList.find(name)->second;
+        else
+            throw std::invalid_argument("Sound not found");
     }
 }

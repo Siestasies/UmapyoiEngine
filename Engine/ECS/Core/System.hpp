@@ -2,7 +2,7 @@
 
 //#include "../Core/Coordinator.h"
 #include "../Core/Types.hpp"
-#include <set>
+#include <vector>
 
 namespace Uma_ECS
 {
@@ -10,7 +10,7 @@ namespace Uma_ECS
     {
     public:
 
-        std::set<Entity> aEntities;
+        std::vector<Entity> aEntities;
 
     };
 }

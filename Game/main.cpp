@@ -1,3 +1,9 @@
+#ifdef _DEBUG
+    #define _CRTDBG_MAP_ALLOC
+    #include <crtdbg.h>
+#endif
+
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -5,6 +11,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define NOMINMAX
 #include "Systems/Window.hpp"
 #include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
@@ -22,6 +29,8 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#include "WIP_Scripts/ImguiManager.h"
+
 #define DEBUG
 
 #ifdef DEBUG
@@ -32,6 +41,10 @@
 
 int main()
 {
+
+#ifdef _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
     // Debug
 #ifdef DEBUG
     Uma_Engine::Debugger::Init(true);
@@ -40,7 +53,7 @@ int main()
 #endif // DEBUG
 
     // Create window
-    Uma_Engine::Window window(800, 600, "UmapyoiEngine - Event System Test");
+    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
 
     // Initialize the engine
     if (!window.Initialize())
@@ -49,22 +62,17 @@ int main()
         return -1;
     }
 
-    std::cout << "\n=== TESTING EVENT SYSTEM + INPUT SYSTEM ===\n";
-
     // Create a systems manager
     Uma_Engine::SystemManager systemManager;
 
     // Register EVENT SYSTEM FIRST
-    std::cout << "Registering EventSystem...\n";
     Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
 
     // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
-    std::cout << "Registering EventInputSystem (InputSystem + Events)...\n";
-    HybridInputSystem* inputSystem = systemManager.RegisterSystem<HybridInputSystem>();
+    Uma_Engine::HybridInputSystem* inputSystem = systemManager.RegisterSystem<Uma_Engine::HybridInputSystem>();
 
     // Register SIMPLE EVENT LISTENER (just logs events)
-    std::cout << "Registering TestEventListener...\n";
-    systemManager.RegisterSystem<TestEventListener>();
+    systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
     // Register your other systems normally
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
@@ -72,25 +80,26 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene
-    //systemManager.RegisterSystem<Uma_Engine::SceneManager>();
-    systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
+    systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+    //systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-
+    Uma_Engine::ImguiManager* imguiHandler = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    imguiHandler->SetSystemManager(&systemManager);
 
     // Initialize all systems
-    std::cout << "\nInitializing all systems...\n";
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
-    // IMPORTANT: Connect InputSystem to EventSystem
+    // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
 
-    // Show what we're listening for
+#ifdef DEBUG
     std::cout << "\nEvent listener counts:\n";
-    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Events::KeyPressEvent>() << "\n";
-    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Events::KeyReleaseEvent>() << "\n";
-    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Events::MouseButtonEvent>() << "\n";
-    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Events::MouseMoveEvent>() << "\n";
+    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
+    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
+    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
+    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+#endif
 
     // Game loop
     float lastFrame = 0.0f;
@@ -98,16 +107,18 @@ int main()
     float lastTime = 0.0f;
     float fps = 0.0f;
     int frameCount = 0;
-    std::stringstream newTitle;
 
-    std::cout << "Starting event test loop...\n\n";
+    std::stringstream newTitle;
 
     while (!window.ShouldClose())
     {
         // calc dt
-        float currentFrame = (float)glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        deltaTime = std::min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
+
         ++frameCount;
 
         // update only after 1 second
@@ -121,25 +132,19 @@ int main()
             newTitle.clear();
             newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
             window.SetTitle(newTitle.str());
-
-#ifdef DEBUG
-            //Uma_Engine::Debugger::Update();
-#endif // DEBUG
         }
 
-        Uma_Engine::InputSystem::UpdatePreviousFrameState();
+        Uma_Engine::HybridInputSystem::UpdatePreviousFrameState();
 
         // Update window (processes GLFW events -> triggers your InputSystem callbacks)
+        // always update before systemmanager updates
         window.Update();
 
-        // Check for ESC to quit (using your original InputSystem method)
-        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
-            std::cout << "\nESC pressed - quitting event test\n";
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
 
-        // Update all systems (this will trigger event dispatching!)
         systemManager.Update(deltaTime);
     }
 

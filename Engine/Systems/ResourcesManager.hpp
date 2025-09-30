@@ -3,8 +3,11 @@
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 
+#include "Core/BaseSerializer.h"
+
 #include <string>
 #include <unordered_map>
+#include <optional>
 
 namespace Uma_Engine
 {
@@ -12,37 +15,39 @@ namespace Uma_Engine
 
     class Sound;
 
-    class ResourcesManager : public ISystem
+    class ResourcesManager : public ISystem, public ISerializer
     {
     public:
         // ISystem virtual functions
         void Init() override;
         void Update(float dt) override;
         void Shutdown() override;
-
-        // Load a texture with a given name
+        
+        // Textures
         bool LoadTexture(const std::string& textureName, const std::string& filePath);
-
-        // Unload a specific texture by name
         void UnloadTexture(const std::string& textureName);
-
-        // Get texture by name
         Texture* GetTexture(const std::string& textureName);
-
-        // Check if texture exists
         bool HasTexture(const std::string& textureName) const;
-
-        // Print all loaded texture names (for debug)
-        void PrintLoadedTextureNames() const;
-
+        void PrintLoadedTextureNames() const; // Print all loaded texture names (for debug)
+        void UnloadAllTextures();
+        
+        // Audio
+        bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
+        void UnloadSound(const std::string& name);
+        bool HasSound(const std::string& name);
+        SoundInfo& GetSound(const std::string& name);
+        void UnloadAllSound();
+        
+        // serializer
+        const char* GetSectionName() const override { return "resources"; };  // e.g. "entities", "resources"
+        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void Deserialize(const rapidjson::Value& in) override;
+        
     private:
         std::unordered_map<std::string, Texture> mTextures;
         Graphics* mGraphics;
 
         std::unordered_map<std::string, SoundInfo> mSoundList;
         Sound* mSound;
-
-        // Clear all textures
-        void UnloadAllTextures();
     };
 }

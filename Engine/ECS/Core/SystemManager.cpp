@@ -9,7 +9,16 @@ void Uma_ECS::SystemManager::EntityDestroyed(Entity entity)
         // getting the system from the map
         auto const& system = pair.second;
 
-        system->aEntities.erase(entity);
+        auto& entities = system->aEntities;
+        for (size_t i = 0; i < entities.size(); ++i) 
+        {
+            if (entities[i] == entity) 
+            {
+                entities[i] = entities.back();  // overwrite with last
+                entities.pop_back();            // shrink
+                break;                          // only one instance per system anyway
+            }
+        }
     }
 }
 
@@ -28,11 +37,24 @@ void Uma_ECS::SystemManager::EntitySignatureChanged(Entity entity, Signature ent
         // (entitySignature & systemSignature) == systemSignature
         if ((entitySiganture & systemSignature) == systemSignature)
         {
-            system->aEntities.insert(entity);
+            auto& entities = system->aEntities;
+            if (std::find(entities.begin(), entities.end(), entity) == entities.end()) // doesnt exist
+            {
+                entities.emplace_back(entity);
+            }
         }
         else
         {
-            system->aEntities.erase(entity);
+            auto& entities = system->aEntities;
+            for (size_t i = 0; i < entities.size(); ++i)
+            {
+                if (entities[i] == entity)
+                {
+                    entities[i] = entities.back();  // overwrite with last
+                    entities.pop_back();            // shrink
+                    break;                          // only one instance per system anyway
+                }
+            }
         }
         
     }
