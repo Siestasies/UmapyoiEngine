@@ -16,11 +16,14 @@ namespace
     Uma_Engine::ResourcesManager* resourcesManager;
 
     Uma_Math::Vec2 playerPosition;
+    Uma_Math::Vec2 cameraPosition;
     float playerRotation;
     float rotationSpeed;
     float moveSpeed;
     float fScale;
     float zoom;
+    bool cameraFollowPlayer = true;
+    float cameraLerpSpeed = 5.0f;
 
     // Demo objects
     struct DemoObject
@@ -64,6 +67,7 @@ namespace Uma_Engine
 
         // Initialize game variables
         playerPosition = { 400.0f, 300.0f };
+        cameraPosition = { 400.0f, 300.0f };
         playerRotation = 0.0f;
         rotationSpeed = 45.0f;
         moveSpeed = 200.0f;
@@ -73,8 +77,8 @@ namespace Uma_Engine
         // Pre-generate demo objects
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_real_distribution<float> posX(0.0f, 800.0f); // Standard viewport width
-        std::uniform_real_distribution<float> posY(0.0f, 600.0f); // Standard viewport height
+        std::uniform_real_distribution<float> posX(0.0f, 800.0f);
+        std::uniform_real_distribution<float> posY(0.0f, 600.0f);
         std::uniform_real_distribution<float> scaleDist(0.01f, 0.05f);
         std::uniform_real_distribution<float> rotSpeedDist(-180.0f, 180.0f);
 
@@ -95,8 +99,15 @@ namespace Uma_Engine
         }
 
         std::cout << "Test_Graphics initialized with " << DEMO_OBJECTS_COUNT << " demo objects" << std::endl;
-        std::cout << "Press SPACE to toggle 2500 rotating objects demo" << std::endl;
-        std::cout << "Press F1 to toggle debug drawing" << std::endl;
+        std::cout << "Controls:" << std::endl;
+        std::cout << "  WASD/Arrow Keys - Move player" << std::endl;
+        std::cout << "  Q/E - Rotate player" << std::endl;
+        std::cout << "  Z/X - Scale player" << std::endl;
+        std::cout << "  1/2 - Zoom camera in/out" << std::endl;
+        std::cout << "  C - Toggle camera follow player" << std::endl;
+        std::cout << "  IJKL - Manual camera movement (when follow is off)" << std::endl;
+        std::cout << "  SPACE - Toggle 2500 rotating objects demo" << std::endl;
+        std::cout << "  F1 - Toggle debug drawing" << std::endl;
     }
 
     void Test_Graphics::Update(float dt)
@@ -104,8 +115,7 @@ namespace Uma_Engine
         float deltaTime = dt;
         static bool spacePressed = false;
         static bool f1Pressed = false;
-
-        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_0)) std::cout << "0 PRESSED\n";
+        static bool cPressed = false;
 
         // Toggle demo with SPACE key
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_SPACE))
@@ -137,6 +147,21 @@ namespace Uma_Engine
             f1Pressed = false;
         }
 
+        // Toggle camera follow with C key
+        if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_C))
+        {
+            if (!cPressed)
+            {
+                cameraFollowPlayer = !cameraFollowPlayer;
+                std::cout << "Camera follow player " << (cameraFollowPlayer ? "ENABLED" : "DISABLED") << std::endl;
+            }
+            cPressed = true;
+        }
+        else
+        {
+            cPressed = false;
+        }
+
         // Handle input for sprite movement
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_W) || Uma_Engine::InputSystem::KeyDown(GLFW_KEY_UP))
         {
@@ -155,14 +180,38 @@ namespace Uma_Engine
             playerPosition.x += moveSpeed * deltaTime;
         }
 
+        // Manual camera movement (when not following player)
+        if (!cameraFollowPlayer)
+        {
+            float cameraSpeed = 300.0f;
+            if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_I))
+            {
+                cameraPosition.y += cameraSpeed * deltaTime;
+            }
+            if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_K))
+            {
+                cameraPosition.y -= cameraSpeed * deltaTime;
+            }
+            if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_J))
+            {
+                cameraPosition.x -= cameraSpeed * deltaTime;
+            }
+            if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_L))
+            {
+                cameraPosition.x += cameraSpeed * deltaTime;
+            }
+        }
+
         // Camera zoom
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_1))
         {
-            zoom += 1 * dt;
+            zoom += 1.0f * deltaTime;
+            if (zoom > 3.0f) zoom = 3.0f;
         }
         if (Uma_Engine::InputSystem::KeyDown(GLFW_KEY_2))
         {
-            zoom -= 1 * dt;
+            zoom -= 1.0f * deltaTime;
+            if (zoom < 0.1f) zoom = 0.1f;
         }
 
         // Rotate sprite
@@ -187,6 +236,26 @@ namespace Uma_Engine
             if (fScale > 3.0f) fScale = 3.0f;
         }
 
+        // World-to-screen & screen-to-world
+        if (Uma_Engine::InputSystem::MouseButtonPressed(GLFW_MOUSE_BUTTON_1))
+        {
+            Vec2 mouseScreen{ static_cast<float>(Uma_Engine::InputSystem::GetMouseX()), static_cast<float>(Uma_Engine::InputSystem::GetMouseY())};
+            Vec2 mouseWorld = graphics->ScreenToWorld(mouseScreen);
+            Vec2 backToScreen = graphics->WorldToScreen(mouseWorld);
+
+            std::cout << "Screen: (" << mouseScreen.x << ", " << mouseScreen.y << ")" << std::endl;
+            std::cout << "World:  (" << mouseWorld.x << ", " << mouseWorld.y << ")" << std::endl;
+            std::cout << "Back:   (" << backToScreen.x << ", " << backToScreen.y << ")" << std::endl;
+        }
+
+        // Update camera position
+        if (cameraFollowPlayer)
+        {
+            // Smooth camera follow using lerp
+            cameraPosition.x += (playerPosition.x - cameraPosition.x) * cameraLerpSpeed * deltaTime;
+            cameraPosition.y += (playerPosition.y - cameraPosition.y) * cameraLerpSpeed * deltaTime;
+        }
+
         // Update demo object rotations
         if (showDemo)
         {
@@ -196,9 +265,8 @@ namespace Uma_Engine
             }
         }
 
-        // Update camera
-        //graphics->GetCamera().SetPosition(playerPosition);
-        //graphics->GetCamera().SetZoom(zoom);
+        // Update camera in graphics system using your new SetCamInfo method
+        graphics->SetCamInfo(cameraPosition, zoom);
 
         // Clear the background
         graphics->ClearBackground(0.2f, 0.3f, 0.3f);
@@ -225,12 +293,10 @@ namespace Uma_Engine
                     Vec2(200, 700), Vec2(1000, 300), Vec2(1200, 600)
                 };
 
-                // Draw enemies and collect positions for debug drawing later
                 for (const Vec2& pos : positions)
                 {
                     graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, pos, enemyScale);
 
-                    // Collect positions for debug drawing
                     if (debugDrawingEnabled)
                     {
                         enemyPositions.push_back(pos);
@@ -239,22 +305,51 @@ namespace Uma_Engine
             }
         }
 
-        // Draw all 2500 demo objects with random scales and rotation speeds
-        if (showDemo)
+        if (showDemo && !demoObjects.empty())
         {
             const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
             if (enemyTexture != nullptr)
             {
+                // Prepare vectors for instanced rendering
+                std::vector<Vec2> positions;
+                std::vector<Vec2> scales;
+                std::vector<float> rotations;
+
+                positions.reserve(demoObjects.size());
+                scales.reserve(demoObjects.size());
+                rotations.reserve(demoObjects.size());
+
+                // Collect all instance data
                 for (const auto& obj : demoObjects)
                 {
-                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size,
-                        obj.position, obj.scale, obj.rotation);
+                    positions.push_back(obj.position);
+                    scales.push_back(obj.scale);
+                    rotations.push_back(obj.rotation);
+                }
 
-                    // Collect all demo object positions for debug drawing
-                    if (debugDrawingEnabled)
-                    {
-                        enemyPositions.push_back(obj.position);
-                    }
+                graphics->DrawSpritesInstanced(
+                    enemyTexture->tex_id,
+                    enemyTexture->tex_size,
+                    positions,
+                    scales,
+                    rotations
+                );
+            }
+        }
+        else
+        {
+            const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+            if (enemyTexture != nullptr)
+            {
+                Vec2 enemyScale{ .2f, .2f };
+                Vec2 positions[] = {
+                    Vec2(100, 100), Vec2(600, 200), Vec2(800, 500),
+                    Vec2(200, 700), Vec2(1000, 300), Vec2(1200, 600)
+                };
+
+                for (const Vec2& pos : positions)
+                {
+                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, pos, enemyScale);
                 }
             }
         }
@@ -270,7 +365,6 @@ namespace Uma_Engine
         // Draw debug info
         if (debugDrawingEnabled)
         {
-            // Debug drawing for player
             Vec2 playerPos = { playerPosition.x, playerPosition.y };
 
             // Player center point (red)
@@ -280,27 +374,24 @@ namespace Uma_Engine
             float playerCollisionRadius = 40.0f;
             graphics->DrawDebugCircle(playerPos, playerCollisionRadius, 0.0f, 0.0f, 1.0f);
 
+            // Camera center point (magenta)
+            graphics->DrawDebugPoint(cameraPosition, 1.0f, 0.0f, 1.0f);
+
             // Debug drawing for all enemies/objects
             for (const Vec2& enemyPos : enemyPositions)
             {
-                // Center point (red)
                 graphics->DrawDebugPoint(enemyPos, 1.0f, 0.0f, 0.0f);
 
-                // Collision rectangle (green)
                 Vec2 collisionSize;
                 if (showDemo)
                 {
-                    // Smaller rectangles for demo objects
                     collisionSize = Vec2(15.0f, 25.0f);
                 }
                 else
                 {
-                    // Larger rectangles for regular enemies
                     collisionSize = Vec2(30.0f, 60.0f);
                 }
                 graphics->DrawDebugRect(enemyPos, collisionSize, 0.0f, 1.0f, 0.0f);
-
-                // Line to player (yellow)
                 graphics->DrawDebugLine(enemyPos, playerPos, 1.0f, 1.0f, 0.0f);
             }
         }

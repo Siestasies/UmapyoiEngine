@@ -35,12 +35,19 @@ namespace Uma_Engine
         GLuint mVAO, mVBO;
         GLuint mShaderProgram;
 
+        // Instanced rendering resources
+        GLuint mInstanceVBO;
+        GLuint mInstanceVAO;
+        GLuint mInstanceShaderProgram;
+
         // Viewport size
         int mViewportWidth, mViewportHeight;
 
         // Helper functions
         bool InitializeRenderer();
         void ShutdownRenderer();
+        bool InitializeInstancedRenderer();
+        void ShutdownInstancedRenderer();
         GLuint CreateShader(const std::string& vertexSource, const std::string& fragmentSource);
         //void CheckOpenGLVersion();
 
@@ -79,6 +86,13 @@ namespace Uma_Engine
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f);
+
+        void DrawSpritesInstanced(
+            unsigned int textureID,
+            const Vec2& textureSize,
+            const std::vector<Vec2>& positions,
+            const std::vector<Vec2>& scales,
+            const std::vector<float>& rotations);
 
         // Draw background image
         void DrawBackground(unsigned int textureID, const Vec2& textureSize);

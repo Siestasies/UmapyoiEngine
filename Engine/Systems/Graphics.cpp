@@ -50,8 +50,40 @@ void main()
 }
 )";
 
+    // Vertex shader for 2D sprite instanced rendering
+    const std::string instancedVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
+
+out vec2 TexCoords;
+
+uniform mat4 projection;
+
+void main()
+{
+    TexCoords = vertex.zw;
+    gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
+}
+)";
+
+    // Fragment shader for 2D sprite instanced rendering
+    const std::string instancedFragmentShaderSource = R"(
+#version 450 core
+in vec2 TexCoords;
+out vec4 color;
+
+uniform sampler2D image;
+
+void main()
+{
+    color = texture(image, TexCoords);
+}
+)";
+
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
-        mShaderProgram(0), mViewportWidth(800), mViewportHeight(600) {}
+        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
+        mViewportWidth(800), mViewportHeight(600) {}
 
     Graphics::~Graphics()
     {
@@ -93,6 +125,12 @@ void main()
             return;
         }
 
+        if (!InitializeInstancedRenderer())
+        {
+            std::cerr << "Failed to initialize instanced renderer!" << std::endl;
+            return;
+        }
+
         // init cam info
         cam = {
             .pos = {0,0},
@@ -125,6 +163,7 @@ void main()
         {
             std::cout << "Shutting down graphics system..." << std::endl;
             ShutdownRenderer();
+            ShutdownInstancedRenderer();
             mInitialized = false;
         }
     }
@@ -442,24 +481,46 @@ void main()
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
     {
+        // Convert screen coordinates to NDC
         float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
         float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
 
-        glm::mat4 viewProjMatrix = glm::mat4(0);
-        glm::mat4 invViewProjMatrix = glm::inverse(viewProjMatrix);
+        // Calculate  projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
 
-        glm::vec4 worldPos = invViewProjMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+        glm::mat4 projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        glm::mat4 invProjectionMatrix = glm::inverse(projectionMatrix);
+
+        // Transform NDC to world space
+        glm::vec4 worldPos = invProjectionMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
         return Vec2(worldPos.x, worldPos.y);
     }
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
-        glm::mat4 viewProjMatrix = glm::mat4(0);
-        glm::vec4 clipPos = viewProjMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+        // Calculate projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
 
+        glm::mat4 projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        // Transform world space to clip space
+        glm::vec4 clipPos = projectionMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+
+        // Convert clip space to NDC
         float ndcX = clipPos.x / clipPos.w;
         float ndcY = clipPos.y / clipPos.w;
 
+        // Convert NDC to screen coordinates
         float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
         float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
 
@@ -560,6 +621,131 @@ void main()
             Vec2 p2 = Vec2(center.x + cosf(angle2) * radius, center.y + sinf(angle2) * radius);
 
             DrawDebugLine(p1, p2, r, g, b);
+        }
+    }
+
+    bool Graphics::InitializeInstancedRenderer()
+    {
+        // Create instanced shader program
+        mInstanceShaderProgram = CreateShader(instancedVertexShaderSource, instancedFragmentShaderSource);
+        if (mInstanceShaderProgram == 0) 
+        {
+            std::cerr << "Failed to create instanced shader program!" << std::endl;
+            return false;
+        }
+
+        // Create instance VAO
+        glGenVertexArrays(1, &mInstanceVAO);
+        glBindVertexArray(mInstanceVAO);
+
+        // Bind the existing VBO with quad vertices
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+        // Create instance VBO for model matrices
+        glGenBuffers(1, &mInstanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+
+        // Allocate space for up to 10000 instances
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 10000, nullptr, GL_DYNAMIC_DRAW);
+
+        // Set up instance attributes
+        for (int i = 0; i < 4; ++i) 
+        {
+            glEnableVertexAttribArray(1 + i);
+            glVertexAttribPointer(1 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * i));
+            glVertexAttribDivisor(1 + i, 1);
+        }
+
+        // Unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        return true;
+    }
+
+    void Graphics::DrawSpritesInstanced(
+        unsigned int textureID,
+        const Vec2& textureSize,
+        const std::vector<Vec2>& positions,
+        const std::vector<Vec2>& scales,
+        const std::vector<float>& rotations)
+    {
+        if (!mInitialized || textureID == 0 || positions.empty()) return;
+
+        size_t instanceCount = positions.size();
+
+        // Build model matrices for all instances
+        std::vector<glm::mat4> models;
+        models.reserve(instanceCount);
+
+        for (size_t i = 0; i < instanceCount; ++i) {
+            glm::mat4 model = glm::mat4(1.0f);
+
+            // Translate
+            model = glm::translate(model, glm::vec3(positions[i].x, positions[i].y, 0.0f));
+
+            // Rotate
+            float rotation = (i < rotations.size()) ? rotations[i] : 0.0f;
+            if (rotation != 0.0f) {
+                model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+            }
+
+            // Scale
+            Vec2 scale = (i < scales.size()) ? scales[i] : Vec2(1.0f, 1.0f);
+            model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
+
+            models.push_back(model);
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+        glUseProgram(mInstanceShaderProgram);
+
+        // Set projection matrix uniform
+        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+
+        // Calculate projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Set texture uniform
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+
+        // Bind texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Draw all instances in one call
+        glBindVertexArray(mInstanceVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instanceCount);
+
+        // Cleanup
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void Graphics::ShutdownInstancedRenderer()
+    {
+        if (mInstanceVAO != 0) {
+            glDeleteVertexArrays(1, &mInstanceVAO);
+            mInstanceVAO = 0;
+        }
+        if (mInstanceVBO != 0) {
+            glDeleteBuffers(1, &mInstanceVBO);
+            mInstanceVBO = 0;
+        }
+        if (mInstanceShaderProgram != 0) {
+            glDeleteProgram(mInstanceShaderProgram);
+            mInstanceShaderProgram = 0;
         }
     }
 }
