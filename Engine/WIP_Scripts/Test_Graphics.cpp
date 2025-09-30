@@ -37,7 +37,7 @@ namespace
     std::vector<DemoObject> demoObjects;
     bool showDemo = false;
     bool debugDrawingEnabled = false;
-    const int DEMO_OBJECTS_COUNT = 2500;
+    const int DEMO_OBJECTS_COUNT = 10000;
 }
 
 namespace Uma_Engine
@@ -311,28 +311,30 @@ namespace Uma_Engine
             if (enemyTexture != nullptr)
             {
                 // Prepare vectors for instanced rendering
-                std::vector<Vec2> positions;
-                std::vector<Vec2> scales;
-                std::vector<float> rotations;
+                std::vector<Sprite_Info> sprites;
+                
 
-                positions.reserve(demoObjects.size());
-                scales.reserve(demoObjects.size());
-                rotations.reserve(demoObjects.size());
-
+                sprites.reserve(demoObjects.size());
+                
                 // Collect all instance data
                 for (const auto& obj : demoObjects)
                 {
-                    positions.push_back(obj.position);
-                    scales.push_back(obj.scale);
-                    rotations.push_back(obj.rotation);
+                    sprites.push_back(
+                        Sprite_Info
+                        {
+                            .tex_id = enemyTexture->tex_id,
+                            .tex_size = enemyTexture->tex_size,
+                            .pos = obj.position,
+                            .scale = obj.scale,
+                            .rot = obj.rotation,
+                            .rot_speed = obj.rotationSpeed
+                        });
                 }
 
                 graphics->DrawSpritesInstanced(
                     enemyTexture->tex_id,
-                    enemyTexture->tex_size,
-                    positions,
-                    scales,
-                    rotations
+                    enemyTexture->tex_size, 
+                    sprites
                 );
             }
         }

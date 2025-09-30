@@ -20,6 +20,8 @@ Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
     // out of range check
     assert(mActiveEntityCnt < MAX_ENTITIES && "ERROR : Too many active entities.");
 
+    if (mActiveEntityCnt >= MAX_ENTITIES) return -1;
+
     // pop the queue and set the new entity id
     Entity new_entity = aAvailableEntities.front();
     aAvailableEntities.pop();

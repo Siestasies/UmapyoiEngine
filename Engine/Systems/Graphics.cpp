@@ -276,7 +276,7 @@ void main()
 
         model = glm::translate(model, glm::vec3(pos, 0.0f));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
+        model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
 
         // Set model uniform
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
@@ -668,13 +668,11 @@ void main()
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
         const Vec2& textureSize,
-        const std::vector<Vec2>& positions,
-        const std::vector<Vec2>& scales,
-        const std::vector<float>& rotations)
+        std::vector<Sprite_Info> const& sprites)
     {
-        if (!mInitialized || textureID == 0 || positions.empty()) return;
+        if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
-        size_t instanceCount = positions.size();
+        size_t instanceCount = sprites.size();
 
         // Build model matrices for all instances
         std::vector<glm::mat4> models;
@@ -683,18 +681,18 @@ void main()
         for (size_t i = 0; i < instanceCount; ++i) {
             glm::mat4 model = glm::mat4(1.0f);
 
+            Vec2 position = sprites[i].pos;
+            Vec2 scale = sprites[i].scale;
+            float rot = sprites[i].rot;
+
             // Translate
-            model = glm::translate(model, glm::vec3(positions[i].x, positions[i].y, 0.0f));
+            model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
 
             // Rotate
-            float rotation = (i < rotations.size()) ? rotations[i] : 0.0f;
-            if (rotation != 0.0f) {
-                model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-            }
+            model = glm::rotate(model, glm::radians(rot), glm::vec3(0.0f, 0.0f, 1.0f));
 
             // Scale
-            Vec2 scale = (i < scales.size()) ? scales[i] : Vec2(1.0f, 1.0f);
-            model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
+            model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
 
             models.push_back(model);
         }

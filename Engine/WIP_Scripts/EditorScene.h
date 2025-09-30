@@ -92,7 +92,7 @@ namespace Uma_Engine
             //subscribe to events
             pEventSystem->Subscribe<Uma_Engine::EntityCreatedEvent>(
                 [](const Uma_Engine::EntityCreatedEvent& e) {
-                    std::cout << "Entity created: " << e.entityId << std::endl;
+                    //std::cout << "Entity created: " << e.entityId << std::endl;
                     // e.handled = true;
                 });
 
@@ -220,7 +220,7 @@ namespace Uma_Engine
             // reset
             if (pHybridInputSystem->KeyPressed(GLFW_KEY_3))
             {
-                SpawnAllEntitiesManually();
+                ResetAllEntities();
             }
 
             // destroy all
@@ -248,7 +248,7 @@ namespace Uma_Engine
 
 		    }
 
-        void SpawnAllEntitiesManually()
+        void ResetAllEntities()
         {
             gCoordinator.DestroyAllEntities();
 
@@ -257,8 +257,8 @@ namespace Uma_Engine
             // create entities
             {
                 std::default_random_engine generator;
-                std::uniform_real_distribution<float> randPositionX(0.f, 1920.f);
-                std::uniform_real_distribution<float> randPositionY(0.f, 1080.f);
+                std::uniform_real_distribution<float> randPositionX(-1920.f, 1920.f);
+                std::uniform_real_distribution<float> randPositionY(-1080.f, 1080.f);
                 std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
                 std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
@@ -302,7 +302,7 @@ namespace Uma_Engine
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
-                for (size_t i = 0; i < 2500; i++)
+                for (size_t i = 0; i < 10000; i++)
                 {
                     Entity tmp = gCoordinator.DuplicateEntity(enemy);
 
@@ -383,7 +383,10 @@ namespace Uma_Engine
                     });
             }
 
-            
+            std::string log;
+            std::stringstream ss(log);
+            ss << "Created Entity : " << 10000;
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
         }
 	  };
 }

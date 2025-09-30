@@ -20,6 +20,17 @@ namespace Uma_Engine
         float zoom;
     };
 
+    struct Sprite_Info
+    {
+        GLuint tex_id;
+        Vec2 tex_size;
+
+        Vec2 pos;
+        Vec2 scale;
+        float rot;
+        float rot_speed;
+    };
+
     class Graphics : public ISystem, public IWindowSystem
     {
     private:
@@ -90,9 +101,7 @@ namespace Uma_Engine
         void DrawSpritesInstanced(
             unsigned int textureID,
             const Vec2& textureSize,
-            const std::vector<Vec2>& positions,
-            const std::vector<Vec2>& scales,
-            const std::vector<float>& rotations);
+            std::vector<Sprite_Info> const& sprites);
 
         // Draw background image
         void DrawBackground(unsigned int textureID, const Vec2& textureSize);
