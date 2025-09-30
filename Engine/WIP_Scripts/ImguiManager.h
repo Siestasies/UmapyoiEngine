@@ -13,21 +13,19 @@ namespace Uma_Engine
 {
     class ImguiManager : public ISystem, public IWindowSystem
     {   
-        private:
-            SystemManager* m_systemManager;
         public:
             ImguiManager()
                 : m_initialized(false)
                 , m_window(nullptr)
                 , m_showEngineDebug(true)
                 , m_showEventDebug(true)
-                , m_showDemoWindow(true)
+                , m_showDemoWindow(false)
                 , m_showPerformanceWindow(true)
                 , m_showSystemsWindow(true)
                 , m_historyOffset(0)
                 , m_systemManager(nullptr)
             {
-                // Initialize history arrays
+                // init array
                 for (int i = 0; i < 120; ++i)
                 {
                     m_fpsHistory[i] = 0.0f;
@@ -36,7 +34,7 @@ namespace Uma_Engine
             }
             ~ImguiManager() override
             {
-                // Shutdown is handled by the system manager calling Shutdown()
+                // nothing cus shutdown should handle destorying alr
             }
 
             void SetSystemManager(SystemManager* manager)
@@ -44,7 +42,7 @@ namespace Uma_Engine
                 m_systemManager = manager;
             }
 
-            // ISystem interface
+            // isystem stuff
             void Init() override
             {
                 std::cout << "ImGuiSystem: Initializing..." << std::endl;
@@ -83,7 +81,6 @@ namespace Uma_Engine
                 ImGui_ImplOpenGL3_Init(glsl_version);
 
                 m_initialized = true;
-                std::cout << "ImGuiSystem: Successfully initialized!" << std::endl;
             }
 
             void Update(float deltaTime) override
@@ -113,54 +110,42 @@ namespace Uma_Engine
                     frameCount = 0;
                 }
 
-                // Start ImGui frame
                 StartFrame();
 
-                // Create debug windows
+                // call for windows to be shown
                 float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
                 CreateDebugWindows(currentFps, deltaTime);
 
-                // Render ImGui
                 Render();
             }
 
             void Shutdown() override
             {
                 if (!m_initialized)
-                {
                     return;
-                }
-
-                std::cout << "ImGuiSystem: Shutting down..." << std::endl;
 
                 ImGui_ImplOpenGL3_Shutdown();
                 ImGui_ImplGlfw_Shutdown();
                 ImGui::DestroyContext();
 
                 m_initialized = false;
-                std::cout << "ImGuiSystem: Successfully shutdown!" << std::endl;
+                std::cout << "imgui SHUTDOWN" << std::endl;
             }
 
             void SetWindow(GLFWwindow* window) override
             {
                 m_window = window;
-
-                // If we haven't initialized yet and now have a window, try to initialize
                 if (!m_initialized && m_window)
-                {
                     Init();
-                }
             }
 
             // ImGui-specific methods
             void StartFrame()
             {
                 if (!m_initialized)
-                {
                     return;
-                }
 
-                // Start the Dear ImGui frame
+                // start imgui fram
                 ImGui_ImplOpenGL3_NewFrame();
                 ImGui_ImplGlfw_NewFrame();
                 ImGui::NewFrame();
@@ -169,55 +154,35 @@ namespace Uma_Engine
             void Render()
             {
                 if (!m_initialized)
-                {
                     return;
-                }
-
-                // Rendering
                 ImGui::Render();
                 ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-                // Note: Multi-viewport support removed for compatibility
-                // If you have a newer ImGui version with viewport support, uncomment these lines:
-                /*
-                ImGuiIO& io = ImGui::GetIO();
-                if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-                {
-                    GLFWwindow* backup_current_context = glfwGetCurrentContext();
-                    ImGui::UpdatePlatformWindows();
-                    ImGui::RenderPlatformWindowsDefault();
-                    glfwMakeContextCurrent(backup_current_context);
-                }
-                */
             }
 
             void CreateDebugWindows(float fps, float deltaTime)
             {
                 if (!m_initialized)
-                {
                     return;
-                }
 
-                // Create various debug windows
                 CreateEngineDebugWindow(fps, deltaTime);
                 CreatePerformanceWindow(fps, deltaTime);
 
                 if (m_showSystemsWindow)
                 {
                     CreateSystemsWindow();
+                    CreateEntityDebugWindow();
+                    CreateConsoleWindow();
                 }
 
-                // ImGui Demo window (useful for learning ImGui features)
                 if (m_showDemoWindow)
                 {
                     ImGui::ShowDemoWindow(&m_showDemoWindow);
                 }
             }
 
-            // Check if ImGui is initialized
             bool IsInitialized() const { return m_initialized; }
 
-            // Window visibility controls
+            // for window controls
             void ShowEngineDebug(bool show) { m_showEngineDebug = show; }
             void ShowEventDebug(bool show) { m_showEventDebug = show; }
             void ShowDemoWindow(bool show) { m_showDemoWindow = show; }
@@ -225,10 +190,7 @@ namespace Uma_Engine
             void ShowSystemsWindow(bool show) { m_showSystemsWindow = show; }
 
         private:
-            bool m_initialized;
-            GLFWwindow* m_window;
-
-            // Internal helper methods
+            // helper functions
             void CreateEngineDebugWindow(float fps, float deltaTime)
             {
                 if (!m_showEngineDebug)
@@ -267,20 +229,6 @@ namespace Uma_Engine
                 ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
                 ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));
                 ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
-
-                ImGui::Spacing();
-
-                // Engine status
-                ImGui::Text("Engine Status");
-                ImGui::Separator();
-                ImGui::Text("Systems Manager: Active");
-                ImGui::Text("ImGui System: Active");
-
-                // System Manager info
-                //if (m_systemManager)
-                //{
-                //    ImGui::Text("System Manager: %p", m_systemManager);
-                //}
 
                 ImGui::End();
             }
@@ -331,7 +279,7 @@ namespace Uma_Engine
                         {
                             double ms = timings[i];
                             double percent = (ms / total) * 100.0;
-                            ImGui::Text("System %s: %.1f ms (%.1f%%)", m_systemManager->GetSystemName(i).c_str(), ms, percent);
+                            ImGui::Text("%i. %s: %.1f ms (%.1f%%)", (i + 1), m_systemManager->GetSystemName(i).c_str(), ms, percent);
                         }
 
                         ImGui::Separator();
@@ -350,17 +298,86 @@ namespace Uma_Engine
                 ImGui::End();
             }
 
+            void CreateEntityDebugWindow()
+            {
+                bool b = true;
+                ImGui::Begin("Entity Debug", &b);
 
-            // Window visibility flags
+                // get entity count here
+                ImGui::Text("Entity Count:");
+                ImGui::Separator();
+
+                if (ImGui::Button("Spawn Entity", { 100, 50 }))
+                {
+                    // do spawning here
+                    std::cout << "Entity spawned" << std::endl;
+                }
+                //ImGui::SetCursorPos({5, 100});
+                if (ImGui::Button("Destroy Entity", { 100, 50 }))
+                {
+                    // do spawning here
+                    std::cout << "Entity destroyed" << std::endl;
+                }
+                
+                ImGui::End();
+            }
+
+            void CreateConsoleWindow()
+            {
+                bool b = true;
+                ImGui::Begin("Console", &b);
+                // to clear the console
+                if (ImGui::Button("Clear"))
+                    logsVec.clear();
+                ImGui::SameLine();
+                // test message 
+                if (ImGui::Button("Test Message Button"))
+                    AddConsoleLog("This is a test message");
+
+                ImGui::Separator();
+
+                ImGui::BeginChild("ConsoleLog", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+                for (const auto& entry : logsVec)
+                {
+                    ImVec4 color = ImVec4(1, 1, 1, 1); // whit color
+                    ImGui::PushStyleColor(ImGuiCol_Text, color);
+                    ImGui::Text("%s", entry.c_str());
+                    ImGui::PopStyleColor();
+                }
+                // keep scroll to bottom
+                if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+                    ImGui::SetScrollHereY(1.0f);
+                ImGui::EndChild();
+
+                ImGui::End();
+            }
+
+            void AddConsoleLog(const std::string& message)
+            {
+                logsVec.push_back(message);
+
+                // dont go beyond 100 messgaes shown
+                if (logsVec.size() > 100)
+                    logsVec.erase(logsVec.begin());
+            }
+
+
+            bool m_initialized;
+            GLFWwindow* m_window;
+
+            // refs to other classes
+            SystemManager* m_systemManager;
+            // show or not
             bool m_showEngineDebug;
             bool m_showEventDebug;
             bool m_showDemoWindow;
             bool m_showPerformanceWindow;
             bool m_showSystemsWindow;
 
-            // Performance tracking
+            // performance window vars
             float m_fpsHistory[120];
             float m_frametimeHistory[120];
             int m_historyOffset;
+            std::vector<std::string> logsVec;
     };
 }
