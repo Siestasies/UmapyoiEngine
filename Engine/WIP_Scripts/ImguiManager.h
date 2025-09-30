@@ -1,5 +1,6 @@
 #pragma once
 #include "SystemType.h"
+#include "IMGUIEvents.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include "imgui.h"
@@ -303,20 +304,26 @@ namespace Uma_Engine
                 bool b = true;
                 ImGui::Begin("Entity Debug", &b);
 
+                //Uma_ECS::Coordinator* coordRef = m_systemManager->GetSystem<Uma_ECS::Coordinator>();
+                //std::cout << coordRef->GetEntityCount() << std::endl;
+                // 
                 // get entity count here
-                ImGui::Text("Entity Count:");
+                //ImGui::Text("Entity Count: %i", coordRef->GetEntityCount());
+
                 ImGui::Separator();
 
                 if (ImGui::Button("Spawn Entity", { 100, 50 }))
                 {
                     // do spawning here
                     std::cout << "Entity spawned" << std::endl;
+                    pEventSystem->Emit<CloneEntityRequestEvent>(200);
                 }
                 //ImGui::SetCursorPos({5, 100});
                 if (ImGui::Button("Destroy Entity", { 100, 50 }))
                 {
                     // do spawning here
                     std::cout << "Entity destroyed" << std::endl;
+                    pEventSystem->Emit<DestroyEntityRequestEvent>(200);
                 }
                 
                 ImGui::End();

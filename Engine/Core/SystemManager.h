@@ -112,8 +112,7 @@ namespace Uma_Engine
             }
             return nullptr;
         }
-
-        // Access profiling info
+        // get timing stuff for
         double GetLastTotalTime() const { return lastTotalTime; }
         const std::vector<double>& GetLastTimings() const { return timings; }
 
