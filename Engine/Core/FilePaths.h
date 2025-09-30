@@ -4,13 +4,7 @@
 namespace Uma_FilePath 
 {
 
-    inline const std::string ASSET_ROOT =
-
-#if defined(_DEBUG)
-        "../../../../Assets/"; // Dev mode — raw asset folder
-#else
-        "Assets/"; // Build mode — copied to build folder
-#endif
+    inline const std::string ASSET_ROOT = "Assets/";
 
     // Assets
     inline const std::string TEXTURES_DIR = ASSET_ROOT + "Textures/";

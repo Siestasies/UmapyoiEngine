@@ -1,3 +1,8 @@
+#ifdef _DEBUG
+    #define _CRTDBG_MAP_ALLOC
+    #include <crtdbg.h>
+#endif
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -31,6 +36,10 @@
 
 int main()
 {
+
+#ifdef _DEBUG
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
     // Debug
 #ifdef DEBUG
     Uma_Engine::Debugger::Init(true);
