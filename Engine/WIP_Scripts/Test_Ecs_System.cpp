@@ -413,7 +413,9 @@ void Uma_Engine::Test_Ecs::Update(float dt)
         std::uniform_int_distribution<Uma_ECS::Entity> distribution(0, gCoordinator.GetEntityCount());
 
         Uma_ECS::Entity rand = distribution(generator);
-        if (rand != player && rand != enemy && gCoordinator.HasActiveEntity(rand)) gCoordinator.DestroyEntity(rand);
+        while (rand == player && !gCoordinator.HasActiveEntity(rand)) rand = distribution(generator);
+
+        gCoordinator.DestroyEntity(rand);
     }
 
 
