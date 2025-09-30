@@ -1,28 +1,16 @@
 #pragma once
 
-#include <functional>
+#include <string>
 
 #include "EventType.h"
 #include "../ECS/Core/Types.hpp"
 
 namespace Uma_Engine
 {
-	enum class EntityTemplate
-	{
-		Empty,
-		Player,
-		Enemy,
-		Projectile,
-		Particle
-		// Add-on
-	};
-
 	class SpawnEntityRequestEvent : public Event
 	{
 	public:
-		SpawnEntityRequestEvent(std::function<void(Uma_ECS::Entity)> setupCallback = nullptr) : setupCallback(setupCallback) { priority = Priority::Normal; }
-	public:
-		std::function<void(Uma_ECS::Entity)> setupCallback = nullptr;
+		SpawnEntityRequestEvent() { priority = Priority::Normal; }
 	};
 
 	class DestroyEntityRequestEvent : public Event
@@ -45,21 +33,21 @@ namespace Uma_Engine
 	class AddComponentRequestEvent : public Event
 	{
 	public:
-		AddComponentRequestEvent(Uma_ECS::Entity entityId, std::type_index componentType) : entityId(entityId), componentType(componentType) { priority = Priority::Normal; }
+		AddComponentRequestEvent(Uma_ECS::Entity entityId, std::string componentType) : entityId(entityId), componentType(componentType) { priority = Priority::Normal; }
 
 	public:
 		Uma_ECS::Entity entityId;
-		std::type_index componentType;
+		std::string componentType;
 	};
 
 	class RemoveComponentRequestEvent : public Event
 	{
 	public:
-		RemoveComponentRequestEvent(Uma_ECS::Entity entityId, std::type_index componentType) : entityId(entityId), componentType(componentType) { priority = Priority::Normal; }
+		RemoveComponentRequestEvent(Uma_ECS::Entity entityId, std::string componentType) : entityId(entityId), componentType(componentType) { priority = Priority::Normal; }
 
 	public:
 		Uma_ECS::Entity entityId;
-		std::type_index componentType;
+		std::string componentType;
 	};
 
 	class ClearSceneRequestEvent : public Event
