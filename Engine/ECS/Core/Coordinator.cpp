@@ -1,4 +1,5 @@
 #include "Coordinator.hpp"
+#include "Core/IMGUIEvents.h"
 
 #include "Debugging/Debugger.hpp"
 
@@ -14,6 +15,14 @@ namespace Uma_ECS
         aSystemManager = std::make_unique<SystemManager>();
 
         pEventSystem = eventSystem;
+
+        pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = GetEntityCount(); });
+        pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) { if (HasActiveEntity(e.entityId)) DuplicateEntity(e.entityId); });
+        pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) { if (HasActiveEntity(e.entityId)) DestroyEntity(e.entityId); });
+
+        pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { SerializeAllEntities(e.filepath); });
+        pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { DeserializeAllEntities(e.filepath); });
+        pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { DestroyAllEntities(); });
     }
 
     Entity Coordinator::CreateEntity()
