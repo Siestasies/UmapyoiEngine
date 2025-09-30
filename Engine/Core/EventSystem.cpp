@@ -2,7 +2,7 @@
 
 #include "EventSystem.h"
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 namespace Uma_Engine
 {

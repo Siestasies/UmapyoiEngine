@@ -1,5 +1,7 @@
 #include "Coordinator.hpp"
 
+#include "Debugging/Debugger.hpp"
+
 #include <fstream>
 #include <rapidjson/document.h>
 
@@ -23,6 +25,11 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::EntityCreatedEvent>(en);
         }
 
+        std::string log;
+        std::stringstream ss(log);
+        ss << "Created Entity : " << en;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+
         return en;
     }
 
@@ -32,6 +39,11 @@ namespace Uma_ECS
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
         aSystemManager->EntityDestroyed(entity);
+
+        std::string log;
+        std::stringstream ss(log);
+        ss << "Destroyed Entity : " << entity;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
     }
 
     bool Coordinator::HasActiveEntity(Entity entity) const
@@ -67,6 +79,11 @@ namespace Uma_ECS
         {
             DestroyEntity(en);
         }
+
+        std::string log;
+        std::stringstream ss(log);
+        ss << "Destroyed Entities : " << enList.size();
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
     }
 
     void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
@@ -95,7 +112,7 @@ namespace Uma_ECS
 
         for (auto& entityVal : in.GetArray())
         {
-            Entity entity = aEntityManager->CreateEntity(); // new ID
+            Entity entity = CreateEntity(); // new ID
             const auto& comps = entityVal["components"];
             Signature sign = aComponentManager->DeserializeAll(entity, comps);
             aEntityManager->SetSignature(entity, sign);

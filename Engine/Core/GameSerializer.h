@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/BaseSerializer.h"
+#include "Debugging/Debugger.hpp"
 
 #include <vector>
 #include <string>
@@ -47,6 +48,11 @@ namespace Uma_Engine
             std::ofstream ofs(filename);
             ofs << buffer.GetString();
             ofs.close();
+
+            std::string log;
+            std::stringstream ss(log);
+            ss << "Saved to file : " << filename;
+            Debugger::Log(WarningLevel::eInfo, ss.str());
         }
 
         void load(const std::string& filename)
@@ -64,6 +70,13 @@ namespace Uma_Engine
                     s->Deserialize(doc[s->GetSectionName()]);
                 }
             }
+
+            std::string log;
+            std::stringstream ss(log);
+
+            ss << "Loaded from file : " << filename;
+
+            Debugger::Log(WarningLevel::eInfo, ss.str());
         }
     };
 
