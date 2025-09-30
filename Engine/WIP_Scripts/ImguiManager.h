@@ -6,6 +6,9 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+#include "Core/FilePaths.h"
+
 #include <iostream>
 
 struct GLFWwindow;
@@ -69,7 +72,10 @@ namespace Uma_Engine
                 // set font and font size
                 float fontSize = 20.0f;
                 io.Fonts->AddFontDefault();
-                io.FontDefault = io.Fonts->AddFontFromFileTTF("../../../../Assets/Roboto-Medium.ttf", fontSize);
+
+                std::string path = Uma_FilePath::ASSET_ROOT + "Roboto-Medium.ttf";
+
+                io.FontDefault = io.Fonts->AddFontFromFileTTF(path.c_str(), fontSize);
 
                 // set up backend stuff
                 ImGui_ImplGlfw_InitForOpenGL(m_window, true);

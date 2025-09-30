@@ -47,7 +47,7 @@ int main()
 #endif // DEBUG
 
     // Create window
-    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
+    Uma_Engine::Window window(1920, 1080, "UmapyoiEngine");
 
     // Initialize the engine
     if (!window.Initialize())

@@ -28,6 +28,7 @@
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Core/ECSEvents.h"
+#include "../Core/IMGUIEvents.h"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -95,6 +96,29 @@ namespace Uma_Engine
                     //std::cout << "Entity created: " << e.entityId << std::endl;
                     // e.handled = true;
                 });
+
+            pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
+           
+            pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { gGameSerializer.save(e.filepath); });
+            pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { gCoordinator.DestroyAllEntities(); gGameSerializer.load(e.filepath); });
+            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { gCoordinator.DestroyAllEntities(); });
+
+
+            pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
+                { 
+                    if (gCoordinator.HasActiveEntity(e.entityId))
+                    {
+                        gCoordinator.DuplicateEntity(e.entityId);
+                    }
+                });
+            pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) 
+                { 
+                    if (gCoordinator.HasActiveEntity(e.entityId))
+                    {
+                        gCoordinator.DestroyEntity(e.entityId);
+                    }
+                });
+
 
             // Ecs stuff
             using namespace Uma_ECS;
