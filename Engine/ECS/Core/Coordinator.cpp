@@ -1,4 +1,5 @@
 #include "Coordinator.hpp"
+#include "Core/IMGUIEvents.h"
 
 #include <fstream>
 #include <rapidjson/document.h>
@@ -15,6 +16,8 @@ namespace Uma_ECS
         aSystemManager = std::make_unique<SystemManager>();
 
         pEventSystem = eventSystem;
+
+        pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = GetEntityCount(); });
     }
 
     Entity Coordinator::CreateEntity()

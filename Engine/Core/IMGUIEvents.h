@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "EventType.h"
 #include "../ECS/Core/Types.hpp"
@@ -25,9 +26,21 @@ namespace Uma_Engine
 	{
 	public:
 		CloneEntityRequestEvent(Uma_ECS::Entity entityId) : entityId(entityId) { priority = Priority::Normal; }
-
 	public:
 		Uma_ECS::Entity entityId;
+	};
+
+	class QueryActiveEntitiesEvent : public Event
+	{
+	public:
+		QueryActiveEntitiesEvent()
+		{
+			priority = Priority::Critical;
+		}
+
+	public:
+		mutable int mActiveEntityCnt = 0;
+		//mutable std::vector<Uma_ECS::Entity> entities;
 	};
 
 	class AddComponentRequestEvent : public Event
