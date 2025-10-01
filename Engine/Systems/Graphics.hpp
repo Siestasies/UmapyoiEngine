@@ -94,7 +94,6 @@ namespace Uma_Engine
 
         // Sprite rendering
         void DrawSprite(unsigned int textureID,
-            const Vec2& textureSize,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f);
@@ -105,7 +104,7 @@ namespace Uma_Engine
             std::vector<Sprite_Info> const& sprites);
 
         // Draw background image
-        void DrawBackground(unsigned int textureID, const Vec2& textureSize);
+        void DrawBackground(unsigned int textureID);
         void SetVSync(bool enabled);
         void SetViewport(int width, int height);
 
