@@ -263,72 +263,7 @@ namespace Uma_Engine
             gCoordinator.DestroyAllEntities();
 
             using namespace Uma_ECS;
-
-            //// create entities
-            //{
-            //    std::default_random_engine generator;
-            //    std::uniform_real_distribution<float> randPositionX(-1920.f, 1920.f);
-            //    std::uniform_real_distribution<float> randPositionY(-1080.f, 1080.f);
-            //    std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
-            //    std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
-
-            //    Entity enemy;
-            //    {
-            //        enemy = gCoordinator.CreateEntity();
-
-            //        gCoordinator.AddComponent(
-            //            enemy,
-            //            RigidBody{
-            //              .velocity = Vec2(0.0f, 0.0f),
-            //              .acceleration = Vec2(0.0f, 0.0f),
-            //              .accel_strength = 200,
-            //              .fric_coeff = 100
-            //            });
-
-            //        gCoordinator.AddComponent(
-            //            enemy,
-            //            Transform{
-            //              .position = Vec2(randPositionX(generator), randPositionY(generator)),
-            //              .rotation = Vec2(randRotation(generator), randRotation(generator)),
-            //              .scale = Vec2(randScale(generator), randScale(generator))
-            //            });
-
-            //        std::string texName = "enemy";
-            //        gCoordinator.AddComponent(
-            //            enemy,
-            //            SpriteRenderer{
-            //              .textureName = texName,
-            //              .flipX = false,
-            //              .flipY = false,
-            //              .texture = pResourcesManager->GetTexture(texName),
-            //            });
-
-            //        gCoordinator.AddComponent(
-            //            enemy,
-            //            Collider{
-            //              .layer = CollisionLayer::CL_ENEMY,
-            //              .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
-            //            });
-            //    }
-
-            //    // using 1 enemy to duplicate 2500 times and rand its transform
-            //    for (size_t i = 0; i < 10000; i++)
-            //    {
-            //        Entity tmp = gCoordinator.DuplicateEntity(enemy);
-
-            //        Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
-
-            //        tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-            //        tf.rotation = Vec2(randRotation(generator), randRotation(generator));
-            //        tf.scale = Vec2(randScale(generator), randScale(generator));
-
-            //        SpriteRenderer& sr = gCoordinator.GetComponent<SpriteRenderer>(tmp);
-
-            //        sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
-            //        sr.texture = pResourcesManager->GetTexture(sr.textureName);
-            //    }
-            //}
-
+            
             // create player
             player = gCoordinator.CreateEntity();
             {
