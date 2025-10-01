@@ -1,6 +1,8 @@
 #pragma once
 #include "SystemType.h"
 #include "IMGUIEvents.h"
+#include "DebugEvents.h"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include "imgui.h"
@@ -8,7 +10,6 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Core/FilePaths.h"
-
 #include <iostream>
 
 struct GLFWwindow;
@@ -83,6 +84,8 @@ namespace Uma_Engine
                 ImGui_ImplOpenGL3_Init(glsl_version);
 
                 m_initialized = true;
+
+                pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
             }
 
             void Update(float deltaTime) override
@@ -351,8 +354,7 @@ namespace Uma_Engine
                     logsVec.clear();
                 ImGui::SameLine();
                 // test message 
-                if (ImGui::Button("Test Message Button"))
-                    AddConsoleLog("This is a test message");
+                //if (ImGui::Button("Test Message Button"))
 
                 ImGui::Separator();
 

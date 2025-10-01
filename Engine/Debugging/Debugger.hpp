@@ -1,4 +1,7 @@
 #pragma once
+#include "SystemType.h"
+#include "EventSystem.h"
+
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -7,7 +10,6 @@
 
 namespace Uma_Engine
 {
-
     enum class WarningLevel
     {
         eInfo = 0,
@@ -17,22 +19,24 @@ namespace Uma_Engine
         eNoLabel
     };
 
-    class Debugger
+    class Debugger : public ISystem
     {
-    public:
+        public:
 
-        static void Init(bool console, const std::string& logfile = "../Logs/debug.log");
-        static void Update();
-        static void Shutdown();
+            void Init() override;
+            //void Init(bool console, const std::string& logfile = "../Logs/debug.log");
+            void Update(float dt) override;
+            void Shutdown() override;
 
-        static void Log(WarningLevel level, const std::string& msg);
-        static void Assert(bool condition, const std::string& msg);
+            static void Log(WarningLevel level, const std::string& msg);
+            static void Assert(bool condition, const std::string& msg);
 
-    private:
+        private:
+            static bool consoleLog;
+            static std::ofstream sLogFile;
+            static std::mutex sLogMutex;
 
-        static bool consoleLog;
-        static std::ofstream sLogFile;
-        static std::mutex sLogMutex;
+            static EventSystem* pEventSystem;
     };
 
 } // namespace Uma_Engine
