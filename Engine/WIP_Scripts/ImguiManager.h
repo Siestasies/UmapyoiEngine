@@ -11,6 +11,7 @@
 
 #include "Core/FilePaths.h"
 #include <iostream>
+#include <random>
 
 struct GLFWwindow;
 
@@ -28,7 +29,7 @@ namespace Uma_Engine
                 , m_showPerformanceWindow(true)
                 , m_showSystemsWindow(true)
                 , m_historyOffset(0)
-                , m_systemManager(nullptr)
+                , pEventSystem(nullptr)
             {
                 // init array
                 for (int i = 0; i < 120; ++i)
@@ -36,15 +37,8 @@ namespace Uma_Engine
                     m_fpsHistory[i] = 0.0f;
                     m_frametimeHistory[i] = 0.0f;
                 }
-            }
-            ~ImguiManager() override
-            {
-                // nothing cus shutdown should handle destorying alr
-            }
 
-            void SetSystemManager(SystemManager* manager)
-            {
-                m_systemManager = manager;
+                //pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { /*AddConsoleLog(e.message);*/ std::cout << "STUPID AH MF!!!!\n"; });
             }
 
             // isystem stuff
@@ -83,9 +77,12 @@ namespace Uma_Engine
                 const char* glsl_version = "#version 130";
                 ImGui_ImplOpenGL3_Init(glsl_version);
 
-                m_initialized = true;
 
+                pEventSystem = pSystemManager->GetSystem<EventSystem>();
+                static int rt = 0;
                 pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
+                rt++;
+                m_initialized = true;
             }
 
             void Update(float deltaTime) override
@@ -252,10 +249,10 @@ namespace Uma_Engine
 
                 ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
-                if (m_systemManager)
+                if (pSystemManager)
                 {
-                    const auto& timings = m_systemManager->GetLastTimings();
-                    double total = m_systemManager->GetLastTotalTime();
+                    const auto& timings = pSystemManager->GetLastTimings();
+                    double total = pSystemManager->GetLastTotalTime();
 
                     ImGui::Text("Registered Systems: %zu", timings.size());
                     ImGui::Separator();
@@ -266,7 +263,7 @@ namespace Uma_Engine
                         {
                             double ms = timings[i];
                             double percent = (ms / total) * 100.0;
-                            ImGui::Text("%i. %s: %.1f ms (%.1f%%)", (i + 1), m_systemManager->GetSystemName(i).c_str(), ms, percent);
+                            ImGui::Text("%i. %s: %.1f ms (%.1f%%)", (i + 1), pSystemManager->GetSystemName(i).c_str(), ms, percent);
                         }
 
                         ImGui::Separator();
@@ -386,8 +383,6 @@ namespace Uma_Engine
             bool m_initialized;
             GLFWwindow* m_window;
 
-            // refs to other classes
-            SystemManager* m_systemManager;
             // show or not
             bool m_showEngineDebug;
             bool m_showEventDebug;
@@ -400,5 +395,7 @@ namespace Uma_Engine
             float m_frametimeHistory[120];
             int m_historyOffset;
             std::vector<std::string> logsVec;
+
+            EventSystem* pEventSystem;
     };
 }
