@@ -17,8 +17,6 @@ namespace Uma_Engine
             std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
             Scene* activeScene = nullptr;
 
-            virtual ~SceneManager() = default;
-
             // inherit from isystem
             void Init() override
             {
