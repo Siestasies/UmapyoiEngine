@@ -100,7 +100,7 @@ namespace Uma_Engine
 
         void DrawSpritesInstanced(
             unsigned int textureID,
-            const Vec2& textureSize,
+            //const Vec2& textureSize,
             std::vector<Sprite_Info> const& sprites);
 
         // Draw background image

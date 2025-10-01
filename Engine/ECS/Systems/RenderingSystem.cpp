@@ -22,6 +22,8 @@ namespace Uma_ECS
 
     void RenderingSystem::Update(float dt)
     {
+        (void)dt;
+
         if (!aEntities.size()) return;
 
         auto& srArray = pCoordinator->GetComponentArray<SpriteRenderer>();
@@ -44,18 +46,20 @@ namespace Uma_ECS
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-           if (!sr.texture)
-           {
-               sr.texture = pResourcesManager->GetTexture(sr.textureName);
+            // Load texture if not already loaded
+            if (!sr.texture)
+            {
+                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+            }
 
-               if (sr.texture->tex_id == 0)
-               {
-                   std::stringstream log;
-                   log << "Entity(" << entity << ") texture is not valid.";
-                   Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-                   continue;
-               }
-           }
+            // Verify texture is valid before using it
+            if (!sr.texture || sr.texture->tex_id == 0)
+            {
+                std::stringstream log;
+                log << "Entity(" << entity << ") texture is not valid.";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                continue;
+            }
 
             sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
                 {
@@ -91,7 +95,7 @@ namespace Uma_ECS
 
             pGraphics->DrawSpritesInstanced(
                 pair.first,
-                sprites[0].tex_size,
+                //sprites[0].tex_size,
                 sprites
             );
         }
