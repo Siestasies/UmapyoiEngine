@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <unordered_map>
 #include <vector>
+#include <queue>
 
 #include "EventType.h"
 #include "SystemManager.h"

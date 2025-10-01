@@ -31,12 +31,14 @@ namespace Uma_Engine
 #endif
 
         // Process all queued events in priority order
-        for (auto& wrapper : eventQueue)
+        while (!eventQueue.empty())
         {
+            auto wrapper = std::move(eventQueue.front());
+
+            eventQueue.erase(eventQueue.begin());
+
             wrapper->Dispatch(this);
         }
-
-        eventQueue.clear();
     }
 
     void EventSystem::ProcessHighPriorityEvents()
