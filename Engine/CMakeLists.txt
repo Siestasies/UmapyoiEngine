@@ -1,7 +1,7 @@
 # Create GLAD library from local files
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_library(glad STATIC
-    ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h")
+    ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h")
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 # Add ImGui (INSERT HERE - before ENGINE_SOURCES)
@@ -76,7 +76,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h")
 
 # Add warning level 4 for Uma_Engine
 target_compile_options(Uma_Engine PRIVATE

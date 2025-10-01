@@ -28,10 +28,10 @@ namespace
     // Demo objects
     struct DemoObject
     {
-        Uma_Math::Vec2 position;
-        Uma_Math::Vec2 scale;
-        float rotation;
-        float rotationSpeed;
+        Uma_Math::Vec2 position{};
+        Uma_Math::Vec2 scale{};
+        float rotation{};
+        float rotationSpeed{};
     };
 
     std::vector<DemoObject> demoObjects;
@@ -71,7 +71,7 @@ namespace Uma_Engine
         playerRotation = 0.0f;
         rotationSpeed = 45.0f;
         moveSpeed = 200.0f;
-        fScale = 0.3f;
+        fScale = 10.f;
         zoom = 1.0f;
 
         // Pre-generate demo objects
@@ -275,7 +275,7 @@ namespace Uma_Engine
         const Texture* backgroundTexture = resourcesManager->GetTexture("background");
         if (backgroundTexture != nullptr)
         {
-            graphics->DrawBackground(backgroundTexture->tex_id, backgroundTexture->tex_size);
+            graphics->DrawBackground(backgroundTexture->tex_id);
         }
 
         // Enemy positions for collision debug drawing
@@ -295,7 +295,7 @@ namespace Uma_Engine
 
                 for (const Vec2& pos : positions)
                 {
-                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, pos, enemyScale);
+                    graphics->DrawSprite(enemyTexture->tex_id, pos, enemyTexture->tex_size);
 
                     if (debugDrawingEnabled)
                     {
@@ -351,7 +351,7 @@ namespace Uma_Engine
 
                 for (const Vec2& pos : positions)
                 {
-                    graphics->DrawSprite(enemyTexture->tex_id, enemyTexture->tex_size, pos, enemyScale);
+                    graphics->DrawSprite(enemyTexture->tex_id, pos, enemyScale);
                 }
             }
         }
@@ -361,7 +361,7 @@ namespace Uma_Engine
         if (playerTexture != nullptr)
         {
             Vec2 playerPos = { playerPosition.x, playerPosition.y };
-            graphics->DrawSprite(playerTexture->tex_id, playerTexture->tex_size, playerPos, Vec2(fScale), playerRotation);
+            graphics->DrawSprite(playerTexture->tex_id, playerPos, Vec2(fScale), playerRotation);
         }
 
         // Draw debug info

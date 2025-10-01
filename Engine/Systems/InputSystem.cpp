@@ -92,6 +92,7 @@ namespace Uma_Engine
     // Keep callback functions for potential future use or chaining
     void InputSystem::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
+        
         if (key >= 0 && key <= GLFW_KEY_LAST)
         {
             if (action == GLFW_PRESS) {

@@ -155,6 +155,8 @@ void main()
 
     void Graphics::Update(float dt)
     {
+        UNREFERENCED_PARAMETER(dt);
+
         // Handle window resize if needed
         if (mWindow)
         {
@@ -279,8 +281,7 @@ void main()
         cam.zoom = zoom;
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
-        const Vec2& position, const Vec2& scale, float rotation)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -308,7 +309,7 @@ void main()
         glBindVertexArray(0);
     }
 
-    void Graphics::DrawBackground(unsigned int textureID, const Vec2& textureSize)
+    void Graphics::DrawBackground(unsigned int textureID)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -752,7 +753,7 @@ void main()
 
         // Draw all instances in one call
         glBindVertexArray(mInstanceVAO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instanceCount);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
 
         // Cleanup
         glBindVertexArray(0);
