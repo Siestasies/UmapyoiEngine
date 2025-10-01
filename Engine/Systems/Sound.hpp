@@ -50,24 +50,86 @@ namespace Uma_Engine
 				void Update(float dt) override; // Call this every frame
 
 				// Sound loading and management
+				/*!
+				*\brief loads the sound file
+				*\param filePath, type
+				*\return struct SoundInfo that contains the sound, channel and type
+				*/ 
 				SoundInfo loadSound(const std::string& filePath, SoundType type);
+
+				/*!
+				*\brief unload the sound 
+				*\param sound
+				*/
 				void unloadSound(FMOD_SOUND* sound);
+
+				/*!
+				*\brief unload and releases the sound
+				*\param mSoundList
+				*/
 				void unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList);
 
+				/*!
+				*\brief release all the systems
+				*/
 				void releaseSounds();
 
 				// Sound playback
+				/*!
+				*\brief plays the sound file
+				*\param info - sound info
+				*\param loopCount - number of loops to play the sound
+				*\param volume - volume of the sound
+				*\param pitch - pitch of the sound
+				*/
 				void playSound(SoundInfo& info,int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+
+				/*!
+				*\brief stops the sound from playing
+				*\param info - sound info
+				*/
 				void stopSound(SoundInfo& info);
+
+				/*!
+				*\brief stops all sound from playing
+				*/
 				void stopAllSounds();
+
+				/*!
+				*\brief pauses sound specified
+				*\param info - sound info
+				*\param pause - true to pause
+				*/
 				void pauseSound(SoundInfo& info, bool pause = true);
+
+				/*!
+				*\brief pauses all sound
+				*\param pause - true to pause
+				*/
 				void pauseAllSounds(bool pause = true);
 
 				// Volume and pitch control
+				/*!
+				*\brief set the volume of a sound 
+				*\param info - the info for sound info
+				*\param volume - volume to set the sound to
+				*/
 				void setSoundVolume(SoundInfo& info, float volume);
+
+				/*!
+				*\brief set the pitch of a sound
+				*\param info - the info for sound info
+				*\param volume - pitch to set the sound to
+				*/
 				void setSoundPitch(SoundInfo& info, float pitch);
+
 				//toggle volume groups i.e. SFX,BGM,MASTER
 				//default value is master 
+				/*!
+				*\brief set the volume of the sound groups 
+				*\param volume - volume of the sound group
+				*\param type - the sound group
+				*/
 				void setChannelGroupVolume(float volume, SoundType type);
 
 		private:
