@@ -23,7 +23,6 @@ All rights reserved.
 // Include FMOD headers
 #include <../fmod/inc/fmod.h>
 #include <../fmod/inc/fmod_errors.h>
-#include <winnt.h>
 
 #define DEBUG
 
@@ -98,7 +97,7 @@ namespace Uma_Engine {
 
 	void Sound::Update(float dt)
 	{
-		UNREFERENCED_PARAMETER(dt);
+		(void)(dt);
 		if (pFmodSystem) {
 			FMOD_System_Update(pFmodSystem);
 		}
