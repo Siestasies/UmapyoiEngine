@@ -1,3 +1,25 @@
+/*!
+\file   Graphics.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Manages OpenGL resources, shaders, and rendering operations for 2D sprite-based
+graphics.
+
+Inherits from ISystem for engine management and IWindowSystem for
+GLFW window integration and resize handling.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include "Core/SystemType.h" 
 #include "Window.hpp"
@@ -17,19 +39,19 @@ namespace Uma_Engine
 {
     struct Cam_Info
     {
-        Vec2 pos;
-        float zoom;
+        Vec2 pos{};
+        float zoom{};
     };
 
     struct Sprite_Info
     {
-        GLuint tex_id;
-        Vec2 tex_size;
+        GLuint tex_id{};
+        Vec2 tex_size{};
 
-        Vec2 pos;
-        Vec2 scale;
-        float rot;
-        float rot_speed;
+        Vec2 pos{};
+        Vec2 scale{};
+        float rot{};
+        float rot_speed{};
     };
 
     class Graphics : public ISystem, public IWindowSystem

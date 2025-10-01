@@ -1,3 +1,41 @@
+/*!
+\file   Graphics.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Implements textured sprite rendering for single and instanced drawing modes, debug
+drawing utilities, and 2D camera with zoom support. Uses GLFW for window management,
+GLAD for OpenGL loading, GLM for math operations, and STB for image loading.
+
+Per-Frame Rendering:
+-------------------
+|   Update(dt)    | - Handle viewport resize, update projection matrix
+-------------------
+-------------------
+| ClearBackground | - Set clear color, clear screen
+-------------------
+-------------------------------------------------
+|            Render Scene                       |
+|-----------------------------------------------|
+| • DrawBackground()       - Fullscreen texture |
+| • DrawSprite()           - Single sprite      |
+| • DrawSpritesInstanced() - Batch N            |
+| • DrawDebug*()           - Debug overlays     |
+-------------------------------------------------
+Coordinate Transformation Pipeline:
+Model Space -> World Space -> View Space -> NDC -> Viewport (Screen Space)
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Systems/Graphics.hpp"
 
 #include <glad/glad.h>

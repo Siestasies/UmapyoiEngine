@@ -1,3 +1,22 @@
+/*!
+\file   InputSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Definition of a GLFW-based input handling system class that manages keyboard and mouse input through callbacks and query functions.
+Supports detection of key/button down, pressed (single-frame), and released states.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "InputSystem.h"
 #include <stdexcept>
 #include <iostream>
