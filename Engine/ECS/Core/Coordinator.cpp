@@ -1,4 +1,5 @@
 #include "Coordinator.hpp"
+#include "Core/IMGUIEvents.h"
 
 #include "Debugging/Debugger.hpp"
 

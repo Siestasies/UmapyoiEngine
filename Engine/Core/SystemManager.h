@@ -112,8 +112,7 @@ namespace Uma_Engine
             }
             return nullptr;
         }
-
-        // Access profiling info
+        // get timing stuff for
         double GetLastTotalTime() const { return lastTotalTime; }
         const std::vector<double>& GetLastTimings() const { return timings; }
 
@@ -124,7 +123,7 @@ namespace Uma_Engine
 
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
-        std::vector<double> timings;   // per-system timings (ms)
-        double lastTotalTime = 0.0;    // total update time (ms)
+        std::vector<double> timings;
+        double lastTotalTime = 0.0;
     };
 }

@@ -7,6 +7,7 @@
 //#include "Systems/TMP_CameraSystem.hpp"
 
 #include "Core/Coordinator.hpp"
+#include "Collider.h"
 
 // Forward declarations
 struct GLFWwindow;
@@ -93,18 +94,17 @@ namespace Uma_Engine
 
         // Sprite rendering
         void DrawSprite(unsigned int textureID,
-            const Vec2& textureSize,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f);
 
         void DrawSpritesInstanced(
             unsigned int textureID,
-            const Vec2& textureSize,
+            //const Vec2& textureSize,
             std::vector<Sprite_Info> const& sprites);
 
         // Draw background image
-        void DrawBackground(unsigned int textureID, const Vec2& textureSize);
+        void DrawBackground(unsigned int textureID);
         void SetVSync(bool enabled);
         void SetViewport(int width, int height);
 
@@ -120,6 +120,7 @@ namespace Uma_Engine
         void DrawDebugPoint(const Vec2& position, float r = 1.0f, float g = 0.0f, float b = 0.0f);
         void DrawDebugLine(const Vec2& start, const Vec2& end, float r = 1.0f, float g = 0.0f, float b = 0.0f);
         void DrawDebugRect(const Vec2& center, const Vec2& size, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+        void DrawDebugRect(const Uma_ECS::BoundingBox& bbox, float r = 1.0f, float g = 0.0f, float b = 0.0f);
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
     };
 }

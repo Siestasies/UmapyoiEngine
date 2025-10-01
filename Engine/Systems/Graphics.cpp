@@ -11,6 +11,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+namespace
+{
+    size_t MAX_INSTANCES = 10000;
+}
+
 namespace Uma_Engine
 {
     // Vertex shader for 2D sprite rendering
@@ -110,6 +115,13 @@ void main()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // Set viewport
+        if (mWindow)
+        {
+            int width, height;
+            glfwGetFramebufferSize(mWindow, &width, &height);
+            mViewportWidth = width;
+            mViewportHeight = height;
+        }
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
         // Set camera
@@ -143,6 +155,8 @@ void main()
 
     void Graphics::Update(float dt)
     {
+        UNREFERENCED_PARAMETER(dt);
+
         // Handle window resize if needed
         if (mWindow)
         {
@@ -185,6 +199,12 @@ void main()
 
             // Set the framebuffer size callback
             glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
+
+            // Update viewport if graphics is initialised
+            if (mInitialized)
+            {
+                SetViewport(width, height);
+            }
         }
     }
 
@@ -261,8 +281,7 @@ void main()
         cam.zoom = zoom;
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
-        const Vec2& position, const Vec2& scale, float rotation)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -290,7 +309,7 @@ void main()
         glBindVertexArray(0);
     }
 
-    void Graphics::DrawBackground(unsigned int textureID, const Vec2& textureSize)
+    void Graphics::DrawBackground(unsigned int textureID)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -604,6 +623,17 @@ void main()
         DrawDebugLine(Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), r, g, b); // Left
     }
 
+    void Graphics::DrawDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        // Draw 4 lines using bounding box min and max
+        DrawDebugLine(Vec2(bbox.min.x, bbox.min.y), Vec2(bbox.max.x, bbox.min.y), r, g, b); // Bottom
+        DrawDebugLine(Vec2(bbox.max.x, bbox.min.y), Vec2(bbox.max.x, bbox.max.y), r, g, b); // Right
+        DrawDebugLine(Vec2(bbox.max.x, bbox.max.y), Vec2(bbox.min.x, bbox.max.y), r, g, b); // Top
+        DrawDebugLine(Vec2(bbox.min.x, bbox.max.y), Vec2(bbox.min.x, bbox.min.y), r, g, b); // Left
+    }
+
     void Graphics::DrawDebugCircle(const Vec2& center, float radius, float r, float g, float b)
     {
         if (!mInitialized) return;
@@ -647,8 +677,8 @@ void main()
         glGenBuffers(1, &mInstanceVBO);
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
 
-        // Allocate space for up to 10000 instances
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 10000, nullptr, GL_DYNAMIC_DRAW);
+        // Allocate space for up to MAX_INSTANCES
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
         // Set up instance attributes
         for (int i = 0; i < 4; ++i) 
@@ -667,10 +697,15 @@ void main()
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        const Vec2& textureSize,
+        //const Vec2& textureSize,
         std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
+
+        if (sprites.size() > MAX_INSTANCES)
+        {
+            std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
+        }
 
         size_t instanceCount = sprites.size();
 
@@ -678,24 +713,18 @@ void main()
         std::vector<glm::mat4> models;
         models.reserve(instanceCount);
 
-        for (size_t i = 0; i < instanceCount; ++i) {
+        for (size_t i = 0; i < instanceCount; ++i)
+        {
+            const Sprite_Info& sprite = sprites[i];
             glm::mat4 model = glm::mat4(1.0f);
-
-            Vec2 position = sprites[i].pos;
-            Vec2 scale = sprites[i].scale;
-            float rot = sprites[i].rot;
-
-            // Translate
-            model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-
-            // Rotate
-            model = glm::rotate(model, glm::radians(rot), glm::vec3(0.0f, 0.0f, 1.0f));
-
-            // Scale
-            model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
+            model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
+            model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
 
             models.push_back(model);
         }
+
+        if (models.empty()) return;
 
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
@@ -724,7 +753,7 @@ void main()
 
         // Draw all instances in one call
         glBindVertexArray(mInstanceVAO);
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instanceCount);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
 
         // Cleanup
         glBindVertexArray(0);

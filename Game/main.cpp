@@ -40,6 +40,7 @@ int main()
 #ifdef _DEBUG
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
+
     // Debug
 #ifdef DEBUG
     Uma_Engine::Debugger::Init(true);
@@ -47,7 +48,7 @@ int main()
 #endif // DEBUG
 
     // Create window
-    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
+    Uma_Engine::Window window(1920, 1080, "UmapyoiEngine");
 
     // Initialize the engine
     if (!window.Initialize())

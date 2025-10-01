@@ -7,6 +7,11 @@ file(GLOB GAME_SOURCES
 # Create the executable
 add_executable(UmapyoiGame ${GAME_SOURCES})
 
+# Set working directory for Visual Studio debugging
+set_target_properties(UmapyoiGame PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:UmapyoiGame>"
+)
+
 # Link against the Engine library
 target_link_libraries(UmapyoiGame 
     PRIVATE 

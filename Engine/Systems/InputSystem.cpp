@@ -55,6 +55,8 @@ namespace Uma_Engine
 
     void InputSystem::Update(float dt)
     {
+        (void)dt;
+
         // Only process input if window is set
         if (!mWindow) return;
 
@@ -92,6 +94,8 @@ namespace Uma_Engine
     // Keep callback functions for potential future use or chaining
     void InputSystem::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
+        (void)window; (void)mods; (void)scancode;
+
         if (key >= 0 && key <= GLFW_KEY_LAST)
         {
             if (action == GLFW_PRESS) {
@@ -105,6 +109,8 @@ namespace Uma_Engine
 
     void InputSystem::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
+        (void)window; (void)mods;
+
         if (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST)
         {
             if (action == GLFW_PRESS) {
@@ -118,6 +124,8 @@ namespace Uma_Engine
 
     void InputSystem::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
+        (void)window;
+
         sMouseX = xpos;
         sMouseY = ypos;
 
