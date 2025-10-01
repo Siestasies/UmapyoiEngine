@@ -22,6 +22,12 @@ namespace Uma_Engine
 		Uma_ECS::Entity entityId;
 	};
 
+	class StressTestRequestEvent : public Event
+	{
+	public:
+			StressTestRequestEvent(){ priority = Priority::High; }
+	};
+
 	class CloneEntityRequestEvent : public Event
 	{
 	public:

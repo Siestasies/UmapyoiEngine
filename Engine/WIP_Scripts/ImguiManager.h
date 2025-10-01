@@ -2,6 +2,7 @@
 #include "SystemType.h"
 #include "IMGUIEvents.h"
 #include "DebugEvents.h"
+#include "ECSEvents.h"
 
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -38,7 +39,6 @@ namespace Uma_Engine
                     m_frametimeHistory[i] = 0.0f;
                 }
 
-                //pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { /*AddConsoleLog(e.message);*/ std::cout << "STUPID AH MF!!!!\n"; });
             }
 
             // isystem stuff
@@ -79,9 +79,12 @@ namespace Uma_Engine
 
 
                 pEventSystem = pSystemManager->GetSystem<EventSystem>();
-                static int rt = 0;
+
                 pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-                rt++;
+
+                pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
+                pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
+
                 m_initialized = true;
             }
 
@@ -279,9 +282,7 @@ namespace Uma_Engine
                 ImGui::Begin("Entity Debug", &b);
 
                 // get entity count here
-                QueryActiveEntitiesEvent query;
-                pEventSystem->Dispatch(query);
-                ImGui::Text("Entity Count: %i", query.mActiveEntityCnt);
+                ImGui::Text("Entity Count: %i", mEntityCount);
 
                 ImGui::Separator();
 
@@ -305,7 +306,7 @@ namespace Uma_Engine
 
                     pEventSystem->Emit<CloneEntityRequestEvent>(1);
                 }
-                if (ImGui::Button("Destroy Rand Entity", { 150, 50 }))
+                if (ImGui::Button("Destroy Rand Entity", { 160, 50 }))
                 {
                     // do spawning here
                     //std::cout << "Entity destroyed" << std::endl;
@@ -317,6 +318,19 @@ namespace Uma_Engine
                     Uma_ECS::Entity rand = distribution(generator);*/
 
                     pEventSystem->Emit<DestroyEntityRequestEvent>(1);
+                }
+                if (ImGui::Button("Stress Test 10k GO", { 150, 50 }))
+                {
+                    // do spawning here
+                    //std::cout << "Entity destroyed" << std::endl;
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    /*std::default_random_engine generator;
+                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    Uma_ECS::Entity rand = distribution(generator);*/
+
+                    pEventSystem->Emit<StressTestRequestEvent>();
                 }
                 
                 ImGui::End();
@@ -396,6 +410,9 @@ namespace Uma_Engine
             bool m_showDemoWindow;
             bool m_showPerformanceWindow;
             bool m_showSystemsWindow;
+
+            // values that need to keep track
+            int mEntityCount;
 
             // performance window vars
             float m_fpsHistory[120];

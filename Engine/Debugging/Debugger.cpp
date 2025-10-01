@@ -12,7 +12,7 @@ namespace Uma_Engine
 	void Debugger::Init()
 	{
 		pEventSystem = pSystemManager->GetSystem<EventSystem>();
-		consoleLog = 1;
+		consoleLog = 0;
 		sLogFile.open("../Logs/debug.log", std::ios::out | std::ios::trunc);
 		sLogFile << std::unitbuf; // immediately write
 		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~Debug~~~~~~~~~~~~~~~~~~~~~~");

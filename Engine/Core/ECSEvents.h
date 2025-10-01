@@ -8,19 +8,21 @@ namespace Uma_Engine
     class EntityCreatedEvent : public Event
     {
     public:
-        EntityCreatedEvent(Uma_ECS::Entity entityId) : entityId(entityId) { priority = Priority::Normal; /* Safe to queue */ }
+        EntityCreatedEvent(Uma_ECS::Entity entityId, int entityCnt) : entityId(entityId), entityCnt(entityCnt){ priority = Priority::Normal; /* Safe to queue */ }
 
     public:
         Uma_ECS::Entity entityId;
+        int entityCnt;
     };
 
     class EntityDestroyedEvent : public Event
     {
     public:
-        EntityDestroyedEvent(Uma_ECS::Entity entityId) : entityId(entityId) { priority = Priority::High; }
+        EntityDestroyedEvent(Uma_ECS::Entity entityId, int entityCnt) : entityId(entityId), entityCnt(entityCnt) { priority = Priority::High;}
 
     public:
         Uma_ECS::Entity entityId;
+        int entityCnt;
     };
 
     class ComponentAddedEvent : public Event

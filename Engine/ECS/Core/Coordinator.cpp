@@ -23,28 +23,28 @@ namespace Uma_ECS
 
         if (en >= 0) // entity is created
         {
-            //pEventSystem->Emit<Uma_Engine::EntityCreatedEvent>(en);
+            pEventSystem->Emit<Uma_Engine::EntityCreatedEvent>(en, GetEntityCount());
         }
 
-        //std::string log;
-        //std::stringstream ss(log);
-        //ss << "Created Entity : " << en;
-        //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+        std::string log;
+        std::stringstream ss(log);
+        ss << "Created Entity : " << en;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
 
         return en;
     }
 
     void Coordinator::DestroyEntity(Entity entity)
     {
-        //pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(entity);
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
         aSystemManager->EntityDestroyed(entity);
+        pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(entity, GetEntityCount());
 
-        //std::string log;
-        //std::stringstream ss(log);
-        //ss << "Destroyed Entity : " << entity;
-        //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+        std::string log;
+        std::stringstream ss(log);
+        ss << "Destroyed Entity : " << entity;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
     }
 
     bool Coordinator::HasActiveEntity(Entity entity) const
