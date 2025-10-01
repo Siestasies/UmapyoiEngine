@@ -617,6 +617,17 @@ void main()
         DrawDebugLine(Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), r, g, b); // Left
     }
 
+    void Graphics::DrawDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        // Draw 4 lines using bounding box min and max
+        DrawDebugLine(Vec2(bbox.min.x, bbox.min.y), Vec2(bbox.max.x, bbox.min.y), r, g, b); // Bottom
+        DrawDebugLine(Vec2(bbox.max.x, bbox.min.y), Vec2(bbox.max.x, bbox.max.y), r, g, b); // Right
+        DrawDebugLine(Vec2(bbox.max.x, bbox.max.y), Vec2(bbox.min.x, bbox.max.y), r, g, b); // Top
+        DrawDebugLine(Vec2(bbox.min.x, bbox.max.y), Vec2(bbox.min.x, bbox.min.y), r, g, b); // Left
+    }
+
     void Graphics::DrawDebugCircle(const Vec2& center, float radius, float r, float g, float b)
     {
         if (!mInitialized) return;
@@ -691,24 +702,18 @@ void main()
         std::vector<glm::mat4> models;
         models.reserve(instanceCount);
 
-        for (size_t i = 0; i < instanceCount; ++i) {
+        for (size_t i = 0; i < instanceCount; ++i)
+        {
+            const Sprite_Info& sprite = sprites[i];
             glm::mat4 model = glm::mat4(1.0f);
-
-            Vec2 position = sprites[i].pos;
-            Vec2 scale = sprites[i].scale;
-            float rot = sprites[i].rot;
-
-            // Translate
-            model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-
-            // Rotate
-            model = glm::rotate(model, glm::radians(rot), glm::vec3(0.0f, 0.0f, 1.0f));
-
-            // Scale
-            model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
+            model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
+            model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
 
             models.push_back(model);
         }
+
+        if (models.empty()) return;
 
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
