@@ -93,10 +93,6 @@ namespace Uma_ECS
     {
         if (aEntities.empty()) return;
 
-        auto& pArray = pCoordinator->GetComponentArray<Player>();
-        auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
-        auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-
         Entity player = aEntities[0];
         auto& rb = pCoordinator->GetComponent<RigidBody>(player);
 

@@ -91,17 +91,16 @@ namespace Uma_Engine
 
             // event system stuffs
             //subscribe to events
-            pEventSystem->Subscribe<Uma_Engine::EntityCreatedEvent>(
-                [](const Uma_Engine::EntityCreatedEvent& e) {
-                    //std::cout << "Entity created: " << e.entityId << std::endl;
-                    // e.handled = true;
+            pEventSystem->Subscribe<Uma_Engine::EntityCreatedEvent>([](const Uma_Engine::EntityCreatedEvent& e) {
+                    std::cout << "Entity created: " << e.entityId << std::endl;
+                    e.handled = true;
                 });
 
             pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
            
             pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { gGameSerializer.save(e.filepath); });
             pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { gCoordinator.DestroyAllEntities(); gGameSerializer.load(e.filepath); });
-            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { gCoordinator.DestroyAllEntities(); });
+            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); });
 
 
             pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 

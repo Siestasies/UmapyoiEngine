@@ -11,7 +11,7 @@ namespace Uma_Engine
         virtual ~Event() = default;
 
     public:
-        bool handled = false;
+        mutable bool handled = false;
 
         // Event priority for processing order
         enum class Priority

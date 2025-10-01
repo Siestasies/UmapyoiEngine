@@ -11,8 +11,8 @@ namespace Uma_ECS
         Vec2 velocity{};
         Vec2 acceleration{};
 
-        float accel_strength;   // acceleration (for tweak)
-        float fric_coeff;       // friction
+        float accel_strength{};   // acceleration (for tweak)
+        float fric_coeff{};       // friction
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
