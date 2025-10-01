@@ -19,7 +19,7 @@ namespace Uma_ECS
     
     // Uma_ECS
     using Entity = unsigned int;
-    const Entity MAX_ENTITIES = 6000;
+    const Entity MAX_ENTITIES = 11000;
     using ComponentType = unsigned int;
     const ComponentType MAX_COMPONENTS = 32;
 		

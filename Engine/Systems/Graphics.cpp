@@ -37,6 +37,43 @@ in vec2 TexCoords;
 out vec4 color;
 
 uniform sampler2D image;
+uniform vec3 debugColor;
+uniform int useDebugColor;
+
+void main()
+{
+    if (useDebugColor == 1) {
+        color = vec4(debugColor, 1.0);
+    } else {
+        color = texture(image, TexCoords);
+    }
+}
+)";
+
+    // Vertex shader for 2D sprite instanced rendering
+    const std::string instancedVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
+
+out vec2 TexCoords;
+
+uniform mat4 projection;
+
+void main()
+{
+    TexCoords = vertex.zw;
+    gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
+}
+)";
+
+    // Fragment shader for 2D sprite instanced rendering
+    const std::string instancedFragmentShaderSource = R"(
+#version 450 core
+in vec2 TexCoords;
+out vec4 color;
+
+uniform sampler2D image;
 
 void main()
 {
@@ -45,7 +82,8 @@ void main()
 )";
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
-        mShaderProgram(0), mViewportWidth(800), mViewportHeight(600) {}
+        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
+        mViewportWidth(800), mViewportHeight(600) {}
 
     Graphics::~Graphics()
     {
@@ -75,7 +113,10 @@ void main()
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
         // Set camera
-        mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
+        //mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
+
+        // V sync 
+        //SetVSync(true);
 
         // Initialize 2D renderer
         if (!InitializeRenderer())
@@ -83,6 +124,18 @@ void main()
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
             return;
         }
+
+        if (!InitializeInstancedRenderer())
+        {
+            std::cerr << "Failed to initialize instanced renderer!" << std::endl;
+            return;
+        }
+
+        // init cam info
+        cam = {
+            .pos = {0,0},
+            .zoom = 1.f
+        };
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
@@ -110,6 +163,7 @@ void main()
         {
             std::cout << "Shutting down graphics system..." << std::endl;
             ShutdownRenderer();
+            ShutdownInstancedRenderer();
             mInitialized = false;
         }
     }
@@ -178,6 +232,7 @@ void main()
             // Fill texture struct
             tex.tex_id = textureID;
             tex.tex_size = Vec2(static_cast<float>(width), static_cast<float>(height));
+            tex.filePath = texturePath;
 
             std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
         }
@@ -200,6 +255,12 @@ void main()
         }
     }
 
+    void Graphics::SetCamInfo(const Vec2& pos, float zoom)
+    {
+        cam.pos = pos;
+        cam.zoom = zoom;
+    }
+
     void Graphics::DrawSprite(unsigned int textureID, const Vec2& textureSize,
         const Vec2& position, const Vec2& scale, float rotation)
     {
@@ -215,7 +276,7 @@ void main()
 
         model = glm::translate(model, glm::vec3(pos, 0.0f));
         model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(textureSize.x * scale.x, textureSize.y * scale.y, 1.0f));
+        model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
 
         // Set model uniform
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
@@ -294,8 +355,9 @@ void main()
         glUseProgram(mShaderProgram);
         UpdateProjectionMatrix();
 
-        // Set texture sampler
+        // Set uniforms
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
 
         return true;
     }
@@ -377,7 +439,7 @@ void main()
 
         // Update projection matrix
         glUseProgram(mShaderProgram);
-        mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
+        //mCamera.SetPosition(Vec2(width * 0.5f, height * 0.5f));
         UpdateProjectionMatrix();
     }
 
@@ -400,35 +462,288 @@ void main()
     {
         if (!mInitialized) return;
 
+        // testing
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+
+        glm::mat4 projMat =  glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
+        glm::mat4 projection = projMat;
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
     }
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
     {
+        // Convert screen coordinates to NDC
         float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
         float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
 
-        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
-        glm::mat4 invViewProjMatrix = glm::inverse(viewProjMatrix);
+        // Calculate  projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
 
-        glm::vec4 worldPos = invViewProjMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
+        glm::mat4 projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        glm::mat4 invProjectionMatrix = glm::inverse(projectionMatrix);
+
+        // Transform NDC to world space
+        glm::vec4 worldPos = invProjectionMatrix * glm::vec4(ndcX, ndcY, 0.0f, 1.0f);
         return Vec2(worldPos.x, worldPos.y);
     }
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
-        glm::mat4 viewProjMatrix = mCamera.GetViewProjectionMatrix(mViewportWidth, mViewportHeight);
-        glm::vec4 clipPos = viewProjMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+        // Calculate projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
 
+        glm::mat4 projectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        // Transform world space to clip space
+        glm::vec4 clipPos = projectionMatrix * glm::vec4(worldPos.x, worldPos.y, 0.0f, 1.0f);
+
+        // Convert clip space to NDC
         float ndcX = clipPos.x / clipPos.w;
         float ndcY = clipPos.y / clipPos.w;
 
+        // Convert NDC to screen coordinates
         float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
         float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
 
         return Vec2(screenX, screenY);
+    }
+
+    void Graphics::DrawDebugPoint(const Vec2& position, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        glUseProgram(mShaderProgram);
+
+        // Enable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
+        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
+
+        // Draw a small quad as point
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+        model = glm::scale(model, glm::vec3(6.0f, 6.0f, 1.0f)); // 6x6 pixel point
+
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Draw using existing VAO
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // Disable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
+    }
+
+    void Graphics::DrawDebugLine(const Vec2& start, const Vec2& end, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        // Calculate line properties
+        float dx = end.x - start.x;
+        float dy = end.y - start.y;
+        float length = sqrtf(dx * dx + dy * dy);
+        if (length < 0.001f) return;
+
+        float angle = atan2f(dy, dx) * 180.0f / 3.14159265f;
+        Vec2 center = Vec2((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f);
+
+        glUseProgram(mShaderProgram);
+
+        // Enable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
+        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
+
+        // Draw line as thin rectangle
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
+        model = glm::scale(model, glm::vec3(length, 2.0f, 1.0f)); // 2 pixel thick line
+
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // Disable debug color mode
+        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
+    }
+
+    void Graphics::DrawDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        float halfW = size.x * 0.5f;
+        float halfH = size.y * 0.5f;
+
+        // Draw 4 lines
+        DrawDebugLine(Vec2(center.x - halfW, center.y - halfH), Vec2(center.x + halfW, center.y - halfH), r, g, b); // Bottom
+        DrawDebugLine(Vec2(center.x + halfW, center.y - halfH), Vec2(center.x + halfW, center.y + halfH), r, g, b); // Right
+        DrawDebugLine(Vec2(center.x + halfW, center.y + halfH), Vec2(center.x - halfW, center.y + halfH), r, g, b); // Top
+        DrawDebugLine(Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), r, g, b); // Left
+    }
+
+    void Graphics::DrawDebugCircle(const Vec2& center, float radius, float r, float g, float b)
+    {
+        if (!mInitialized) return;
+
+        const int segments = 24;
+        const float angleStep = 2.0f * 3.14159f / segments;
+
+        // Draw circle as connected lines
+        for (int i = 0; i < segments; ++i)
+        {
+            float angle1 = i * angleStep;
+            float angle2 = (i + 1) * angleStep;
+
+            Vec2 p1 = Vec2(center.x + cosf(angle1) * radius, center.y + sinf(angle1) * radius);
+            Vec2 p2 = Vec2(center.x + cosf(angle2) * radius, center.y + sinf(angle2) * radius);
+
+            DrawDebugLine(p1, p2, r, g, b);
+        }
+    }
+
+    bool Graphics::InitializeInstancedRenderer()
+    {
+        // Create instanced shader program
+        mInstanceShaderProgram = CreateShader(instancedVertexShaderSource, instancedFragmentShaderSource);
+        if (mInstanceShaderProgram == 0) 
+        {
+            std::cerr << "Failed to create instanced shader program!" << std::endl;
+            return false;
+        }
+
+        // Create instance VAO
+        glGenVertexArrays(1, &mInstanceVAO);
+        glBindVertexArray(mInstanceVAO);
+
+        // Bind the existing VBO with quad vertices
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+
+        // Create instance VBO for model matrices
+        glGenBuffers(1, &mInstanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+
+        // Allocate space for up to 10000 instances
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 10000, nullptr, GL_DYNAMIC_DRAW);
+
+        // Set up instance attributes
+        for (int i = 0; i < 4; ++i) 
+        {
+            glEnableVertexAttribArray(1 + i);
+            glVertexAttribPointer(1 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * i));
+            glVertexAttribDivisor(1 + i, 1);
+        }
+
+        // Unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        return true;
+    }
+
+    void Graphics::DrawSpritesInstanced(
+        unsigned int textureID,
+        const Vec2& textureSize,
+        std::vector<Sprite_Info> const& sprites)
+    {
+        if (!mInitialized || textureID == 0 || sprites.empty()) return;
+
+        size_t instanceCount = sprites.size();
+
+        // Build model matrices for all instances
+        std::vector<glm::mat4> models;
+        models.reserve(instanceCount);
+
+        for (size_t i = 0; i < instanceCount; ++i) {
+            glm::mat4 model = glm::mat4(1.0f);
+
+            Vec2 position = sprites[i].pos;
+            Vec2 scale = sprites[i].scale;
+            float rot = sprites[i].rot;
+
+            // Translate
+            model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+
+            // Rotate
+            model = glm::rotate(model, glm::radians(rot), glm::vec3(0.0f, 0.0f, 1.0f));
+
+            // Scale
+            model = glm::scale(model, glm::vec3(/*textureSize.x * */scale.x, /*textureSize.y * */scale.y, 1.0f));
+
+            models.push_back(model);
+        }
+
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+        glUseProgram(mInstanceShaderProgram);
+
+        // Set projection matrix uniform
+        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+
+        // Calculate projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Set texture uniform
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+
+        // Bind texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Draw all instances in one call
+        glBindVertexArray(mInstanceVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instanceCount);
+
+        // Cleanup
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void Graphics::ShutdownInstancedRenderer()
+    {
+        if (mInstanceVAO != 0) {
+            glDeleteVertexArrays(1, &mInstanceVAO);
+            mInstanceVAO = 0;
+        }
+        if (mInstanceVBO != 0) {
+            glDeleteBuffers(1, &mInstanceVBO);
+            mInstanceVBO = 0;
+        }
+        if (mInstanceShaderProgram != 0) {
+            glDeleteProgram(mInstanceShaderProgram);
+            mInstanceShaderProgram = 0;
+        }
     }
 }

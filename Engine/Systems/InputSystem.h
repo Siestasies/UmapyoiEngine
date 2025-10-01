@@ -25,6 +25,7 @@ namespace Uma_Engine
         static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
         static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+        static void UpdatePreviousFrameState();
 
         // Input query methods
         static bool KeyDown(int key);
@@ -36,8 +37,6 @@ namespace Uma_Engine
         static void GetMousePosition(double& x, double& y);
         static double GetMouseX();
         static double GetMouseY();
-
-        static void UpdatePreviousFrameState();
 
     private:
         static const char* GetKeyName(int key);

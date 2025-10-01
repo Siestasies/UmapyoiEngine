@@ -4,6 +4,9 @@
 #include <array>
 #include <unordered_map>
 #include <cassert>
+#include <string>
+
+#include "rapidjson/document.h"		// rapidjson's DOM-style API
 
 namespace Uma_ECS
 {
@@ -15,6 +18,10 @@ namespace Uma_ECS
 
         virtual bool Has(Entity entity) const = 0;
         virtual void CloneComponent(Entity src, Entity dest) = 0;
+
+        // serialization and deserialization
+        virtual void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) = 0;
+        virtual std::string Deserialize(Entity entity, const rapidjson::Value& comps) = 0;
     };
 
     template <typename T>
@@ -117,6 +124,31 @@ namespace Uma_ECS
 
             T component = GetData(src);
             AddData(dest, component);
+        }
+
+        // serialization and deserialization
+        void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) override
+        {
+            if (!Has(entity)) return; // entity not exists
+
+            T& component = aComponentArray[aEntityToIndex[entity]];
+            rapidjson::Value componentObj;
+            component.Serialize(componentObj, allocator);
+            comps.AddMember(rapidjson::StringRef(typeid(T).name()), componentObj, allocator);
+        }
+
+        std::string Deserialize(Entity entity, const rapidjson::Value& comps) override
+        {
+            std::string compType = "";
+            if (comps.HasMember(typeid(T).name())) 
+            {
+                T component;
+                component.Deserialize(comps[typeid(T).name()]);
+                AddData(entity, component);
+
+                compType = typeid(T).name();
+            }
+            return compType;
         }
 
     private:

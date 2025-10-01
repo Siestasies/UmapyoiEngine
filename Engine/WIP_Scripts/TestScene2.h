@@ -6,6 +6,11 @@ namespace Uma_Engine
 {
 	class TestScene2 : public Scene
 	{
+		private:
+			SystemManager* pSystemManagerRef;
+
+		public:
+			TestScene2(SystemManager* sm) : pSystemManagerRef(sm) {}
 		void OnLoad() override
 		{
 			// parse files here
@@ -14,7 +19,6 @@ namespace Uma_Engine
 		void OnUnload() override
 		{
 			std::cout << "Test Scene 2: UNloaded" << std::endl;
-
 		}
 		void Update(float dt) override
 		{

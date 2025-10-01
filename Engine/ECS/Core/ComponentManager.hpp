@@ -9,6 +9,8 @@
 
 #include <Debugging/Debugger.hpp>
 
+#include "rapidjson/document.h"		// rapidjson's DOM-style API
+
 namespace Uma_ECS
 {
     class ComponentManager
@@ -56,6 +58,14 @@ namespace Uma_ECS
             return aComponentTypes[type_name];
         }
 
+        ComponentType GetComponentType(const std::string& compType)
+        {
+            assert(aComponentTypes.find(compType) != aComponentTypes.end()
+                && "Error : Component is not registered.");
+
+            return aComponentTypes[compType];
+        }
+
         template<typename T>
         void AddComponent(Entity entity, const T& component)
         {
@@ -92,6 +102,30 @@ namespace Uma_ECS
         void EntityDestroyed(Entity entity);
 
         void CloneEntityComponents(Entity src, Entity dest);
+
+        void SerializeAll(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) 
+        {
+            for (auto const& pair : aComponentArrays) 
+            {
+                pair.second->Serialize(entity, comps, allocator);
+            }
+        }
+
+        Signature DeserializeAll(Entity entity, const rapidjson::Value& comps) 
+        {
+            Signature sign;
+            for (auto const& pair : aComponentArrays) 
+            {
+                std::string compType = pair.second->Deserialize(entity, comps); // ""
+
+                if (!compType.empty())
+                {
+                    ComponentType typeIndex = GetComponentType(compType); // returns int
+                    sign.set(typeIndex);  // << set the bit
+                }
+            }
+            return sign;
+        }
 
     private:
 
