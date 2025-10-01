@@ -4,11 +4,11 @@
 #include <vector>
 
 #include "EventType.h"
-#include "Debugger.hpp"
+#include "Debugging/Debugger.hpp"
 
 namespace Uma_Engine
 {
-    struct DebugLogEvent : public Event
+    class DebugLogEvent : public Event
     {
     public:
         DebugLogEvent(const std::string& message, WarningLevel level = WarningLevel::eInfo) : message(message), level(level) { priority = (level == WarningLevel::eCritical) ? Priority::Critical : Priority::Normal; }
