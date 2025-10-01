@@ -285,31 +285,38 @@ namespace Uma_Engine
 
                 ImGui::Separator();
 
-                if (ImGui::Button("Spawn Entity", { 100, 50 }))
+                // access coordinator to get id
+                // 
+                // 
+
+
+
+
+                if (ImGui::Button("Spawn Entity", { 150, 50 }))
                 {
                     // do spawning here
-                    std::cout << "Entity spawned" << std::endl;
+                    //std::cout << "Entity spawned" << std::endl;
                     QueryActiveEntitiesEvent query;
                     pEventSystem->Dispatch(query);
 
-                    std::default_random_engine generator;
-                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    Uma_ECS::Entity rand = distribution(generator);
+                    //std::default_random_engine generator;
+                    //std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    //Uma_ECS::Entity rand = distribution(generator);
 
-                    pEventSystem->Emit<CloneEntityRequestEvent>(rand);
+                    pEventSystem->Emit<CloneEntityRequestEvent>(1);
                 }
-                if (ImGui::Button("Destroy Entity", { 100, 50 }))
+                if (ImGui::Button("Destroy Rand Entity", { 150, 50 }))
                 {
                     // do spawning here
-                    std::cout << "Entity destroyed" << std::endl;
+                    //std::cout << "Entity destroyed" << std::endl;
                     QueryActiveEntitiesEvent query;
                     pEventSystem->Dispatch(query);
 
-                    std::default_random_engine generator;
+                    /*std::default_random_engine generator;
                     std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    Uma_ECS::Entity rand = distribution(generator);
+                    Uma_ECS::Entity rand = distribution(generator);*/
 
-                    pEventSystem->Emit<DestroyEntityRequestEvent>(rand);
+                    pEventSystem->Emit<DestroyEntityRequestEvent>(1);
                 }
                 
                 ImGui::End();
