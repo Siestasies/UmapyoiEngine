@@ -23,6 +23,7 @@ namespace Uma_Engine
 
     void ResourcesManager::Update(float dt)
     {
+        (void)dt;
         // EMPTY (resource manager doesn't need to update anything)
     }
 

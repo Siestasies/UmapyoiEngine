@@ -333,7 +333,7 @@ namespace Uma_Engine
 
                 graphics->DrawSpritesInstanced(
                     enemyTexture->tex_id,
-                    enemyTexture->tex_size, 
+                    //enemyTexture->tex_size, 
                     sprites
                 );
             }

@@ -78,12 +78,6 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 # Create the Uma_Engine library
 add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h")
 
-# Add warning level 4 for Uma_Engine
-target_compile_options(Uma_Engine PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
-)
-
 set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
 
 add_library(fmod STATIC IMPORTED)

@@ -12,12 +12,6 @@ set_target_properties(UmapyoiGame PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:UmapyoiGame>"
 )
 
-# Add warning level 4 for UmapyoiGame
-target_compile_options(UmapyoiGame PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W4>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
-)
-
 # Link against the Engine library
 target_link_libraries(UmapyoiGame 
     PRIVATE 

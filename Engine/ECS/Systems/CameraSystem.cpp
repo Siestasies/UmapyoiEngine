@@ -13,6 +13,7 @@ namespace Uma_ECS
 {
     void CameraSystem::Update(float dt)
     {
+        (void)dt;
         if (aEntities.size() == 0) return;
 
         auto& pArray = pCoordinator->GetComponentArray<Player>();
