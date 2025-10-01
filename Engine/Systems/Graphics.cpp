@@ -11,6 +11,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+namespace
+{
+    size_t MAX_INSTANCES = 10000;
+}
+
 namespace Uma_Engine
 {
     // Vertex shader for 2D sprite rendering
@@ -671,8 +676,8 @@ void main()
         glGenBuffers(1, &mInstanceVBO);
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
 
-        // Allocate space for up to 10000 instances
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 10000, nullptr, GL_DYNAMIC_DRAW);
+        // Allocate space for up to MAX_INSTANCES
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
         // Set up instance attributes
         for (int i = 0; i < 4; ++i) 
@@ -695,6 +700,11 @@ void main()
         std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
+
+        if (sprites.size() > MAX_INSTANCES)
+        {
+            std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
+        }
 
         size_t instanceCount = sprites.size();
 
