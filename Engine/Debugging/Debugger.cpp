@@ -1,5 +1,6 @@
 #include "Debugger.hpp"
 #include <ctime>
+#include <vector>
 
 namespace Uma_Engine
 {
@@ -18,8 +19,8 @@ namespace Uma_Engine
 	void Debugger::Update()
 	{
 		// Crash Test
-		int* p = nullptr;
-		*p = 42;
+		std::vector<int> nums = { 1 };
+		int x = nums.at(5);
 	}
 
 	void Debugger::Shutdown()
@@ -67,10 +68,12 @@ namespace Uma_Engine
 			std::cerr << finalMsg;
 	}
 
-	void Debugger::Assert(bool condition, const std::string& msg)
+	void Debugger::Assert(bool terminate, const std::string& msg)
 	{
-
+		if (!terminate) {
+			Log(WarningLevel::eCritical, "Assert Reached: " + msg);
+			std::terminate();
+		}
 	}
-
 
 } // namespace Uma_Engine

@@ -26,7 +26,7 @@ namespace Uma_Engine
         static void Shutdown();
 
         static void Log(WarningLevel level, const std::string& msg);
-        static void Assert(bool condition, const std::string& msg);
+        static void Assert(bool terminate, const std::string& msg);
 
     private:
 

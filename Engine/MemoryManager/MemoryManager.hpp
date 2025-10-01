@@ -44,12 +44,12 @@ inline void* operator new[](std::size_t size, const char* file, int line, const 
     return Uma_Engine::MemoryManager::Allocate(size, file, line, func);
 }
 
-inline void operator delete(void* ptr) noexcept
+void operator delete(void* ptr) noexcept
 {
     Uma_Engine::MemoryManager::Free(ptr);
 }
 
-inline void operator delete[](void* ptr) noexcept
+void operator delete[](void* ptr) noexcept
 {
     Uma_Engine::MemoryManager::Free(ptr);
 }

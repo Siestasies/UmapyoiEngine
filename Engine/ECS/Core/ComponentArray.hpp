@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Types.hpp"
+#include "Debugging/Debugger.hpp"
 #include <array>
 #include <unordered_map>
 #include <cassert>
@@ -33,7 +34,7 @@ namespace Uma_ECS
         ECSErrorCode AddData(Entity entity, const T& component)
         {
 #ifndef NDEBUG
-            assert(!Has(entity) && "Error : Same component is being added again.");
+            Uma_Engine::Debugger::Assert(!Has(entity), "Same component is being added again.");
 #else
             if (Has(entity))
             {
@@ -53,7 +54,7 @@ namespace Uma_ECS
         ECSErrorCode RemoveData(Entity entity)
         {
 #ifndef NDEBUG
-            assert(Has(entity) && "Error : This entity doesn't contain this component.");
+            Uma_Engine::Debugger::Assert(Has(entity), "This entity doesn't contain this component.");
 #else
             if (!Has(entity))
             {
@@ -78,7 +79,7 @@ namespace Uma_ECS
 
         T& GetData(Entity entity)
         {
-            assert(Has(entity) && "ERROR : Entity doesnt contain this data.");
+            Uma_Engine::Debugger::Assert(Has(entity), "Entity doesnt contain this data.");
 
             size_t index = aEntityToIndex[entity];
             return aComponentArray[index];
@@ -120,7 +121,7 @@ namespace Uma_ECS
 
         void CloneComponent(Entity src, Entity dest) override
         {
-            assert(Has(src) && "Error : src entity doesn't contain this component type.");
+            Uma_Engine::Debugger::Assert(Has(src), "Src entity doesn't contain this component type.");
 
             T component = GetData(src);
             AddData(dest, component);

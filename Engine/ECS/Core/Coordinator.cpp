@@ -109,7 +109,7 @@ namespace Uma_ECS
 
     void Coordinator::Deserialize(const rapidjson::Value& in)
     {
-        assert(in.IsArray());
+        Uma_Engine::Debugger::Assert(in.IsArray(), "Deserialize Failed");
 
         for (auto& entityVal : in.GetArray())
         {

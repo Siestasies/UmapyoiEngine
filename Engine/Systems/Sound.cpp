@@ -1,6 +1,8 @@
 #include "Sound.hpp"
+#include "Debugging/Debugger.hpp"
 #include <iostream>
 #include <filesystem>
+#include <sstream>
 
 // Include FMOD headers
 #include <../fmod/inc/fmod.h>
@@ -23,30 +25,40 @@ namespace Uma_Engine {
 	{
 		FMOD_RESULT result = FMOD_System_Create(&pFmodSystem, FMOD_VERSION);
 		if (result != FMOD_OK) {
-			std::cerr << "Failed to create FMOD system: " << FMOD_ErrorString(result) << std::endl;
+			std::stringstream log;
+			log << "Failed to create FMOD system: " << FMOD_ErrorString(result);
+			Debugger::Log(WarningLevel::eError, log.str());
 			return;
 		}
 		// Initialize FMOD system
 		result = FMOD_System_Init(pFmodSystem, 32, FMOD_INIT_NORMAL, nullptr);
 		if (result != FMOD_OK) {
-			std::cerr << "Failed to initialize FMOD system: " << FMOD_ErrorString(result) << std::endl;
+			std::stringstream log;
+			log << "Failed to initialize FMOD system: " << FMOD_ErrorString(result);
+			Debugger::Log(WarningLevel::eError, log.str());
 			return;
 		}
 		std::cout << "AudioManager initialized successfully" << std::endl;
 
 		result = FMOD_System_CreateChannelGroup(pFmodSystem, "SFX", &SFX);
 		if (result != FMOD_OK) {
-			std::cerr << "Failed to create channel sfx: " << FMOD_ErrorString(result) << std::endl;
+			std::stringstream log;
+			log << "Failed to create channel sfx: " << FMOD_ErrorString(result);
+			Debugger::Log(WarningLevel::eError, log.str());
 			return;
 		}
 		result = FMOD_System_CreateChannelGroup(pFmodSystem, "BGM", &BGM);
 		if (result != FMOD_OK) {
-			std::cerr << "Failed to create channel bgm: " << FMOD_ErrorString(result) << std::endl;
+			std::stringstream log;
+			log << "Failed to create channel bgm: " << FMOD_ErrorString(result);
+			Debugger::Log(WarningLevel::eError, log.str());
 			return;
 		}
 		result = FMOD_System_GetMasterChannelGroup(pFmodSystem, &Master);
 		if (result != FMOD_OK) {
-			std::cerr << "Failed to create channel master: " << FMOD_ErrorString(result) << std::endl;
+			std::stringstream log;
+			log << "Failed to create channel master: " << FMOD_ErrorString(result);
+			Debugger::Log(WarningLevel::eError, log.str());
 			return;
 		}
 
@@ -134,8 +146,9 @@ namespace Uma_Engine {
 			if (it.second.sound) {
 				FMOD_RESULT result = FMOD_Sound_Release(it.second.sound);
 				if (result != FMOD_OK) {
-					std::cerr << "FMOD_Sound_Release failed: "
-						<< FMOD_ErrorString(result) << std::endl;
+					std::stringstream log;
+					log << "FMOD_Sound_Release failed: " << FMOD_ErrorString(result);
+					Debugger::Log(WarningLevel::eError, log.str());
 				}
 				it.second.sound = nullptr;
 			}

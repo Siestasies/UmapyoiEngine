@@ -7,7 +7,7 @@
 #include <memory>
 #include <cassert>
 
-#include <Debugging/Debugger.hpp>
+#include "Debugging/Debugger.hpp"
 
 #include "rapidjson/document.h"		// rapidjson's DOM-style API
 
@@ -34,8 +34,8 @@ namespace Uma_ECS
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, debugLog);
             }
 
-            assert(aComponentTypes.find(type_name) == aComponentTypes.end()
-                && "Error : Component being registered more than once.");
+            Uma_Engine::Debugger::Assert(aComponentTypes.find(type_name) == aComponentTypes.end()
+                , "Component being registered more than once.");
 
 
 
@@ -52,16 +52,16 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
-            assert(aComponentTypes.find(type_name) != aComponentTypes.end()
-                && "Error : Component is not registered.");
+            Uma_Engine::Debugger::Assert(aComponentTypes.find(type_name) != aComponentTypes.end()
+                , "Component is not registered.");
 
             return aComponentTypes[type_name];
         }
 
         ComponentType GetComponentType(const std::string& compType)
         {
-            assert(aComponentTypes.find(compType) != aComponentTypes.end()
-                && "Error : Component is not registered.");
+            Uma_Engine::Debugger::Assert(aComponentTypes.find(compType) != aComponentTypes.end()
+                , "Component is not registered.");
 
             return aComponentTypes[compType];
         }
@@ -92,8 +92,8 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
-            assert(aComponentTypes.find(type_name) != aComponentTypes.end()
-                && "Error : Component is not registered before.");
+            Uma_Engine::Debugger::Assert(aComponentTypes.find(type_name) != aComponentTypes.end()
+                , "Component is not registered before.");
 
             // Use static_pointer_cast to get the derived type back
             return *std::static_pointer_cast<ComponentArray<T>>(aComponentArrays[type_name]);

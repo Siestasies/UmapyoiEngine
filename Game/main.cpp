@@ -59,7 +59,7 @@ int main()
     // Initialize the engine
     if (!window.Initialize())
     {
-        std::cerr << "Failed to initialize window!" << std::endl;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Failed to initialize window!");
         return -1;
     }
 
@@ -95,11 +95,11 @@ int main()
     inputSystem->SetEventSystem(eventSystem);
 
 #ifdef DEBUG
-    std::cout << "\nEvent listener counts:\n";
-    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
-    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
-    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
-    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyPress listeners: "       + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyRelease listeners: "     + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseButton listeners: "    + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseMove listeners: "      + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>()));
 #endif
 
     // Game loop
@@ -145,14 +145,18 @@ int main()
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
+        {
+            Uma_Engine::Debugger::Update();
+        }
 
         systemManager.Update(deltaTime);
     }
 
     Uma_Engine::Debugger::Shutdown();
-    std::cout << "\n=== Event System Test Complete ===\n";
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\n=== Event System Test Complete ===");
     systemManager.Shutdown();
-    std::cout << "Event test finished!\n";
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Event test finished!");
 
 #ifdef DEBUG
     Uma_Engine::MemoryManager::Disable();
