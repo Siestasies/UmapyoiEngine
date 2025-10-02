@@ -5,13 +5,9 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Javier Chua Dong Qing (90%) - Initial GLFW window and GLAD setup
+\author Javier Chua Dong Qing (100%)
 \par    E-mail: javierdongqing.chua@digipen.edu
 \par    DigiPen login: javierdongqing.chua
-
-\author Muhammad Shahir Bin Rasid (10%) - IWindowSystem interface
-\par    E-mail: b.muhammadshahir@digipen.edu
-\par    DigiPen login: b.muhammadshahir
 
 \brief
 Handles creation and management of the application window using GLFW,
