@@ -1,4 +1,5 @@
 #include "Window.hpp"
+#include "Debugging/Debugger.hpp"
 #include <iostream>
 
 #include <glad/glad.h>
@@ -16,12 +17,12 @@ namespace Uma_Engine
 
     bool Window::Initialize()
     {
-        std::cout << "Initializing Uma_Engine..." << std::endl;
+        Debugger::Log(WarningLevel::eInfo, "Initializing Uma_Engine...");
         
         // Initialize GLFW
         if (!glfwInit())
         {
-            std::cerr << "Failed to initialize GLFW!" << std::endl;
+            Debugger::Log(WarningLevel::eError, "Failed to initialize GLFW!");
             return false;
         }
 
@@ -34,7 +35,7 @@ namespace Uma_Engine
         mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
         if (!mWindow)
         {
-            std::cerr << "Failed to create GLFW window!" << std::endl;
+            Debugger::Log(WarningLevel::eError, "Failed to create GLFW window!");
             glfwTerminate();
             return false;
         }
@@ -45,7 +46,7 @@ namespace Uma_Engine
         // Initialize OpenGL with GLAD
         if (!InitializeOpenGL())
         {
-            std::cerr << "Failed to initialize OpenGL!" << std::endl;
+            Debugger::Log(WarningLevel::eError, "Failed to initialize OpenGL!");
             glfwDestroyWindow(mWindow);
             glfwTerminate();
             return false;
@@ -66,7 +67,7 @@ namespace Uma_Engine
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cerr << "Failed to initialize GLAD!" << std::endl;
+            Debugger::Log(WarningLevel::eError, "Failed to initialize GLAD!");
             return false;
         }
 
@@ -91,7 +92,7 @@ namespace Uma_Engine
     {
         if (mInitialized)
         {
-            std::cout << "Shutting down Uma_Engine..." << std::endl;
+            Debugger::Log(WarningLevel::eInfo, "Shutting down Uma_Engine...");
             
             if (mWindow) 
             {

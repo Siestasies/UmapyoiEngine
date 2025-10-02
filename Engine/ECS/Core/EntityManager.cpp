@@ -1,5 +1,6 @@
 //#include "Precompiled.h"
 #include "EntityManager.hpp"
+#include "Debugging/Debugger.hpp"
 
 #include <iostream>
 #include <cassert>
@@ -18,7 +19,7 @@ Uma_ECS::EntityManager::EntityManager()
 Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
 {
     // out of range check
-    assert(mActiveEntityCnt < MAX_ENTITIES && "ERROR : Too many active entities.");
+    Uma_Engine::Debugger::Assert(mActiveEntityCnt < MAX_ENTITIES , "Too many active entities.");
 
     if (mActiveEntityCnt >= MAX_ENTITIES) return 0;
 
@@ -34,8 +35,8 @@ Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
 void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
 {
     // check if id is valid and whether this entity is active
-    assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
-    assert(aEntityActive[entity] && "ERROR: Attempting to destroy an already inactive entity.");
+    Uma_Engine::Debugger::Assert(entity >= 0 && entity < MAX_ENTITIES , "Entity id is Invalid.");
+    Uma_Engine::Debugger::Assert(aEntityActive[entity] , "Attempting to destroy an already inactive entity.");
 
     // reset the signature of the entity 
     aSignatures[entity].reset();
@@ -53,14 +54,14 @@ bool Uma_ECS::EntityManager::HasActiveEntity(Entity entity) const
 
 void Uma_ECS::EntityManager::SetSignature(Entity entity, const Signature& signature)
 {
-    assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
+    Uma_Engine::Debugger::Assert(entity >= 0 && entity < MAX_ENTITIES, "Entity id is Invalid.");
 
     aSignatures[entity] = signature;
 }
 
 Uma_ECS::Signature Uma_ECS::EntityManager::GetSignature(Entity entity) const
 {
-    assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
+    Uma_Engine::Debugger::Assert(entity >= 0 && entity < MAX_ENTITIES, "Entity id is Invalid.");
 
     return aSignatures[entity];
 }
