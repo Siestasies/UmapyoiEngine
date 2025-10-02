@@ -1,3 +1,22 @@
+/*!
+\file   Tmp_CameraSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Simple 2D camera with position and zoom control. Generates orthographic
+projection matrices centered on the camera position with zoom applied uniformly.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Systems/TMP_CameraSystem.hpp"
 #include <algorithm>
 

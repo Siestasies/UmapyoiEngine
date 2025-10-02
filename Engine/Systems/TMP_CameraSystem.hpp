@@ -1,3 +1,22 @@
+/*!
+\file   TMP_CameraSystem.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Class for 2D camera state (position and zoom) to generate view-projection matrices.
+The camera centers the view on its position and scales the visible area based on zoom level.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include "Math/Math.h"
 #include <glm/glm.hpp>

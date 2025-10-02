@@ -1,3 +1,30 @@
+/*!
+\file   Window.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (90%) - Initial GLFW window and GLAD setup
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\author Muhammad Shahir Bin Rasid (10%) - IWindowSystem interface
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+Handles creation and management of the application window using GLFW,
+including OpenGL context setup using GLAD. Manages window events,
+buffer swapping and shutdown.
+
+Inherits from ISystem for engine management and IWindowSystem for
+GLFW window integration and resize handling.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Window.hpp"
 #include <iostream>
 
