@@ -40,9 +40,7 @@ namespace Uma_Engine
     double InputSystem::sMouseX = 0.0;
     double InputSystem::sMouseY = 0.0;
 
-    InputSystem::InputSystem() : mWindow(nullptr)
-    {
-    }
+    InputSystem::InputSystem() : mWindow(nullptr) {}
 
     void InputSystem::Init()
     {
@@ -65,8 +63,7 @@ namespace Uma_Engine
 
         mWindow = window;
 
-        // set callbacks for inputs
-
+        // Set callbacks for inputs
         glfwSetKeyCallback(mWindow, KeyCallback);
         glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
         glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
@@ -95,15 +92,13 @@ namespace Uma_Engine
 
     void InputSystem::Shutdown()
     {
-        // Since we're not setting callbacks, no need to clear them
-        // But if you were setting them, you'd clear them here:
-        /*
-        if (mWindow) {
+        if (mWindow) 
+        {
             glfwSetKeyCallback(mWindow, nullptr);
             glfwSetMouseButtonCallback(mWindow, nullptr);
             glfwSetCursorPosCallback(mWindow, nullptr);
         }
-        */
+        
 
 #ifdef _DEBUG_LOG
         std::cout << "InputSystem shut down" << std::endl;

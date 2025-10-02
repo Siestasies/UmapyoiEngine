@@ -28,14 +28,17 @@ namespace Uma_Engine
 
     glm::mat4 Camera2D::GetViewProjectionMatrix(int viewportWidth, int viewportHeight) const
     {
+        // Calculate dimensions of the visible area based on zoom
         float halfWidth = (viewportWidth * 0.5f) / mZoom;
         float halfHeight = (viewportHeight * 0.5f) / mZoom;
 
+        // Calculate orthographic projection bounds centered on camera position
         float left = mPosition.x - halfWidth;
         float right = mPosition.x + halfWidth;
         float bottom = mPosition.y - halfHeight;
         float top = mPosition.y + halfHeight;
 
+        // Create orthographic projection (maps world space coordinates to NDC)
         return glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
     }
 }
