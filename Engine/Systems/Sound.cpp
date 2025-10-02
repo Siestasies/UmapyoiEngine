@@ -1,8 +1,6 @@
 #include "Sound.hpp"
-#include "Debugging/Debugger.hpp"
 #include <iostream>
 #include <filesystem>
-#include <sstream>
 
 #define DEBUG
 
@@ -18,46 +16,36 @@ namespace Uma_Engine {
         //Shutdown();
     }
 
-	void Sound::Init()
-	{
-		FMOD_RESULT result = FMOD_System_Create(&pFmodSystem, FMOD_VERSION);
-		if (result != FMOD_OK) {
-			std::stringstream log;
-			log << "Failed to create FMOD system: " << FMOD_ErrorString(result);
-			Debugger::Log(WarningLevel::eError, log.str());
-			return;
-		}
-		// Initialize FMOD system
-		result = FMOD_System_Init(pFmodSystem, 32, FMOD_INIT_NORMAL, nullptr);
-		if (result != FMOD_OK) {
-			std::stringstream log;
-			log << "Failed to initialize FMOD system: " << FMOD_ErrorString(result);
-			Debugger::Log(WarningLevel::eError, log.str());
-			return;
-		}
-		std::cout << "AudioManager initialized successfully" << std::endl;
+    void Sound::Init()
+    {
+        FMOD_RESULT result = FMOD_System_Create(&pFmodSystem, FMOD_VERSION);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create FMOD system: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        // Initialize FMOD system
+        result = FMOD_System_Init(pFmodSystem, 32, FMOD_INIT_NORMAL, nullptr);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to initialize FMOD system: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        std::cout << "AudioManager initialized successfully" << std::endl;
 
-		result = FMOD_System_CreateChannelGroup(pFmodSystem, "SFX", &SFX);
-		if (result != FMOD_OK) {
-			std::stringstream log;
-			log << "Failed to create channel sfx: " << FMOD_ErrorString(result);
-			Debugger::Log(WarningLevel::eError, log.str());
-			return;
-		}
-		result = FMOD_System_CreateChannelGroup(pFmodSystem, "BGM", &BGM);
-		if (result != FMOD_OK) {
-			std::stringstream log;
-			log << "Failed to create channel bgm: " << FMOD_ErrorString(result);
-			Debugger::Log(WarningLevel::eError, log.str());
-			return;
-		}
-		result = FMOD_System_GetMasterChannelGroup(pFmodSystem, &Master);
-		if (result != FMOD_OK) {
-			std::stringstream log;
-			log << "Failed to create channel master: " << FMOD_ErrorString(result);
-			Debugger::Log(WarningLevel::eError, log.str());
-			return;
-		}
+        result = FMOD_System_CreateChannelGroup(pFmodSystem, "SFX", &SFX);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create channel sfx: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        result = FMOD_System_CreateChannelGroup(pFmodSystem, "BGM", &BGM);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create channel bgm: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        result = FMOD_System_GetMasterChannelGroup(pFmodSystem, &Master);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create channel master: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
 
         // Add BGM to Master
         result = FMOD_ChannelGroup_AddGroup(Master, BGM, true, nullptr);

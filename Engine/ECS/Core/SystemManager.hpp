@@ -2,7 +2,6 @@
 
 #include "Types.hpp"
 #include "System.hpp"
-#include "Debugging/Debugger.hpp"
 
 #include <string>
 #include <unordered_map>
@@ -22,7 +21,7 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
-            Uma_Engine::Debugger::Assert(aSystems.find(type_name) == aSystems.end() , "Registering the system more than once.");
+            assert(aSystems.find(type_name) == aSystems.end() && "Error : Registering the system more than once.");
 
             // Create a pointer to the system and return it, so that it can be used externally
             auto system = std::make_shared<T>();
@@ -35,7 +34,7 @@ namespace Uma_ECS
         {
             std::string type_name = std::string(typeid(T).name());
 
-            Uma_Engine::Debugger::Assert(aSystems.find(type_name) != aSystems.end(), "Setting the signature of the system before registering.");
+            assert(aSystems.find(type_name) != aSystems.end() && "Error : setting the signature of the system before registering.");
 
             aSignatures.insert({ type_name, signature });
         }

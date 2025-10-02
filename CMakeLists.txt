@@ -57,9 +57,6 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
-add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
-
-
 # Build Engine first, then Game
 add_subdirectory(Engine)
 add_subdirectory(Game)

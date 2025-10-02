@@ -2,7 +2,6 @@
 #include "../Systems/Graphics.hpp"
 #include "../Systems/Sound.hpp"
 #include "../../Core/SystemManager.h"
-#include "Debugging/Debugger.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -16,8 +15,8 @@ namespace Uma_Engine
         mGraphics = pSystemManager->GetSystem<Graphics>();
         mSound = pSystemManager->GetSystem<Sound>();
 
-        Uma_Engine::Debugger::Assert(mGraphics != nullptr , "Graphics system failed to initialize");
-        Uma_Engine::Debugger::Assert(mSound != nullptr , "Sound system failed to initialize");
+        assert(mGraphics != nullptr && "Error: Graphics system failed to initialize");
+        assert(mSound != nullptr && "Error: Sound system failed to initialize");
 
         std::cout << "ResourcesManager initialized" << std::endl;
     }
@@ -37,7 +36,7 @@ namespace Uma_Engine
 
     bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
     {
-        Uma_Engine::Debugger::Assert(mGraphics != nullptr , "Graphics system is not initialized properly.");
+        assert(mGraphics != nullptr && "Error: Graphics system is not initialized properly.");
 
         // Check if texture is already loaded
         if (HasTexture(textureName))
@@ -157,7 +156,7 @@ namespace Uma_Engine
 
     void ResourcesManager::Deserialize(const rapidjson::Value& in)
     {
-        Uma_Engine::Debugger::Assert(in.IsObject(), "Deserialize Failed");
+        assert(in.IsObject());
 
         if (in.HasMember("textures") && in["textures"].IsArray())
         {

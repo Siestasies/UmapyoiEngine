@@ -1,5 +1,4 @@
 #include "Systems/Graphics.hpp"
-#include "Debugging/Debugger.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -8,7 +7,6 @@
 
 #include <iostream>
 #include <cassert>
-#include <sstream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -108,7 +106,7 @@ void main()
         // Check if OpenGL context is available
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            Debugger::Log(WarningLevel::eError, "GLAD not initialized");
+            std::cerr << "GLAD not initialized" << std::endl;
             return;
         }
 
@@ -135,13 +133,13 @@ void main()
         // Initialize 2D renderer
         if (!InitializeRenderer())
         {
-            Debugger::Log(WarningLevel::eError, "Failed to initialize 2D renderer!");
+            std::cerr << "Failed to initialize 2D renderer!" << std::endl;
             return;
         }
 
         if (!InitializeInstancedRenderer())
         {
-            Debugger::Log(WarningLevel::eError, "Failed to initialize instanced renderer!");
+            std::cerr << "Failed to initialize instanced renderer!" << std::endl;
             return;
         }
 
@@ -151,7 +149,7 @@ void main()
             .zoom = 1.f
         };
 
-        Debugger::Log(WarningLevel::eInfo, "Graphics system initialized successfully!");
+        std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
     }
 
@@ -177,7 +175,7 @@ void main()
     {
         if (mInitialized)
         {
-            Debugger::Log(WarningLevel::eInfo, "Shutting down graphics system...");
+            std::cout << "Shutting down graphics system..." << std::endl;
             ShutdownRenderer();
             ShutdownInstancedRenderer();
             mInitialized = false;
@@ -220,7 +218,7 @@ void main()
 
     Texture Graphics::LoadTextureFromFile(const std::string& texturePath)
     {
-        Uma_Engine::Debugger::Assert(mInitialized, "Graphics System is not initialized.");
+        assert(mInitialized && "Error: Graphics System is not initialized.");
 
         Texture tex = {}; // Initialize to zero
 
@@ -256,15 +254,11 @@ void main()
             tex.tex_size = Vec2(static_cast<float>(width), static_cast<float>(height));
             tex.filePath = texturePath;
 
-            std::stringstream log;
-            log << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID;
-            Debugger::Log(WarningLevel::eInfo, log.str());
+            std::cout << "Texture loaded: " << texturePath << " (" << width << "x" << height << ") ID: " << textureID << std::endl;
         }
         else
         {
-            std::stringstream log;
-            log << "Failed to load texture: " << texturePath;
-            Debugger::Log(WarningLevel::eError, log.str());
+            std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
         }
 
@@ -410,9 +404,7 @@ void main()
         if (!success)
         {
             glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-            std::stringstream log;
-            log << "Vertex shader compilation failed: " << infoLog;
-            Debugger::Log(WarningLevel::eError, log.str());
+            std::cerr << "Vertex shader compilation failed: " << infoLog << std::endl;
             return 0;
         }
 
@@ -426,9 +418,7 @@ void main()
         if (!success)
         {
             glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-            std::stringstream log;
-            log << "Fragment shader compilation failed: " << infoLog;
-            Debugger::Log(WarningLevel::eError, log.str());
+            std::cerr << "Fragment shader compilation failed: " << infoLog << std::endl;
             return 0;
         }
 
@@ -442,9 +432,7 @@ void main()
         if (!success)
         {
             glGetProgramInfoLog(program, 512, NULL, infoLog);
-            std::stringstream log;
-            log << "Shader linking failed: " << infoLog;
-            Debugger::Log(WarningLevel::eError, log.str());
+            std::cerr << "Shader linking failed: " << infoLog << std::endl;
             return 0;
         }
 
@@ -672,7 +660,7 @@ void main()
         mInstanceShaderProgram = CreateShader(instancedVertexShaderSource, instancedFragmentShaderSource);
         if (mInstanceShaderProgram == 0) 
         {
-            Debugger::Log(WarningLevel::eError, "Failed to create instanced shader program!");
+            std::cerr << "Failed to create instanced shader program!" << std::endl;
             return false;
         }
 
@@ -716,9 +704,7 @@ void main()
 
         if (sprites.size() > MAX_INSTANCES)
         {
-            std::stringstream log;
-            log << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES;
-            Debugger::Log(WarningLevel::eError, log.str());
+            std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
         }
 
         size_t instanceCount = sprites.size();
