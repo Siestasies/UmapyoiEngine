@@ -14,6 +14,8 @@ namespace Uma_Engine
 
     void EventSystem::Update(float dt)
     {
+        (void)dt;
+
         ProcessEvents();
     }
 
@@ -156,6 +158,8 @@ namespace Uma_Engine
 
     void EventListenerSystem::Update(float dt)
     {
+        (void)dt;
+
         // Base implementation does nothing
         // Derived classes can override if they need per-frame updates beyond events
     }

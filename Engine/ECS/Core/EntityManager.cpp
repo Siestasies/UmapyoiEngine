@@ -20,7 +20,7 @@ Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
     // out of range check
     assert(mActiveEntityCnt < MAX_ENTITIES && "ERROR : Too many active entities.");
 
-    if (mActiveEntityCnt >= MAX_ENTITIES) return -1;
+    if (mActiveEntityCnt >= MAX_ENTITIES) return 0;
 
     // pop the queue and set the new entity id
     Entity new_entity = aAvailableEntities.front();
@@ -51,7 +51,7 @@ bool Uma_ECS::EntityManager::HasActiveEntity(Entity entity) const
     return aEntityActive[entity];
 }
 
-void Uma_ECS::EntityManager::SetSignature(Entity entity, Signature& const signature)
+void Uma_ECS::EntityManager::SetSignature(Entity entity, const Signature& signature)
 {
     assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
 

@@ -29,6 +29,12 @@ namespace Uma_ECS
     {
     public:
 
+        ComponentArray()
+        {
+            aEntityToIndex.fill(MAX_ENTITIES);
+            aIndexToEntity.fill(MAX_ENTITIES);
+        }
+
         // Add / Remove Component from the array
         ECSErrorCode AddData(Entity entity, const T& component)
         {
@@ -70,6 +76,10 @@ namespace Uma_ECS
             // swap their locations
             aEntityToIndex[last_entity] = index_to_remove;
             aIndexToEntity[index_to_remove] = last_entity;
+
+            // Clear the removed entity's mapping
+            aEntityToIndex[entity] = 0;
+            aIndexToEntity[last_index] = 0;  // Clear the now-unused slot
 
             --mSize;
 
@@ -156,8 +166,8 @@ namespace Uma_ECS
         // the container that stores all components of the same type of all entities
         std::array<T, MAX_ENTITIES> aComponentArray{};
 
-        std::array<Entity, MAX_ENTITIES> aIndexToEntity;
-        std::array<size_t, MAX_ENTITIES> aEntityToIndex;
+        std::array<Entity, MAX_ENTITIES> aIndexToEntity{};
+        std::array<size_t, MAX_ENTITIES> aEntityToIndex{};
 
         size_t mSize = 0; // how many components are currently in use
     };

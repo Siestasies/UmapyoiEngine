@@ -4,75 +4,78 @@
 
 namespace Uma_Engine
 {
-	bool			Debugger::consoleLog = false;
-	std::ofstream	Debugger::sLogFile;
-	std::mutex		Debugger::sLogMutex;
-	EventSystem* Debugger::pEventSystem = nullptr;
+    bool			Debugger::consoleLog = false;
+    std::ofstream	Debugger::sLogFile;
+    std::mutex		Debugger::sLogMutex;
+    EventSystem* Debugger::pEventSystem = nullptr;
 
-	void Debugger::Init()
-	{
-		pEventSystem = pSystemManager->GetSystem<EventSystem>();
-		consoleLog = 0;
-		sLogFile.open("../Logs/debug.log", std::ios::out | std::ios::trunc);
-		sLogFile << std::unitbuf; // immediately write
-		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~Debug~~~~~~~~~~~~~~~~~~~~~~");
-	}
+    void Debugger::Init()
+    {
+        pEventSystem = pSystemManager->GetSystem<EventSystem>();
+        consoleLog = 0;
+        sLogFile.open("../Logs/debug.log", std::ios::out | std::ios::trunc);
+        sLogFile << std::unitbuf; // immediately write
+        Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~Debug~~~~~~~~~~~~~~~~~~~~~~");
+    }
 
-	void Debugger::Update(float dt)
-	{
-		// Crash Test
-		/*int* p = nullptr;
-		*p = 42;*/
-	}
+    void Debugger::Update(float dt)
+    {
+        (void)dt;
 
-	void Debugger::Shutdown()
-	{
-		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~~End~~~~~~~~~~~~~~~~~~~~~~~");
-		sLogFile.close();
-	}
+        // Crash Test
+        /*int* p = nullptr;
+        *p = 42;*/
+    }
 
-	void Debugger::Log(WarningLevel level, const std::string& msg)
-	{
-		std::lock_guard<std::mutex> lock(sLogMutex);
+    void Debugger::Shutdown()
+    {
+        Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~~~End~~~~~~~~~~~~~~~~~~~~~~~");
+        sLogFile.close();
+    }
 
-		std::string finalMsg;
-		switch (level)
-		{
-		case WarningLevel::eInfo:
-			finalMsg = "[Log]Info: <";
-			break;
-		case WarningLevel::eWarning:
-			finalMsg = "[Log]Warning: <";
-			break;
-		case WarningLevel::eError:
-			finalMsg = "[Log]Error: <";
-			break;
-		case WarningLevel::eCritical:
-			finalMsg = "[Log]Critical: <";
-			break;
-		default:
-			finalMsg = "<";
-			break;
-		}
+    void Debugger::Log(WarningLevel level, const std::string& msg)
+    {
+        std::lock_guard<std::mutex> lock(sLogMutex);
 
-		finalMsg += msg + ">\n";
-		if (sLogFile.is_open())
-			sLogFile << finalMsg;
+        std::string finalMsg;
+        switch (level)
+        {
+        case WarningLevel::eInfo:
+            finalMsg = "[Log]Info: <";
+            break;
+        case WarningLevel::eWarning:
+            finalMsg = "[Log]Warning: <";
+            break;
+        case WarningLevel::eError:
+            finalMsg = "[Log]Error: <";
+            break;
+        case WarningLevel::eCritical:
+            finalMsg = "[Log]Critical: <";
+            break;
+        default:
+            finalMsg = "<";
+            break;
+        }
 
-		if (consoleLog)
-		{
-			std::cerr << finalMsg;
-		}
+        finalMsg += msg + ">\n";
+        if (sLogFile.is_open())
+            sLogFile << finalMsg;
 
-		if (pEventSystem != nullptr)
-		{
-			pEventSystem->Emit<DebugLogEvent>(msg, level);
-		}
-	}
+        if (consoleLog)
+        {
+            std::cerr << finalMsg;
+        }
 
-	void Debugger::Assert(bool condition, const std::string& msg)
-	{
+        if (pEventSystem != nullptr)
+        {
+            pEventSystem->Emit<DebugLogEvent>(msg, level);
+        }
+    }
 
-	}
+    void Debugger::Assert(bool condition, const std::string& msg)
+    {
+        (void)msg;
+        (void)condition;
+    }
 
 } // namespace Uma_Engine

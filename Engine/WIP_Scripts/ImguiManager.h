@@ -4,8 +4,13 @@
 #include "DebugEvents.h"
 #include "ECSEvents.h"
 
-#include <GLFW/glfw3.h>
+
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -31,6 +36,7 @@ namespace Uma_Engine
                 , m_showSystemsWindow(true)
                 , m_historyOffset(0)
                 , pEventSystem(nullptr)
+                , mEntityCount(0)
             {
                 // init array
                 for (int i = 0; i < 120; ++i)
@@ -227,6 +233,9 @@ namespace Uma_Engine
 
             void CreatePerformanceWindow(float fps, float deltaTime)
             {
+                (void)fps;
+                (void)deltaTime;
+
                 if (!m_showPerformanceWindow)
                 {
                     return;

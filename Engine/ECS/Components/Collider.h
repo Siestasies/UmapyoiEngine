@@ -23,16 +23,16 @@ namespace Uma_ECS
 
     struct BoundingBox
     {
-        Vec2 min;
-        Vec2 max;
+        Vec2 min{};
+        Vec2 max{};
     };
 
     // currently in 2d
     struct Collider
     {
-        BoundingBox boundingBox;
-        LayerMask layer; // the layer it is in
-        LayerMask colliderMask; // the layer it can collide with
+        BoundingBox boundingBox{};
+        LayerMask layer = CL_NONE; // the layer it is in
+        LayerMask colliderMask = CL_NONE; // the layer it can collide with
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

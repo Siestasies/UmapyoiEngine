@@ -22,7 +22,7 @@ namespace Uma_Engine
 		}
 		void Update(float dt) override
 		{
-
+				(void)dt;
 		}
 		void Render() override
 		{

@@ -44,10 +44,10 @@ namespace Uma_Engine
         void Deserialize(const rapidjson::Value& in) override;
         
     private:
-        std::unordered_map<std::string, Texture> mTextures;
-        Graphics* mGraphics;
+        std::unordered_map<std::string, Texture> mTextures{};
+        Graphics* mGraphics = nullptr;
 
-        std::unordered_map<std::string, SoundInfo> mSoundList;
-        Sound* mSound;
+        std::unordered_map<std::string, SoundInfo> mSoundList{};
+        Sound* mSound = nullptr;
     };
 }

@@ -8,10 +8,10 @@ namespace Uma_ECS
     // currently in 2d
     struct Transform //: public SerializationBase
     {
-        Vec2 position;
-        Vec2 rotation;
-        Vec2 scale;
-        Vec2 prevPos; // shdnt edit this value manually
+        Vec2 position{};
+        Vec2 rotation{};
+        Vec2 scale{};
+        Vec2 prevPos{}; // shdnt edit this value manually
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

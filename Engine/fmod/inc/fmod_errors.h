@@ -17,7 +17,9 @@
 static const char *FMOD_ErrorString(FMOD_RESULT errcode) __attribute__((unused));
 #endif
 
-static const char *FMOD_ErrorString(FMOD_RESULT errcode)
+//#pragma warning(disable:4505)
+
+inline const char *FMOD_ErrorString(FMOD_RESULT errcode)
 {
     switch (errcode)
     {

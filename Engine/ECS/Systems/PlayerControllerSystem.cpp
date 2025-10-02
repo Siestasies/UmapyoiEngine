@@ -87,6 +87,7 @@ namespace Uma_ECS
     }
     void PlayerControllerSystem::OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event)
     {
+        (void)event;
     }
 
     void PlayerControllerSystem::HandleMovementInput(float dt)

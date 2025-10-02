@@ -94,18 +94,20 @@ namespace Uma_Engine
             // subscribe to events
             pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
            
-            pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { gGameSerializer.save(Uma_FilePath::SCENES_DIR + currSceneName); });
-            pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
-            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { ResetAll(); });
-            pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { StressTest(); });
+            pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { (void)e; gGameSerializer.save(Uma_FilePath::SCENES_DIR + currSceneName); });
+            pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
+            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
+            pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
 
 
             pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
                 { 
+                    (void)e;
                     DuplicateOrCreateEntity();
                 });
             pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) 
                 { 
+                    (void)e;
                     DestroyRandomEntity();
                 });
 

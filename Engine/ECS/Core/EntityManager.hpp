@@ -17,7 +17,7 @@ namespace Uma_ECS
 
         bool HasActiveEntity(Entity entity) const;
 
-        void SetSignature(Entity entity, Signature& const signature);
+        void SetSignature(Entity entity, const Signature& signature);
         Signature GetSignature(Entity entity) const;
 
         int GetEntityCount() const;

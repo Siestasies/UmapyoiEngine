@@ -19,7 +19,6 @@
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/Sound.hpp"
 
-#include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
 #include "WIP_Scripts/Test_Input_Events.h"
 
@@ -78,7 +77,6 @@ int main()
 
     // scene
     systemManager.RegisterSystem<Uma_Engine::SceneManager>();
-    //systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
     systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
