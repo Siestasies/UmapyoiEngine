@@ -9,9 +9,9 @@ namespace Uma_ECS
     struct SpriteRenderer
     {
         // pointer pointing to the texture in resources manager
-        std::string textureName;
-        bool flipX;
-        bool flipY;
+        std::string textureName{};
+        bool flipX{};
+        bool flipY{};
         Uma_Engine::Texture* texture = nullptr;
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override

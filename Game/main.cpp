@@ -48,7 +48,7 @@ int main()
 
     // Debug
 #ifdef DEBUG
-    Uma_Engine::Debugger::Init(true);
+    //Uma_Engine::Debugger::Init(true);
     Uma_Engine::CrashLogger::StartUp();
     Uma_Engine::MemoryManager::Enable();
 #endif // DEBUG
@@ -76,6 +76,8 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
     // Register your other systems normally
+    systemManager.RegisterSystem<Uma_Engine::Debugger>();
+
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
     systemManager.RegisterSystem<Uma_Engine::Sound>();
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
@@ -84,8 +86,7 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::SceneManager>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-    Uma_Engine::ImguiManager* imguiHandler = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
-    imguiHandler->SetSystemManager(&systemManager);
+    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
     // Initialize all systems
     systemManager.Init();
@@ -154,9 +155,7 @@ int main()
     }
 
     Uma_Engine::Debugger::Shutdown();
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\n=== Event System Test Complete ===");
     systemManager.Shutdown();
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Event test finished!");
 
 #ifdef DEBUG
     Uma_Engine::MemoryManager::Disable();

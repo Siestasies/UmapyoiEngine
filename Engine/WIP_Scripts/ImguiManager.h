@@ -1,6 +1,9 @@
 #pragma once
 #include "SystemType.h"
 #include "IMGUIEvents.h"
+#include "DebugEvents.h"
+#include "ECSEvents.h"
+
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include "imgui.h"
@@ -8,8 +11,8 @@
 #include "imgui_impl_opengl3.h"
 
 #include "Core/FilePaths.h"
-
 #include <iostream>
+#include <random>
 
 struct GLFWwindow;
 
@@ -27,7 +30,7 @@ namespace Uma_Engine
                 , m_showPerformanceWindow(true)
                 , m_showSystemsWindow(true)
                 , m_historyOffset(0)
-                , m_systemManager(nullptr)
+                , pEventSystem(nullptr)
             {
                 // init array
                 for (int i = 0; i < 120; ++i)
@@ -35,15 +38,7 @@ namespace Uma_Engine
                     m_fpsHistory[i] = 0.0f;
                     m_frametimeHistory[i] = 0.0f;
                 }
-            }
-            ~ImguiManager() override
-            {
-                // nothing cus shutdown should handle destorying alr
-            }
 
-            void SetSystemManager(SystemManager* manager)
-            {
-                m_systemManager = manager;
             }
 
             // isystem stuff
@@ -81,6 +76,14 @@ namespace Uma_Engine
                 ImGui_ImplGlfw_InitForOpenGL(m_window, true);
                 const char* glsl_version = "#version 130";
                 ImGui_ImplOpenGL3_Init(glsl_version);
+
+
+                pEventSystem = pSystemManager->GetSystem<EventSystem>();
+
+                pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
+
+                pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
+                pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
 
                 m_initialized = true;
             }
@@ -249,10 +252,10 @@ namespace Uma_Engine
 
                 ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
-                if (m_systemManager)
+                if (pSystemManager)
                 {
-                    const auto& timings = m_systemManager->GetLastTimings();
-                    double total = m_systemManager->GetLastTotalTime();
+                    const auto& timings = pSystemManager->GetLastTimings();
+                    double total = pSystemManager->GetLastTotalTime();
 
                     ImGui::Text("Registered Systems: %zu", timings.size());
                     ImGui::Separator();
@@ -263,7 +266,7 @@ namespace Uma_Engine
                         {
                             double ms = timings[i];
                             double percent = (ms / total) * 100.0;
-                            ImGui::Text("%i. %s: %.1f ms (%.1f%%)", (i + 1), m_systemManager->GetSystemName(i).c_str(), ms, percent);
+                            ImGui::Text("%i. %s: %.1f ms (%.1f%%)", (i + 1), pSystemManager->GetSystemName(i).c_str(), ms, percent);
                         }
 
                         ImGui::Separator();
@@ -279,9 +282,7 @@ namespace Uma_Engine
                 ImGui::Begin("Entity Debug", &b);
 
                 // get entity count here
-                QueryActiveEntitiesEvent query;
-                pEventSystem->Dispatch(query);
-                ImGui::Text("Entity Count: %i", query.mActiveEntityCnt);
+                ImGui::Text("Entity Count: %i", mEntityCount);
 
                 ImGui::Separator();
 
@@ -305,7 +306,7 @@ namespace Uma_Engine
 
                     pEventSystem->Emit<CloneEntityRequestEvent>(1);
                 }
-                if (ImGui::Button("Destroy Rand Entity", { 150, 50 }))
+                if (ImGui::Button("Destroy Rand Entity", { 160, 50 }))
                 {
                     // do spawning here
                     //std::cout << "Entity destroyed" << std::endl;
@@ -317,6 +318,19 @@ namespace Uma_Engine
                     Uma_ECS::Entity rand = distribution(generator);*/
 
                     pEventSystem->Emit<DestroyEntityRequestEvent>(1);
+                }
+                if (ImGui::Button("Stress Test 10k GO", { 150, 50 }))
+                {
+                    // do spawning here
+                    //std::cout << "Entity destroyed" << std::endl;
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    /*std::default_random_engine generator;
+                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    Uma_ECS::Entity rand = distribution(generator);*/
+
+                    pEventSystem->Emit<StressTestRequestEvent>();
                 }
                 
                 ImGui::End();
@@ -358,8 +372,7 @@ namespace Uma_Engine
                     logsVec.clear();
                 ImGui::SameLine();
                 // test message 
-                if (ImGui::Button("Test Message Button"))
-                    AddConsoleLog("This is a test message");
+                //if (ImGui::Button("Test Message Button"))
 
                 ImGui::Separator();
 
@@ -391,8 +404,6 @@ namespace Uma_Engine
             bool m_initialized;
             GLFWwindow* m_window;
 
-            // refs to other classes
-            SystemManager* m_systemManager;
             // show or not
             bool m_showEngineDebug;
             bool m_showEventDebug;
@@ -400,10 +411,15 @@ namespace Uma_Engine
             bool m_showPerformanceWindow;
             bool m_showSystemsWindow;
 
+            // values that need to keep track
+            int mEntityCount;
+
             // performance window vars
             float m_fpsHistory[120];
             float m_frametimeHistory[120];
             int m_historyOffset;
             std::vector<std::string> logsVec;
+
+            EventSystem* pEventSystem;
     };
 }

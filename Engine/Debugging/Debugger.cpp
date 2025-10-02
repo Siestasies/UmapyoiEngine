@@ -1,22 +1,26 @@
 #include "Debugger.hpp"
 #include <ctime>
 #include <vector>
+#include "SystemManager.h"
+#include "DebugEvents.h"
 
 namespace Uma_Engine
 {
 	bool			Debugger::consoleLog = false;
 	std::ofstream	Debugger::sLogFile;
 	std::mutex		Debugger::sLogMutex;
+	EventSystem* Debugger::pEventSystem = nullptr;
 
-	void Debugger::Init(bool console, const std::string& filename)
+	void Debugger::Init()
 	{
-		consoleLog = console;
-		sLogFile.open(filename, std::ios::out | std::ios::trunc);
+		pEventSystem = pSystemManager->GetSystem<EventSystem>();
+		consoleLog = 0;
+		sLogFile.open("../Logs/debug.log", std::ios::out | std::ios::trunc);
 		sLogFile << std::unitbuf; // immediately write
 		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~DEBUG_START~~~~~~~~~~~~~~~~~~~");
 	}
 
-	void Debugger::Update()
+	void Debugger::Update(float dt)
 	{
 		// Crash Test
 		std::vector<int> nums = { 1 };
@@ -65,7 +69,14 @@ namespace Uma_Engine
 			sLogFile << finalMsg;
 
 		if (consoleLog)
+		{
 			std::cerr << finalMsg;
+		}
+
+		if (pEventSystem != nullptr)
+		{
+			pEventSystem->Emit<DebugLogEvent>(msg, level);
+		}
 	}
 
 	void Debugger::Assert(bool terminate, const std::string& msg)
