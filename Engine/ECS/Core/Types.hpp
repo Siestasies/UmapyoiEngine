@@ -1,3 +1,26 @@
+/*!
+\file   Types.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines core type aliases and constants for the Uma_ECS namespace.
+
+Establishes Entity as unsigned int with MAX_ENTITIES capacity of 11,000.
+ComponentType as unsigned int with MAX_COMPONENTS limit of 32 types.
+Signature as std::bitset<MAX_COMPONENTS> for efficient component presence tracking.
+Includes ECSErrorCode enum for error handling in debug and release builds.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 // this whole header file is just to declare the types we are using for Uma_ECS

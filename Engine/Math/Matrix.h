@@ -1,3 +1,26 @@
+/*!
+\file   Matrix.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines templated 2x2, 3x3, and 4x4 matrix classes with column-major storage
+following GLM conventions. Supports arithmetic operations, matrix multiplication,
+determinants, transposes, and inverse calculations for floating-point types.
+
+Provides GLM-style column/row accessors, array-style indexing via proxy classes,
+transformation functions (translate, rotate, scale), and matrix-vector multiplication.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <array>

@@ -1,3 +1,27 @@
+/*!
+\file   CollisionSystem.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines collision detection and resolution system using spatial hashing with AABB (axis-aligned bounding box) primitives.
+
+Provides layer-based collision filtering through bitmask operations on Collider components.
+Cell struct and CellHash functor enable grid-based spatial partitioning with configurable CELL_SIZE constant.
+Exposes helper methods for layer management (ShouldCollide, IsInLayer, SetLayer, AddMask) and internal methods
+for grid insertion, static/dynamic AABB intersection tests, and penetration-based collision resolution.
+Maintains Coordinator reference for component array access.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/System.hpp"

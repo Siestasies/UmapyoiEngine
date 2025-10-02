@@ -1,3 +1,26 @@
+/*!
+\file   IMGUIEvents.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines UI-related events for handling IMGUI interactions within the Uma Engine.
+
+Includes event types for common UI requests such as spawning or destroying entities,
+component modifications, scene management actions, and querying active entities.
+Each event encapsulates relevant data and uses priority levels to control event processing
+within the IMGUI event handling system.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <string>

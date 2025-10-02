@@ -1,3 +1,26 @@
+/*!
+\file   SpriteRenderer.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines sprite rendering component that references texture assets by name with flip flags for mirroring.
+
+Stores texture name string for serialization and cached Texture pointer (managed by ResourcesManager) for runtime rendering.
+Supports horizontal and vertical sprite flipping through flipX/flipY boolean flags.
+Serializes only texture name (not pointer) to JSON for persistent storage. Texture pointer is resolved at runtime
+by RenderingSystem through ResourcesManager lookup. Used by RenderingSystem for batched sprite drawing.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../../Math/Math.h"

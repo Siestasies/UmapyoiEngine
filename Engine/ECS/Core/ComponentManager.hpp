@@ -1,3 +1,27 @@
+/*!
+\file   ComponentManager.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Manages registration, storage, and retrieval of all component types in the ECS using type-indexed maps.
+
+Maps component type names (via typeid) to unique ComponentType identifiers and corresponding ComponentArray instances.
+Provides template-based API for type-safe component operations (add, remove, get) with compile-time type resolution.
+Handles batch serialization/deserialization of all components for a given entity, returning signatures for deserialized components.
+Uses shared pointers for polymorphic component array storage and maintains component type counter for unique identification.
+Integrates with Uma_Engine debugger for component registration logging.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Types.hpp"

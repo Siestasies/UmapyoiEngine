@@ -1,3 +1,26 @@
+/*!
+\file   RigidBody.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines 2D rigid body physics component containing velocity, acceleration, and physical properties.
+
+Stores Vec2 velocity and acceleration for integration by PhysicsSystem, with tunable accel_strength for input responsiveness
+and fric_coeff for friction damping to slow entities naturally.
+Provides JSON serialization for all physics properties including vector components. Used in conjunction with Transform
+component for position updates via semi-implicit Euler integration.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../../Math/Math.h"
