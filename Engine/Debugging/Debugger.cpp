@@ -51,12 +51,7 @@ namespace Uma_Engine
 		Log(WarningLevel::eNoLabel, "~~~~~~~~~~~~~~~~~~~DEBUG_START~~~~~~~~~~~~~~~~~~~");
 	}
 
-	void Debugger::Update(float dt)
-	{
-		// Crash test code - intentionally accesses out of bounds to test crash handler
-		std::vector<int> nums = { 1 };
-		int x = nums.at(5);
-	}
+	void Debugger::Update(float dt) {}
 
 	void Debugger::Shutdown()
 	{
@@ -129,6 +124,14 @@ namespace Uma_Engine
 			Log(WarningLevel::eCritical, "Assert Reached: " + msg);
 			std::terminate();
 		}
+	}
+
+	void Debugger::TestCrash()
+	{
+		// Crash test code - intentionally accesses out of bounds to test crash handler
+		std::vector<int> nums = { 1 };
+		int x = nums.at(5);
+		x++;
 	}
 
 } // namespace Uma_Engine

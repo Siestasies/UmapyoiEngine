@@ -148,13 +148,12 @@ int main()
         }
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
         {
-            Uma_Engine::Debugger::Update();
+            Uma_Engine::Debugger::TestCrash();
         }
 
         systemManager.Update(deltaTime);
     }
 
-    Uma_Engine::Debugger::Shutdown();
     systemManager.Shutdown();
 
 #ifdef DEBUG

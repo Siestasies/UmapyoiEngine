@@ -75,6 +75,11 @@ namespace Uma_Engine
         */
         static void Assert(bool condition, const std::string& msg);
 
+        /*!
+        * \brief Experimental function to test crash system
+        */
+        static void TestCrash();
+
     private:
         static bool consoleLog;              // Flag to enable/disable console output
         static std::ofstream sLogFile;       // File stream for log output

@@ -49,6 +49,10 @@ namespace Uma_Engine
 
         // Allocate symbol information structure with space for function name
         SYMBOL_INFO* symbol = (SYMBOL_INFO*)calloc(sizeof(SYMBOL_INFO) + 256 * sizeof(char), 1);
+        if (!symbol) {
+            Debugger::Log(WarningLevel::eCritical, "Error trying to receive stack info");
+            return EXCEPTION_EXECUTE_HANDLER;
+        }
         symbol->MaxNameLen = 255;
         symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
 
