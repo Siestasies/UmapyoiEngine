@@ -15,6 +15,8 @@
 #ifndef RAPIDJSON_RAPIDJSON_H_
 #define RAPIDJSON_RAPIDJSON_H_
 
+#pragma warning(disable : 26495) // "member variable not initialized"
+
 /*!\file rapidjson.h
     \brief common definitions and configuration
 

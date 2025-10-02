@@ -7,10 +7,23 @@
 #include <string>
 #include <fstream>
 
+
+//#if defined(_MSC_VER)
+//#  pragma warning(push)
+//#  pragma warning(disable : 26495)
+//#endif
+
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/prettywriter.h>   // pretty JSON output
+
+//// if you need internal stuff
+//#include <rapidjson/internal/ieee754.h>
+//
+//#if defined(_MSC_VER)
+//#  pragma warning(pop)
+//#endif
 
 namespace Uma_Engine
 {

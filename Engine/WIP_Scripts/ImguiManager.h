@@ -4,12 +4,8 @@
 #include "DebugEvents.h"
 #include "ECSEvents.h"
 
-
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"

@@ -12,6 +12,11 @@ if(MSVC)
     string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
     # Add W4
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+
+    add_compile_options(/wd4996)  # Suppress 'deprecated' warnings (e.g., use of unsafe functions)
+    add_compile_options(/wd4201)  # Suppress warning for unnamed struct/union
+    add_compile_options(/wd26495)  # Suppress warning for unnamed struct/union
+
 endif()
 
 # Create Logs directory if it doesn't exist
