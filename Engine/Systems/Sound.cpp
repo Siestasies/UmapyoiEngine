@@ -162,7 +162,7 @@ namespace Uma_Engine {
 		mSoundList.clear();
 	}
 
-	void Sound::releaseSounds() {
+	void Sound::release() {
 		if (!pFmodSystem) return;
 		stopAllSounds();
 		if (SFX) {

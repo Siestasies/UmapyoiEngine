@@ -72,7 +72,7 @@ namespace Uma_Engine
 				/*!
 				*\brief release all the systems
 				*/
-				void releaseSounds();
+				void release();
 
 				// Sound playback
 				/*!
