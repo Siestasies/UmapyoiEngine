@@ -1,3 +1,24 @@
+/*!
+\file   BaseSerializer.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines ISerializer interface for polymorphic serialization of engine subsystems to JSON format.
+
+Requires derived classes to provide section name identifier and implement serialize/deserialize methods using RapidJSON.
+Enables GameSerializer to orchestrate multi-system persistence by treating all subsystems uniformly through this interface.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "RapidJSON/document.h"
