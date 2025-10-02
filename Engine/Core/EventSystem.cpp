@@ -11,6 +11,7 @@
 
 \brief
 Implementation of the EventSystem defined in EventSystem.h.
+
 This file provides the concrete logic for subscribing to, dispatching, and processing game events.
 It implements listener management, immediate and deferred event dispatching with priority ordering,
 and integrates with the ISystem lifecycle (Init, Update, Shutdown). Events are processed in priority order,

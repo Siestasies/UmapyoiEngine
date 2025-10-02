@@ -11,11 +11,12 @@
 
 \brief
 Implementation of a hybrid event system for managing game events with both immediate and queued dispatching.
+
 This file defines a flexible, type-safe event dispatch and subscription system, enabling systems to respond to
 events in real-time or defer handling through prioritised event queues. It supports listener registration,
 event emission with priority-based ordering, and safe type-erased storage for runtime event handling.
 The system also includes facilities for managing event listeners, limiting event processing per frame,
-and integrating cleanly with the game’s system architecture. Designed for use in modular ECS-style engines.
+and integrating cleanly with the game's system architecture. Designed for use in modular ECS-style engines.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.

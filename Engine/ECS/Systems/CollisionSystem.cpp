@@ -14,7 +14,7 @@ Implements spatial hash-based collision detection using grid partitioning for br
 
 Updates axis-aligned bounding boxes from transform and collider data, then performs narrowphase AABB tests
 using both static and dynamic (continuous) collision detection with swept volume calculations.
-Partitions world space into cells (CELL_SIZE) to reduce collision checks from O(n²) to O(n) average case.
+Partitions world space into cells (CELL_SIZE) to reduce collision checks from O(n^2) to O(n) average case.
 Resolves overlaps by separating objects along minimum penetration axis. Supports layer-based collision filtering
 through bitmask comparison. Calculates time of first impact for moving AABBs using relative velocity projection.
 
