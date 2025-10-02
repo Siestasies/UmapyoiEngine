@@ -34,19 +34,17 @@
 
 #define DEBUG
 
+#ifdef DEBUG
+#include "MemoryManager/MemoryManager.hpp"
+#endif // DEBUG
 
 int main()
 {
-
-#ifdef _DEBUG
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
     // Debug
 #ifdef DEBUG
-    //Uma_Engine::Debugger::Init(true);
-    Uma_Engine::CrashLogger::StartUp();
+    Uma_Engine::MemoryManager::Enable();
 #endif // DEBUG
+    Uma_Engine::CrashLogger::StartUp();
 
     // Create window
     Uma_Engine::Window window(1920, 1080, "UmapyoiEngine");
@@ -140,12 +138,19 @@ int main()
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
         }
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
+        {
+            Uma_Engine::Debugger::TestCrash();
+        }
 
         systemManager.Update(deltaTime);
     }
 
     systemManager.Shutdown();
-    //Uma_Engine::Debugger::Shutdown();
+#ifdef DEBUG
+    Uma_Engine::MemoryManager::Disable();
+    Uma_Engine::MemoryManager::ReportLeaks();
+#endif // DEBUG
 
     return 0;
 }
