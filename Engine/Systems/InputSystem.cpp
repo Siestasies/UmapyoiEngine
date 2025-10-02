@@ -27,7 +27,7 @@ All rights reserved.
 #include "imgui.h"
 
 // comment and uncomment this line below to enable/ disable console debug log
-//#define _DEBUG_LOG
+#define _DEBUG_LOG
 
 namespace Uma_Engine
 {
@@ -88,6 +88,22 @@ namespace Uma_Engine
         // Update previous frame state
         // sKeysPrevFrame = sKeys;
         // sMouseButtonsPrevFrame = sMouseButtons;
+
+#ifdef _DEBUG_LOG
+        // Log held keys
+        for (int i = 0; i <= GLFW_KEY_LAST; ++i) {
+            if (sKeys[i] && sKeysPrevFrame[i]) {
+                std::cout << "Key HELD: " << GetKeyName(i) << " (" << i << ")" << std::endl;
+            }
+        }
+
+        // Log held mouse buttons
+        for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i) {
+            if (sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
+                std::cout << "Mouse button HELD: " << i << std::endl;
+            }
+        }
+#endif
     }
 
     void InputSystem::Shutdown()
@@ -114,9 +130,15 @@ namespace Uma_Engine
         {
             if (action == GLFW_PRESS) {
                 sKeys[key] = true;
+#ifdef _DEBUG_LOG
+                std::cout << "Key pressed: " << GetKeyName(key) << " (" << key << ")" << std::endl;
+#endif
             }
             else if (action == GLFW_RELEASE) {
                 sKeys[key] = false;
+#ifdef _DEBUG_LOG
+                std::cout << "Key released: " << GetKeyName(key) << " (" << key << ")" << std::endl;
+#endif
             }
         }
     }
@@ -129,9 +151,15 @@ namespace Uma_Engine
         {
             if (action == GLFW_PRESS) {
                 sMouseButtons[button] = true;
+#ifdef _DEBUG_LOG
+                std::cout << "Mouse button pressed: " << button << std::endl;
+#endif
             }
             else if (action == GLFW_RELEASE) {
                 sMouseButtons[button] = false;
+#ifdef _DEBUG_LOG
+                std::cout << "Mouse button released: " << button << std::endl;
+#endif
             }
         }
     }

@@ -169,10 +169,14 @@ namespace Uma_Engine
          */
         static double GetMouseY();
 
-    private:
+        /**
+         * \brief Gets the key name
+         * \return y-coordinate of the mouse cursor
+         */
         static const char* GetKeyName(int key);
 
-        // Static state - accessible from callbacks
+    private:
+        // Static state
         static std::vector<bool> sKeys;
         static std::vector<bool> sKeysPrevFrame;
         static std::vector<bool> sMouseButtons;
