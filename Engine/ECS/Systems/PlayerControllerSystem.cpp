@@ -141,9 +141,7 @@ namespace Uma_ECS
         // Smooth acceleration to prevent jerk
         const float accelSmoothFactor = 15.f; // tweak for responsiveness
         rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
-
-        std::cout << "player : " << rb.acceleration << std::endl;
-
+     
 #ifdef _DEBUG_LOG
         //std::cout << "Player Movement: " << rb.velocity << std::endl;
 #endif
