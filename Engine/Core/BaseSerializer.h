@@ -2,6 +2,8 @@
 
 #include "RapidJSON/document.h"
 
+#include <string>
+
 namespace Uma_Engine
 {
     using Entity = unsigned int;
@@ -9,7 +11,7 @@ namespace Uma_Engine
     class ISerializer {
     public:
         virtual const char* GetSectionName() const = 0;  // e.g. "entities", "resources"
-        virtual const char* GetSerializerName() const = 0;  // e.g. "entities", "resources"
+        virtual std::string GetSerializerName() const = 0;  // e.g. "entities", "resources"
 
         virtual void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) = 0;
         virtual void Deserialize(const rapidjson::Value& in) = 0;

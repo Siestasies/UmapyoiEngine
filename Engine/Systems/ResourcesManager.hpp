@@ -40,7 +40,7 @@ namespace Uma_Engine
         
         // serializer
         const char* GetSectionName() const override { return "resources"; };  // e.g. "entities", "resources"
-        const char* GetSerializerName() const override { return "resources_manager"; };  // e.g. "resources_manager", "coordinator"
+        std::string GetSerializerName() const override { return "resources_manager"; };  // e.g. "resources_manager", "coordinator"
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void Deserialize(const rapidjson::Value& in) override;
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;

@@ -1,14 +1,34 @@
+/*!
+\file   InputSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Definition of a GLFW-based input handling system class that manages keyboard and mouse input through callbacks and query functions.
+Supports detection of key/button down, pressed (single-frame), and released states.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "InputSystem.h"
+#include "Debugging/Debugger.hpp"
 #include <stdexcept>
 #include <iostream>
-
+#include <sstream>
 #include <GLFW/glfw3.h>
 
 // Include ImGui for input checking
 #include "imgui.h"
 
 // comment and uncomment this line below to enable/ disable console debug log
-//#define _DEBUG_LOG
+#define _DEBUG_LOG
 
 namespace Uma_Engine
 {
@@ -21,9 +41,7 @@ namespace Uma_Engine
     double InputSystem::sMouseX = 0.0;
     double InputSystem::sMouseY = 0.0;
 
-    InputSystem::InputSystem() : mWindow(nullptr)
-    {
-    }
+    InputSystem::InputSystem() : mWindow(nullptr) {}
 
     void InputSystem::Init()
     {
@@ -46,8 +64,7 @@ namespace Uma_Engine
 
         mWindow = window;
 
-        // set callbacks for inputs
-
+        // Set callbacks for inputs
         glfwSetKeyCallback(mWindow, KeyCallback);
         glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
         glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
@@ -72,19 +89,40 @@ namespace Uma_Engine
         // Update previous frame state
         // sKeysPrevFrame = sKeys;
         // sMouseButtonsPrevFrame = sMouseButtons;
+
+#ifdef _DEBUG_LOG
+        // Log held keys
+        for (int i = 0; i <= GLFW_KEY_LAST; ++i) {
+            if (sKeys[i] && sKeysPrevFrame[i]) {
+                //std::cout << "Key HELD: " << GetKeyName(i) << " (" << i << ")" << std::endl;
+
+                std::stringstream ss{""};
+                ss << "Key HELD: " << GetKeyName(i) << " (" << i << ")";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+            }
+        }
+
+        // Log held mouse buttons
+        for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; ++i) {
+            if (sMouseButtons[i] && sMouseButtonsPrevFrame[i]) {
+                //std::cout << "Mouse button HELD: " << i << std::endl;
+                std::stringstream ss{ "" };
+                ss << "Mouse button HELD: " << i;
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+            }
+        }
+#endif
     }
 
     void InputSystem::Shutdown()
     {
-        // Since we're not setting callbacks, no need to clear them
-        // But if you were setting them, you'd clear them here:
-        /*
-        if (mWindow) {
+        if (mWindow) 
+        {
             glfwSetKeyCallback(mWindow, nullptr);
             glfwSetMouseButtonCallback(mWindow, nullptr);
             glfwSetCursorPosCallback(mWindow, nullptr);
         }
-        */
+        
 
 #ifdef _DEBUG_LOG
         std::cout << "InputSystem shut down" << std::endl;
@@ -100,9 +138,21 @@ namespace Uma_Engine
         {
             if (action == GLFW_PRESS) {
                 sKeys[key] = true;
+#ifdef _DEBUG_LOG
+                //std::cout << "Key pressed: " << GetKeyName(key) << " (" << key << ")" << std::endl;
+                std::stringstream ss{ "" };
+                ss << "Key pressed: " << GetKeyName(key) << " (" << key << ")";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
             }
             else if (action == GLFW_RELEASE) {
                 sKeys[key] = false;
+#ifdef _DEBUG_LOG
+                //std::cout << "Key released: " << GetKeyName(key) << " (" << key << ")" << std::endl;
+                std::stringstream ss{ "" };
+                ss << "Key released: " << GetKeyName(key) << " (" << key << ")";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
             }
         }
     }
@@ -115,9 +165,21 @@ namespace Uma_Engine
         {
             if (action == GLFW_PRESS) {
                 sMouseButtons[button] = true;
+#ifdef _DEBUG_LOG
+                //std::cout << "Mouse button pressed: " << button << std::endl;
+                std::stringstream ss{ "" };
+                ss << "Mouse button pressed: " << button;
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
             }
             else if (action == GLFW_RELEASE) {
                 sMouseButtons[button] = false;
+#ifdef _DEBUG_LOG
+                //std::cout << "Mouse button released: " << button << std::endl;
+                std::stringstream ss{ "" };
+                ss << "Mouse button released: " << button;
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
             }
         }
     }
@@ -130,7 +192,10 @@ namespace Uma_Engine
         sMouseY = ypos;
 
 #ifdef _DEBUG_LOG
-        std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
+        //std::cout << "Mouse position: (" << sMouseX << ", " << sMouseY << ")" << std::endl;
+        std::stringstream ss{ "" };
+        ss << "Mouse pos: (" << sMouseX << ", " << sMouseY << ")";
+        Debugger::Log(WarningLevel::eInfo, ss.str());
 #endif // !_DEBUG_LOG
     }
 
