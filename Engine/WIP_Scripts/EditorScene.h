@@ -294,7 +294,7 @@ namespace Uma_Engine
                     Transform
                     {
                         .position = Vec2(400.0f, 300.0f),
-                        .rotation = Vec2(1,1),
+                        .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(50,50),
                     });
 
