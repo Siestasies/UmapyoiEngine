@@ -48,6 +48,17 @@ add_custom_command(TARGET UmapyoiGame POST_BUILD
     COMMENT "Copying Logs folder next to executable"
 )
 
+# Define where config live
+set(CONFIG_DIR ${CMAKE_SOURCE_DIR}/Configs)
+
+# Copy configs folder after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CONFIG_DIR}
+        $<TARGET_FILE_DIR:UmapyoiGame>/Configs
+    COMMENT "Copying Configs folder next to executable"
+)
+
 # FMOD runtime DLL (Windows only)
 set(FMOD_DLL ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll)
 

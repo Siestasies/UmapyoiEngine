@@ -31,12 +31,17 @@
 #include "Systems/SceneManager.h"
 
 #include "WIP_Scripts/ImguiManager.h"
+#include "Core/EngineConfig.h"
+#include "Core/EngineConfigSerializer.h"
+#include "Core/FilePaths.h"
 
 #define DEBUG
 
 #ifdef DEBUG
 #include "MemoryManager/MemoryManager.hpp"
 #endif // DEBUG
+
+Uma_Engine::EngineConfig gEngineConfig;
 
 int main()
 {
@@ -46,8 +51,13 @@ int main()
 #endif // DEBUG
     Uma_Engine::CrashLogger::StartUp();
 
+    Uma_Engine::EngineConfigSerializer gEngineConfigSerializer;
+
+    gEngineConfigSerializer.Register(&gEngineConfig);
+    gEngineConfigSerializer.load(Uma_FilePath::CONFIG_ROOT + "config.json");
+
     // Create window
-    Uma_Engine::Window window(1920, 1080, "UmapyoiEngine");
+    Uma_Engine::Window window(gEngineConfig.screenWidth, gEngineConfig.screenHeight, gEngineConfig.windowTitle);
 
     // Initialize the engine
     if (!window.Initialize())
@@ -124,7 +134,7 @@ int main()
 
             newTitle.str("");
             newTitle.clear();
-            newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
+            newTitle << gEngineConfig.windowTitle << " | FPS: " << std::fixed << std::setprecision(2) << fps;
             window.SetTitle(newTitle.str());
         }
 

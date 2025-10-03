@@ -1,0 +1,9 @@
+{
+    "engine_config": {
+        "screenWidth": 1920,
+        "screenHeight": 1080,
+        "fullscreen": false,
+        "vsync": false,
+        "windowTitle": "UmaPyoi Engine"
+    }
+}

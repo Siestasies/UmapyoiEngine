@@ -30,6 +30,7 @@ namespace Uma_FilePath
 
     inline const std::string ASSET_ROOT = "Assets/";
     inline const std::string LOGS_ROOT = "Logs/";
+    inline const std::string CONFIG_ROOT = "Configs/";
 
     // Assets
     inline const std::string TEXTURES_DIR = ASSET_ROOT + "Textures/";
