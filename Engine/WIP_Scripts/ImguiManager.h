@@ -40,7 +40,6 @@ namespace Uma_Engine
                     m_fpsHistory[i] = 0.0f;
                     m_frametimeHistory[i] = 0.0f;
                 }
-
             }
 
             // isystem stuff
@@ -180,6 +179,7 @@ namespace Uma_Engine
                     CreateEntityDebugWindow();
                     CreateConsoleWindow();
                     CreateSerializationDebugWindow();
+                    CreateEntityPropertyWindow();
                 }
 
                 if (m_showDemoWindow)
@@ -298,7 +298,7 @@ namespace Uma_Engine
 
 
 
-                if (ImGui::Button("Spawn Entity", { 150, 50 }))
+                if (ImGui::Button("Spawn Entity", { 160, 50 }))
                 {
                     // do spawning here
                     //std::cout << "Entity spawned" << std::endl;
@@ -324,7 +324,7 @@ namespace Uma_Engine
 
                     pEventSystem->Emit<DestroyEntityRequestEvent>(1);
                 }
-                if (ImGui::Button("Stress Test 10k GO", { 150, 50 }))
+                if (ImGui::Button("Stress Test 10k GO", { 160, 50 }))
                 {
                     // do spawning here
                     //std::cout << "Entity destroyed" << std::endl;
@@ -337,7 +337,56 @@ namespace Uma_Engine
 
                     pEventSystem->Emit<StressTestRequestEvent>();
                 }
+                if (ImGui::Button("Spawn 2.5k in VP", { 160, 50 }))
+                {
+                    // do spawning here
+                    //std::cout << "Entity destroyed" << std::endl;
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    /*std::default_random_engine generator;
+                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    Uma_ECS::Entity rand = distribution(generator);*/
+
+                    pEventSystem->Emit<ShowEntityInVPRequestEvent>();
+                }
                 
+                ImGui::End();
+            }
+
+            void CreateEntityPropertyWindow()
+            {
+                bool b = true;
+                ImGui::Begin("Entity Run Time Property", &b);
+
+                ImGui::Separator();
+
+                static float rot = 0.f;
+                static float scale = 1.f;
+                static bool showBBox = false;
+
+                if (ImGui::SliderFloat("enemy scale", &scale, 0.1f, 2.0f))
+                {
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+                    pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
+                }
+
+                if (ImGui::SliderFloat("enemy rot", &rot, -1.0f, 1.0f))
+                {
+                }
+                QueryActiveEntitiesEvent q;
+                pEventSystem->Dispatch(q);
+                pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
+
+                if (ImGui::Button("Show BBox", { 160, 50 }))
+                {
+                    showBBox = !showBBox;
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+                    pEventSystem->Emit<ShowBBoxRequestEvent>(showBBox);
+                }
+
                 ImGui::End();
             }
 

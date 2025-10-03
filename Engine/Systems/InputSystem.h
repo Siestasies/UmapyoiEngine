@@ -37,9 +37,9 @@ namespace Uma_Engine
         static void GetMousePosition(double& x, double& y);
         static double GetMouseX();
         static double GetMouseY();
+        static const char* GetKeyName(int key);
 
     private:
-        static const char* GetKeyName(int key);
 
         // Static state - accessible from callbacks
         static std::vector<bool> sKeys;

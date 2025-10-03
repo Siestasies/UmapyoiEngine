@@ -90,11 +90,11 @@ int main()
     inputSystem->SetEventSystem(eventSystem);
 
 #ifdef DEBUG
-    std::cout << "\nEvent listener counts:\n";
-    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
-    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
-    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
-    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyPress listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyRelease listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseButton listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseMove listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>()));
 #endif
 
     // Game loop

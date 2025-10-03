@@ -33,6 +33,7 @@ namespace Uma_ECS
         BoundingBox boundingBox{};
         LayerMask layer = CL_NONE; // the layer it is in
         LayerMask colliderMask = CL_NONE; // the layer it can collide with
+        bool showBBox = false;
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

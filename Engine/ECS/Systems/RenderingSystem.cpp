@@ -4,6 +4,7 @@
 #include "Components/SpriteRenderer.h"
 #include "Components/Transform.h"
 #include "Components/Camera.h"
+#include "Components/Collider.h"
 
 
 #include "Debugging/Debugger.hpp"
@@ -29,6 +30,7 @@ namespace Uma_ECS
         auto& srArray = pCoordinator->GetComponentArray<SpriteRenderer>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
+        auto& cArray = pCoordinator->GetComponentArray<Collider>();
 
         // one camera for now
         Entity camera = camArray.GetEntity(0);
@@ -38,6 +40,19 @@ namespace Uma_ECS
         pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
+
+        for (const auto& entity : aEntities)
+        {
+            auto& c = cArray.GetData(entity);
+
+            // Debug draw
+            if (!c.showBBox)
+            {
+                continue;
+            }
+
+            pGraphics->DrawDebugRect(c.boundingBox);
+        }
 
         std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
 
@@ -70,23 +85,6 @@ namespace Uma_ECS
                     .rot = tf.rotation.x,
                     .rot_speed = tf.rotation.y
                 });
-
-            /*if (!sr.texture)
-            {
-                sr.texture = pResourcesManager->GetTexture(sr.textureName);
-            }
-            else
-            {
-                if (sr.texture->tex_id == 0)
-                {
-                    std::stringstream log;
-                    log << "Entity(" << entity << ") texture is not valid.";
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-                    continue;
-                }
-
-                pGraphics->DrawSprite(sr.texture->tex_id, tf.scale, tf.position);
-            }*/
         }
 
         for (const auto& pair : sorted_sprites)
@@ -95,7 +93,6 @@ namespace Uma_ECS
 
             pGraphics->DrawSpritesInstanced(
                 pair.first,
-                //sprites[0].tex_size,
                 sprites
             );
         }

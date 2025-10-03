@@ -98,6 +98,12 @@ namespace Uma_Engine
             pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
             pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
             pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
+            pEventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
+
+
+            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
+            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
+            pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
 
 
             pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
@@ -252,8 +258,13 @@ namespace Uma_Engine
                 pSound->playSound(pResourcesManager->GetSound("explosion"));
             }
 
+            if (HybridInputSystem::KeyPressed(GLFW_KEY_O))
+            {
+                pSound->playSound(pResourcesManager->GetSound("cave"));
+            }
+
             pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
-            //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
+            pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
             renderingSystem->Update(dt);
 		    }
 		    void Render() override
@@ -346,8 +357,8 @@ namespace Uma_Engine
             // create entities
             {
                 std::default_random_engine generator;
-                std::uniform_real_distribution<float> randPositionX(-1920.f, 1920.f);
-                std::uniform_real_distribution<float> randPositionY(-1080.f, 1080.f);
+                std::uniform_real_distribution<float> randPositionX(-1920.f * 0.45f, 1920.f * 0.45f);
+                std::uniform_real_distribution<float> randPositionY(-1080.f * 0.45f, 1080.f * 0.45f);
                 std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
                 std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
@@ -397,7 +408,7 @@ namespace Uma_Engine
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
-                for (size_t i = 0; i < 2500; i++)
+                for (size_t i = 0; i < 2500 - 3; i++)
                 {
                     Entity tmp = gCoordinator.DuplicateEntity(enemy);
 
@@ -718,6 +729,60 @@ namespace Uma_Engine
                         .mZoom = 1.f,
                         .followPlayer = true
                     });
+            }
+        }
+
+        void ChangeAllEnemyRot(float rot)
+        {
+            using namespace Uma_ECS;
+
+            //std::default_random_engine generator(std::random_device{}());
+            //std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+
+            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
+
+            for (size_t i = 0; i < eArray.Size(); i++)
+            {
+                auto& tf = tfArray.GetData(eArray.GetEntity(i));
+
+                //tf.scale = //Vec2{randScale(generator), randScale(generator)} * scale;
+
+                tf.rotation.x += rot;
+                tf.rotation.y = 200.f;
+            }
+        }
+
+        void ChangeAllEnemyScale(float scale)
+        {
+            using namespace Uma_ECS;
+
+            std::default_random_engine generator(std::random_device{}());
+            std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+
+            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
+
+            for (size_t i = 0; i < eArray.Size(); i++)
+            {
+                auto& tf = tfArray.GetData(eArray.GetEntity(i));
+
+                tf.scale = Vec2{randScale(generator), randScale(generator)} * scale;
+            }
+        }
+
+        void ShowBBox(bool isShow)
+        {
+            using namespace Uma_ECS;
+
+            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& cArray = gCoordinator.GetComponentArray<Uma_ECS::Collider>();
+
+            for (size_t i = 0; i < eArray.Size(); i++)
+            {
+                auto& c = cArray.GetData(eArray.GetEntity(i));
+
+                c.showBBox = isShow;
             }
         }
 	  };

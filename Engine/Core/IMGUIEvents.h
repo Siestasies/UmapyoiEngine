@@ -28,6 +28,33 @@ namespace Uma_Engine
 			StressTestRequestEvent(){ priority = Priority::High; }
 	};
 
+	class ShowEntityInVPRequestEvent : public Event
+	{
+	public:
+			ShowEntityInVPRequestEvent() { priority = Priority::High; }
+	};
+
+	class ChangeEnemyRotRequestEvent : public Event
+	{
+	public:
+			float rot;
+			ChangeEnemyRotRequestEvent(float rot) : rot(rot) { priority = Priority::High; }
+	};
+
+	class ChangeEnemyScaleRequestEvent : public Event
+	{
+	public:
+			float scale;
+			ChangeEnemyScaleRequestEvent(float scale) : scale(scale) { priority = Priority::High; }
+	};
+
+	class ShowBBoxRequestEvent : public Event
+	{
+	public:
+			bool show;
+			ShowBBoxRequestEvent(bool show) : show(show) { priority = Priority::High; }
+	};
+
 	class CloneEntityRequestEvent : public Event
 	{
 	public:

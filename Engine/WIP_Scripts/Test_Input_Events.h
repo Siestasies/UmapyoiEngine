@@ -215,6 +215,9 @@ namespace Uma_Engine
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received KeyPress: key=" << event.key << "\n";
 #else
+                //std::stringstream ss{""};
+                //ss << "TestEventListener received KeyPress: key=" << InputSystem::GetKeyName(event.key);
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
                 (void)event;
 #endif
                 });
@@ -223,6 +226,9 @@ namespace Uma_Engine
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received KeyRelease: key=" << event.key << "\n";
 #else
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received KeyRelease: key=" << InputSystem::GetKeyName(event.key);
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
                 (void)event;
 #endif
                 });
@@ -233,6 +239,11 @@ namespace Uma_Engine
                 std::cout << "TestEventListener received MouseButton " << action
                     << ": button=" << event.button << " at (" << event.x << ", " << event.y << ")\n";
 #else
+                //std::string action = (event.action == GLFW_PRESS) ? "Press" : "Release";
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received MouseButton " << action
+                //    << ": button=" << event.button << " at (" << event.x << ", " << event.y << ")";
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
                 (void)event;
 #endif
                 });
@@ -242,6 +253,10 @@ namespace Uma_Engine
                 std::cout << "TestEventListener received MouseMove: (" << event.x << ", " << event.y
                     << ") delta=(" << event.deltaX << ", " << event.deltaY << ")\n";
 #else
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received MouseMove: (" << event.x << ", " << event.y
+                //    << ") delta=(" << event.deltaX << ", " << event.deltaY << ")";
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
                 (void)event;
 #endif
                 });
