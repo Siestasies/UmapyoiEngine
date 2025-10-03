@@ -42,34 +42,63 @@ void Uma_ECS::CollisionSystem::Update(float dt)
 
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
-    if (!aEntities.size()) return;
+    if (aEntities.empty()) return;
 
     // Get dense component arrays once
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-    // Iterate over the smaller array for efficiency (here, RigidBody)
     for (auto const& entity : aEntities)
     {
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
-        // skip none layer
+        // Skip entities on NONE collision layer
         if ((c.layer & CollisionLayer::CL_NONE)) continue;
 
-        float halfWidth = (1.f / 2.0f) * tf.scale.x;
-        float halfHeight = (1.f / 2.0f) * tf.scale.y;
-
-        // update Bounding box
-        c.boundingBox.min = {
-            tf.prevPos.x - halfWidth,
-            tf.prevPos.y - halfHeight
+        // Create UNIT-SIZED local corners (±0.5, not scaled yet)
+        std::array<Vec2, 4> localCorners = {
+            Vec2{-0.5f, -0.5f},  // Bottom-left
+            Vec2{ 0.5f, -0.5f},  // Bottom-right
+            Vec2{ 0.5f,  0.5f},  // Top-right
+            Vec2{-0.5f,  0.5f}   // Top-left
         };
 
-        c.boundingBox.max = {
-            tf.prevPos.x + halfWidth,
-            tf.prevPos.y + halfHeight
-        };
+        // Build transformation matrix: T * R * S (in reverse order for post-multiply)
+        Mat3 transform = Uma_Constants::IDENTITY_3X3_F;
+        transform = Translate(transform, tf.prevPos);
+        transform = Rotate(transform, tf.rotation.x);
+        transform = Scale(transform, tf.scale);
+
+        // Transform corners into world space
+        std::array<Vec2, 4> worldCorners;
+        for (int i = 0; i < 4; i++)
+        {
+            // Create homogeneous coordinate (x, y, 1)
+            Vec3 localHomogeneous(localCorners[i].x, localCorners[i].y, 1.0f);
+
+            // Transform to world space
+            Vec3 worldHomogeneous = transform * localHomogeneous;
+
+            // Extract 2D world position
+            worldCorners[i] = Vec2(worldHomogeneous.x, worldHomogeneous.y);
+        }
+
+        // Compute AABB from transformed corners
+        Vec2 bbMin = worldCorners[0];
+        Vec2 bbMax = worldCorners[0];
+
+        for (int i = 1; i < 4; i++)
+        {
+            bbMin.x = min(bbMin.x, worldCorners[i].x);
+            bbMin.y = min(bbMin.y, worldCorners[i].y);
+            bbMax.x = max(bbMax.x, worldCorners[i].x);
+            bbMax.y = max(bbMax.y, worldCorners[i].y);
+        }
+
+        // Store final bounding box
+        c.boundingBox.min = bbMin;
+        c.boundingBox.max = bbMax;
     }
 }
 
