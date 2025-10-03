@@ -225,8 +225,8 @@ namespace Uma_Engine
                     return;
                 }
 
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.4f, windowHeight * 0.75f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.3f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.5f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Engine Debug", &m_showEngineDebug);
 
                 // some stats
@@ -256,7 +256,7 @@ namespace Uma_Engine
                 }
 
                 ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.3f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.2f), ImGuiCond_Once);
                 ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
 
                 // FPS graph
@@ -305,8 +305,8 @@ namespace Uma_Engine
             void CreateEntityDebugWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.75f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.9f, 0.f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
                 ImGui::Begin("Entity Debug", &b);
 
                 // get entity count here
@@ -356,6 +356,8 @@ namespace Uma_Engine
             void CreateEntityPropertyWindow()
             {
                 bool b = true;
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, windowHeight * 0.315f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.15f), ImGuiCond_Once);
                 ImGui::Begin("Entity Run Time Property", &b);
 
                 ImGui::Separator();
@@ -392,8 +394,8 @@ namespace Uma_Engine
             void CreateSerializationDebugWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1f, windowHeight * 0.75f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.125f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, 0.f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
                 ImGui::Begin("Serialization Debug", &b);
 
                 // get entity count here
@@ -420,8 +422,8 @@ namespace Uma_Engine
 
             void CreateConsoleWindow()
             {
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7f, windowHeight * 0.75f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.3f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, windowHeight * 0.465f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
                 bool b = true;
                 ImGui::Begin("Console", &b);
                 // to clear the console
