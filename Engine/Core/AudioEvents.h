@@ -1,3 +1,25 @@
+/*!
+\file   AudioEvents.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines audio-related events for the Uma Engine event system.
+
+This file introduces event classes used to trigger and control audio playback,
+including sounds and music. These events are dispatched through the event system
+with configurable parameters such as volume and loop state.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "EventType.h"

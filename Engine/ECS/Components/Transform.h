@@ -1,3 +1,26 @@
+/*!
+\file   Transform.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines spatial transformation component for 2D entity positioning, rotation, and scaling.
+
+Contains position, rotation (x=angle, y=angular velocity), scale as Vec2 values, and prevPos for swept collision detection.
+prevPos is automatically set during deserialization and updated by PhysicsSystem for temporal coherence in collision queries.
+Provides JSON serialization for position, rotation, and scale only (prevPos excluded as runtime-only data).
+Core component used by nearly all systems for spatial queries and world-space transformations.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../../Math/Math.h"

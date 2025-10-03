@@ -1,3 +1,27 @@
+/*!
+\file   GameSerializer.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements multi-system serialization coordinator that aggregates ISerializer implementations into unified JSON documents.
+
+Maintains registry of serializers and orchestrates section-based save/load operations with each serializer contributing
+its own named JSON object (e.g., "entities", "resources") to the document hierarchy.
+Uses RapidJSON PrettyWriter for human-readable output with 3 decimal place precision for floating-point values.
+Provides file I/O operations with debug logging via Uma_Engine::Debugger. Includes commented legacy code showing
+previous monolithic entity serialization approach before ISerializer abstraction.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Core/BaseSerializer.h"

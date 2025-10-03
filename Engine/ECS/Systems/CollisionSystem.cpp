@@ -1,3 +1,27 @@
+/*!
+\file   CollisionSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements spatial hash-based collision detection using grid partitioning for broadphase optimization.
+
+Updates axis-aligned bounding boxes from transform and collider data, then performs narrowphase AABB tests
+using both static and dynamic (continuous) collision detection with swept volume calculations.
+Partitions world space into cells (CELL_SIZE) to reduce collision checks from O(n^2) to O(n) average case.
+Resolves overlaps by separating objects along minimum penetration axis. Supports layer-based collision filtering
+through bitmask comparison. Calculates time of first impact for moving AABBs using relative velocity projection.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "CollisionSystem.hpp"
 
 #include "../Core/Coordinator.hpp"

@@ -1,3 +1,25 @@
+/*!
+\file   EntityManager.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements entity lifecycle management using a free-list queue pattern for ID reuse.
+
+Creates entities by popping from available IDs queue, destroys entities by resetting signatures and returning IDs to the pool.
+Tracks active entity count and maintains per-entity signatures and active status flags.
+Provides entity enumeration for serialization and batch operations with bounds checking and assertion-based validation.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 //#include "Precompiled.h"
 #include "EntityManager.hpp"
 

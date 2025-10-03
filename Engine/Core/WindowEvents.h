@@ -1,3 +1,24 @@
+/*!
+\file   WindowEvents.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines window and framebuffer event types for the engine's event system.
+
+Includes notifications for window resizing, closing, focus changes,
+movement, and framebuffer resizing, each with appropriate event priority.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "EventType.h"

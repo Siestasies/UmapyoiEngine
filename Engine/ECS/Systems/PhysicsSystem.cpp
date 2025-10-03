@@ -1,3 +1,26 @@
+/*!
+\file   PhysicsSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements Verlet-based physics integration with semi-implicit Euler method for velocity updates.
+
+Applies acceleration to velocity, exponential friction damping, and epsilon-based velocity clamping to prevent jitter.
+Stores previous position in Transform before updating for collision system's swept tests.
+Includes debug logging method (PrintLog) that outputs entity signatures and component data for Transform and RigidBody
+to console with formatted output showing total entity counts and system membership.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "PhysicsSystem.hpp"
 
 #include "../Core/Coordinator.hpp"

@@ -1,3 +1,27 @@
+/*!
+\file   PlayerControllerSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (50%), Leong Wai Men (50%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu, waimen.leong@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee@digipen.edu, waimen.leong
+
+\brief
+Implements player input handling system that translates keyboard events into character movement and actions.
+
+Subscribes to KeyPress/Release/Repeat events and maintains input state for WASD movement, dash, attack, and interact actions.
+Applies smooth acceleration to RigidBody based on input state to prevent jerky movement transitions.
+Uses static boolean flags to detect single-press actions (attack, interact, dash) and emits PlayerActionEvents
+through EventSystem. Includes conditional debug logging for action triggers. Movement applies directional acceleration
+with configurable smoothing factor for responsive feel.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "PlayerControllerSystem.hpp"
 
 #include "../Components/RigidBody.h"

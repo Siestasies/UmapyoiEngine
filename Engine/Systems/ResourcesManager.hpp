@@ -1,3 +1,27 @@
+/*!
+\file   ResourcesManager.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines resource management system that provides name-based caching and lookup for textures and sounds.
+
+Implements both ISystem for engine lifecycle integration and ISerializer for scene persistence.
+Maintains unordered maps for O(1) resource lookups by string identifiers with separate storage for textures and audio.
+Provides load/unload/query operations for both resource types with file path and type parameters.
+Returns raw pointers for textures and references for sounds to avoid ownership transfer.
+Serializes resource manifests (not binary data) for scene reloading on deserialization.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include "../Core/SystemType.h"
 #include "Math/Math.h"

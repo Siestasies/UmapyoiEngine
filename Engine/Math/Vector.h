@@ -1,3 +1,26 @@
+/*!
+\file   Vector.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines templated 2D and 3D vector classes supporting arithmetic,
+vector operations, and common utilities for both integral and floating-point types.
+
+Provides GLM-style accessors, swizzle functions (3D), and overloaded operators
+for intuitive usage. Includes functions for magnitude, normalization,
+dot and cross products, distance, reflection, interpolation, and angle calculations.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <algorithm>

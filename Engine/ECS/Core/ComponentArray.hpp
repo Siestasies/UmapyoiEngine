@@ -1,3 +1,27 @@
+/*!
+\file   ComponentArray.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements a packed array storage container for components of a specific type using template-based design.
+
+Provides O(1) component access through entity-to-index mapping with contiguous memory layout for cache efficiency.
+Components are tightly packed by swapping removed elements with the last element to maintain density.
+Includes serialization/deserialization support via RapidJSON and component cloning for entity duplication.
+Base class (BaseComponentArray) enables polymorphic storage of different component types in a single container.
+Supports up to MAX_ENTITIES components with entity existence checking and boundary validation.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Types.hpp"

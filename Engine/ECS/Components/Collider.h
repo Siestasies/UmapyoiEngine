@@ -1,3 +1,26 @@
+/*!
+\file   Collider.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines collision detection component using axis-aligned bounding boxes (AABB) with layer-based filtering.
+
+Uses bitmask enums (CollisionLayer) for efficient collision layer management supporting up to 32 layers.
+Stores min/max bounds for broadphase tests and layer/colliderMask bitmasks for filtering which layers can interact.
+Includes predefined layers: DEFAULT, PLAYER, ENEMY, WALL, PROJECTILE, PICKUP with CL_ALL wildcard.
+Provides JSON serialization for bounding box coordinates and layer masks. BoundingBox struct stores Vec2 min/max extents.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Math/Math.h"

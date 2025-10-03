@@ -1,3 +1,27 @@
+/*!
+\file   Coordinator.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements the Coordinator's entity lifecycle management, event emission, and serialization methods.
+
+Coordinates entity creation/destruction across all three managers (Entity, Component, System) and emits corresponding events.
+Handles entity duplication by cloning components and updating system membership.
+Template methods handle component and system operations with automatic signature updates and system membership
+recalculation. Implements ISerializer for JSON-based scene serialization with RapidJSON. Integrates with
+Uma_Engine::EventSystem to emit entity lifecycle events for external observers.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Coordinator.hpp"
 #include "Core/IMGUIEvents.h"
 

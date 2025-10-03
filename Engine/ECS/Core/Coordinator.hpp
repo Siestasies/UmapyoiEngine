@@ -1,3 +1,28 @@
+/*!
+\file   Coordinator.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Central facade class that unifies EntityManager, ComponentManager, and SystemManager into a single interface.
+
+Provides the primary API for ECS operations: entity creation/destruction, component registration/manipulation,
+and system registration with signature-based filtering.
+Template methods handle component and system operations with automatic signature updates and system membership
+recalculation. Implements ISerializer for JSON-based scene serialization with RapidJSON. Integrates with
+Uma_Engine::EventSystem to emit entity lifecycle events for external observers.
+
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <memory>

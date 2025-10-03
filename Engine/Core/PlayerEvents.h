@@ -1,3 +1,26 @@
+/*!
+\file   PlayerEvents.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines player-related events for movement, actions, state changes, health, spawning, and death.
+
+This file contains events representing various player gameplay interactions, such as velocity changes,
+discrete actions (attack, dash, etc.), state transitions (idle, moving, etc.), health updates,
+spawn/respawn occurrences, and death notifications. Events carry relevant data including player entity IDs,
+action/state types, positional info, and contextual details, with priority levels set to guide event processing.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "EventType.h"

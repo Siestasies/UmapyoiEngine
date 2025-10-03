@@ -1,3 +1,27 @@
+/*!
+\file   Test_Input_Events.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implements a hybrid input processing system that prioritizes input events based on
+criticality for optimal responsiveness and stability. Critical events (window close)
+and high-priority inputs (mouse clicks, action keys, function keys) are dispatched
+immediately, while normal-priority inputs (movement keys, mouse movement) are queued.
+
+Extends Uma_Engine::InputSystem with GLFW integration and EventSystem connectivity.
+Includes TestEventListener class for debugging event flow.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include <iostream>
 #include <GLFW/glfw3.h>

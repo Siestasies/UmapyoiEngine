@@ -1,3 +1,26 @@
+/*!
+\file   Matrix.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines templated 2x2, 3x3, and 4x4 matrix classes with column-major storage
+following GLM conventions. Supports arithmetic operations, matrix multiplication,
+determinants, transposes, and inverse calculations for floating-point types.
+
+Provides GLM-style column/row accessors, array-style indexing via proxy classes,
+transformation functions (translate, rotate, scale), and matrix-vector multiplication.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <array>
@@ -992,6 +1015,118 @@ namespace Uma_Math
         rotation.set(1, 1, c);
         rotation.set(1, 2, T{ 0 });
 
+        rotation.set(2, 0, T{ 0 });
+        rotation.set(2, 1, T{ 0 });
+        rotation.set(2, 2, T{ 1 });
+
+        Matrix3x3<T> result;
+        result.setColumn(0, mat.column(0) * rotation.get(0, 0) + mat.column(1) * rotation.get(0, 1) + mat.column(2) * rotation.get(0, 2));
+        result.setColumn(1, mat.column(0) * rotation.get(1, 0) + mat.column(1) * rotation.get(1, 1) + mat.column(2) * rotation.get(1, 2));
+        result.setColumn(2, mat.column(0) * rotation.get(2, 0) + mat.column(1) * rotation.get(2, 1) + mat.column(2) * rotation.get(2, 2));
+        return result;
+    }
+
+    template <typename T>
+    Matrix2x2<T> Scale(const Matrix2x2<T>& mat, const Vector2D<T>& v)
+    {
+        Matrix2x2<T> result;
+        result.setColumn(0, mat.column(0) * v.x);
+        result.setColumn(1, mat.column(1) * v.y);
+        return result;
+    }
+
+    template <typename T>
+    Matrix2x2<T> Rotate(const Matrix2x2<T>& mat, T angle)
+    {
+        T const c = std::cos(angle);
+        T const s = std::sin(angle);
+
+        Matrix2x2<T> rotation;
+        rotation.set(0, 0, c);
+        rotation.set(0, 1, s);
+        rotation.set(1, 0, -s);
+        rotation.set(1, 1, c);
+
+        Matrix2x2<T> result;
+        result.setColumn(0, mat.column(0) * rotation.get(0, 0) + mat.column(1) * rotation.get(0, 1));
+        result.setColumn(1, mat.column(0) * rotation.get(1, 0) + mat.column(1) * rotation.get(1, 1));
+        return result;
+    }
+
+    // Matrix3x3 transformations (3D, or 2D homogeneous)
+    template <typename T>
+    Matrix3x3<T> Translate(const Matrix3x3<T>& mat, const Vector2D<T>& v)
+    {
+        Matrix3x3<T> result(mat);
+        result.setColumn(2, mat.column(0) * v.x + mat.column(1) * v.y + mat.column(2));
+        return result;
+    }
+
+    template <typename T>
+    Matrix3x3<T> Scale(const Matrix3x3<T>& mat, const Vector3D<T>& v)
+    {
+        Matrix3x3<T> result;
+        result.setColumn(0, mat.column(0) * v.x);
+        result.setColumn(1, mat.column(1) * v.y);
+        result.setColumn(2, mat.column(2) * v.z);
+        return result;
+    }
+
+    // For 2D homogeneous coordinates (using Matrix3x3)
+    template <typename T>
+    Matrix3x3<T> Scale(const Matrix3x3<T>& mat, const Vector2D<T>& v)
+    {
+        Matrix3x3<T> result;
+        result.setColumn(0, mat.column(0) * v.x);
+        result.setColumn(1, mat.column(1) * v.y);
+        result.setColumn(2, mat.column(2));
+        return result;
+    }
+
+    template <typename T>
+    Matrix3x3<T> Rotate(const Matrix3x3<T>& mat, T angle, const Vector3D<T>& axis)
+    {
+        T const c = std::cos(angle);
+        T const s = std::sin(angle);
+
+        Vector3D<T> temp = normalize(axis) * (T{ 1 } - c);
+
+        Matrix3x3<T> rotation;
+        rotation.set(0, 0, c + temp.x * axis.x);
+        rotation.set(0, 1, temp.x * axis.y + s * axis.z);
+        rotation.set(0, 2, temp.x * axis.z - s * axis.y);
+
+        rotation.set(1, 0, temp.y * axis.x - s * axis.z);
+        rotation.set(1, 1, c + temp.y * axis.y);
+        rotation.set(1, 2, temp.y * axis.z + s * axis.x);
+
+        rotation.set(2, 0, temp.z * axis.x + s * axis.y);
+        rotation.set(2, 1, temp.z * axis.y - s * axis.x);
+        rotation.set(2, 2, c + temp.z * axis.z);
+
+        Matrix3x3<T> result;
+        result.setColumn(0, mat.column(0) * rotation.get(0, 0) + mat.column(1) * rotation.get(0, 1) + mat.column(2) * rotation.get(0, 2));
+        result.setColumn(1, mat.column(0) * rotation.get(1, 0) + mat.column(1) * rotation.get(1, 1) + mat.column(2) * rotation.get(1, 2));
+        result.setColumn(2, mat.column(0) * rotation.get(2, 0) + mat.column(1) * rotation.get(2, 1) + mat.column(2) * rotation.get(2, 2));
+        return result;
+    }
+
+    // For 2D rotation (using Matrix3x3 for homogeneous coordinates)
+    template <typename T>
+    Matrix3x3<T> Rotate(const Matrix3x3<T>& mat, T angle)
+    {
+        T const c = std::cos(angle);
+        T const s = std::sin(angle);
+
+        Matrix3x3<T> rotation;
+        rotation.set(0, 0, c);
+        rotation.set(0, 1, s);
+        rotation.set(0, 2, T{ 0 });
+        
+        rotation.set(1, 0, -s);
+        rotation.set(1, 1, c);
+        rotation.set(1, 2, T{ 0 });
+        
         rotation.set(2, 0, T{ 0 });
         rotation.set(2, 1, T{ 0 });
         rotation.set(2, 2, T{ 1 });

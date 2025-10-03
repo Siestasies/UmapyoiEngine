@@ -1,3 +1,27 @@
+/*!
+\file   RenderingSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements sprite batching and rendering system that groups sprites by texture ID for instanced drawing.
+
+Loads textures on-demand through ResourcesManager if not cached in SpriteRenderer component.
+Queries camera transform and zoom from Camera component to configure graphics viewport.
+Validates texture handles before rendering and logs warnings for invalid textures. Builds sorted map of sprites
+grouped by texture ID, then submits batched draw calls through Graphics API for optimal performance.
+Supports single camera setup with entity at index 0.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "RenderingSystem.hpp"
 #include "Core/Coordinator.hpp"
 

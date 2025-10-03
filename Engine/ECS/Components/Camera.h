@@ -1,3 +1,24 @@
+/*!
+\file   Camera.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines Camera component containing viewport zoom level and player following behavior flag.
+
+Provides JSON serialization/deserialization for zoom and followPlayer properties via RapidJSON.
+Used by CameraSystem to control camera positioning and tracking behavior.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Math/Math.h"

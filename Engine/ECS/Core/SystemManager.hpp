@@ -1,3 +1,27 @@
+/*!
+\file   SystemManager.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Manages registration and lifecycle of all ECS systems with signature-based entity filtering.
+
+Maps system type names to system instances (shared pointers) and their required component signatures.
+Template methods provide type-safe system registration and signature configuration.
+Automatically updates system membership when entities are created, destroyed, or have components added/removed
+by comparing entity signatures with system signatures using bitwise AND operations. Systems only track entities
+that contain all required components specified in their signature.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Types.hpp"
