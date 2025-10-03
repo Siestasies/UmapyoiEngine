@@ -367,7 +367,7 @@ namespace Uma_Engine
                 std::default_random_engine generator;
                 std::uniform_real_distribution<float> randPositionX(-1920.f * 0.45f, 1920.f * 0.45f);
                 std::uniform_real_distribution<float> randPositionY(-1080.f * 0.45f, 1080.f * 0.45f);
-                std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
+                //std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
                 std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
                 Entity enemy;
@@ -393,7 +393,7 @@ namespace Uma_Engine
                         enemy,
                         Transform{
                           .position = Vec2(randPositionX(generator), randPositionY(generator)),
-                          .rotation = Vec2(randRotation(generator), randRotation(generator)),
+                          .rotation = Vec2(0, 0),
                           .scale = Vec2(randScale(generator), randScale(generator))
                         });
 
@@ -423,7 +423,7 @@ namespace Uma_Engine
                     Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                    tf.rotation = Vec2(randRotation(generator), randRotation(generator));
+                    tf.rotation = Vec2(0, 0);
                     tf.scale = Vec2(randScale(generator), randScale(generator));
 
                     SpriteRenderer& sr = gCoordinator.GetComponent<SpriteRenderer>(tmp);
@@ -510,7 +510,7 @@ namespace Uma_Engine
             std::default_random_engine generator(std::random_device{}());
             std::uniform_real_distribution<float> randPositionX(-400, 400);
             std::uniform_real_distribution<float> randPositionY(-400, 400);
-            std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
+            //std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
             std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
             if (eArray.Size() == 0)
@@ -540,7 +540,7 @@ namespace Uma_Engine
                         enemy,
                         Transform{
                           .position = Vec2(0, 0),
-                          .rotation = Vec2(randRotation(generator), randRotation(generator)), // I changed this wai men
+                          .rotation = Vec2(0, 0),
                           .scale = Vec2(15, 15)
                         });
 
@@ -567,7 +567,7 @@ namespace Uma_Engine
                 Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
 
                 tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                tf.rotation = Vec2(randRotation(generator), randRotation(generator)); // I change this wai men
+                tf.rotation = Vec2(0, 0); // I change this wai men
                 tf.scale = Vec2(randScale(generator), randScale(generator));
 
             }
