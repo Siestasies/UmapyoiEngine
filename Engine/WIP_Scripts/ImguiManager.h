@@ -86,7 +86,7 @@ namespace Uma_Engine
                 ImGui::StyleColorsDark();
 
                 // set font and font size
-                float fontSize = 20.0f;
+                float fontSize = 16.f;
                 io.Fonts->AddFontDefault();
 
                 std::string path = Uma_FilePath::ASSET_ROOT + "Roboto-Medium.ttf";
@@ -218,55 +218,6 @@ namespace Uma_Engine
 
         private:
             // helper functions
-            void CreateEngineDebugWindow(float fps, float deltaTime)
-            {
-                if (!m_showEngineDebug)
-                {
-                    return;
-                }
-
-                ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.5f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.25f), ImGuiCond_Once);
-                ImGui::Begin("Engine Debug", &m_showEngineDebug);
-
-                // some stats
-                ImGui::Text("Performance Stats");
-                ImGui::Separator();
-                ImGui::Text("FPS: %.1f", fps);
-                ImGui::Text("Frame Time: %.3f ms", deltaTime * 1000.0f);
-                ImGui::Text("Delta Time: %.6f s", deltaTime);
-
-                ImGui::Spacing();
-
-                // onpengl info
-                ImGui::Text("Graphics Information");
-                ImGui::Separator();
-                ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
-                ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));
-                ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
-
-                ImGui::End();
-            }
-
-            void CreatePerformanceWindow()
-            {
-                if (!m_showPerformanceWindow)
-                {
-                    return;
-                }
-
-                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.3f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.2f), ImGuiCond_Once);
-                ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
-
-                // FPS graph
-                ImGui::PlotLines("FPS", m_fpsHistory, 120, m_historyOffset, nullptr, 0.0f, 200.0f, ImVec2(0, 80));
-
-                // Frame time graph
-                ImGui::PlotLines("Frame Time (ms)", m_dtHistory, 120, m_historyOffset, nullptr, 0.0f, 50.0f, ImVec2(0, 80));
-                
-                ImGui::End();
-            }
 
             void CreateSystemsWindow()
             {
@@ -275,7 +226,7 @@ namespace Uma_Engine
                     return;
                 }
                 ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.3f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
                 if (pSystemManager)
@@ -299,6 +250,85 @@ namespace Uma_Engine
                         ImGui::Text("Total Update Time: %.3f ms", total);
                     }
                 }
+                ImGui::End();
+            }
+            
+            void CreatePerformanceWindow()
+            {
+                if (!m_showPerformanceWindow)
+                {
+                    return;
+                }
+
+                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.2f), ImGuiCond_Once);
+                ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
+
+                // FPS graph
+                ImGui::PlotLines("FPS", m_fpsHistory, 120, m_historyOffset, nullptr, 0.0f, 200.0f, ImVec2(0, 80));
+
+                // Frame time graph
+                ImGui::PlotLines("Frame Time (ms)", m_dtHistory, 120, m_historyOffset, nullptr, 0.0f, 50.0f, ImVec2(0, 80));
+                
+                ImGui::End();
+            }
+
+            void CreateEngineDebugWindow(float fps, float deltaTime)
+            {
+                if (!m_showEngineDebug)
+                {
+                    return;
+                }
+
+                ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.45f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.225f), ImGuiCond_Once);
+                ImGui::Begin("Engine Debug", &m_showEngineDebug);
+
+                // some stats
+                ImGui::Text("Performance Stats");
+                ImGui::Separator();
+                ImGui::Text("FPS: %.1f", fps);
+                ImGui::Text("Frame Time: %.3f ms", deltaTime * 1000.0f);
+                ImGui::Text("Delta Time: %.6f s", deltaTime);
+
+                ImGui::Spacing();
+
+                // onpengl info
+                ImGui::Text("Graphics Information");
+                ImGui::Separator();
+                ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
+                ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));
+                ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
+
+                ImGui::End();
+            }
+            
+            void CreateSerializationDebugWindow()
+            {
+                bool b = true;
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.84f, 0.f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.06f, windowHeight * 0.315f), ImGuiCond_Once);
+                ImGui::Begin("Serialization Debug", &b);
+
+                // get entity count here
+                ImGui::Separator();
+
+                if (ImGui::Button("Load Scene", { 100, 50 }))
+                {
+                    // load scene from this file
+                    pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+                }
+                if (ImGui::Button("Save Scene", { 100, 50 }))
+                {
+                    // save scene into this file
+                    pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+                }
+                if (ImGui::Button("Destroy All", { 100, 50 }))
+                {
+                    // destroy entities within the scene lol
+                    pEventSystem->Emit<ClearSceneRequestEvent>();
+                }
+
                 ImGui::End();
             }
 
@@ -356,8 +386,8 @@ namespace Uma_Engine
             void CreateEntityPropertyWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, windowHeight * 0.315f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.15f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.84f, windowHeight * 0.315f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.16f, windowHeight * 0.15f), ImGuiCond_Once);
                 ImGui::Begin("Entity Run Time Property", &b);
 
                 ImGui::Separator();
@@ -391,39 +421,10 @@ namespace Uma_Engine
                 ImGui::End();
             }
 
-            void CreateSerializationDebugWindow()
-            {
-                bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, 0.f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
-                ImGui::Begin("Serialization Debug", &b);
-
-                // get entity count here
-                ImGui::Separator();
-
-                if (ImGui::Button("Load Scene", { 100, 50 }))
-                {
-                    // load scene from this file
-                    pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
-                }
-                if (ImGui::Button("Save Scene", { 100, 50 }))
-                {
-                    // save scene into this file
-                    pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
-                }
-                if (ImGui::Button("Destroy All", { 100, 50 }))
-                {
-                    // destroy entities within the scene lol
-                    pEventSystem->Emit<ClearSceneRequestEvent>();
-                }
-
-                ImGui::End();
-            }
-
             void CreateConsoleWindow()
             {
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.8f, windowHeight * 0.465f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.84f, windowHeight * 0.465f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.16f, windowHeight * 0.25f), ImGuiCond_Once);
                 bool b = true;
                 ImGui::Begin("Console", &b);
                 // to clear the console
