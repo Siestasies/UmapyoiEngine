@@ -115,12 +115,16 @@ Uma_Engine.a
 # ========================================
 # Static/Dynamic Libraries (YOUR builds)
 # ========================================
-*.la
-*.a
-*.so
-*.so.*
-*.dylib
-*.dll.a
+build/**/*.la
+build/**/*.a
+build/**/*.so
+build/**/*.so.*
+build/**/*.dylib
+build/**/*.dll.a
+Build/**/*.la
+Build/**/*.a
+out/**/*.a
+bin/**/*.a
 
 # ========================================
 # Log Files
