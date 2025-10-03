@@ -513,7 +513,7 @@ namespace Uma_Engine
 
             if (eArray.Size() == 0)
             {
-                // Create Entity
+                // Create Entity and save it to the prefab file
 
                 Entity enemy;
                 {
