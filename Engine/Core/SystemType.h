@@ -1,3 +1,22 @@
+/*!
+\file   SystemType.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for a base class of system in that
+anything that wants to be a system should inherit from this class.
+Systems must be registered to system manager to be used.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 
 namespace Uma_Engine
@@ -11,22 +30,10 @@ namespace Uma_Engine
     public:
         virtual ~ISystem() = default;
 
-        /*!
-            \brief Initialize the system.
-            \details Called once at engine startup.
-        */
         virtual void Init() = 0;
 
-        /*!
-            \brief Update the system each frame.
-            \param dt Delta time in seconds since last frame.
-        */
         virtual void Update(float dt) = 0;
 
-        /*!
-            \brief Clean up system resources.
-            \details Called once at engine shutdown.
-        */
         virtual void Shutdown() = 0;
 
         inline void SetSystemManager(SystemManager* sm) { pSystemManager = sm; }

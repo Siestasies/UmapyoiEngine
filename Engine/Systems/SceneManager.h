@@ -1,3 +1,22 @@
+/*!
+\file   SceneManager.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for a Scene manager which stores
+and controls the life-cycle of a scene.
+Also contains helper functions to add and set active scene.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 #include "SceneType.h"
 #include "Core/SystemType.h"
@@ -22,12 +41,10 @@ namespace Uma_Engine
             {
                 std::cout << "Scene Manager INIT" << std::endl;
 
-                // Create a TestScene and store it as a unique_ptr<Scene>
+                // create a TestScene and store it as a unique_ptr<Scene>
                 std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>(pSystemManager);
-                std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>(pSystemManager);
 
                 AddScene("testScene1", std::move(testScene1));
-                AddScene("testScene2", std::move(testScene2));
 
                 SetActiveScene("testScene1");
             }
@@ -66,7 +83,8 @@ namespace Uma_Engine
 
             void SetActiveScene(const std::string& name)
             {
-                if (activeScene) activeScene->OnUnload();
+                if (activeScene)
+                    activeScene->OnUnload();
                 activeScene = scenes[name].get();
                 activeScene->OnLoad();
             }
