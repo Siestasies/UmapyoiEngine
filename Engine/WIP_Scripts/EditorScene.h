@@ -775,12 +775,12 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
             auto& cArray = gCoordinator.GetComponentArray<Uma_ECS::Collider>();
 
-            for (size_t i = 0; i < eArray.Size(); i++)
+            for (size_t i = 0; i < tfArray.Size(); i++)
             {
-                auto& c = cArray.GetData(eArray.GetEntity(i));
+                auto& c = cArray.GetData(tfArray.GetEntity(i));
 
                 c.showBBox = isShow;
             }
