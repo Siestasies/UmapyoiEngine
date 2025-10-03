@@ -39,6 +39,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "ECS/Systems/*.cpp"
     "WIP_Scripts/*.cpp"
     "Debugging/*.cpp"
+    "MemoryManager/.cpp"
 )
 
 # Remove any ImGui files that might have been picked up by GLOB_RECURSE
@@ -57,6 +58,8 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "WIP_Scripts/*.hpp"
     "Debugging/*.h"
     "Debugging/*.hpp"
+    "MemoryManager/.h"
+    "MemoryManager/*.hpp"
 )
 
 # Force CMake to reconfigure when source files change
@@ -69,6 +72,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
     "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
     "Debugging/*.cpp" "Debugging/*.hpp" "Debugging/*.h"
+    "MemoryManager/.cpp" "MemoryManager/.h" "MemoryManager/*.hpp"
 )
 
 # Create the Uma_Engine library
