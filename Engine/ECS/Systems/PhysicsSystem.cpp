@@ -42,6 +42,8 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
 
         tf.prevPos = tf.position;
 
+        tf.rotation.x += tf.rotation.y; // I added this wai men
+
         // Apply acceleration
         rb.velocity += rb.acceleration * dt;
 

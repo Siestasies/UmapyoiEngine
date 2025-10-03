@@ -355,16 +355,15 @@ namespace Uma_Engine
                     pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
                 }
 
-                if (ImGui::SliderFloat("enemy rot", &rot, -1.0f, 1.0f))
+                if (ImGui::SliderFloat("enemy rot", &rot, -45.0f, 45.0f))
                 {
+                    pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
                 }
-
-                pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
 
                 if (ImGui::SliderFloat("enemy move X", &moveX, -1.0f, 1.0f))
                 {
+                    pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
                 }
-                pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
 
                 if (ImGui::Button("Reset", { 160, 50 }))
                 {
@@ -372,6 +371,11 @@ namespace Uma_Engine
                     scale = 1.f;
                     moveX = 0.f;
                     showBBox = false;
+
+                    pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
+                    pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
+                    pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
+                    pEventSystem->Emit<ShowBBoxRequestEvent>(showBBox);
                 }
 
                 if (ImGui::Button("Show BBox", { 160, 50 }))

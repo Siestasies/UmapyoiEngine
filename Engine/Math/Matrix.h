@@ -392,6 +392,19 @@ namespace Uma_Math
         constexpr T& operator()(std::size_t row, std::size_t col) noexcept { return m_data[col * 4 + row]; }
         constexpr const T& operator()(std::size_t row, std::size_t col) const noexcept { return m_data[col * 4 + row]; }
 
+        // GLM-style column access functions, swap with Vector4D later
+        constexpr std::array<T, 4> column(std::size_t col) const noexcept
+        {
+            return { m_data[col * 4], m_data[col * 4 + 1], m_data[col * 4 + 2], m_data[col * 4 + 3] };
+        }
+        constexpr void setColumn(std::size_t col, std::array<T, 4> values) noexcept
+        {
+            m_data[col * 4] = values[0];
+            m_data[col * 4 + 1] = values[1];
+            m_data[col * 4 + 2] = values[2];
+            m_data[col * 4 + 3] = values[3];
+        }
+
         // Size information
         constexpr std::size_t size() const noexcept { return 16; }
 
@@ -929,8 +942,8 @@ namespace Uma_Math
 
         Matrix2x2<T> rotation;
         rotation.set(0, 0, c);
-        rotation.set(0, 1, s);
-        rotation.set(1, 0, -s);
+        rotation.set(0, 1, -s);
+        rotation.set(1, 0, s);
         rotation.set(1, 1, c);
 
         Matrix2x2<T> result;
@@ -975,20 +988,25 @@ namespace Uma_Math
         T const c = std::cos(angle);
         T const s = std::sin(angle);
 
-        Vector3D<T> temp = normalize(axis) * (T{ 1 } - c);
+        // FIXED: Store normalized axis and use it consistently
+        Vector3D<T> normalizedAxis = normalize(axis);
+        Vector3D<T> temp = normalizedAxis * (T{ 1 } - c);
 
         Matrix3x3<T> rotation;
-        rotation.set(0, 0, c + temp.x * axis.x);
-        rotation.set(0, 1, temp.x * axis.y + s * axis.z);
-        rotation.set(0, 2, temp.x * axis.z - s * axis.y);
+        // Row 0
+        rotation.set(0, 0, c + temp.x * normalizedAxis.x);
+        rotation.set(0, 1, temp.x * normalizedAxis.y + s * normalizedAxis.z);
+        rotation.set(0, 2, temp.x * normalizedAxis.z - s * normalizedAxis.y);
 
-        rotation.set(1, 0, temp.y * axis.x - s * axis.z);
-        rotation.set(1, 1, c + temp.y * axis.y);
-        rotation.set(1, 2, temp.y * axis.z + s * axis.x);
+        // Row 1
+        rotation.set(1, 0, temp.y * normalizedAxis.x - s * normalizedAxis.z);
+        rotation.set(1, 1, c + temp.y * normalizedAxis.y);
+        rotation.set(1, 2, temp.y * normalizedAxis.z + s * normalizedAxis.x);
 
-        rotation.set(2, 0, temp.z * axis.x + s * axis.y);
-        rotation.set(2, 1, temp.z * axis.y - s * axis.x);
-        rotation.set(2, 2, c + temp.z * axis.z);
+        // Row 2
+        rotation.set(2, 0, temp.z * normalizedAxis.x + s * normalizedAxis.y);
+        rotation.set(2, 1, temp.z * normalizedAxis.y - s * normalizedAxis.x);
+        rotation.set(2, 2, c + temp.z * normalizedAxis.z);
 
         Matrix3x3<T> result;
         result.setColumn(0, mat.column(0) * rotation.get(0, 0) + mat.column(1) * rotation.get(0, 1) + mat.column(2) * rotation.get(0, 2));
@@ -1006,13 +1024,13 @@ namespace Uma_Math
 
         Matrix3x3<T> rotation;
         rotation.set(0, 0, c);
-        rotation.set(0, 1, s);
+        rotation.set(0, 1, -s);
         rotation.set(0, 2, T{ 0 });
-        
-        rotation.set(1, 0, -s);
+
+        rotation.set(1, 0, s);
         rotation.set(1, 1, c);
         rotation.set(1, 2, T{ 0 });
-        
+
         rotation.set(2, 0, T{ 0 });
         rotation.set(2, 1, T{ 0 });
         rotation.set(2, 2, T{ 1 });
@@ -1049,20 +1067,25 @@ namespace Uma_Math
         T const c = std::cos(angle);
         T const s = std::sin(angle);
 
-        Vector3D<T> temp = normalize(axis) * (T{ 1 } - c);
+        // FIXED: Store normalized axis and use it consistently
+        Vector3D<T> normalizedAxis = normalize(axis);
+        Vector3D<T> temp = normalizedAxis * (T{ 1 } - c);
 
         Matrix4x4<T> rotation;
-        rotation.set(0, 0, c + temp.x * axis.x);
-        rotation.set(0, 1, temp.x * axis.y + s * axis.z);
-        rotation.set(0, 2, temp.x * axis.z - s * axis.y);
+        // Row 0
+        rotation.set(0, 0, c + temp.x * normalizedAxis.x);
+        rotation.set(0, 1, temp.x * normalizedAxis.y + s * normalizedAxis.z);
+        rotation.set(0, 2, temp.x * normalizedAxis.z - s * normalizedAxis.y);
 
-        rotation.set(1, 0, temp.y * axis.x - s * axis.z);
-        rotation.set(1, 1, c + temp.y * axis.y);
-        rotation.set(1, 2, temp.y * axis.z + s * axis.x);
+        // Row 1
+        rotation.set(1, 0, temp.y * normalizedAxis.x - s * normalizedAxis.z);
+        rotation.set(1, 1, c + temp.y * normalizedAxis.y);
+        rotation.set(1, 2, temp.y * normalizedAxis.z + s * normalizedAxis.x);
 
-        rotation.set(2, 0, temp.z * axis.x + s * axis.y);
-        rotation.set(2, 1, temp.z * axis.y - s * axis.x);
-        rotation.set(2, 2, c + temp.z * axis.z);
+        // Row 2
+        rotation.set(2, 0, temp.z * normalizedAxis.x + s * normalizedAxis.y);
+        rotation.set(2, 1, temp.z * normalizedAxis.y - s * normalizedAxis.x);
+        rotation.set(2, 2, c + temp.z * normalizedAxis.z);
 
         Matrix4x4<T> result;
         result.setColumn(0, mat.column(0) * rotation.get(0, 0) + mat.column(1) * rotation.get(0, 1) + mat.column(2) * rotation.get(0, 2));

@@ -95,7 +95,7 @@ namespace Uma_ECS
                     .pos = tf.position,
                     .scale = tf.scale,
                     .rot = tf.rotation.x,
-                    .rot_speed = tf.rotation.y
+                    .rot_speed = tf.rotation.y,
                 });
         }
 
