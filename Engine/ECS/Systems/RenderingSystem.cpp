@@ -29,6 +29,7 @@ All rights reserved.
 #include "Components/Transform.h"
 #include "Components/Camera.h"
 #include "Components/Collider.h"
+#include "Components/Player.h"
 
 
 #include "Debugging/Debugger.hpp"
@@ -55,6 +56,7 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& cArray = pCoordinator->GetComponentArray<Collider>();
+        auto& pArray = pCoordinator->GetComponentArray<Player>();
 
         // one camera for now
         Entity camera = camArray.GetEntity(0);
@@ -64,20 +66,6 @@ namespace Uma_ECS
         pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
-
-        for (const auto& entity : aEntities)
-        {
-            auto& c = cArray.GetData(entity);
-
-            // Debug draw
-            if (!c.showBBox)
-            {
-                continue;
-            }
-
-            pGraphics->DrawDebugRect(c.boundingBox);
-        }
-
         std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
 
         for (const auto& entity : aEntities)
@@ -119,6 +107,27 @@ namespace Uma_ECS
                 pair.first,
                 sprites
             );
+        }
+
+        for (const auto& entity : aEntities)
+        {
+            auto& c = cArray.GetData(entity);
+            auto& tf = tfArray.GetData(entity);
+
+            // Debug draw
+            if (!c.showBBox)
+            {
+                continue;
+            }
+
+            if (!pArray.Has(entity))
+            {
+                pGraphics->DrawDebugRect(c.boundingBox);
+            }
+            else
+            {
+                pGraphics->DrawDebugCircle(tf.position, tf.scale.x * 0.5f, 0.f, 1.f, 0.f);
+            }
         }
     }
 }

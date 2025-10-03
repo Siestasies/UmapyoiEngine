@@ -815,15 +815,18 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
             auto& cArray = gCoordinator.GetComponentArray<Uma_ECS::Collider>();
 
             for (size_t i = 0; i < tfArray.Size(); i++)
             {
+                if (!cArray.Has(tfArray.GetEntity(i))) continue;
                 auto& c = cArray.GetData(tfArray.GetEntity(i));
 
                 c.showBBox = isShow;
             }
+
+
         }
 
         void LoadPrefab()
