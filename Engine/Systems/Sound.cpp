@@ -177,22 +177,6 @@ namespace Uma_Engine {
         mSoundList.clear();
     }
 
-    void Sound::releaseSounds() {
-        if (!pFmodSystem) return;
-        stopAllSounds();
-        if (SFX) {
-            FMOD_ChannelGroup_Release(SFX);
-            SFX = nullptr;
-        }
-        if (BGM) {
-            FMOD_ChannelGroup_Release(BGM);
-            BGM = nullptr;
-        }
-        FMOD_System_Close(pFmodSystem);
-        FMOD_System_Release(pFmodSystem);
-        pFmodSystem = nullptr;
-    }
-
     void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
     {
         if (!pFmodSystem) { //check if fmod has been init
