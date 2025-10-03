@@ -778,16 +778,11 @@ namespace Uma_Engine
             std::uniform_real_distribution<float> randfloat(1.0f, 5.0f);
 
             auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
-            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
             auto& rbArray = gCoordinator.GetComponentArray<Uma_ECS::RigidBody>();
 
             for (size_t i = 0; i < eArray.Size(); i++)
             {
-                if (randfloat(generator) > 1.5f) continue;
-
                 auto& rb = rbArray.GetData(eArray.GetEntity(i));
-
-                //tf.scale = //Vec2{randScale(generator), randScale(generator)} * scale;
 
                 rb.acceleration = Vec2{ 5000.f * xPos, 0 };
             }

@@ -47,6 +47,8 @@ namespace Uma_ECS
         // by right shd only have 1 player
         HandleMovementInput(dt);
         HandleActionInput();
+
+
     }
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
@@ -139,6 +141,8 @@ namespace Uma_ECS
         // Smooth acceleration to prevent jerk
         const float accelSmoothFactor = 15.f; // tweak for responsiveness
         rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
+
+        std::cout << "player : " << rb.acceleration << std::endl;
 
 #ifdef _DEBUG_LOG
         //std::cout << "Player Movement: " << rb.velocity << std::endl;
