@@ -1,3 +1,21 @@
+/*!
+\file   ImguiManager.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for an IMGUI Manager as a system and
+implements functions to create and show IMGUI windows.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 #include "SystemType.h"
 #include "IMGUIEvents.h"
@@ -33,12 +51,14 @@ namespace Uma_Engine
                 , m_historyOffset(0)
                 , pEventSystem(nullptr)
                 , mEntityCount(0)
+                , windowWidth(1920)
+                , windowHeight(1080)
             {
                 // init array
                 for (int i = 0; i < 120; ++i)
                 {
                     m_fpsHistory[i] = 0.0f;
-                    m_frametimeHistory[i] = 0.0f;
+                    m_dtHistory[i] = 0.0f;
                 }
 
             }
@@ -79,7 +99,7 @@ namespace Uma_Engine
                 const char* glsl_version = "#version 130";
                 ImGui_ImplOpenGL3_Init(glsl_version);
 
-
+                // event listeners
                 pEventSystem = pSystemManager->GetSystem<EventSystem>();
 
                 pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
@@ -97,7 +117,6 @@ namespace Uma_Engine
                     return;
                 }
 
-                // Update performance history
                 static float fpsAccumulator = 0.0f;
                 static int frameCount = 0;
                 static float lastFpsUpdate = 0.0f;
@@ -105,12 +124,12 @@ namespace Uma_Engine
                 fpsAccumulator += deltaTime;
                 frameCount++;
 
-                // Update FPS every 0.1 seconds for smoother graphs
+                // update every 0.1 seconds
                 if (fpsAccumulator >= 0.1f)
                 {
                     float fps = frameCount / fpsAccumulator;
                     m_fpsHistory[m_historyOffset] = fps;
-                    m_frametimeHistory[m_historyOffset] = (deltaTime * 1000.0f);
+                    m_dtHistory[m_historyOffset] = (deltaTime * 1000.0f);
                     m_historyOffset = (m_historyOffset + 1) % 120;
 
                     fpsAccumulator = 0.0f;
@@ -172,7 +191,7 @@ namespace Uma_Engine
                     return;
 
                 CreateEngineDebugWindow(fps, deltaTime);
-                CreatePerformanceWindow(fps, deltaTime);
+                CreatePerformanceWindow();
 
                 if (m_showSystemsWindow)
                 {
@@ -206,6 +225,8 @@ namespace Uma_Engine
                     return;
                 }
 
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.4f, windowHeight * 0.75f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.3f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Engine Debug", &m_showEngineDebug);
 
                 // some stats
@@ -227,23 +248,22 @@ namespace Uma_Engine
                 ImGui::End();
             }
 
-            void CreatePerformanceWindow(float fps, float deltaTime)
+            void CreatePerformanceWindow()
             {
-                (void)fps;
-                (void)deltaTime;
-
                 if (!m_showPerformanceWindow)
                 {
                     return;
                 }
 
+                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.3f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
 
                 // FPS graph
                 ImGui::PlotLines("FPS", m_fpsHistory, 120, m_historyOffset, nullptr, 0.0f, 200.0f, ImVec2(0, 80));
 
                 // Frame time graph
-                ImGui::PlotLines("Frame Time (ms)", m_frametimeHistory, 120, m_historyOffset, nullptr, 0.0f, 50.0f, ImVec2(0, 80));
+                ImGui::PlotLines("Frame Time (ms)", m_dtHistory, 120, m_historyOffset, nullptr, 0.0f, 50.0f, ImVec2(0, 80));
                 
                 ImGui::End();
             }
@@ -254,7 +274,8 @@ namespace Uma_Engine
                 {
                     return;
                 }
-
+                ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.265f, windowHeight * 0.3f), ImGuiCond_Once);
                 ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
                 if (pSystemManager)
@@ -284,19 +305,14 @@ namespace Uma_Engine
             void CreateEntityDebugWindow()
             {
                 bool b = true;
+                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.75f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Entity Debug", &b);
 
                 // get entity count here
                 ImGui::Text("Entity Count: %i", mEntityCount);
 
                 ImGui::Separator();
-
-                // access coordinator to get id
-                // 
-                // 
-
-
-
 
                 if (ImGui::Button("Spawn Entity", { 150, 50 }))
                 {
@@ -344,6 +360,8 @@ namespace Uma_Engine
             void CreateSerializationDebugWindow()
             {
                 bool b = true;
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.1f, windowHeight * 0.75f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.125f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Serialization Debug", &b);
 
                 // get entity count here
@@ -370,14 +388,14 @@ namespace Uma_Engine
 
             void CreateConsoleWindow()
             {
+                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.7f, windowHeight * 0.75f), ImGuiCond_Once);
+                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.3f, windowHeight * 0.25f), ImGuiCond_Once);
                 bool b = true;
                 ImGui::Begin("Console", &b);
                 // to clear the console
                 if (ImGui::Button("Clear"))
                     logsVec.clear();
                 ImGui::SameLine();
-                // test message 
-                //if (ImGui::Button("Test Message Button"))
 
                 ImGui::Separator();
 
@@ -418,11 +436,13 @@ namespace Uma_Engine
 
             // values that need to keep track
             int mEntityCount;
+            int windowWidth, windowHeight;
 
             // performance window vars
             float m_fpsHistory[120];
-            float m_frametimeHistory[120];
+            float m_dtHistory[120];
             int m_historyOffset;
+            // debug var
             std::vector<std::string> logsVec;
 
             EventSystem* pEventSystem;
