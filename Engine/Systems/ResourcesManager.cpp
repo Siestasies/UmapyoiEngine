@@ -224,4 +224,18 @@ namespace Uma_Engine
         else
             throw std::invalid_argument("Sound not found");
     }
+
+    void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
+    {
+        // we are not using this function in resources manager 
+        (void)entity;
+        (void)out;
+        (void)allocator;
+    }
+
+    void ResourcesManager::DeserializePrefab(const rapidjson::Value& in)
+    {
+        // we are not using this function in resources manager 
+        (void)in;
+    }
 }

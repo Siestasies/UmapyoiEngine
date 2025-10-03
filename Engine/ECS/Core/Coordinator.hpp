@@ -120,8 +120,11 @@ namespace Uma_ECS
         //void DeserializeAllEntities(const std::string& filename);
 
         const char* GetSectionName() const override { return "entities"; };  // e.g. "entities", "resources"
+        const char* GetSerializerName() const override { return "coordinator"; };  // e.g. "coordinator", "resources_manager"
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void Deserialize(const rapidjson::Value& in) override;
+        void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void DeserializePrefab(const rapidjson::Value& in) override;
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

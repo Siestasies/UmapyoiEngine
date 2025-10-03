@@ -298,7 +298,7 @@ namespace Uma_Engine
 
 
 
-                if (ImGui::Button("Spawn Entity", { 160, 50 }))
+                if (ImGui::Button("dup or create Entity", { 160, 50 }))
                 {
                     // do spawning here
                     //std::cout << "Entity spawned" << std::endl;
@@ -310,6 +310,19 @@ namespace Uma_Engine
                     //Uma_ECS::Entity rand = distribution(generator);
 
                     pEventSystem->Emit<CloneEntityRequestEvent>(1);
+                }
+                if (ImGui::Button("load Entity prefab", { 160, 50 }))
+                {
+                    // do spawning here
+                    //std::cout << "Entity spawned" << std::endl;
+                    QueryActiveEntitiesEvent query;
+                    pEventSystem->Dispatch(query);
+
+                    //std::default_random_engine generator;
+                    //std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
+                    //Uma_ECS::Entity rand = distribution(generator);
+
+                    pEventSystem->Emit<LoadPrefabRequestEvent>();
                 }
                 if (ImGui::Button("Destroy Rand Entity", { 160, 50 }))
                 {

@@ -111,6 +111,13 @@ namespace Uma_Engine
                     (void)e;
                     DuplicateOrCreateEntity();
                 });
+
+            pEventSystem->Subscribe<Uma_Engine::LoadPrefabRequestEvent>([this](const Uma_Engine::LoadPrefabRequestEvent& e)
+                {
+                    (void)e;
+                    LoadPrefab();
+                });
+
             pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) 
                 { 
                     (void)e;
@@ -530,9 +537,9 @@ namespace Uma_Engine
                     gCoordinator.AddComponent(
                         enemy,
                         Transform{
-                          .position = Vec2(randPositionX(generator), randPositionY(generator)),
+                          .position = Vec2(0, 0),
                           .rotation = Vec2(0, 0),
-                          .scale = Vec2(randScale(generator), randScale(generator))
+                          .scale = Vec2(15, 15)
                         });
 
                     std::string texName = "enemy";
@@ -552,6 +559,15 @@ namespace Uma_Engine
                           .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                         });
                 }
+
+                gGameSerializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
+
+                Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
+
+                tf.position = Vec2(randPositionX(generator), randPositionY(generator));
+                tf.rotation = Vec2(0, 0);
+                tf.scale = Vec2(randScale(generator), randScale(generator));
+
             }
             else
             {
@@ -784,6 +800,11 @@ namespace Uma_Engine
 
                 c.showBBox = isShow;
             }
+        }
+
+        void LoadPrefab()
+        {
+            gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + "enemy.json");
         }
 	  };
 }

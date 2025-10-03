@@ -41,6 +41,13 @@ namespace Uma_Engine
 			ChangeEnemyRotRequestEvent(float rot) : rot(rot) { priority = Priority::High; }
 	};
 
+	class LoadPrefabRequestEvent : public Event
+	{
+	public:
+			
+			LoadPrefabRequestEvent() { priority = Priority::High; }
+	};
+
 	class ChangeEnemyScaleRequestEvent : public Event
 	{
 	public:

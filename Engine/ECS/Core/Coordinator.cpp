@@ -121,4 +121,26 @@ namespace Uma_ECS
         }
 
     }
+
+    void Coordinator::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
+    {
+        if (!aEntityManager->IsEntityActive(entity)) return;
+
+        out.SetObject();
+        
+        out.AddMember("id", entity, allocator);
+
+        rapidjson::Value comps(rapidjson::kObjectType);
+        aComponentManager->SerializeAll(entity, comps, allocator);
+        out.AddMember("components", comps, allocator);
+    }
+
+    void Coordinator::DeserializePrefab(const rapidjson::Value& in)
+    {
+        Entity entity = CreateEntity(); // new ID
+        const auto& comps = in["components"];
+        Signature sign = aComponentManager->DeserializeAll(entity, comps);
+        aEntityManager->SetSignature(entity, sign);
+        aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
+    }
 }
