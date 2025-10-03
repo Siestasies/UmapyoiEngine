@@ -367,7 +367,7 @@ namespace Uma_Engine
                 std::default_random_engine generator;
                 std::uniform_real_distribution<float> randPositionX(-1920.f * 0.45f, 1920.f * 0.45f);
                 std::uniform_real_distribution<float> randPositionY(-1080.f * 0.45f, 1080.f * 0.45f);
-                std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
+                std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
                 std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
                 Entity enemy;
@@ -441,7 +441,7 @@ namespace Uma_Engine
                     Transform
                     {
                         .position = Vec2(0.f, 0.f),
-                        .rotation = Vec2(1,1),
+                        .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(50,50),
                     });
 
@@ -510,6 +510,7 @@ namespace Uma_Engine
             std::default_random_engine generator(std::random_device{}());
             std::uniform_real_distribution<float> randPositionX(-400, 400);
             std::uniform_real_distribution<float> randPositionY(-400, 400);
+            std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
             std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
             if (eArray.Size() == 0)
@@ -539,7 +540,7 @@ namespace Uma_Engine
                         enemy,
                         Transform{
                           .position = Vec2(0, 0),
-                          .rotation = Vec2(0, 0),
+                          .rotation = Vec2(randRotation(generator), randRotation(generator)), // I changed this wai men
                           .scale = Vec2(15, 15)
                         });
 
@@ -566,7 +567,7 @@ namespace Uma_Engine
                 Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
 
                 tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                tf.rotation = Vec2(0, 0);
+                tf.rotation = Vec2(randRotation(generator), randRotation(generator)); // I change this wai men
                 tf.scale = Vec2(randScale(generator), randScale(generator));
 
             }
@@ -642,7 +643,7 @@ namespace Uma_Engine
                         enemy,
                         Transform{
                           .position = Vec2(randPositionX(generator), randPositionY(generator)),
-                          .rotation = Vec2(randRotation(generator), randRotation(generator)),
+                          .rotation = Vec2(randRotation(generator), randRotation(generator)), // I change this wai men
                           .scale = Vec2(randScale(generator), randScale(generator))
                         });
 
@@ -690,7 +691,7 @@ namespace Uma_Engine
                     Transform
                     {
                         .position = Vec2(0.f, 0.f),
-                        .rotation = Vec2(1,1),
+                        .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(50,50),
                     });
 
@@ -765,8 +766,7 @@ namespace Uma_Engine
 
                 //tf.scale = //Vec2{randScale(generator), randScale(generator)} * scale;
 
-                tf.rotation.x += rot;
-                tf.rotation.y = 200.f;
+                tf.rotation.y = rot;
             }
         }
 
