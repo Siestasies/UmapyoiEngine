@@ -7,6 +7,8 @@ file(GLOB GAME_SOURCES
 # Create the executable
 add_executable(UmapyoiGame ${GAME_SOURCES})
 
+add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
+
 # Set working directory for Visual Studio debugging
 set_target_properties(UmapyoiGame PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:UmapyoiGame>"

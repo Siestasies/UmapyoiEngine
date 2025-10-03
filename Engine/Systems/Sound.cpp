@@ -1,3 +1,21 @@
+/*!
+\file   Sound.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Koh Kai Yang (100%)
+\par    E-mail: k.kaiyang@digipen.edu
+\par    DigiPen login: k.kaiyang
+
+\brief
+This implements wrapper functions for the use of Fmod
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Sound.hpp"
 #include <iostream>
 #include <filesystem>
@@ -124,6 +142,23 @@ namespace Uma_Engine {
         }
     }
 
+	void Sound::release() 
+    {
+		if (!pFmodSystem) return;
+		stopAllSounds();
+		if (SFX) {
+			FMOD_ChannelGroup_Release(SFX);
+			SFX = nullptr;
+		}
+		if (BGM) {
+			FMOD_ChannelGroup_Release(BGM);
+			BGM = nullptr;
+		}
+		FMOD_System_Close(pFmodSystem);
+		FMOD_System_Release(pFmodSystem);
+		pFmodSystem = nullptr;
+	}
+
     void Sound::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
     {
         if (!pFmodSystem) return;
@@ -140,22 +175,6 @@ namespace Uma_Engine {
             }
         }
         mSoundList.clear();
-    }
-
-    void Sound::releaseSounds() {
-        if (!pFmodSystem) return;
-        stopAllSounds();
-        if (SFX) {
-            FMOD_ChannelGroup_Release(SFX);
-            SFX = nullptr;
-        }
-        if (BGM) {
-            FMOD_ChannelGroup_Release(BGM);
-            BGM = nullptr;
-        }
-        FMOD_System_Close(pFmodSystem);
-        FMOD_System_Release(pFmodSystem);
-        pFmodSystem = nullptr;
     }
 
     void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)

@@ -78,7 +78,7 @@ namespace Uma_Engine
             std::string log;
             std::stringstream ss(log);
             ss << "Saved to file : " << filename;
-            Debugger::Log(WarningLevel::eInfo, ss.str());
+            Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
         void load(const std::string& filename)
@@ -102,7 +102,7 @@ namespace Uma_Engine
 
             ss << "Loaded from file : " << filename;
 
-            Debugger::Log(WarningLevel::eInfo, ss.str());
+            Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
         void savePrefab(Entity entity, const std::string& filename)
@@ -135,7 +135,7 @@ namespace Uma_Engine
             std::string log;
             std::stringstream ss(log);
             ss << "Saved to file : " << filename;
-            Debugger::Log(WarningLevel::eInfo, ss.str());
+            Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
         void loadPrefab(const std::string& filename)
@@ -159,7 +159,7 @@ namespace Uma_Engine
 
             ss << "Loaded from file : " << filename;
 
-            Debugger::Log(WarningLevel::eInfo, ss.str());
+            Debugger::Log(WarningLevel::eCritical, ss.str());
         }
     };
 }

@@ -231,7 +231,7 @@ namespace Uma_Engine
     void ResourcesManager::UnloadAllSound() 
     {
         mSound->unloadAllSounds(mSoundList);
-        mSound->releaseSounds();
+        mSound->release();
     }
 
     bool ResourcesManager::HasSound(const std::string& name) 

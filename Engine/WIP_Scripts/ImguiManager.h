@@ -316,67 +316,22 @@ namespace Uma_Engine
 
                 if (ImGui::Button("dup or create Entity", { 160, 50 }))
                 {
-                    // do spawning here
-                    //std::cout << "Entity spawned" << std::endl;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
-
-                    //std::default_random_engine generator;
-                    //std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    //Uma_ECS::Entity rand = distribution(generator);
-
                     pEventSystem->Emit<CloneEntityRequestEvent>(1);
                 }
                 if (ImGui::Button("load Entity prefab", { 160, 50 }))
                 {
-                    // do spawning here
-                    //std::cout << "Entity spawned" << std::endl;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
-
-                    //std::default_random_engine generator;
-                    //std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    //Uma_ECS::Entity rand = distribution(generator);
-
                     pEventSystem->Emit<LoadPrefabRequestEvent>();
                 }
                 if (ImGui::Button("Destroy Rand Entity", { 160, 50 }))
                 {
-                    // do spawning here
-                    //std::cout << "Entity destroyed" << std::endl;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
-
-                    /*std::default_random_engine generator;
-                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    Uma_ECS::Entity rand = distribution(generator);*/
-
                     pEventSystem->Emit<DestroyEntityRequestEvent>(1);
                 }
                 if (ImGui::Button("Stress Test 10k GO", { 160, 50 }))
                 {
-                    // do spawning here
-                    //std::cout << "Entity destroyed" << std::endl;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
-
-                    /*std::default_random_engine generator;
-                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    Uma_ECS::Entity rand = distribution(generator);*/
-
                     pEventSystem->Emit<StressTestRequestEvent>();
                 }
                 if (ImGui::Button("Spawn 2.5k in VP", { 160, 50 }))
                 {
-                    // do spawning here
-                    //std::cout << "Entity destroyed" << std::endl;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
-
-                    /*std::default_random_engine generator;
-                    std::uniform_int_distribution<Uma_ECS::Entity> distribution(1, query.mActiveEntityCnt);
-                    Uma_ECS::Entity rand = distribution(generator);*/
-
                     pEventSystem->Emit<ShowEntityInVPRequestEvent>();
                 }
                 
@@ -392,27 +347,36 @@ namespace Uma_Engine
 
                 static float rot = 0.f;
                 static float scale = 1.f;
+                static float moveX = 0.f;
                 static bool showBBox = false;
 
                 if (ImGui::SliderFloat("enemy scale", &scale, 0.1f, 2.0f))
                 {
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
                     pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
                 }
 
                 if (ImGui::SliderFloat("enemy rot", &rot, -1.0f, 1.0f))
                 {
                 }
-                QueryActiveEntitiesEvent q;
-                pEventSystem->Dispatch(q);
+
                 pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
+
+                if (ImGui::SliderFloat("enemy move X", &moveX, -1.0f, 1.0f))
+                {
+                }
+                pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
+
+                if (ImGui::Button("Reset", { 160, 50 }))
+                {
+                    rot = 0.f;
+                    scale = 1.f;
+                    moveX = 0.f;
+                    showBBox = false;
+                }
 
                 if (ImGui::Button("Show BBox", { 160, 50 }))
                 {
                     showBBox = !showBBox;
-                    QueryActiveEntitiesEvent query;
-                    pEventSystem->Dispatch(query);
                     pEventSystem->Emit<ShowBBoxRequestEvent>(showBBox);
                 }
 

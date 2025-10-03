@@ -102,6 +102,7 @@ namespace Uma_Engine
 
 
             pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
+            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
             pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
             pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
 
@@ -766,6 +767,29 @@ namespace Uma_Engine
 
                 tf.rotation.x += rot;
                 tf.rotation.y = 200.f;
+            }
+        }
+
+        void ChangeAllEnemyXPos(float xPos)
+        {
+            using namespace Uma_ECS;
+
+            std::default_random_engine generator(std::random_device{}());
+            std::uniform_real_distribution<float> randfloat(1.0f, 5.0f);
+
+            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
+            auto& rbArray = gCoordinator.GetComponentArray<Uma_ECS::RigidBody>();
+
+            for (size_t i = 0; i < eArray.Size(); i++)
+            {
+                if (randfloat(generator) > 1.5f) continue;
+
+                auto& rb = rbArray.GetData(eArray.GetEntity(i));
+
+                //tf.scale = //Vec2{randScale(generator), randScale(generator)} * scale;
+
+                rb.acceleration = Vec2{ 5000.f * xPos, 0 };
             }
         }
 
