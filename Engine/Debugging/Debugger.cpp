@@ -26,6 +26,8 @@ All rights reserved.
 #include <vector>
 #include "SystemManager.h"
 #include "DebugEvents.h"
+#include "filepaths.h"
+
 
 namespace Uma_Engine
 {
@@ -44,7 +46,7 @@ namespace Uma_Engine
 		consoleLog = 1;
 
 		// Open log file, truncating any existing content
-		sLogFile.open("../Logs/debug.log", std::ios::out | std::ios::trunc);
+		sLogFile.open(Uma_FilePath::LOGS_ROOT + "debug.log", std::ios::out | std::ios::trunc);
 		sLogFile << std::unitbuf; // Set unbuffered mode for immediate writes
 
 		// Log initialization marker
@@ -101,7 +103,7 @@ namespace Uma_Engine
 		finalMsg += msg + ">\n";
 
 		// Write to log file if open
-		if (sLogFile.is_open())
+		if (sLogFile.is_open() && level != WarningLevel::eInfo)
 			sLogFile << finalMsg;
 
 		// Output to console if enabled
