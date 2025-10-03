@@ -1,3 +1,22 @@
+/*!
+\file   SystemManager.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for a System manager which stores
+and controls the life-cycle of a system.
+Also contains some helper functions to calculate time per system.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 #include <vector>
 #include <memory>
@@ -22,8 +41,10 @@ namespace Uma_Engine
             auto system = std::make_unique<T>();
             T* ptr = system.get();
             ptr->SetSystemManager(this);
+
             systems.push_back(std::move(system));
             timings.push_back(0.0); // keep timings vector in sync
+
             return ptr;
         }
 
@@ -48,11 +69,8 @@ namespace Uma_Engine
             }
         }
 
-        // Update all systems with profiling
         void Update(float dt)
         {
-            using namespace std::chrono;
-
             static double timeCheck = 0.0;
             static int frameCounter = 0;
 
@@ -63,15 +81,17 @@ namespace Uma_Engine
             {
                 double totalTime = 0.0;
 
+                // loop thru all systems and check timing per system
                 for (size_t i = 0; i < systems.size(); ++i)
                 {
                     auto& system = systems[i];
-                    // calc timing per system
-                    auto start = high_resolution_clock::now();
-                    system->Update(dt);
-                    auto end = high_resolution_clock::now();
 
-                    double elapsed = duration<double, std::milli>(end - start).count();
+                    // calc timing per system
+                    auto start = std::chrono::high_resolution_clock::now();
+                    system->Update(dt);
+                    auto end = std::chrono::high_resolution_clock::now();
+
+                    double elapsed = std::chrono::duration<double, std::milli>(end - start).count();
                     timings[i] = elapsed;
                     totalTime += elapsed;
                 }
@@ -112,6 +132,7 @@ namespace Uma_Engine
             }
             return nullptr;
         }
+
         // get timing stuff for
         double GetLastTotalTime() const { return lastTotalTime; }
         const std::vector<double>& GetLastTimings() const { return timings; }
