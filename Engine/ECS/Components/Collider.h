@@ -53,49 +53,86 @@ namespace Uma_ECS
     // currently in 2d
     struct Collider
     {
-        BoundingBox boundingBox{};
-        LayerMask layer = CL_NONE; // the layer it is in
-        LayerMask colliderMask = CL_NONE; // the layer it can collide with
+        // Local collider size in world units (like Unity's Box Collider 2D size)
+        Vec2 size = Vec2(1.0f, 1.0f);
+
+        // Offset from entity position (useful for asymmetric colliders)
+        Vec2 offset = Vec2(0.0f, 0.0f);
+
+        // Auto-fit to sprite's render size (overrides manual size if true)
+        bool autoFitToSprite = false;
+
+        // Layer system
+        LayerMask layer = CL_NONE;
+        LayerMask colliderMask = CL_NONE;
+
+        // Debug visualization
         bool showBBox = false;
 
-        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
+        // === RUNTIME DATA (Not Serialized) ===
+
+        // World-space bounding box, updated each frame by collision system
+        BoundingBox boundingBox{};
+
+        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
 
-            // Bounding box
-            rapidjson::Value bbox(rapidjson::kObjectType);
+            // Serialize size
+            rapidjson::Value sizeVal(rapidjson::kObjectType);
+            sizeVal.AddMember("x", size.x, allocator);
+            sizeVal.AddMember("y", size.y, allocator);
+            value.AddMember("size", sizeVal, allocator);
 
-            rapidjson::Value minVal(rapidjson::kObjectType);
-            minVal.AddMember("x", boundingBox.min.x, allocator);
-            minVal.AddMember("y", boundingBox.min.y, allocator);
+            // Serialize offset
+            rapidjson::Value offsetVal(rapidjson::kObjectType);
+            offsetVal.AddMember("x", offset.x, allocator);
+            offsetVal.AddMember("y", offset.y, allocator);
+            value.AddMember("offset", offsetVal, allocator);
 
-            rapidjson::Value maxVal(rapidjson::kObjectType);
-            maxVal.AddMember("x", boundingBox.max.x, allocator);
-            maxVal.AddMember("y", boundingBox.max.y, allocator);
+            // Serialize auto-fit flag
+            value.AddMember("autoFitToSprite", autoFitToSprite, allocator);
 
-            bbox.AddMember("min", minVal, allocator);
-            bbox.AddMember("max", maxVal, allocator);
-
-            value.AddMember("boundingBox", bbox, allocator);
-
-            // Layer + mask as raw integers (bitmasks)
+            // Serialize layer settings
             value.AddMember("layer", layer, allocator);
             value.AddMember("colliderMask", colliderMask, allocator);
+            value.AddMember("showBBox", showBBox, allocator);
+
+            // Don't serialize boundingBox - it's runtime data
         }
 
-        // Deserialize from JSON
-        void Deserialize(const rapidjson::Value& value) //override
+        void Deserialize(const rapidjson::Value& value)
         {
-            const auto& bbox = value["boundingBox"];
+            // Check if each key exists before accessing
+            if (value.HasMember("size") && value["size"].IsObject())
+            {
+                const auto& sizeObj = value["size"];
+                if (sizeObj.HasMember("x") && sizeObj["x"].IsNumber())
+                    size.x = sizeObj["x"].GetFloat();
+                if (sizeObj.HasMember("y") && sizeObj["y"].IsNumber())
+                    size.y = sizeObj["y"].GetFloat();
+            }
 
-            boundingBox.min.x = bbox["min"]["x"].GetFloat();
-            boundingBox.min.y = bbox["min"]["y"].GetFloat();
+            if (value.HasMember("offset") && value["offset"].IsObject())
+            {
+                const auto& offsetObj = value["offset"];
+                if (offsetObj.HasMember("x") && offsetObj["x"].IsNumber())
+                    offset.x = offsetObj["x"].GetFloat();
+                if (offsetObj.HasMember("y") && offsetObj["y"].IsNumber())
+                    offset.y = offsetObj["y"].GetFloat();
+            }
 
-            boundingBox.max.x = bbox["max"]["x"].GetFloat();
-            boundingBox.max.y = bbox["max"]["y"].GetFloat();
+            if (value.HasMember("autoFitToSprite") && value["autoFitToSprite"].IsBool())
+                autoFitToSprite = value["autoFitToSprite"].GetBool();
 
-            layer = value["layer"].GetUint();
-            colliderMask = value["colliderMask"].GetUint();
+            if (value.HasMember("layer") && value["layer"].IsUint())
+                layer = value["layer"].GetUint();
+
+            if (value.HasMember("colliderMask") && value["colliderMask"].IsUint())
+                colliderMask = value["colliderMask"].GetUint();
+
+            if (value.HasMember("showBBox") && value["showBBox"].IsBool())
+                showBBox = value["showBBox"].GetBool();
         }
     };
 }

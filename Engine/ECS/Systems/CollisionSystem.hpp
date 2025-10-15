@@ -29,7 +29,7 @@ All rights reserved.
 
 #include "Components/Collider.h"
 
-const float CELL_SIZE = 100.0f; // tune this based on your game world
+const float CELL_SIZE = 50.0f; // tune this based on your game world
 
 namespace Uma_ECS
 {
@@ -52,6 +52,7 @@ namespace Uma_ECS
     };
 
     struct Transform;
+    struct Collider;
 
     class CollisionSystem : public ECSSystem
     {
@@ -129,7 +130,8 @@ namespace Uma_ECS
             return CollisionIntersection_RectRect_Dynamic(lhs, vel1, rhs, vel2, firstTimeOfCollision, dt);
         }
 
-        void ResolveAABBCollision(Transform& lhs, Transform& rhs);
+        void ResolveAABBCollision(Transform& lhsTransform, Collider& lhsCollider,
+            Transform& rhsTransform, Collider& rhsCollider);
 
         Coordinator* gCoordinator = nullptr;
     };

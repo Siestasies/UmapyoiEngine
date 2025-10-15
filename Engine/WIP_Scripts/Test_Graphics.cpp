@@ -323,7 +323,6 @@ namespace Uma_Engine
                         Sprite_Info
                         {
                             .tex_id = enemyTexture->tex_id,
-                            .tex_size = enemyTexture->tex_size,
                             .pos = obj.position,
                             .scale = obj.scale,
                             .rot = obj.rotation,

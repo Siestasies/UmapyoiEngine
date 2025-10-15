@@ -28,6 +28,7 @@ All rights reserved.
 #include "../Components/Collider.h"
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
+#include "../Components/Sprite.h"
 
 #include <iostream>
 #include <iomanip>
@@ -40,6 +41,68 @@ void Uma_ECS::CollisionSystem::Update(float dt)
     UpdateCollision(dt);
 }
 
+//void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
+//{
+//    if (aEntities.empty()) return;
+//
+//    // Get dense component arrays once
+//    auto& cArray = gCoordinator->GetComponentArray<Collider>();
+//    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+//
+//    for (auto const& entity : aEntities)
+//    {
+//        auto& c = cArray.GetData(entity);
+//        auto& tf = tfArray.GetData(entity);
+//
+//        // Skip entities on NONE collision layer
+//        if ((c.layer & CollisionLayer::CL_NONE)) continue;
+//
+//        // Create UNIT-SIZED local corners (±0.5, not scaled yet)
+//        std::array<Vec2, 4> localCorners = {
+//            Vec2{-0.5f, -0.5f},  // Bottom-left
+//            Vec2{ 0.5f, -0.5f},  // Bottom-right
+//            Vec2{ 0.5f,  0.5f},  // Top-right
+//            Vec2{-0.5f,  0.5f}   // Top-left
+//        };
+//
+//        // Build transformation matrix: T * R * S (in reverse order for post-multiply)
+//        Mat3 transform = Uma_Constants::IDENTITY_3X3_F;
+//        transform = Translate(transform, tf.prevPos);
+//        transform = Rotate(transform, tf.rotation.x);
+//        transform = Scale(transform, tf.scale);
+//
+//        // Transform corners into world space
+//        std::array<Vec2, 4> worldCorners;
+//        for (int i = 0; i < 4; i++)
+//        {
+//            // Create homogeneous coordinate (x, y, 1)
+//            Vec3 localHomogeneous(localCorners[i].x, localCorners[i].y, 1.0f);
+//
+//            // Transform to world space
+//            Vec3 worldHomogeneous = transform * localHomogeneous;
+//
+//            // Extract 2D world position
+//            worldCorners[i] = Vec2(worldHomogeneous.x, worldHomogeneous.y);
+//        }
+//
+//        // Compute AABB from transformed corners
+//        Vec2 bbMin = worldCorners[0];
+//        Vec2 bbMax = worldCorners[0];
+//
+//        for (int i = 1; i < 4; i++)
+//        {
+//            bbMin.x = min(bbMin.x, worldCorners[i].x);
+//            bbMin.y = min(bbMin.y, worldCorners[i].y);
+//            bbMax.x = max(bbMax.x, worldCorners[i].x);
+//            bbMax.y = max(bbMax.y, worldCorners[i].y);
+//        }
+//
+//        // Store final bounding box
+//        c.boundingBox.min = bbMin;
+//        c.boundingBox.max = bbMax;
+//    }
+//}
+
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
     if (aEntities.empty()) return;
@@ -47,58 +110,44 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
     // Get dense component arrays once
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+    auto& sArray = gCoordinator->GetComponentArray<Sprite>();
 
     for (auto const& entity : aEntities)
     {
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
+        //auto& s = sArray.GetData(entity);
 
         // Skip entities on NONE collision layer
         if ((c.layer & CollisionLayer::CL_NONE)) continue;
 
-        // Create UNIT-SIZED local corners (±0.5, not scaled yet)
-        std::array<Vec2, 4> localCorners = {
-            Vec2{-0.5f, -0.5f},  // Bottom-left
-            Vec2{ 0.5f, -0.5f},  // Bottom-right
-            Vec2{ 0.5f,  0.5f},  // Top-right
-            Vec2{-0.5f,  0.5f}   // Top-left
-        };
+        Vec2 effectiveSize;
 
-        // Build transformation matrix: T * R * S (in reverse order for post-multiply)
-        Mat3 transform = Uma_Constants::IDENTITY_3X3_F;
-        transform = Translate(transform, tf.prevPos);
-        transform = Rotate(transform, tf.rotation.x);
-        transform = Scale(transform, tf.scale);
-
-        // Transform corners into world space
-        std::array<Vec2, 4> worldCorners;
-        for (int i = 0; i < 4; i++)
+        if (c.autoFitToSprite && sArray.Has(entity) && sArray.GetData(entity).texture)
         {
-            // Create homogeneous coordinate (x, y, 1)
-            Vec3 localHomogeneous(localCorners[i].x, localCorners[i].y, 1.0f);
-
-            // Transform to world space
-            Vec3 worldHomogeneous = transform * localHomogeneous;
-
-            // Extract 2D world position
-            worldCorners[i] = Vec2(worldHomogeneous.x, worldHomogeneous.y);
+            auto& s = sArray.GetData(entity);
+            effectiveSize = s.texture->GetNativeSize();
+        }
+        else
+        {
+            effectiveSize = c.size;
         }
 
-        // Compute AABB from transformed corners
-        Vec2 bbMin = worldCorners[0];
-        Vec2 bbMax = worldCorners[0];
+        Vec2 scaledSize = Vec2(
+            effectiveSize.x * tf.scale.x,
+            effectiveSize.y * tf.scale.y
+        );
 
-        for (int i = 1; i < 4; i++)
-        {
-            bbMin.x = min(bbMin.x, worldCorners[i].x);
-            bbMin.y = min(bbMin.y, worldCorners[i].y);
-            bbMax.x = max(bbMax.x, worldCorners[i].x);
-            bbMax.y = max(bbMax.y, worldCorners[i].y);
-        }
+        // Calculate world position with offset
+        Vec2 worldOffset = Vec2(
+            c.offset.x * tf.scale.x,
+            c.offset.y * tf.scale.y
+        );
+        Vec2 worldPosition = Vec2(tf.position.x, tf.position.y) + worldOffset;
 
-        // Store final bounding box
-        c.boundingBox.min = bbMin;
-        c.boundingBox.max = bbMax;
+        // Update runtime bounding box
+        c.boundingBox.min = worldPosition - scaledSize * 0.5f;
+        c.boundingBox.max = worldPosition + scaledSize * 0.5f;
     }
 }
 
@@ -161,7 +210,7 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
                     auto& tfb = tfArray.GetData(b);
 
                     // handle collision
-                    ResolveAABBCollision(tfa, tfb);
+                    ResolveAABBCollision(tfa, ca, tfb, cb);
 
                     // shd dispatch event system for this
                 }
@@ -328,35 +377,59 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Dynamic(const Boun
     return true;
 }
 
-void Uma_ECS::CollisionSystem::ResolveAABBCollision(Transform& lhs, Transform& rhs)
+void Uma_ECS::CollisionSystem::ResolveAABBCollision(Transform& lhsTransform, Collider& lhsCollider,
+    Transform& rhsTransform, Collider& rhsCollider)
 {
+    // Use the already-calculated bounding boxes from the colliders
+    const BoundingBox& lhsBox = lhsCollider.boundingBox;
+    const BoundingBox& rhsBox = rhsCollider.boundingBox;
+
+    // Calculate the centers and half-extents
+    Vec2 lhsCenter = Vec2(
+        (lhsBox.min.x + lhsBox.max.x) * 0.5f,
+        (lhsBox.min.y + lhsBox.max.y) * 0.5f
+    );
+    Vec2 rhsCenter = Vec2(
+        (rhsBox.min.x + rhsBox.max.x) * 0.5f,
+        (rhsBox.min.y + rhsBox.max.y) * 0.5f
+    );
+
+    Vec2 lhsHalfExtents = Vec2(
+        (lhsBox.max.x - lhsBox.min.x) * 0.5f,
+        (lhsBox.max.y - lhsBox.min.y) * 0.5f
+    );
+    Vec2 rhsHalfExtents = Vec2(
+        (rhsBox.max.x - rhsBox.min.x) * 0.5f,
+        (rhsBox.max.y - rhsBox.min.y) * 0.5f
+    );
+
     // Calculate overlap on both axes
-    float overlapX = (lhs.scale.x / 2 + rhs.scale.x / 2) - std::abs(lhs.position.x - rhs.position.x);
-    float overlapY = (lhs.scale.y / 2 + rhs.scale.y / 2) - std::abs(lhs.position.y - rhs.position.y);
+    float overlapX = (lhsHalfExtents.x + rhsHalfExtents.x) - std::abs(lhsCenter.x - rhsCenter.x);
+    float overlapY = (lhsHalfExtents.y + rhsHalfExtents.y) - std::abs(lhsCenter.y - rhsCenter.y);
 
     // Only resolve if actually overlapping
     if (overlapX > 0 && overlapY > 0) {
-        // Resolve along the axis with the smallest overlap
+        // Resolve along the axis with the smallest overlap (minimum translation vector)
         if (overlapX < overlapY) {
             // Resolve along X axis
-            if (lhs.position.x < rhs.position.x) {
-                lhs.position.x -= overlapX / 2;
-                rhs.position.x += overlapX / 2;
+            if (lhsCenter.x < rhsCenter.x) {
+                lhsTransform.position.x -= overlapX / 2;
+                rhsTransform.position.x += overlapX / 2;
             }
             else {
-                lhs.position.x += overlapX / 2;
-                rhs.position.x -= overlapX / 2;
+                lhsTransform.position.x += overlapX / 2;
+                rhsTransform.position.x -= overlapX / 2;
             }
         }
         else {
             // Resolve along Y axis
-            if (lhs.position.y < rhs.position.y) {
-                lhs.position.y -= overlapY / 2;
-                rhs.position.y += overlapY / 2;
+            if (lhsCenter.y < rhsCenter.y) {
+                lhsTransform.position.y -= overlapY / 2;
+                rhsTransform.position.y += overlapY / 2;
             }
             else {
-                lhs.position.y += overlapY / 2;
-                rhs.position.y -= overlapY / 2;
+                lhsTransform.position.y += overlapY / 2;
+                rhsTransform.position.y -= overlapY / 2;
             }
         }
     }

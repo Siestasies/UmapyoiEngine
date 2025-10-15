@@ -25,7 +25,7 @@ All rights reserved.
 #include "RenderingSystem.hpp"
 #include "Core/Coordinator.hpp"
 
-#include "Components/SpriteRenderer.h"
+#include "Components/Sprite.h"
 #include "Components/Transform.h"
 #include "Components/Camera.h"
 #include "Components/Collider.h"
@@ -52,7 +52,7 @@ namespace Uma_ECS
 
         if (!aEntities.size()) return;
 
-        auto& srArray = pCoordinator->GetComponentArray<SpriteRenderer>();
+        auto& srArray = pCoordinator->GetComponentArray<Sprite>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& cArray = pCoordinator->GetComponentArray<Collider>();
@@ -63,7 +63,7 @@ namespace Uma_ECS
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 
-        pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom);
+        pGraphics->SetCamInfo(cam_tf.position, 10);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
         std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
@@ -88,12 +88,27 @@ namespace Uma_ECS
                 continue;
             }
 
+            // if use native
+            // the the tf scale will be scaling the tex size with its aspect ratio
+            // else it will be using the transform scale
+            Vec2 spriteScale;
+            if (sr.UseNativeSize)
+            {
+                spriteScale = sr.texture->GetNativeSize();
+                spriteScale.x *= tf.scale.x;
+                spriteScale.y *= tf.scale.y;
+            }
+            else
+            {
+                spriteScale = tf.scale;
+            }
+
             sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
                 {
                     .tex_id = sr.texture->tex_id,
-                    .tex_size = sr.texture->tex_size,
+                    //.tex_size = sr.texture->tex_size,
                     .pos = tf.position,
-                    .scale = tf.scale,
+                    .scale = spriteScale,
                     .rot = tf.rotation.x,
                     .rot_speed = tf.rotation.y,
                 });
@@ -120,14 +135,16 @@ namespace Uma_ECS
                 continue;
             }
 
-            if (!pArray.Has(entity))
+            pGraphics->DrawDebugRect(c.boundingBox);
+
+            /*if (!pArray.Has(entity))
             {
                 pGraphics->DrawDebugRect(c.boundingBox);
             }
             else
             {
                 pGraphics->DrawDebugCircle(tf.position, tf.scale.x * 0.5f, 0.f, 1.f, 0.f);
-            }
+            }*/
         }
     }
 }

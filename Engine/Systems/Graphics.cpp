@@ -666,7 +666,7 @@ void main()
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
         model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(length, 2.0f, 1.0f)); // 2 pixel thick line
+        model = glm::scale(model, glm::vec3(length, 0.3f, 0.3f)); // 2 pixel thick line
 
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);

@@ -29,12 +29,13 @@ All rights reserved.
 namespace Uma_ECS
 {
     // currently in 2d
-    struct SpriteRenderer
+    struct Sprite
     {
         // pointer pointing to the texture in resources manager
         std::string textureName{};
         bool flipX{};
         bool flipY{};
+        bool UseNativeSize{};
         Uma_Engine::Texture* texture = nullptr;
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
@@ -48,6 +49,7 @@ namespace Uma_ECS
 
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
+            value.AddMember("Native", UseNativeSize, allocator);
         }
 
         // Deserialize from JSON
@@ -56,6 +58,7 @@ namespace Uma_ECS
             textureName = value["textureName"].GetString();
             flipX = value["flipX"].GetBool();
             flipY = value["flipY"].GetBool();
+            UseNativeSize = value["Native"].GetBool();
         }
     };
 }

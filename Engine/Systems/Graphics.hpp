@@ -54,7 +54,7 @@ namespace Uma_Engine
     struct Sprite_Info
     {
         GLuint tex_id{};
-        Vec2 tex_size{};
+        //Vec2 tex_size{};
 
         Vec2 pos{};
         Vec2 scale{};

@@ -14,7 +14,7 @@
 #include "ECS/Components/Transform.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/Player.h"
-#include "ECS/Components/SpriteRenderer.h"
+#include "ECS/Components/Sprite.h"
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
@@ -135,7 +135,7 @@ namespace Uma_Engine
             gCoordinator.RegisterComponent<Transform>();
             gCoordinator.RegisterComponent<RigidBody>();
             gCoordinator.RegisterComponent<Collider>();
-            gCoordinator.RegisterComponent<SpriteRenderer>();
+            gCoordinator.RegisterComponent<Sprite>();
             gCoordinator.RegisterComponent<Camera>();
             gCoordinator.RegisterComponent<Player>();
             gCoordinator.RegisterComponent<Enemy>();
@@ -177,7 +177,7 @@ namespace Uma_Engine
             renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
             {
                 Signature sign;
-                sign.set(gCoordinator.GetComponentType<SpriteRenderer>());
+                sign.set(gCoordinator.GetComponentType<Sprite>());
                 sign.set(gCoordinator.GetComponentType<Transform>());
                 gCoordinator.SetSystemSignature<RenderingSystem>(sign);
             }
@@ -272,7 +272,7 @@ namespace Uma_Engine
             }
 
             pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
-            pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
+            //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
             renderingSystem->Update(dt);
 		    }
 		    void Render() override
@@ -293,9 +293,9 @@ namespace Uma_Engine
                     player,
                     Transform
                     {
-                        .position = Vec2(400.0f, 300.0f),
+                        .position = Vec2(0.f, 0.f),
                         .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(50,50),
+                        .scale = Vec2(1,1),
                     });
 
                 gCoordinator.AddComponent(
@@ -303,27 +303,32 @@ namespace Uma_Engine
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 2500,
+                      .accel_strength = 500,
                       .fric_coeff = 5
                     });
 
                 gCoordinator.AddComponent(
                     player,
-                    Player{});
+                    Player{
+                        .mSpeed = 1.f
+                    });
 
                 std::string texName = "player";
                 gCoordinator.AddComponent(
                     player,
-                    SpriteRenderer{
+                    Sprite{
                       .textureName = texName,
                       .flipX = false,
                       .flipY = false,
+                      .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
                 gCoordinator.AddComponent(
                     player,
                     Collider{
+                      //.size = Vec2{5.f, 5.f},
+                      .autoFitToSprite = true,
                       .layer = CollisionLayer::CL_PLAYER,
                       .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                     });
@@ -365,10 +370,10 @@ namespace Uma_Engine
             // create entities
             {
                 std::default_random_engine generator;
-                std::uniform_real_distribution<float> randPositionX(-1920.f * 0.45f, 1920.f * 0.45f);
-                std::uniform_real_distribution<float> randPositionY(-1080.f * 0.45f, 1080.f * 0.45f);
+                std::uniform_real_distribution<float> randPositionX(-1920.f * 0.1f, 1920.f * 0.1f);
+                std::uniform_real_distribution<float> randPositionY(-1080.f * 0.1f, 1080.f * 0.1f);
                 //std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
-                std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+                std::uniform_real_distribution<float> randScale(1.f, 1.f);
 
                 Entity enemy;
                 {
@@ -400,16 +405,18 @@ namespace Uma_Engine
                     std::string texName = "enemy";
                     gCoordinator.AddComponent(
                         enemy,
-                        SpriteRenderer{
+                        Sprite{
                           .textureName = texName,
                           .flipX = false,
                           .flipY = false,
+                          .UseNativeSize = true,
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
                     gCoordinator.AddComponent(
                         enemy,
                         Collider{
+                          .autoFitToSprite = true,
                           .layer = CollisionLayer::CL_ENEMY,
                           .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                         });
@@ -426,7 +433,7 @@ namespace Uma_Engine
                     tf.rotation = Vec2(0, 0);
                     tf.scale = Vec2(randScale(generator), randScale(generator));
 
-                    SpriteRenderer& sr = gCoordinator.GetComponent<SpriteRenderer>(tmp);
+                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 
                     sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
                     sr.texture = pResourcesManager->GetTexture(sr.textureName);
@@ -442,7 +449,7 @@ namespace Uma_Engine
                     {
                         .position = Vec2(0.f, 0.f),
                         .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(50,50),
+                        .scale = Vec2(1,1),
                     });
 
                 gCoordinator.AddComponent(
@@ -450,7 +457,7 @@ namespace Uma_Engine
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 2500,
+                      .accel_strength = 500,
                       .fric_coeff = 5
                     });
 
@@ -463,16 +470,19 @@ namespace Uma_Engine
                 std::string texName = "player";
                 gCoordinator.AddComponent(
                     player,
-                    SpriteRenderer{
+                    Sprite{
                       .textureName = texName,
                       .flipX = false,
                       .flipY = false,
+                      .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
                 gCoordinator.AddComponent(
                     player,
                     Collider{
+                      //.size = Vec2{5.f, 5.f},
+                      .autoFitToSprite = true,
                       .layer = CollisionLayer::CL_PLAYER,
                       .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                     });
@@ -511,7 +521,7 @@ namespace Uma_Engine
             std::uniform_real_distribution<float> randPositionX(-400, 400);
             std::uniform_real_distribution<float> randPositionY(-400, 400);
             //std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
-            std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+            std::uniform_real_distribution<float> randScale(1, 1);
 
             if (eArray.Size() == 0)
             {
@@ -547,16 +557,18 @@ namespace Uma_Engine
                     std::string texName = "enemy";
                     gCoordinator.AddComponent(
                         enemy,
-                        SpriteRenderer{
+                        Sprite{
                           .textureName = texName,
                           .flipX = false,
                           .flipY = false,
+                          .UseNativeSize = true,
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
                     gCoordinator.AddComponent(
                         enemy,
                         Collider{
+                          .autoFitToSprite = true,
                           .layer = CollisionLayer::CL_ENEMY,
                           .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                         });
@@ -583,7 +595,7 @@ namespace Uma_Engine
                 tf.rotation = Vec2(0, 0);
                 tf.scale = Vec2(randScale(generator), randScale(generator));
 
-                SpriteRenderer& sr = gCoordinator.GetComponent<SpriteRenderer>(tmp);
+                Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 
                 // set texture randomly
                 sr.textureName = (randPositionX(generator) > 0.f) ? "pink_enemy" : "enemy";
@@ -618,7 +630,7 @@ namespace Uma_Engine
                 std::uniform_real_distribution<float> randPositionX(-1920.f, 1920.f);
                 std::uniform_real_distribution<float> randPositionY(-1080.f, 1080.f);
                 std::uniform_real_distribution<float> randRotation(0.0f, 0.0f);
-                std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
+                std::uniform_real_distribution<float> randScale(1, 1);
 
                 Entity enemy;
                 {
@@ -650,16 +662,18 @@ namespace Uma_Engine
                     std::string texName = "enemy";
                     gCoordinator.AddComponent(
                         enemy,
-                        SpriteRenderer{
+                        Sprite{
                           .textureName = texName,
                           .flipX = false,
                           .flipY = false,
+                          .UseNativeSize = true,
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
                     gCoordinator.AddComponent(
                         enemy,
                         Collider{
+                          .autoFitToSprite = true,
                           .layer = CollisionLayer::CL_ENEMY,
                           .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                         });
@@ -676,7 +690,7 @@ namespace Uma_Engine
                     tf.rotation = Vec2(randRotation(generator), randRotation(generator));
                     tf.scale = Vec2(randScale(generator), randScale(generator));
 
-                    SpriteRenderer& sr = gCoordinator.GetComponent<SpriteRenderer>(tmp);
+                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 
                     sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
                     sr.texture = pResourcesManager->GetTexture(sr.textureName);
@@ -692,7 +706,7 @@ namespace Uma_Engine
                     {
                         .position = Vec2(0.f, 0.f),
                         .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(50,50),
+                        .scale = Vec2(1,1),
                     });
 
                 gCoordinator.AddComponent(
@@ -700,7 +714,7 @@ namespace Uma_Engine
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 2500,
+                      .accel_strength = 500,
                       .fric_coeff = 5
                     });
 
@@ -713,18 +727,21 @@ namespace Uma_Engine
                 std::string texName = "player";
                 gCoordinator.AddComponent(
                     player,
-                    SpriteRenderer{
+                    Sprite{
                       .textureName = texName,
                       .flipX = false,
                       .flipY = false,
+                      .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
                 gCoordinator.AddComponent(
                     player,
                     Collider{
-                      .layer = CollisionLayer::CL_PLAYER,
-                      .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                        //.size = Vec2{5.f, 5.f},
+                        .autoFitToSprite = true,
+                        .layer = CollisionLayer::CL_PLAYER,
+                        .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
                     });
             }
 
