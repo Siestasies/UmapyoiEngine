@@ -24,6 +24,7 @@ All rights reserved.
 #pragma once
 
 #include "Math/Math.h"
+#include "fmod/inc/fmod.h"
 
 #include <string>
 
@@ -31,6 +32,7 @@ All rights reserved.
 struct FMOD_SYSTEM;
 struct FMOD_SOUND;
 struct FMOD_CHANNEL;
+struct FMOD_VECTOR;
 
 namespace Uma_Engine
 {
@@ -52,5 +54,7 @@ namespace Uma_Engine
 		FMOD_CHANNEL* channel = nullptr;
 		SoundType type = SoundType::END;
 		std::string filePath;
+
+		FMOD_VECTOR pos;
 	};
 }
