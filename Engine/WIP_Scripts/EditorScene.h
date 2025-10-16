@@ -82,7 +82,7 @@ namespace Uma_Engine
 
 		    void OnLoad() override
 		    {
-            currSceneName = "data.json";
+            currSceneName = "test_collider.json";
 
             pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
             pGraphics = pSystemManager->GetSystem<Graphics>();
@@ -367,13 +367,57 @@ namespace Uma_Engine
 
             using namespace Uma_ECS;
 
+            Entity kappa;
+            {
+                kappa = gCoordinator.CreateEntity();
+
+                gCoordinator.AddComponent(
+                    kappa,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 200,
+                      .fric_coeff = 100
+                    });
+
+                gCoordinator.AddComponent(
+                    kappa,
+                    Transform{
+                      .position = Vec2(20, 0),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(1.f, 1.f)
+                    });
+
+                std::string texName = "kappa_statue";
+                gCoordinator.AddComponent(
+                    kappa,
+                    Sprite{
+                      .textureName = texName,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = pResourcesManager->GetTexture(texName),
+                    });
+
+                // Create collider with two shapes
+                Collider kappaCollider;
+
+                // Primary shape: Body hitbox (for taking damage)
+                kappaCollider.autoFitToSprite = true;
+                kappaCollider.primaryPurpose = ColliderPurpose::Environment;
+                kappaCollider.layer = CL_WALL;
+                kappaCollider.colliderMask = CL_WALL;
+
+                gCoordinator.AddComponent(kappa, kappaCollider);
+            }
+
             // create entities
             {
-                std::default_random_engine generator;
-                std::uniform_real_distribution<float> randPositionX(-1920.f * 0.1f, 1920.f * 0.1f);
-                std::uniform_real_distribution<float> randPositionY(-1080.f * 0.1f, 1080.f * 0.1f);
-                //std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
-                std::uniform_real_distribution<float> randScale(1.f, 1.f);
+                //std::default_random_engine generator;
+                //std::uniform_real_distribution<float> randPositionX(-1920.f * 0.1f, 1920.f * 0.1f);
+                //std::uniform_real_distribution<float> randPositionY(-1080.f * 0.1f, 1080.f * 0.1f);
+                ////std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
+                //std::uniform_real_distribution<float> randScale(1.f, 1.f);
 
                 Entity enemy;
                 {
@@ -397,12 +441,12 @@ namespace Uma_Engine
                     gCoordinator.AddComponent(
                         enemy,
                         Transform{
-                          .position = Vec2(randPositionX(generator), randPositionY(generator)),
+                          .position = Vec2(-10, 0),
                           .rotation = Vec2(0, 0),
-                          .scale = Vec2(randScale(generator), randScale(generator))
+                          .scale = Vec2(1.f, 1.f)
                         });
 
-                    std::string texName = "enemy";
+                    std::string texName = "pink_enemy";
                     gCoordinator.AddComponent(
                         enemy,
                         Sprite{
@@ -413,17 +457,31 @@ namespace Uma_Engine
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
-                    gCoordinator.AddComponent(
-                        enemy,
-                        Collider{
-                          .autoFitToSprite = true,
-                          .layer = CollisionLayer::CL_ENEMY,
-                          .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
-                        });
+                    // Create collider with two shapes
+                    Collider enemyCollider;
+
+                    // Primary shape: Body hitbox (for taking damage)
+                    enemyCollider.size = Vec2(3.f, 3.f);        // Body size
+                    enemyCollider.offset = Vec2(0.f, 1.f);         // Offset up from center
+                    enemyCollider.primaryPurpose = ColliderPurpose::Physics;
+                    enemyCollider.layer = CL_ENEMY;
+                    enemyCollider.colliderMask = CL_PLAYER | CL_PROJECTILE;
+
+                    // Additional shape: Feet collider (for walls)
+                    ColliderShape feetCollider;
+                    feetCollider.size = Vec2(2.f, 0.5f);          // Smaller ground footprint
+                    feetCollider.offset = Vec2(0.f, -2.f);          // At the bottom
+                    feetCollider.purpose = ColliderPurpose::Environment;
+                    feetCollider.layer = CL_WALL;
+                    feetCollider.colliderMask = CL_WALL; // Walls and other enemies
+
+                    enemyCollider.additionalShapes.push_back(feetCollider);
+
+                    gCoordinator.AddComponent(enemy, enemyCollider);
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
-                for (size_t i = 0; i < 2500 - 3; i++)
+                /*for (size_t i = 0; i < 2500 - 3; i++)
                 {
                     Entity tmp = gCoordinator.DuplicateEntity(enemy);
 
@@ -437,7 +495,7 @@ namespace Uma_Engine
 
                     sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
                     sr.texture = pResourcesManager->GetTexture(sr.textureName);
-                }
+                }*/
             }
 
             // create player
@@ -478,14 +536,26 @@ namespace Uma_Engine
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
-                gCoordinator.AddComponent(
-                    player,
-                    Collider{
-                      //.size = Vec2{5.f, 5.f},
-                      .autoFitToSprite = true,
-                      .layer = CollisionLayer::CL_PLAYER,
-                      .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
-                    });
+                // Create collider with two shapes
+                Collider playerCollider;
+
+                // Primary shape: Body hitbox (for taking damage)
+                playerCollider.autoFitToSprite = true,
+                playerCollider.primaryPurpose = ColliderPurpose::Physics;
+                playerCollider.layer = CL_PLAYER;
+                playerCollider.colliderMask = CL_ENEMY | CL_PROJECTILE;
+
+                // Additional shape: Feet collider (for walls)
+                ColliderShape feetCollider;
+                feetCollider.size = Vec2(7.0f, 0.5f);          // Smaller ground footprint
+                feetCollider.offset = Vec2(0, -3.f);          // At the bottom
+                feetCollider.purpose = ColliderPurpose::Environment;
+                feetCollider.layer = CL_WALL;
+                feetCollider.colliderMask = CL_WALL; // Walls and other enemies
+
+                playerCollider.additionalShapes.push_back(feetCollider);
+
+                gCoordinator.AddComponent(player, playerCollider);
             }
 
             // create camera
@@ -675,7 +745,7 @@ namespace Uma_Engine
                         Collider{
                           .autoFitToSprite = true,
                           .layer = CollisionLayer::CL_ENEMY,
-                          .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                          .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE
                         });
                 }
 
@@ -741,7 +811,7 @@ namespace Uma_Engine
                         //.size = Vec2{5.f, 5.f},
                         .autoFitToSprite = true,
                         .layer = CollisionLayer::CL_PLAYER,
-                        .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                        .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE
                     });
             }
 

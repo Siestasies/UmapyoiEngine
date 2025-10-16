@@ -1,0 +1,257 @@
+{
+    "resources": {
+        "textures": [
+            {
+                "name": "player",
+                "path": "Assets/hello.jpg"
+            },
+            {
+                "name": "enemy",
+                "path": "Assets/marisa.png"
+            },
+            {
+                "name": "background",
+                "path": "Assets/bg.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
+            },
+            {
+                "name": "kappa_statue",
+                "path": "Assets/statue.png"
+            }
+        ],
+        "sounds": [
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
+                "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            }
+        ]
+    },
+    "entities": [
+        {
+            "id": 10,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "kappa_statue",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "size": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "autoFitToSprite": true,
+                    "primaryPurpose": 1,
+                    "layer": 8,
+                    "colliderMask": 8,
+                    "showBBox": true
+                }
+            }
+        },
+        {
+            "id": 11,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": -10.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "pink_enemy",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "size": {
+                        "x": 3.0,
+                        "y": 3.0
+                    },
+                    "offset": {
+                        "x": 0.0,
+                        "y": 1.0
+                    },
+                    "autoFitToSprite": false,
+                    "primaryPurpose": 0,
+                    "layer": 4,
+                    "colliderMask": 18,
+                    "showBBox": true,
+                    "additionalShapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": -2.0
+                            },
+                            "size": {
+                                "x": 2.0,
+                                "y": 0.5
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 8,
+                            "isActive": true
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Enemy": {
+                    "mSpeed": 1.0
+                }
+            }
+        },
+        {
+            "id": 12,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Player": {
+                    "mSpeed": 1.0
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "player",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 500.0,
+                    "fric_coeff": 5.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "size": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "offset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "autoFitToSprite": true,
+                    "primaryPurpose": 0,
+                    "layer": 2,
+                    "colliderMask": 20,
+                    "showBBox": true,
+                    "additionalShapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": -3.0
+                            },
+                            "size": {
+                                "x": 7.0,
+                                "y": 0.5
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 8,
+                            "isActive": true
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Camera": {
+                    "zoom": 1.0,
+                    "followPlayer": true
+                }
+            }
+        },
+        {
+            "id": 13,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 400.0,
+                        "y": 300.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                }
+            }
+        }
+    ]
+}

@@ -53,6 +53,7 @@ namespace Uma_ECS
 
     struct Transform;
     struct Collider;
+    struct RigidBody;
 
     class CollisionSystem : public ECSSystem
     {
@@ -92,6 +93,18 @@ namespace Uma_ECS
 
         void UpdateCollision(float dt);
 
+        bool ShouldShapesCollide(
+            const Collider::ShapeData& shape1,
+            const Collider::ShapeData& shape2);
+
+        void HandlePurposedCollision(
+            Entity e1, Entity e2,
+            Transform& tf1, Transform& tf2,
+            Collider& c1, Collider& c2,
+            RigidBody& rb1, RigidBody& rb2,
+            const Collider::ShapeData& shape1,
+            const Collider::ShapeData& shape2);
+
         inline int WorldToCell(float coord) {
             return static_cast<int>(std::floor(coord / CELL_SIZE));
         }
@@ -130,8 +143,11 @@ namespace Uma_ECS
             return CollisionIntersection_RectRect_Dynamic(lhs, vel1, rhs, vel2, firstTimeOfCollision, dt);
         }
 
-        void ResolveAABBCollision(Transform& lhsTransform, Collider& lhsCollider,
-            Transform& rhsTransform, Collider& rhsCollider);
+        void ResolveAABBCollision(
+            Transform& lhsTransform,
+            Transform& rhsTransform,
+            const BoundingBox& lhsBox, 
+            const BoundingBox& rhsBox);
 
         Coordinator* gCoordinator = nullptr;
     };

@@ -135,7 +135,19 @@ namespace Uma_ECS
                 continue;
             }
 
-            pGraphics->DrawDebugRect(c.boundingBox);
+            for (const auto& shapeData : c.GetAllShapesWithPurpose())
+            {
+                if (shapeData.purpose == ColliderPurpose::Environment)
+                {
+                    pGraphics->DrawDebugRect(shapeData.bounds, 0.f, 1.f, 0.f);
+                }
+                else
+                {
+                    pGraphics->DrawDebugRect(shapeData.bounds, 1.f, 0.f, 0.f);
+                }
+            }
+
+            
 
             /*if (!pArray.Has(entity))
             {

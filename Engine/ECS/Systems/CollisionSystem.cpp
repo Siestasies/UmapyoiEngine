@@ -119,7 +119,7 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
         //auto& s = sArray.GetData(entity);
 
         // Skip entities on NONE collision layer
-        if ((c.layer & CollisionLayer::CL_NONE)) continue;
+        if ((c.layer == CollisionLayer::CL_NONE)) continue;
 
         Vec2 effectiveSize;
 
@@ -148,6 +148,39 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
         // Update runtime bounding box
         c.boundingBox.min = worldPosition - scaledSize * 0.5f;
         c.boundingBox.max = worldPosition + scaledSize * 0.5f;
+
+        c.additionalBounds.clear();
+        c.additionalBounds.reserve(c.additionalShapes.size());
+
+        for (const auto& colliderShape : c.additionalShapes)
+        {
+            if (!colliderShape.isActive)
+            {
+                // Still add placeholder for index consistency
+                c.additionalBounds.push_back(BoundingBox{});
+                continue;
+            }
+            BoundingBox newBound{};
+            
+            effectiveSize = colliderShape.size;
+
+            scaledSize = Vec2(
+                effectiveSize.x * tf.scale.x,
+                effectiveSize.y * tf.scale.y
+            );
+
+            // Calculate world position with offset
+            worldOffset = Vec2(
+                colliderShape.offset.x * tf.scale.x,
+                colliderShape.offset.y * tf.scale.y
+            );
+            worldPosition = Vec2(tf.position.x, tf.position.y) + worldOffset;
+
+            // Update runtime bounding box
+            newBound.min = worldPosition - scaledSize * 0.5f;
+            newBound.max = worldPosition + scaledSize * 0.5f;
+            c.additionalBounds.push_back(newBound);
+        }
     }
 }
 
@@ -180,42 +213,130 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
         // skip none-layer
         if (c.layer == CollisionLayer::CL_NONE) continue;
 
-        InsertIntoGrid(grid, e, c.boundingBox);
+        // Insert all shapes into grid (you could optimize to only insert Environment shapes)
+        for (const auto& shapeData : c.GetAllShapesWithPurpose())
+        {
+            InsertIntoGrid(grid, e, shapeData.bounds);
+        }
     }
 
 
-    // Check collisions inside each cell
-    for (auto& [cell, entities] : grid) {
-        for (size_t i = 0; i < entities.size(); ++i) {
-            for (size_t j = i + 1; j < entities.size(); ++j) {
-                Entity a = entities[i];
-                Entity b = entities[j];
+    for (auto const& [cell, entities] : grid)
+    {
+        // Check all entity pairs in this cell
+        for (size_t i = 0; i < entities.size(); ++i)
+        {
+            for (size_t j = i + 1; j < entities.size(); ++j)
+            {
+                Entity e1 = entities[i];
+                Entity e2 = entities[j];
 
-                auto& ca = cArray.GetData(a);
-                auto& cb = cArray.GetData(b);
+                auto& tf1 = tfArray.GetData(e1);
+                auto& tf2 = tfArray.GetData(e2);
+                auto& c1 = cArray.GetData(e1);
+                auto& c2 = cArray.GetData(e2);
+                auto& rb1 = rbArray.GetData(e1);
+                auto& rb2 = rbArray.GetData(e2);
 
-                // Layer mask filtering
-                if (!(ca.colliderMask & cb.layer)) continue;
-                if (!(cb.colliderMask & ca.layer)) continue;
+                // Get all shapes with purposes
+                auto shapes1 = c1.GetAllShapesWithPurpose();
+                auto shapes2 = c2.GetAllShapesWithPurpose();
 
-                auto& rba = rbArray.GetData(a);
-                auto& rbb = rbArray.GetData(b);
-
-                float firstTimeCollide = 0.f;
-
-                // Narrowphase AABB test
-                if (CollisionIntersection_RectRect(ca.boundingBox, rba.velocity, cb.boundingBox, rbb.velocity, firstTimeCollide, dt)) 
+                // Test each shape pair
+                for (const auto& shape1 : shapes1)
                 {
-                    auto& tfa = tfArray.GetData(a);
-                    auto& tfb = tfArray.GetData(b);
+                    for (const auto& shape2 : shapes2)
+                    {
+                        // Check if these shape purposes should interact
+                        if (!ShouldShapesCollide(shape1, shape2)) continue;
 
-                    // handle collision
-                    ResolveAABBCollision(tfa, ca, tfb, cb);
-
-                    // shd dispatch event system for this
+                        float firstTimeOfCollision;
+                        if (CollisionIntersection_RectRect(
+                            shape1.bounds, rb1.velocity,
+                            shape2.bounds, rb2.velocity,
+                            firstTimeOfCollision, dt))
+                        {
+                            // Handle collision based on purposes
+                            HandlePurposedCollision(
+                                e1, e2,
+                                tf1, tf2,
+                                c1, c2,
+                                rb1, rb2,
+                                shape1, shape2
+                            );
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+bool Uma_ECS::CollisionSystem::ShouldShapesCollide(
+    const Collider::ShapeData& shape1,
+    const Collider::ShapeData& shape2)
+{
+    // Layer mask check
+    bool layerCheck = (shape1.layer & shape2.mask) && (shape2.layer & shape1.mask);
+    if (!layerCheck) return false;
+
+    // Purpose-based rules
+    // Example: Environment shapes only collide with Environment shapes
+    if (shape1.purpose == ColliderPurpose::Environment ||
+        shape2.purpose == ColliderPurpose::Environment)
+    {
+        // Both must be Environment for wall collision
+        return shape1.purpose == ColliderPurpose::Environment &&
+            shape2.purpose == ColliderPurpose::Environment;
+    }
+
+    // Physics shapes collide with Physics shapes
+    if (shape1.purpose == ColliderPurpose::Physics &&
+        shape2.purpose == ColliderPurpose::Physics)
+    {
+        return true;
+    }
+
+    // Triggers don't block
+    if (shape1.purpose == ColliderPurpose::Trigger ||
+        shape2.purpose == ColliderPurpose::Trigger)
+    {
+        return true; // But don't resolve physically
+    }
+
+    return false;
+}
+
+void Uma_ECS::CollisionSystem::HandlePurposedCollision(
+    Entity e1, Entity e2,
+    Transform& tf1, Transform& tf2,
+    Collider& c1, Collider& c2,
+    RigidBody& rb1, RigidBody& rb2,
+    const Collider::ShapeData& shape1,
+    const Collider::ShapeData& shape2)
+{
+    // Environment collision: Block movement (but its not working for now)
+    if (shape1.purpose == ColliderPurpose::Environment &&
+        shape2.purpose == ColliderPurpose::Environment)
+    {
+        ResolveAABBCollision(tf1, tf2, shape1.bounds, shape2.bounds);
+    }
+    // Physics collision: Entity interaction (damage, etc.)
+    else if (shape1.purpose == ColliderPurpose::Physics &&
+        shape2.purpose == ColliderPurpose::Physics)
+    {
+        // Emit event for game logic to handle
+        // pEventSystem->Emit<CollisionBeginEvent>(e1, e2);
+
+        // Optionally resolve physically
+        ResolveAABBCollision(tf1, tf2, shape1.bounds, shape2.bounds);
+    }
+    // Trigger collision: Just notify, don't resolve
+    else if (shape1.purpose == ColliderPurpose::Trigger ||
+        shape2.purpose == ColliderPurpose::Trigger)
+    {
+        // pEventSystem->Emit<TriggerEnterEvent>(e1, e2);
+        // NO physical resolution
     }
 }
 
@@ -377,14 +498,14 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Dynamic(const Boun
     return true;
 }
 
-void Uma_ECS::CollisionSystem::ResolveAABBCollision(Transform& lhsTransform, Collider& lhsCollider,
-    Transform& rhsTransform, Collider& rhsCollider)
+// Change signature to accept specific bounding boxes instead of whole colliders
+void Uma_ECS::CollisionSystem::ResolveAABBCollision(
+    Transform& lhsTransform,
+    Transform& rhsTransform,
+    const BoundingBox& lhsBox,
+    const BoundingBox& rhsBox)
 {
-    // Use the already-calculated bounding boxes from the colliders
-    const BoundingBox& lhsBox = lhsCollider.boundingBox;
-    const BoundingBox& rhsBox = rhsCollider.boundingBox;
-
-    // Calculate the centers and half-extents
+    // Calculate the centers and half-extents of the SPECIFIC shapes
     Vec2 lhsCenter = Vec2(
         (lhsBox.min.x + lhsBox.max.x) * 0.5f,
         (lhsBox.min.y + lhsBox.max.y) * 0.5f
