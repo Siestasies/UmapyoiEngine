@@ -221,12 +221,10 @@ namespace Uma_Engine {
         FMOD_Channel_SetPitch(info.channel, pitch);
         FMOD_Sound_SetLoopCount(info.sound, loopCount);
 
-        if (info.is3D) {
-            FMOD_Channel_SetMode(info.channel, FMOD_3D);
-            info.pos = { x,y,0 };
-            FMOD_Channel_Set3DAttributes(info.channel, &info.pos, nullptr);
-            FMOD_Channel_Set3DMinMaxDistance(info.channel, 1.0f, 1000.0f);
-        }
+        FMOD_Channel_SetMode(info.channel, FMOD_3D);
+        info.pos = { x,y,0 };
+        FMOD_Channel_Set3DAttributes(info.channel, &info.pos, nullptr);
+        FMOD_Channel_Set3DMinMaxDistance(info.channel, 1.0f, 1000.0f);
 
         //add the channel to its respective group channel
         if (info.type == SoundType::SFX) {
