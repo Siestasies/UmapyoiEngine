@@ -1,3 +1,27 @@
+/*!
+\file   CollisionSystem.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines collision detection and resolution system using spatial hashing with AABB (axis-aligned bounding box) primitives.
+
+Provides layer-based collision filtering through bitmask operations on Collider components.
+Cell struct and CellHash functor enable grid-based spatial partitioning with configurable CELL_SIZE constant.
+Exposes helper methods for layer management (ShouldCollide, IsInLayer, SetLayer, AddMask) and internal methods
+for grid insertion, static/dynamic AABB intersection tests, and penetration-based collision resolution.
+Maintains Coordinator reference for component array access.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/System.hpp"
@@ -5,7 +29,7 @@
 
 #include "Components/Collider.h"
 
-const float CELL_SIZE = 100.0f; // tune this based on your game world
+const float CELL_SIZE = 50.0f; // tune this based on your game world
 
 namespace Uma_ECS
 {
@@ -28,6 +52,10 @@ namespace Uma_ECS
     };
 
     struct Transform;
+    struct Collider;
+    struct RigidBody;
+    enum class ColliderPurpose;
+    struct BoundingBox;
 
     class CollisionSystem : public ECSSystem
     {
@@ -37,26 +65,26 @@ namespace Uma_ECS
 
         void Update(float dt);
 
-        inline bool ShouldCollide(const Collider& lhs, const Collider& rhs)
-        {
-            // check if they shd collider for both of their layer and collider mask
-            return (lhs.layer & rhs.colliderMask) && (lhs.colliderMask & rhs.layer);
-        }
+        //inline bool ShouldCollide(const Collider& lhs, const Collider& rhs)
+        //{
+        //    // check if they shd collider for both of their layer and collider mask
+        //    return (lhs.layer & rhs.colliderMask) && (lhs.colliderMask & rhs.layer);
+        //}
 
-        inline bool IsInLayer(const Collider& col, CollisionLayer layer) 
-        {
-            return (col.layer & layer) != 0;
-        }
+        //inline bool IsInLayer(const Collider& col, CollisionLayer layer) 
+        //{
+        //    return (col.layer & layer) != 0;
+        //}
 
-        inline void SetLayer(Collider& col, CollisionLayer layer) 
-        {
-            col.layer = layer;
-        }
+        //inline void SetLayer(Collider& col, CollisionLayer layer) 
+        //{
+        //    col.layer = layer;
+        //}
 
-        inline void AddMask(Collider& col, CollisionLayer layer) 
-        {
-            col.colliderMask |= layer;
-        }
+        //inline void AddMask(Collider& col, CollisionLayer layer) 
+        //{
+        //    col.colliderMask |= layer;
+        //}
 
 
 
@@ -66,6 +94,29 @@ namespace Uma_ECS
         void UpdateBoundingBoxes();
 
         void UpdateCollision(float dt);
+
+        bool ShouldShapesCollide(
+            const ColliderPurpose& shape1Purpose,
+            const ColliderPurpose& shape2Purpose);
+
+        void HandleShapeCollision(
+            Entity e1, Entity e2,
+            Transform& tf1, Transform& tf2,
+            RigidBody* rb1, RigidBody* rb2,
+            const BoundingBox& box1, const BoundingBox& box2,
+            ColliderPurpose purpose1, ColliderPurpose purpose2);
+
+        Vec2 GetCollisionNormal(
+            const BoundingBox& box1,
+            const BoundingBox& box2);
+
+        void ResolveAABBDynamicCollision(
+            Transform& tf1, Transform& tf2,
+            const BoundingBox& box1, const BoundingBox& box2,
+            bool e1CanMove, bool e2CanMove);
+
+        void ResolveAABBStaticCollision(Transform& lhsTransform, const BoundingBox& lhsBound,
+            Transform& rhsTransform, const BoundingBox& rhsBound);
 
         inline int WorldToCell(float coord) {
             return static_cast<int>(std::floor(coord / CELL_SIZE));
@@ -104,8 +155,6 @@ namespace Uma_ECS
             //Step 2 until 5
             return CollisionIntersection_RectRect_Dynamic(lhs, vel1, rhs, vel2, firstTimeOfCollision, dt);
         }
-
-        void ResolveAABBCollision(Transform& lhs, Transform& rhs);
 
         Coordinator* gCoordinator = nullptr;
     };

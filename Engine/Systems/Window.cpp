@@ -1,3 +1,26 @@
+/*!
+\file   Window.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Handles creation and management of the application window using GLFW,
+including OpenGL context setup using GLAD. Manages window events,
+buffer swapping and shutdown.
+
+Inherits from ISystem for engine management and IWindowSystem for
+GLFW window integration and resize handling.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "Window.hpp"
 #include <iostream>
 
@@ -89,39 +112,51 @@ namespace Uma_Engine
 
     void Window::Shutdown()
     {
+        // Only shut down if initialized
         if (mInitialized)
         {
             std::cout << "Shutting down Uma_Engine..." << std::endl;
             
+            // Destroy the window and free its resources
             if (mWindow) 
             {
                 glfwDestroyWindow(mWindow);
                 mWindow = nullptr;
             }
 
+            // Terminate GLFW and clean up all GLFW resources
             glfwTerminate();
+
+            // Mark as no longer initialized
             mInitialized = false;
         }
     }
 
     void Window::Close()
     {
+        // Only set close flag if window exists
         if (mWindow)
         {
+            // Set the window's close flag to true
             glfwSetWindowShouldClose(mWindow, GLFW_TRUE);
         }
     }
 
     bool Window::ShouldClose() const
     {
+        // If not initialized or window doesn't exist, should close
         if (!mInitialized || !mWindow) return true;
+
+        // Check GLFW's window close flag
         return glfwWindowShouldClose(mWindow);
     }
 
     void Window::SetTitle(std::string newTitle)
     {
+        // Update the window's title bar
         glfwSetWindowTitle(mWindow, newTitle.c_str());
 
+        // Store the new title
         mTitle = newTitle;
     }
 }

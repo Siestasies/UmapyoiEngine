@@ -1,9 +1,36 @@
+/*!
+\file   ComponentArray.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements a packed array storage container for components of a specific type using template-based design.
+
+Provides O(1) component access through entity-to-index mapping with contiguous memory layout for cache efficiency.
+Components are tightly packed by swapping removed elements with the last element to maintain density.
+Includes serialization/deserialization support via RapidJSON and component cloning for entity duplication.
+Base class (BaseComponentArray) enables polymorphic storage of different component types in a single container.
+Supports up to MAX_ENTITIES components with entity existence checking and boundary validation.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Types.hpp"
 #include <array>
 #include <unordered_map>
 #include <cassert>
+#include <string>
+
+#include "rapidjson/document.h"		// rapidjson's DOM-style API
 
 namespace Uma_ECS
 {
@@ -15,12 +42,22 @@ namespace Uma_ECS
 
         virtual bool Has(Entity entity) const = 0;
         virtual void CloneComponent(Entity src, Entity dest) = 0;
+
+        // serialization and deserialization
+        virtual void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) = 0;
+        virtual std::string Deserialize(Entity entity, const rapidjson::Value& comps) = 0;
     };
 
     template <typename T>
     class ComponentArray : public BaseComponentArray
     {
     public:
+
+        ComponentArray()
+        {
+            aEntityToIndex.fill(MAX_ENTITIES);
+            aIndexToEntity.fill(MAX_ENTITIES);
+        }
 
         // Add / Remove Component from the array
         ECSErrorCode AddData(Entity entity, const T& component)
@@ -63,6 +100,10 @@ namespace Uma_ECS
             // swap their locations
             aEntityToIndex[last_entity] = index_to_remove;
             aIndexToEntity[index_to_remove] = last_entity;
+
+            // Clear the removed entity's mapping
+            aEntityToIndex[entity] = 0;
+            aIndexToEntity[last_index] = 0;  // Clear the now-unused slot
 
             --mSize;
 
@@ -119,13 +160,38 @@ namespace Uma_ECS
             AddData(dest, component);
         }
 
+        // serialization and deserialization
+        void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) override
+        {
+            if (!Has(entity)) return; // entity not exists
+
+            T& component = aComponentArray[aEntityToIndex[entity]];
+            rapidjson::Value componentObj;
+            component.Serialize(componentObj, allocator);
+            comps.AddMember(rapidjson::StringRef(typeid(T).name()), componentObj, allocator);
+        }
+
+        std::string Deserialize(Entity entity, const rapidjson::Value& comps) override
+        {
+            std::string compType = "";
+            if (comps.HasMember(typeid(T).name())) 
+            {
+                T component;
+                component.Deserialize(comps[typeid(T).name()]);
+                AddData(entity, component);
+
+                compType = typeid(T).name();
+            }
+            return compType;
+        }
+
     private:
 
         // the container that stores all components of the same type of all entities
         std::array<T, MAX_ENTITIES> aComponentArray{};
 
-        std::array<Entity, MAX_ENTITIES> aIndexToEntity;
-        std::array<size_t, MAX_ENTITIES> aEntityToIndex;
+        std::array<Entity, MAX_ENTITIES> aIndexToEntity{};
+        std::array<size_t, MAX_ENTITIES> aEntityToIndex{};
 
         size_t mSize = 0; // how many components are currently in use
     };

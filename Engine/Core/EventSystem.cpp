@@ -1,8 +1,31 @@
+/*!
+\file   EventSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implementation of the EventSystem defined in EventSystem.h.
+
+This file provides the concrete logic for subscribing to, dispatching, and processing game events.
+It implements listener management, immediate and deferred event dispatching with priority ordering,
+and integrates with the ISystem lifecycle (Init, Update, Shutdown). Events are processed in priority order,
+and propagation can be halted if an event is marked as handled.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include <iostream>
 
 #include "EventSystem.h"
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 namespace Uma_Engine
 {
@@ -14,6 +37,8 @@ namespace Uma_Engine
 
     void EventSystem::Update(float dt)
     {
+        (void)dt;
+
         ProcessEvents();
     }
 
@@ -31,12 +56,14 @@ namespace Uma_Engine
 #endif
 
         // Process all queued events in priority order
-        for (auto& wrapper : eventQueue)
+        while (!eventQueue.empty())
         {
+            auto wrapper = std::move(eventQueue.front());
+
+            eventQueue.erase(eventQueue.begin());
+
             wrapper->Dispatch(this);
         }
-
-        eventQueue.clear();
     }
 
     void EventSystem::ProcessHighPriorityEvents()
@@ -154,6 +181,8 @@ namespace Uma_Engine
 
     void EventListenerSystem::Update(float dt)
     {
+        (void)dt;
+
         // Base implementation does nothing
         // Derived classes can override if they need per-frame updates beyond events
     }

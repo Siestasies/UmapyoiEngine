@@ -1,8 +1,30 @@
+/*!
+\file   SystemManager.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for a System manager which stores
+and controls the life-cycle of a system.
+Also contains some helper functions to calculate time per system.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 #include <vector>
 #include <memory>
 #include <algorithm>
 #include <type_traits>
+#include <chrono>
+#include <string>
+#include <iostream>
 #include "SystemType.h"
 #include "../Systems/Window.hpp"
 
@@ -19,8 +41,11 @@ namespace Uma_Engine
             auto system = std::make_unique<T>();
             T* ptr = system.get();
             ptr->SetSystemManager(this);
+
             systems.push_back(std::move(system));
-            return ptr; // Return pointer for further configuration if needed
+            timings.push_back(0.0); // keep timings vector in sync
+
+            return ptr;
         }
 
         // Initialize all systems
@@ -37,7 +62,6 @@ namespace Uma_Engine
         {
             for (auto& system : systems)
             {
-                // Check if system implements IWindowSystem
                 if (auto windowSystem = dynamic_cast<IWindowSystem*>(system.get()))
                 {
                     windowSystem->SetWindow(window);
@@ -45,12 +69,44 @@ namespace Uma_Engine
             }
         }
 
-        // Update all systems
         void Update(float dt)
         {
-            for (auto& system : systems)
+            static double timeCheck = 0.0;
+            static int frameCounter = 0;
+
+            timeCheck += dt;
+            frameCounter++;
+
+            if (timeCheck >= 1.0)
             {
-                system->Update(dt);
+                double totalTime = 0.0;
+
+                // loop thru all systems and check timing per system
+                for (size_t i = 0; i < systems.size(); ++i)
+                {
+                    auto& system = systems[i];
+
+                    // calc timing per system
+                    auto start = std::chrono::high_resolution_clock::now();
+                    system->Update(dt);
+                    auto end = std::chrono::high_resolution_clock::now();
+
+                    double elapsed = std::chrono::duration<double, std::milli>(end - start).count();
+                    timings[i] = elapsed;
+                    totalTime += elapsed;
+                }
+                lastTotalTime = totalTime;
+
+                // reset
+                timeCheck = 0.0;
+                frameCounter = 0;
+            }
+            else
+            {
+                for (auto& system : systems)
+                {
+                    system->Update(dt);
+                }
             }
         }
 
@@ -77,7 +133,18 @@ namespace Uma_Engine
             return nullptr;
         }
 
+        // get timing stuff for
+        double GetLastTotalTime() const { return lastTotalTime; }
+        const std::vector<double>& GetLastTimings() const { return timings; }
+
+        std::string GetSystemName(size_t index)
+        {
+            return typeid(*systems[index].get()).name();
+        }
+
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
+        std::vector<double> timings;
+        double lastTotalTime = 0.0;
     };
 }

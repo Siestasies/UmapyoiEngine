@@ -1,3 +1,27 @@
+/*!
+\file   Test_Input_Events.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implements a hybrid input processing system that prioritizes input events based on
+criticality for optimal responsiveness and stability. Critical events (window close)
+and high-priority inputs (mouse clicks, action keys, function keys) are dispatched
+immediately, while normal-priority inputs (movement keys, mouse movement) are queued.
+
+Extends Uma_Engine::InputSystem with GLFW integration and EventSystem connectivity.
+Includes TestEventListener class for debugging event flow.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include <iostream>
 #include <GLFW/glfw3.h>
@@ -6,7 +30,7 @@
 #include "Core/WindowEvents.h"
 #include "Systems/InputSystem.h"
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 namespace Uma_Engine
 {
@@ -67,6 +91,8 @@ namespace Uma_Engine
 
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Mouse button " << button << " pressed - DISPATCHING High priority event" << std::endl;
+#else
+                    (void)button;
 #endif
 
                     eventSystem->Dispatch(MouseButtonEvent(button, GLFW_PRESS, 0, x, y)); // High priority
@@ -78,6 +104,8 @@ namespace Uma_Engine
 
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Mouse button " << button << " released - DISPATCHING High priority event" << std::endl;
+#else
+                    (void)button;
 #endif
 
                     eventSystem->Dispatch(MouseButtonEvent(button, GLFW_RELEASE, 0, x, y)); // High priority
@@ -92,6 +120,8 @@ namespace Uma_Engine
                     {
 #ifdef _DEBUG_LOG
                         std::cout << "HybridInputSystem: Function key F" << (key - GLFW_KEY_F1 + 1) << " - DISPATCHING High priority event" << std::endl;
+#else
+                        (void)key;
 #endif
 
                         eventSystem->Dispatch(KeyPressEvent(key, GLFW_PRESS, 0)); // High priority
@@ -100,6 +130,8 @@ namespace Uma_Engine
                     {
 #ifdef _DEBUG_LOG
                         std::cout << "HybridInputSystem: Movement key " << key << " released - EMITTING to queue (Normal priority)" << std::endl;
+#else
+                        (void)key;
 #endif
 
                         eventSystem->Emit(KeyReleaseEvent(key, 0)); // High priority (immediate)
@@ -115,6 +147,8 @@ namespace Uma_Engine
                 {
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Movement key " << key << " pressed - EMITTING to queue (Normal priority)" << std::endl;
+#else
+                    (void)key;
 #endif
 
                     eventSystem->Emit(KeyPressEvent(key, GLFW_PRESS, 0)); // Normal priority (gets queued)
@@ -123,6 +157,8 @@ namespace Uma_Engine
                 {
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Movement key " << key << " released - EMITTING to queue (Normal priority)" << std::endl;
+#else
+                    (void)key;
 #endif
 
                     eventSystem->Emit(KeyReleaseEvent(key, 0)); // High priority (immediate)
@@ -137,6 +173,8 @@ namespace Uma_Engine
                 {
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Action key " << key << " pressed - DISPATCHING High priority event" << std::endl;
+#else
+                    (void)key;
 #endif
 
                     eventSystem->Dispatch(KeyPressEvent(key, GLFW_PRESS, 0)); // High priority
@@ -145,6 +183,8 @@ namespace Uma_Engine
                 {
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Movement key " << key << " released - EMITTING to queue (Normal priority)" << std::endl;
+#else
+                    (void)key;
 #endif
 
                     eventSystem->Emit(KeyReleaseEvent(key, 0)); // High priority (immediate)
@@ -198,12 +238,22 @@ namespace Uma_Engine
             SubscribeToEvent<KeyPressEvent>([this](const KeyPressEvent& event){
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received KeyPress: key=" << event.key << "\n";
+#else
+                //std::stringstream ss{""};
+                //ss << "TestEventListener received KeyPress: key=" << InputSystem::GetKeyName(event.key);
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
+                (void)event;
 #endif
                 });
 
             SubscribeToEvent<KeyReleaseEvent>([this](const KeyReleaseEvent& event){
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received KeyRelease: key=" << event.key << "\n";
+#else
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received KeyRelease: key=" << InputSystem::GetKeyName(event.key);
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
+                (void)event;
 #endif
                 });
 
@@ -212,6 +262,13 @@ namespace Uma_Engine
                 std::string action = (event.action == GLFW_PRESS) ? "Press" : "Release";
                 std::cout << "TestEventListener received MouseButton " << action
                     << ": button=" << event.button << " at (" << event.x << ", " << event.y << ")\n";
+#else
+                //std::string action = (event.action == GLFW_PRESS) ? "Press" : "Release";
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received MouseButton " << action
+                //    << ": button=" << event.button << " at (" << event.x << ", " << event.y << ")";
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
+                (void)event;
 #endif
                 });
 
@@ -219,6 +276,12 @@ namespace Uma_Engine
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received MouseMove: (" << event.x << ", " << event.y
                     << ") delta=(" << event.deltaX << ", " << event.deltaY << ")\n";
+#else
+                //std::stringstream ss{ "" };
+                //ss << "TestEventListener received MouseMove: (" << event.x << ", " << event.y
+                //    << ") delta=(" << event.deltaX << ", " << event.deltaY << ")";
+                //Debugger::Log(WarningLevel::eInfo, ss.str());
+                (void)event;
 #endif
                 });
         }

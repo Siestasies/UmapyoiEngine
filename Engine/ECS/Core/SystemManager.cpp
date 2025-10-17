@@ -1,3 +1,24 @@
+/*!
+\file   SystemManager.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements system-entity membership management based on signature matching using bitwise operations.
+
+Handles entity removal from all systems when destroyed, and dynamically adds/removes entities from systems
+when their component signatures change. Uses swap-and-pop pattern for efficient entity removal from system vectors.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "SystemManager.hpp"
 #include "System.hpp"
 
@@ -9,7 +30,16 @@ void Uma_ECS::SystemManager::EntityDestroyed(Entity entity)
         // getting the system from the map
         auto const& system = pair.second;
 
-        system->aEntities.erase(entity);
+        auto& entities = system->aEntities;
+        for (size_t i = 0; i < entities.size(); ++i) 
+        {
+            if (entities[i] == entity) 
+            {
+                entities[i] = entities.back();  // overwrite with last
+                entities.pop_back();            // shrink
+                break;                          // only one instance per system anyway
+            }
+        }
     }
 }
 
@@ -28,11 +58,24 @@ void Uma_ECS::SystemManager::EntitySignatureChanged(Entity entity, Signature ent
         // (entitySignature & systemSignature) == systemSignature
         if ((entitySiganture & systemSignature) == systemSignature)
         {
-            system->aEntities.insert(entity);
+            auto& entities = system->aEntities;
+            if (std::find(entities.begin(), entities.end(), entity) == entities.end()) // doesnt exist
+            {
+                entities.emplace_back(entity);
+            }
         }
         else
         {
-            system->aEntities.erase(entity);
+            auto& entities = system->aEntities;
+            for (size_t i = 0; i < entities.size(); ++i)
+            {
+                if (entities[i] == entity)
+                {
+                    entities[i] = entities.back();  // overwrite with last
+                    entities.pop_back();            // shrink
+                    break;                          // only one instance per system anyway
+                }
+            }
         }
         
     }

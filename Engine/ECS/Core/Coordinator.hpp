@@ -1,3 +1,28 @@
+/*!
+\file   Coordinator.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Central facade class that unifies EntityManager, ComponentManager, and SystemManager into a single interface.
+
+Provides the primary API for ECS operations: entity creation/destruction, component registration/manipulation,
+and system registration with signature-based filtering.
+Template methods handle component and system operations with automatic signature updates and system membership
+recalculation. Implements ISerializer for JSON-based scene serialization with RapidJSON. Integrates with
+Uma_Engine::EventSystem to emit entity lifecycle events for external observers.
+
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include <memory>
@@ -7,9 +32,11 @@
 #include "EntityManager.hpp"
 #include "SystemManager.hpp"
 
+#include "Core/BaseSerializer.h"
+
 // Event system
-#include <../Core/EventSystem.h>
-#include <../Core/ECSEvents.h>
+#include "Core/EventSystem.h"
+#include "Core/ECSEvents.h"
 
 namespace Uma_ECS
 {
@@ -17,7 +44,7 @@ namespace Uma_ECS
     // Entity Manager, System Manager and Entity Manager 
     // into a single coordinator that can handles everything 
     // within this class
-    class Coordinator
+    class Coordinator : public Uma_Engine::ISerializer
     {
     public:
         void Init(Uma_Engine::EventSystem* eventSystem);
@@ -33,6 +60,8 @@ namespace Uma_ECS
         Signature GetEntitySignature(Entity entity);
 
         int GetEntityCount() const;
+
+        void DestroyAllEntities();
 
         // Components functions
 
@@ -109,6 +138,18 @@ namespace Uma_ECS
         }
 
         Entity DuplicateEntity(Entity src);
+
+        //Serialization
+
+        //void SerializeAllEntities(const std::string& filename);
+        //void DeserializeAllEntities(const std::string& filename);
+
+        const char* GetSectionName() const override { return "entities"; };  // e.g. "entities", "resources"
+        std::string GetSerializerName() const override { return "coordinator"; };  // e.g. "coordinator", "resources_manager"
+        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void Deserialize(const rapidjson::Value& in) override;
+        void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
+        void DeserializePrefab(const rapidjson::Value& in) override;
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

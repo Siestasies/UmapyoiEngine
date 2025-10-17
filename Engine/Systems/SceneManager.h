@@ -1,3 +1,22 @@
+/*!
+\file   SceneManager.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (100%)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\brief
+This file implements the definition for a Scene manager which stores
+and controls the life-cycle of a scene.
+Also contains helper functions to add and set active scene.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #pragma once
 #include "SceneType.h"
 #include "Core/SystemType.h"
@@ -6,7 +25,7 @@
 #include <memory>
 #include <iostream>
 
-#include "WIP_Scripts/TestScene.h"
+#include "WIP_Scripts/EditorScene.h"
 #include "WIP_Scripts/TestScene2.h"
 
 namespace Uma_Engine
@@ -22,15 +41,11 @@ namespace Uma_Engine
             {
                 std::cout << "Scene Manager INIT" << std::endl;
 
-                // Create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<TestScene> testScene1 = std::make_unique<TestScene>();
-                std::unique_ptr<TestScene2> testScene2 = std::make_unique<TestScene2>();
+                // create a TestScene and store it as a unique_ptr<Scene>
+                std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>(pSystemManager);
 
-                // Add TestScene as a unique_ptr<Scene> to the scenes map
                 AddScene("testScene1", std::move(testScene1));
-                AddScene("testScene2", std::move(testScene2));
 
-                // Optionally, set it as the active scene
                 SetActiveScene("testScene1");
             }
             void Update(float dt) override
@@ -44,21 +59,20 @@ namespace Uma_Engine
                 {
                     std::cout << "Scene Manager MAP is EMPTY" << std::endl;
                 }
-
-                static float fulltime = 0.f;
-                static bool stop = false;
-                if (!stop)
-                    fulltime += dt;
-                if (fulltime > 5.f)
-                {
-                    SetActiveScene("testScene2");
-                    fulltime = 0.f;
-                    stop = true;
-                }
             }
             void Shutdown() override
             {
                 std::cout << "Scene Manager SHUTDOWN" << std::endl;
+                
+                // Unload the active scene
+                // other scenes should already be unloaded
+                if (activeScene)
+                {
+                    activeScene->OnUnload();
+                    activeScene = nullptr;
+                }
+                // clear scenes map
+                scenes.clear();
             }
 
         public:
@@ -69,7 +83,8 @@ namespace Uma_Engine
 
             void SetActiveScene(const std::string& name)
             {
-                if (activeScene) activeScene->OnUnload();
+                if (activeScene)
+                    activeScene->OnUnload();
                 activeScene = scenes[name].get();
                 activeScene->OnLoad();
             }

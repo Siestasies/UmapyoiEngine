@@ -1,3 +1,26 @@
+/*!
+\file   PhysicsSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements Verlet-based physics integration with semi-implicit Euler method for velocity updates.
+
+Applies acceleration to velocity, exponential friction damping, and epsilon-based velocity clamping to prevent jitter.
+Stores previous position in Transform before updating for collision system's swept tests.
+Includes debug logging method (PrintLog) that outputs entity signatures and component data for Transform and RigidBody
+to console with formatted output showing total entity counts and system membership.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "PhysicsSystem.hpp"
 
 #include "../Core/Coordinator.hpp"
@@ -9,53 +32,69 @@
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
-
-    // THIS IS OLD METHOD WHICH IS EXPENSIVE
-    // NOT IN USED
-    {
-    //for (auto const& entity : aEntities)
-    //{
-    //    auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
-    //    auto& tf = gCoordinator->GetComponent<Transform>(entity);
-
-    //    tf.position += rb.velocity;
-
-    //    //std::cout << "physics updating\n";
-    //}
-    }
-
-    // Get dense component arrays once
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-    // Iterate over the smaller array for efficiency (here, RigidBody)
-    for (size_t i = 0; i < rbArray.Size(); ++i)
+    for (auto const& entity : aEntities)
     {
-        Entity e = rbArray.GetEntity(i);
+        auto& rb = rbArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
 
-        if (tfArray.Has(e))  // check if Transform exists
-        {
-            auto& rb = rbArray.GetComponentAt(i);
-            auto& tf = tfArray.GetData(e);
+        tf.prevPos = tf.position;
 
-            // set prev pos
-            tf.prevPos = tf.position;
+        tf.rotation.x += tf.rotation.y; // I added this wai men
 
-            rb.velocity += rb.acceleration * dt;
+        // Apply acceleration
+        rb.velocity += rb.acceleration * dt;
 
-            rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+        // Apply smooth friction
+        rb.velocity *= std::exp(-rb.fric_coeff * dt);
 
-            tf.position += rb.velocity * dt;
+        const float epsilon = 0.01f;
+        if (std::abs(rb.velocity.x) < epsilon) rb.velocity.x = 0.f;
+        if (std::abs(rb.velocity.y) < epsilon) rb.velocity.y = 0.f;
 
-            rb.acceleration = { 0,0 };
-
-            // tmp
-            /*if (tf.position.y <= 0)
-            {
-                tf.position.y += 1080.f;
-            }*/
-        }
+        tf.position += rb.velocity * dt;
     }
+
+    //// Get dense component arrays once
+    //auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    //auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+
+    //if (rbArray.Size() == 0 ||
+    //    tfArray.Size() == 0)
+    //{
+    //    return;
+    //}
+
+    //// Iterate over the smaller array for efficiency (here, RigidBody)
+    //for (size_t i = 0; i < rbArray.Size(); ++i)
+    //{
+    //    Entity e = rbArray.GetEntity(i);
+
+    //    if (tfArray.Has(e))  // check if Transform exists
+    //    {
+    //        auto& rb = rbArray.GetComponentAt(i);
+    //        auto& tf = tfArray.GetData(e);
+
+    //        // set prev pos
+    //        tf.prevPos = tf.position;
+
+    //        rb.velocity += rb.acceleration * dt;
+
+    //        rb.velocity -= rb.velocity * rb.fric_coeff * dt;
+
+    //        tf.position += rb.velocity * dt;
+
+    //        rb.acceleration = { 0,0 };
+
+    //        // tmp
+    //        /*if (tf.position.y <= 0)
+    //        {
+    //            tf.position.y += 1080.f;
+    //        }*/
+    //    }
+    //}
 }
 
 void Uma_ECS::PhysicsSystem::PrintLog()

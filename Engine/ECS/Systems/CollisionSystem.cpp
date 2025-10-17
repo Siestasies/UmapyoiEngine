@@ -1,9 +1,34 @@
+/*!
+\file   CollisionSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements spatial hash-based collision detection using grid partitioning for broadphase optimization.
+
+Updates axis-aligned bounding boxes from transform and collider data, then performs narrowphase AABB tests
+using both static and dynamic (continuous) collision detection with swept volume calculations.
+Partitions world space into cells (CELL_SIZE) to reduce collision checks from O(n^2) to O(n) average case.
+Resolves overlaps by separating objects along minimum penetration axis. Supports layer-based collision filtering
+through bitmask comparison. Calculates time of first impact for moving AABBs using relative velocity projection.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "CollisionSystem.hpp"
 
 #include "../Core/Coordinator.hpp"
 #include "../Components/Collider.h"
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
+#include "../Components/Sprite.h"
 
 #include <iostream>
 #include <iomanip>
@@ -18,107 +43,407 @@ void Uma_ECS::CollisionSystem::Update(float dt)
 
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
-    // Get dense component arrays once
+    if (aEntities.empty()) return;
+
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+    auto& sArray = gCoordinator->GetComponentArray<Sprite>();
 
-    // Iterate over the smaller array for efficiency (here, RigidBody)
-    for (size_t i = 0; i < cArray.Size(); ++i)
+    for (auto const& entity : aEntities)
     {
-        Entity e = cArray.GetEntity(i);
+        auto& c = cArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
 
-        if (tfArray.Has(e))  // check if Transform exists
+        // IMPORTANT: Clear bounds first, then rebuild
+        c.bounds.clear();  // ADD THIS LINE
+
+        Vec2 spriteSize{ 1.0f, 1.0f };
+        if (sArray.Has(entity))
         {
-            auto& c = cArray.GetComponentAt(i);
-            auto& tf = tfArray.GetData(e);
+            auto& s = sArray.GetData(entity);
+            if (s.texture)
+            {
+                spriteSize = s.texture->GetNativeSize();
+            }
+        }
 
-            // skip none layer
-            if ((c.layer & CollisionLayer::CL_NONE)) continue;
+        for (const auto& colliderShape : c.shapes)
+        {
+            if (!colliderShape.isActive)
+            {
+                c.bounds.push_back(BoundingBox{});
+                continue;
+            }
 
-            float halfWidth = (1.f / 2.0f) * tf.scale.x;
-            float halfHeight = (1.f / 2.0f) * tf.scale.y;
+            Vec2 effectiveSize;
+            if (colliderShape.autoFitToSprite && sArray.Has(entity) && sArray.GetData(entity).texture)
+            {
+                auto& s = sArray.GetData(entity);
+                effectiveSize = s.texture->GetNativeSize();
+            }
+            else
+            {
+                effectiveSize = colliderShape.size;
+            }
 
-            // update Bounding box
-            c.boundingBox.min = {
-                tf.prevPos.x - halfWidth,
-                tf.prevPos.y - halfHeight
-            };
+            Vec2 scaledSize = Vec2(
+                effectiveSize.x * tf.scale.x,
+                effectiveSize.y * tf.scale.y
+            );
 
-            c.boundingBox.max = {
-                tf.prevPos.x + halfWidth,
-                tf.prevPos.y + halfHeight
-            };
+            Vec2 worldOffset = Vec2(
+                colliderShape.offset.x * tf.scale.x,
+                colliderShape.offset.y * tf.scale.y
+            );
+            Vec2 worldPosition = Vec2(tf.position.x, tf.position.y) + worldOffset;
 
-            //std::cout << "entity " << e << " : " << c.boundingBox.max << " " << c.boundingBox.min << std::endl;
+            BoundingBox newBound;
+            newBound.min = worldPosition - scaledSize * 0.5f;
+            newBound.max = worldPosition + scaledSize * 0.5f;
+            c.bounds.push_back(newBound);
         }
     }
 }
 
 void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 {
-    // Get dense component arrays once
+    if (aEntities.empty()) return;
+
     auto& cArray = gCoordinator->GetComponentArray<Collider>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
 
-    // split entities into list of entities in grid (spatial hash buckets)
-    // this idea is to prevent situation that we are checking collison of 
-    // all entities with one another at one shot, this is way too expensive and
-    // not practical
-
-    // so we split the world into cells and only check collision of the entites
-    // that are inside the same cell
-    // Broadphase storage (spatial hash buckets)
+    // Build spatial grid
     std::unordered_map<Cell, std::vector<Entity>, CellHash> grid;
 
-    // Insert all colliders into spatial grid
-    for (size_t i = 0; i < cArray.Size(); ++i) {
-        Entity e = cArray.GetEntity(i);
-        if (!tfArray.Has(e)) continue;
-
-        auto& c = cArray.GetComponentAt(i);
-
-        // skip none-layer
-        if (c.layer == CollisionLayer::CL_NONE) continue;
-
-        InsertIntoGrid(grid, e, c.boundingBox);
+    for (const auto& entity : aEntities)
+    {
+        auto& c = cArray.GetData(entity);
+        if (!c.shapes.empty() && c.shapes[0].isActive)
+        {
+            InsertIntoGrid(grid, entity, c.bounds[0]);
+        }
     }
 
+    // Check collisions within each cell
+    for (auto const& [cell, entities] : grid)
+    {
+        // Check all pairs in this cell
+        for (size_t i = 0; i < entities.size(); ++i)
+        {
+            for (size_t j = i + 1; j < entities.size(); ++j)
+            {
+                Entity e1 = entities[i];
+                Entity e2 = entities[j];
 
-    // Check collisions inside each cell
-    for (auto& [cell, entities] : grid) {
-        for (size_t i = 0; i < entities.size(); ++i) {
-            for (size_t j = i + 1; j < entities.size(); ++j) {
-                Entity a = entities[i];
-                Entity b = entities[j];
+                auto& tf1 = tfArray.GetData(e1);
+                auto& tf2 = tfArray.GetData(e2);
+                auto& c1 = cArray.GetData(e1);
+                auto& c2 = cArray.GetData(e2);
 
-                auto& ca = cArray.GetData(a);
-                auto& cb = cArray.GetData(b);
+                // Check if entities have RigidBody
+                bool e1HasRb = rbArray.Has(e1);
+                bool e2HasRb = rbArray.Has(e2);
 
-                // Layer mask filtering
-                if (!(ca.colliderMask & cb.layer)) continue;
-                if (!(cb.colliderMask & ca.layer)) continue;
+                // Skip if no rigidbodies (both static)
+                if (!rbArray.Has(e1) && !rbArray.Has(e2))
+                    continue;
 
-                auto& rba = rbArray.GetData(a);
-                auto& rbb = rbArray.GetData(b);
+                // Broad phase: check primary bounds first
+                if (!CollisionIntersection_RectRect_Static(c1.bounds[0], c2.bounds[0]))
+                    continue;
 
-                float firstTimeCollide = 0.f;
+                RigidBody* rb1 = e1HasRb ? &rbArray.GetData(e1) : nullptr;
+                RigidBody* rb2 = e2HasRb ? &rbArray.GetData(e2) : nullptr;
 
-                // Narrowphase AABB test
-                if (CollisionIntersection_RectRect(ca.boundingBox, rba.velocity, cb.boundingBox, rbb.velocity, firstTimeCollide, dt)) 
+                // Narrow phase: check all shape pairs
+                for (size_t si = 0; si < c1.shapes.size(); ++si)
                 {
-                    auto& tfa = tfArray.GetData(a);
-                    auto& tfb = tfArray.GetData(b);
+                    const auto& shape1 = c1.shapes[si];
+                    if (!shape1.isActive) continue;
 
-                    // handle collision
-                    ResolveAABBCollision(tfa, tfb);
+                    for (size_t sj = 0; sj < c2.shapes.size(); ++sj)
+                    {
+                        const auto& shape2 = c2.shapes[sj];
+                        if (!shape2.isActive) continue;
 
-                    // shd dispatch event system for this
+                        // Layer filtering
+                        LayerMask layer1 = c1.GetEffectiveLayer(si);
+                        LayerMask mask1 = c1.GetEffectiveMask(si);
+                        LayerMask layer2 = c2.GetEffectiveLayer(sj);
+                        LayerMask mask2 = c2.GetEffectiveMask(sj);
+
+                        if (!((layer1 & mask2) && (mask1 & layer2)))
+                            continue;
+
+                        if (!ShouldShapesCollide(shape1.purpose, shape2.purpose))
+                            continue;
+
+                        // Collision test
+                        float firstTimeOfCollision;
+                        if (CollisionIntersection_RectRect(
+                            c1.bounds[si], rb1->velocity,
+                            c2.bounds[sj], rb2->velocity,
+                            firstTimeOfCollision, dt))
+                        {
+                            // Resolve using your existing method
+                           // Handle collision with physics and purpose awareness
+                            HandleShapeCollision(
+                                e1, e2,
+                                tf1, tf2,
+                                rb1, rb2,
+                                c1.bounds[si], c2.bounds[sj],
+                                shape1.purpose, shape2.purpose
+                            );
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+bool Uma_ECS::CollisionSystem::ShouldShapesCollide(
+    const ColliderPurpose& shape1Purpose,
+    const ColliderPurpose& shape2Purpose)
+{
+    // Triggers always detect but never block
+    if (shape1Purpose == ColliderPurpose::Trigger || shape2Purpose == ColliderPurpose::Trigger)
+        return true;
+
+    // Physics collides with Physics and Environment
+    if (shape1Purpose == ColliderPurpose::Physics)
+        return (shape2Purpose == ColliderPurpose::Physics || shape2Purpose == ColliderPurpose::Environment);
+
+    if (shape2Purpose == ColliderPurpose::Physics)
+        return (shape1Purpose == ColliderPurpose::Physics || shape1Purpose == ColliderPurpose::Environment);
+
+    // Environment doesn't collide with Environment
+    return false;
+}
+
+void Uma_ECS::CollisionSystem::HandleShapeCollision(
+    Entity e1, Entity e2,
+    Transform& tf1, Transform& tf2,
+    RigidBody* rb1, RigidBody* rb2,
+    const BoundingBox& box1, const BoundingBox& box2,
+    ColliderPurpose purpose1, ColliderPurpose purpose2)
+{
+    // Handle triggers (no physics resolution)
+    if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
+    {
+        // TODO: Emit trigger event when you add event system
+        // Example: pEventSystem->Emit<TriggerEnterEvent>(e1, e2);
+        return; // No physics resolution for triggers
+    }
+
+    // Determine if entities can move
+    bool e1CanMove = rb1 != nullptr;
+    bool e2CanMove = rb2 != nullptr;
+
+    // Determine if we should resolve based on purposes
+    bool shouldResolve = false;
+
+    if (purpose1 == ColliderPurpose::Physics && purpose2 == ColliderPurpose::Physics)
+    {
+        // Physics vs Physics - resolve if at least one can move
+        shouldResolve = e1CanMove || e2CanMove;
+    }
+    else if (purpose1 == ColliderPurpose::Physics && purpose2 == ColliderPurpose::Environment)
+    {
+        // Physics vs Environment (wall) - resolve if physics object can move
+        shouldResolve = e1CanMove;
+        e2CanMove = false; // wall
+    }
+    else if (purpose1 == ColliderPurpose::Environment && purpose2 == ColliderPurpose::Physics)
+    {
+        // Environment vs Physics - resolve if physics object can move
+        shouldResolve = e2CanMove;
+        e1CanMove = false; // wall
+    }
+
+    if (!shouldResolve)
+        return;
+
+    // Resolve position overlap
+    ResolveAABBDynamicCollision(tf1, tf2, box1, box2, e1CanMove, e2CanMove);
+    //ResolveAABBStaticCollision(tf1,  box1, tf2, box2);
+
+    // Apply velocity changes based on collision type
+    if (e1CanMove && e2CanMove)
+    {
+        // Both can move - apply bounce physics
+        Vec2 relativeVel = rb1->velocity - rb2->velocity;
+        Vec2 normal = GetCollisionNormal(box1, box2);
+
+        float restitution = 0.3f; // Bounciness (0 = no bounce, 1 = perfect bounce)
+        float impulse = -(1.0f + restitution) * dot(relativeVel, normal);
+        impulse /= 2.0f; // Assuming equal mass
+
+        rb1->velocity += normal * impulse;
+        rb2->velocity -= normal * impulse;
+    }
+    else if (e1CanMove)
+    {
+        // Only e1 can move - stop sliding into wall
+        Vec2 normal = GetCollisionNormal(box1, box2);
+        float velAlongNormal = dot(rb1->velocity, normal);
+
+        if (velAlongNormal < 0) // Moving into the wall
+        {
+            rb1->velocity -= normal * velAlongNormal;
+        }
+    }
+    else if (e2CanMove)
+    {
+        // Only e2 can move - stop sliding into wall
+        Vec2 normal = GetCollisionNormal(box2, box1);
+        float velAlongNormal = dot(rb2->velocity, normal);
+
+        if (velAlongNormal < 0) // Moving into the wall
+        {
+            rb2->velocity -= normal * velAlongNormal;
+        }
+    }
+}
+
+Vec2 Uma_ECS::CollisionSystem::GetCollisionNormal(
+    const BoundingBox& box1,
+    const BoundingBox& box2)
+{
+    Vec2 center1 = (box1.min + box1.max) * 0.5f;
+    Vec2 center2 = (box2.min + box2.max) * 0.5f;
+    Vec2 delta = center1 - center2;
+
+    // Normalize
+    float length = std::sqrt(delta.x * delta.x + delta.y * delta.y);
+    if (length > 0.0001f)
+    {
+        delta.x /= length;
+        delta.y /= length;
+    }
+    else
+    {
+        // Collision at exact same position, default to up
+        delta = Vec2(0, 1);
+    }
+
+    return delta;
+}
+
+void Uma_ECS::CollisionSystem::ResolveAABBDynamicCollision(
+    Transform& tf1, Transform& tf2,
+    const BoundingBox& box1, const BoundingBox& box2,
+    bool e1CanMove, bool e2CanMove)
+{
+    // Calculate centers and half-extents
+    Vec2 center1 = (box1.min + box1.max) * 0.5f;
+    Vec2 center2 = (box2.min + box2.max) * 0.5f;
+    Vec2 halfSize1 = (box1.max - box1.min) * 0.5f;
+    Vec2 halfSize2 = (box2.max - box2.min) * 0.5f;
+
+    // Calculate overlap on both axes
+    Vec2 delta = center1 - center2;
+    Vec2 overlap = Vec2{
+        halfSize1.x + halfSize2.x - std::abs(delta.x),
+        halfSize1.y + halfSize2.y - std::abs(delta.y)
+    };
+
+    // Only resolve if actually overlapping
+    if (overlap.x <= 0 || overlap.y <= 0)
+        return;
+
+    // Find minimum penetration axis (MTV - Minimum Translation Vector)
+    Vec2 separation{ 0, 0 };
+    if (overlap.x < overlap.y)
+    {
+        // Separate on X axis
+        separation.x = (delta.x > 0) ? overlap.x : -overlap.x;
+    }
+    else
+    {
+        // Separate on Y axis
+        separation.y = (delta.y > 0) ? overlap.y : -overlap.y;
+    }
+
+    // Apply separation based on movement capability
+    if (e1CanMove && e2CanMove)
+    {
+        // Both can move - split separation 50/50
+        tf1.position += separation * 0.5f;
+        tf2.position -= separation * 0.5f;
+    }
+    else if (e1CanMove)
+    {
+        // Only e1 moves (e2 is wall/static)
+        tf1.position += separation;
+    }
+    else if (e2CanMove)
+    {
+        // Only e2 moves (e1 is wall/static)
+        tf2.position -= separation;
+    }
+    // If both can't move, do nothing (shouldn't happen due to earlier check)
+}
+
+void Uma_ECS::CollisionSystem::ResolveAABBStaticCollision(Transform& lhsTransform, const BoundingBox& lhsBound,
+    Transform& rhsTransform,const BoundingBox& rhsBound)
+{
+    // Use the already-calculated bounding boxes from the colliders
+    const BoundingBox& lhsBox = lhsBound;
+    const BoundingBox& rhsBox = rhsBound;
+
+    // Calculate the centers and half-extents
+    Vec2 lhsCenter = Vec2(
+        (lhsBox.min.x + lhsBox.max.x) * 0.5f,
+        (lhsBox.min.y + lhsBox.max.y) * 0.5f
+    );
+    Vec2 rhsCenter = Vec2(
+        (rhsBox.min.x + rhsBox.max.x) * 0.5f,
+        (rhsBox.min.y + rhsBox.max.y) * 0.5f
+    );
+
+    Vec2 lhsHalfExtents = Vec2(
+        (lhsBox.max.x - lhsBox.min.x) * 0.5f,
+        (lhsBox.max.y - lhsBox.min.y) * 0.5f
+    );
+    Vec2 rhsHalfExtents = Vec2(
+        (rhsBox.max.x - rhsBox.min.x) * 0.5f,
+        (rhsBox.max.y - rhsBox.min.y) * 0.5f
+    );
+
+    // Calculate overlap on both axes
+    float overlapX = (lhsHalfExtents.x + rhsHalfExtents.x) - std::abs(lhsCenter.x - rhsCenter.x);
+    float overlapY = (lhsHalfExtents.y + rhsHalfExtents.y) - std::abs(lhsCenter.y - rhsCenter.y);
+
+    // Only resolve if actually overlapping
+    if (overlapX > 0 && overlapY > 0) {
+        // Resolve along the axis with the smallest overlap (minimum translation vector)
+        if (overlapX < overlapY) {
+            // Resolve along X axis
+            if (lhsCenter.x < rhsCenter.x) {
+                lhsTransform.position.x -= overlapX / 2;
+                rhsTransform.position.x += overlapX / 2;
+            }
+            else {
+                lhsTransform.position.x += overlapX / 2;
+                rhsTransform.position.x -= overlapX / 2;
+            }
+        }
+        else {
+            // Resolve along Y axis
+            if (lhsCenter.y < rhsCenter.y) {
+                lhsTransform.position.y -= overlapY / 2;
+                rhsTransform.position.y += overlapY / 2;
+            }
+            else {
+                lhsTransform.position.y += overlapY / 2;
+                rhsTransform.position.y -= overlapY / 2;
+            }
+        }
+    }
+}
+
 
 void Uma_ECS::CollisionSystem::InsertIntoGrid(std::unordered_map<Cell, std::vector<Entity>, CellHash>& grid, Entity e, const BoundingBox& box)
 {
@@ -276,38 +601,4 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Dynamic(const Boun
 
     firstTimeOfCollision = tFirst;
     return true;
-}
-
-void Uma_ECS::CollisionSystem::ResolveAABBCollision(Transform& lhs, Transform& rhs)
-{
-    // Calculate overlap on both axes
-    float overlapX = (lhs.scale.x / 2 + rhs.scale.x / 2) - std::abs(lhs.position.x - rhs.position.x);
-    float overlapY = (lhs.scale.y / 2 + rhs.scale.y / 2) - std::abs(lhs.position.y - rhs.position.y);
-
-    // Only resolve if actually overlapping
-    if (overlapX > 0 && overlapY > 0) {
-        // Resolve along the axis with the smallest overlap
-        if (overlapX < overlapY) {
-            // Resolve along X axis
-            if (lhs.position.x < rhs.position.x) {
-                lhs.position.x -= overlapX / 2;
-                rhs.position.x += overlapX / 2;
-            }
-            else {
-                lhs.position.x += overlapX / 2;
-                rhs.position.x -= overlapX / 2;
-            }
-        }
-        else {
-            // Resolve along Y axis
-            if (lhs.position.y < rhs.position.y) {
-                lhs.position.y -= overlapY / 2;
-                rhs.position.y += overlapY / 2;
-            }
-            else {
-                lhs.position.y += overlapY / 2;
-                rhs.position.y -= overlapY / 2;
-            }
-        }
-    }
 }

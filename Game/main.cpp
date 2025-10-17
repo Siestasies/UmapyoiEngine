@@ -1,3 +1,11 @@
+#ifdef _DEBUG
+    #define _CRTDBG_MAP_ALLOC
+    #include <crtdbg.h>
+#endif
+#pragma warning(disable : 4005)
+
+
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -5,6 +13,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define NOMINMAX
 #include "Systems/Window.hpp"
 #include "Systems/Graphics.hpp"
 #include "Core/SystemManager.h"
@@ -12,7 +21,6 @@
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/Sound.hpp"
 
-#include "WIP_Scripts/Test_Ecs_System.h"
 #include "WIP_Scripts/Test_Graphics.h"
 #include "WIP_Scripts/Test_Input_Events.h"
 
@@ -22,18 +30,34 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#include "WIP_Scripts/ImguiManager.h"
+#include "Core/EngineConfig.h"
+#include "Core/EngineConfigSerializer.h"
+#include "Core/FilePaths.h"
+
 #define DEBUG
+
+#ifdef DEBUG
+#include "MemoryManager/MemoryManager.hpp"
+#endif // DEBUG
+
+Uma_Engine::EngineConfig gEngineConfig;
 
 int main()
 {
     // Debug
 #ifdef DEBUG
-    Uma_Engine::Debugger::Init(true);
-    Uma_Engine::CrashLogger::StartUp();
+    Uma_Engine::MemoryManager::Enable();
 #endif // DEBUG
+    Uma_Engine::CrashLogger::StartUp();
+
+    Uma_Engine::EngineConfigSerializer gEngineConfigSerializer;
+
+    gEngineConfigSerializer.Register(&gEngineConfig);
+    gEngineConfigSerializer.load(Uma_FilePath::CONFIG_ROOT + "config.json");
 
     // Create window
-    Uma_Engine::Window window(800, 600, "UmapyoiEngine");
+    Uma_Engine::Window window(gEngineConfig.screenWidth, gEngineConfig.screenHeight, gEngineConfig.windowTitle);
 
     // Initialize the engine
     if (!window.Initialize())
@@ -55,15 +79,16 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
 
     // Register your other systems normally
+    systemManager.RegisterSystem<Uma_Engine::Debugger>();
+
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
     systemManager.RegisterSystem<Uma_Engine::Sound>();
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene
-    //systemManager.RegisterSystem<Uma_Engine::SceneManager>();
-    systemManager.RegisterSystem<Uma_Engine::Test_Ecs>();
+    systemManager.RegisterSystem<Uma_Engine::SceneManager>();
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-
+    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
     // Initialize all systems
     systemManager.Init();
@@ -73,11 +98,11 @@ int main()
     inputSystem->SetEventSystem(eventSystem);
 
 #ifdef DEBUG
-    std::cout << "\nEvent listener counts:\n";
-    std::cout << "KeyPress listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>() << "\n";
-    std::cout << "KeyRelease listeners: " << eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>() << "\n";
-    std::cout << "MouseButton listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>() << "\n";
-    std::cout << "MouseMove listeners: " << eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>() << "\n";
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyPress listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyRelease listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseButton listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>()));
+    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseMove listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>()));
 #endif
 
     // Game loop
@@ -86,14 +111,18 @@ int main()
     float lastTime = 0.0f;
     float fps = 0.0f;
     int frameCount = 0;
+
     std::stringstream newTitle;
 
     while (!window.ShouldClose())
     {
         // calc dt
-        float currentFrame = (float)glfwGetTime();
+        float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        deltaTime = std::min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
+
         ++frameCount;
 
         // update only after 1 second
@@ -105,31 +134,36 @@ int main()
 
             newTitle.str("");
             newTitle.clear();
-            newTitle << "UmapyoiEngine | FPS: " << std::fixed << std::setprecision(2) << fps;
+            newTitle << gEngineConfig.windowTitle << " | FPS: " << std::fixed << std::setprecision(2) << fps;
             window.SetTitle(newTitle.str());
-
-#ifdef DEBUG
-            //Uma_Engine::Debugger::Update();
-#endif // DEBUG
         }
 
-        Uma_Engine::InputSystem::UpdatePreviousFrameState();
+        Uma_Engine::HybridInputSystem::UpdatePreviousFrameState();
 
+        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
+        // always update before systemmanager updates
         window.Update();
 
-        if (Uma_Engine::InputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
+        }
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
+        {
+            Uma_Engine::Debugger::TestCrash();
         }
 
         systemManager.Update(deltaTime);
     }
 
     systemManager.Shutdown();
-    Uma_Engine::Debugger::Shutdown();
+#ifdef DEBUG
+    Uma_Engine::MemoryManager::Disable();
+    Uma_Engine::MemoryManager::ReportLeaks();
+#endif // DEBUG
 
     return 0;
-} 
+}
 
 // JED FALLBACK PLAN
 //#include <iostream>

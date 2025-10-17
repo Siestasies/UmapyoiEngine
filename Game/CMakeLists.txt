@@ -7,6 +7,13 @@ file(GLOB GAME_SOURCES
 # Create the executable
 add_executable(UmapyoiGame ${GAME_SOURCES})
 
+add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
+
+# Set working directory for Visual Studio debugging
+set_target_properties(UmapyoiGame PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:UmapyoiGame>"
+)
+
 # Link against the Engine library
 target_link_libraries(UmapyoiGame 
     PRIVATE 
@@ -19,43 +26,46 @@ target_compile_features(UmapyoiGame PUBLIC cxx_std_20)
 # Set as startup project in Visual Studio
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT UmapyoiGame)
 
-# Copy Assets folder to the build directory where the executable is
-# This works for both Debug and Release builds
-#add_custom_command(TARGET UmapyoiGame POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        "${CMAKE_SOURCE_DIR}/Assets"
-#        "$<TARGET_FILE_DIR:UmapyoiGame>/Assets"
-#    COMMENT "Copying Assets folder to build directory"
-#)
-
 # Define where assets live
 set(ASSET_DIR ${CMAKE_SOURCE_DIR}/Assets)
 
-# Define where to copy them
-set(ASSET_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Game/Assets)
-
-# Copy all assets every build
-add_custom_target(copy_assets ALL
+# Copy Assets folder after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${ASSET_DIR} ${ASSET_OUTPUT_DIR}
-    COMMENT "Copying assets to build folder"
+        ${ASSET_DIR}
+        $<TARGET_FILE_DIR:UmapyoiGame>/Assets
+    COMMENT "Copying Assets folder next to executable"
+)
+
+# Define where logs live
+set(LOGS_DIR ${CMAKE_SOURCE_DIR}/Logs)
+
+# Copy Logs folder after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${LOGS_DIR}
+        $<TARGET_FILE_DIR:UmapyoiGame>/Logs
+    COMMENT "Copying Logs folder next to executable"
+)
+
+# Define where config live
+set(CONFIG_DIR ${CMAKE_SOURCE_DIR}/Configs)
+
+# Copy configs folder after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CONFIG_DIR}
+        $<TARGET_FILE_DIR:UmapyoiGame>/Configs
+    COMMENT "Copying Configs folder next to executable"
 )
 
 # FMOD runtime DLL (Windows only)
 set(FMOD_DLL ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll)
 
-# Where to copy FMOD DLL (next to your game exe)
-set(FMOD_OUTPUT_DIR ${CMAKE_BINARY_DIR}/Game)
-
-# Copy FMOD runtime DLL after build
-add_custom_target(copy_fmod ALL
+# Copy FMOD runtime DLL after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${FMOD_DLL} ${FMOD_OUTPUT_DIR}
-    COMMENT "Copying fmod.dll to build folder"
+        ${FMOD_DLL}
+        $<TARGET_FILE_DIR:UmapyoiGame>
+    COMMENT "Copying fmod.dll next to executable"
 )
-
-
-# Make sure your game depends on this step
-add_dependencies(Uma_Engine copy_assets)
-
-add_dependencies(Uma_Engine copy_fmod)
