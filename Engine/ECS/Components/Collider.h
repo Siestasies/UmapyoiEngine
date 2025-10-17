@@ -59,199 +59,108 @@ namespace Uma_ECS
 
     struct ColliderShape
     {
-        Vec2 offset{};
         Vec2 size{};
+        Vec2 offset{};
         ColliderPurpose purpose = ColliderPurpose::Physics;
-        LayerMask layer = CL_NONE;          // Can have different layers per shape
-        LayerMask colliderMask = CL_NONE;
-        bool isActive = true;
-
-        /*BoundingBox GetWorldBounds(const Vec2& entityPos, const Vec2& entityScale) const
-        {
-            Vec2 center = entityPos + offset;
-            Vec2 halfSize = (size * entityScale) * 0.5f;
-            return BoundingBox{
-                .min = center - halfSize,
-                .max = center + halfSize
-            };
-        }*/
-    };
-
-    // currently in 2d
-    struct Collider
-    {
-        // Primary shape (backward compatible) - defaults to Physics purpose
-        Vec2 size = Vec2(1.0f, 1.0f);
-        Vec2 offset = Vec2(0.0f, 0.0f);
-        bool autoFitToSprite = false;
-        ColliderPurpose primaryPurpose = ColliderPurpose::Physics;
-
-        // Additional shapes for compound colliders
-        std::vector<ColliderShape> additionalShapes;
-
-        // Default layer settings (used if shape doesn't override)
         LayerMask layer = CL_NONE;
         LayerMask colliderMask = CL_NONE;
+        bool isActive = true;
+        bool autoFitToSprite = false;  // Add this per-shape flag
+    };
+
+    struct Collider
+    {
+        std::vector<ColliderShape> shapes;
+
+        LayerMask defaultLayer = CL_DEFAULT;
+        LayerMask defaultMask = CL_ALL;
         bool showBBox = false;
 
         // Runtime data
-        BoundingBox boundingBox{};
-        std::vector<BoundingBox> additionalBounds;
+        std::vector<BoundingBox> bounds;
 
-        // Helper to get all shapes with their purposes
-        struct ShapeData
+        // Constructor with default shape
+        Collider()
         {
-            BoundingBox bounds;
-            ColliderPurpose purpose;
-            LayerMask layer;
-            LayerMask mask;
-            size_t index; // 0 = primary, 1+ = additional
-        };
-
-        std::vector<ShapeData> GetAllShapesWithPurpose() const
-        {
-            std::vector<ShapeData> shapes;
-            shapes.reserve(1 + additionalShapes.size());
-
-            // Primary shape
-            shapes.push_back(ShapeData{
-                .bounds = boundingBox,
-                .purpose = primaryPurpose,
-                .layer = layer,
-                .mask = colliderMask,
-                .index = 0
+            shapes.push_back(ColliderShape{
+                .size = Vec2(1.0f, 1.0f),
+                .offset = Vec2(0.0f, 0.0f),
+                .purpose = ColliderPurpose::Physics,
+                .autoFitToSprite = true  // Primary shape auto-fits by default
                 });
-
-            // Additional shapes
-            for (size_t i = 0; i < additionalShapes.size(); ++i)
-            {
-                if (additionalShapes[i].isActive && i < additionalBounds.size())
-                {
-                    const auto& shape = additionalShapes[i];
-                    shapes.push_back(ShapeData{
-                        .bounds = additionalBounds[i],
-                        .purpose = shape.purpose,
-                        .layer = shape.layer != CL_NONE ? shape.layer : layer,
-                        .mask = shape.colliderMask != CL_NONE ? shape.colliderMask : colliderMask,
-                        .index = i + 1
-                        });
-                }
-            }
-
-            return shapes;
+            bounds.resize(1);
         }
 
-        // Get shapes by purpose
-        std::vector<BoundingBox> GetShapesByPurpose(ColliderPurpose purpose) const
+        inline LayerMask GetEffectiveLayer(size_t index) const
         {
-            std::vector<BoundingBox> result;
-
-            if (primaryPurpose == purpose)
-            {
-                result.push_back(boundingBox);
-            }
-
-            for (size_t i = 0; i < additionalShapes.size(); ++i)
-            {
-                if (additionalShapes[i].isActive &&
-                    additionalShapes[i].purpose == purpose &&
-                    i < additionalBounds.size())
-                {
-                    result.push_back(additionalBounds[i]);
-                }
-            }
-
-            return result;
+            if (index >= shapes.size()) return defaultLayer;
+            return shapes[index].layer != CL_NONE ? shapes[index].layer : defaultLayer;
         }
 
+        inline LayerMask GetEffectiveMask(size_t index) const
+        {
+            if (index >= shapes.size()) return defaultMask;
+            return shapes[index].colliderMask != CL_NONE ? shapes[index].colliderMask : defaultMask;
+        }
+
+        // Direct access helpers
+        inline ColliderShape& GetPrimaryShape() { return shapes[0]; }
+        inline const ColliderShape& GetPrimaryShape() const { return shapes[0]; }
+
+        inline BoundingBox& GetPrimaryBounds() { return bounds[0]; }
+        inline const BoundingBox& GetPrimaryBounds() const { return bounds[0]; }
+
+        // Serialize/Deserialize updated below
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
 
-            // Existing serialization...
-            rapidjson::Value sizeVal(rapidjson::kObjectType);
-            sizeVal.AddMember("x", size.x, allocator);
-            sizeVal.AddMember("y", size.y, allocator);
-            value.AddMember("size", sizeVal, allocator);
-
-            rapidjson::Value offsetVal(rapidjson::kObjectType);
-            offsetVal.AddMember("x", offset.x, allocator);
-            offsetVal.AddMember("y", offset.y, allocator);
-            value.AddMember("offset", offsetVal, allocator);
-
-            value.AddMember("autoFitToSprite", autoFitToSprite, allocator);
-            value.AddMember("primaryPurpose", static_cast<int>(primaryPurpose), allocator);
-            value.AddMember("layer", layer, allocator);
-            value.AddMember("colliderMask", colliderMask, allocator);
+            value.AddMember("defaultLayer", defaultLayer, allocator);
+            value.AddMember("defaultMask", defaultMask, allocator);
             value.AddMember("showBBox", showBBox, allocator);
 
-            // Serialize additional shapes
-            if (!additionalShapes.empty())
+            rapidjson::Value shapesArray(rapidjson::kArrayType);
+            for (const auto& shape : shapes)
             {
-                rapidjson::Value shapesArray(rapidjson::kArrayType);
-                for (const auto& shape : additionalShapes)
-                {
-                    rapidjson::Value shapeObj(rapidjson::kObjectType);
+                rapidjson::Value shapeObj(rapidjson::kObjectType);
 
-                    rapidjson::Value shapeOffsetVal(rapidjson::kObjectType);
-                    shapeOffsetVal.AddMember("x", shape.offset.x, allocator);
-                    shapeOffsetVal.AddMember("y", shape.offset.y, allocator);
-                    shapeObj.AddMember("offset", shapeOffsetVal, allocator);
+                rapidjson::Value offsetVal(rapidjson::kObjectType);
+                offsetVal.AddMember("x", shape.offset.x, allocator);
+                offsetVal.AddMember("y", shape.offset.y, allocator);
+                shapeObj.AddMember("offset", offsetVal, allocator);
 
-                    rapidjson::Value shapeSizeVal(rapidjson::kObjectType);
-                    shapeSizeVal.AddMember("x", shape.size.x, allocator);
-                    shapeSizeVal.AddMember("y", shape.size.y, allocator);
-                    shapeObj.AddMember("size", shapeSizeVal, allocator);
+                rapidjson::Value sizeVal(rapidjson::kObjectType);
+                sizeVal.AddMember("x", shape.size.x, allocator);
+                sizeVal.AddMember("y", shape.size.y, allocator);
+                shapeObj.AddMember("size", sizeVal, allocator);
 
-                    shapeObj.AddMember("purpose", static_cast<int>(shape.purpose), allocator);
-                    shapeObj.AddMember("layer", shape.layer, allocator);
-                    shapeObj.AddMember("colliderMask", shape.colliderMask, allocator);
-                    shapeObj.AddMember("isActive", shape.isActive, allocator);
+                shapeObj.AddMember("purpose", static_cast<int>(shape.purpose), allocator);
+                shapeObj.AddMember("layer", shape.layer, allocator);
+                shapeObj.AddMember("colliderMask", shape.colliderMask, allocator);
+                shapeObj.AddMember("isActive", shape.isActive, allocator);
+                shapeObj.AddMember("autoFitToSprite", shape.autoFitToSprite, allocator);
 
-                    shapesArray.PushBack(shapeObj, allocator);
-                }
-                value.AddMember("additionalShapes", shapesArray, allocator);
+                shapesArray.PushBack(shapeObj, allocator);
             }
+            value.AddMember("shapes", shapesArray, allocator);
         }
 
         void Deserialize(const rapidjson::Value& value)
         {
-            // Existing deserialization...
-            if (value.HasMember("size") && value["size"].IsObject())
-            {
-                const auto& sizeObj = value["size"];
-                if (sizeObj.HasMember("x")) size.x = sizeObj["x"].GetFloat();
-                if (sizeObj.HasMember("y")) size.y = sizeObj["y"].GetFloat();
-            }
+            /*if (value.HasMember("defaultLayer"))
+                defaultLayer = value["defaultLayer"].GetUint();
 
-            if (value.HasMember("offset") && value["offset"].IsObject())
-            {
-                const auto& offsetObj = value["offset"];
-                if (offsetObj.HasMember("x")) offset.x = offsetObj["x"].GetFloat();
-                if (offsetObj.HasMember("y")) offset.y = offsetObj["y"].GetFloat();
-            }
-
-            if (value.HasMember("autoFitToSprite"))
-                autoFitToSprite = value["autoFitToSprite"].GetBool();
-
-            if (value.HasMember("primaryPurpose"))
-                primaryPurpose = static_cast<ColliderPurpose>(value["primaryPurpose"].GetInt());
-
-            if (value.HasMember("layer"))
-                layer = value["layer"].GetUint();
-
-            if (value.HasMember("colliderMask"))
-                colliderMask = value["colliderMask"].GetUint();
+            if (value.HasMember("defaultMask"))
+                defaultMask = value["defaultMask"].GetUint();
 
             if (value.HasMember("showBBox"))
                 showBBox = value["showBBox"].GetBool();
 
-            // Deserialize additional shapes
-            if (value.HasMember("additionalShapes") && value["additionalShapes"].IsArray())
+            if (value.HasMember("shapes") && value["shapes"].IsArray())
             {
-                const auto& shapesArray = value["additionalShapes"];
-                additionalShapes.clear();
-                additionalShapes.reserve(shapesArray.Size());
+                const auto& shapesArray = value["shapes"];
+                shapes.clear();
+                shapes.reserve(shapesArray.Size());
 
                 for (const auto& shapeVal : shapesArray.GetArray())
                 {
@@ -283,9 +192,19 @@ namespace Uma_ECS
                     if (shapeVal.HasMember("isActive"))
                         shape.isActive = shapeVal["isActive"].GetBool();
 
-                    additionalShapes.push_back(shape);
+                    if (shapeVal.HasMember("autoFitToSprite"))
+                        shape.autoFitToSprite = shapeVal["autoFitToSprite"].GetBool();
+
+                    shapes.push_back(shape);
                 }
-            }
+
+                if (shapes.empty())
+                {
+                    shapes.push_back(ColliderShape{ .autoFitToSprite = true });
+                }
+
+                bounds.resize(shapes.size());
+            }*/
         }
     };
 }

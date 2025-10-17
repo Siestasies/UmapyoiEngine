@@ -135,28 +135,51 @@ namespace Uma_ECS
                 continue;
             }
 
-            for (const auto& shapeData : c.GetAllShapesWithPurpose())
+            for (size_t i = 0; i < c.shapes.size(); i++)
             {
-                if (shapeData.purpose == ColliderPurpose::Environment)
-                {
-                    pGraphics->DrawDebugRect(shapeData.bounds, 0.f, 1.f, 0.f);
-                }
-                else
-                {
-                    pGraphics->DrawDebugRect(shapeData.bounds, 1.f, 0.f, 0.f);
-                }
-            }
+                if (!c.shapes[i].isActive) continue;
+                if (i >= c.bounds.size()) continue;
 
-            
+                const auto& shape = c.shapes[i];
+                const auto& bounds = c.bounds[i];
 
-            /*if (!pArray.Has(entity))
-            {
-                pGraphics->DrawDebugRect(c.boundingBox);
+                LayerMask effectiveLayer = c.GetEffectiveLayer(i);
+                LayerMask effectiveMask = c.GetEffectiveMask(i);
+
+                float r = 1.f, g = 0.f, b = 0.f;
+
+                if (shape.purpose == ColliderPurpose::Trigger)
+                {
+                    // Triggers: Blue
+                    r = 0.f; g = 0.f; b = 1.f;
+                }
+                else if (shape.purpose == ColliderPurpose::Environment)
+                {
+                    // Walls: Green
+                    r = 0.f; g = 1.f; b = 0.f;
+                }
+                else if (shape.purpose == ColliderPurpose::Physics)
+                {
+                    // Check what it collides with
+                    if (effectiveMask & CL_WALL)
+                    {
+                        // Feet (collides with walls): green
+                        r = 0.f; g = 1.f; b = 0.f;
+                    }
+                    else if (effectiveMask & CL_ENEMY || effectiveMask & CL_PLAYER)
+                    {
+                        // Body (collides with enemies / player): Red
+                        r = 1.f; g = 0.f; b = 0.f;
+                    }
+                    else
+                    {
+                        // Other physics: Purple
+                        r = 1.f; g = 0.f; b = 1.f;
+                    }
+                }
+
+                pGraphics->DrawDebugRect(bounds, r, g, b);
             }
-            else
-            {
-                pGraphics->DrawDebugCircle(tf.position, tf.scale.x * 0.5f, 0.f, 1.f, 0.f);
-            }*/
         }
     }
 }

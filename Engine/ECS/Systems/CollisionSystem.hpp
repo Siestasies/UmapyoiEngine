@@ -54,6 +54,7 @@ namespace Uma_ECS
     struct Transform;
     struct Collider;
     struct RigidBody;
+    enum class ColliderPurpose;
 
     class CollisionSystem : public ECSSystem
     {
@@ -63,26 +64,26 @@ namespace Uma_ECS
 
         void Update(float dt);
 
-        inline bool ShouldCollide(const Collider& lhs, const Collider& rhs)
-        {
-            // check if they shd collider for both of their layer and collider mask
-            return (lhs.layer & rhs.colliderMask) && (lhs.colliderMask & rhs.layer);
-        }
+        //inline bool ShouldCollide(const Collider& lhs, const Collider& rhs)
+        //{
+        //    // check if they shd collider for both of their layer and collider mask
+        //    return (lhs.layer & rhs.colliderMask) && (lhs.colliderMask & rhs.layer);
+        //}
 
-        inline bool IsInLayer(const Collider& col, CollisionLayer layer) 
-        {
-            return (col.layer & layer) != 0;
-        }
+        //inline bool IsInLayer(const Collider& col, CollisionLayer layer) 
+        //{
+        //    return (col.layer & layer) != 0;
+        //}
 
-        inline void SetLayer(Collider& col, CollisionLayer layer) 
-        {
-            col.layer = layer;
-        }
+        //inline void SetLayer(Collider& col, CollisionLayer layer) 
+        //{
+        //    col.layer = layer;
+        //}
 
-        inline void AddMask(Collider& col, CollisionLayer layer) 
-        {
-            col.colliderMask |= layer;
-        }
+        //inline void AddMask(Collider& col, CollisionLayer layer) 
+        //{
+        //    col.colliderMask |= layer;
+        //}
 
 
 
@@ -94,16 +95,24 @@ namespace Uma_ECS
         void UpdateCollision(float dt);
 
         bool ShouldShapesCollide(
-            const Collider::ShapeData& shape1,
-            const Collider::ShapeData& shape2);
+            const ColliderPurpose& shape1Purpose,
+            const ColliderPurpose& shape2Purpose);
 
-        void HandlePurposedCollision(
+        void HandleShapeCollision(
             Entity e1, Entity e2,
             Transform& tf1, Transform& tf2,
-            Collider& c1, Collider& c2,
-            RigidBody& rb1, RigidBody& rb2,
-            const Collider::ShapeData& shape1,
-            const Collider::ShapeData& shape2);
+            RigidBody* rb1, RigidBody* rb2,
+            const BoundingBox& box1, const BoundingBox& box2,
+            ColliderPurpose purpose1, ColliderPurpose purpose2);
+
+        Vec2 GetCollisionNormal(
+            const BoundingBox& box1,
+            const BoundingBox& box2);
+
+        void ResolveAABBCollision(
+            Transform& tf1, Transform& tf2,
+            const BoundingBox& box1, const BoundingBox& box2,
+            bool e1CanMove, bool e2CanMove);
 
         inline int WorldToCell(float coord) {
             return static_cast<int>(std::floor(coord / CELL_SIZE));
@@ -142,12 +151,6 @@ namespace Uma_ECS
             //Step 2 until 5
             return CollisionIntersection_RectRect_Dynamic(lhs, vel1, rhs, vel2, firstTimeOfCollision, dt);
         }
-
-        void ResolveAABBCollision(
-            Transform& lhsTransform,
-            Transform& rhsTransform,
-            const BoundingBox& lhsBox, 
-            const BoundingBox& rhsBox);
 
         Coordinator* gCoordinator = nullptr;
     };

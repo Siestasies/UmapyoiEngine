@@ -324,14 +324,29 @@ namespace Uma_Engine
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
-                gCoordinator.AddComponent(
-                    player,
-                    Collider{
-                      //.size = Vec2{5.f, 5.f},
-                      .autoFitToSprite = true,
-                      .layer = CollisionLayer::CL_PLAYER,
-                      .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                // Create collider with two shapes
+                Collider playerCollider;
+
+                playerCollider.shapes.push_back(ColliderShape{
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_PLAYER,
+                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = true
                     });
+
+                playerCollider.shapes.push_back(ColliderShape{
+                    .size = Vec2(7.0f, 0.5f),
+                    .offset = Vec2(0, -3.f),
+                    .purpose = ColliderPurpose::Environment,
+                    .layer = CL_WALL,
+                    .colliderMask = CL_WALL,
+                    .isActive = true,
+                    .autoFitToSprite = false
+                    });
+
+                playerCollider.bounds.resize(playerCollider.shapes.size());
+                gCoordinator.AddComponent(player, playerCollider);
             }
 
             // create camera
@@ -403,11 +418,15 @@ namespace Uma_Engine
                 Collider kappaCollider;
 
                 // Primary shape: Body hitbox (for taking damage)
-                kappaCollider.autoFitToSprite = true;
-                kappaCollider.primaryPurpose = ColliderPurpose::Environment;
-                kappaCollider.layer = CL_WALL;
-                kappaCollider.colliderMask = CL_WALL;
+                kappaCollider.shapes[0] = ColliderShape{
+                    .purpose = ColliderPurpose::Environment,
+                    .layer = CL_WALL,
+                    .colliderMask = CL_PLAYER | CL_ENEMY,  // Blocks entities,
+                    .isActive = true,
+                    .autoFitToSprite = true  // Will be 128x128 (64*2 scale)
+                };
 
+                kappaCollider.bounds.resize(kappaCollider.shapes.size());
                 gCoordinator.AddComponent(kappa, kappaCollider);
             }
 
@@ -460,23 +479,27 @@ namespace Uma_Engine
                     // Create collider with two shapes
                     Collider enemyCollider;
 
-                    // Primary shape: Body hitbox (for taking damage)
-                    enemyCollider.size = Vec2(3.f, 3.f);        // Body size
-                    enemyCollider.offset = Vec2(0.f, 1.f);         // Offset up from center
-                    enemyCollider.primaryPurpose = ColliderPurpose::Physics;
-                    enemyCollider.layer = CL_ENEMY;
-                    enemyCollider.colliderMask = CL_PLAYER | CL_PROJECTILE;
+                    enemyCollider.shapes[0] = ColliderShape{
+                        .size = Vec2(3.f, 3.f),
+                        .offset = Vec2(0.f, 1.f),
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_ENEMY,
+                        .colliderMask = CL_PLAYER | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = false
+                    };
+                
+                    enemyCollider.shapes.push_back(ColliderShape{
+                        .size = Vec2(2.f, 0.5f),
+                        .offset = Vec2(0.f, -2.f),
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_ENEMY,
+                        .colliderMask = CL_WALL,
+                        .isActive = true,
+                        .autoFitToSprite = false
+                    });
 
-                    // Additional shape: Feet collider (for walls)
-                    ColliderShape feetCollider;
-                    feetCollider.size = Vec2(2.f, 0.5f);          // Smaller ground footprint
-                    feetCollider.offset = Vec2(0.f, -2.f);          // At the bottom
-                    feetCollider.purpose = ColliderPurpose::Environment;
-                    feetCollider.layer = CL_WALL;
-                    feetCollider.colliderMask = CL_WALL; // Walls and other enemies
-
-                    enemyCollider.additionalShapes.push_back(feetCollider);
-
+                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
                     gCoordinator.AddComponent(enemy, enemyCollider);
                 }
 
@@ -539,22 +562,25 @@ namespace Uma_Engine
                 // Create collider with two shapes
                 Collider playerCollider;
 
-                // Primary shape: Body hitbox (for taking damage)
-                playerCollider.autoFitToSprite = true,
-                playerCollider.primaryPurpose = ColliderPurpose::Physics;
-                playerCollider.layer = CL_PLAYER;
-                playerCollider.colliderMask = CL_ENEMY | CL_PROJECTILE;
+                playerCollider.shapes[0] = ColliderShape{
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_PLAYER,
+                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = true
+                    };
 
-                // Additional shape: Feet collider (for walls)
-                ColliderShape feetCollider;
-                feetCollider.size = Vec2(7.0f, 0.5f);          // Smaller ground footprint
-                feetCollider.offset = Vec2(0, -3.f);          // At the bottom
-                feetCollider.purpose = ColliderPurpose::Environment;
-                feetCollider.layer = CL_WALL;
-                feetCollider.colliderMask = CL_WALL; // Walls and other enemies
+                playerCollider.shapes.push_back(ColliderShape{
+                    .size = Vec2(7.0f, 0.5f),
+                    .offset = Vec2(0, -3.f),
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_PLAYER,
+                    .colliderMask = CL_WALL,
+                    .isActive = true,
+                    .autoFitToSprite = false
+                    });
 
-                playerCollider.additionalShapes.push_back(feetCollider);
-
+                playerCollider.bounds.resize(playerCollider.shapes.size());
                 gCoordinator.AddComponent(player, playerCollider);
             }
 
@@ -619,12 +645,12 @@ namespace Uma_Engine
                     gCoordinator.AddComponent(
                         enemy,
                         Transform{
-                          .position = Vec2(0, 0),
+                          .position = Vec2(-10, 0),
                           .rotation = Vec2(0, 0),
-                          .scale = Vec2(15, 15)
+                          .scale = Vec2(1.f, 1.f)
                         });
 
-                    std::string texName = "enemy";
+                    std::string texName = "pink_enemy";
                     gCoordinator.AddComponent(
                         enemy,
                         Sprite{
@@ -635,13 +661,31 @@ namespace Uma_Engine
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
-                    gCoordinator.AddComponent(
-                        enemy,
-                        Collider{
-                          .autoFitToSprite = true,
-                          .layer = CollisionLayer::CL_ENEMY,
-                          .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE | CollisionLayer::CL_WALL
+                    // Create collider with two shapes
+                    Collider enemyCollider;
+
+                    enemyCollider.shapes[0] = ColliderShape{
+                        .size = Vec2(3.f, 3.f),
+                        .offset = Vec2(0.f, 1.f),
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_ENEMY,
+                        .colliderMask = CL_PLAYER | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = false
+                        };
+
+                    enemyCollider.shapes.push_back(ColliderShape{
+                        .size = Vec2(2.f, 0.5f),
+                        .offset = Vec2(0.f, -2.f),
+                        .purpose = ColliderPurpose::Environment,
+                        .layer = CL_WALL,
+                        .colliderMask = CL_WALL,
+                        .isActive = true,
+                        .autoFitToSprite = false
                         });
+
+                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
+                    gCoordinator.AddComponent(enemy, enemyCollider);
                 }
 
                 gGameSerializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
@@ -649,8 +693,6 @@ namespace Uma_Engine
                 Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
 
                 tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                tf.rotation = Vec2(0, 0); // I change this wai men
-                tf.scale = Vec2(randScale(generator), randScale(generator));
 
             }
             else
@@ -724,12 +766,12 @@ namespace Uma_Engine
                     gCoordinator.AddComponent(
                         enemy,
                         Transform{
-                          .position = Vec2(randPositionX(generator), randPositionY(generator)),
-                          .rotation = Vec2(randRotation(generator), randRotation(generator)), // I change this wai men
-                          .scale = Vec2(randScale(generator), randScale(generator))
+                          .position = Vec2(-10, 0),
+                          .rotation = Vec2(0, 0),
+                          .scale = Vec2(1.f, 1.f)
                         });
 
-                    std::string texName = "enemy";
+                    std::string texName = "pink_enemy";
                     gCoordinator.AddComponent(
                         enemy,
                         Sprite{
@@ -740,13 +782,31 @@ namespace Uma_Engine
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
-                    gCoordinator.AddComponent(
-                        enemy,
-                        Collider{
-                          .autoFitToSprite = true,
-                          .layer = CollisionLayer::CL_ENEMY,
-                          .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_PLAYER | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE
+                    // Create collider with two shapes
+                    Collider enemyCollider;
+
+                    enemyCollider.shapes[0] = ColliderShape{
+                        .size = Vec2(3.f, 3.f),
+                        .offset = Vec2(0.f, 1.f),
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_ENEMY,
+                        .colliderMask = CL_PLAYER | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = false
+                        };
+
+                    enemyCollider.shapes.push_back(ColliderShape{
+                        .size = Vec2(2.f, 0.5f),
+                        .offset = Vec2(0.f, -2.f),
+                        .purpose = ColliderPurpose::Environment,
+                        .layer = CL_WALL,
+                        .colliderMask = CL_WALL,
+                        .isActive = true,
+                        .autoFitToSprite = false
                         });
+
+                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
+                    gCoordinator.AddComponent(enemy, enemyCollider);
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
@@ -757,12 +817,10 @@ namespace Uma_Engine
                     Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                    tf.rotation = Vec2(randRotation(generator), randRotation(generator));
-                    tf.scale = Vec2(randScale(generator), randScale(generator));
 
                     Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 
-                    sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
+                    //sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
                     sr.texture = pResourcesManager->GetTexture(sr.textureName);
                 }
             }
@@ -805,14 +863,29 @@ namespace Uma_Engine
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
-                gCoordinator.AddComponent(
-                    player,
-                    Collider{
-                        //.size = Vec2{5.f, 5.f},
-                        .autoFitToSprite = true,
-                        .layer = CollisionLayer::CL_PLAYER,
-                        .colliderMask = CollisionLayer::CL_ENEMY | CollisionLayer::CL_WALL | CollisionLayer::CL_PROJECTILE
+                // Create collider with two shapes
+                Collider playerCollider;
+
+                playerCollider.shapes[0] = ColliderShape{
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_PLAYER,
+                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = true
+                    };
+
+                playerCollider.shapes.push_back(ColliderShape{
+                    .size = Vec2(7.0f, 0.5f),
+                    .offset = Vec2(0, -3.f),
+                    .purpose = ColliderPurpose::Environment,
+                    .layer = CL_WALL,
+                    .colliderMask = CL_WALL,
+                    .isActive = true,
+                    .autoFitToSprite = false
                     });
+
+                playerCollider.bounds.resize(playerCollider.shapes.size());
+                gCoordinator.AddComponent(player, playerCollider);
             }
 
             // create camera

@@ -24,20 +24,20 @@
         ],
         "sounds": [
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
-                "type": 0
-            },
-            {
                 "name": "cave",
                 "path": "Assets/sounds/cave.mp3",
                 "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
+                "type": 0
             }
         ]
     },
     "entities": [
         {
-            "id": 10,
+            "id": 4,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -72,24 +72,46 @@
                     "fric_coeff": 100.0
                 },
                 "struct Uma_ECS::Collider": {
-                    "size": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "offset": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "autoFitToSprite": true,
-                    "primaryPurpose": 1,
-                    "layer": 8,
-                    "colliderMask": 8,
-                    "showBBox": true
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "purpose": 0,
+                            "layer": 0,
+                            "colliderMask": 0,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        },
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 8,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
                 }
             }
         },
         {
-            "id": 11,
+            "id": 5,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -124,20 +146,40 @@
                     "fric_coeff": 100.0
                 },
                 "struct Uma_ECS::Collider": {
-                    "size": {
-                        "x": 3.0,
-                        "y": 3.0
-                    },
-                    "offset": {
-                        "x": 0.0,
-                        "y": 1.0
-                    },
-                    "autoFitToSprite": false,
-                    "primaryPurpose": 0,
-                    "layer": 4,
-                    "colliderMask": 18,
-                    "showBBox": true,
-                    "additionalShapes": [
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "purpose": 0,
+                            "layer": 0,
+                            "colliderMask": 0,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        },
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 1.0
+                            },
+                            "size": {
+                                "x": 3.0,
+                                "y": 3.0
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 18,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
                         {
                             "offset": {
                                 "x": 0.0,
@@ -150,7 +192,8 @@
                             "purpose": 1,
                             "layer": 8,
                             "colliderMask": 8,
-                            "isActive": true
+                            "isActive": true,
+                            "autoFitToSprite": false
                         }
                     ]
                 },
@@ -160,7 +203,7 @@
             }
         },
         {
-            "id": 12,
+            "id": 6,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -198,20 +241,40 @@
                     "fric_coeff": 5.0
                 },
                 "struct Uma_ECS::Collider": {
-                    "size": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "offset": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "autoFitToSprite": true,
-                    "primaryPurpose": 0,
-                    "layer": 2,
-                    "colliderMask": 20,
-                    "showBBox": true,
-                    "additionalShapes": [
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "purpose": 0,
+                            "layer": 0,
+                            "colliderMask": 0,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        },
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 0,
+                            "layer": 2,
+                            "colliderMask": 20,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
                         {
                             "offset": {
                                 "x": 0.0,
@@ -224,7 +287,8 @@
                             "purpose": 1,
                             "layer": 8,
                             "colliderMask": 8,
-                            "isActive": true
+                            "isActive": true,
+                            "autoFitToSprite": false
                         }
                     ]
                 },
@@ -235,7 +299,7 @@
             }
         },
         {
-            "id": 13,
+            "id": 7,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
