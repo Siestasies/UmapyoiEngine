@@ -124,8 +124,12 @@ namespace Uma_ECS
             );
         }
 
+        
+
         for (const auto& entity : aEntities)
         {
+            if (!cArray.Has(entity)) continue;
+
             auto& c = cArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 

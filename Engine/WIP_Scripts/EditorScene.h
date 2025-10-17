@@ -430,6 +430,144 @@ namespace Uma_Engine
                 gCoordinator.AddComponent(kappa, kappaCollider);
             }
 
+            Entity wall;
+            {
+                wall = gCoordinator.CreateEntity();
+
+                gCoordinator.AddComponent(
+                    wall,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 200,
+                      .fric_coeff = 100
+                    });
+
+                gCoordinator.AddComponent(
+                    wall,
+                    Transform{
+                      .position = Vec2(20, 0),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(1.f, 1.f)
+                    });
+
+                std::string texName = "wall_top";
+                gCoordinator.AddComponent(
+                    wall,
+                    Sprite{
+                      .textureName = texName,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = pResourcesManager->GetTexture(texName),
+                    });
+
+                // Create collider with two shapes
+                Collider wallCollider;
+
+                // Primary shape: Body hitbox (for taking damage)
+                wallCollider.shapes[0] = ColliderShape{
+                    .purpose = ColliderPurpose::Environment,
+                    .layer = CL_WALL,
+                    .colliderMask = CL_PLAYER | CL_ENEMY,  // Blocks entities,
+                    .isActive = true,
+                    .autoFitToSprite = true  // Will be 128x128 (64*2 scale)
+                };
+
+                wallCollider.bounds.resize(wallCollider.shapes.size());
+                gCoordinator.AddComponent(wall, wallCollider);
+
+                for (size_t i = 0; i < 5; i++)
+                {
+                    Entity tmp = gCoordinator.DuplicateEntity(wall);
+
+                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+                    tf.position = Vec2(20 + (i * 5), 0);
+
+                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
+
+                    // set texture randomly
+                    sr.textureName = "wall_btm";
+                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                }
+
+                for (size_t i = 0; i < 6; i++)
+                {
+                    Entity tmp = gCoordinator.DuplicateEntity(wall);
+
+                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+                    tf.position = Vec2(15 + (6 * 5), 5 + (i * 5));
+
+                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
+
+                    // set texture randomly
+                    sr.textureName = "wall_right";
+                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                }
+
+                for (size_t i = 0; i < 5; i++)
+                {
+                    Entity tmp = gCoordinator.DuplicateEntity(wall);
+
+                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+                    tf.position = Vec2(20 + (i * 5), 15 + (4 * 5));
+
+                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
+
+                    // set texture randomly
+                    sr.textureName = "wall_top";
+                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                }
+            }
+
+            Entity floor;
+            {
+                floor = gCoordinator.CreateEntity();
+
+                gCoordinator.AddComponent(
+                    floor,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 200,
+                      .fric_coeff = 100
+                    });
+
+                gCoordinator.AddComponent(
+                    floor,
+                    Transform{
+                      .position = Vec2(20, 7.5),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(2.f, 2.f)
+                    });
+
+                std::string texName = "floor_tatami";
+                gCoordinator.AddComponent(
+                    floor,
+                    Sprite{
+                      .textureName = texName,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = pResourcesManager->GetTexture(texName),
+                    });
+
+                for (size_t i = 0; i < 5; i++)
+                {
+                    for (size_t j = 0; j < 3; j++)
+                    {
+                        Entity tmp = gCoordinator.DuplicateEntity(floor);
+
+                        Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
+
+                        tf.position = Vec2(20 + (i * 5), 7.5 + (j * 10));
+                    }
+                }
+            }
+
             // create entities
             {
                 //std::default_random_engine generator;

@@ -266,7 +266,8 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
         return;
 
     // Resolve position overlap
-    ResolveAABBCollision(tf1, tf2, box1, box2, e1CanMove, e2CanMove);
+    ResolveAABBDynamicCollision(tf1, tf2, box1, box2, e1CanMove, e2CanMove);
+    //ResolveAABBStaticCollision(tf1,  box1, tf2, box2);
 
     // Apply velocity changes based on collision type
     if (e1CanMove && e2CanMove)
@@ -330,7 +331,7 @@ Vec2 Uma_ECS::CollisionSystem::GetCollisionNormal(
     return delta;
 }
 
-void Uma_ECS::CollisionSystem::ResolveAABBCollision(
+void Uma_ECS::CollisionSystem::ResolveAABBDynamicCollision(
     Transform& tf1, Transform& tf2,
     const BoundingBox& box1, const BoundingBox& box2,
     bool e1CanMove, bool e2CanMove)
@@ -384,6 +385,65 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     }
     // If both can't move, do nothing (shouldn't happen due to earlier check)
 }
+
+void Uma_ECS::CollisionSystem::ResolveAABBStaticCollision(Transform& lhsTransform, const BoundingBox& lhsBound,
+    Transform& rhsTransform,const BoundingBox& rhsBound)
+{
+    // Use the already-calculated bounding boxes from the colliders
+    const BoundingBox& lhsBox = lhsBound;
+    const BoundingBox& rhsBox = rhsBound;
+
+    // Calculate the centers and half-extents
+    Vec2 lhsCenter = Vec2(
+        (lhsBox.min.x + lhsBox.max.x) * 0.5f,
+        (lhsBox.min.y + lhsBox.max.y) * 0.5f
+    );
+    Vec2 rhsCenter = Vec2(
+        (rhsBox.min.x + rhsBox.max.x) * 0.5f,
+        (rhsBox.min.y + rhsBox.max.y) * 0.5f
+    );
+
+    Vec2 lhsHalfExtents = Vec2(
+        (lhsBox.max.x - lhsBox.min.x) * 0.5f,
+        (lhsBox.max.y - lhsBox.min.y) * 0.5f
+    );
+    Vec2 rhsHalfExtents = Vec2(
+        (rhsBox.max.x - rhsBox.min.x) * 0.5f,
+        (rhsBox.max.y - rhsBox.min.y) * 0.5f
+    );
+
+    // Calculate overlap on both axes
+    float overlapX = (lhsHalfExtents.x + rhsHalfExtents.x) - std::abs(lhsCenter.x - rhsCenter.x);
+    float overlapY = (lhsHalfExtents.y + rhsHalfExtents.y) - std::abs(lhsCenter.y - rhsCenter.y);
+
+    // Only resolve if actually overlapping
+    if (overlapX > 0 && overlapY > 0) {
+        // Resolve along the axis with the smallest overlap (minimum translation vector)
+        if (overlapX < overlapY) {
+            // Resolve along X axis
+            if (lhsCenter.x < rhsCenter.x) {
+                lhsTransform.position.x -= overlapX / 2;
+                rhsTransform.position.x += overlapX / 2;
+            }
+            else {
+                lhsTransform.position.x += overlapX / 2;
+                rhsTransform.position.x -= overlapX / 2;
+            }
+        }
+        else {
+            // Resolve along Y axis
+            if (lhsCenter.y < rhsCenter.y) {
+                lhsTransform.position.y -= overlapY / 2;
+                rhsTransform.position.y += overlapY / 2;
+            }
+            else {
+                lhsTransform.position.y += overlapY / 2;
+                rhsTransform.position.y -= overlapY / 2;
+            }
+        }
+    }
+}
+
 
 void Uma_ECS::CollisionSystem::InsertIntoGrid(std::unordered_map<Cell, std::vector<Entity>, CellHash>& grid, Entity e, const BoundingBox& box)
 {

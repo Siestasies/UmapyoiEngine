@@ -147,7 +147,7 @@ namespace Uma_ECS
 
         void Deserialize(const rapidjson::Value& value)
         {
-            /*if (value.HasMember("defaultLayer"))
+            if (value.HasMember("defaultLayer"))
                 defaultLayer = value["defaultLayer"].GetUint();
 
             if (value.HasMember("defaultMask"))
@@ -204,7 +204,7 @@ namespace Uma_ECS
                 }
 
                 bounds.resize(shapes.size());
-            }*/
+            }
         }
     };
 }

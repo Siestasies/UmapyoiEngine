@@ -55,6 +55,7 @@ namespace Uma_ECS
     struct Collider;
     struct RigidBody;
     enum class ColliderPurpose;
+    struct BoundingBox;
 
     class CollisionSystem : public ECSSystem
     {
@@ -109,10 +110,13 @@ namespace Uma_ECS
             const BoundingBox& box1,
             const BoundingBox& box2);
 
-        void ResolveAABBCollision(
+        void ResolveAABBDynamicCollision(
             Transform& tf1, Transform& tf2,
             const BoundingBox& box1, const BoundingBox& box2,
             bool e1CanMove, bool e2CanMove);
+
+        void ResolveAABBStaticCollision(Transform& lhsTransform, const BoundingBox& lhsBound,
+            Transform& rhsTransform, const BoundingBox& rhsBound);
 
         inline int WorldToCell(float coord) {
             return static_cast<int>(std::floor(coord / CELL_SIZE));

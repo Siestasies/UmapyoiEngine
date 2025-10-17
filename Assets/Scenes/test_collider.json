@@ -6,6 +6,14 @@
                 "path": "Assets/hello.jpg"
             },
             {
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
+            },
+            {
+                "name": "wall_left",
+                "path": "Assets/wall_left.png"
+            },
+            {
                 "name": "enemy",
                 "path": "Assets/marisa.png"
             },
@@ -20,24 +28,44 @@
             {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
+            },
+            {
+                "name": "wall_top_left",
+                "path": "Assets/wall_top_left.png"
+            },
+            {
+                "name": "wall_right",
+                "path": "Assets/wall_right.png"
+            },
+            {
+                "name": "wall_btm",
+                "path": "Assets/wall_btm.png"
+            },
+            {
+                "name": "floor_tatami",
+                "path": "Assets/floor_tatami.png"
             }
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
     "entities": [
         {
-            "id": 4,
+            "id": 5,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -82,15 +110,59 @@
                                 "y": 0.0
                             },
                             "size": {
-                                "x": 1.0,
-                                "y": 1.0
+                                "x": 0.0,
+                                "y": 0.0
                             },
-                            "purpose": 0,
-                            "layer": 0,
-                            "colliderMask": 0,
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
                             "isActive": true,
                             "autoFitToSprite": true
-                        },
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 6,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
                         {
                             "offset": {
                                 "x": 0.0,
@@ -102,7 +174,7 @@
                             },
                             "purpose": 1,
                             "layer": 8,
-                            "colliderMask": 8,
+                            "colliderMask": 6,
                             "isActive": true,
                             "autoFitToSprite": true
                         }
@@ -111,7 +183,1543 @@
             }
         },
         {
-            "id": 5,
+            "id": 7,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_btm",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 8,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 25.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_btm",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 9,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 30.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_btm",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 10,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 35.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_btm",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 11,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 40.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_btm",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 12,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 5.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 13,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 10.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 14,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 15.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 15,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 20.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 16,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 25.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 17,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 45.0,
+                        "y": 30.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_right",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 18,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 35.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 19,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 25.0,
+                        "y": 35.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 20,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 30.0,
+                        "y": 35.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 21,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 35.0,
+                        "y": 35.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 22,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 40.0,
+                        "y": 35.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "wall_top",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 23,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 24,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 25,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 17.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 26,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 20.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 27,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 25.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 28,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 25.0,
+                        "y": 17.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 29,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 25.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 30,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 30.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 31,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 30.0,
+                        "y": 17.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 32,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 30.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 33,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 35.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 34,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 35.0,
+                        "y": 17.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 35,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 35.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 36,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 40.0,
+                        "y": 7.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 37,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 40.0,
+                        "y": 17.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 38,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": 40.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 39,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -153,21 +1761,6 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "purpose": 0,
-                            "layer": 0,
-                            "colliderMask": 0,
-                            "isActive": true,
-                            "autoFitToSprite": true
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
                                 "y": 1.0
                             },
                             "size": {
@@ -189,8 +1782,8 @@
                                 "x": 2.0,
                                 "y": 0.5
                             },
-                            "purpose": 1,
-                            "layer": 8,
+                            "purpose": 0,
+                            "layer": 4,
                             "colliderMask": 8,
                             "isActive": true,
                             "autoFitToSprite": false
@@ -203,12 +1796,12 @@
             }
         },
         {
-            "id": 6,
+            "id": 40,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 9.711,
+                        "y": 6.056
                     },
                     "rotation": {
                         "x": 0.0,
@@ -230,12 +1823,12 @@
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
-                        "x": 0.0,
+                        "x": -2.595,
                         "y": 0.0
                     },
                     "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -0.01,
+                        "y": -0.0
                     },
                     "accel_strength": 500.0,
                     "fric_coeff": 5.0
@@ -251,21 +1844,6 @@
                                 "y": 0.0
                             },
                             "size": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "purpose": 0,
-                            "layer": 0,
-                            "colliderMask": 0,
-                            "isActive": true,
-                            "autoFitToSprite": true
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
                                 "x": 0.0,
                                 "y": 0.0
                             },
@@ -273,7 +1851,7 @@
                             "layer": 2,
                             "colliderMask": 20,
                             "isActive": true,
-                            "autoFitToSprite": false
+                            "autoFitToSprite": true
                         },
                         {
                             "offset": {
@@ -284,8 +1862,8 @@
                                 "x": 7.0,
                                 "y": 0.5
                             },
-                            "purpose": 1,
-                            "layer": 8,
+                            "purpose": 0,
+                            "layer": 2,
                             "colliderMask": 8,
                             "isActive": true,
                             "autoFitToSprite": false
@@ -299,7 +1877,7 @@
             }
         },
         {
-            "id": 7,
+            "id": 41,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
