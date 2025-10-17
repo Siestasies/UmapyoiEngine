@@ -305,6 +305,18 @@ namespace Uma_Math
 		return Vector2D<T>(lhs.x - rhs.x, lhs.y - rhs.y);
 	}
 
+	template <typename T>
+	constexpr Vector2D<T> operator*(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
+	{
+		return Vector2D<T>(lhs.x * rhs.x, lhs.y * rhs.y);
+	}
+
+	template <typename T>
+	constexpr Vector2D<T> operator/(const Vector2D<T>& lhs, const Vector2D<T>& rhs)
+	{
+		return Vector2D<T>(lhs.x / rhs.x, lhs.y / rhs.y);
+	}
+
 	template <typename T, typename U>
 	constexpr Vector2D<T> operator*(const Vector2D<T>& vec, U scalar)
 	{
@@ -323,6 +335,12 @@ namespace Uma_Math
 		return Vector2D<T>(vec.x / scalar, vec.y / scalar);
 	}
 
+	template <typename T, typename U>
+	constexpr Vector2D<T> operator/(U scalar, const Vector2D<T>& vec)
+	{
+		return Vector2D<T>(scalar / vec.x, scalar / vec.y);
+	}
+
 	template <typename T>
 	constexpr Vector3D<T> operator+(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
@@ -333,6 +351,18 @@ namespace Uma_Math
 	constexpr Vector3D<T> operator-(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
 	{
 		return Vector3D<T>(lhs.x - rhs.x, lhs.y - rhs.y, lhs.z - rhs.z);
+	}
+
+	template <typename T>
+	constexpr Vector3D<T> operator*(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
+	{
+		return Vector3D<T>(lhs.x * rhs.x, lhs.y * rhs.y, lhs.z * rhs.z);
+	}
+
+	template <typename T>
+	constexpr Vector3D<T> operator/(const Vector3D<T>& lhs, const Vector3D<T>& rhs)
+	{
+		return Vector3D<T>(lhs.x / rhs.x, lhs.y / rhs.y, lhs.z / rhs.z);
 	}
 
 	template <typename T, typename U>
@@ -351,6 +381,12 @@ namespace Uma_Math
 	constexpr Vector3D<T> operator/(const Vector3D<T>& vec, U scalar)
 	{
 		return Vector3D<T>(vec.x / scalar, vec.y / scalar, vec.z / scalar);
+	}
+
+	template <typename T, typename U>
+	constexpr Vector3D<T> operator/(U scalar, const Vector3D<T>& vec)
+	{
+		return Vector3D<T>(scalar / vec.x, scalar / vec.y, scalar / vec.z);
 	}
 
 	// Unary minus operator
