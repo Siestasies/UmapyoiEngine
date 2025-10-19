@@ -398,9 +398,9 @@ namespace Uma_Engine
                 gCoordinator.AddComponent(
                     kappa,
                     Transform{
-                      .position = Vec2(20, 0),
+                      .position = Vec2(30, 35),
                       .rotation = Vec2(0, 0),
-                      .scale = Vec2(1.f, 1.f)
+                      .scale = Vec2(3.f, 3.f)
                     });
 
                 std::string texName = "kappa_statue";
@@ -408,26 +408,12 @@ namespace Uma_Engine
                     kappa,
                     Sprite{
                       .textureName = texName,
+                      .renderLayer = RL_ENV,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
-
-                // Create collider with two shapes
-                Collider kappaCollider;
-
-                // Primary shape: Body hitbox (for taking damage)
-                kappaCollider.shapes[0] = ColliderShape{
-                    .purpose = ColliderPurpose::Environment,
-                    .layer = CL_WALL,
-                    .colliderMask = CL_PLAYER | CL_ENEMY,  // Blocks entities,
-                    .isActive = true,
-                    .autoFitToSprite = true  // Will be 128x128 (64*2 scale)
-                };
-
-                kappaCollider.bounds.resize(kappaCollider.shapes.size());
-                gCoordinator.AddComponent(kappa, kappaCollider);
             }
 
             Entity wall;
@@ -456,6 +442,7 @@ namespace Uma_Engine
                     wall,
                     Sprite{
                       .textureName = texName,
+                      .renderLayer = RL_WALL,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
@@ -549,6 +536,7 @@ namespace Uma_Engine
                     floor,
                     Sprite{
                       .textureName = texName,
+                      .renderLayer = RL_WALL,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
@@ -600,7 +588,7 @@ namespace Uma_Engine
                         Transform{
                           .position = Vec2(-10, 0),
                           .rotation = Vec2(0, 0),
-                          .scale = Vec2(1.f, 1.f)
+                          .scale = Vec2(2.f, 2.f)
                         });
 
                     std::string texName = "pink_enemy";
@@ -608,6 +596,7 @@ namespace Uma_Engine
                         enemy,
                         Sprite{
                           .textureName = texName,
+                          .renderLayer = RL_ENEMY,
                           .flipX = false,
                           .flipY = false,
                           .UseNativeSize = true,
@@ -691,6 +680,7 @@ namespace Uma_Engine
                     player,
                     Sprite{
                       .textureName = texName,
+                      .renderLayer = RL_PLAYER,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,

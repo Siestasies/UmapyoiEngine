@@ -24,10 +24,10 @@ All rights reserved.
 #pragma once
 
 #include "Math/Math.h"
+#include "Core/Types.hpp"
 
 namespace Uma_ECS
 {
-    using LayerMask = unsigned int;
 
     // using bitmask (raw integers), faster n cheaper approach 
     // compared to using bitset<N> like what I did in ECS component

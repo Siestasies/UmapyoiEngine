@@ -36,6 +36,7 @@ All rights reserved.
 
 #include <cassert>
 #include <sstream>
+#include <algorithm>
 
 namespace Uma_ECS
 {
@@ -64,6 +65,9 @@ namespace Uma_ECS
         auto& cam_c = camArray.GetData(camera);
 
         pGraphics->SetCamInfo(cam_tf.position, 10);
+
+        // need to sort the entities before rendering based on their layer
+        SortEntitiesByLayer(aEntities);
 
         // Iterate over the smaller array for efficiency (here, RigidBody)
         std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
@@ -125,7 +129,9 @@ namespace Uma_ECS
         }
 
         
-
+        // this is for debug drawing 
+        // NEED TO CLEAN THIS CODE OMG
+        // REMINE ME NEXT TIME I WILL FORGET
         for (const auto& entity : aEntities)
         {
             if (!cArray.Has(entity)) continue;
@@ -185,5 +191,21 @@ namespace Uma_ECS
                 pGraphics->DrawDebugRect(bounds, r, g, b);
             }
         }
+    }
+
+    void RenderingSystem::SortEntitiesByLayer(std::vector<Entity>& sorted)
+    {
+        // sort it
+
+        auto& srArray = pCoordinator->GetComponentArray<Sprite>();
+
+        std::sort(sorted.begin(), sorted.end(),
+            [&srArray](Entity const& a, Entity const& b)
+            {
+                auto& spriteA = srArray.GetData(a);
+                auto& spriteB = srArray.GetData(b);
+
+                return spriteA.renderLayer < spriteB.renderLayer;
+            });
     }
 }

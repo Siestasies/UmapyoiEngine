@@ -166,8 +166,8 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
         return;
 
     // Broad phase: check primary bounds
-    if (!CollisionIntersection_RectRect_Static(c1.bounds[0], c2.bounds[0]))
-        return;
+    /*if (!CollisionIntersection_RectRect_Static(c1.bounds[0], c2.bounds[0]))
+        return;*/
 
     // Get components
     auto& tf1 = tfArray.GetData(e1);

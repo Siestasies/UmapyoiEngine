@@ -25,14 +25,27 @@ All rights reserved.
 
 #include "../../Math/Math.h"
 #include "../Systems/ResourcesTypes.hpp"
+#include "Core/Types.hpp"
 
 namespace Uma_ECS
 {
+    enum RenderLayer : LayerMask
+    {
+        RL_NONE = 1 << 0,
+        RL_WALL = 1 << 1,
+        RL_ENV = 1 << 2,
+        RL_ENEMY = 1 << 3,
+        RL_PLAYER = 1 << 4,
+        RL_UI = 1 << 5
+    };
+
+
     // currently in 2d
     struct Sprite
     {
         // pointer pointing to the texture in resources manager
         std::string textureName{};
+        LayerMask renderLayer = RL_NONE;
         bool flipX{};
         bool flipY{};
         bool UseNativeSize{};
@@ -47,6 +60,8 @@ namespace Uma_ECS
                 rapidjson::Value(textureName.c_str(), allocator),
                 allocator);
 
+            value.AddMember("Layer", renderLayer, allocator);
+
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
             value.AddMember("Native", UseNativeSize, allocator);
@@ -56,6 +71,7 @@ namespace Uma_ECS
         void Deserialize(const rapidjson::Value& value) //override
         {
             textureName = value["textureName"].GetString();
+            renderLayer = value["Layer"].GetUint();
             flipX = value["flipX"].GetBool();
             flipY = value["flipY"].GetBool();
             UseNativeSize = value["Native"].GetBool();

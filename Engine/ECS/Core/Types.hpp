@@ -45,6 +45,10 @@ namespace Uma_ECS
     const Entity MAX_ENTITIES = 11000;
     using ComponentType = unsigned int;
     const ComponentType MAX_COMPONENTS = 32;
+
+		// for component that requires layer
+		// eg collider and renderer
+		using LayerMask = unsigned int;
 		
 		// this is to track which components an entity has 
 		using Signature = std::bitset<MAX_COMPONENTS>;
