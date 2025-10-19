@@ -29,10 +29,11 @@ All rights reserved.
 #include "../Components/Player.h"
 
 #include "PlayerEvents.h"
+#include "Debugging/Debugger.hpp"
 
 #include <GLFW/glfw3.h>
 
-#define _DEBUG_LOG
+//#define _DEBUG_LOG
 
 #ifdef _DEBUG_LOG
 #include <iostream>
@@ -143,7 +144,10 @@ namespace Uma_ECS
         rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
      
 #ifdef _DEBUG_LOG
-        //std::cout << "Player Movement: " << rb.velocity << std::endl;
+
+        std::stringstream ss{ "" };
+        ss << "Player Movement: " << rb.velocity;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
 #endif
 
     }

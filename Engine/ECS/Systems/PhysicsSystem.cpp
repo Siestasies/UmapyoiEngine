@@ -55,6 +55,8 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         if (std::abs(rb.velocity.y) < epsilon) rb.velocity.y = 0.f;
 
         tf.position += rb.velocity * dt;
+
+        //rb.acceleration = { 0, 0 };
     }
 
     //// Get dense component arrays once

@@ -10,13 +10,11 @@
 \par    DigiPen login: waimen.leong
 
 \brief
-Defines collision detection and resolution system using spatial hashing with AABB (axis-aligned bounding box) primitives.
+Defines collision detection and resolution system using spatial hashing with AABB primitives.
 
+Unity-inspired approach with contact normals, velocity projection, and purpose-based resolution.
 Provides layer-based collision filtering through bitmask operations on Collider components.
 Cell struct and CellHash functor enable grid-based spatial partitioning with configurable CELL_SIZE constant.
-Exposes helper methods for layer management (ShouldCollide, IsInLayer, SetLayer, AddMask) and internal methods
-for grid insertion, static/dynamic AABB intersection tests, and penetration-based collision resolution.
-Maintains Coordinator reference for component array access.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -26,27 +24,29 @@ All rights reserved.
 
 #include "../Core/System.hpp"
 #include "../Core/Coordinator.hpp"
-
 #include "Components/Collider.h"
 
-const float CELL_SIZE = 50.0f; // tune this based on your game world
+#include <unordered_set>
+
+const float CELL_SIZE = 100.0f; // Tune based on your game world
 
 namespace Uma_ECS
 {
-    struct Cell {
+    struct Cell
+    {
         int x, y;
 
-        bool operator==(const Cell& other) const {
+        bool operator==(const Cell& other) const
+        {
             return x == other.x && y == other.y;
         }
     };
 
-    // custom hash for unordered_map
-    // this is to make cell into the hash key
-    // so that the unorderedmap can be accessed using this hash key
-    struct CellHash {
-        std::size_t operator()(const Cell& c) const {
-            // mix x and y into one hash
+    // Hash function for spatial grid
+    struct CellHash
+    {
+        std::size_t operator()(const Cell& c) const
+        {
             return (std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) << 1));
         }
     };
@@ -54,51 +54,32 @@ namespace Uma_ECS
     struct Transform;
     struct Collider;
     struct RigidBody;
-    enum class ColliderPurpose;
-    struct BoundingBox;
 
     class CollisionSystem : public ECSSystem
     {
     public:
-
         inline void Init(Coordinator* c) { gCoordinator = c; }
 
         void Update(float dt);
 
-        //inline bool ShouldCollide(const Collider& lhs, const Collider& rhs)
-        //{
-        //    // check if they shd collider for both of their layer and collider mask
-        //    return (lhs.layer & rhs.colliderMask) && (lhs.colliderMask & rhs.layer);
-        //}
-
-        //inline bool IsInLayer(const Collider& col, CollisionLayer layer) 
-        //{
-        //    return (col.layer & layer) != 0;
-        //}
-
-        //inline void SetLayer(Collider& col, CollisionLayer layer) 
-        //{
-        //    col.layer = layer;
-        //}
-
-        //inline void AddMask(Collider& col, CollisionLayer layer) 
-        //{
-        //    col.colliderMask |= layer;
-        //}
-
-
-
-
     private:
-
+        // Bounding box update
         void UpdateBoundingBoxes();
 
+        // Collision detection and resolution
         void UpdateCollision(float dt);
 
-        bool ShouldShapesCollide(
-            const ColliderPurpose& shape1Purpose,
-            const ColliderPurpose& shape2Purpose);
+        void CheckEntityPairCollision(
+            Entity e1, Entity e2,
+            ComponentArray<Transform>& tfArray,
+            ComponentArray<Collider>& cArray,
+            ComponentArray<RigidBody>& rbArray,
+            float dt);
 
+        // Purpose-based collision filtering
+        bool ShouldPurposesCollide(ColliderPurpose p1, ColliderPurpose p2);
+
+        // Unity-style collision handling
         void HandleShapeCollision(
             Entity e1, Entity e2,
             Transform& tf1, Transform& tf2,
@@ -106,19 +87,18 @@ namespace Uma_ECS
             const BoundingBox& box1, const BoundingBox& box2,
             ColliderPurpose purpose1, ColliderPurpose purpose2);
 
-        Vec2 GetCollisionNormal(
-            const BoundingBox& box1,
-            const BoundingBox& box2);
-
-        void ResolveAABBDynamicCollision(
+        // Unity-style AABB resolution with contact normals
+        void ResolveAABBCollision(
             Transform& tf1, Transform& tf2,
             const BoundingBox& box1, const BoundingBox& box2,
-            bool e1CanMove, bool e2CanMove);
+            bool e1CanMove, bool e2CanMove,
+            RigidBody* rb1, RigidBody* rb2);
 
-        void ResolveAABBStaticCollision(Transform& lhsTransform, const BoundingBox& lhsBound,
-            Transform& rhsTransform, const BoundingBox& rhsBound);
+        // Helper functions
+        Vec2 GetCollisionNormal(const BoundingBox& box1, const BoundingBox& box2);
 
-        inline int WorldToCell(float coord) {
+        inline int WorldToCell(float coord)
+        {
             return static_cast<int>(std::floor(coord / CELL_SIZE));
         }
 
@@ -127,35 +107,22 @@ namespace Uma_ECS
             Entity e,
             const BoundingBox& box);
 
-        // AABB Collsion
-        bool CollisionIntersection_RectRect_Static(const BoundingBox& lhs, const BoundingBox& rhs);
-
-        bool CollisionIntersection_RectRect_Dynamic(const BoundingBox& lhs,
-            const Vec2& vel1,
-            const BoundingBox& rhs,
-            const Vec2& vel2,
-            float& firstTimeOfCollision,
-            float dt);
-
-        inline bool CollisionIntersection_RectRect(const BoundingBox& lhs,
-            const Vec2& vel1,
-            const BoundingBox& rhs,
-            const Vec2& vel2,
-            float& firstTimeOfCollision,
-            float dt)
-        {
-            //Step 1
-            bool staticCollision = false;
-            staticCollision = CollisionIntersection_RectRect_Static(lhs, rhs);
-            if (staticCollision)
-            {
-                return true;
-            }
-
-            //Step 2 until 5
-            return CollisionIntersection_RectRect_Dynamic(lhs, vel1, rhs, vel2, firstTimeOfCollision, dt);
-        }
+        // AABB intersection test
+        bool CollisionIntersection_RectRect_Static(
+            const BoundingBox& lhs,
+            const BoundingBox& rhs);
 
         Coordinator* gCoordinator = nullptr;
+
+        //// Track which entity pairs we've already resolved this frame
+        //struct PairHash
+        //{
+        //    std::size_t operator()(const std::pair<Entity, Entity>& p) const
+        //    {
+        //        return std::hash<Entity>()(p.first) ^ (std::hash<Entity>()(p.second) << 1);
+        //    }
+        //};
+
+        //std::unordered_set<std::pair<Entity, Entity>, PairHash> resolvedPairsThisFrame;
     };
 }
