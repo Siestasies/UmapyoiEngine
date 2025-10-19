@@ -150,16 +150,6 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     float dt)
 {
 
-    // ═══════════════════════════════════════════════════════════
-   // FIX: Only resolve each entity pair ONCE per frame
-   // ═══════════════════════════════════════════════════════════
-    //auto entityPair = std::make_pair(min(e1, e2), max(e1, e2));
-    //if (resolvedPairsThisFrame.count(entityPair) > 0)
-    //{
-    //    return; // Already resolved this pair, skip all shape checks
-    //}
-    // ═══════════════════════════════════════════════════════════
-
     auto& c1 = cArray.GetData(e1);
     auto& c2 = cArray.GetData(e2);
 

@@ -327,19 +327,19 @@ namespace Uma_Engine
                 // Create collider with two shapes
                 Collider playerCollider;
 
-                playerCollider.shapes.push_back(ColliderShape{
+                playerCollider.shapes[0] = ColliderShape{
                         .purpose = ColliderPurpose::Physics,
                         .layer = CL_PLAYER,
                         .colliderMask = CL_ENEMY | CL_PROJECTILE,
                         .isActive = true,
                         .autoFitToSprite = true
-                    });
+                };
 
                 playerCollider.shapes.push_back(ColliderShape{
                     .size = Vec2(7.0f, 0.5f),
                     .offset = Vec2(0, -3.f),
-                    .purpose = ColliderPurpose::Environment,
-                    .layer = CL_WALL,
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_PLAYER,
                     .colliderMask = CL_WALL,
                     .isActive = true,
                     .autoFitToSprite = false
@@ -710,7 +710,7 @@ namespace Uma_Engine
 
                 playerCollider.shapes.push_back(ColliderShape{
                     .size = Vec2(7.0f, 0.5f),
-                    .offset = Vec2(0, -3.f),
+                    .offset = Vec2(0, -2.75f),
                     .purpose = ColliderPurpose::Physics,
                     .layer = CL_PLAYER,
                     .colliderMask = CL_WALL,
@@ -831,7 +831,6 @@ namespace Uma_Engine
                 Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
 
                 tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-
             }
             else
             {
@@ -931,7 +930,7 @@ namespace Uma_Engine
                         .colliderMask = CL_PLAYER | CL_PROJECTILE,
                         .isActive = true,
                         .autoFitToSprite = false
-                        };
+                    };
 
                     enemyCollider.shapes.push_back(ColliderShape{
                         .size = Vec2(2.f, 0.5f),
