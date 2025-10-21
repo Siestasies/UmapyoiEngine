@@ -100,12 +100,10 @@ namespace Uma_Engine
             pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
             pEventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
 
-
             pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
             pEventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
             pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
             pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
-
 
             pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
                 { 
@@ -171,7 +169,6 @@ namespace Uma_Engine
                 gCoordinator.SetSystemSignature<CollisionSystem>(sign);
             }
             collisionSystem->Init(&gCoordinator);
-
 
             // Rendering System
             renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
