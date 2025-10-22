@@ -80,202 +80,202 @@ namespace Uma_Engine
     public:
         EditorScene(SystemManager* sm) : pSystemManager(sm) {}
 
-		    void OnLoad() override
-		    {
-            currSceneName = "test_collider.json";
+		void OnLoad() override
+		{
+			currSceneName = "test_collider.json";
 
-            pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
-            pGraphics = pSystemManager->GetSystem<Graphics>();
-            pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
-            pEventSystem = pSystemManager->GetSystem<EventSystem>();
-            pSound = pSystemManager->GetSystem<Sound>();
+			pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
+			pGraphics = pSystemManager->GetSystem<Graphics>();
+			pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+			pEventSystem = pSystemManager->GetSystem<EventSystem>();
+			pSound = pSystemManager->GetSystem<Sound>();
 
-            // event system stuffs
-            // subscribe to events
-            pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
-           
-            pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { (void)e; gGameSerializer.save(Uma_FilePath::SCENES_DIR + currSceneName); });
-            pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
-            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
-            pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
-            pEventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
+			// event system stuffs
+			// subscribe to events
+			pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
 
-            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
-            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
-            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
-            pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
+			pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { (void)e; gGameSerializer.save(Uma_FilePath::SCENES_DIR + currSceneName); });
+			pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
+			pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
+			pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
+			pEventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
 
-            pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
-                { 
-                    (void)e;
-                    DuplicateOrCreateEntity();
-                });
+			pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
+			pEventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
+			pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
+			pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
 
-            pEventSystem->Subscribe<Uma_Engine::LoadPrefabRequestEvent>([this](const Uma_Engine::LoadPrefabRequestEvent& e)
-                {
-                    (void)e;
-                    LoadPrefab();
-                });
+			pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e)
+				{
+					(void)e;
+					DuplicateOrCreateEntity();
+				});
 
-            pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) 
-                { 
-                    (void)e;
-                    DestroyRandomEntity();
-                });
+			pEventSystem->Subscribe<Uma_Engine::LoadPrefabRequestEvent>([this](const Uma_Engine::LoadPrefabRequestEvent& e)
+				{
+					(void)e;
+					LoadPrefab();
+				});
 
-
-            // Ecs stuff
-            using namespace Uma_ECS;
-
-            gCoordinator.Init(pEventSystem);
-
-            // register components
-            gCoordinator.RegisterComponent<Transform>();
-            gCoordinator.RegisterComponent<RigidBody>();
-            gCoordinator.RegisterComponent<Collider>();
-            gCoordinator.RegisterComponent<Sprite>();
-            gCoordinator.RegisterComponent<Camera>();
-            gCoordinator.RegisterComponent<Player>();
-            gCoordinator.RegisterComponent<Enemy>();
-
-            // Player controller
-            playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
-            {
-                Signature sign;
-                sign.set(gCoordinator.GetComponentType<RigidBody>());
-                sign.set(gCoordinator.GetComponentType<Transform>());
-                sign.set(gCoordinator.GetComponentType<Player>());
-                gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
-            }
-            playerController->Init(pEventSystem, pHybridInputSystem, &gCoordinator);
-
-            // Physics System
-            physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
-            {
-                Signature sign;
-                sign.set(gCoordinator.GetComponentType<RigidBody>());
-                sign.set(gCoordinator.GetComponentType<Transform>());
-                gCoordinator.SetSystemSignature<PhysicsSystem>(sign);
-            }
-            physicsSystem->Init(&gCoordinator);
-
-            // Collision System
-            collisionSystem = gCoordinator.RegisterSystem<CollisionSystem>();
-            {
-                Signature sign;
-                sign.set(gCoordinator.GetComponentType<RigidBody>());
-                sign.set(gCoordinator.GetComponentType<Transform>());
-                sign.set(gCoordinator.GetComponentType<Collider>());
-                gCoordinator.SetSystemSignature<CollisionSystem>(sign);
-            }
-            collisionSystem->Init(&gCoordinator);
-
-            // Rendering System
-            renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
-            {
-                Signature sign;
-                sign.set(gCoordinator.GetComponentType<Sprite>());
-                sign.set(gCoordinator.GetComponentType<Transform>());
-                gCoordinator.SetSystemSignature<RenderingSystem>(sign);
-            }
-            renderingSystem->Init(pGraphics, pResourcesManager, &gCoordinator);
-
-            cameraSystem = gCoordinator.RegisterSystem<CameraSystem>();
-            {
-                Signature sign;
-                sign.set(gCoordinator.GetComponentType<Camera>());
-                sign.set(gCoordinator.GetComponentType<Transform>());
-                gCoordinator.SetSystemSignature<CameraSystem>(sign);
-            }
-            cameraSystem->Init(&gCoordinator);
-
-            // Init the game serializer
-            gGameSerializer.Register(pResourcesManager);
-            gGameSerializer.Register(&gCoordinator);
+			pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e)
+				{
+					(void)e;
+					DestroyRandomEntity();
+				});
 
 
-            //deserialize and spawn all the entities
-            //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
-            gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
+			// Ecs stuff
+			using namespace Uma_ECS;
 
-		    }
-		    void OnUnload() override
-		    {
-			      std::cout << "Test Scene 1: UNLOADED" << std::endl;
+			gCoordinator.Init(pEventSystem);
 
-            // resources unload
-            pResourcesManager->UnloadAllTextures();
-            pResourcesManager->UnloadAllSound();
-		    }
-		    void Update(float dt) override
-		    {
-            static bool firstFrame = true;
-            static float smoothedDt = 0.0f;
-            if (firstFrame) {
-                smoothedDt = dt; // seed filter with a realistic value
-                firstFrame = false;
-            }
-            else {
-                smoothedDt = 0.9f * smoothedDt + 0.1f * dt;
-            }
+			// register components
+			gCoordinator.RegisterComponent<Transform>();
+			gCoordinator.RegisterComponent<RigidBody>();
+			gCoordinator.RegisterComponent<Collider>();
+			gCoordinator.RegisterComponent<Sprite>();
+			gCoordinator.RegisterComponent<Camera>();
+			gCoordinator.RegisterComponent<Player>();
+			gCoordinator.RegisterComponent<Enemy>();
 
-            playerController->Update(dt);
+			// Player controller
+			playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
+			{
+				Signature sign;
+				sign.set(gCoordinator.GetComponentType<RigidBody>());
+				sign.set(gCoordinator.GetComponentType<Transform>());
+				sign.set(gCoordinator.GetComponentType<Player>());
+				gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
+			}
+			playerController->Init(pEventSystem, pHybridInputSystem, &gCoordinator);
 
-            physicsSystem->Update(smoothedDt);
+			// Physics System
+			physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
+			{
+				Signature sign;
+				sign.set(gCoordinator.GetComponentType<RigidBody>());
+				sign.set(gCoordinator.GetComponentType<Transform>());
+				gCoordinator.SetSystemSignature<PhysicsSystem>(sign);
+			}
+			physicsSystem->Init(&gCoordinator);
 
-            collisionSystem->Update(dt);
+			// Collision System
+			collisionSystem = gCoordinator.RegisterSystem<CollisionSystem>();
+			{
+				Signature sign;
+				sign.set(gCoordinator.GetComponentType<RigidBody>());
+				sign.set(gCoordinator.GetComponentType<Transform>());
+				sign.set(gCoordinator.GetComponentType<Collider>());
+				gCoordinator.SetSystemSignature<CollisionSystem>(sign);
+			}
+			collisionSystem->Init(&gCoordinator);
 
-            cameraSystem->Update(dt);
+			// Rendering System
+			renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
+			{
+				Signature sign;
+				sign.set(gCoordinator.GetComponentType<Sprite>());
+				sign.set(gCoordinator.GetComponentType<Transform>());
+				gCoordinator.SetSystemSignature<RenderingSystem>(sign);
+			}
+			renderingSystem->Init(pGraphics, pResourcesManager, &gCoordinator);
 
-            // save to file
-            if (pHybridInputSystem->KeyPressed(GLFW_KEY_1))
-            {
-                std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+			cameraSystem = gCoordinator.RegisterSystem<CameraSystem>();
+			{
+				Signature sign;
+				sign.set(gCoordinator.GetComponentType<Camera>());
+				sign.set(gCoordinator.GetComponentType<Transform>());
+				gCoordinator.SetSystemSignature<CameraSystem>(sign);
+			}
+			cameraSystem->Init(&gCoordinator);
 
-                gGameSerializer.save(filepath);
-            }
+			// Init the game serializer
+			gGameSerializer.Register(pResourcesManager);
+			gGameSerializer.Register(&gCoordinator);
 
-            // load from file
-            if (pHybridInputSystem->KeyPressed(GLFW_KEY_2))
-            {
-                gCoordinator.DestroyAllEntities();
 
-                std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
-                
-                gGameSerializer.load(filepath);
-            }
+			//deserialize and spawn all the entities
+			//gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
+			//gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
 
-            // reset
-            if (pHybridInputSystem->KeyPressed(GLFW_KEY_3))
-            {
-                ResetAll();
-            }
+		}
+		void OnUnload() override
+		{
+			std::cout << "Test Scene 1: UNLOADED" << std::endl;
 
-            // Spawn Default
-            if (HybridInputSystem::KeyPressed(GLFW_KEY_4))
-            {
-                gCoordinator.DestroyAllEntities();
-                SpawnDefaultEntities();
-            }
+			// resources unload
+			pResourcesManager->UnloadAllTextures();
+			pResourcesManager->UnloadAllSound();
+		}
+		void Update(float dt) override
+		{
+			static bool firstFrame = true;
+			static float smoothedDt = 0.0f;
+			if (firstFrame) {
+				smoothedDt = dt; // seed filter with a realistic value
+				firstFrame = false;
+			}
+			else {
+				smoothedDt = 0.9f * smoothedDt + 0.1f * dt;
+			}
 
-            if (HybridInputSystem::KeyPressed(GLFW_KEY_P))
-            {
-                pSound->playSound(pResourcesManager->GetSound("explosion"));
-            }
+			playerController->Update(dt);
 
-            if (HybridInputSystem::KeyPressed(GLFW_KEY_O))
-            {
-                pSound->playSound(pResourcesManager->GetSound("cave"));
-            }
+			physicsSystem->Update(smoothedDt);
 
-            pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
-            //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
-            renderingSystem->Update(dt);
-		    }
-		    void Render() override
-		    {
+			collisionSystem->Update(dt);
 
-		    }
+			cameraSystem->Update(dt);
+
+			// save to file
+			if (pHybridInputSystem->KeyPressed(GLFW_KEY_1))
+			{
+				std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+
+				gGameSerializer.save(filepath);
+			}
+
+			// load from file
+			if (pHybridInputSystem->KeyPressed(GLFW_KEY_2))
+			{
+				gCoordinator.DestroyAllEntities();
+
+				std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+
+				gGameSerializer.load(filepath);
+			}
+
+			// reset
+			if (pHybridInputSystem->KeyPressed(GLFW_KEY_3))
+			{
+				ResetAll();
+			}
+
+			// Spawn Default
+			if (HybridInputSystem::KeyPressed(GLFW_KEY_4))
+			{
+				gCoordinator.DestroyAllEntities();
+				SpawnDefaultEntities();
+			}
+
+			if (HybridInputSystem::KeyPressed(GLFW_KEY_P))
+			{
+				pSound->playSound(pResourcesManager->GetSound("explosion"));
+			}
+
+			if (HybridInputSystem::KeyPressed(GLFW_KEY_O))
+			{
+				pSound->playSound(pResourcesManager->GetSound("cave"));
+			}
+
+			pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
+			//pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
+			renderingSystem->Update(dt);
+		}
+		void Render() override
+		{
+
+		}
 
         void ResetAll()
         {
