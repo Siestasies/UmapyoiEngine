@@ -25,68 +25,34 @@ All rights reserved.
 #include <memory>
 #include <iostream>
 
-#include "WIP_Scripts/EditorScene.h"
-#include "WIP_Scripts/TestScene2.h"
+//#include "WIP_Scripts/EditorScene.h"
+//#include "WIP_Scripts/TestScene2.h"
 
 namespace Uma_Engine
 {
     class SceneManager : public ISystem
     {
-        private:
-            std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
-            Scene* activeScene = nullptr;
+    public:
+        void Init() override;
+        void Update(float dt) override;
+        void Shutdown() override;
 
-            // inherit from isystem
-            void Init() override
-            {
-                std::cout << "Scene Manager INIT" << std::endl;
+        std::shared_ptr<Scene> CreateScene(const std::string& name);
+        std::shared_ptr<Scene> LoadScene(const std::string& filepath, bool additive);
+        void LoadSceneAsync(const std::string& filepath, bool additive);
+        void UnloadScene(const std::string& name);
+        void UnloadAllScenes();
 
-                // create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>(pSystemManager);
+        void SetActiveScene(const std::string& name);
+        std::shared_ptr<Scene> GetScene(const std::string& name);
+        bool IsSceneLoaded(const std::string& name) const;
+        std::vector<std::string> GetAvailableScenes() const;
+        void UpdateLoadingScenes();
+        void RemoveUnloadedScenes();
 
-                AddScene("testScene1", std::move(testScene1));
-
-                SetActiveScene("testScene1");
-            }
-            void Update(float dt) override
-            {
-                if (activeScene)
-                {
-                    activeScene->Update(dt);
-                    activeScene->Render();
-                }
-                if (scenes.empty())
-                {
-                    std::cout << "Scene Manager MAP is EMPTY" << std::endl;
-                }
-            }
-            void Shutdown() override
-            {
-                std::cout << "Scene Manager SHUTDOWN" << std::endl;
-                
-                // Unload the active scene
-                // other scenes should already be unloaded
-                if (activeScene)
-                {
-                    activeScene->OnUnload();
-                    activeScene = nullptr;
-                }
-                // clear scenes map
-                scenes.clear();
-            }
-
-        public:
-            void AddScene(const std::string& name, std::unique_ptr<Scene> scene)
-            {
-                scenes[name] = std::move(scene);
-            }
-
-            void SetActiveScene(const std::string& name)
-            {
-                if (activeScene)
-                    activeScene->OnUnload();
-                activeScene = scenes[name].get();
-                activeScene->OnLoad();
-            }
+    private:
+        std::unordered_map<std::string, std::shared_ptr<Scene>> m_Scenes;
+        std::unordered_map<std::string, std::shared_ptr<Scene>> m_LoadedScenes;
+        std::shared_ptr<Scene> m_ActiveScene;
     };
 }
