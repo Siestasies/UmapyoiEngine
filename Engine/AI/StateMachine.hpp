@@ -1,16 +1,20 @@
 #pragma once
+
+#include "ECS/Core/Types.hpp"
 #include <memory>
 
-using Entity = Uma_ECS::Entity;
 
-struct State {
-    virtual ~State() = default;
-    virtual void enter(Entity) {}
-    virtual void exit(Entity) {}
-    virtual void update(Entity, float dt) = 0;
-};
+// component
+namespace Uma_ECS 
+{
+    //using Entity = Uma_ECS::Entity;
 
-namespace Uma_ECS {
+    struct State {
+        virtual ~State() = default;
+        virtual void enter(Entity) {}
+        virtual void exit(Entity) {}
+        virtual void update(Entity, float dt) = 0;
+    };
 
     struct FSM{
         std::shared_ptr<State> currState;
@@ -35,12 +39,12 @@ namespace Uma_ECS {
             currState->enter(entity);
         }
         
-        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
+        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) 
         {
         }
 
         // Deserialize from JSON
-        void Deserialize(const rapidjson::Value& value) //override
+        void Deserialize(const rapidjson::Value& value)
         {
         }
     };

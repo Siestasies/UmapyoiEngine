@@ -47,8 +47,10 @@
 
 #include <GLFW/glfw3.h>
 
-//testing state machine
+//WIP
 #include "../AI/StateMachine.hpp"
+
+#include "Systems/StateMachineSystem.hpp"
 
 
 // Engine Systems
@@ -61,11 +63,17 @@ Uma_Engine::EventSystem* pEventSystem;
 // ECS related
 using Coordinator = Uma_ECS::Coordinator;
 Coordinator gCoordinator;
+
 std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
+
 std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
+
+// global variable for state machine
+std::shared_ptr<Uma_ECS::StateMachineSystem> stateMachineSystem;
+
 Uma_ECS::Entity player;
 Uma_ECS::Entity cam;
 
@@ -191,6 +199,11 @@ namespace Uma_Engine
                 gCoordinator.SetSystemSignature<CameraSystem>(sign);
             }
             cameraSystem->Init(&gCoordinator);
+
+            stateMachineSystem = gCoordinator.RegisterSystem<StateMachineSystem>();
+            {
+
+            }
 
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
