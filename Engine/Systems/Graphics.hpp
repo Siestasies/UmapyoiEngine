@@ -60,6 +60,9 @@ namespace Uma_Engine
         Vec2 scale{};
         float rot{};
         float rot_speed{};
+
+        Vec2 uvOffset{ 0.0f, 0.0f };  // UV offset (default = full texture)
+        Vec2 uvSize{ 1.0f, 1.0f };    // UV size (default = full texture)
     };
 
     class Graphics : public ISystem, public IWindowSystem
@@ -81,6 +84,8 @@ namespace Uma_Engine
         GLuint mInstanceVBO;
         GLuint mInstanceVAO;
         GLuint mInstanceShaderProgram;
+
+        GLuint mInstanceUVVBO;
 
         // Viewport size
         int mViewportWidth, mViewportHeight;

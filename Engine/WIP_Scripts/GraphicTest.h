@@ -21,6 +21,8 @@
 #include "Core/FilePaths.h"
 #include <GLFW/glfw3.h>
 
+#include "Systems/SpriteAnimator.h"
+
 // Global variables for this scene
 Uma_Engine::HybridInputSystem* gTestInputSystem;
 Uma_Engine::Graphics* gTestGraphics;
@@ -34,6 +36,10 @@ std::shared_ptr<Uma_ECS::RenderingSystem> gTestRenderingSystem;
 std::shared_ptr<Uma_ECS::CameraSystem> gTestCameraSystem;
 Uma_ECS::Entity gTestPlayer;
 Uma_ECS::Entity gTestCam;
+
+Uma_Engine::SpriteAnimator gTestAnimator;
+std::string gPlayerDirection = "down";
+bool gPlayerMoving = false;
 
 namespace Uma_Engine
 {
@@ -53,8 +59,20 @@ namespace Uma_Engine
             gTestResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
             gTestEventSystem = pSystemManager->GetSystem<EventSystem>();
 
-            // Load all required textures FIRST
+            // Load all required textures
             LoadAllTextures();
+
+            // Setup animator
+            gTestAnimator.AddClip("idle_down", 4, 4, 0, 1, 0.0f, false);
+            gTestAnimator.AddClip("walk_down", 4, 4, 0, 4, 10.0f, true);
+            gTestAnimator.AddClip("idle_left", 4, 4, 4, 1, 0.0f, false);
+            gTestAnimator.AddClip("walk_left", 4, 4, 4, 4, 10.0f, true);
+            gTestAnimator.AddClip("idle_right", 4, 4, 8, 1, 0.0f, false);
+            gTestAnimator.AddClip("walk_right", 4, 4, 8, 4, 10.0f, true);
+            gTestAnimator.AddClip("idle_up", 4, 4, 12, 1, 0.0f, false);
+            gTestAnimator.AddClip("walk_up", 4, 4, 12, 4, 10.0f, true);
+
+            gTestAnimator.Play("idle_down"); // Start facing down
 
             // Initialize ECS
             using namespace Uma_ECS;
@@ -84,12 +102,9 @@ namespace Uma_Engine
             // Load textures manually - adjust paths to match your asset structure
             std::string texturePath = Uma_FilePath::ASSET_ROOT;
 
-            gTestResourcesManager->LoadTexture("player", texturePath + "hello.jpg");
+            gTestResourcesManager->LoadTexture("player", texturePath + "test.png");
             gTestResourcesManager->LoadTexture("enemy", texturePath + "cirno.png");
             gTestResourcesManager->LoadTexture("pink_enemy", texturePath + "marisa.png");
-
-            // Optional: Load background if you have one
-            // gTestResourcesManager->LoadTexture("background", texturePath + "background.png");
 
             std::cout << "Textures loaded successfully" << std::endl;
         }
@@ -152,7 +167,7 @@ namespace Uma_Engine
                     Transform{
                         .position = Vec2(0.f, 0.f),
                         .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(1.5f, 1.5f)
+                        .scale = Vec2(10.f, 10.f)
                     });
 
                 gTestCoordinator.AddComponent(
@@ -161,23 +176,13 @@ namespace Uma_Engine
                         .velocity = Vec2(0.0f, 0.0f),
                         .acceleration = Vec2(0.0f, 0.0f),
                         .accel_strength = 500,
-                        .fric_coeff = 5
+                        .fric_coeff = 20
                     });
 
                 gTestCoordinator.AddComponent(
                     gTestPlayer,
                     Player{
                         .mSpeed = 1.f
-                    });
-
-                gTestCoordinator.AddComponent(
-                    gTestPlayer,
-                    Sprite{
-                        .textureName = "player",
-                        .flipX = false,
-                        .flipY = false,
-                        .UseNativeSize = true,
-                        .texture = gTestResourcesManager->GetTexture("player")
                     });
 
                 Collider playerCollider;
@@ -315,16 +320,72 @@ namespace Uma_Engine
             gTestPhysicsSystem->Update(dt);
             gTestCameraSystem->Update(dt);
 
+            // Get player velocity to check if moving
+            auto& playerRB = gTestCoordinator.GetComponent<Uma_ECS::RigidBody>(gTestPlayer);
+            float velocityThreshold = 0.1f;
+            bool isMoving = (abs(playerRB.velocity.x) > velocityThreshold ||
+                abs(playerRB.velocity.y) > velocityThreshold);
+
+            // Determine direction based on velocity
+            if (isMoving)
+            {
+                if (abs(playerRB.velocity.y) > abs(playerRB.velocity.x))
+                {
+                    // Moving vertically
+                    if (playerRB.velocity.y > 0)
+                        gPlayerDirection = "up";
+                    else
+                        gPlayerDirection = "down";
+                }
+                else
+                {
+                    // Moving horizontally
+                    if (playerRB.velocity.x > 0)
+                        gPlayerDirection = "right";
+                    else
+                        gPlayerDirection = "left";
+                }
+            }
+
+            // Update animation based on movement and direction
+            std::string desiredAnim = isMoving ? "walk_" + gPlayerDirection : "idle_" + gPlayerDirection;
+
+            // Only change animation if different from current
+            if (gTestAnimator.GetCurrentClip() != desiredAnim)
+            {
+                gTestAnimator.Play(desiredAnim);
+            }
+
+            gPlayerMoving = isMoving;
+
+            // Update animator
+            gTestAnimator.Update(dt);
+
             // Clear background
             gTestGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
 
-            // Optional: Draw background texture if you have one
-            // auto* bgTexture = gTestResourcesManager->GetTexture("background");
-            // if (bgTexture) {
-            //     gTestGraphics->DrawBackground(bgTexture->tex_id);
-            // }
+            // Get player transform
+            auto& playerTransform = gTestCoordinator.GetComponent<Uma_ECS::Transform>(gTestPlayer);
 
-            // Render all entities
+            // Draw animated player
+            unsigned int playerTexID = gTestResourcesManager->GetTexture("player")->tex_id;
+            Vec2 uvOffset, uvSize;
+            gTestAnimator.GetUVs(uvOffset, uvSize);
+
+            std::vector<Uma_Engine::Sprite_Info> playerSprite;
+            playerSprite.push_back(Uma_Engine::Sprite_Info{
+                .tex_id = playerTexID,
+                .pos = playerTransform.position,
+                .scale = Vec2(10.f, 10.f),
+                .rot = playerTransform.rotation.x,
+                .rot_speed = 0.0f,
+                .uvOffset = uvOffset,
+                .uvSize = uvSize
+                });
+
+            gTestGraphics->DrawSpritesInstanced(playerTexID, playerSprite);
+
+            // Render all other entities (enemies)
             gTestRenderingSystem->Update(dt);
         }
 

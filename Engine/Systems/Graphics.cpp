@@ -102,6 +102,7 @@ void main()
 #version 450 core
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
+layout (location = 5) in vec4 instanceUV; // <vec2 uvOffset, vec2 uvSize>
 
 out vec2 TexCoords;
 
@@ -109,7 +110,10 @@ uniform mat4 projection;
 
 void main()
 {
-    TexCoords = vertex.zw;
+    // Apply UV transformation
+    vec2 uv = vertex.zw;
+    TexCoords = instanceUV.xy + uv * instanceUV.zw;
+    
     gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
 }
 )";
@@ -275,10 +279,10 @@ void main()
         glBindTexture(GL_TEXTURE_2D, textureID);
 
         // Set texture parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         // Load image
         int width, height, nrChannels;
@@ -758,6 +762,16 @@ void main()
             glVertexAttribDivisor(1 + i, 1);
         }
 
+        // Create instance VBO for UVs
+        glGenBuffers(1, &mInstanceUVVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
+
+        // Set up UV attribute
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
+        glVertexAttribDivisor(5, 1);
+
         // Unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -767,7 +781,6 @@ void main()
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        //const Vec2& textureSize,
         std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
@@ -777,27 +790,40 @@ void main()
             std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
         }
 
-        size_t instanceCount = sprites.size();
+        size_t instanceCount = std::min(sprites.size(), MAX_INSTANCES);
 
-        // Build model matrices for all instances
+        // Build model matrices and UV data
         std::vector<glm::mat4> models;
+        std::vector<glm::vec4> uvData;
         models.reserve(instanceCount);
+        uvData.reserve(instanceCount);
 
         for (size_t i = 0; i < instanceCount; ++i)
         {
             const Sprite_Info& sprite = sprites[i];
+
+            // Build model matrix
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
             model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
             model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
-
             models.push_back(model);
+
+            // Build UV data
+            uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
+                sprite.uvSize.x, sprite.uvSize.y));
         }
 
         if (models.empty()) return;
 
+        // Upload model matrices
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+
+        // Upload UV data
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
+
         glUseProgram(mInstanceShaderProgram);
 
         // Set projection matrix uniform
@@ -839,6 +865,10 @@ void main()
         if (mInstanceVBO != 0) {
             glDeleteBuffers(1, &mInstanceVBO);
             mInstanceVBO = 0;
+        }
+        if (mInstanceUVVBO != 0) {
+            glDeleteBuffers(1, &mInstanceUVVBO);
+            mInstanceUVVBO = 0;
         }
         if (mInstanceShaderProgram != 0) {
             glDeleteProgram(mInstanceShaderProgram);
