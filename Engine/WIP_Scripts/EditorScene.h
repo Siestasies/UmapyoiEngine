@@ -9,6 +9,7 @@
 #include "ECS/Systems/PlayerControllerSystem.hpp"
 #include "ECS/Systems/RenderingSystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
+#include "ECS/Systems/LuaScriptingSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -18,6 +19,7 @@
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
+#include "ECS/Components/LuaScript.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
@@ -63,6 +65,7 @@ std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
+std::shared_ptr<Uma_ECS::LuaScriptingSystem> scriptingSystem;
 Uma_ECS::Entity player;
 Uma_ECS::Entity cam;
 
@@ -137,6 +140,7 @@ namespace Uma_Engine
             gCoordinator.RegisterComponent<Camera>();
             gCoordinator.RegisterComponent<Player>();
             gCoordinator.RegisterComponent<Enemy>();
+            gCoordinator.RegisterComponent<LuaScript>();
 
             // Player controller
             playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -189,19 +193,30 @@ namespace Uma_Engine
             }
             cameraSystem->Init(&gCoordinator);
 
+            scriptingSystem = gCoordinator.RegisterSystem<LuaScriptingSystem>();
+            {
+                Signature sign;
+                sign.set(gCoordinator.GetComponentType<LuaScript>());
+                gCoordinator.SetSystemSignature<LuaScriptingSystem>(sign);
+            }
+            scriptingSystem->Init(&gCoordinator);
+
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
             gGameSerializer.Register(&gCoordinator);
-
 
             //deserialize and spawn all the entities
             //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
             gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
 
+            scriptingSystem->CallStart();
+
 		    }
 		    void OnUnload() override
 		    {
 			      std::cout << "Test Scene 1: UNLOADED" << std::endl;
+
+            scriptingSystem->Shutdown();
 
             // resources unload
             pResourcesManager->UnloadAllTextures();
@@ -224,6 +239,8 @@ namespace Uma_Engine
             physicsSystem->Update(smoothedDt);
 
             collisionSystem->Update(dt);
+
+            scriptingSystem->Update(dt);
 
             cameraSystem->Update(dt);
 
@@ -411,6 +428,23 @@ namespace Uma_Engine
                       .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
+
+                LuaScript kappaScript;
+                {
+                    kappaScript.scriptPath = Uma_FilePath::SCENES_DIR + "kappa.lua";
+
+                    // Optional: Pre-define exposed variables (or let Lua auto-discover)
+                    kappaScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
+                        .name = "speed",
+                        .value = 100.0f,
+                        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                        .min = 0.0f,
+                        .max = 500.0f,
+                        .isSlider = true
+                        });
+
+                    gCoordinator.AddComponent(kappa, kappaScript);
+                }
             }
 
             Entity wall;
