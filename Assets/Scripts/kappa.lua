@@ -12,7 +12,7 @@ function Update(dt)
     local transform = GetTransform()
     local rb = GetRigidBody()
     
-    rb.velocity.x = speed * dt
+    rb.velocity.x = -100 * speed * dt
     
     Log("Enemy position: " .. transform.position.x)
 end

@@ -431,7 +431,7 @@ namespace Uma_Engine
 
                 LuaScript kappaScript;
                 {
-                    kappaScript.scriptPath = Uma_FilePath::SCENES_DIR + "kappa.lua";
+                    kappaScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappa.lua";
 
                     // Optional: Pre-define exposed variables (or let Lua auto-discover)
                     kappaScript.exposedVariables.push_back(Uma_ECS::LuaVariable{

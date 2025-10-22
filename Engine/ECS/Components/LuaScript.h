@@ -112,16 +112,16 @@ namespace Uma_ECS
 										switch (var.type)
 										{
 										case LuaVarType::T_FLOAT:
-												var.value = varVal["type"].GetFloat();
+												var.value = varVal["value"].GetFloat();
 												break;
 										case LuaVarType::T_INT:
-												var.value = varVal["type"].GetInt();
+												var.value = varVal["value"].GetInt();
 												break;
 										case LuaVarType::T_BOOL:
-												var.value = varVal["type"].GetBool();
+												var.value = varVal["value"].GetBool();
 												break;
 										case LuaVarType::T_STRING:
-												var.value = std::string(varVal["type"].GetString());
+												var.value = std::string(varVal["value"].GetString());
 												break;
 										}
 

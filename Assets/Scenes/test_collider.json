@@ -52,14 +52,14 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
@@ -69,7 +69,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 30.0,
+                        "x": 30.372,
                         "y": 35.0
                     },
                     "rotation": {
@@ -90,7 +90,7 @@
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
-                        "x": 0.0,
+                        "x": 0.167,
                         "y": 0.0
                     },
                     "acceleration": {
@@ -99,6 +99,35 @@
                     },
                     "accel_strength": 200.0,
                     "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scriptPath": "Assets/Scripts/kappa.lua",
+                    "exposedVariables": [
+                        {
+                            "name": "speed",
+                            "type": 0,
+                            "value": 100.0,
+                            "min": 0.0,
+                            "max": 500.0,
+                            "isSlider": true
+                        },
+                        {
+                            "name": "health",
+                            "type": 0,
+                            "value": 50.0,
+                            "min": 0.0,
+                            "max": 100.0,
+                            "isSlider": false
+                        },
+                        {
+                            "name": "isActive",
+                            "type": 2,
+                            "value": true,
+                            "min": 0.0,
+                            "max": 100.0,
+                            "isSlider": false
+                        }
+                    ]
                 }
             }
         },

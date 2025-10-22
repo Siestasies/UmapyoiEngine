@@ -72,10 +72,27 @@ namespace Uma_ECS
         for (auto const& entity : aEntities)
         {
             auto& script = scriptArray.GetData(entity);
-            script.lua.reset();
+
+            // Clear the environment first
+            if (script.scriptEnv.valid())
+            {
+                script.scriptEnv = sol::nil;  // Invalidate environment
+            }
+
+            // Then clear the Lua state
+            if (script.lua)
+            {
+                script.lua.reset();
+            }
+
+            script.isInitialized = false;
         }
 
-        sharedLua.reset();
+        // Finally clear the shared state
+        if (sharedLua)
+        {
+            sharedLua.reset();
+        }
     }
 
     void LuaScriptingSystem::RegisterLuaAPI()
