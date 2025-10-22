@@ -1,7 +1,7 @@
 # Create GLAD library from local files
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_library(glad STATIC
-    ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h" "AI/pathfinding.cpp" "AI/StateMachine.tpp")
+    ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h" "AI/pathfinding.cpp")
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 # Add ImGui (INSERT HERE - before ENGINE_SOURCES)
@@ -25,7 +25,7 @@ set(IMGUI_HEADERS
     ${IMGUI_DIR}/backends/imgui_impl_glfw.h
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.h
 )
-add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS} "AI/pathfinding.cpp" "AI/StateMachine.tpp")
+add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS} "AI/pathfinding.cpp")
 target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
 target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
 
@@ -76,7 +76,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h" "AI/pathfinding.cpp" "AI/StateMachine.tpp")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h" "AI/pathfinding.cpp")
 
 set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
 
