@@ -28,6 +28,7 @@ All rights reserved.
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_internal.h"
 
 #include "Core/FilePaths.h"
 #include <iostream>
@@ -42,6 +43,7 @@ namespace Uma_Engine
         public:
             ImguiManager()
                 : m_initialized(false)
+                , ds_initialized(false)
                 , m_window(nullptr)
                 , m_showEngineDebug(true)
                 , m_showEventDebug(true)
@@ -77,7 +79,8 @@ namespace Uma_Engine
 
                 IMGUI_CHECKVERSION();
                 ImGui::CreateContext();
-                ImGuiIO& io = ImGui::GetIO(); (void)io;
+                ImGuiIO& io = ImGui::GetIO();
+                io.IniFilename = "imgui.ini";
 
                 io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
                 io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -136,6 +139,8 @@ namespace Uma_Engine
                 }
 
                 StartFrame();
+
+                CreateDockspace();
 
                 // call for windows to be shown
                 float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
@@ -225,8 +230,8 @@ namespace Uma_Engine
                 {
                     return;
                 }
-                ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
                 ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
                 if (pSystemManager)
@@ -260,8 +265,8 @@ namespace Uma_Engine
                     return;
                 }
 
-                ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.25f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.2f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.25f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.2f), ImGuiCond_Once);
                 ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
 
                 // FPS graph
@@ -280,8 +285,8 @@ namespace Uma_Engine
                     return;
                 }
 
-                ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.45f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.225f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.45f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.225f), ImGuiCond_Once);
                 ImGui::Begin("Engine Debug", &m_showEngineDebug);
 
                 // some stats
@@ -306,8 +311,8 @@ namespace Uma_Engine
             void CreateSerializationDebugWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
                 ImGui::Begin("Serialization Debug", &b);
 
                 // get entity count here
@@ -335,8 +340,8 @@ namespace Uma_Engine
             void CreateEntityDebugWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.9f, 0.f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.9f, 0.f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
                 ImGui::Begin("Entity Debug", &b);
 
                 // get entity count here
@@ -371,8 +376,8 @@ namespace Uma_Engine
             void CreateEntityPropertyWindow()
             {
                 bool b = true;
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.315f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.21f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.315f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.21f), ImGuiCond_Once);
                 ImGui::Begin("Entity Run Time Property", &b);
 
                 ImGui::Separator();
@@ -421,8 +426,8 @@ namespace Uma_Engine
 
             void CreateConsoleWindow()
             {
-                ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.525f), ImGuiCond_Once);
-                ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.25f), ImGuiCond_Once);
+                //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.525f), ImGuiCond_Once);
+                //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.25f), ImGuiCond_Once);
                 bool b = true;
                 ImGui::Begin("Console", &b);
                 // to clear the console
@@ -448,6 +453,38 @@ namespace Uma_Engine
                 ImGui::End();
             }
 
+            void CreateDockspace()
+            {
+                // Create main dockspace window
+                ImGuiViewport* viewport = ImGui::GetMainViewport();
+                ImGui::SetNextWindowPos(viewport->WorkPos);
+                ImGui::SetNextWindowSize(viewport->WorkSize);
+                ImGui::SetNextWindowViewport(viewport->ID);
+
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+                window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
+                window_flags |= ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+                window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+                ImGui::Begin("DockSpace", nullptr, window_flags);
+                ImGui::PopStyleVar(3);
+
+                ImGuiID ds_id = ImGui::GetID("DockSpace");
+                ImGui::DockSpace(ds_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+
+                if (!ds_initialized)
+                {
+                    ds_initialized = true;
+                    InitDockspace(ds_id, viewport);
+                }
+
+                ImGui::End();
+            }
+
             void AddConsoleLog(const std::string& message)
             {
                 logsVec.push_back(message);
@@ -457,7 +494,40 @@ namespace Uma_Engine
                     logsVec.erase(logsVec.begin());
             }
 
+            void InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport) {
+                 // Clear any existing layout
+                 ImGui::DockBuilderRemoveNode(dockspace_id);
+                 ImGui::DockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
+                 ImGui::DockBuilderSetNodeSize(dockspace_id, viewport->Size);
+
+                 // Split the dockspace into regions (Unity-style layout)
+                 ImGuiID dock_main_id = dockspace_id;
+                 ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.15f, nullptr, &dock_main_id);
+                 ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.15f, nullptr, &dock_main_id);
+                 ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.15f, nullptr, &dock_main_id);
+
+                 if (!windowsInit())
+                 {
+                     // Dock windows to their initial positions
+                     ImGui::DockBuilderDockWindow("Systems Monitor", dock_id_left);
+                     ImGui::DockBuilderDockWindow("Performance Monitor", dock_id_left);
+                     ImGui::DockBuilderDockWindow("Entity Debug", dock_id_right);
+                     ImGui::DockBuilderDockWindow("Entity Run Time Property", dock_id_right);
+                     ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
+                     ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
+                     ImGui::DockBuilderDockWindow("Serialization Debug", dock_id_bottom);
+                 }
+
+                 ImGui::DockBuilderFinish(dockspace_id);
+            };
+
+            bool windowsInit(const char* filename = "imgui.ini")
+            {
+                return std::ifstream(filename).good();
+            }
+
             bool m_initialized;
+            bool ds_initialized;
             GLFWwindow* m_window;
 
             // show or not
