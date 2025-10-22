@@ -47,6 +47,9 @@
 
 #include <GLFW/glfw3.h>
 
+//testing state machine
+#include "../AI/StateMachine.hpp"
+
 
 // Engine Systems
 Uma_Engine::HybridInputSystem* pHybridInputSystem;
@@ -599,6 +602,9 @@ namespace Uma_Engine
                           .UseNativeSize = true,
                           .texture = pResourcesManager->GetTexture(texName),
                         });
+
+                    //testing
+                    //gCoordinator.AddComponent(enemy, FSM{});
 
                     // Create collider with two shapes
                     Collider enemyCollider;
