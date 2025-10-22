@@ -196,7 +196,7 @@ namespace Uma_Engine
 
 			//deserialize and spawn all the entities
 			//gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
-			//gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
+			gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
 
 		}
 		void OnUnload() override
