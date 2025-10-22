@@ -105,6 +105,7 @@ namespace Uma_Engine
             gTestResourcesManager->LoadTexture("player", texturePath + "test.png");
             gTestResourcesManager->LoadTexture("enemy", texturePath + "cirno.png");
             gTestResourcesManager->LoadTexture("pink_enemy", texturePath + "marisa.png");
+            gTestResourcesManager->LoadTexture("background", texturePath + "bg.png");
 
             std::cout << "Textures loaded successfully" << std::endl;
         }
@@ -362,7 +363,7 @@ namespace Uma_Engine
             gTestAnimator.Update(dt);
 
             // Clear background
-            gTestGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
+            gTestGraphics->DrawBackground(gTestResourcesManager->GetTexture("background")->tex_id);
 
             // Get player transform
             auto& playerTransform = gTestCoordinator.GetComponent<Uma_ECS::Transform>(gTestPlayer);
@@ -383,10 +384,8 @@ namespace Uma_Engine
                 .uvSize = uvSize
                 });
 
-            gTestGraphics->DrawSpritesInstanced(playerTexID, playerSprite);
-
-            // Render all other entities (enemies)
             gTestRenderingSystem->Update(dt);
+            gTestGraphics->DrawSpritesInstanced(playerTexID, playerSprite);
         }
 
         void Render() override
