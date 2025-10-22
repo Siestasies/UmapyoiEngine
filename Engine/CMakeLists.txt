@@ -92,7 +92,9 @@ target_link_libraries(Uma_Engine
         OpenGL::GL  # Cross-platform OpenGL linking
 	      fmod
         glad
-	imgui
+	      imgui
+        sol2::sol2
+        ${LUA_LIBRARIES}
 )
 
 # Include directories
@@ -113,6 +115,7 @@ target_include_directories(Uma_Engine
         ${glfw_SOURCE_DIR}/include        # <-- add this line
         ${IMGUI_DIR}              # <-- Add this
         ${IMGUI_DIR}/backends     # <-- Add this
+        ${LUA_INCLUDE_DIR}
 )
 
 # Set C++ standard
