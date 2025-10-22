@@ -60,7 +60,7 @@ namespace Uma_ECS
                 rapidjson::Value(textureName.c_str(), allocator),
                 allocator);
 
-            value.AddMember("Layer", renderLayer, allocator);
+            value.AddMember("layer", renderLayer, allocator);
 
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
@@ -71,7 +71,12 @@ namespace Uma_ECS
         void Deserialize(const rapidjson::Value& value) //override
         {
             textureName = value["textureName"].GetString();
-            renderLayer = value["Layer"].GetUint();
+
+            if (value.HasMember("layer"))
+            {
+                renderLayer = value["layer"].GetUint();
+            }
+
             flipX = value["flipX"].GetBool();
             flipY = value["flipY"].GetBool();
             UseNativeSize = value["Native"].GetBool();
