@@ -2,42 +2,50 @@
 #include <memory>
 #include "../Core/SystemType.h"
 
-template <typename Owner>
+template <typename Parent>
 struct State {
     virtual ~State() = default;
-    virtual void enter(Owner&) {}
-    virtual void exit(Owner&) {}
-    virtual void update(Owner&, float dt) = 0;
+    virtual void enter(Parent) {}
+    virtual void exit(Parent) {}
+    virtual void update(Parent, float dt) = 0;
 };
 
 namespace Uma_Engine {
 
-    template <typename Owner>
-    class FSM : public ISystem {
+    template <typename Parent>
+    struct FSM{
     public:
-        explicit FSM(Owner* ownerPtr) : owner(ownerPtr) {}
+        std::unique_ptr<State<Parent>> currState;
 
-        void Init() override {}
-        void Shutdown() override {}
-        void Update(float dt) override {
+        void Update(float dt) {
             if (currState) {
-                currState->update(*owner, dt);
+                currState->update(*parent, dt);
             }
         }
 
-        template<typename NewState, typename... Args>
-        void ChangeState(Args&&... args) {
+        //calling changeState<new state struct>
+        template<typename NewState>
+        void ChangeState(Parent parent) {
+            //exits the current state if any
             if (currState) {
-                currState->exit(*owner);
+                currState->exit(parent);
             }
-            currState = std::make_unique<NewState>(std::forward<Args>(args)...);
-            currState->enter(*owner);
+            //creates new state with unique pointer
+            currState = std::make_unique<NewState>();
+            //enters the new state
+            currState->enter(parent);
         }
-
-    private:
-        Owner* owner = nullptr;
-        std::unique_ptr<State<Owner>> currState;
+        
     };
+
+    //how to use?
+    /*
+    struct idleState : State<*insert entity type here>{
+    //populate as needed
+    void enter
+    void update
+    void exit
+    */
 
 }
 
