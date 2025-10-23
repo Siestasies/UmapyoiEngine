@@ -33,15 +33,15 @@ namespace Uma_ECS
         //calling changeState<new state struct>
         void ChangeState(FSM& entity,std::string name) {
             //exits the current state if any
-            //if (auto it = states.find(currStateName); it != states.end()) {
-            //    it->second->exit(entity);
-            //    
-            //}
-            ////enters the new state
-            //currStateName = name;
-            //if (auto it = states.find(name); it != states.end()) {
-            //    it->second->enter(entity);
-            //}
+            if (auto it = states.find(currStateName); it != states.end()) {
+                it->second->exit(entity);
+                
+            }
+            //enters the new state
+            currStateName = name;
+            if (auto it = states.find(name); it != states.end()) {
+                it->second->enter(entity);
+            }
 
             entity.currStateName = "IM A CHICKEN";
         }
@@ -70,18 +70,16 @@ namespace Uma_ECS
         static constexpr const char* name = "Base";
         float timer = 0;
         void enter(FSM& entity) override {
-            //entity.currStateName = name;
+            entity.currStateName = name;
         }
         void exit(FSM& entity) override {
-            //entity.currStateName = "";
+            entity.currStateName = "";
         }
         void update(FSM& entity, float dt) override {
             timer += dt;
             if (timer > 1) {
                 //std::cout << timer << "\n";
                 entity.ChangeState(entity, "Move");
-                std::cout << "changed to move\n";
-                std::cout << entity.currStateName << "\n";
             }
         }
     };
@@ -89,13 +87,12 @@ namespace Uma_ECS
     struct move : State {
         static constexpr const char* name = "Move";
         void enter(FSM& entity) override {
-            //entity.currStateName = name;
+            entity.currStateName = name;
         }
         void exit(FSM& entity) override {
-            //entity.currStateName = "";
+            entity.currStateName = "";
         }
         void update(FSM& entity, float dt) override {
-            std::cout << "move bitch\n";
         }
     };
 
