@@ -148,6 +148,8 @@ namespace Uma_Engine
             gCoordinator.RegisterComponent<Camera>();
             gCoordinator.RegisterComponent<Player>();
             gCoordinator.RegisterComponent<Enemy>();
+            //testing state machine
+            gCoordinator.RegisterComponent<FSM>();
 
             // Player controller
             playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -199,11 +201,16 @@ namespace Uma_Engine
                 gCoordinator.SetSystemSignature<CameraSystem>(sign);
             }
             cameraSystem->Init(&gCoordinator);
-
+            //set signature to look for the entities
+            //register
             stateMachineSystem = gCoordinator.RegisterSystem<StateMachineSystem>();
             {
-
+                Signature sign;
+                //sign.set(gCoordinator.GetComponentType<FSM>());
+                sign.set(gCoordinator.GetComponentType<Enemy>());
+                gCoordinator.SetSystemSignature<StateMachineSystem>(sign);
             }
+            stateMachineSystem->Init(&gCoordinator);
 
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
@@ -242,6 +249,9 @@ namespace Uma_Engine
             collisionSystem->Update(dt);
 
             cameraSystem->Update(dt);
+
+            //testing state machine
+            stateMachineSystem->Update(dt);
 
             // save to file
             if (pHybridInputSystem->KeyPressed(GLFW_KEY_1))
@@ -617,7 +627,7 @@ namespace Uma_Engine
                         });
 
                     //testing
-                    //gCoordinator.AddComponent(enemy, FSM{});
+                    gCoordinator.AddComponent(enemy, FSM{});
 
                     // Create collider with two shapes
                     Collider enemyCollider;

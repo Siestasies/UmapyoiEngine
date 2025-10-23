@@ -1,4 +1,3 @@
-Uma_Engine::Pathfinding::~Pathfinding(){
 //#include "pathfinding.hpp"
 //
 //Uma_Engine::Pathfinding::Pathfinding(){
