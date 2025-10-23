@@ -429,12 +429,11 @@ namespace Uma_Engine
                       .texture = pResourcesManager->GetTexture(texName),
                     });
 
-                LuaScript kappaScript;
+                LuaScript kappaScriptComponent;
                 {
-                    kappaScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappa.lua";
+                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
 
-                    // Optional: Pre-define exposed variables (or let Lua auto-discover)
-                    kappaScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
+                    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                         .name = "speed",
                         .value = 100.0f,
                         .type = Uma_ECS::LuaVarType::T_FLOAT,
@@ -443,8 +442,36 @@ namespace Uma_Engine
                         .isSlider = true
                         });
 
-                    gCoordinator.AddComponent(kappa, kappaScript);
+                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+
+                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                       .name = "speed",
+                       .value = 100.0f,
+                       .type = Uma_ECS::LuaVarType::T_FLOAT,
+                       .min = 0.0f,
+                       .max = 500.0f,
+                       .isSlider = true
+                        });
+
+                    gCoordinator.AddComponent(kappa, kappaScriptComponent);
                 }
+
+                //LuaScript kappaScaleScript;
+                //{
+                //    kappaScaleScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappaScale.lua";
+
+                //    // Optional: Pre-define exposed variables (or let Lua auto-discover)
+                //    kappaScaleScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
+                //        .name = "speed",
+                //        .value = 100.0f,
+                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                //        .min = 0.0f,
+                //        .max = 500.0f,
+                //        .isSlider = true
+                //        });
+
+                //    gCoordinator.AddComponent(kappa, kappaScaleScript);
+                //}
             }
 
             Entity wall;

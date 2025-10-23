@@ -3,12 +3,10 @@
 #include "../Core/System.hpp"
 #include "../Core/Coordinator.hpp"
 #include "../Components/LuaScript.h"
-#include "../Components/Transform.h"
-#include "../Components/RigidBody.h"
-#include "../Components/Sprite.h"
 #include "Debugging/Debugger.hpp"
 
 #include <sol/sol.hpp>
+#include <memory>
 
 namespace Uma_ECS
 {
@@ -23,13 +21,20 @@ namespace Uma_ECS
         void CallStart();
 
     private:
+        // Intialize all scripts for an entity
+        void InitializeScripts(Entity entity, LuaScript& scriptComponent);
+        // Initialize a single script instance
+        void InitializeScript(Entity entity, LuaScriptInstance& script, std::shared_ptr<sol::state> lua);
+
         void RegisterLuaAPI();
-        void InitializeScript(Entity entity, LuaScript& script);
+        
         void BindEntityAPI(Entity entity, sol::environment& env);
-        void DiscoverExposedVariables(LuaScript& script);
-        void SyncVariablesToLua(LuaScript& script);
-        void SyncVariablesFromLua(LuaScript& script);
-        void CallLuaFunction(LuaScript& script, const char* funcName, float dt = 0.f);
+
+        void DiscoverExposedVariables(LuaScriptInstance& script);
+
+        void SyncVariablesToLua(LuaScriptInstance& script);
+        void SyncVariablesFromLua(LuaScriptInstance& script);
+        void CallLuaFunction(LuaScriptInstance& script, const char* funcName, float dt = 0.f);
 
         Coordinator* pCoordinator = nullptr;
         std::shared_ptr<sol::state> sharedLua;

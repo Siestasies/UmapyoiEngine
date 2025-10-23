@@ -1,5 +1,22 @@
 #include "LuaScriptingSystem.hpp"
 
+#include "../Components/Transform.h"
+#include "../Components/RigidBody.h"
+#include "../Components/Sprite.h"
+#include "../Components/Collider.h"
+#include "../Components/Camera.h"
+#include "../Components/Player.h"
+#include "../Components/Enemy.h"
+
+// the macro to get components
+#define BIND_COMPONENT_GETTER(ComponentType) \
+    env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType& { \
+        return pCoordinator->GetComponent<ComponentType>(entity); \
+    }); \
+    env.set_function("Has" #ComponentType, [this, entity]() -> bool { \
+        return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
+    });
+
 namespace Uma_ECS
 {
     void LuaScriptingSystem::Init(Coordinator* c)
@@ -24,24 +41,34 @@ namespace Uma_ECS
 
         for (auto const& entity : aEntities)
         {
-            auto& script = scriptArray.GetData(entity);
+            auto& scriptComponent = scriptArray.GetData(entity);
 
-            if (!script.isInitialized)
+            // Initialize scripts if needed
+            if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
             {
-                InitializeScript(entity, script);
+                InitializeScripts(entity, scriptComponent);
             }
 
-            if (script.hasError)
-                continue;
+            // update each script instance
+            for (auto& script : scriptComponent.scripts)
+            {
+                if (script.hasError)
+                    continue;
 
-            // sync c++ variables to lua
-            SyncVariablesToLua(script);
+                if (!script.isInitialized)
+                {
+                    InitializeScript(entity, script, scriptComponent.lua);
+                }
 
-            // call update
-            CallLuaFunction(script, "Update", dt);
+                // sync c++ variables to lua
+                SyncVariablesToLua(script);
 
-            // sync lua variables back to c++
-            SyncVariablesFromLua(script);
+                // call update
+                CallLuaFunction(script, "Update", dt);
+
+                // sync lua variables back to c++
+                SyncVariablesFromLua(script);
+            }
         }
     }
 
@@ -51,15 +78,17 @@ namespace Uma_ECS
 
         for (auto const& entity : aEntities)
         {
-            auto& script = scriptArray.GetData(entity);
+            auto& scriptComponent = scriptArray.GetData(entity);
 
-            if (!script.isInitialized)
-            {
-                InitializeScript(entity, script);
-            }
+            InitializeScripts(entity, scriptComponent);
 
-            if (!script.hasError)
+            for (auto& script : scriptComponent.scripts)
             {
+                if (!script.isEnabled || !script.isInitialized || script.hasError)
+                {
+                    continue;
+                }
+
                 CallLuaFunction(script, "Start");
             }
         }
@@ -71,21 +100,24 @@ namespace Uma_ECS
 
         for (auto const& entity : aEntities)
         {
-            auto& script = scriptArray.GetData(entity);
+            auto& scriptComponent = scriptArray.GetData(entity);
 
-            // Clear the environment first
-            if (script.scriptEnv.valid())
+            for (auto& script : scriptComponent.scripts)
             {
-                script.scriptEnv = sol::nil;  // Invalidate environment
+                // Clear the environment first
+                if (script.scriptEnv.valid())
+                {
+                    script.scriptEnv = sol::nil;  // Invalidate environment
+                }
+
+                script.isInitialized = false;
             }
 
             // Then clear the Lua state
-            if (script.lua)
+            if (scriptComponent.lua)
             {
-                script.lua.reset();
+                scriptComponent.lua.reset();
             }
-
-            script.isInitialized = false;
         }
 
         // Finally clear the shared state
@@ -139,69 +171,80 @@ namespace Uma_ECS
             "flipY", &Sprite::flipY
         );
 
+        
+
         // need to add more (tf rb for testing now)
         // more...
     }
 
-    // setting up the environment for the Lua script to run
-    void LuaScriptingSystem::InitializeScript(Entity entity, LuaScript& script)
+    void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
     {
-        script.lua = sharedLua; // use shared state
+        scriptComponent.lua = sharedLua;
 
-        // creating the isolated environment for this script
-        script.scriptEnv = sol::environment(*script.lua, sol::create, script.lua->globals());
-
-        // Bind entity-specific functions to this environment
-        BindEntityAPI(entity, script.scriptEnv);
-
-        // load and run the script
-        try
+        for (auto& script : scriptComponent.scripts)
         {
-            auto result = script.lua->script_file(script.scriptPath, script.scriptEnv);
-
-            // it has problem running the script
-            if (!result.valid())
+            if (!script.isInitialized)
             {
-                sol::error err = result;
-                script.hasError = true;
-                script.errorMessage = err.what();
-
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
-
-                return;
+                InitializeScript(entity, script, scriptComponent.lua);
             }
         }
-        catch (const sol::error& e)
-        {
-            script.hasError = true;
-            script.errorMessage = e.what();
-
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
-
-            return;
-        }
-
-        // store entity ID in environment 
-        script.scriptEnv["EntityID"] = entity;
-
-        // Discover exposed variables
-        DiscoverExposedVariables(script);
-
-        script.isInitialized = true;
-
-        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-            "Lua script loaded: " + script.scriptPath);
     }
 
+    void LuaScriptingSystem::InitializeScript(Entity entity, LuaScriptInstance& script, std::shared_ptr<sol::state> lua)
+    {
+        script.scriptEnv = sol::environment(*lua, sol::create, lua->globals());
+
+            // Bind entity-specific functions to this environment
+       BindEntityAPI(entity, script.scriptEnv);
+
+       // load and run the script
+       try
+       {
+           auto result = lua->script_file(script.scriptPath, script.scriptEnv);
+
+           // it has problem running the script
+           if (!result.valid())
+           {
+               sol::error err = result;
+               script.hasError = true;
+               script.errorMessage = err.what();
+
+               Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                   "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
+
+               return;
+           }
+       }
+       catch (const sol::error& e)
+       {
+           script.hasError = true;
+           script.errorMessage = e.what();
+
+           Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+               "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
+
+           return;
+       }
+
+       // store entity ID in environment 
+       script.scriptEnv["EntityID"] = entity;
+
+       // Discover exposed variables
+       DiscoverExposedVariables(script);
+
+       script.isInitialized = true;
+
+       Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+           "Lua script loaded: " + script.scriptPath);
+    }
+     
     // basically setting up functions that lua script can use 
     // eg. get transform/rigidbody or other of entity
     void LuaScriptingSystem::BindEntityAPI(Entity entity, sol::environment& env)
     {
         // Get components THIS IS UGLY
         // CAN BE OPTIMISED
-        env.set_function("GetTransform", [this, entity]() -> Transform& 
+        /*env.set_function("GetTransform", [this, entity]() -> Transform& 
             {
                 return pCoordinator->GetComponent<Transform>(entity);
             });
@@ -214,7 +257,16 @@ namespace Uma_ECS
         env.set_function("GetSprite", [this, entity]() -> Sprite& 
             {
                 return pCoordinator->GetComponent<Sprite>(entity);
-            });
+            });*/
+
+        BIND_COMPONENT_GETTER(Transform);
+        BIND_COMPONENT_GETTER(RigidBody);
+        BIND_COMPONENT_GETTER(Sprite);
+        //BIND_COMPONENT_GETTER(Collider);
+        //BIND_COMPONENT_GETTER(Player);
+        //BIND_COMPONENT_GETTER(Enemy);
+        //BIND_COMPONENT_GETTER(Camera);
+
 
         // debugging
         // Utility functions
@@ -232,7 +284,7 @@ namespace Uma_ECS
 
     }
 
-    void LuaScriptingSystem::DiscoverExposedVariables(LuaScript& script)
+    void LuaScriptingSystem::DiscoverExposedVariables(LuaScriptInstance& script)
     {
         sol::optional<sol::table> exposedVars = script.scriptEnv["ExposedVars"];
 
@@ -281,7 +333,7 @@ namespace Uma_ECS
         }
     }
 
-    void LuaScriptingSystem::SyncVariablesToLua(LuaScript& script)
+    void LuaScriptingSystem::SyncVariablesToLua(LuaScriptInstance& script)
     {
         for (const auto& var : script.exposedVariables)
         {
@@ -303,7 +355,7 @@ namespace Uma_ECS
         }
     }
 
-    void LuaScriptingSystem::SyncVariablesFromLua(LuaScript& script)
+    void LuaScriptingSystem::SyncVariablesFromLua(LuaScriptInstance& script)
     {
         for (auto& var : script.exposedVariables)
         {
@@ -334,7 +386,7 @@ namespace Uma_ECS
 
     // Invoking the Lua code
     // BISMILLAH PLEASE WORK
-    void LuaScriptingSystem::CallLuaFunction(LuaScript& script, const char* funcName, float dt)
+    void LuaScriptingSystem::CallLuaFunction(LuaScriptInstance& script, const char* funcName, float dt)
     {
         try
         {

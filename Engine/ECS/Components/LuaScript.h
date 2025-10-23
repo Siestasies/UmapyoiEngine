@@ -32,17 +32,18 @@ namespace Uma_ECS
 				bool isSlider = false;
 		};
 
-		struct LuaScript
+		struct LuaScriptInstance
 		{
 				std::string scriptPath;
 				std::vector<LuaVariable> exposedVariables;
 
 				// runtime data dont need serialization
-				std::shared_ptr<sol::state> lua;		// Sol state instead of lua_State*
+				//std::shared_ptr<sol::state> lua;		// Sol state instead of lua_State*
 				sol::environment scriptEnv;					// Isolated environment per script
 				bool isInitialized = false;
 				bool hasError = false;
 				std::string errorMessage;
+				bool isEnabled = true;
 
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{
@@ -51,6 +52,8 @@ namespace Uma_ECS
 						value.AddMember("scriptPath",
 								rapidjson::Value(scriptPath.c_str(), allocator), 
 								allocator);
+
+						value.AddMember("isEnabled", isEnabled, allocator);
 
 						rapidjson::Value varsArray(rapidjson::kArrayType);
 						for (const auto& var : exposedVariables)
@@ -96,6 +99,11 @@ namespace Uma_ECS
 				{
 						scriptPath = value["scriptPath"].GetString();
 
+						if (value.HasMember("isEnabled"))
+						{
+								isEnabled = value["isEnabled"].GetBool();
+						}
+
 						if (value.HasMember("exposedVariables") && value["exposedVariables"].IsArray())
 						{
 								const auto& varsArray = value["exposedVariables"];
@@ -133,6 +141,87 @@ namespace Uma_ECS
 												var.isSlider = varVal["isSlider"].GetBool();
 
 										exposedVariables.push_back(var);
+								}
+						}
+				}
+		};
+
+		struct LuaScript
+		{
+				std::vector<LuaScriptInstance> scripts;
+
+				std::shared_ptr<sol::state> lua;
+
+				// add script 
+				void AddScript(const std::string& scriptPath)
+				{
+						LuaScriptInstance instance;
+						instance.scriptPath = scriptPath;
+						instance.isEnabled = true;
+						scripts.push_back(instance);
+				}
+
+				// remove script
+				void RemoveScript(size_t idx)
+				{
+						if (idx < scripts.size())
+						{
+								scripts.erase(scripts.begin() + idx);
+						}
+				}
+
+				// get script 
+				LuaScriptInstance* GetScript(size_t idx)
+				{
+						if (idx < scripts.size())
+						{
+								return &scripts[idx];
+						}
+
+						return nullptr;
+				}
+
+				// get script by path
+				LuaScriptInstance* GetScriptByPath(const std::string& path)
+				{
+						for (LuaScriptInstance& script : scripts)
+						{
+								if (script.scriptPath == path)
+								{
+										return &script;
+								}
+						}
+
+						return nullptr;
+				}
+
+				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
+				{
+						value.SetObject();
+
+						rapidjson::Value scriptsArray(rapidjson::kArrayType);
+						for (const auto& script : scripts)
+						{
+								rapidjson::Value scriptObj(rapidjson::kObjectType);
+								script.Serialize(scriptObj, allocator);
+								scriptsArray.PushBack(scriptObj, allocator);
+						}
+						value.AddMember("scripts", scriptsArray, allocator);
+				}
+
+				void Deserialize(const rapidjson::Value& value)
+				{
+						if (value.HasMember("scripts") && value["scripts"].IsArray())
+						{
+								const auto& scriptsArray = value["scripts"];
+								scripts.clear();
+								scripts.reserve(scriptsArray.Size());
+
+								for (const auto& scriptVal : scriptsArray.GetArray())
+								{
+										LuaScriptInstance instance;
+										instance.Deserialize(scriptVal);
+										scripts.push_back(instance);
 								}
 						}
 				}

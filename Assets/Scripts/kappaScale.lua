@@ -5,15 +5,15 @@ ExposedVars = {
 }
 
 function Start()
-    Log("kappa")
+    Log("kappa lua")
 end
 
 function Update(dt)
     local transform = GetTransform()
     local rb = GetRigidBody()
     
-    rb.velocity.x = -200 * speed * dt
-    --transform.scale = 1.1 * transform.scale
+    --rb.velocity.x = -200 * speed * dt
+    transform.scale = 1.001 * transform.scale
     
     --Log("Enemy position: " .. transform.position.x)
 end
