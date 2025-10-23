@@ -28,7 +28,7 @@ All rights reserved.
 #include "../Components/Transform.h"
 #include "../Components/Player.h"
 
-#include "PlayerEvents.h"
+#include "Events/PlayerEvents.h"
 #include "Debugging/Debugger.hpp"
 
 #include <GLFW/glfw3.h>

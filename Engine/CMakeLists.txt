@@ -1,7 +1,7 @@
 # Create GLAD library from local files
 set(GLAD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/glad")
 add_library(glad STATIC
-    ${GLAD_DIR}/src/glad.c "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h")
+    ${GLAD_DIR}/src/glad.c )
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
 # Add ImGui (INSERT HERE - before ENGINE_SOURCES)
@@ -34,6 +34,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
     "Systems/*.cpp" 
     "Core/*.cpp"
+    "Events/*.cpp"
     "ECS/*.cpp"
     "ECS/Components/*.cpp"
     "ECS/Systems/*.cpp"
@@ -51,6 +52,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "Systems/*.h"
     "Systems/*.hpp"
     "Core/*.h"
+    "Events/*.h"
     "ECS/*.h"
     "ECS/Components/*.h"
     "ECS/Systems/*.h" 
@@ -67,6 +69,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "*.cpp" "*.hpp" "*.h"
     "Systems/*.cpp" "Systems/*.hpp" "Systems/*.h"
     "Core/*.cpp" "Core/*.hpp" "Core/*.h"
+    "Events/*.cpp" "Events/*.hpp" "Events/*.h"
     "ECS/*.cpp" "ECS/*.hpp" "ECS/*.h"
     "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
@@ -76,7 +79,7 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 )
 
 # Create the Uma_Engine library
-add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS} "Core/InputEvents.h" "Core/WindowEvents.h" "Core/ECSEvents.h" "Core/PhysicsEvents.h" "Core/AudioEvents.h" "Core/SceneEvents.h" "Core/ResourceEvents.h" "Core/PlayerEvents.h" "Core/IMGUIEvents.h")
+add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
 set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
 

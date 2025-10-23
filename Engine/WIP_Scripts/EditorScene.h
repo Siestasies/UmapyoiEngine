@@ -30,8 +30,8 @@
 #include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
-#include "../Core/ECSEvents.h"
-#include "../Core/IMGUIEvents.h"
+#include "../Events/ECSEvents.h"
+#include "../Events/IMGUIEvents.h"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -442,7 +442,8 @@ namespace Uma_Engine
                         .isSlider = true
                         });
 
-                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+                    // this works just that i didnt want to add this now
+                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
 
                     kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                        .name = "speed",
@@ -451,7 +452,7 @@ namespace Uma_Engine
                        .min = 0.0f,
                        .max = 500.0f,
                        .isSlider = true
-                        });
+                        });*/
 
                     gCoordinator.AddComponent(kappa, kappaScriptComponent);
                 }

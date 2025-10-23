@@ -23,7 +23,7 @@ All rights reserved.
 */
 
 #include "Coordinator.hpp"
-#include "Core/IMGUIEvents.h"
+#include "Events/IMGUIEvents.h"
 
 #include "Debugging/Debugger.hpp"
 

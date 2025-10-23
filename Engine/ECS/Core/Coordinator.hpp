@@ -36,7 +36,7 @@ All rights reserved.
 
 // Event system
 #include "Core/EventSystem.h"
-#include "Core/ECSEvents.h"
+#include "Events/ECSEvents.h"
 
 namespace Uma_ECS
 {

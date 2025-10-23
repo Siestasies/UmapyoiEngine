@@ -18,9 +18,9 @@ All rights reserved.
 */
 #pragma once
 #include "SystemType.h"
-#include "IMGUIEvents.h"
-#include "DebugEvents.h"
-#include "ECSEvents.h"
+#include "Events/IMGUIEvents.h"
+#include "Events/DebugEvents.h"
+#include "Events/ECSEvents.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
