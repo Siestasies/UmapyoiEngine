@@ -7,8 +7,6 @@
 // component
 namespace Uma_ECS 
 {
-    //using Entity = Uma_ECS::Entity;
-
     struct State {
         virtual ~State() = default;
         virtual void enter(Entity) {}
@@ -20,7 +18,6 @@ namespace Uma_ECS
         std::shared_ptr<State> currState;
 
         void Update(Entity entity ,float dt) {
-            printf("a");
             if (currState) {
                 currState->update(entity, dt);
             }
@@ -34,7 +31,7 @@ namespace Uma_ECS
                 currState->exit(entity);
             }
             //creates new state with unique pointer
-            currState = std::make_unique<NewState>();
+            currState = std::make_shared<NewState>();
             //enters the new state
             currState->enter(entity);
         }

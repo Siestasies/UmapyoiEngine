@@ -49,7 +49,6 @@
 
 //WIP
 #include "../AI/StateMachine.hpp"
-
 #include "Systems/StateMachineSystem.hpp"
 
 
@@ -626,9 +625,6 @@ namespace Uma_Engine
                           .texture = pResourcesManager->GetTexture(texName),
                         });
 
-                    //testing
-                    gCoordinator.AddComponent(enemy, FSM{});
-
                     // Create collider with two shapes
                     Collider enemyCollider;
 
@@ -654,6 +650,10 @@ namespace Uma_Engine
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
                     gCoordinator.AddComponent(enemy, enemyCollider);
+
+                    //testing
+                    FSM test;
+                    gCoordinator.AddComponent(enemy, test);
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
