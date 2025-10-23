@@ -205,8 +205,8 @@ namespace Uma_Engine
             stateMachineSystem = gCoordinator.RegisterSystem<StateMachineSystem>();
             {
                 Signature sign;
-                //sign.set(gCoordinator.GetComponentType<FSM>());
-                sign.set(gCoordinator.GetComponentType<Enemy>());
+                sign.set(gCoordinator.GetComponentType<FSM>());
+                //sign.set(gCoordinator.GetComponentType<Enemy>());
                 gCoordinator.SetSystemSignature<StateMachineSystem>(sign);
             }
             stateMachineSystem->Init(&gCoordinator);
@@ -653,6 +653,9 @@ namespace Uma_Engine
 
                     //testing
                     FSM test;
+                    test.registerState<base,move>();
+                    test.currStateName = "Base";
+                    //test.ChangeState(test, "Base");
                     gCoordinator.AddComponent(enemy, test);
                 }
 

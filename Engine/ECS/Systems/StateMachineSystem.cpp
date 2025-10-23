@@ -7,7 +7,8 @@ void Uma_ECS::StateMachineSystem::Update(float dt)
     for (auto const& entity : aEntities)
     {
         auto& sm = smArray.GetData(entity);
-        sm.Update(entity, dt);
+        sm.Update(sm, dt);
+        std::cout << sm.currStateName << " " << entity << "\n";
     }
 }
 
