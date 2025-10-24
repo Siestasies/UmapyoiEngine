@@ -21,6 +21,7 @@ All rights reserved.
 #include "IMGUIEvents.h"
 #include "DebugEvents.h"
 #include "ECSEvents.h"
+#include "FileSystem/FileSystem.hpp"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -145,6 +146,8 @@ namespace Uma_Engine
                 // call for windows to be shown
                 float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
                 CreateDebugWindows(currentFps, deltaTime);
+
+                fileBrowser.Render();
 
                 Render();
             }
@@ -549,5 +552,7 @@ namespace Uma_Engine
             std::vector<std::string> logsVec;
 
             EventSystem* pEventSystem;
+
+            FileBrowser fileBrowser;
     };
 }
