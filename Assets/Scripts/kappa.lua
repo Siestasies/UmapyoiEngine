@@ -17,3 +17,7 @@ function Update(dt)
     
     --Log("Enemy position: " .. transform.position.x)
 end
+
+function OnCollision()
+    log("Collided")
+end

@@ -48,8 +48,6 @@ namespace Uma_ECS
         // by right shd only have 1 player
         HandleMovementInput(dt);
         HandleActionInput();
-
-
     }
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
@@ -112,6 +110,7 @@ namespace Uma_ECS
             break;
         }
     }
+
     void PlayerControllerSystem::OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event)
     {
         (void)event;

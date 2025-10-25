@@ -22,9 +22,11 @@ All rights reserved.
 
 #pragma once
 
-#include "../Core/System.hpp"
-#include "../Core/Coordinator.hpp"
+#include "Core/System.hpp"
+#include "Core/Coordinator.hpp"
 #include "Components/Collider.h"
+
+#include "Core/EventSystem.h"
 
 #include <unordered_set>
 
@@ -58,7 +60,7 @@ namespace Uma_ECS
     class CollisionSystem : public ECSSystem
     {
     public:
-        inline void Init(Coordinator* c) { gCoordinator = c; }
+        inline void Init(Coordinator* c, Uma_Engine::EventSystem* e) { gCoordinator = c; pEventSystem = e; }
 
         void Update(float dt);
 
@@ -113,6 +115,7 @@ namespace Uma_ECS
             const BoundingBox& rhs);
 
         Coordinator* gCoordinator = nullptr;
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
 
         //// Track which entity pairs we've already resolved this frame
         //struct PairHash

@@ -8,10 +8,21 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
+#include "Events/PhysicsEvents.h"
+
 // the macro to get components
 #define BIND_COMPONENT_GETTER(ComponentType) \
-    env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType& { \
-        return pCoordinator->GetComponent<ComponentType>(entity); \
+    env.set_function("Get" #ComponentType, [this, entity]() -> sol::optional<std::reference_wrapper<ComponentType>> { \
+        if (!pCoordinator->HasActiveEntity(entity)) { \
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, \
+                "Lua: Tried to access " #ComponentType " on destroyed entity"); \
+            return sol::nullopt; \
+        } \
+        auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+        if (!arr.Has(entity)) { \
+            return sol::nullopt; \
+        } \
+        return std::ref(arr.GetData(entity)); \
     }); \
     env.set_function("Has" #ComponentType, [this, entity]() -> bool { \
         return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
@@ -19,9 +30,10 @@
 
 namespace Uma_ECS
 {
-    void LuaScriptingSystem::Init(Coordinator* c)
+    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e)
     {
         pCoordinator = c;
+        pEventSystem = e;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -33,6 +45,8 @@ namespace Uma_ECS
         );
 
         RegisterLuaAPI();
+
+        RegisterEventListeners();
     }
 
     void LuaScriptingSystem::Update(float dt)
@@ -55,13 +69,40 @@ namespace Uma_ECS
                 if (script.hasError)
                     continue;
 
+                if (!script.isEnabled)
+                {
+                    if (script.wasEnabledLastFrame)
+                    {
+                        CallLuaFunction(script, "OnDisable");
+                        script.wasEnabledLastFrame = false;
+                    }
+                    continue;
+                }
+
+                if (!script.wasEnabledLastFrame)
+                {
+                    script.isVariableDirty = true;  // Force sync when enabled
+                    script.wasEnabledLastFrame = true;
+
+                    if (!script.isInitialized)
+                    {
+                        InitializeScript(entity, script, scriptComponent.lua);
+                    }
+
+                    CallLuaFunction(script, "OnEnable");
+                }
+
                 if (!script.isInitialized)
                 {
                     InitializeScript(entity, script, scriptComponent.lua);
                 }
 
-                // sync c++ variables to lua
-                SyncVariablesToLua(script);
+                if (script.isVariableDirty) // oni update when there is changes being made
+                {
+                    // sync c++ variables to lua
+                    SyncVariablesToLua(script);
+                    script.isVariableDirty = false;
+                }
 
                 // call update
                 CallLuaFunction(script, "Update", dt);
@@ -70,6 +111,7 @@ namespace Uma_ECS
                 SyncVariablesFromLua(script);
             }
         }
+        lastDeltaTime = dt;
     }
 
     void LuaScriptingSystem::CallStart() 
@@ -104,12 +146,9 @@ namespace Uma_ECS
 
             for (auto& script : scriptComponent.scripts)
             {
-                // Clear the environment first
-                if (script.scriptEnv.valid())
-                {
-                    script.scriptEnv = sol::nil;  // Invalidate environment
-                }
+                CallLuaFunction(script, "OnDestroy"); // call OnDestroy on the Lua script
 
+                script.scriptEnv = sol::nil;  // Invalidate environment
                 script.isInitialized = false;
             }
 
@@ -123,6 +162,7 @@ namespace Uma_ECS
         // Finally clear the shared state
         if (sharedLua)
         {
+            sharedLua->collect_garbage(); // force garbage collect before shutdown
             sharedLua.reset();
         }
     }
@@ -170,8 +210,6 @@ namespace Uma_ECS
             "flipX", &Sprite::flipX,
             "flipY", &Sprite::flipY
         );
-
-        
 
         // need to add more (tf rb for testing now)
         // more...
@@ -232,10 +270,99 @@ namespace Uma_ECS
        // Discover exposed variables
        DiscoverExposedVariables(script);
 
+       // cache the function to the callback
+       CacheCallbacks(script);
+
+       script.isVariableDirty = true;
        script.isInitialized = true;
 
        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
            "Lua script loaded: " + script.scriptPath);
+    }
+
+    void LuaScriptingSystem::CacheCallbacks(LuaScriptInstance& script)
+    {
+        sol::optional<sol::protected_function> onCollision = script.scriptEnv["OnCollision"];
+        if (onCollision)
+        {
+            script.callbacks.hasOnCollision = true;
+            script.callbacks.onCollisionFunc = *onCollision;
+        }
+    }
+
+    template <typename... Args>
+    void LuaScriptingSystem::CallCachedFunction(LuaScriptInstance& script, 
+                                                sol::protected_function& func, 
+                                                Args&&... args)
+    {
+        try
+        {
+            auto result = func(std::forward<Args>(args)...);
+
+            if (!result.valid())
+            {
+                sol::error err = result;
+                script.hasError = true;
+                script.errorMessage = err.what();
+
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    script.scriptPath + " callback error: " + script.errorMessage);
+            }
+        }
+        catch (const sol::error& e)
+        {
+            script.hasError = true;
+            script.errorMessage = e.what();
+
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                script.scriptPath + " callback exception: " + script.errorMessage);
+        }
+    }
+
+    void LuaScriptingSystem::RegisterEventListeners()
+    {
+       /* pEventSystem->Subscribe<Uma_Engine::CollisionBeginEvent>([this](const Uma_Engine::CollisionBeginEvent& c)
+            {
+                OnCollisionEvent(c.entityA, c.entityB);
+            });*/
+    }
+
+    void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        // Notify entityA's scripts
+        if (scriptArray.Has(entityA))
+        {
+            auto& scriptComponent = scriptArray.GetData(entityA);
+
+            for (auto& script : scriptComponent.scripts)
+            {
+                if (!script.isEnabled || script.hasError) continue;
+
+                // FAST CHECK: Use cached flag
+                if (script.callbacks.hasOnCollision)
+                {
+                    CallCachedFunction(script, script.callbacks.onCollisionFunc, entityB);
+                }
+            }
+        }
+
+        // Notify entityB's scripts
+        if (scriptArray.Has(entityB))
+        {
+            auto& scriptComponent = scriptArray.GetData(entityB);
+
+            for (auto& script : scriptComponent.scripts)
+            {
+                if (!script.isEnabled || script.hasError) continue;
+
+                if (script.callbacks.hasOnCollision)
+                {
+                    CallCachedFunction(script, script.callbacks.onCollisionFunc, entityA);
+                }
+            }
+        }
     }
      
     // basically setting up functions that lua script can use 
@@ -280,6 +407,13 @@ namespace Uma_ECS
 
         env.set_function("LogError", [](const std::string& msg) {
             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, msg);
+            });
+
+        // other helpers
+
+        // Add time access
+        sharedLua->set_function("GetDeltaTime", [this]() {
+            return lastDeltaTime; // Store in class
             });
 
     }
@@ -381,6 +515,45 @@ namespace Uma_ECS
                 break;
             }
         }
+    }
+
+    // for hot reload 
+    void LuaScriptingSystem::ReloadScript(Entity entity, size_t scriptIndex)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+        if (!scriptArray.Has(entity)) return;
+
+        auto& scriptComponent = scriptArray.GetData(entity);
+        if (scriptIndex >= scriptComponent.scripts.size()) return;
+
+        auto& script = scriptComponent.scripts[scriptIndex];
+
+        // Store current variable values
+        std::vector<LuaVariable> oldVars = script.exposedVariables;
+
+        // Clear and reinitialize
+        script.scriptEnv = sol::nil;
+        script.isInitialized = false;
+        script.hasError = false;
+
+        InitializeScript(entity, script, scriptComponent.lua);
+
+        // Restore variable values where names match
+        for (auto& newVar : script.exposedVariables)
+        {
+            for (const auto& oldVar : oldVars)
+            {
+                if (newVar.name == oldVar.name && newVar.type == oldVar.type)
+                {
+                    newVar.value = oldVar.value;
+                    break;
+                }
+            }
+        }
+
+        // Re-sync to Lua
+        SyncVariablesToLua(script);
+        CallLuaFunction(script, "Start");
     }
 
 

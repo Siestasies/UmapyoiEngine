@@ -172,7 +172,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<Collider>());
                 gCoordinator.SetSystemSignature<CollisionSystem>(sign);
             }
-            collisionSystem->Init(&gCoordinator);
+            collisionSystem->Init(&gCoordinator, pEventSystem);
 
             // Rendering System
             renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
@@ -199,7 +199,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<LuaScript>());
                 gCoordinator.SetSystemSignature<LuaScriptingSystem>(sign);
             }
-            scriptingSystem->Init(&gCoordinator);
+            scriptingSystem->Init(&gCoordinator, pEventSystem);
 
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
