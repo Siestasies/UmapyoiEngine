@@ -109,6 +109,33 @@ namespace Uma_ECS
             Entity e,
             const BoundingBox& box);
 
+        // tracking the entity pairs that are currently colliding
+        struct EntityPair
+        {
+            Entity entityA;
+            Entity entityB;
+
+            EntityPair(Entity a, Entity b)
+                : entityA((a < b) ? a : b)
+                , entityB((a < b) ? b : a)
+            {
+            }
+
+            bool operator==(const EntityPair& other) const
+            {
+                return entityA == other.entityA && entityB == other.entityB;
+            }
+        };
+
+        struct EntityPairHash
+        {
+            std::size_t operator()(const EntityPair& p) const
+            {
+                return std::hash<Uma_ECS::Entity>()(p.entityA) ^
+                    (std::hash<Uma_ECS::Entity>()(p.entityB) << 1);
+            }
+        };
+
         // AABB intersection test
         bool CollisionIntersection_RectRect_Static(
             const BoundingBox& lhs,
@@ -117,15 +144,7 @@ namespace Uma_ECS
         Coordinator* gCoordinator = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
 
-        //// Track which entity pairs we've already resolved this frame
-        //struct PairHash
-        //{
-        //    std::size_t operator()(const std::pair<Entity, Entity>& p) const
-        //    {
-        //        return std::hash<Entity>()(p.first) ^ (std::hash<Entity>()(p.second) << 1);
-        //    }
-        //};
-
-        //std::unordered_set<std::pair<Entity, Entity>, PairHash> resolvedPairsThisFrame;
+        std::unordered_set<EntityPair, EntityPairHash> currentCollisions;
+        std::unordered_set<EntityPair, EntityPairHash> previousCollisions;
     };
 }

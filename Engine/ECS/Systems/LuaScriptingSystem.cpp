@@ -8,7 +8,7 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
-#include "Events/PhysicsEvents.h"
+#include "Events/CollisionEvent.h"
 
 // the macro to get components
 #define BIND_COMPONENT_GETTER(ComponentType) \
@@ -146,10 +146,18 @@ namespace Uma_ECS
 
             for (auto& script : scriptComponent.scripts)
             {
-                CallLuaFunction(script, "OnDestroy"); // call OnDestroy on the Lua script
+                if (script.isEnabled && script.isInitialized)
+                {
+                    CallLuaFunction(script, "OnDestroy");
+                }
 
-                script.scriptEnv = sol::nil;  // Invalidate environment
+                // CRITICAL: Clear cached callbacks first
+                script.callbacks = LuaScriptInstance::CallbackCache{};
+
+                // Clear the environment (this releases references)
+                script.scriptEnv = sol::nil;
                 script.isInitialized = false;
+                script.hasError = false;
             }
 
             // Then clear the Lua state
@@ -321,46 +329,116 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::RegisterEventListeners()
     {
-       /* pEventSystem->Subscribe<Uma_Engine::CollisionBeginEvent>([this](const Uma_Engine::CollisionBeginEvent& c)
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent>(
+            [this](const Uma_Engine::OnCollisionEnterEvent& e)
             {
-                OnCollisionEvent(c.entityA, c.entityB);
-            });*/
+                OnCollisionEnterEvent(e.entityA, e.entityB);
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent>(
+            [this](const Uma_Engine::OnCollisionEvent& e)
+            {
+                OnCollisionEvent(e.entityA, e.entityB);
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent>(
+            [this](const Uma_Engine::OnCollisionExitEvent& e)
+            {
+                OnCollisionExitEvent(e.entityA, e.entityB);
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent>(
+            [this](const Uma_Engine::OnTriggerEnterEvent& e)
+            {
+                OnTriggerEnterEvent(e.trigger, e.entity);
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent>(
+            [this](const Uma_Engine::OnTriggerEvent& e)
+            {
+                OnTriggerEvent(e.trigger, e.entity);
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent>(
+            [this](const Uma_Engine::OnTriggerExitEvent& e)
+            {
+                OnTriggerExitEvent(e.trigger, e.entity);
+            });
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
-        // Notify entityA's scripts
-        if (scriptArray.Has(entityA))
+        // Notify both entities
+        NotifyScripts(scriptArray, entityA, entityB, "OnCollision");
+        NotifyScripts(scriptArray, entityB, entityA, "OnCollision");
+    }
+
+    void LuaScriptingSystem::OnCollisionEnterEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        // Notify both entities
+        NotifyScripts(scriptArray, entityA, entityB, "OnCollisionEnter");
+        NotifyScripts(scriptArray, entityB, entityA, "OnCollisionEnter");
+    }
+
+    void LuaScriptingSystem::OnCollisionExitEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        NotifyScripts(scriptArray, entityA, entityB, "OnCollisionExit");
+        NotifyScripts(scriptArray, entityB, entityA, "OnCollisionExit");
+    }
+
+    void LuaScriptingSystem::OnTriggerEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        // Notify both entities
+        NotifyScripts(scriptArray, entityA, entityB, "OnTrigger");
+        NotifyScripts(scriptArray, entityB, entityA, "OnTrigger");
+    }
+
+    void LuaScriptingSystem::OnTriggerEnterEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        // Notify both entities
+        NotifyScripts(scriptArray, entityA, entityB, "OnTriggerEnter");
+        NotifyScripts(scriptArray, entityB, entityA, "OnTriggerEnter");
+    }
+
+    void LuaScriptingSystem::OnTriggerExitEvent(Entity entityA, Entity entityB)
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        NotifyScripts(scriptArray, entityA, entityB, "OnTriggerExit");
+        NotifyScripts(scriptArray, entityB, entityA, "OnTriggerExit");
+    }
+
+    // Helper function to reduce code duplication
+    void LuaScriptingSystem::NotifyScripts(
+        ComponentArray<LuaScript>& scriptArray,
+        Entity owner,
+        Entity other,
+        const char* callbackName)
+    {
+        if (!scriptArray.Has(owner)) return;
+
+        auto& scriptComponent = scriptArray.GetData(owner);
+
+        for (auto& script : scriptComponent.scripts)
         {
-            auto& scriptComponent = scriptArray.GetData(entityA);
+            if (!script.isEnabled || script.hasError) continue;
 
-            for (auto& script : scriptComponent.scripts)
+            sol::optional<sol::protected_function> callback =
+                script.scriptEnv[callbackName];
+
+            if (callback)
             {
-                if (!script.isEnabled || script.hasError) continue;
-
-                // FAST CHECK: Use cached flag
-                if (script.callbacks.hasOnCollision)
-                {
-                    CallCachedFunction(script, script.callbacks.onCollisionFunc, entityB);
-                }
-            }
-        }
-
-        // Notify entityB's scripts
-        if (scriptArray.Has(entityB))
-        {
-            auto& scriptComponent = scriptArray.GetData(entityB);
-
-            for (auto& script : scriptComponent.scripts)
-            {
-                if (!script.isEnabled || script.hasError) continue;
-
-                if (script.callbacks.hasOnCollision)
-                {
-                    CallCachedFunction(script, script.callbacks.onCollisionFunc, entityA);
-                }
+                CallCachedFunction(script, *callback, other);
             }
         }
     }

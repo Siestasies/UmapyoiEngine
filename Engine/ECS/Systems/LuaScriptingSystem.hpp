@@ -42,12 +42,27 @@ namespace Uma_ECS
 
         // NEW SHIT TO DO 
         void RegisterEventListeners();                          // basically subscribe to event then trigger the func
+
+        void NotifyScripts(                                     // this is to let the Lua script to know that there are                                                     
+            ComponentArray<LuaScript>& scriptArray,             // events triggering the script
+            Entity owner,
+            Entity other,
+            const char* callbackName);
+
         void CacheCallbacks(LuaScriptInstance& script);         // caching the callback (stroing the callbacks in the script instance)
 
+        // thi is to call the cached callbacks of the script
+        // eg onCollisionEnter, OnTriggerExit, etc...
         template <typename... Args>
         void CallCachedFunction(LuaScriptInstance& script, sol::protected_function& func, Args&&... args);
         
-        void OnCollisionEvent(Entity entityA, Entity entityB);  // 
+        // These are all callback events
+        void OnCollisionEnterEvent(Entity entityA, Entity entityB);
+        void OnCollisionExitEvent(Entity entityA, Entity entityB);
+        void OnCollisionEvent(Entity entityA, Entity entityB);
+        void OnTriggerEnterEvent(Entity entityA, Entity entityB);
+        void OnTriggerExitEvent(Entity entityA, Entity entityB);
+        void OnTriggerEvent(Entity entityA, Entity entityB);
 
         Uma_Engine::EventSystem* pEventSystem = nullptr;
         Coordinator* pCoordinator = nullptr;

@@ -687,6 +687,34 @@ namespace Uma_Engine
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
                     gCoordinator.AddComponent(enemy, enemyCollider);
+
+                    LuaScript enemyScriptComponent;
+                    {
+                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+
+                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                            .name = "speed",
+                            .value = 100.0f,
+                            .type = Uma_ECS::LuaVarType::T_FLOAT,
+                            .min = 0.0f,
+                            .max = 500.0f,
+                            .isSlider = true
+                            });
+
+                        // this works just that i didnt want to add this now
+                        /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+
+                        kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                           .name = "speed",
+                           .value = 100.0f,
+                           .type = Uma_ECS::LuaVarType::T_FLOAT,
+                           .min = 0.0f,
+                           .max = 500.0f,
+                           .isSlider = true
+                            });*/
+
+                        gCoordinator.AddComponent(enemy, enemyScriptComponent);
+                    }
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
