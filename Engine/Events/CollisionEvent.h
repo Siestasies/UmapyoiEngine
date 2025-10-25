@@ -1,5 +1,5 @@
 /*!
-\file   PhysicsEvents.h
+\file   CollisionEvent.h
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -27,39 +27,105 @@ All rights reserved.
 
 namespace Uma_Engine
 {
-    class CollisionBeginEvent : public Event
+    /**
+     * @brief Event fired when two entities start colliding (Unity: OnCollisionEnter)
+     */
+    class OnCollisionEnterEvent : public Event
     {
     public:
-        CollisionBeginEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
+        OnCollisionEnterEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB)
+            : entityA(entityA)
+            , entityB(entityB)
+        {
+            priority = Priority::Normal;
+        }
 
-    public:
-        Uma_ECS::Entity entityA, entityB;
+        Uma_ECS::Entity entityA;
+        Uma_ECS::Entity entityB;
     };
 
-    class CollisionEndEvent : public Event
+    /**
+     * @brief Event fired continuously while two entities are colliding (Unity: OnCollisionStay)
+     */
+    class OnCollisionEvent : public Event
     {
     public:
-        CollisionEndEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB) : entityA(entityA), entityB(entityB) { priority = Priority::Normal; }
+        OnCollisionEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB)
+            : entityA(entityA)
+            , entityB(entityB)
+        {
+            priority = Priority::Normal;
+        }
 
-    public:
-        Uma_ECS::Entity entityA, entityB;
+        Uma_ECS::Entity entityA;
+        Uma_ECS::Entity entityB;
     };
 
-    class TriggerEnterEvent : public Event
+    /**
+     * @brief Event fired when two entities stop colliding (Unity: OnCollisionExit)
+     */
+    class OnCollisionExitEvent : public Event
     {
     public:
-        TriggerEnterEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
+        OnCollisionExitEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB)
+            : entityA(entityA)
+            , entityB(entityB)
+        {
+            priority = Priority::Normal;
+        }
 
-    public:
-        Uma_ECS::Entity trigger, entity;
+        Uma_ECS::Entity entityA;
+        Uma_ECS::Entity entityB;
     };
 
-    class TriggerExitEvent : public Event
+    /**
+     * @brief Event fired when an entity enters a trigger volume (Unity: OnTriggerEnter)
+     */
+    class OnTriggerEnterEvent : public Event
     {
     public:
-        TriggerExitEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity) : trigger(trigger), entity(entity) { priority = Priority::Normal; }
+        OnTriggerEnterEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity)
+            : trigger(trigger)
+            , entity(entity)
+        {
+            priority = Priority::Normal;
+        }
 
+        Uma_ECS::Entity trigger;
+        Uma_ECS::Entity entity;
+    };
+
+    /**
+     * @brief Event fired continuously while an entity is inside a trigger volume (Unity: OnTriggerStay)
+     */
+    class OnTriggerEvent : public Event
+    {
     public:
-        Uma_ECS::Entity trigger, entity;
+        OnTriggerEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity)
+            : trigger(trigger)
+            , entity(entity)
+        {
+            priority = Priority::Normal;
+        }
+
+        Uma_ECS::Entity trigger;
+        Uma_ECS::Entity entity;
+    };
+
+    /**
+     * @brief Event fired when an entity exits a trigger volume (Unity: OnTriggerExit)
+     */
+    class OnTriggerExitEvent : public Event
+    {
+    public:
+        OnTriggerExitEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity)
+            : trigger(trigger)
+            , entity(entity)
+        {
+            priority = Priority::Normal;
+        }
+
+        Uma_ECS::Entity trigger;
+        Uma_ECS::Entity entity;
     };
 }
