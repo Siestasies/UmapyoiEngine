@@ -49,6 +49,9 @@ All rights reserved.
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 namespace
 {
     size_t MAX_INSTANCES = 10000;
@@ -197,6 +200,12 @@ void main()
             .zoom = 1.f
         };
 
+        UpdateProjectionMatrix();
+
+        if (!InitializeTextRenderer()) {
+            std::cerr << "Failed to initialize text renderer" << std::endl;
+        }
+
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
     }
@@ -226,7 +235,8 @@ void main()
         {
             std::cout << "Shutting down graphics system..." << std::endl;
 
-            // Clean up both renderers
+            // Clean up renderers
+            ShutdownTextRenderer();
             ShutdownRenderer();
             ShutdownInstancedRenderer();
 
@@ -874,5 +884,300 @@ void main()
             glDeleteProgram(mInstanceShaderProgram);
             mInstanceShaderProgram = 0;
         }
+    }
+
+    bool Graphics::InitializeTextRenderer()
+    {
+        // Create text shader
+        mTextShaderProgram = CreateTextShader();
+        if (!mTextShaderProgram) {
+            std::cerr << "Failed to create text shader" << std::endl;
+            return false;
+        }
+
+        std::cout << "Text renderer initialized successfully" << std::endl;
+        return true;
+    }
+
+    void Graphics::ShutdownTextRenderer()
+    {
+        // Clean up all fonts
+        for (auto& [name, fontData] : mFonts) 
+        {
+            for (auto& [c, character] : fontData.characters) 
+            {
+                glDeleteTextures(1, &character.textureID);
+            }
+            glDeleteVertexArrays(1, &fontData.VAO);
+            glDeleteBuffers(1, &fontData.VBO);
+        }
+        mFonts.clear();
+        mCurrentFont.clear();
+
+        // Delete shader program
+        if (mTextShaderProgram) 
+        {
+            glDeleteProgram(mTextShaderProgram);
+            mTextShaderProgram = 0;
+        }
+    }
+
+    bool Graphics::LoadFont(const std::string& fontName, const std::string& fontPath,
+        unsigned int fontSize)
+    {
+        // Initialize FreeType
+        FT_Library ft;
+        if (FT_Init_FreeType(&ft)) {
+            std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+            return false;
+        }
+
+        // Load font face
+        FT_Face face;
+        if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
+            std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
+            FT_Done_FreeType(ft);
+            return false;
+        }
+
+        // Set font size
+        FT_Set_Pixel_Sizes(face, 0, fontSize);
+
+        // Disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        // Create new FontData
+        FontData newFont;
+        newFont.fontSize = fontSize;
+
+        // Create VAO and VBO for this font
+        glCreateVertexArrays(1, &newFont.VAO);
+        glCreateBuffers(1, &newFont.VBO);
+
+        // Allocate storage for quad data
+        glNamedBufferStorage(newFont.VBO, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+        // Set vertex attributes
+        glEnableVertexArrayAttrib(newFont.VAO, 0);
+        glVertexArrayAttribFormat(newFont.VAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribBinding(newFont.VAO, 0, 0);
+
+        // Bind VBO to VAO
+        glVertexArrayVertexBuffer(newFont.VAO, 0, newFont.VBO, 0, 4 * sizeof(float));
+
+        // Load ASCII characters (32-126)
+        for (unsigned char c = 32; c < 127; c++) 
+        {
+            // Load character glyph
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+            {
+                std::cerr << "WARNING: Failed to load Glyph '" << c << "'" << std::endl;
+                continue;
+            }
+
+            // Create texture
+            GLuint texture;
+            glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+
+            // Allocate texture storage
+            glTextureStorage2D(
+                texture,
+                1,  // mipmap levels
+                GL_R8,  // internal format
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows
+            );
+
+            // Upload pixel data
+            if (face->glyph->bitmap.buffer) {
+                glTextureSubImage2D(
+                    texture,
+                    0,      // mipmap level
+                    0, 0,   // x, y offset
+                    face->glyph->bitmap.width,
+                    face->glyph->bitmap.rows,
+                    GL_RED,
+                    GL_UNSIGNED_BYTE,
+                    face->glyph->bitmap.buffer
+                );
+            }
+
+            // Set texture parameters
+            glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            // Store character
+            Character character = 
+            {
+                texture,
+                Vec2(static_cast<float>(face->glyph->bitmap.width), static_cast<float>(face->glyph->bitmap.rows)),
+                Vec2(static_cast<float>(face->glyph->bitmap_left), static_cast<float>(face->glyph->bitmap_top)),
+                static_cast<float>(face->glyph->advance.x >> 6)
+            };
+            newFont.characters[c] = character;
+        }
+
+        // Clean up FreeType
+        FT_Done_Face(face);
+        FT_Done_FreeType(ft);
+
+        // Store font in map
+        mFonts[fontName] = newFont;
+
+        // Set as current font to the first
+        if (mCurrentFont.empty()) {
+            mCurrentFont = fontName;
+        }
+
+        std::cout << "Font loaded successfully: " << fontName << " (" << fontPath << ", size: " << fontSize << ")" << std::endl;
+        return true;
+    }
+
+    void Graphics::SetCurrentFont(const std::string& fontName)
+    {
+        auto it = mFonts.find(fontName);
+        if (it != mFonts.end()) 
+        {
+            mCurrentFont = fontName;
+        }
+        else 
+        {
+            std::cerr << "WARNING: Font '" << fontName << "' not found" << std::endl;
+        }
+    }
+
+    void Graphics::DrawTextScreen(const std::string& text, float x, float y,
+        float scale, float r, float g, float b)
+    {
+        // Use current font
+        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) 
+        {
+            std::cerr << "ERROR: No font loaded" << std::endl;
+            return;
+        }
+
+        DrawTextScreen(mCurrentFont, text, x, y, scale, r, g, b);
+    }
+
+    void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
+        float x, float y, float scale, float r, float g, float b)
+    {
+        // Check if font exists
+        auto it = mFonts.find(fontName);
+        if (it == mFonts.end()) {
+            std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+            return;
+        }
+
+        FontData& font = it->second;
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glUseProgram(mTextShaderProgram);
+        glBindVertexArray(font.VAO);
+
+        // Set text color
+        glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
+
+        // Set up orthographic projection
+        float left = 0.0f;
+        float right = static_cast<float>(mViewportWidth);
+        float bottom = 0.0f;
+        float top = static_cast<float>(mViewportHeight);
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Render each character
+        for (char c : text) {
+            if (font.characters.find(c) == font.characters.end()) continue;
+
+            Character ch = font.characters[c];
+
+            float xpos = x + ch.bearing.x * scale;
+            float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+            float w = ch.size.x * scale;
+            float h = ch.size.y * scale;
+
+            float vertices[6][4] = {
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos,     ypos,       0.0f, 1.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos + w, ypos + h,   1.0f, 0.0f }
+            };
+
+            glBindTextureUnit(0, ch.textureID);
+            glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            x += ch.advance * scale;
+        }
+
+        glBindVertexArray(0);
+        glBindTextureUnit(0, 0);
+    }
+
+    float Graphics::MeasureText(const std::string& text, float scale)
+    {
+        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
+            return 0.0f;
+        }
+        return MeasureText(mCurrentFont, text, scale);
+    }
+
+    float Graphics::MeasureText(const std::string& fontName, const std::string& text,
+        float scale)
+    {
+        auto it = mFonts.find(fontName);
+        if (it == mFonts.end()) {
+            return 0.0f;
+        }
+
+        FontData& font = it->second;
+        float width = 0.0f;
+
+        for (char c : text) {
+            if (font.characters.find(c) != font.characters.end()) {
+                width += font.characters[c].advance * scale;
+            }
+        }
+
+        return width;
+    }
+
+    GLuint Graphics::CreateTextShader()
+    {
+        const char* vertexShaderSource = R"(
+        #version 450 core
+        layout (location = 0) in vec4 vertex;
+        out vec2 TexCoords;
+        uniform mat4 projection;
+        
+        void main() {
+            gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+            TexCoords = vertex.zw;
+        }
+    )";
+
+        const char* fragmentShaderSource = R"(
+        #version 450 core
+        in vec2 TexCoords;
+        out vec4 FragColor;
+        layout (binding = 0) uniform sampler2D text;
+        uniform vec3 textColor;
+        
+        void main() {
+            float alpha = texture(text, TexCoords).r;
+            FragColor = vec4(textColor, 1.0) * vec4(1.0, 1.0, 1.0, alpha);
+        }
+    )";
+
+        return CreateShader(vertexShaderSource, fragmentShaderSource);
     }
 }

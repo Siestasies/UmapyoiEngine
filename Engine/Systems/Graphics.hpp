@@ -26,6 +26,7 @@ All rights reserved.
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
 #include <string>
+#include <map>
 //#include "Systems/TMP_CameraSystem.hpp"
 
 #include "Core/Coordinator.hpp"
@@ -37,6 +38,14 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    struct Character
+    {
+        GLuint textureID;
+        Vec2   size;
+        Vec2   bearing;
+        float  advance;
+    };
+
     /**
      * \struct Cam_Info
      * \brief Camera information containing position and zoom level
@@ -87,10 +96,26 @@ namespace Uma_Engine
 
         GLuint mInstanceUVVBO;
 
+        // TEXT RENDERING
+        struct FontData 
+        {
+            std::map<char, Character> characters;
+            GLuint VAO;
+            GLuint VBO;
+            unsigned int fontSize;
+        };
+
+        std::map<std::string, FontData> mFonts;
+        std::string mCurrentFont;
+        GLuint mTextShaderProgram;
+
         // Viewport size
         int mViewportWidth, mViewportHeight;
 
         // Helper functions
+        bool InitializeTextRenderer();
+        void ShutdownTextRenderer();
+        GLuint CreateTextShader();
 
         /**
          * \brief Initializes the basic 2D sprite renderer
@@ -347,5 +372,18 @@ namespace Uma_Engine
          * \param b Blue component (0.0 to 1.0)
          */
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+
+        bool LoadFont(const std::string& fontName, const std::string& fontPath,
+            unsigned int fontSize = 48);
+        void SetCurrentFont(const std::string& fontName);
+        std::string GetCurrentFont() const { return mCurrentFont; }
+        void DrawTextScreen(const std::string& text, float x, float y,
+            float scale = 1.0f,
+            float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextScreen(const std::string& fontName, const std::string& text,
+            float x, float y, float scale = 1.0f,
+            float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        float MeasureText(const std::string& text, float scale = 1.0f);
+        float MeasureText(const std::string& fontName, const std::string& text, float scale = 1.0f);
     };
 }

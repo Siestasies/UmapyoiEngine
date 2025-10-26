@@ -62,6 +62,23 @@ namespace Uma_Engine
             // Load all required textures
             LoadAllTextures();
 
+            std::string fontPath = Uma_FilePath::ASSET_ROOT + "fonts/";
+
+            // Load title font
+            if (!gTestGraphics->LoadFont("title", fontPath + "Urbanist-Regular.ttf", 48)) 
+            {
+                std::cerr << "Failed to load title font!" << std::endl;
+            }
+
+            // Load UI font
+            if (!gTestGraphics->LoadFont("ui", fontPath + "Neucha.ttf", 24))
+            {
+                std::cerr << "Failed to load UI font!" << std::endl;
+            }
+
+            // Set default font to UI
+            gTestGraphics->SetCurrentFont("ui");
+
             // Setup animator
             gTestAnimator.AddClip("idle_down", 4, 4, 0, 1, 0.0f, false);
             gTestAnimator.AddClip("walk_down", 4, 4, 0, 4, 10.0f, true);
@@ -204,7 +221,7 @@ namespace Uma_Engine
                 gTestCoordinator.AddComponent(
                     enemy1,
                     Transform{
-                        .position = Vec2(25.f, 25.f),
+                        .position = Vec2(-50.f, -50.f),
                         .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(5.f, 5.f)
                     });
@@ -386,6 +403,20 @@ namespace Uma_Engine
 
             gTestRenderingSystem->Update(dt);
             gTestGraphics->DrawSpritesInstanced(playerTexID, playerSprite);
+
+            // Title text using large font
+            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene", 25.0f, 200.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+
+            // Player status using UI font
+            std::string status = gPlayerMoving ? "Moving" : "Idle";
+            gTestGraphics->DrawTextScreen("ui", status, 25.0f, 75.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+
+            // Player direction using UI font
+            std::string dir = "Direction: " + gPlayerDirection;
+            gTestGraphics->DrawTextScreen("ui", dir, 25.0f, 125.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+
+            // Additional info using default font (UI)
+            gTestGraphics->DrawTextScreen("Press WASD to move", 25.0f, 25.0f, 1.0f, 0.7f, 0.7f, 0.7f);
         }
 
         void Render() override
