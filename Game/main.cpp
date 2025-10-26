@@ -35,8 +35,12 @@
 #include "Core/EngineConfigSerializer.h"
 #include "Core/FilePaths.h"
 
+#include "WIP_Scripts/OverlayManager.h"
+#include "WIP_Scripts/ApplicationOverlay.h"
 #include "WIP_Scripts/EditorOverlay.h"
 #include "WIP_Scripts/RuntimeOverlay.h"
+
+#include "NewEditorTest.h"
 
 #define DEBUG
 
@@ -93,18 +97,17 @@ int main()
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
 
     Uma_Engine::SceneManager* sceneManager = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
-    // Choose mode: Editor or Runtime
-    #ifdef EDITOR_MODE
-        Uma_Engine::EditorLayer editorLayer(sceneManager, &systemManager);
-        editorLayer.OnAttach();
-    #else
-        Uma_Engine::RuntimeOverlay runtimeLayer(sceneManager, &systemManager);
-        runtimeLayer.OnAttach();
-        // Load initial scene
-        sceneManager->LoadScene("Assets/Scenes/MainMenu.json", 0);
-    #endif
+    auto editorScene = sceneManager->CreateScene<Uma_Engine::EditorSceneTest>(
+        "EditorScene",
+        "test_collider.json"
+    );
+    sceneManager->LoadScene("EditorScene");
     // MUST BE LAST
-    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    //systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    // setting active overlay as editor one
+    //Uma_Engine::OverlayManager* om = systemManager.RegisterSystem<Uma_Engine::OverlayManager>();
+    //om->SetSceneManager(sceneManager);
+    //om->SetActiveOverlay("Editor");
 
     // Initialize all systems
     systemManager.Init();

@@ -48,6 +48,7 @@ All rights reserved.
 #include "../Core/IMGUIEvents.h"
 
 #include "Core/FilePaths.h"
+#include "Core/GameSerializer.h"
 
 #include <string>
 #include <memory>
@@ -62,60 +63,74 @@ namespace Uma_Engine
         SCENE_RUNNING,
         SCENE_UNLOADING
     };
+
     class Scene
     {
-        public:
-            Scene(const std::string& name, const std::string& filepath, SystemManager* sm);
-            ~Scene();
+    public:
+        Scene(const std::string& name, const std::string& filepath, SystemManager* sm);
+        virtual ~Scene();
 
-            void OnLoad();
-            void OnLoadAsync();
-            void OnUnload();
-            void OnUpdate(float dt);
-            void OnRender();
+        // Called by SceneManager - handles common setup then calls virtual methods
+        void Load();
+        void LoadAsync();
+        void Unload();
+        void Update(float dt);
 
-            void Serialize(const std::string& filepath);
-            void Deserialize(const std::string& filepath);
+        // Serialization
+        void Serialize(const std::string& filepath = "");
+        void Deserialize(const std::string& filepath = "");
 
-            Uma_ECS::Entity CreateEntity();
-            void DestroyEntity(Uma_ECS::Entity entity);
+        // Getters
+        SceneState GetState() const { return m_State; }
+        float GetLoadProgress() const { return m_LoadProgress; }
+        Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; }
+        const std::string& GetName() const { return m_Name; }
+        const std::string& GetFilePath() const { return m_FilePath; }
+        bool IsLoaded() const { return m_State == SceneState::SCENE_RUNNING; }
 
-            SceneState GetState() const { return m_State; }
-            float GetLoadProgress() const { return m_LoadProgress; };
-            Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; };
-            const std::string& GetName() const { return m_Name; };
-            const std::string& GetFilePath() const { return m_FilePath; };
-            bool isLoaded() const { return m_State == SceneState::SCENE_RUNNING; };
+    protected:
+        friend class SceneManager;
 
-        private:
-            friend class SceneManager;
-            SystemManager* m_SystemManager = nullptr;
+        // Virtual methods for derived scenes to override
+        virtual void OnLoad() {}       // Called after ECS setup, before deserialization
+        virtual void OnUnload() {}     // Called before entity destruction
+        virtual void OnUpdate(float dt) {} // Called every frame after system updates
 
-            void SpawnDefaultEntities();
+        // Helper for derived scenes
+        void InitializeECS();          // Sets up all ECS systems
+        void UpdateECSSystems(float dt); // Updates all ECS systems
 
-            std::string m_Name;
-            std::string m_FilePath;
-            SceneState m_State = SceneState::SCENE_UNLOADED;
-            float m_LoadProgress = 0.0f;
+        // scene file properties
+        std::string m_Name;
+        std::string m_FilePath;
+        SceneState m_State = SceneState::SCENE_UNLOADED;
+        float m_LoadProgress = 0.0f;
 
-            // Engine Systems
-            Uma_Engine::HybridInputSystem* m_HybridInputSystem;
-            Uma_Engine::Graphics* m_Graphics;
-            Uma_Engine::Sound* m_Sound;
-            Uma_Engine::ResourcesManager* m_ResourcesManager;
-            Uma_Engine::EventSystem* m_EventSystem;
+        // Engine Systems HANDLERS
+        SystemManager* m_SystemManager = nullptr;
+        Uma_Engine::HybridInputSystem* m_HybridInputSystem = nullptr;
+        Uma_Engine::Graphics* m_Graphics = nullptr;
+        Uma_Engine::Sound* m_Sound = nullptr;
+        Uma_Engine::ResourcesManager* m_ResourcesManager = nullptr;
+        Uma_Engine::EventSystem* m_EventSystem = nullptr;
 
-            // ECS related
-            Uma_ECS::Coordinator m_Coordinator;
-            std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
-            std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
-            std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
-            std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
-            std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
-            Uma_ECS::Entity m_Player;
-            Uma_ECS::Entity m_Cam;
+        // ECS related HANDLERS
+        Uma_ECS::Coordinator m_Coordinator;
+        std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
+        std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
+        std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
+        std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
+        std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
+        Uma_ECS::Entity m_Player;
+        Uma_ECS::Entity m_Cam;
+        Uma_Engine::GameSerializer m_GameSerializer;
 
-            std::future<void> m_LoadFuture;
-            void LoadInternal();
+        // Delta time smoothing
+        float m_SmoothedDt = 0.0f;
+        bool m_FirstFrame = true;
+
+    private:
+        void LoadInternal();
+        std::future<void> m_LoadFuture;
     };
 }

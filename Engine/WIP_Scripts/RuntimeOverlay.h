@@ -7,18 +7,23 @@ namespace Uma_Engine
 	class RuntimeOverlay : public ApplicationOverlay
 	{
 	public:
-		RuntimeOverlay(SceneManager* sm, SystemManager* sysm);
-		~RuntimeOverlay();
+		RuntimeOverlay(SystemManager* sysm)
+		{
+			m_SystemManager = sysm;
+		}
+		~RuntimeOverlay()
+		{
+			m_SystemManager = nullptr;
+		}
 
-		void OnAttach() override;
-		void OnDetach() override;
-		void OnUpdate(float dt) override;
-		void OnRender() override;
+		void OnAttach() {}
+		void OnDetach() {}
+		void OnUpdate(float dt) {}
 
 	private:
 		// fps, drawcalls, entities
 		// just debug stuff
-		SceneManager* m_SceneManager;
+		//SceneManager* m_SceneManager;
 		SystemManager* m_SystemManager;
 	};
 }
