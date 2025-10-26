@@ -221,7 +221,7 @@ namespace Uma_Engine
                 gTestCoordinator.AddComponent(
                     enemy1,
                     Transform{
-                        .position = Vec2(-50.f, -50.f),
+                        .position = Vec2(20.f, 30.f),
                         .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(5.f, 5.f)
                     });
