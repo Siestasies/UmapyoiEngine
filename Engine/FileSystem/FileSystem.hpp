@@ -3,24 +3,34 @@
 #include <vector>
 #include <filesystem>
 #include <algorithm>
+#include <GLFW/glfw3native.h>
 #include "imgui.h"
+#include "DropCallback.hpp"
+
+namespace Uma_Engine
+{
 
 namespace fs = std::filesystem;
 
-struct FileEntry {
+struct File {
     std::string name;
     std::string path;
-    bool is_directory;
+    bool isFolder;
     uintmax_t size;
     fs::file_time_type last_modified;
 
-    FileEntry(const fs::directory_entry& entry)
+    File(const fs::directory_entry& entry)
         : name(entry.path().filename().string())
         , path(entry.path().string())
-        , is_directory(entry.is_directory())
+        , isFolder(entry.is_directory())
         , size(entry.is_directory() ? 0 : entry.file_size())
         , last_modified(entry.last_write_time())
     {}
+};
+
+struct FilePayload {
+    char filepath[256];
+    bool isFolder;
 };
 
 enum class SortMode {
@@ -33,15 +43,18 @@ enum class SortMode {
 class FileBrowser {
 public:
     FileBrowser(const std::string& root_path = ".")
-        : m_current_path(fs::absolute(root_path))
-        , m_sort_mode(SortMode::Name)
-        , m_sort_ascending(true)
+        : mCurrPath(fs::absolute(root_path))
+        , eSortMode(SortMode::Name)
+        , bSortAscending(true)
     {
-        m_filter[0] = '\0';
+        mFilter[0] = '\0';
         RefreshDirectory();
     }
 
     void Render() {
+        // Lock mutex to ensure thread-safe logging
+        std::lock_guard<std::mutex> lock(mFileSysMutex);
+
         ImGui::Begin("File Browser");
 
         RenderNavigationBar();
@@ -52,46 +65,68 @@ public:
 
         RenderFileList();
 
+        if (!FileDropHandler::aDroppedFiles.empty() && ImGui::IsWindowHovered()) {
+            for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles) {
+                try
+                {
+                    fs::copy(droppedfilepath, mCurrPath, std::filesystem::copy_options::recursive);
+                    RefreshDirectory();
+                }
+                catch (const std::exception& e)
+                {
+                    feedback = e.what();
+                }
+            }
+            FileDropHandler::aDroppedFiles.clear();
+        }
+
+        RenderFeedback();
+
         ImGui::End();
     }
 
-    // Get the currently selected file path (if any)
-    const std::string& GetSelectedPath() const { return m_selected_path; }
-
-    // Check if a file was double-clicked (for opening)
-    bool WasFileDoubleClicked() const { return m_file_double_clicked; }
 
 private:
-    fs::path m_current_path;
-    std::vector<FileEntry> m_entries;
-    std::string m_selected_path;
-    char m_filter[256];
-    SortMode m_sort_mode;
-    bool m_sort_ascending;
-    bool m_file_double_clicked = false;
+    // Files
+    fs::path mCurrPath;
+    std::string mSelectedPath;
+    std::vector<File> aFiles;
+    char mFilter[256];
+    // Sort
+    SortMode eSortMode;
+    bool bSortAscending;
+    // Mouse
+    bool bDoubleClick = false;
+    // Drag Drop
+    bool bDropStart = false;
+    std::string dropSource;
+    // Log
+    std::string feedback = ":P";
+    // Mutex
+    std::mutex mFileSysMutex;
 
     void RefreshDirectory() {
-        m_entries.clear();
+        aFiles.clear();
 
         try {
-            for (const auto& entry : fs::directory_iterator(m_current_path)) {
-                m_entries.emplace_back(entry);
+            for (const auto& entry : fs::directory_iterator(mCurrPath)) {
+                aFiles.emplace_back(entry);
             }
-            SortEntries();
+            SortFiles();
         }
         catch (const fs::filesystem_error& e) {
-            // Handle errors (permissions, invalid path, etc.)
+            feedback = e.what();
         }
     }
 
-    void SortEntries() {
-        std::sort(m_entries.begin(), m_entries.end(), [this](const FileEntry& a, const FileEntry& b) {
+    void SortFiles() {
+        std::sort(aFiles.begin(), aFiles.end(), [this](const File& a, const File& b) {
             // Directories always first
-            if (a.is_directory != b.is_directory)
-                return a.is_directory;
+            if (a.isFolder != b.isFolder)
+                return a.isFolder;
 
             bool result = false;
-            switch (m_sort_mode) {
+            switch (eSortMode) {
             case SortMode::Name:
                 result = a.name < b.name;
                 break;
@@ -109,25 +144,22 @@ private:
                 break;
             }
 
-            return m_sort_ascending ? result : !result;
+            return bSortAscending ? result : !result;
             });
     }
 
     void RenderNavigationBar() {
         // Up directory button
-        if (ImGui::Button("^ Up") && m_current_path.has_parent_path()) {
-            m_current_path = m_current_path.parent_path();
+        if (ImGui::Button("^ Up") && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path()) {
+            mCurrPath = mCurrPath.parent_path();
             RefreshDirectory();
         }
 
         ImGui::SameLine();
-
-        // Current path display (clickable breadcrumbs)
         ImGui::Text("Path:");
-        ImGui::SameLine();
 
-        std::string path_str = m_current_path.string();
-        ImGui::TextWrapped("%s", path_str.c_str());
+        ImGui::SameLine();
+        ImGui::TextWrapped("%s", fs::relative(mCurrPath, fs::absolute(".")).string().c_str());
 
         // Quick navigation buttons
         ImGui::SameLine();
@@ -138,58 +170,56 @@ private:
 
     void RenderFilterBar() {
         ImGui::SetNextItemWidth(200);
-        if (ImGui::InputText("Filter", m_filter, IM_ARRAYSIZE(m_filter))) {
-            // Filter updated
-        }
+        ImGui::InputText("Filter", mFilter, IM_ARRAYSIZE(mFilter));
 
         ImGui::SameLine();
 
         // Sort mode selector
         const char* sort_modes[] = { "Name", "Size", "Type", "Modified" };
-        int current_mode = static_cast<int>(m_sort_mode);
+        int current_mode = static_cast<int>(eSortMode);
         ImGui::SetNextItemWidth(100);
         if (ImGui::Combo("Sort", &current_mode, sort_modes, IM_ARRAYSIZE(sort_modes))) {
-            m_sort_mode = static_cast<SortMode>(current_mode);
-            SortEntries();
+            eSortMode = static_cast<SortMode>(current_mode);
+            SortFiles();
         }
 
         ImGui::SameLine();
-        if (ImGui::Button(m_sort_ascending ? "Asc" : "Desc")) {
-            m_sort_ascending = !m_sort_ascending;
-            SortEntries();
+        if (ImGui::Button(bSortAscending ? "Asc" : "Desc")) {
+            bSortAscending = !bSortAscending;
+            SortFiles();
         }
     }
 
     void RenderFileList() {
-        m_file_double_clicked = false;
+        bDoubleClick = false;
 
-        ImGui::BeginChild("FileList", ImVec2(0, 0), true);
-
-        for (const auto& entry : m_entries) {
+        ImVec2 parentSize = ImGui::GetContentRegionAvail();
+        ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y * 0.94f), true);
+        for (const auto& entry : aFiles) {
             // Apply filter
-            if (m_filter[0] != '\0' &&
-                entry.name.find(m_filter) == std::string::npos) {
+            if (mFilter[0] != '\0' &&
+                entry.name.find(mFilter) == std::string::npos) {
                 continue;
             }
+            
+            std::string fileName = entry.isFolder ? "[FOLDER] " : "[FILE] ";
+            fileName += entry.name;
 
-            // Icon based on type
-            const char* icon = entry.is_directory ? "[DIR]" : "[FILE]";
-            std::string label = std::string(icon) + " " + entry.name;
+            bool is_selected = (mSelectedPath == entry.path);
 
-            bool is_selected = (m_selected_path == entry.path);
-
-            if (ImGui::Selectable(label.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
-                m_selected_path = entry.path;
+            if (ImGui::Selectable(fileName.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
+                mSelectedPath = entry.path;
 
                 // Handle double-click
                 if (ImGui::IsMouseDoubleClicked(0)) {
-                    if (entry.is_directory) {
-                        m_current_path = entry.path;
+                    if (entry.isFolder) {
+                        mCurrPath = entry.path;
                         RefreshDirectory();
-                        m_selected_path.clear();
+                        mSelectedPath.clear();
+                        break;
                     }
                     else {
-                        m_file_double_clicked = true;
+                        bDoubleClick = true;
                     }
                 }
             }
@@ -197,48 +227,61 @@ private:
             // Drag and drop source
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
                 // Store the full path in the payload
-                ImGui::SetDragDropPayload("FILE_PATH", entry.path.c_str(), entry.path.size() + 1);
+                ImGui::SetDragDropPayload(entry.name.c_str(), entry.path.c_str(), entry.path.size() + 1);
                 ImGui::Text("%s", entry.name.c_str());
                 ImGui::EndDragDropSource();
+
+                bDropStart = true;
+                dropSource = entry.name.c_str();
+            }
+
+            if (entry.isFolder && ImGui::BeginDragDropTarget() && !dropSource.empty()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
+                    FilePayload plData = *(FilePayload*)pl->Data;
+                    bool success = false;
+                    try
+                    {
+                        fs::copy(plData.filepath, entry.path, std::filesystem::copy_options::recursive);
+                        fs::remove(plData.filepath);
+                    }
+                    catch (const std::exception& e)
+                    {
+                        feedback = e.what();
+                    }
+                    bDropStart = false;
+                    dropSource.clear();
+                    RefreshDirectory();
+                    break;
+                }
+                ImGui::EndDragDropTarget();
             }
 
             // Tooltip with details
             if (ImGui::IsItemHovered()) {
                 ImGui::BeginTooltip();
                 ImGui::Text("Path: %s", entry.path.c_str());
-                if (!entry.is_directory) {
+                if (!entry.isFolder) {
                     ImGui::Text("Size: %llu bytes", entry.size);
                 }
                 ImGui::EndTooltip();
+
             }
+
         }
 
         ImGui::EndChild();
     }
-};
 
-// Usage example:
-/*
-class MyEditor {
-    FileBrowser m_file_browser;
-
-    void Update() {
-        m_file_browser.Render();
-
-        // Check if a file was double-clicked to open it
-        if (m_file_browser.WasFileDoubleClicked()) {
-            std::string path = m_file_browser.GetSelectedPath();
-            LoadAsset(path);
-        }
-
-        // In your viewport or other drop target:
-        if (ImGui::BeginDragDropTarget()) {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("FILE_PATH")) {
-                const char* dropped_path = static_cast<const char*>(payload->Data);
-                HandleDroppedFile(dropped_path);
-            }
-            ImGui::EndDragDropTarget();
-        }
+    void RenderFeedback()
+    {
+        ImGuiWindowFlags flags = 0;
+        flags |= ImGuiWindowFlags_NoScrollbar;          // No scrollbars at all
+        flags |= ImGuiWindowFlags_NoScrollWithMouse;    // Can't scroll with mouse wheel
+        ImVec2 parentSize = ImGui::GetContentRegionAvail();
+        ImGui::BeginChild("Feedback", ImVec2(parentSize.x, 0), true, flags);
+        ImGui::Text("%s", feedback.c_str());
+        ImGui::EndChild();
     }
-};
-*/
+};  
+
+} // namespace Uma_Engine
