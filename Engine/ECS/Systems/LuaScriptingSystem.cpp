@@ -10,7 +10,12 @@
 
 #include "Events/CollisionEvent.h"
 
-// the macro to get components
+#include <functional>
+
+// --------------------------------------------------
+// |          Component Getter Macro                |
+// --------------------------------------------------
+
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> sol::optional<std::reference_wrapper<ComponentType>> { \
         if (!pCoordinator->HasActiveEntity(entity)) { \
@@ -28,12 +33,34 @@
         return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
     });
 
+// SCRAPED METHOD NOT QUITE PRACTICAL
+//// --------------------------------------------------
+//// |            Input System Macro                  |
+//// --------------------------------------------------
+//
+//// InputSystem Functions
+//#define BIND_INPUT_FUNCTION(FuncName) \
+//    sharedLua->set_function(#FuncName, [this](int param) -> bool \
+//    { \
+//        if (!pInputSystem) \
+//        { \
+//            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, \
+//                "Lua: Input System not available for " #FuncName); \
+//            return false; \
+//        } \
+//        return pInputSystem->FuncName(param); \
+//    } \
+//    );
+
 namespace Uma_ECS
 {
-    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e)
+    
+    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i)
     {
+        // linking the Engine systems 
         pCoordinator = c;
         pEventSystem = e;
+        pInputSystem = i;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -221,6 +248,10 @@ namespace Uma_ECS
 
         // need to add more (tf rb for testing now)
         // more...
+
+        // Input System Functions
+        RegisterInputBindings();    // register the key press functions
+        RegisterKeyConstants();     // register the availables keys
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
@@ -632,6 +663,59 @@ namespace Uma_ECS
         // Re-sync to Lua
         SyncVariablesToLua(script);
         CallLuaFunction(script, "Start");
+    }
+
+    template<typename Func>
+    void LuaScriptingSystem::BindInputFunction(const char* name, Func func)
+    {
+        sharedLua->set_function(name, [this, func, name](int param) -> bool {
+            if (!pInputSystem) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                    std::string("Lua: InputSystem not available for ") + name);
+                return false;
+            }
+            return std::invoke(func, param);
+            });
+    }
+
+    void LuaScriptingSystem::RegisterInputBindings()
+    {
+        // Bind all input functions
+        BindInputFunction("KeyDown", &Uma_Engine::HybridInputSystem::KeyDown);
+        BindInputFunction("KeyPressed", &Uma_Engine::HybridInputSystem::KeyPressed);
+        BindInputFunction("KeyReleased", &Uma_Engine::HybridInputSystem::KeyReleased);
+        BindInputFunction("MouseButtonDown", &Uma_Engine::HybridInputSystem::MouseButtonDown);
+        BindInputFunction("MouseButtonPressed", &Uma_Engine::HybridInputSystem::MouseButtonPressed);
+        BindInputFunction("MouseButtonReleased", &Uma_Engine::HybridInputSystem::MouseButtonReleased);
+
+        // Mouse position (special case)
+        sharedLua->set_function("GetMousePosition", [this]() -> Vec2 {
+            return pInputSystem ? pInputSystem->GetMousePosition() : Vec2{ 0, 0 };
+            });
+    }
+
+    void LuaScriptingSystem::RegisterKeyConstants()
+    {
+        // Batch register key constants
+        struct KeyBinding { const char* name; int code; };
+
+        const KeyBinding keys[] = {
+            {"KEY_W", GLFW_KEY_W},
+            {"KEY_A", GLFW_KEY_A},
+            {"KEY_S", GLFW_KEY_S},
+            {"KEY_D", GLFW_KEY_D},
+            {"KEY_SPACE", GLFW_KEY_SPACE},
+            {"KEY_SHIFT", GLFW_KEY_LEFT_SHIFT},
+            {"KEY_CTRL", GLFW_KEY_LEFT_CONTROL},
+            {"KEY_E", GLFW_KEY_E},
+            {"MOUSE_LEFT", GLFW_MOUSE_BUTTON_LEFT},
+            {"MOUSE_RIGHT", GLFW_MOUSE_BUTTON_RIGHT},
+            {"MOUSE_MIDDLE", GLFW_MOUSE_BUTTON_MIDDLE}
+        };
+
+        for (const auto& key : keys) {
+            sharedLua->set(key.name, key.code);
+        }
     }
 
 

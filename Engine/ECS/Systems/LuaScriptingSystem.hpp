@@ -1,10 +1,14 @@
 #pragma once
 
 #include "../Core/System.hpp"
-#include "../Core/Coordinator.hpp"
 #include "../Components/LuaScript.h"
-#include "Debugging/Debugger.hpp"
+
+// Engine systems
+#include "WIP_Scripts/Test_Input_Events.h"
 #include "Core/EventSystem.h"
+#include "Debugging/Debugger.hpp"
+#include "../Core/Coordinator.hpp"
+
 
 #include <sol/sol.hpp>
 #include <memory>
@@ -15,7 +19,7 @@ namespace Uma_ECS
     {
     public:
 
-        void Init(Coordinator* c, Uma_Engine::EventSystem* e);
+        void Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i);
         void Update(float dt);
         void Shutdown();
 
@@ -64,10 +68,20 @@ namespace Uma_ECS
         void OnTriggerExitEvent(Entity entityA, Entity entityB);
         void OnTriggerEvent(Entity entityA, Entity entityB);
 
-        Uma_Engine::EventSystem* pEventSystem = nullptr;
-        Coordinator* pCoordinator = nullptr;
+        // InputSystemAPI
+        template<typename Func>
+        void BindInputFunction(const char* name, Func func);
+        void RegisterInputBindings();
+        void RegisterKeyConstants();
+
         std::shared_ptr<sol::state> sharedLua;
 
+        // supporting systems
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
+        Uma_Engine::HybridInputSystem* pInputSystem = nullptr;
+        Coordinator* pCoordinator = nullptr;
+
+        // runtime variables
         float lastDeltaTime{};
     };
 }

@@ -1,6 +1,6 @@
 ExposedVars = {
     speed = 100.0,
-    health = 50,
+    name = "unknown",
     isActive = true
 }
 
@@ -13,7 +13,7 @@ function Update(dt)
     local rb = GetRigidBody()
 
     if transform and rb then 
-        rb.velocity.x = -200 * speed * dt
+        --rb.velocity.x = -200 * speed * dt
     else
         Log("components are missing");
     end
@@ -21,8 +21,4 @@ function Update(dt)
     --transform.scale = 1.1 * transform.scale
     
     --Log("Enemy position: " .. transform.position.x)
-end
-
-function OnCollisionEnter()
-    Log("Collided")
 end

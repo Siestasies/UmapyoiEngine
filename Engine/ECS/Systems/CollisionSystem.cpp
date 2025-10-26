@@ -210,16 +210,19 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
             LayerMask layer2 = c2.GetEffectiveLayer(j);
             LayerMask mask2 = c2.GetEffectiveMask(j);
 
+            // checking if these 2 mask shd collide with each other
             if (!((layer1 & mask2) && (mask1 & layer2)))
                 continue;
 
             // Purpose filtering
+            // checking whether these 2 purpose shd collide with each other
             if (!ShouldPurposesCollide(shape1.purpose, shape2.purpose))
                 continue;
 
             // Collision test
             if (CollisionIntersection_RectRect_Static(c1.bounds[i], c2.bounds[j]))
             {
+                // handle the collision
                 HandleShapeCollision(
                     e1, e2,
                     tf1, tf2,

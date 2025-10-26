@@ -199,7 +199,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<LuaScript>());
                 gCoordinator.SetSystemSignature<LuaScriptingSystem>(sign);
             }
-            scriptingSystem->Init(&gCoordinator, pEventSystem);
+            scriptingSystem->Init(&gCoordinator, pEventSystem, pHybridInputSystem);
 
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
@@ -690,7 +690,7 @@ namespace Uma_Engine
 
                     LuaScript enemyScriptComponent;
                     {
-                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
 
                         enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                             .name = "speed",
@@ -699,6 +699,13 @@ namespace Uma_Engine
                             .min = 0.0f,
                             .max = 500.0f,
                             .isSlider = true
+                            });
+
+                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                            .name = "name",
+                            .value = "bird",
+                            .type = Uma_ECS::LuaVarType::T_STRING,
+                            .isSlider = false
                             });
 
                         // this works just that i didnt want to add this now
