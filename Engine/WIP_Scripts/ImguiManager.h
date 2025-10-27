@@ -464,20 +464,23 @@ namespace Uma_Engine
                 ImGui::SetNextWindowSize(viewport->WorkSize);
                 ImGui::SetNextWindowViewport(viewport->ID);
 
-                ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+                ImGuiWindowFlags window_flags = /*ImGuiWindowFlags_MenuBar |*/ ImGuiWindowFlags_NoDocking;
                 window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
                 window_flags |= ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
                 window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+                window_flags |= ImGuiWindowFlags_NoBackground;
 
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
                 ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+                ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
 
                 ImGui::Begin("DockSpace", nullptr, window_flags);
                 ImGui::PopStyleVar(3);
+                ImGui::PopStyleColor(); // Don't forget to pop the color!
 
                 ImGuiID ds_id = ImGui::GetID("DockSpace");
-                ImGui::DockSpace(ds_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_None);
+                ImGui::DockSpace(ds_id, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
                 if (!ds_initialized)
                 {
