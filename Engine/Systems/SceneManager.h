@@ -27,6 +27,7 @@ All rights reserved.
 
 #include "WIP_Scripts/EditorScene.h"
 #include "WIP_Scripts/TestScene2.h"
+#include "WIP_Scripts/GraphicTest.h"
 
 namespace Uma_Engine
 {
@@ -40,13 +41,11 @@ namespace Uma_Engine
             void Init() override
             {
                 std::cout << "Scene Manager INIT" << std::endl;
-
+                
                 // create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<EditorScene> testScene1 = std::make_unique<EditorScene>(pSystemManager);
-
-                AddScene("testScene1", std::move(testScene1));
-
-                SetActiveScene("testScene1");
+                std::unique_ptr<GraphicTest> testScene = std::make_unique<GraphicTest>(pSystemManager);
+                AddScene("GraphicTest", std::move(testScene));
+                SetActiveScene("GraphicTest");
             }
             void Update(float dt) override
             {
