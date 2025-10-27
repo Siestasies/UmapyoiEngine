@@ -21,10 +21,10 @@ function Start()
     end
     
     -- Cross-entity access
-    local playerEntity = FindEntityWithComponent("Player")
+    playerEntity = FindEntityWithComponent("Player")
     Log("player : " .. playerEntity)
     if playerEntity ~= -1 then
-        local playerTf = GetTransformFrom(player)
+        local playerTf = GetTransformFrom(playerEntity)
         if playerTf then
             Log("Player position: " .. playerTf.position.x .. ", " .. playerTf.position.y)
         end
@@ -39,7 +39,7 @@ function Update(dt)
         --Log(" position: " .. transform.position.x .. ", " .. transform.position.y)
         
         local playerTf = GetTransformFrom(playerEntity)
-        Log("Player is at: " .. playerTf.position.x .. ", " .. playerTf.position.y)
+        --Log("Player is at: " .. playerTf.position.x .. ", " .. playerTf.position.y)
         --if playerEntity ~= -1 then
         --    local playerTf = GetTransform(playerEntity)
         --    if playerTf then

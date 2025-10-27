@@ -98,7 +98,7 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
                 shape.offset.x * tf.scale.x,
                 shape.offset.y * tf.scale.y
             };
-            Vec2 worldPosition = tf.position + worldOffset;
+            Vec2 worldPosition = tf.prevPos + worldOffset;
 
             // Update runtime bounding box
             Vec2 halfSize = scaledSize * 0.5f;

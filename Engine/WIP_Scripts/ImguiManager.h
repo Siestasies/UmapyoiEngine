@@ -485,6 +485,23 @@ namespace Uma_Engine
                 if (!ds_initialized)
                 {
                     ds_initialized = true;
+
+                    // Check for docking data
+                    bool has_layout = false;
+                    std::ifstream file("imgui.ini");
+                    if (file.good())
+                    {
+                        std::string line;
+                        while (std::getline(file, line))
+                        {
+                            if (line.find("[Docking][Data]") != std::string::npos)
+                            {
+                                has_layout = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!has_layout);
                     InitDockspace(ds_id, viewport);
                 }
 
@@ -508,20 +525,21 @@ namespace Uma_Engine
 
                  // Split the dockspace into regions (Unity-style layout)
                  ImGuiID dock_main_id = dockspace_id;
+                 ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.15f, nullptr, &dock_main_id);
                  ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.15f, nullptr, &dock_main_id);
                  ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.15f, nullptr, &dock_main_id);
-                 ImGuiID dock_id_bottom = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Down, 0.15f, nullptr, &dock_main_id);
 
                  if (!windowsInit())
                  {
                      // Dock windows to their initial positions
+                     ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
+                     ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
+                     ImGui::DockBuilderDockWindow("File Browser", dock_id_bottom);
                      ImGui::DockBuilderDockWindow("Systems Monitor", dock_id_left);
                      ImGui::DockBuilderDockWindow("Performance Monitor", dock_id_left);
                      ImGui::DockBuilderDockWindow("Entity Debug", dock_id_right);
                      ImGui::DockBuilderDockWindow("Entity Run Time Property", dock_id_right);
-                     ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
-                     ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
-                     ImGui::DockBuilderDockWindow("Serialization Debug", dock_id_bottom);
+                     ImGui::DockBuilderDockWindow("Serialization Debug", dock_id_right);
                  }
 
                  ImGui::DockBuilderFinish(dockspace_id);
