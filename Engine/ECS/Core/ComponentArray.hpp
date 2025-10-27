@@ -165,7 +165,7 @@ namespace Uma_ECS
         std::vector<Entity> GetAllEntities() const override
         {
             std::vector<Entity> result;
-            result.reserve(mSize);
+            //result.reserve(mSize);
 
             for_each(std::begin(aIndexToEntity), std::end(aIndexToEntity), [&result](const Entity& e) {result.push_back(e); });
 

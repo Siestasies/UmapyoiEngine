@@ -461,10 +461,13 @@ namespace Uma_ECS
        // Discover exposed variables
        DiscoverExposedVariables(script);
 
+       // Sync variables to Lua BEFORE calling Start()
+       SyncVariablesToLua(script);
+
        // cache the function to the callback
        CacheCallbacks(script);
 
-       script.isVariableDirty = true;
+       script.isVariableDirty = false;
        script.isInitialized = true;
 
        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,

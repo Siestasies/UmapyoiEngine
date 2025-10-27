@@ -61,7 +61,7 @@ namespace Uma_ECS
             assert(aComponentTypes.find(type_name) == aComponentTypes.end()
                 && "Error : Component being registered more than once.");
 
-
+            RegisterComponentFriendlyName<T>();
 
             aComponentTypes.insert({ type_name, mNextComponentType });
 
@@ -125,6 +125,41 @@ namespace Uma_ECS
             return *std::static_pointer_cast<ComponentArray<T>>(aComponentArrays[type_name]);
         }
 
+        // the  whole friendly name idea here is to provide a easier access for the Lua scripting
+        // when optimising the code please find a way to scrape this
+        // this si kinda ugly
+        // but works for temp solution
+        template<typename T>
+        void RegisterComponentFriendlyName()
+        {
+            std::string type_name = std::string(typeid(T).name());
+            std::string friendly_name = GetFriendlyName<T>();
+
+            aFriendlyNameToTypeName[friendly_name] = type_name;
+
+            std::string debugLog = "Registered friendly name: " + friendly_name + " -> " + type_name;
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debugLog);
+        }
+        
+        template<typename T>
+        std::string GetFriendlyName()
+        {
+            // Extract class name from full type name
+            std::string fullName = typeid(T).name();
+
+            // Remove "struct " or "class " prefix (MSVC)
+            size_t pos = fullName.find_last_of(" ");
+            if (pos != std::string::npos)
+                fullName = fullName.substr(pos + 1);
+
+            // Remove namespace (everything before ::)
+            pos = fullName.find_last_of(":");
+            if (pos != std::string::npos)
+                fullName = fullName.substr(pos + 1);
+
+            return fullName;
+        }
+
         void EntityDestroyed(Entity entity);
 
         void CloneEntityComponents(Entity src, Entity dest);
@@ -159,6 +194,9 @@ namespace Uma_ECS
         std::unordered_map<std::string, ComponentType> aComponentTypes{};
 
         std::unordered_map<std::string, std::shared_ptr<BaseComponentArray>> aComponentArrays{};
+
+        // ugly approach
+        std::unordered_map<std::string, std::string> aFriendlyNameToTypeName{};
 
         ComponentType mNextComponentType{};
     };

@@ -49,9 +49,20 @@ std::vector<Uma_ECS::Entity> Uma_ECS::ComponentManager::GetEntitiesByComponentNa
 {
     std::vector<Entity> entities;
 
-    auto it = aComponentArrays.find(componentName);
+    // Try friendly name first
+    std::string actualTypeName = componentName;
+    auto friendlyIt = aFriendlyNameToTypeName.find(componentName);
+    if (friendlyIt != aFriendlyNameToTypeName.end())
+    {
+        actualTypeName = friendlyIt->second;
+    }
+
+    auto it = aComponentArrays.find(actualTypeName);
     if (it == aComponentArrays.end())
     {
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+            "Component not found: " + componentName + " (tried: " + actualTypeName + ")");
+
         return entities; // doesnt exist
     }
 
