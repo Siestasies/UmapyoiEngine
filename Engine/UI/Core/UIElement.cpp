@@ -8,7 +8,7 @@ namespace Uma_UI
 
 		for (auto& child : children)
 		{
-			if (child->enabled) child->Update();
+			if (child->enabled) child->Update(dt);
 		}
 	}
 

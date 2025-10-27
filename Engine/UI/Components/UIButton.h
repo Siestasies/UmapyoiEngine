@@ -8,9 +8,9 @@ namespace Uma_UI
     class UIButton : public UIElement
     {
     public:
-        Colour normalColor{ 1.f, 1.f, 1.f, 1.f };
-        Colour hoverColor{ 0.9f, 0.9f, 0.9f, 1.f };
-        Colour pressedColor{ 0.7f, 0.7f, 0.7f, 1.f };
+        Colour normalColour{ 1.f, 1.f, 1.f, 1.f };
+        Colour hoverColour{ 0.9f, 0.9f, 0.9f, 1.f };
+        Colour pressedColour{ 0.7f, 0.7f, 0.7f, 1.f };
 
         std::function<void()> onClick;
 
