@@ -79,6 +79,19 @@ public:
             }
             FileDropHandler::aDroppedFiles.clear();
         }
+        //Paste
+        if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_V) && !copySource.empty())
+        {
+            try
+            {
+                fs::copy(copySource, mCurrPath, std::filesystem::copy_options::recursive);
+                RefreshDirectory();
+            }
+            catch (const std::exception& e)
+            {
+                feedback = e.what();
+            }
+        }
 
         RenderFeedback();
 
@@ -100,6 +113,8 @@ private:
     // Drag Drop
     bool bDropStart = false;
     std::string dropSource;
+    // Copy
+    std::string copySource;
     // Log
     std::string feedback = ":P";
     // Mutex
@@ -210,7 +225,7 @@ private:
             if (ImGui::Selectable(fileName.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
                 mSelectedPath = entry.path;
 
-                // Handle double-click
+                // Double-click
                 if (ImGui::IsMouseDoubleClicked(0)) {
                     if (entry.isFolder) {
                         mCurrPath = entry.path;
@@ -221,6 +236,21 @@ private:
                     else {
                         bDoubleClick = true;
                     }
+                }
+            }
+
+            if (is_selected)
+            {
+                if (ImGui::IsKeyPressed(ImGuiKey_Delete)) // Delete
+                {
+                    fs::remove(mSelectedPath);
+                    RefreshDirectory();
+                    mSelectedPath.clear();
+                    break;
+                }
+                else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C)) // Copy
+                {
+                    copySource = entry.path;
                 }
             }
 
