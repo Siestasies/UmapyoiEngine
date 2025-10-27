@@ -16,13 +16,13 @@
 #define NOMINMAX
 #include "Systems/Window.hpp"
 #include "Systems/Graphics.hpp"
+#include "Systems/HybridInputSystem.h"
 #include "Core/SystemManager.h"
 #include "Core/EventSystem.h"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/Sound.hpp"
 
 #include "WIP_Scripts/Test_Graphics.h"
-#include "WIP_Scripts/Test_Input_Events.h"
 
 #include "Debugging/Debugger.hpp"
 #include "Debugging/CrashLogger.hpp"

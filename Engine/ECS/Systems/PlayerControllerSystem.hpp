@@ -29,9 +29,7 @@ All rights reserved.
 #include "../../Core/EventSystem.h"
 #include "../../Core/InputEvents.h"
 
-#include "../../Systems/InputSystem.h"
-
-#include "Test_Input_Events.h"
+#include "../../Systems/HybridInputSystem.h"
 
 namespace Uma_ECS
 {

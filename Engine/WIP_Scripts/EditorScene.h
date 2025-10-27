@@ -20,8 +20,7 @@
 #include "ECS/Components/Enemy.h"
 
 // Engine Systems
-#include "Systems/InputSystem.h"
-#include "WIP_Scripts/Test_Input_Events.h"
+#include "Systems/HybridInputSystem.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/Sound.hpp"
 #include "Systems/ResourcesManager.hpp"
