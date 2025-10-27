@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UITypes.h"
+#include "../Core/UITypes.h"
 
 #include <vector>
 #include <memory>
@@ -28,8 +28,31 @@ namespace Uma_UI
 			return ptr;
 		}
 
-		UIElement* FindByName(const std::string& name);
-		UIElement* FindByTag(const std::string& tag);
+		UIElement* FindByName(const std::string& name)
+		{
+			if (this->name == name) return this;
+
+			for (const auto& child : children)
+			{
+				UIElement* result = child->FindByName(name);
+				if (result != nullptr) return result;
+			}
+
+			return nullptr;
+		}
+
+		UIElement* FindByTag(const std::string& tag)
+		{
+			if (this->tag == tag) return this;
+
+			for (const auto& child : children)
+			{
+				UIElement* result = child->FindByTag(tag);
+				if (result != nullptr) return result;
+			}
+
+			return nullptr;
+		}
 
 		template <typename T>
 		T* FindByNameAs(const std::string& name)
@@ -37,7 +60,7 @@ namespace Uma_UI
 			return dynamic_cast<T*>(FindByName(name));
 		}
 
-	private:
+	public:
 		UIElement* parent = nullptr;
 		std::vector<std::unique_ptr<UIElement>> children;
 

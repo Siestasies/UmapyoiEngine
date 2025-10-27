@@ -1,4 +1,4 @@
-#include "UIElement.h"
+#include "../Core/UIElement.h"
 
 namespace Uma_UI
 {
@@ -76,10 +76,10 @@ namespace Uma_UI
 		if (!parent) return Rect(anchoredPosition.x, anchoredPosition.y, sizeDelta.x, sizeDelta.y);
 
 		Rect parentRect = parent->GetRect();
-		float anchorX = parentRect.x + parentRect.width * anchorMin.x;
-		float anchorY = parentRect.y + parentRect.height * anchorMin.y;
-		float anchorW = parentRect.width * (anchorMax.x - anchorMin.x);
-		float anchorH = parentRect.height * (anchorMax.y - anchorMin.y);
+		float anchorX = parentRect.x + parentRect.w * anchorMin.x;
+		float anchorY = parentRect.y + parentRect.h * anchorMin.y;
+		float anchorW = parentRect.w * (anchorMax.x - anchorMin.x);
+		float anchorH = parentRect.h * (anchorMax.y - anchorMin.y);
 
 		return Rect(
 			anchorX + anchoredPosition.x - sizeDelta.x * pivot.x,
@@ -87,31 +87,5 @@ namespace Uma_UI
 			anchorW + sizeDelta.x,
 			anchorH + sizeDelta.y
 		);
-	}
-
-	UIElement* FindByName(const std::string& name)
-	{
-		if (this->name == name) return this;
-
-		for (const auto& child : children)
-		{
-			UIElement* result = child->FindByName(name);
-			if (result != nullptr) return result;
-		}
-
-		return nullptr;
-	}
-
-	UIElement* FindByTag(const std::string& tag)
-	{
-		if (this->tag == tag) return this;
-
-		for (const auto& child : children)
-		{
-			UIElement* result = child->FindByTag(tag);
-			if (result != nullptr) return result;
-		}
-
-		return nullptr;
 	}
 }

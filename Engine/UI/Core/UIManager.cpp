@@ -1,12 +1,10 @@
-#include "UIManager.h"
+#include <algorithm>
+
+#include "../Core/UIManager.h"
+#include "../Components/UIButton.h"
 
 namespace Uma_UI
 {
-#include "UIManager.h"
-#include "UIButton.h"
-
-#include <algorithm>
-
 	void UIManager::RegisterScreen(const std::string& name, std::unique_ptr<UIPanel> screen)
 	{
 		ScreenData data;

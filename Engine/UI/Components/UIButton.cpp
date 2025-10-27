@@ -1,4 +1,4 @@
-#include "UIButton.h"
+#include "../Components/UIButton.h"
 
 namespace Uma_UI
 {
@@ -15,9 +15,9 @@ namespace Uma_UI
     {
         if (!visible) return;
         if (!layoutDirty) rect = GetRect();
-        Colour currentColor = normalColor;
-        if (isPressed) currentColor = pressedColor;
-        else if (isHovered) currentColor = hoverColor;
+        Colour currentColor = normalColour;
+        if (isPressed) currentColor = pressedColour;
+        else if (isHovered) currentColor = hoverColour;
         // TODO: Pixel-space rendering
         UIElement::Render();
     }

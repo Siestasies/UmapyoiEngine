@@ -1,11 +1,12 @@
 #pragma once
 
-#include "SystemType.h"
-#include "UIElement.h"
-#include "UIPanel.h"
-
 #include <string>
 #include <memory>
+#include <unordered_map>
+
+#include "SystemType.h"
+#include "../Core/UIElement.h"
+#include "../Components/UIPanel.h"
 
 namespace Uma_UI
 {
@@ -36,11 +37,11 @@ namespace Uma_UI
 		std::unordered_map<std::string, ScreenData> screens;
 		std::vector<std::string> renderOrder;
 
-		Vector2 mousePosition{ 0, 0 };
+		Vec2 mousePosition{ 0, 0 };
 		bool mousePressed = false;
 		bool mouseReleased = false;
 
 		bool ProcessUIElement(UIElement* element);
 		void UpdateRenderOrder();
-	}
+	};
 }
