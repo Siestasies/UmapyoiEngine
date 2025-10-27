@@ -43,9 +43,9 @@ namespace Uma_Engine
                 std::cout << "Scene Manager INIT" << std::endl;
                 
                 // create a TestScene and store it as a unique_ptr<Scene>
-                std::unique_ptr<EditorScene> testScene = std::make_unique<EditorScene>(pSystemManager);
-                AddScene("Editor", std::move(testScene));
-                SetActiveScene("Editor");
+                std::unique_ptr<GraphicTest> testScene = std::make_unique<GraphicTest>(pSystemManager);
+                AddScene("GraphicTest", std::move(testScene));
+                SetActiveScene("GraphicTest");
             }
             void Update(float dt) override
             {
