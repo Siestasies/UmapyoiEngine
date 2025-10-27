@@ -252,6 +252,158 @@ namespace Uma_ECS
         // Input System Functions
         RegisterInputBindings();    // register the key press functions
         RegisterKeyConstants();     // register the availables keys
+        RegisterUtilityFUnctions();
+        RegisterCrossEntityAccess();
+        RegisterEntityQueries();
+    }
+
+    void LuaScriptingSystem::RegisterEntityQueries()
+    {
+        // -----------------------------------------------------------
+        // ENTITY QUERY FUNCTIONS (GLOBAL)
+        // -----------------------------------------------------------
+
+        // Find all entities with a component (returns array of entity IDs)
+        sharedLua->set_function("FindEntitiesWithComponent",
+            [this](const std::string& componentName) -> std::vector<Entity> {
+                if (!pCoordinator) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Lua: Coordinator not available for FindEntitiesWithComponent");
+                    return {};
+                }
+                return pCoordinator->FindEntitiesWithComponentByName(componentName);
+            });
+
+        // Find first entity with a component (returns entity ID or -1 if not found)
+        sharedLua->set_function("FindEntityWithComponent",
+            [this](const std::string& componentName) -> Entity {
+                if (!pCoordinator) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Lua: Coordinator not available for FindEntityWithComponent");
+                    return static_cast<Entity>(-1);
+                }
+                return pCoordinator->FindEntityWithComponentByName(componentName);
+            });
+
+        // Get total active entity count
+        sharedLua->set_function("GetEntityCount", [this]() -> int {
+            if (!pCoordinator) return 0;
+            return pCoordinator->GetEntityCount();
+            });
+
+        // Check if an entity ID is valid and active
+        sharedLua->set_function("IsEntityValid", [this](Entity entity) -> bool {
+            if (!pCoordinator) return false;
+            if (entity == static_cast<Entity>(-1)) return false; // Invalid entity marker
+            return pCoordinator->HasActiveEntity(entity);
+            });
+    }
+
+    void LuaScriptingSystem::RegisterCrossEntityAccess()
+    {
+        // ok so in this function righht
+        // we are gg to provide 2 methods of accessing the component 
+        // of the targeted entity
+
+        // first is entity wrapper (like accessing a struct / class)
+        // then the direct access method with the entity id
+
+        // -----------------------------------------------------------
+        // COMPONENT LIST - Single source of truth
+        // -----------------------------------------------------------
+
+#define COMPONENT_LIST \
+        X(Transform)   \
+        X(RigidBody)   \
+        X(Sprite)      \
+        X(Collider)    \
+        X(Player)      \
+        X(Enemy)       \
+        X(Camera)
+
+        // -----------------------------------------------------------
+        // ENTITY WRAPPER
+        // -----------------------------------------------------------
+
+        sharedLua->set_function("GetEntity", [this](Entity targetEntity) -> sol::table {
+            sol::state_view lua(sharedLua->lua_state());
+            sol::table entityTable = lua.create_table();
+
+            if (!pCoordinator->HasActiveEntity(targetEntity)) {
+                entityTable["isValid"] = false;
+                return entityTable;
+            }
+
+            entityTable["id"] = targetEntity;
+            entityTable["isValid"] = true;
+
+            // Add all component getters using X-macro pattern
+#define X(ComponentType) \
+            entityTable["Get" #ComponentType] = [this, targetEntity]() \
+                -> sol::optional<std::reference_wrapper<ComponentType>> { \
+                    auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+                    if (!arr.Has(targetEntity)) return sol::nullopt; \
+                    return std::ref(arr.GetData(targetEntity)); \
+                }; \
+            entityTable["Has" #ComponentType] = [this, targetEntity]() -> bool { \
+                return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
+            };
+
+            COMPONENT_LIST  // Expands to all ADD_COMPONENT_GETTER calls
+
+#undef X
+
+                return entityTable;
+            });
+
+        // -----------------------------------------------------------
+        // DIRECT FUNCTIONS (FUNCTIONAL STYLE)
+        // -----------------------------------------------------------
+
+#define X(ComponentType) \
+        sharedLua->set_function("Get" #ComponentType "From", [this](Entity targetEntity) \
+            -> sol::optional<std::reference_wrapper<ComponentType>> { \
+                if (!pCoordinator->HasActiveEntity(targetEntity)) { \
+                    return sol::nullopt; \
+                } \
+                auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+                if (!arr.Has(targetEntity)) { \
+                    return sol::nullopt; \
+                } \
+                return std::ref(arr.GetData(targetEntity)); \
+            }); \
+        sharedLua->set_function("Has" #ComponentType "On", [this](Entity targetEntity) -> bool { \
+            if (!pCoordinator->HasActiveEntity(targetEntity)) return false; \
+            return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
+        });
+
+        COMPONENT_LIST  // Expands to all BIND_COMPONENT_GETTER_FROM calls
+
+#undef X
+#undef COMPONENT_LIST
+    }
+
+    void LuaScriptingSystem::RegisterUtilityFUnctions()
+    {
+        // Utility functions
+        sharedLua->set_function("Log", [](const std::string& msg) {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, msg);
+            });
+
+        sharedLua->set_function("LogWarning", [](const std::string& msg) {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, msg);
+            });
+
+        sharedLua->set_function("LogError", [](const std::string& msg) {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, msg);
+            });
+
+        // other helpers
+
+        // Add time access
+        sharedLua->set_function("GetDeltaTime", [this]() {
+            return lastDeltaTime; // Store in class
+            });
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
@@ -505,25 +657,7 @@ namespace Uma_ECS
 
 
         // debugging
-        // Utility functions
-        env.set_function("Log", [](const std::string& msg) {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, msg);
-            });
 
-        env.set_function("LogWarning", [](const std::string& msg) {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, msg);
-            });
-
-        env.set_function("LogError", [](const std::string& msg) {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, msg);
-            });
-
-        // other helpers
-
-        // Add time access
-        sharedLua->set_function("GetDeltaTime", [this]() {
-            return lastDeltaTime; // Store in class
-            });
 
     }
 

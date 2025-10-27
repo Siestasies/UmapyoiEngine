@@ -111,6 +111,8 @@ namespace Uma_ECS
             return component_array.GetData(entity);
         }
 
+        std::vector<Entity> GetEntitiesByComponentName(const std::string& componentName);
+
         template<typename T>
         ComponentArray<T>& GetComponentArray()
         {

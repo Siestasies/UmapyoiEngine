@@ -826,6 +826,8 @@ namespace Uma_Engine
                         .followPlayer = true
                     });
             }
+
+            scriptingSystem->CallStart();
         }
 
         void DuplicateOrCreateEntity()

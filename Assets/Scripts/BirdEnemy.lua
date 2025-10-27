@@ -5,7 +5,27 @@ ExposedVars = {
 }
 
 function Start()
-    name = "bird"
+    -- Global utilities (same for everyone)
+    Log("Script started at " .. GetDeltaTime())
+    
+    -- Entity-specific context
+    Log("My entity ID: " .. EntityID)
+
+    Log("My Name is: " .. name);
+    
+    local myTransform = GetTransform()
+    if myTransform then
+        Log("My position: " .. myTransform.position.x .. ", " .. myTransform.position.y)
+    end
+    
+    -- Cross-entity access
+    local player = FindEntityWithComponent("Player")
+    if player ~= -1 then
+        local playerTf = GetTransformFrom(player)
+        if playerTf then
+            Log("Player position: " .. playerTf.position.x .. ", " .. playerTf.position.y)
+        end
+    end
 end
 
 function Update(dt)
@@ -18,13 +38,13 @@ function Update(dt)
         Log("components are missing");
     end
 
-    if KeyPressed(KEY_W) then 
-        Log("W IS PRESSED")
-    elseif KeyDown(KEY_W) then 
-        Log("W IS DOWN")
-    elseif KeyReleased(KEY_W) then 
-        Log("W IS RELEASE")
-    end
+    --if KeyPressed(KEY_W) then 
+    --    Log("W IS PRESSED")
+    --elseif KeyDown(KEY_W) then 
+    --    Log("W IS DOWN")
+    --elseif KeyReleased(KEY_W) then 
+    --    Log("W IS RELEASE")
+    --end
     
     --transform.scale = 1.1 * transform.scale
     

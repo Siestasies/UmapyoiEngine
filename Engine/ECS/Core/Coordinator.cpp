@@ -111,6 +111,27 @@ namespace Uma_ECS
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
     }
 
+    // Find entities with a component by string name (for Lua)
+    std::vector<Entity> Coordinator::FindEntitiesWithComponentByName(const std::string& componentName)
+    {
+        std::vector<Entity> result = aComponentManager->GetEntitiesByComponentName(componentName);
+
+        return result;
+    }
+
+    // Find first entity with a component by string name (for Lua)
+    Entity Coordinator::FindEntityWithComponentByName(const std::string& componentName)
+    {
+        std::vector<Entity> result = aComponentManager->GetEntitiesByComponentName(componentName);
+
+        if (result.size() <= 0)
+        {
+            return static_cast<Entity>(-1);
+        }
+
+        return result[0];
+    }
+
     void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
     {
         out.SetArray();

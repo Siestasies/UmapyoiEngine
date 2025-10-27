@@ -44,3 +44,20 @@ void Uma_ECS::ComponentManager::CloneEntityComponents(Entity src, Entity dest)
         }
     }
 }
+
+std::vector<Uma_ECS::Entity> Uma_ECS::ComponentManager::GetEntitiesByComponentName(const std::string& componentName)
+{
+    std::vector<Entity> entities;
+
+    auto it = aComponentArrays.find(componentName);
+    if (it == aComponentArrays.end())
+    {
+        return entities; // doesnt exist
+    }
+
+    auto& componentArray = it->second;
+
+    // You'll need to add a virtual method to BaseComponentArray
+    // to get all entities
+    return componentArray->GetAllEntities();
+}

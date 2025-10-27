@@ -74,6 +74,16 @@ namespace Uma_ECS
         void RegisterInputBindings();
         void RegisterKeyConstants();
 
+        // Helper methods for entity Queries
+        void RegisterEntityQueries();
+
+        // Helper methods for utility function
+        void RegisterUtilityFUnctions();
+
+        // Helper methods to cross access other entities
+        void RegisterCrossEntityAccess();
+        
+
         std::shared_ptr<sol::state> sharedLua;
 
         // supporting systems
