@@ -1,7 +1,6 @@
 #pragma once
 
-#include "UITypes.h"
-
+#include "UITypes.hpp"
 #include <vector>
 #include <memory>
 #include <string>
@@ -51,8 +50,5 @@ namespace Uma_UI
 		bool visible = true;
 		std::string name;
 		std::string tag;
-
-		Rect rect{};
-		bool layoutDirty = true;
 	};
 }

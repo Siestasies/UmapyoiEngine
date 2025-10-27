@@ -1,10 +1,9 @@
-#include "UIManager.h"
+#include "UIManager.hpp"
 
 namespace Uma_UI
 {
-#include "UIManager.h"
-#include "UIButton.h"
-
+#include "Engine/UI/Core/UIManager.hpp"
+#include "Engine/UI/Components/UIButton.hpp"
 #include <algorithm>
 
 	void UIManager::RegisterScreen(const std::string& name, std::unique_ptr<UIPanel> screen)
@@ -40,17 +39,12 @@ namespace Uma_UI
 		return it != screens.end() ? it->second.screen.get() : nullptr;
 	}
 
-	void UIManager::Init()
-	{
-		// Init UI resources
-	}
-
-	void UIManager::Update(float dt)
+	void UIManager::Update(float deltaTime)
 	{
 		for (const auto& screenName : renderOrder)
 		{
 			auto& data = screens[screenName];
-			if (data.active && data.screen) data.screen->Update(dt);
+			if (data.active && data.screen) data.screen->Update(deltaTime);
 		}
 
 		if (mousePressed || mouseReleased)
@@ -63,12 +57,6 @@ namespace Uma_UI
 		}
 	}
 
-	void UIManager::Shutdown()
-	{
-		screens.clear();
-		renderOrder.clear();
-	}
-
 	void UIManager::Render()
 	{
 		for (const auto& screenName : renderOrder)
@@ -78,7 +66,7 @@ namespace Uma_UI
 		}
 	}
 
-	void UIManager::HandleInput(Vec2 mousePos, bool pressed, bool released)
+	void UIManager::HandleInput(Vector2 mousePos, bool pressed, bool released)
 	{
 		mousePosition = mousePos;
 		mousePressed = pressed;

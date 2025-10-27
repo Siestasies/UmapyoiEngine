@@ -1,29 +1,23 @@
 #pragma once
 
-#include "SystemType.h"
-#include "UIElement.h"
-#include "UIPanel.h"
-
 #include <string>
 #include <memory>
 
 namespace Uma_UI
 {
-	class UIManager : public Uma_Engine::ISystem
+	class UIManager
 	{
 	public:
 		void RegisterScreen(const std::string& name, std::unique_ptr<UIPanel> screen);
 		void ShowScreen(const std::string& name);
 		void HideScreen(const std::string& name);
 		void HideAllScreens();
+
 		UIPanel* GetScreen(const std::string& name);
 
-		void Init() override;
-		void Update(float dt) override;
-		void Shutdown() override;
-
+		void Update(float deltaTime);
 		void Render();
-		void HandleInput(Vec2 mousePos, bool mousePressed, bool mouseReleased);
+		void HandleInput(Vector2 mousePos, bool mousePressed, bool mouseReleased);
 
 	private:
 		struct ScreenData
