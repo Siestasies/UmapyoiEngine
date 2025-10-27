@@ -9,6 +9,7 @@
 #include "ECS/Systems/PlayerControllerSystem.hpp"
 #include "ECS/Systems/RenderingSystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
+#include "ECS/Systems/LuaScriptingSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -18,6 +19,7 @@
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
+#include "ECS/Components/LuaScript.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
@@ -28,8 +30,8 @@
 #include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
-#include "../Core/ECSEvents.h"
-#include "../Core/IMGUIEvents.h"
+#include "../Events/ECSEvents.h"
+#include "../Events/IMGUIEvents.h"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -63,6 +65,7 @@ std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
 std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
 std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
 std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
+std::shared_ptr<Uma_ECS::LuaScriptingSystem> scriptingSystem;
 Uma_ECS::Entity player;
 Uma_ECS::Entity cam;
 
@@ -137,6 +140,7 @@ namespace Uma_Engine
             gCoordinator.RegisterComponent<Camera>();
             gCoordinator.RegisterComponent<Player>();
             gCoordinator.RegisterComponent<Enemy>();
+            gCoordinator.RegisterComponent<LuaScript>();
 
             // Player controller
             playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
@@ -168,7 +172,7 @@ namespace Uma_Engine
                 sign.set(gCoordinator.GetComponentType<Collider>());
                 gCoordinator.SetSystemSignature<CollisionSystem>(sign);
             }
-            collisionSystem->Init(&gCoordinator);
+            collisionSystem->Init(&gCoordinator, pEventSystem);
 
             // Rendering System
             renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
@@ -189,19 +193,30 @@ namespace Uma_Engine
             }
             cameraSystem->Init(&gCoordinator);
 
+            scriptingSystem = gCoordinator.RegisterSystem<LuaScriptingSystem>();
+            {
+                Signature sign;
+                sign.set(gCoordinator.GetComponentType<LuaScript>());
+                gCoordinator.SetSystemSignature<LuaScriptingSystem>(sign);
+            }
+            scriptingSystem->Init(&gCoordinator, pEventSystem, pHybridInputSystem);
+
             // Init the game serializer
             gGameSerializer.Register(pResourcesManager);
             gGameSerializer.Register(&gCoordinator);
-
 
             //deserialize and spawn all the entities
             //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
             gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
 
+            scriptingSystem->CallStart();
+
 		    }
 		    void OnUnload() override
 		    {
 			      std::cout << "Test Scene 1: UNLOADED" << std::endl;
+
+            scriptingSystem->Shutdown();
 
             // resources unload
             pResourcesManager->UnloadAllTextures();
@@ -224,6 +239,8 @@ namespace Uma_Engine
             physicsSystem->Update(smoothedDt);
 
             collisionSystem->Update(dt);
+
+            scriptingSystem->Update(dt);
 
             cameraSystem->Update(dt);
 
@@ -411,6 +428,51 @@ namespace Uma_Engine
                       .UseNativeSize = true,
                       .texture = pResourcesManager->GetTexture(texName),
                     });
+
+                LuaScript kappaScriptComponent;
+                {
+                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+
+                    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                        .name = "speed",
+                        .value = 100.0f,
+                        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                        .min = 0.0f,
+                        .max = 500.0f,
+                        .isSlider = true
+                        });
+
+                    // this works just that i didnt want to add this now
+                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+
+                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                       .name = "speed",
+                       .value = 100.0f,
+                       .type = Uma_ECS::LuaVarType::T_FLOAT,
+                       .min = 0.0f,
+                       .max = 500.0f,
+                       .isSlider = true
+                        });*/
+
+                    gCoordinator.AddComponent(kappa, kappaScriptComponent);
+                }
+
+                //LuaScript kappaScaleScript;
+                //{
+                //    kappaScaleScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappaScale.lua";
+
+                //    // Optional: Pre-define exposed variables (or let Lua auto-discover)
+                //    kappaScaleScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
+                //        .name = "speed",
+                //        .value = 100.0f,
+                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                //        .min = 0.0f,
+                //        .max = 500.0f,
+                //        .isSlider = true
+                //        });
+
+                //    gCoordinator.AddComponent(kappa, kappaScaleScript);
+                //}
             }
 
             Entity wall;
@@ -625,6 +687,41 @@ namespace Uma_Engine
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
                     gCoordinator.AddComponent(enemy, enemyCollider);
+
+                    LuaScript enemyScriptComponent;
+                    {
+                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
+
+                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                            .name = "speed",
+                            .value = 100.0f,
+                            .type = Uma_ECS::LuaVarType::T_FLOAT,
+                            .min = 0.0f,
+                            .max = 500.0f,
+                            .isSlider = true
+                            });
+
+                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                            .name = "name",
+                            .value = "bird",
+                            .type = Uma_ECS::LuaVarType::T_STRING,
+                            .isSlider = false
+                            });
+
+                        // this works just that i didnt want to add this now
+                        /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+
+                        kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                           .name = "speed",
+                           .value = 100.0f,
+                           .type = Uma_ECS::LuaVarType::T_FLOAT,
+                           .min = 0.0f,
+                           .max = 500.0f,
+                           .isSlider = true
+                            });*/
+
+                        gCoordinator.AddComponent(enemy, enemyScriptComponent);
+                    }
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
@@ -729,6 +826,8 @@ namespace Uma_Engine
                         .followPlayer = true
                     });
             }
+
+            scriptingSystem->CallStart();
         }
 
         void DuplicateOrCreateEntity()

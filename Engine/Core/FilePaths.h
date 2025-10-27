@@ -39,6 +39,7 @@ namespace Uma_FilePath
     // Scenes
     inline const std::string SCENES_DIR = ASSET_ROOT + "Scenes/";
     inline const std::string PREFAB_DIR = ASSET_ROOT + "Prefabs/";
+    inline const std::string SCRIPT_DIR = ASSET_ROOT + "Scripts/";
 
     // Engine Settings
 

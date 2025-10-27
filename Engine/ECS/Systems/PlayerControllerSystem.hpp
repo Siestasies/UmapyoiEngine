@@ -23,13 +23,13 @@ All rights reserved.
 
 #pragma once
 
-#include "../Core/System.hpp"
-#include "../Core/Coordinator.hpp"
+#include "Core/System.hpp"
+#include "Core/Coordinator.hpp"
 
-#include "../../Core/EventSystem.h"
-#include "../../Core/InputEvents.h"
+#include "Core/EventSystem.h"
+#include "Events/InputEvents.h"
 
-#include "../../Systems/InputSystem.h"
+#include "Systems/InputSystem.h"
 
 #include "Test_Input_Events.h"
 

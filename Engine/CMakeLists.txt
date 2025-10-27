@@ -34,6 +34,7 @@ file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
     "Systems/*.cpp" 
     "Core/*.cpp"
+    "Events/*.cpp"
     "ECS/*.cpp"
     "ECS/Components/*.cpp"
     "ECS/Systems/*.cpp"
@@ -51,6 +52,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "Systems/*.h"
     "Systems/*.hpp"
     "Core/*.h"
+    "Events/*.h"
     "ECS/*.h"
     "ECS/Components/*.h"
     "ECS/Systems/*.h" 
@@ -67,12 +69,13 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "*.cpp" "*.hpp" "*.h"
     "Systems/*.cpp" "Systems/*.hpp" "Systems/*.h"
     "Core/*.cpp" "Core/*.hpp" "Core/*.h"
+    "Events/*.cpp" "Events/*.hpp" "Events/*.h"
     "ECS/*.cpp" "ECS/*.hpp" "ECS/*.h"
     "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
     "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
     "Debugging/*.cpp" "Debugging/*.hpp" "Debugging/*.h"
-    "MemoryManager/.cpp" "MemoryManager/.h" "MemoryManager/*.hpp"
+    "MemoryManager/*.cpp" "MemoryManager/*.h" "MemoryManager/*.hpp"
 )
 
 # Create the Uma_Engine library
@@ -92,9 +95,10 @@ set_target_properties(freetype PROPERTIES
     IMPORTED_LOCATION "${FREETYPE_DIR}/win64/freetype.lib"
 )
 
-# Link libraries
+# Link libraries - liblua MUST come first
 target_link_libraries(Uma_Engine 
     PUBLIC 
+        liblua          # Lua library (FIRST!)
         glfw
         OpenGL::GL  # Cross-platform OpenGL linking
         fmod
@@ -116,18 +120,18 @@ target_include_directories(Uma_Engine
         ${CMAKE_CURRENT_SOURCE_DIR}/Systems
         ${CMAKE_CURRENT_SOURCE_DIR}/WIP_Scripts
         ${CMAKE_CURRENT_SOURCE_DIR}/RapidJSON
-        ${glm_SOURCE_DIR}
         ${stb_SOURCE_DIR}
-        ${glfw_SOURCE_DIR}/include        # <-- add this line
-        ${IMGUI_DIR}              # <-- Add this
-        ${IMGUI_DIR}/backends     # <-- Add this
+        ${glfw_SOURCE_DIR}/include
+        ${IMGUI_DIR}
+        ${IMGUI_DIR}/backends
+        ${lua_SOURCE_DIR}/src          # Lua headers
+        ${sol2_SOURCE_DIR}/include     # Sol2 headers
         ${FREETYPE_DIR}/include   # FreeType headers
 )
 
 # Set C++ standard
 target_compile_features(Uma_Engine PUBLIC cxx_std_20)
 
-# Enable verbose output for debugging
 set_target_properties(Uma_Engine PROPERTIES
     CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON

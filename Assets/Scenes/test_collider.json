@@ -99,6 +99,40 @@
                     },
                     "accel_strength": 200.0,
                     "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/kappa.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 100.0,
+                                    "min": 0.0,
+                                    "max": 500.0,
+                                    "isSlider": true
+                                },
+                                {
+                                    "name": "name",
+                                    "type": 3,
+                                    "value": "unknown",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "isActive",
+                                    "type": 2,
+                                    "value": true,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
                 }
             }
         },
@@ -1803,6 +1837,40 @@
                         }
                     ]
                 },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BirdEnemy.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 100.0,
+                                    "min": 0.0,
+                                    "max": 500.0,
+                                    "isSlider": true
+                                },
+                                {
+                                    "name": "name",
+                                    "type": 3,
+                                    "value": "bird",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "isActive",
+                                    "type": 2,
+                                    "value": true,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
                 "struct Uma_ECS::Enemy": {
                     "mSpeed": 1.0
                 }
@@ -1813,7 +1881,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 0.0,
+                        "x": 0.869,
                         "y": 0.0
                     },
                     "rotation": {
@@ -1837,11 +1905,11 @@
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
-                        "x": 0.0,
+                        "x": -0.032,
                         "y": 0.0
                     },
                     "acceleration": {
-                        "x": 0.0,
+                        "x": -0.0,
                         "y": 0.0
                     },
                     "accel_strength": 500.0,

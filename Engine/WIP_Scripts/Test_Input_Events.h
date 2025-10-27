@@ -26,8 +26,8 @@ All rights reserved.
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include "Core/EventSystem.h"
-#include "Core/InputEvents.h"
-#include "Core/WindowEvents.h"
+#include "Events/InputEvents.h"
+#include "Events/WindowEvents.h"
 #include "Systems/InputSystem.h"
 
 //#define _DEBUG_LOG

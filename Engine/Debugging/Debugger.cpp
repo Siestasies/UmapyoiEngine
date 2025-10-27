@@ -25,7 +25,7 @@ All rights reserved.
 #include <ctime>
 #include <vector>
 #include "SystemManager.h"
-#include "DebugEvents.h"
+#include "Events/DebugEvents.h"
 #include "filepaths.h"
 
 
