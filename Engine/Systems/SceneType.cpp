@@ -59,6 +59,8 @@ namespace Uma_Engine
             script->OnUnload();
         }
 
+        m_LuaScriptingSystem->Shutdown();
+
         // Destroy entities
         m_Coordinator.DestroyAllEntities();
 
@@ -71,7 +73,6 @@ namespace Uma_Engine
         }
 
         // Unlaod scripts
-        m_LuaScriptingSystem->Shutdown();
 
         m_State = SceneState::SCENE_UNLOADED;
         m_LoadProgress = 0.0f;
