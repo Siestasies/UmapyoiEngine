@@ -165,41 +165,77 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::Shutdown()
     {
+        if (!pCoordinator) return;
+
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
+        // First pass: Call OnDestroy and clear all Lua references
         for (auto const& entity : aEntities)
         {
+            if (!scriptArray.Has(entity)) continue;
+
             auto& scriptComponent = scriptArray.GetData(entity);
 
             for (auto& script : scriptComponent.scripts)
             {
                 if (script.isEnabled && script.isInitialized)
                 {
-                    CallLuaFunction(script, "OnDestroy");
+                    // Wrap in try-catch in case Lua state is already invalid
+                    try
+                    {
+                        CallLuaFunction(script, "OnDestroy");
+                    }
+                    catch (...)
+                    {
+                        // Ignore errors during shutdown
+                    }
                 }
 
-                // CRITICAL: Clear cached callbacks first
+                // Clear all function references explicitly
+                script.callbacks.onCollisionFunc = sol::nil;
+                script.callbacks.onCollisionEnterFunc = sol::nil;
+                script.callbacks.onCollisionExitFunc = sol::nil;
+                script.callbacks.onTriggerEnterFunc = sol::nil;
+                script.callbacks.onTriggerExitFunc = sol::nil;
+
+                // Reset cache
                 script.callbacks = LuaScriptInstance::CallbackCache{};
 
-                // Clear the environment (this releases references)
+                // Clear environment
                 script.scriptEnv = sol::nil;
+
                 script.isInitialized = false;
                 script.hasError = false;
             }
 
-            // Then clear the Lua state
-            if (scriptComponent.lua)
+            // CRITICAL: Clear the scripts vector completely
+            scriptComponent.scripts.clear();
+
+            // Detach the Lua state reference
+            scriptComponent.lua = nullptr;
+        }
+
+        // Force garbage collection on shared state before clearing
+        if (sharedLua)
+        {
+            try
             {
-                scriptComponent.lua.reset();
+                sharedLua->collect_garbage();
+                sharedLua->collect_garbage();
+            }
+            catch (...)
+            {
+                // Ignore GC errors during shutdown
             }
         }
 
-        // Finally clear the shared state
-        if (sharedLua)
-        {
-            sharedLua->collect_garbage(); // force garbage collect before shutdown
-            sharedLua.reset();
-        }
+        // Clear the shared state
+        sharedLua = nullptr;
+
+        // Clear coordinator reference
+        pCoordinator = nullptr;
+        pEventSystem = nullptr;
+        pInputSystem = nullptr;
     }
 
     void LuaScriptingSystem::RegisterLuaAPI()
@@ -541,6 +577,11 @@ namespace Uma_ECS
                                                 sol::protected_function& func, 
                                                 Args&&... args)
     {
+        if (!func.valid() || func == sol::nil)
+        {
+            return;
+        }
+
         try
         {
             auto result = func(std::forward<Args>(args)...);

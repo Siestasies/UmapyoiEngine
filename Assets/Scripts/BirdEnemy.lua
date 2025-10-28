@@ -38,7 +38,7 @@ function Update(dt)
         --rb.velocity.x = -200 * speed * dt
         --Log(" position: " .. transform.position.x .. ", " .. transform.position.y)
         
-        local playerTf = GetTransformFrom(playerEntity)
+        --local playerTf = GetTransformFrom(playerEntity)
         --Log("Player is at: " .. playerTf.position.x .. ", " .. playerTf.position.y)
         --if playerEntity ~= -1 then
         --    local playerTf = GetTransform(playerEntity)
