@@ -168,6 +168,9 @@ namespace Uma_Engine
         CreateEngineDebugWindow(fps, deltaTime);
         CreatePerformanceWindow();
 
+        CreateHierarchyWindow();
+        CreateInspectorWindow();
+
         if (m_showSystemsWindow)
         {
             CreateSystemsWindow();
@@ -506,6 +509,182 @@ namespace Uma_Engine
     bool ImguiManager::windowsInit(const char* filename)
     {
         return std::ifstream(filename).good();
+    }
+
+    void ImguiManager::CreateHierarchyWindow()
+    {
+        bool b = true;
+        ImGui::Begin("Hierarchy", &b);
+
+        // Header with entity count
+        ImGui::Text("Scene Entities: %d", mEntityCount);
+        ImGui::Separator();
+
+        // Refresh button to update entity list
+        if (ImGui::Button("Refresh"))
+        {
+            // TODO: Call your ECS system to get all entities
+            // Example: m_sceneEntities = pEntityManager->GetAllEntities();
+        }
+
+        ImGui::SameLine();
+
+        // Create new entity button
+        if (ImGui::Button("Create Game Object"))
+        {
+            // TODO: Create new entity through your ECS
+            // Example: pEntityManager->CreateEntity();
+        }
+
+        ImGui::Separator();
+
+        // Scrollable region for entity list
+        ImGui::BeginChild("EntityList", ImVec2(0, 0), true);
+
+        // Display all entities
+        // TODO: Replace this with actual entity retrieval from your ECS
+        for (int i = 0; i < mEntityCount; ++i)
+        {
+            // Generate unique ID for each selectable
+            ImGui::PushID(i);
+
+            // Create selectable item for each entity
+            // TODO: Get actual entity name from your ECS
+            std::string entityName = "Entity " + std::to_string(i);
+
+            // Check if this entity is selected
+            //bool isSelected = (m_selectedEntity.GetID() == i);  // Adjust based on your Entity implementation
+
+            if (ImGui::Selectable(entityName.c_str(), false))
+            {
+                // TODO: Set selected entity from your ECS
+                // m_selectedEntity = m_sceneEntities[i];
+                //m_selectedEntity = Entity(i);  // Placeholder
+            }
+
+            // Right-click context menu
+            if (ImGui::BeginPopupContextItem())
+            {
+                if (ImGui::MenuItem("Delete"))
+                {
+                    // TODO: Delete entity through your ECS
+                    // pEntityManager->DestroyEntity(entity);
+                }
+
+                if (ImGui::MenuItem("Duplicate"))
+                {
+                    // TODO: Duplicate entity through your ECS
+                    // pEntityManager->DuplicateEntity(entity);
+                }
+
+                ImGui::EndPopup();
+            }
+
+            ImGui::PopID();
+        }
+
+        ImGui::EndChild();
+        ImGui::End();
+    }
+
+    void ImguiManager::CreateInspectorWindow()
+    {
+        bool b = true;
+        ImGui::Begin("Inspector", &b);
+
+        // Check if an entity is selected
+        //if (!m_selectedEntity.IsValid())  // Adjust based on your Entity implementation
+        //{
+        //    ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No entity selected");
+        //    ImGui::End();
+        //    return;
+        //}
+
+        // Display entity ID
+        ImGui::Text("Entity ID: %d", /*m_selectedEntity.GetID()*/1);
+        ImGui::Separator();
+
+        // Entity Name Field
+        static char entityName[128] = "Entity";
+        ImGui::Text("Name:");
+        ImGui::SameLine();
+        if (ImGui::InputText("##EntityName", entityName, sizeof(entityName)))
+        {
+            // TODO: Update entity name in your ECS
+        }
+
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // ========== Transform Component ==========
+        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            // TODO: Get actual transform component from entity
+            static float position[3] = { 0.0f, 0.0f, 0.0f };
+            static float rotation[3] = { 0.0f, 0.0f, 0.0f };
+            static float scale[3] = { 1.0f, 1.0f, 1.0f };
+
+            ImGui::Indent();
+
+            ImGui::Text("Position");
+            if (ImGui::DragFloat3("##Position", position, 0.1f))
+            {
+                // TODO: Update transform component
+            }
+
+            ImGui::Text("Rotation");
+            if (ImGui::DragFloat3("##Rotation", rotation, 1.0f))
+            {
+                // TODO: Update transform component
+            }
+
+            ImGui::Text("Scale");
+            if (ImGui::DragFloat3("##Scale", scale, 0.1f))
+            {
+                // TODO: Update transform component
+            }
+
+            ImGui::Unindent();
+        }
+
+        // ========== Add Component Button ==========
+        ImGui::Spacing();
+        ImGui::Separator();
+
+        if (ImGui::Button("Add Component", ImVec2(-1, 0)))
+        {
+            ImGui::OpenPopup("AddComponentPopup");
+        }
+
+        // Add Component Popup
+        if (ImGui::BeginPopup("AddComponentPopup"))
+        {
+            ImGui::Text("Select Component Type:");
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Mesh Renderer"))
+            {
+                // TODO: Add mesh renderer component
+            }
+
+            if (ImGui::MenuItem("Rigidbody"))
+            {
+                // TODO: Add rigidbody component
+            }
+
+            if (ImGui::MenuItem("Collider"))
+            {
+                // TODO: Add collider component
+            }
+
+            if (ImGui::MenuItem("Script"))
+            {
+                // TODO: Add script component
+            }
+
+            ImGui::EndPopup();
+        }
+        ImGui::End();
     }
 
 }

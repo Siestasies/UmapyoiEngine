@@ -62,6 +62,9 @@ namespace Uma_Engine
             void InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport);
 
             // helper functions
+            void CreateHierarchyWindow();
+            void CreateInspectorWindow();
+
             void CreateSystemsWindow();
             void CreatePerformanceWindow();
             void CreateEngineDebugWindow(float fps, float deltaTime);
