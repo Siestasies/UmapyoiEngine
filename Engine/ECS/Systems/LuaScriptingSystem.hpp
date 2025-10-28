@@ -82,6 +82,9 @@ namespace Uma_ECS
 
         // Helper methods to cross access other entities
         void RegisterCrossEntityAccess();
+
+        // Register component types
+        void RegisterComponentTypes();
         
 
         std::shared_ptr<sol::state> sharedLua;

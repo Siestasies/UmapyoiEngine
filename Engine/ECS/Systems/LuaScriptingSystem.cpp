@@ -223,6 +223,23 @@ namespace Uma_ECS
             )
         );
 
+        // need to add more (tf rb for testing now)
+        // more...
+
+        // Register Component types
+        RegisterComponentTypes();
+
+        // Input System Functions
+        RegisterInputBindings();    // register the key press functions
+        RegisterKeyConstants();     // register the availables keys
+
+        RegisterUtilityFUnctions();
+        RegisterCrossEntityAccess();
+        RegisterEntityQueries();
+    }
+
+    void LuaScriptingSystem::RegisterComponentTypes()
+    {
         // Register Transform component
         sharedLua->new_usertype<Transform>("Transform",
             "position", &Transform::position,
@@ -246,15 +263,50 @@ namespace Uma_ECS
             "flipY", &Sprite::flipY
         );
 
-        // need to add more (tf rb for testing now)
-        // more...
+        // register Camera component
+        sharedLua->new_usertype<Camera>("Camera",
+            "zoom", &Camera::mZoom,
+            "followPlayer", &Camera::followPlayer
+        );
 
-        // Input System Functions
-        RegisterInputBindings();    // register the key press functions
-        RegisterKeyConstants();     // register the availables keys
-        RegisterUtilityFUnctions();
-        RegisterCrossEntityAccess();
-        RegisterEntityQueries();
+        // collison part
+
+        // Collision Layers
+        sol::table collisionLayerTable = sharedLua->create_table("CollisionLayer");
+        collisionLayerTable["NONE"] = CL_NONE;
+        collisionLayerTable["DEFAULT"] = CL_DEFAULT;
+        collisionLayerTable["PLAYER"] = CL_PLAYER;
+        collisionLayerTable["ENEMY"] = CL_ENEMY;
+        collisionLayerTable["WALL"] = CL_WALL;
+        collisionLayerTable["PROJECTILE"] = CL_PROJECTILE;
+        collisionLayerTable["PICKUP"] = CL_PICKUP;
+        collisionLayerTable["ALL"] = CL_ALL;
+
+        // Collider Purpose
+        sol::table colliderPurposeTable = sharedLua->create_table("ColliderPurpose");
+        colliderPurposeTable["Physics"] = static_cast<int>(ColliderPurpose::Physics);
+        colliderPurposeTable["Environment"] = static_cast<int>(ColliderPurpose::Environment);
+        colliderPurposeTable["Trigger"] = static_cast<int>(ColliderPurpose::Trigger);
+
+        // bounding box struct
+        sharedLua->new_usertype<BoundingBox>("BoundingBox",
+            "min", &BoundingBox::min,
+            "max", &BoundingBox::max
+        );
+
+        // collider shape
+        sharedLua->new_usertype<ColliderShape>("ColliderShape",
+            "size", &ColliderShape::size,
+            "offset", &ColliderShape::offset,
+            "purpose", &ColliderShape::purpose,
+            "layer", &ColliderShape::layer,
+            "colliderMask", &ColliderShape::colliderMask,
+            "isActive", &ColliderShape::isActive,
+            "autoFitToSprite", &ColliderShape::autoFitToSprite
+        );
+
+        // collider component itself
+
     }
 
     void LuaScriptingSystem::RegisterEntityQueries()
