@@ -247,16 +247,27 @@ namespace Uma_ECS
 
         // u need to register any class struct yall need 
 
-        // register Vec2
+        // Register Vec2 with explicit constructor
         sharedLua->new_usertype<Vec2>("Vec2",
-            sol::constructors<Vec2(), Vec2(float, float)>(),                                        // constructor
+            // Constructors
+            sol::constructors<Vec2(), Vec2(float, float)>(),
+
+            // Properties
             "x", &Vec2::x,
             "y", &Vec2::y,
-            sol::meta_function::addition, [](const Vec2& a, const Vec2& b) {return a + b; },        // operator + overload
-            sol::meta_function::subtraction, [](const Vec2& a, const Vec2& b) {return a - b; },     // operator - overload
-            sol::meta_function::multiplication, sol::overload(                                      // operator * overload (MULTIPLE OVERLOAD)
-                [](const Vec2& v, float s) {return v * s; },
-                [](float s, const Vec2& v) {return v * s; }
+
+            // Operators
+            sol::meta_function::addition, [](const Vec2& a, const Vec2& b) { return a + b; },
+            sol::meta_function::subtraction, [](const Vec2& a, const Vec2& b) { return a - b; },
+            sol::meta_function::multiplication, sol::overload(
+                [](const Vec2& v, float s) { return v * s; },
+                [](float s, const Vec2& v) { return v * s; }
+            ),
+
+            // Add __call metamethod to make Vec2() work as a function call
+            sol::meta_function::call, sol::overload(
+                []() { return Vec2(); },
+                [](float x, float y) { return Vec2(x, y); }
             )
         );
 
@@ -298,6 +309,16 @@ namespace Uma_ECS
             "renderLayer", &Sprite::renderLayer,
             "flipX", &Sprite::flipX,
             "flipY", &Sprite::flipY
+        );
+
+        // Register Player component - ADD THIS IF MISSING
+        sharedLua->new_usertype<Player>("Player",
+            "mSpeed", &Player::mSpeed
+        );
+
+        // Register Enemy component - ADD THIS IF MISSING
+        sharedLua->new_usertype<Enemy>("Enemy",
+            "mSpeed", &Enemy::mSpeed
         );
 
         // Register Camera
@@ -952,9 +973,9 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::RegisterKeyConstants()
     {
-        // Batch register key constants
         struct KeyBinding { const char* name; int code; };
 
+        // Movement keys
         const KeyBinding keys[] = {
             {"KEY_W", GLFW_KEY_W},
             {"KEY_A", GLFW_KEY_A},
@@ -972,6 +993,31 @@ namespace Uma_ECS
         for (const auto& key : keys) {
             sharedLua->set(key.name, key.code);
         }
+
+        // Register all letters A-Z
+        for (char c = 'A'; c <= 'Z'; ++c) {
+            std::string keyName = std::string("KEY_") + c;
+            sharedLua->set(keyName, GLFW_KEY_A + (c - 'A'));
+        }
+
+        // Register all numbers 0-9
+        for (int i = 0; i <= 9; ++i) {
+            std::string keyName = std::string("KEY_") + std::to_string(i);
+            sharedLua->set(keyName, GLFW_KEY_0 + i);
+        }
+
+        // Register function keys F1-F12
+        for (int i = 1; i <= 12; ++i) {
+            std::string keyName = std::string("KEY_F") + std::to_string(i);
+            sharedLua->set(keyName, GLFW_KEY_F1 + (i - 1));
+        }
+
+        // Other common keys
+        sharedLua->set("KEY_ESCAPE", GLFW_KEY_ESCAPE);
+        sharedLua->set("KEY_ENTER", GLFW_KEY_ENTER);
+        sharedLua->set("KEY_TAB", GLFW_KEY_TAB);
+        sharedLua->set("KEY_BACKSPACE", GLFW_KEY_BACKSPACE);
+        sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
     }
 
 

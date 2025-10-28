@@ -319,18 +319,18 @@ function Start()
     -- ================================================================
     -- TEST 8: Vec2 Operations
     -- ================================================================
-    Log("\n[TEST 8] Vec2 Math Operations:")
-    local v1 = Vec2(10, 20)
-    local v2 = Vec2(5, 3)
-    
-    local vAdd = v1 + v2
-    Log("  (10, 20) + (5, 3) = (" .. vAdd.x .. ", " .. vAdd.y .. ")")
-    
-    local vSub = v1 - v2
-    Log("  (10, 20) - (5, 3) = (" .. vSub.x .. ", " .. vSub.y .. ")")
-    
-    local vMul = v1 * 2
-    Log("  (10, 20) * 2 = (" .. vMul.x .. ", " .. vMul.y .. ")")
+    -- Log("\n[TEST 8] Vec2 Math Operations:")
+    -- local v1 = Vec2(10, 20)
+    -- local v2 = Vec2(5, 3)
+    -- 
+    -- local vAdd = v1 + v2
+    -- Log("  (10, 20) + (5, 3) = (" .. vAdd.x .. ", " .. vAdd.y .. ")")
+    -- 
+    -- local vSub = v1 - v2
+    -- Log("  (10, 20) - (5, 3) = (" .. vSub.x .. ", " .. vSub.y .. ")")
+    -- 
+    -- local vMul = v1 * 2
+    -- Log("  (10, 20) * 2 = (" .. vMul.x .. ", " .. vMul.y .. ")")
     
     Log("\n========================================")
     Log("START() COMPLETE - Press keys to test!")
@@ -364,33 +364,33 @@ function Update(dt)
     end
     
     -- Movement test (continuous input)
-    if HasTransform() and HasRigidBody() then
-        local rb = GetRigidBody()
-        local moveVec = Vec2(0, 0)
-        
-        if KeyDown(KEY_W) then
-            moveVec.y = moveVec.y + 1
-            if not hasLoggedMovement then
-                Log("[INPUT] W is held down")
-                hasLoggedMovement = true
-            end
-        end
-        if KeyDown(KEY_S) then moveVec.y = moveVec.y - 1 end
-        if KeyDown(KEY_A) then moveVec.x = moveVec.x - 1 end
-        if KeyDown(KEY_D) then moveVec.x = moveVec.x + 1 end
-        
-        -- Apply movement
-        if moveVec.x ~= 0 or moveVec.y ~= 0 then
-            rb.acceleration = moveVec * speed
-        else
-            hasLoggedMovement = false
-        end
-        
-        -- Key release test
-        if KeyReleased(KEY_W) then
-            Log("[INPUT] W released")
-        end
-    end
+    -- if HasTransform() and HasRigidBody() then
+    --     local rb = GetRigidBody()
+    --     local moveVec = Vec2(0, 0)
+    --     
+    --     if KeyDown(KEY_W) then
+    --         moveVec.y = moveVec.y + 1
+    --         if not hasLoggedMovement then
+    --             Log("[INPUT] W is held down")
+    --             hasLoggedMovement = true
+    --         end
+    --     end
+    --     if KeyDown(KEY_S) then moveVec.y = moveVec.y - 1 end
+    --     if KeyDown(KEY_A) then moveVec.x = moveVec.x - 1 end
+    --     if KeyDown(KEY_D) then moveVec.x = moveVec.x + 1 end
+    --     
+    --     -- Apply movement
+    --     if moveVec.x ~= 0 or moveVec.y ~= 0 then
+    --         rb.acceleration = moveVec * speed
+    --     else
+    --         hasLoggedMovement = false
+    --     end
+    --     
+    --     -- Key release test
+    --     if KeyReleased(KEY_W) then
+    --         Log("[INPUT] W released")
+    --     end
+    -- end
     
     -- Jump/move up test
     if KeyPressed(KEY_SPACE) then
@@ -436,19 +436,19 @@ function Update(dt)
         end
         
         -- Add new shape
-        if KeyPressed(KEY_A) then
-            local newShape = ColliderShape()
-            newShape.size = Vec2(1.0, 1.0)
-            newShape.offset = Vec2(2.0, 0.0)
-            newShape.purpose = ColliderPurpose.Physics
-            newShape.layer = CollisionLayer.DEFAULT
-            newShape.colliderMask = CollisionLayer.ALL
-            newShape.isActive = true
-            newShape.autoFitToSprite = false
-            
-            collider.shapes:push_back(newShape)
-            Log("[INPUT] Added new shape. Total: " .. collider.shapes:size())
-        end
+        -- if KeyPressed(KEY_A) then
+        --     local newShape = ColliderShape()
+        --     newShape.size = Vec2(1.0, 1.0)
+        --     newShape.offset = Vec2(2.0, 0.0)
+        --     newShape.purpose = ColliderPurpose.Physics
+        --     newShape.layer = CollisionLayer.DEFAULT
+        --     newShape.colliderMask = CollisionLayer.ALL
+        --     newShape.isActive = true
+        --     newShape.autoFitToSprite = false
+        --     
+        --     collider.shapes:push_back(newShape)
+        --     Log("[INPUT] Added new shape. Total: " .. collider.shapes:size())
+        -- end
         
         -- Clear shapes
         if KeyPressed(KEY_C) then
