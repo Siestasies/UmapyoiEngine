@@ -373,23 +373,18 @@ namespace Uma_Engine
          */
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
 
-        bool LoadFont(const std::string& fontName, const std::string& fontPath,
-            unsigned int fontSize = 48);
+        bool LoadFont(const std::string& fontName, const std::string& fontPath, unsigned int fontSize = 48);
         void SetCurrentFont(const std::string& fontName);
         std::string GetCurrentFont() const { return mCurrentFont; }
-        void DrawTextScreen(const std::string& text, float x, float y,
-            float scale = 1.0f,
-            float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextScreen(const std::string& fontName, const std::string& text,
-            float x, float y, float scale = 1.0f,
-            float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextScreen(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextScreen(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
         float MeasureText(const std::string& text, float scale = 1.0f);
         float MeasureText(const std::string& fontName, const std::string& text, float scale = 1.0f);
-        void DrawTextWorld(const std::string& text, float x, float y,
-            float scale = 1.0f,
-            float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextWorld(const std::string& fontName, const std::string& text,
-            float x, float y, float scale = 1.0f,
-            float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextWorld(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextWorld(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+
+        void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
+            const Vec2& uvSize = Vec2(1.0f, 1.0f));
+        void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
     };
 }

@@ -1259,4 +1259,129 @@ void main()
 
         return CreateShader(vertexShaderSource, fragmentShaderSource);
     }
+
+    void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize)
+    {
+        if (!mInitialized || textureID == 0) return;
+
+        glUseProgram(mShaderProgram);
+
+        // Create transformation matrix in screen space
+        glm::mat4 model = glm::mat4(1.0f);
+
+        // Translate to screen position
+        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+
+        // Rotate around center
+        if (rotation != 0.0f)
+        {
+            model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.0f));
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(-size.x * 0.5f, -size.y * 0.5f, 0.0f));
+        }
+
+        // Scale to size
+        model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+
+        // Set model uniform
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set up orthographic projection for screen space
+        glm::mat4 projection = glm::ortho(
+            0.0f, static_cast<float>(mViewportWidth),
+            0.0f, static_cast<float>(mViewportHeight),
+            -1.0f, 1.0f
+        );
+
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Bind texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Draw the quad
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        // Restore camera projection
+        UpdateProjectionMatrix();
+    }
+
+    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
+    {
+        if (!mInitialized || textureID == 0 || sprites.empty()) return;
+
+        if (sprites.size() > MAX_INSTANCES)
+        {
+            std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
+        }
+
+        size_t instanceCount = std::min(sprites.size(), MAX_INSTANCES);
+
+        // Build model matrices and UV data
+        std::vector<glm::mat4> models;
+        std::vector<glm::vec4> uvData;
+        models.reserve(instanceCount);
+        uvData.reserve(instanceCount);
+
+        for (size_t i = 0; i < instanceCount; ++i)
+        {
+            const Sprite_Info& sprite = sprites[i];
+
+            // Build model matrix in screen space
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
+            model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
+            models.push_back(model);
+
+            // Build UV data
+            uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
+                sprite.uvSize.x, sprite.uvSize.y));
+        }
+
+        if (models.empty()) return;
+
+        // Upload model matrices
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+
+        // Upload UV data
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
+
+        glUseProgram(mInstanceShaderProgram);
+
+        // Set screen-space projection matrix
+        glm::mat4 projection = glm::ortho(
+            0.0f, static_cast<float>(mViewportWidth),
+            0.0f, static_cast<float>(mViewportHeight),
+            -1.0f, 1.0f
+        );
+
+        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Set texture uniform
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+
+        // Bind texture
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        // Draw all instances in one call
+        glBindVertexArray(mInstanceVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
+
+        // Cleanup
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Restore camera projection
+        UpdateProjectionMatrix();
+    }
 }

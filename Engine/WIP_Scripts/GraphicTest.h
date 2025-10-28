@@ -44,6 +44,10 @@ namespace Uma_Engine
     {
     private:
         SystemManager* pSystemManager;
+        float fpsTimer = 0.0f;
+        int frameCount = 0;
+        int currentFPS = 0;
+        int playerHealth = 5;
 
     public:
         GraphicTest(SystemManager* sm) : pSystemManager(sm) {}
@@ -295,6 +299,16 @@ namespace Uma_Engine
 
         void Update(float dt) override
         {
+            // FPS calculation
+            fpsTimer += dt;
+            frameCount++;
+            if (fpsTimer >= 1.0f)
+            {
+                currentFPS = frameCount;
+                frameCount = 0;
+                fpsTimer = 0.0f;
+            }
+
             // Update systems in order
             gTestPlayerController->Update(dt);
             gTestPhysicsSystem->Update(dt);
@@ -315,12 +329,13 @@ namespace Uma_Engine
             // Get player components for UI
             auto& playerTransform = gTestCoordinator.GetComponent<Uma_ECS::Transform>(gTestPlayer);
             auto& playerAnimator = gTestCoordinator.GetComponent<Uma_ECS::Animator>(gTestPlayer);
+            auto& playerRB = gTestCoordinator.GetComponent<Uma_ECS::RigidBody>(gTestPlayer);
 
-            // World space text attached to player
+            // WORLD SPACE TEXT
+            // Player label
             float textOffsetY = 8.0f;
-
             std::string playerLabel = "Player";
-            float labelWidth = gTestGraphics->MeasureText("ui", playerLabel, 0.05f);
+            float labelWidth = gTestGraphics->MeasureText("ui", playerLabel, 0.08f);
             gTestGraphics->DrawTextWorld("ui", playerLabel,
                 playerTransform.position.x - (labelWidth * 0.5f),
                 playerTransform.position.y + textOffsetY,
@@ -328,20 +343,83 @@ namespace Uma_Engine
 
             // Animation state
             std::string animState = playerAnimator.animator.GetCurrentClip();
-            float animWidth = gTestGraphics->MeasureText("ui", animState, 0.04f);
+            float animWidth = gTestGraphics->MeasureText("ui", animState, 0.06f);
             gTestGraphics->DrawTextWorld("ui", animState,
                 playerTransform.position.x - (animWidth * 0.5f),
-                playerTransform.position.y + textOffsetY + 1.5f,
-                0.08f, 0.5f, 1.0f, 0.5f);
+                playerTransform.position.y + textOffsetY + 2.0f,
+                0.06f, 0.5f, 1.0f, 0.5f);
 
-            // Screen space UI
-            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene", 25.0f, 200.0f, 1.0f);
+            // SCREEN SPACE TEXT
+            // Title
+            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene", 25.0f, 550.0f, 1.0f);
+
+            // Instructions
             gTestGraphics->DrawTextScreen("ui", "Press WASD to move", 25.0f, 25.0f, 1.0f, 0.7f, 0.7f, 0.7f);
 
+            // Position
             std::string coordsText = "Pos: (" +
                 std::to_string(static_cast<int>(playerTransform.position.x)) + ", " +
                 std::to_string(static_cast<int>(playerTransform.position.y)) + ")";
             gTestGraphics->DrawTextScreen("ui", coordsText, 25.0f, 75.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+
+            // Speed display
+            float speed = sqrtf(playerRB.velocity.x * playerRB.velocity.x +
+                playerRB.velocity.y * playerRB.velocity.y);
+            std::string speedText = "Speed: " + std::to_string(static_cast<int>(speed));
+            gTestGraphics->DrawTextScreen("ui", speedText, 25.0f, 125.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+
+            // FPS counter
+            std::string fpsText = "FPS: " + std::to_string(currentFPS);
+            gTestGraphics->DrawTextScreen("ui", fpsText, 25.0f, 175.0f, 0.8f, 0.5f, 0.5f, 0.5f);
+
+            // Draw Fumo Cirno health bar using world-space rendering
+            DrawHealthBar();
+        }
+
+        // Draw 5 Fumo Cirno sprites as health UI in screen-space
+        void DrawHealthBar()
+        {
+            // Screen space position
+            float startX = 500.0f;
+            float startY = 400.0f;
+
+            // Health bar label
+            gTestGraphics->DrawTextScreen("ui", "Lives:",
+                startX, startY,
+                1.0f, 1.0f, 1.0f, 1.0f);
+
+            // Draw 5 Cirno sprites horizontally in screen space
+            unsigned int cirnoTexture = gTestResourcesManager->GetTexture("enemy")->tex_id;
+            float iconSize = 40.0f;
+            float spacing = 50.0f;
+            float iconsStartX = startX + 80.0f;
+
+            std::vector<Uma_Engine::Sprite_Info> healthIcons;
+
+            for (int i = 0; i < 5; i++)
+            {
+                float xPos = iconsStartX + (i * spacing);
+
+                // Add Cirno icon
+                healthIcons.push_back(Uma_Engine::Sprite_Info{
+                    .tex_id = cirnoTexture,
+                    .pos = Vec2(xPos, startY + 5.0f),
+                    .scale = Vec2(iconSize, iconSize),
+                    .rot = 0.0f,
+                    .rot_speed = 0.0f,
+                    .uvOffset = Vec2(0.0f, 0.0f),
+                    .uvSize = Vec2(1.0f, 1.0f)
+                    });
+            }
+
+            // Draw all health icons in one instanced call
+            gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons);
+
+            // Health counter text
+            std::string healthText = std::to_string(playerHealth) + "/5";
+            gTestGraphics->DrawTextScreen("ui", healthText,
+                iconsStartX + 80.0f, startY - 30.0f,
+                0.9f, 1.0f, 0.5f, 0.5f);
         }
 
         void UpdatePlayerAnimation()
