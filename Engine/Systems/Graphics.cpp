@@ -1151,6 +1151,85 @@ void main()
         return width;
     }
 
+    void Graphics::DrawTextWorld(const std::string& text, float x, float y,
+        float scale, float r, float g, float b)
+    {
+        // Use current font
+        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end())
+        {
+            std::cerr << "ERROR: No font loaded" << std::endl;
+            return;
+        }
+
+        DrawTextWorld(mCurrentFont, text, x, y, scale, r, g, b);
+    }
+
+    void Graphics::DrawTextWorld(const std::string& fontName, const std::string& text,
+        float x, float y, float scale, float r, float g, float b)
+    {
+        // Check if font exists
+        auto it = mFonts.find(fontName);
+        if (it == mFonts.end()) {
+            std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+            return;
+        }
+
+        FontData& font = it->second;
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glUseProgram(mTextShaderProgram);
+        glBindVertexArray(font.VAO);
+
+        // Set text color
+        glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
+
+        // Use camera-based projection
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Render each character in world space
+        for (char c : text) {
+            if (font.characters.find(c) == font.characters.end()) continue;
+
+            Character ch = font.characters[c];
+
+            // Calculate positions in world space
+            float xpos = x + ch.bearing.x * scale;
+            float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+            float w = ch.size.x * scale;
+            float h = ch.size.y * scale;
+
+            float vertices[6][4] = {
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos,     ypos,       0.0f, 1.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos + w, ypos + h,   1.0f, 0.0f }
+            };
+
+            glBindTextureUnit(0, ch.textureID);
+            glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            // Advance to next character position
+            x += ch.advance * scale;
+        }
+
+        glBindVertexArray(0);
+        glBindTextureUnit(0, 0);
+    }
+
     GLuint Graphics::CreateTextShader()
     {
         const char* vertexShaderSource = R"(

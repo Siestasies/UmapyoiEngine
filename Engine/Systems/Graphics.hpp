@@ -385,5 +385,11 @@ namespace Uma_Engine
             float r = 1.0f, float g = 1.0f, float b = 1.0f);
         float MeasureText(const std::string& text, float scale = 1.0f);
         float MeasureText(const std::string& fontName, const std::string& text, float scale = 1.0f);
+        void DrawTextWorld(const std::string& text, float x, float y,
+            float scale = 1.0f,
+            float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        void DrawTextWorld(const std::string& fontName, const std::string& text,
+            float x, float y, float scale = 1.0f,
+            float r = 1.0f, float g = 1.0f, float b = 1.0f);
     };
 }

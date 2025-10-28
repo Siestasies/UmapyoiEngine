@@ -407,6 +407,16 @@ namespace Uma_Engine
             // Title text using large font
             gTestGraphics->DrawTextScreen("title", "GraphicTest Scene", 25.0f, 200.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 
+            // Draw text above the player in world coordinates
+            float textOffsetY = 5.0f;
+
+            // Player label
+            gTestGraphics->DrawTextWorld("ui", "Player",
+                playerTransform.position.x - 2.5f,
+                playerTransform.position.y + textOffsetY,
+                0.1f,
+                1.0f, 1.0f, 1.0f);
+
             // Player status using UI font
             std::string status = gPlayerMoving ? "Moving" : "Idle";
             gTestGraphics->DrawTextScreen("ui", status, 25.0f, 75.0f, 1.0f, 0.0f, 1.0f, 0.0f);
