@@ -30,10 +30,14 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
+#include "WIP_Scripts/EditorSceneScript.h"
+
 #include "WIP_Scripts/ImguiManager.h"
 #include "Core/EngineConfig.h"
 #include "Core/EngineConfigSerializer.h"
 #include "Core/FilePaths.h"
+
+#include "FileSystem/DropCallback.hpp"
 
 #define DEBUG
 
@@ -86,7 +90,8 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene
-    systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+    auto scnm = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
     systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
@@ -94,8 +99,16 @@ int main()
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
+    scnm->SetSystemManager(&systemManager);
+    scnm->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
+    auto editorScene = scnm->CreateScene("EditorScene", "Assets/Scenes/test_collider.json");
+    scnm->AttachScriptToScene("EditorScene", "EditorBehavior");
+    scnm->LoadScene("EditorScene");
     // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
+
+    // Setup File Drop Callback
+    glfwSetDropCallback(window.GetGLFWWindow(), Uma_Engine::FileDropHandler::DropCallback);
 
 #ifdef DEBUG
     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");

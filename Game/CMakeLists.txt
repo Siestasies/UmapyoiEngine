@@ -69,3 +69,14 @@ add_custom_command(TARGET UmapyoiGame POST_BUILD
         $<TARGET_FILE_DIR:UmapyoiGame>
     COMMENT "Copying fmod.dll next to executable"
 )
+
+# FreeType runtime DLL (Windows only)
+set(FREETYPE_DLL ${CMAKE_SOURCE_DIR}/Engine/freetype/win64/freetype.dll)
+
+# Copy FreeType runtime DLL after build (to the actual exe location)
+add_custom_command(TARGET UmapyoiGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${FREETYPE_DLL}
+        $<TARGET_FILE_DIR:UmapyoiGame>
+    COMMENT "Copying freetype.dll next to executable"
+)

@@ -29,6 +29,7 @@ All rights reserved.
 #include <unordered_map>
 #include <cassert>
 #include <string>
+#include <algorithm>
 
 #include "rapidjson/document.h"		// rapidjson's DOM-style API
 
@@ -42,6 +43,7 @@ namespace Uma_ECS
 
         virtual bool Has(Entity entity) const = 0;
         virtual void CloneComponent(Entity src, Entity dest) = 0;
+        virtual std::vector<Entity> GetAllEntities() const = 0;
 
         // serialization and deserialization
         virtual void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) = 0;
@@ -158,6 +160,16 @@ namespace Uma_ECS
 
             T component = GetData(src);
             AddData(dest, component);
+        }
+
+        std::vector<Entity> GetAllEntities() const override
+        {
+            std::vector<Entity> result;
+            //result.reserve(mSize);
+
+            for_each(std::begin(aIndexToEntity), std::end(aIndexToEntity), [&result](const Entity& e) {result.push_back(e); });
+
+            return result;
         }
 
         // serialization and deserialization

@@ -17,17 +17,178 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 #pragma once
+// ECS Core
+#include "ECS/Core/Coordinator.hpp"
+
+// ECS Systems
+#include "ECS/Systems/PhysicsSystem.hpp"
+#include "ECS/Systems/PlayerControllerSystem.hpp"
+#include "ECS/Systems/RenderingSystem.hpp"
+#include "ECS/Systems/CollisionSystem.hpp"
+#include "ECS/Systems/LuaScriptingSystem.hpp"
+
+// ECS Components
+#include "ECS/Components/Transform.h"
+#include "ECS/Components/RigidBody.h"
+#include "ECS/Components/Player.h"
+#include "ECS/Components/Sprite.h"
+#include "ECS/Components/Collider.h"
+#include "ECS/Components/Camera.h"
+#include "ECS/Components/Enemy.h"
+#include "ECS/Components/LuaScript.h"
+
+// Engine Systems
+#include "Systems/InputSystem.h"
+#include "WIP_Scripts/Test_Input_Events.h"
+#include "Systems/Graphics.hpp"
+#include "Systems/Sound.hpp"
+#include "Systems/ResourcesManager.hpp"
+#include "Systems/CameraSystem.hpp"
+#include "../Core/SystemManager.h"
+#include "../Core/EventSystem.h"
+#include "../Events/ECSEvents.h"
+#include "../Events/IMGUIEvents.h"
+
+// Serializer
+#include "Core/GameSerializer.h"
+
+// Engine Settings
+#include "Core/FilePaths.h"
+
+// debug
+#include "Debugging/Debugger.hpp"
+
+#include <future>
 
 namespace Uma_Engine
 {
+    // forward decalaration
+    class SceneScript;
+
+    // enum fro asyn loading tracking
+    enum class SceneState
+    {
+        SCENE_UNLOADED,
+        SCENE_LOADING,
+        SCENE_RUNNING,
+        SCENE_UNLOADING
+    };
+
     class Scene
     {
         public:
-            virtual void OnLoad() = 0;
-            virtual void OnUnload() = 0;
-            virtual void Update(float dt) = 0;
-            virtual void Render() = 0;
+            Scene(const std::string& name, const std::string& filepath, SystemManager* sm);
+            ~Scene();
 
-            virtual ~Scene() = default;
+            // Lifecycle Stuff (called by SceneManager)
+            void Load();
+            void LoadAsync();
+            void Unload();
+            void Update(float dt);
+            void Render();
+
+            // Script management
+            void AttachScript(std::shared_ptr<SceneScript> script);
+            void DetachScript(const std::string& scriptName);
+            void DetachAllScripts();
+            bool HasScript(const std::string& scriptName) const;
+            std::vector<std::string> GetAttachedScriptNames() const;
+
+            // Entity stuff
+            Uma_ECS::Entity CreateEntity();
+            void DestroyEntity(Uma_ECS::Entity entity);
+
+            // Serialization
+            void Serialize(const std::string& filepath = "");
+            void Deserialize(const std::string& filepath = "");
+
+            SceneState GetState() const { return m_State; }
+            float GetLoadProgress() const { return m_LoadProgress; }
+            bool IsLoaded() const { return m_State == SceneState::SCENE_RUNNING; }
+            const std::string& GetName() const { return m_Name; }
+            const std::string& GetFilePath() const { return m_FilePath; }
+
+            // System accessors (for scripts to use)
+            Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; }
+            //SystemManager* GetSystemManager() { return m_SystemManager; }
+            Uma_Engine::HybridInputSystem* GetInputSystem() { return m_HybridInputSystem; }
+            Uma_Engine::Graphics* GetGraphics() { return m_Graphics; }
+            Uma_Engine::Sound* GetSound() { return m_Sound; }
+            Uma_Engine::ResourcesManager* GetResourcesManager() { return m_ResourcesManager; }
+            Uma_Engine::EventSystem* GetEventSystem() { return m_EventSystem; }
+
+        //protected:
+            // Engine Systems
+            Uma_Engine::SystemManager* m_SystemManager;
+            Uma_Engine::HybridInputSystem* m_HybridInputSystem;
+            Uma_Engine::Graphics* m_Graphics;
+            Uma_Engine::Sound* m_Sound;
+            Uma_Engine::ResourcesManager* m_ResourcesManager;
+            Uma_Engine::EventSystem* m_EventSystem;
+
+            // ECS related
+            using Coordinator = Uma_ECS::Coordinator;
+            Coordinator m_Coordinator;
+            std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
+            std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
+            std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
+            std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
+            std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
+            std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
+
+            // temp need to remove oneday
+            Uma_ECS::Entity m_player;
+            Uma_ECS::Entity m_cam;
+
+            // Scene Specific
+            Uma_Engine::GameSerializer gGameSerializer;
+            // Attached scripts
+            std::vector<std::shared_ptr<SceneScript>> m_AttachedScripts;
+        private:
+            void InitializeECS();
+            void UpdateECSSystems(float dt);
+            void LoadInternal();
+
+            // Scene metadata
+            std::string m_Name;
+            std::string m_FilePath;
+            SceneState m_State = SceneState::SCENE_UNLOADED;
+            float m_LoadProgress = 0.0f;
+
+            // Delta time smoothing
+            float m_SmoothedDt = 0.0f;
+            bool m_FirstFrame = true;
+            // Async loading
+            std::future<void> m_LoadFuture;
+
+    };
+
+    class SceneScript
+    {
+        public:
+            SceneScript(const std::string& name) : m_Name(name) {}
+            virtual ~SceneScript() = default;
+
+            // Lifecycle hooks - override these in derived scripts
+            virtual void OnAttach(Scene* scene) { m_Scene = scene; }
+            virtual void OnDetach() {}
+            virtual void OnLoad() {}
+            virtual void OnUnload() {}
+            virtual void OnUpdate(float dt) {}
+            virtual void OnRender() {}
+
+            const std::string& GetName() const { return m_Name; }
+
+        protected:
+            std::string m_Name;
+            Scene* m_Scene = nullptr;
+
+            // Helper accessors for scripts
+            Uma_ECS::Coordinator& GetCoordinator() { return m_Scene->GetCoordinator(); }
+            Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
+            Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
+            Uma_Engine::Sound* GetSound() { return m_Scene->GetSound(); }
+            Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
+            Uma_Engine::EventSystem* GetEvents() { return m_Scene->GetEventSystem(); }
     };
 }
