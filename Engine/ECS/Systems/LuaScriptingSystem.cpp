@@ -341,11 +341,59 @@ namespace Uma_ECS
             "autoFitToSprite", &ColliderShape::autoFitToSprite
         );
 
-        // collider component itself
+        // the vector 
+        // Register std::vector<ColliderShape> as a Lua-accessible container
+        sharedLua->new_usertype<std::vector<ColliderShape>>("ColliderShapeVector",
+            sol::meta_function::index, [](std::vector<ColliderShape>& vec, int index) -> sol::optional<ColliderShape*> {
+                // Lua is 1-indexed, C++ is 0-indexed
+                if (index < 1 || index > static_cast<int>(vec.size())) {
+                    return sol::nullopt;
+                }
+                return &vec[index - 1];
+            },
+            sol::meta_function::new_index, [](std::vector<ColliderShape>& vec, int index, const ColliderShape& shape) {
+                if (index < 1 || index > static_cast<int>(vec.size())) {
+                    return;
+                }
+                vec[index - 1] = shape;
+            },
+            sol::meta_function::length, [](std::vector<ColliderShape>& vec) {
+                return vec.size();
+            },
+            "push_back", &std::vector<ColliderShape>::push_back,
+            "size", &std::vector<ColliderShape>::size,
+            "clear", &std::vector<ColliderShape>::clear
+        );
 
+        // Register std::vector<BoundingBox> as well
+        sharedLua->new_usertype<std::vector<BoundingBox>>("BoundingBoxVector",
+            sol::meta_function::index, [](std::vector<BoundingBox>& vec, int index) -> sol::optional<BoundingBox*> {
+                if (index < 1 || index > static_cast<int>(vec.size())) {
+                    return sol::nullopt;
+                }
+                return &vec[index - 1];
+            },
+            sol::meta_function::length, [](std::vector<BoundingBox>& vec) {
+                return vec.size();
+            },
+            "size", &std::vector<BoundingBox>::size
+        );
+
+        // collider component itself
+        sharedLua->new_usertype<Collider>("Collider",
+            "shapes", &Collider::shapes,  // This will now work!
+            "defaultLayer", &Collider::defaultLayer,
+            "defaultMask", &Collider::defaultMask,
+            "showBBox", &Collider::showBBox,
+            "bounds", &Collider::bounds,  // This will now work!
+            "GetPrimaryShape", &Collider::GetPrimaryShape,
+            "GetPrimaryBounds", &Collider::GetPrimaryBounds,
+            "GetEffectiveLayer", &Collider::GetEffectiveLayer,
+            "GetEffectiveMask", &Collider::GetEffectiveMask
+        );
     }
 
-    void LuaScriptingSystem::RegisterEntityQueries()
+    void LuaScriptingSystem::RegisterEntityQueries() 
     {
         // -----------------------------------------------------------
         // ENTITY QUERY FUNCTIONS (GLOBAL)
