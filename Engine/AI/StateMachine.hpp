@@ -46,7 +46,7 @@ namespace Uma_ECS
             entity.currStateName = "IM A CHICKEN";
         }
 
-        template <typename... NewStates>
+        /*template <typename... NewStates>
         void registerState() {
             (registerOne<NewStates>(), ...);
         }
@@ -54,7 +54,7 @@ namespace Uma_ECS
         template <typename StateType>
         void registerOne() {
             states.emplace(std::string(StateType::name), std::make_shared<StateType>());
-        }
+        }*/
         
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) 
         {
@@ -66,35 +66,35 @@ namespace Uma_ECS
         }
     };
 
-    struct base : State {
-        static constexpr const char* name = "Base";
-        float timer = 0;
-        void enter(FSM& entity) override {
-            entity.currStateName = name;
-        }
-        void exit(FSM& entity) override {
-            entity.currStateName = "";
-        }
-        void update(FSM& entity, float dt) override {
-            timer += dt;
-            if (timer > 1) {
-                //std::cout << timer << "\n";
-                entity.ChangeState(entity, "Move");
-            }
-        }
-    };
+    //struct base : State {
+    //    static constexpr const char* name = "Base";
+    //    float timer = 0;
+    //    void enter(FSM& entity) override {
+    //        entity.currStateName = name;
+    //    }
+    //    void exit(FSM& entity) override {
+    //        entity.currStateName = "";
+    //    }
+    //    void update(FSM& entity, float dt) override {
+    //        timer += dt;
+    //        if (timer > 1) {
+    //            //std::cout << timer << "\n";
+    //            entity.ChangeState(entity, "Move");
+    //        }
+    //    }
+    //};
 
-    struct move : State {
-        static constexpr const char* name = "Move";
-        void enter(FSM& entity) override {
-            entity.currStateName = name;
-        }
-        void exit(FSM& entity) override {
-            entity.currStateName = "";
-        }
-        void update(FSM& entity, float dt) override {
-        }
-    };
+    //struct move : State {
+    //    static constexpr const char* name = "Move";
+    //    void enter(FSM& entity) override {
+    //        entity.currStateName = name;
+    //    }
+    //    void exit(FSM& entity) override {
+    //        entity.currStateName = "";
+    //    }
+    //    void update(FSM& entity, float dt) override {
+    //    }
+    //};
 
     //how to use?
     /*
