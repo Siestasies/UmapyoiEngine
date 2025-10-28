@@ -17,19 +17,20 @@
 // --------------------------------------------------
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
-    env.set_function("Get" #ComponentType, [this, entity]() -> sol::optional<std::reference_wrapper<ComponentType>> { \
+    env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
         if (!pCoordinator->HasActiveEntity(entity)) { \
             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, \
                 "Lua: Tried to access " #ComponentType " on destroyed entity"); \
-            return sol::nullopt; \
+            return nullptr; \
         } \
         auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
         if (!arr.Has(entity)) { \
-            return sol::nullopt; \
+            return nullptr; \
         } \
-        return std::ref(arr.GetData(entity)); \
+        return &arr.GetData(entity); \
     }); \
     env.set_function("Has" #ComponentType, [this, entity]() -> bool { \
+        if (!pCoordinator->HasActiveEntity(entity)) return false; \
         return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
     });
 
@@ -276,14 +277,14 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::RegisterComponentTypes()
     {
-        // Register Transform component
+        // Register Transform
         sharedLua->new_usertype<Transform>("Transform",
             "position", &Transform::position,
             "rotation", &Transform::rotation,
             "scale", &Transform::scale
         );
 
-        // Register RigidBody component
+        // Register RigidBody
         sharedLua->new_usertype<RigidBody>("RigidBody",
             "velocity", &RigidBody::velocity,
             "acceleration", &RigidBody::acceleration,
@@ -291,7 +292,7 @@ namespace Uma_ECS
             "fric_coeff", &RigidBody::fric_coeff
         );
 
-        // Register Sprite component
+        // Register Sprite
         sharedLua->new_usertype<Sprite>("Sprite",
             "textureName", &Sprite::textureName,
             "renderLayer", &Sprite::renderLayer,
@@ -299,13 +300,15 @@ namespace Uma_ECS
             "flipY", &Sprite::flipY
         );
 
-        // register Camera component
+        // Register Camera
         sharedLua->new_usertype<Camera>("Camera",
             "zoom", &Camera::mZoom,
             "followPlayer", &Camera::followPlayer
         );
 
-        // collison part
+        // ===================================================================
+        // COLLISION SYSTEM TYPES
+        // ===================================================================
 
         // Collision Layers
         sol::table collisionLayerTable = sharedLua->create_table("CollisionLayer");
@@ -324,14 +327,15 @@ namespace Uma_ECS
         colliderPurposeTable["Environment"] = static_cast<int>(ColliderPurpose::Environment);
         colliderPurposeTable["Trigger"] = static_cast<int>(ColliderPurpose::Trigger);
 
-        // bounding box struct
+        // BoundingBox
         sharedLua->new_usertype<BoundingBox>("BoundingBox",
             "min", &BoundingBox::min,
             "max", &BoundingBox::max
         );
 
-        // collider shape
+        // ColliderShape - MUST be registered BEFORE the vector
         sharedLua->new_usertype<ColliderShape>("ColliderShape",
+            sol::constructors<ColliderShape()>(),
             "size", &ColliderShape::size,
             "offset", &ColliderShape::offset,
             "purpose", &ColliderShape::purpose,
@@ -341,53 +345,34 @@ namespace Uma_ECS
             "autoFitToSprite", &ColliderShape::autoFitToSprite
         );
 
-        // the vector 
-        // Register std::vector<ColliderShape> as a Lua-accessible container
-        sharedLua->new_usertype<std::vector<ColliderShape>>("ColliderShapeVector",
-            sol::meta_function::index, [](std::vector<ColliderShape>& vec, int index) -> sol::optional<ColliderShape*> {
-                // Lua is 1-indexed, C++ is 0-indexed
-                if (index < 1 || index > static_cast<int>(vec.size())) {
-                    return sol::nullopt;
-                }
-                return &vec[index - 1];
-            },
-            sol::meta_function::new_index, [](std::vector<ColliderShape>& vec, int index, const ColliderShape& shape) {
-                if (index < 1 || index > static_cast<int>(vec.size())) {
-                    return;
-                }
-                vec[index - 1] = shape;
-            },
-            sol::meta_function::length, [](std::vector<ColliderShape>& vec) {
-                return vec.size();
-            },
-            "push_back", &std::vector<ColliderShape>::push_back,
-            "size", &std::vector<ColliderShape>::size,
-            "clear", &std::vector<ColliderShape>::clear
-        );
+        // ===================================================================
+        // VECTOR REGISTRATION - Use sol::as_container
+        // ===================================================================
 
-        // Register std::vector<BoundingBox> as well
-        sharedLua->new_usertype<std::vector<BoundingBox>>("BoundingBoxVector",
-            sol::meta_function::index, [](std::vector<BoundingBox>& vec, int index) -> sol::optional<BoundingBox*> {
-                if (index < 1 || index > static_cast<int>(vec.size())) {
-                    return sol::nullopt;
-                }
-                return &vec[index - 1];
-            },
-            sol::meta_function::length, [](std::vector<BoundingBox>& vec) {
-                return vec.size();
-            },
-            "size", &std::vector<BoundingBox>::size
-        );
+        // This tells Sol2 to treat std::vector<ColliderShape> as a container
+        // No explicit usertype needed - Sol2 handles it automatically
 
-        // collider component itself
+        // ===================================================================
+        // COLLIDER REGISTRATION - Use property accessors
+        // ===================================================================
+
         sharedLua->new_usertype<Collider>("Collider",
-            "shapes", &Collider::shapes,  // This will now work!
+            // Use sol::property for vectors to ensure proper handling
+            "shapes", sol::property(
+                [](Collider& c) -> std::vector<ColliderShape>&{ return c.shapes; }
+            ),
+            "bounds", sol::property(
+                [](Collider& c) -> std::vector<BoundingBox>&{ return c.bounds; }
+            ),
+
+            // Regular members
             "defaultLayer", &Collider::defaultLayer,
             "defaultMask", &Collider::defaultMask,
             "showBBox", &Collider::showBBox,
-            "bounds", &Collider::bounds,  // This will now work!
-            "GetPrimaryShape", &Collider::GetPrimaryShape,
-            "GetPrimaryBounds", &Collider::GetPrimaryBounds,
+
+            // Member functions
+            "GetPrimaryShape", sol::resolve<ColliderShape & ()>(&Collider::GetPrimaryShape),
+            "GetPrimaryBounds", sol::resolve<BoundingBox & ()>(&Collider::GetPrimaryBounds),
             "GetEffectiveLayer", &Collider::GetEffectiveLayer,
             "GetEffectiveMask", &Collider::GetEffectiveMask
         );
@@ -444,10 +429,7 @@ namespace Uma_ECS
         // first is entity wrapper (like accessing a struct / class)
         // then the direct access method with the entity id
 
-        // -----------------------------------------------------------
-        // COMPONENT LIST - Single source of truth
-        // -----------------------------------------------------------
-
+       // Component list macro
 #define COMPONENT_LIST \
         X(Transform)   \
         X(RigidBody)   \
@@ -457,9 +439,9 @@ namespace Uma_ECS
         X(Enemy)       \
         X(Camera)
 
-        // -----------------------------------------------------------
-        // ENTITY WRAPPER
-        // -----------------------------------------------------------
+    // -----------------------------------------------------------
+    // ENTITY WRAPPER
+    // -----------------------------------------------------------
 
         sharedLua->set_function("GetEntity", [this](Entity targetEntity) -> sol::table {
             sol::state_view lua(sharedLua->lua_state());
@@ -475,17 +457,18 @@ namespace Uma_ECS
 
             // Add all component getters using X-macro pattern
 #define X(ComponentType) \
-            entityTable["Get" #ComponentType] = [this, targetEntity]() \
-                -> sol::optional<std::reference_wrapper<ComponentType>> { \
-                    auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
-                    if (!arr.Has(targetEntity)) return sol::nullopt; \
-                    return std::ref(arr.GetData(targetEntity)); \
-                }; \
-            entityTable["Has" #ComponentType] = [this, targetEntity]() -> bool { \
-                return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
-            };
+        entityTable["Get" #ComponentType] = [this, targetEntity]() -> ComponentType* { \
+            if (!pCoordinator->HasActiveEntity(targetEntity)) return nullptr; \
+            auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+            if (!arr.Has(targetEntity)) return nullptr; \
+            return &arr.GetData(targetEntity); \
+        }; \
+        entityTable["Has" #ComponentType] = [this, targetEntity]() -> bool { \
+            if (!pCoordinator->HasActiveEntity(targetEntity)) return false; \
+            return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
+        };
 
-            COMPONENT_LIST  // Expands to all ADD_COMPONENT_GETTER calls
+            COMPONENT_LIST
 
 #undef X
 
@@ -497,23 +480,18 @@ namespace Uma_ECS
         // -----------------------------------------------------------
 
 #define X(ComponentType) \
-        sharedLua->set_function("Get" #ComponentType "From", [this](Entity targetEntity) \
-            -> sol::optional<std::reference_wrapper<ComponentType>> { \
-                if (!pCoordinator->HasActiveEntity(targetEntity)) { \
-                    return sol::nullopt; \
-                } \
-                auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
-                if (!arr.Has(targetEntity)) { \
-                    return sol::nullopt; \
-                } \
-                return std::ref(arr.GetData(targetEntity)); \
-            }); \
-        sharedLua->set_function("Has" #ComponentType "On", [this](Entity targetEntity) -> bool { \
-            if (!pCoordinator->HasActiveEntity(targetEntity)) return false; \
-            return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
-        });
+    sharedLua->set_function("Get" #ComponentType "From", [this](Entity targetEntity) -> ComponentType* { \
+        if (!pCoordinator->HasActiveEntity(targetEntity)) return nullptr; \
+        auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+        if (!arr.Has(targetEntity)) return nullptr; \
+        return &arr.GetData(targetEntity); \
+    }); \
+    sharedLua->set_function("Has" #ComponentType "On", [this](Entity targetEntity) -> bool { \
+        if (!pCoordinator->HasActiveEntity(targetEntity)) return false; \
+        return pCoordinator->GetComponentArray<ComponentType>().Has(targetEntity); \
+    });
 
-        COMPONENT_LIST  // Expands to all BIND_COMPONENT_GETTER_FROM calls
+        COMPONENT_LIST
 
 #undef X
 #undef COMPONENT_LIST
@@ -794,10 +772,10 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Transform);
         BIND_COMPONENT_GETTER(RigidBody);
         BIND_COMPONENT_GETTER(Sprite);
-        //BIND_COMPONENT_GETTER(Collider);
-        //BIND_COMPONENT_GETTER(Player);
-        //BIND_COMPONENT_GETTER(Enemy);
-        //BIND_COMPONENT_GETTER(Camera);
+        BIND_COMPONENT_GETTER(Collider);
+        BIND_COMPONENT_GETTER(Player);
+        BIND_COMPONENT_GETTER(Enemy);
+        BIND_COMPONENT_GETTER(Camera);
 
 
         // debugging
