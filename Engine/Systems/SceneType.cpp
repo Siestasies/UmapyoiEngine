@@ -62,12 +62,16 @@ namespace Uma_Engine
         // Destroy entities
         m_Coordinator.DestroyAllEntities();
 
+        
         // Unload resources
         if (m_ResourcesManager)
         {
             m_ResourcesManager->UnloadAllTextures();
             m_ResourcesManager->UnloadAllSound();
         }
+
+        // Unlaod scripts
+        m_LuaScriptingSystem->Shutdown();
 
         m_State = SceneState::SCENE_UNLOADED;
         m_LoadProgress = 0.0f;
@@ -255,6 +259,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::Camera>();
         m_Coordinator.RegisterComponent<Uma_ECS::Player>();
         m_Coordinator.RegisterComponent<Uma_ECS::Enemy>();
+        m_Coordinator.RegisterComponent<Uma_ECS::LuaScript>();
 
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -286,7 +291,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Collider>());
             m_Coordinator.SetSystemSignature<Uma_ECS::CollisionSystem>(sign);
         }
-        m_CollisionSystem->Init(&m_Coordinator);
+        m_CollisionSystem->Init(&m_Coordinator, m_EventSystem);
 
         // Rendering System
         m_RenderingSystem = m_Coordinator.RegisterSystem<Uma_ECS::RenderingSystem>();
@@ -308,6 +313,14 @@ namespace Uma_Engine
         }
         m_CameraSystem->Init(&m_Coordinator);
 
+        m_LuaScriptingSystem = m_Coordinator.RegisterSystem<Uma_ECS::LuaScriptingSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::LuaScriptingSystem>(sign);
+        }
+        m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
+
         gGameSerializer.Register(m_ResourcesManager);
         gGameSerializer.Register(&m_Coordinator);
     }
@@ -322,6 +335,9 @@ namespace Uma_Engine
 
         if (m_CollisionSystem)
             m_CollisionSystem->Update(dt);
+
+        if (m_LuaScriptingSystem)
+            m_LuaScriptingSystem->Update(dt);
 
         if (m_CameraSystem)
             m_CameraSystem->Update(dt);

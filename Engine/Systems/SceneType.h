@@ -25,6 +25,7 @@ All rights reserved.
 #include "ECS/Systems/PlayerControllerSystem.hpp"
 #include "ECS/Systems/RenderingSystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
+#include "ECS/Systems/LuaScriptingSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -34,6 +35,7 @@ All rights reserved.
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
+#include "ECS/Components/LuaScript.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
@@ -44,8 +46,8 @@ All rights reserved.
 #include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
-#include "../Core/ECSEvents.h"
-#include "../Core/IMGUIEvents.h"
+#include "../Events/ECSEvents.h"
+#include "../Events/IMGUIEvents.h"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -115,7 +117,7 @@ namespace Uma_Engine
             Uma_Engine::ResourcesManager* GetResourcesManager() { return m_ResourcesManager; }
             Uma_Engine::EventSystem* GetEventSystem() { return m_EventSystem; }
 
-        protected:
+        //protected:
             // Engine Systems
             Uma_Engine::SystemManager* m_SystemManager;
             Uma_Engine::HybridInputSystem* m_HybridInputSystem;
@@ -132,6 +134,9 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
             std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
+            std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
+
+            // temp need to remove oneday
             Uma_ECS::Entity m_player;
             Uma_ECS::Entity m_cam;
 
