@@ -30,6 +30,7 @@ All rights reserved.
 #include "Components/Camera.h"
 #include "Components/Collider.h"
 #include "Components/Player.h"
+#include "Components/Animator.h"
 
 
 #include "Debugging/Debugger.hpp"
@@ -58,6 +59,7 @@ namespace Uma_ECS
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& cArray = pCoordinator->GetComponentArray<Collider>();
         auto& pArray = pCoordinator->GetComponentArray<Player>();
+        auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
 
         // one camera for now
         Entity camera = camArray.GetEntity(0);
@@ -107,6 +109,17 @@ namespace Uma_ECS
                 spriteScale = tf.scale;
             }
 
+            // Get UV coordinates from animator if present
+            Vec2 uvOffset(0.0f, 0.0f);
+            Vec2 uvSize(1.0f, 1.0f);
+
+            if (animatorArray.Has(entity))
+            {
+                auto& animator = animatorArray.GetData(entity);
+                uvOffset = animator.uvOffset;
+                uvSize = animator.uvSize;
+            }
+
             sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
                 {
                     .tex_id = sr.texture->tex_id,
@@ -115,6 +128,8 @@ namespace Uma_ECS
                     .scale = spriteScale,
                     .rot = tf.rotation.x,
                     .rot_speed = tf.rotation.y,
+                    .uvOffset = uvOffset,
+                    .uvSize = uvSize
                 });
         }
 
