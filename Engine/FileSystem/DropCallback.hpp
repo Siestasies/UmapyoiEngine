@@ -5,27 +5,17 @@
 
 namespace Uma_Engine
 {
+    class FileBrowser;
 
-class FileBrowser;
+    class FileDropHandler
+    {
+        public:
+            static void DropCallback(GLFWwindow* window, int count, const char** paths);
 
-class FileDropHandler
-{
-public:
-    static void DropCallback(GLFWwindow* window, int count, const char** paths);
+        private:
+            static std::vector<std::string> aDroppedFiles;
 
-private:
-    static std::vector<std::string> aDroppedFiles;
-
-    friend class FileBrowser;
-};
-
-std::vector<std::string> FileDropHandler::aDroppedFiles;
-
-void FileDropHandler::DropCallback(GLFWwindow* window, int count, const char** paths) 
-{
-    for (int i = 0; i < count; i++) {
-        aDroppedFiles.push_back(paths[i]);
-    }
-}
+            friend class FileBrowser;
+    };
 
 } // namespace Uma_Engine
