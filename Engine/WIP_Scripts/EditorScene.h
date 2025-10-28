@@ -1,6 +1,47 @@
 //#pragma once
 //#include "SceneType.h"
 //
+//// ECS Core
+//#include "ECS/Core/Coordinator.hpp"
+//
+//// ECS Systems
+//#include "ECS/Systems/PhysicsSystem.hpp"
+//#include "ECS/Systems/PlayerControllerSystem.hpp"
+//#include "ECS/Systems/RenderingSystem.hpp"
+//#include "ECS/Systems/CollisionSystem.hpp"
+//#include "ECS/Systems/LuaScriptingSystem.hpp"
+//
+//// ECS Components
+//#include "ECS/Components/Transform.h"
+//#include "ECS/Components/RigidBody.h"
+//#include "ECS/Components/Player.h"
+//#include "ECS/Components/Sprite.h"
+//#include "ECS/Components/Collider.h"
+//#include "ECS/Components/Camera.h"
+//#include "ECS/Components/Enemy.h"
+//#include "ECS/Components/LuaScript.h"
+//
+//// Engine Systems
+//#include "Systems/InputSystem.h"
+//#include "WIP_Scripts/Test_Input_Events.h"
+//#include "Systems/Graphics.hpp"
+//#include "Systems/Sound.hpp"
+//#include "Systems/ResourcesManager.hpp"
+//#include "Systems/CameraSystem.hpp"
+//#include "../Core/SystemManager.h"
+//#include "../Core/EventSystem.h"
+//#include "../Events/ECSEvents.h"
+//#include "../Events/IMGUIEvents.h"
+//
+//// Serializer
+//#include "Core/GameSerializer.h"
+//
+//// Engine Settings
+//#include "Core/FilePaths.h"
+//
+//// debug
+//#include "Debugging/Debugger.hpp"
+//
 //#include <vector>
 //#include <random>
 //#include <iostream>
@@ -8,6 +49,29 @@
 //
 //#include <GLFW/glfw3.h>
 //
+//
+//// Engine Systems
+//Uma_Engine::HybridInputSystem* pHybridInputSystem;
+//Uma_Engine::Graphics* pGraphics;
+//Uma_Engine::Sound* pSound;
+//Uma_Engine::ResourcesManager* pResourcesManager;
+//Uma_Engine::EventSystem* pEventSystem;
+//
+//// ECS related
+//using Coordinator = Uma_ECS::Coordinator;
+//Coordinator gCoordinator;
+//std::shared_ptr<Uma_ECS::PhysicsSystem> physicsSystem;
+//std::shared_ptr<Uma_ECS::CollisionSystem> collisionSystem;
+//std::shared_ptr<Uma_ECS::PlayerControllerSystem> playerController;
+//std::shared_ptr<Uma_ECS::RenderingSystem> renderingSystem;
+//std::shared_ptr<Uma_ECS::CameraSystem> cameraSystem;
+//std::shared_ptr<Uma_ECS::LuaScriptingSystem> scriptingSystem;
+//Uma_ECS::Entity player;
+//Uma_ECS::Entity cam;
+//
+//// Scene Specific
+//Uma_Engine::GameSerializer gGameSerializer;
+//std::string currSceneName;
 //
 //namespace Uma_Engine
 //{
@@ -21,42 +85,42 @@
 //
 //		    void OnLoad() override
 //		    {
-//            m_FilePath = "test_collider.json";
+//            currSceneName = "test_collider.json";
 //
-//            m_HybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
-//            m_Graphics = pSystemManager->GetSystem<Graphics>();
-//            m_ResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
-//            m_EventSystem = pSystemManager->GetSystem<EventSystem>();
-//            m_Sound = pSystemManager->GetSystem<Sound>();
+//            pHybridInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
+//            pGraphics = pSystemManager->GetSystem<Graphics>();
+//            pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+//            pEventSystem = pSystemManager->GetSystem<EventSystem>();
+//            pSound = pSystemManager->GetSystem<Sound>();
 //
 //            // event system stuffs
 //            // subscribe to events
-//            m_EventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = m_Coordinator.GetEntityCount(); });
+//            pEventSystem->Subscribe<Uma_Engine::QueryActiveEntitiesEvent>([this](const Uma_Engine::QueryActiveEntitiesEvent& e) { e.mActiveEntityCnt = gCoordinator.GetEntityCount(); });
 //           
-//            m_EventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { (void)e; gGameSerializer.save(Uma_FilePath::SCENES_DIR + m_FilePath); });
-//            m_EventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; m_Coordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + m_FilePath); });
-//            m_EventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
-//            m_EventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
-//            m_EventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
+//            pEventSystem->Subscribe<Uma_Engine::SaveSceneRequestEvent>([this](const Uma_Engine::SaveSceneRequestEvent& e) { (void)e; gGameSerializer.save(Uma_FilePath::SCENES_DIR + currSceneName); });
+//            pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent>([this](const Uma_Engine::LoadSceneRequestEvent& e) { (void)e; gCoordinator.DestroyAllEntities(); gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName); });
+//            pEventSystem->Subscribe<Uma_Engine::ClearSceneRequestEvent>([this](const Uma_Engine::ClearSceneRequestEvent& e) { (void)e; ResetAll(); });
+//            pEventSystem->Subscribe<Uma_Engine::StressTestRequestEvent>([this](const Uma_Engine::StressTestRequestEvent& e) { (void)e; StressTest(); });
+//            pEventSystem->Subscribe<Uma_Engine::ShowEntityInVPRequestEvent>([this](const Uma_Engine::ShowEntityInVPRequestEvent& e) { (void)e; SpawnDefaultEntities(); });
 //
-//            m_EventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
-//            m_EventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
-//            m_EventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
-//            m_EventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
+//            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyRotRequestEvent>([this](const Uma_Engine::ChangeEnemyRotRequestEvent& e) { ChangeAllEnemyRot(e.rot); });
+//            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyXposRequestEvent>([this](const Uma_Engine::ChangeEnemyXposRequestEvent& e) { ChangeAllEnemyXPos(e.xpos); });
+//            pEventSystem->Subscribe<Uma_Engine::ChangeEnemyScaleRequestEvent>([this](const Uma_Engine::ChangeEnemyScaleRequestEvent& e) { ChangeAllEnemyScale(e.scale); });
+//            pEventSystem->Subscribe<Uma_Engine::ShowBBoxRequestEvent>([this](const Uma_Engine::ShowBBoxRequestEvent& e) {  ShowBBox(e.show); });
 //
-//            m_EventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e)
+//            pEventSystem->Subscribe<Uma_Engine::CloneEntityRequestEvent>([this](const Uma_Engine::CloneEntityRequestEvent& e) 
 //                { 
 //                    (void)e;
 //                    DuplicateOrCreateEntity();
 //                });
 //
-//            m_EventSystem->Subscribe<Uma_Engine::LoadPrefabRequestEvent>([this](const Uma_Engine::LoadPrefabRequestEvent& e)
+//            pEventSystem->Subscribe<Uma_Engine::LoadPrefabRequestEvent>([this](const Uma_Engine::LoadPrefabRequestEvent& e)
 //                {
 //                    (void)e;
 //                    LoadPrefab();
 //                });
 //
-//            m_EventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e)
+//            pEventSystem->Subscribe<Uma_Engine::DestroyEntityRequestEvent>([this](const Uma_Engine::DestroyEntityRequestEvent& e) 
 //                { 
 //                    (void)e;
 //                    DestroyRandomEntity();
@@ -66,85 +130,97 @@
 //            // Ecs stuff
 //            using namespace Uma_ECS;
 //
-//            m_Coordinator.Init(m_EventSystem);
+//            gCoordinator.Init(pEventSystem);
 //
 //            // register components
-//            m_Coordinator.RegisterComponent<Transform>();
-//            m_Coordinator.RegisterComponent<RigidBody>();
-//            m_Coordinator.RegisterComponent<Collider>();
-//            m_Coordinator.RegisterComponent<Sprite>();
-//            m_Coordinator.RegisterComponent<Camera>();
-//            m_Coordinator.RegisterComponent<Player>();
-//            m_Coordinator.RegisterComponent<Enemy>();
+//            gCoordinator.RegisterComponent<Transform>();
+//            gCoordinator.RegisterComponent<RigidBody>();
+//            gCoordinator.RegisterComponent<Collider>();
+//            gCoordinator.RegisterComponent<Sprite>();
+//            gCoordinator.RegisterComponent<Camera>();
+//            gCoordinator.RegisterComponent<Player>();
+//            gCoordinator.RegisterComponent<Enemy>();
+//            gCoordinator.RegisterComponent<LuaScript>();
 //
 //            // Player controller
-//            m_playerController = m_Coordinator.RegisterSystem<PlayerControllerSystem>();
+//            playerController = gCoordinator.RegisterSystem<PlayerControllerSystem>();
 //            {
 //                Signature sign;
-//                sign.set(m_Coordinator.GetComponentType<RigidBody>());
-//                sign.set(m_Coordinator.GetComponentType<Transform>());
-//                sign.set(m_Coordinator.GetComponentType<Player>());
-//                m_Coordinator.SetSystemSignature<PlayerControllerSystem>(sign);
+//                sign.set(gCoordinator.GetComponentType<RigidBody>());
+//                sign.set(gCoordinator.GetComponentType<Transform>());
+//                sign.set(gCoordinator.GetComponentType<Player>());
+//                gCoordinator.SetSystemSignature<PlayerControllerSystem>(sign);
 //            }
-//            m_playerController->Init(m_EventSystem, m_HybridInputSystem, &m_Coordinator);
+//            playerController->Init(pEventSystem, pHybridInputSystem, &gCoordinator);
 //
 //            // Physics System
-//            m_physicsSystem = m_Coordinator.RegisterSystem<PhysicsSystem>();
+//            physicsSystem = gCoordinator.RegisterSystem<PhysicsSystem>();
 //            {
 //                Signature sign;
-//                sign.set(m_Coordinator.GetComponentType<RigidBody>());
-//                sign.set(m_Coordinator.GetComponentType<Transform>());
-//                m_Coordinator.SetSystemSignature<PhysicsSystem>(sign);
+//                sign.set(gCoordinator.GetComponentType<RigidBody>());
+//                sign.set(gCoordinator.GetComponentType<Transform>());
+//                gCoordinator.SetSystemSignature<PhysicsSystem>(sign);
 //            }
-//            m_physicsSystem->Init(&m_Coordinator);
+//            physicsSystem->Init(&gCoordinator);
 //
 //            // Collision System
-//            m_collisionSystem = m_Coordinator.RegisterSystem<CollisionSystem>();
+//            collisionSystem = gCoordinator.RegisterSystem<CollisionSystem>();
 //            {
 //                Signature sign;
-//                sign.set(m_Coordinator.GetComponentType<RigidBody>());
-//                sign.set(m_Coordinator.GetComponentType<Transform>());
-//                sign.set(m_Coordinator.GetComponentType<Collider>());
-//                m_Coordinator.SetSystemSignature<CollisionSystem>(sign);
+//                sign.set(gCoordinator.GetComponentType<RigidBody>());
+//                sign.set(gCoordinator.GetComponentType<Transform>());
+//                sign.set(gCoordinator.GetComponentType<Collider>());
+//                gCoordinator.SetSystemSignature<CollisionSystem>(sign);
 //            }
-//            m_collisionSystem->Init(&m_Coordinator);
+//            collisionSystem->Init(&gCoordinator, pEventSystem);
 //
 //            // Rendering System
-//            m_renderingSystem = m_Coordinator.RegisterSystem<RenderingSystem>();
+//            renderingSystem = gCoordinator.RegisterSystem<RenderingSystem>();
 //            {
 //                Signature sign;
-//                sign.set(m_Coordinator.GetComponentType<Sprite>());
-//                sign.set(m_Coordinator.GetComponentType<Transform>());
-//                m_Coordinator.SetSystemSignature<RenderingSystem>(sign);
+//                sign.set(gCoordinator.GetComponentType<Sprite>());
+//                sign.set(gCoordinator.GetComponentType<Transform>());
+//                gCoordinator.SetSystemSignature<RenderingSystem>(sign);
 //            }
-//            m_renderingSystem->Init(m_Graphics, m_ResourcesManager, &m_Coordinator);
+//            renderingSystem->Init(pGraphics, pResourcesManager, &gCoordinator);
 //
-//            m_cameraSystem = m_Coordinator.RegisterSystem<CameraSystem>();
+//            cameraSystem = gCoordinator.RegisterSystem<CameraSystem>();
 //            {
 //                Signature sign;
-//                sign.set(m_Coordinator.GetComponentType<Camera>());
-//                sign.set(m_Coordinator.GetComponentType<Transform>());
-//                m_Coordinator.SetSystemSignature<CameraSystem>(sign);
+//                sign.set(gCoordinator.GetComponentType<Camera>());
+//                sign.set(gCoordinator.GetComponentType<Transform>());
+//                gCoordinator.SetSystemSignature<CameraSystem>(sign);
 //            }
-//            m_cameraSystem->Init(&m_Coordinator);
+//            cameraSystem->Init(&gCoordinator);
+//
+//            scriptingSystem = gCoordinator.RegisterSystem<LuaScriptingSystem>();
+//            {
+//                Signature sign;
+//                sign.set(gCoordinator.GetComponentType<LuaScript>());
+//                gCoordinator.SetSystemSignature<LuaScriptingSystem>(sign);
+//            }
+//            scriptingSystem->Init(&gCoordinator, pEventSystem, pHybridInputSystem);
 //
 //            // Init the game serializer
-//            gGameSerializer.Register(m_ResourcesManager);
-//            gGameSerializer.Register(&m_Coordinator);
-//
+//            gGameSerializer.Register(pResourcesManager);
+//            gGameSerializer.Register(&gCoordinator);
 //
 //            //deserialize and spawn all the entities
-//            //m_Coordinator.DeserializeAllEntities("Assets/Scenes/data.json");
-//            gGameSerializer.load(Uma_FilePath::SCENES_DIR + m_FilePath);
+//            //gCoordinator.DeserializeAllEntities("Assets/Scenes/data.json");
+//            gGameSerializer.load(Uma_FilePath::SCENES_DIR + currSceneName);
+//
+//            scriptingSystem->CallStart();
 //
 //		    }
 //		    void OnUnload() override
 //		    {
 //			      std::cout << "Test Scene 1: UNLOADED" << std::endl;
 //
+//            scriptingSystem->Shutdown();
+//
 //            // resources unload
-//                  m_ResourcesManager->UnloadAllTextures();
-//                  m_ResourcesManager->UnloadAllSound();
+//            pResourcesManager->UnloadAllTextures();
+//            pResourcesManager->UnloadAllSound();
 //		    }
 //		    void Update(float dt) override
 //		    {
@@ -158,34 +234,36 @@
 //                smoothedDt = 0.9f * smoothedDt + 0.1f * dt;
 //            }
 //
-//            m_playerController->Update(dt);
+//            playerController->Update(dt);
 //
-//            m_physicsSystem->Update(smoothedDt);
+//            physicsSystem->Update(smoothedDt);
 //
-//            m_collisionSystem->Update(dt);
+//            collisionSystem->Update(dt);
 //
-//            m_cameraSystem->Update(dt);
+//            scriptingSystem->Update(dt);
+//
+//            cameraSystem->Update(dt);
 //
 //            // save to file
-//            if (m_HybridInputSystem->KeyPressed(GLFW_KEY_1))
+//            if (pHybridInputSystem->KeyPressed(GLFW_KEY_1))
 //            {
-//                std::string filepath = Uma_FilePath::SCENES_DIR + m_FilePath;
+//                std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
 //
 //                gGameSerializer.save(filepath);
 //            }
 //
 //            // load from file
-//            if (m_HybridInputSystem->KeyPressed(GLFW_KEY_2))
+//            if (pHybridInputSystem->KeyPressed(GLFW_KEY_2))
 //            {
-//                m_Coordinator.DestroyAllEntities();
+//                gCoordinator.DestroyAllEntities();
 //
-//                std::string filepath = Uma_FilePath::SCENES_DIR + m_FilePath;
+//                std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
 //                
 //                gGameSerializer.load(filepath);
 //            }
 //
 //            // reset
-//            if (m_HybridInputSystem->KeyPressed(GLFW_KEY_3))
+//            if (pHybridInputSystem->KeyPressed(GLFW_KEY_3))
 //            {
 //                ResetAll();
 //            }
@@ -193,23 +271,23 @@
 //            // Spawn Default
 //            if (HybridInputSystem::KeyPressed(GLFW_KEY_4))
 //            {
-//                m_Coordinator.DestroyAllEntities();
+//                gCoordinator.DestroyAllEntities();
 //                SpawnDefaultEntities();
 //            }
 //
 //            if (HybridInputSystem::KeyPressed(GLFW_KEY_P))
 //            {
-//                m_Sound->playSound(m_ResourcesManager->GetSound("explosion"));
+//                pSound->playSound(pResourcesManager->GetSound("explosion"));
 //            }
 //
 //            if (HybridInputSystem::KeyPressed(GLFW_KEY_O))
 //            {
-//                m_Sound->playSound(m_ResourcesManager->GetSound("cave"));
+//                pSound->playSound(pResourcesManager->GetSound("cave"));
 //            }
 //
-//            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);
-//            //m_Graphics->DrawBackground(m_ResourcesManager->GetTexture("background")->tex_id);
-//            m_renderingSystem->Update(dt);
+//            pGraphics->ClearBackground(0.2f, 0.3f, 0.3f);
+//            //pGraphics->DrawBackground(pResourcesManager->GetTexture("background")->tex_id);
+//            renderingSystem->Update(dt);
 //		    }
 //		    void Render() override
 //		    {
@@ -218,15 +296,15 @@
 //
 //        void ResetAll()
 //        {
-//            m_Coordinator.DestroyAllEntities();
+//            gCoordinator.DestroyAllEntities();
 //
 //            using namespace Uma_ECS;
 //            
 //            // create player
-//            m_player = m_Coordinator.CreateEntity();
+//            player = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Transform
 //                    {
 //                        .position = Vec2(0.f, 0.f),
@@ -234,8 +312,8 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
 //                      .acceleration = Vec2(0.0f, 0.0f),
@@ -243,21 +321,21 @@
 //                      .fric_coeff = 5
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Player{
 //                        .mSpeed = 1.f
 //                    });
 //
 //                std::string texName = "player";
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Sprite{
 //                      .textureName = texName,
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
 //
 //                // Create collider with two shapes
@@ -282,14 +360,14 @@
 //                    });
 //
 //                playerCollider.bounds.resize(playerCollider.shapes.size());
-//                m_Coordinator.AddComponent(m_player, playerCollider);
+//                gCoordinator.AddComponent(player, playerCollider);
 //            }
 //
 //            // create camera
-//            m_cam = m_Coordinator.CreateEntity();
+//            cam = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_cam,
+//                gCoordinator.AddComponent(
+//                    cam,
 //                    Transform
 //                    {
 //                        .position = Vec2(400.0f, 300.0f),
@@ -297,8 +375,8 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Camera
 //                    {
 //                        .mZoom = 1.f,
@@ -314,15 +392,15 @@
 //
 //        void SpawnDefaultEntities()
 //        {
-//            m_Coordinator.DestroyAllEntities();
+//            gCoordinator.DestroyAllEntities();
 //
 //            using namespace Uma_ECS;
 //
 //            Entity kappa;
 //            {
-//                kappa = m_Coordinator.CreateEntity();
+//                kappa = gCoordinator.CreateEntity();
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    kappa,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
@@ -331,7 +409,7 @@
 //                      .fric_coeff = 100
 //                    });
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    kappa,
 //                    Transform{
 //                      .position = Vec2(30, 35),
@@ -340,7 +418,7 @@
 //                    });
 //
 //                std::string texName = "kappa_statue";
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    kappa,
 //                    Sprite{
 //                      .textureName = texName,
@@ -348,15 +426,60 @@
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
+//
+//                LuaScript kappaScriptComponent;
+//                {
+//                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+//
+//                    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                        .name = "speed",
+//                        .value = 100.0f,
+//                        .type = Uma_ECS::LuaVarType::T_FLOAT,
+//                        .min = 0.0f,
+//                        .max = 500.0f,
+//                        .isSlider = true
+//                        });
+//
+//                    // this works just that i didnt want to add this now
+//                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+//
+//                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                       .name = "speed",
+//                       .value = 100.0f,
+//                       .type = Uma_ECS::LuaVarType::T_FLOAT,
+//                       .min = 0.0f,
+//                       .max = 500.0f,
+//                       .isSlider = true
+//                        });*/
+//
+//                    gCoordinator.AddComponent(kappa, kappaScriptComponent);
+//                }
+//
+//                //LuaScript kappaScaleScript;
+//                //{
+//                //    kappaScaleScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappaScale.lua";
+//
+//                //    // Optional: Pre-define exposed variables (or let Lua auto-discover)
+//                //    kappaScaleScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                //        .name = "speed",
+//                //        .value = 100.0f,
+//                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
+//                //        .min = 0.0f,
+//                //        .max = 500.0f,
+//                //        .isSlider = true
+//                //        });
+//
+//                //    gCoordinator.AddComponent(kappa, kappaScaleScript);
+//                //}
 //            }
 //
 //            Entity wall;
 //            {
-//                wall = m_Coordinator.CreateEntity();
+//                wall = gCoordinator.CreateEntity();
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    wall,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
@@ -365,7 +488,7 @@
 //                      .fric_coeff = 100
 //                    });
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    wall,
 //                    Transform{
 //                      .position = Vec2(20, 0),
@@ -374,7 +497,7 @@
 //                    });
 //
 //                std::string texName = "wall_top";
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    wall,
 //                    Sprite{
 //                      .textureName = texName,
@@ -382,7 +505,7 @@
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
 //
 //                // Create collider with two shapes
@@ -398,59 +521,59 @@
 //                };
 //
 //                wallCollider.bounds.resize(wallCollider.shapes.size());
-//                m_Coordinator.AddComponent(wall, wallCollider);
+//                gCoordinator.AddComponent(wall, wallCollider);
 //
 //                for (size_t i = 0; i < 5; i++)
 //                {
-//                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+//                    Entity tmp = gCoordinator.DuplicateEntity(wall);
 //
-//                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                    tf.position = Vec2(20 + (i * 5), 0);
 //
-//                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                    // set texture randomly
 //                    sr.textureName = "wall_btm";
-//                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //                }
 //
 //                for (size_t i = 0; i < 6; i++)
 //                {
-//                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+//                    Entity tmp = gCoordinator.DuplicateEntity(wall);
 //
-//                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                    tf.position = Vec2(15 + (6 * 5), 5 + (i * 5));
 //
-//                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                    // set texture randomly
 //                    sr.textureName = "wall_right";
-//                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //                }
 //
 //                for (size_t i = 0; i < 5; i++)
 //                {
-//                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+//                    Entity tmp = gCoordinator.DuplicateEntity(wall);
 //
-//                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                    tf.position = Vec2(20 + (i * 5), 15 + (4 * 5));
 //
-//                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                    // set texture randomly
 //                    sr.textureName = "wall_top";
-//                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //                }
 //            }
 //
 //            Entity floor;
 //            {
-//                floor = m_Coordinator.CreateEntity();
+//                floor = gCoordinator.CreateEntity();
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    floor,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
@@ -459,7 +582,7 @@
 //                      .fric_coeff = 100
 //                    });
 //
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    floor,
 //                    Transform{
 //                      .position = Vec2(20, 7.5),
@@ -468,7 +591,7 @@
 //                    });
 //
 //                std::string texName = "floor_tatami";
-//                m_Coordinator.AddComponent(
+//                gCoordinator.AddComponent(
 //                    floor,
 //                    Sprite{
 //                      .textureName = texName,
@@ -476,16 +599,16 @@
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
 //
 //                for (size_t i = 0; i < 5; i++)
 //                {
 //                    for (size_t j = 0; j < 3; j++)
 //                    {
-//                        Entity tmp = m_Coordinator.DuplicateEntity(floor);
+//                        Entity tmp = gCoordinator.DuplicateEntity(floor);
 //
-//                        Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                        Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                        tf.position = Vec2(20 + (i * 5), 7.5 + (j * 10));
 //                    }
@@ -502,15 +625,15 @@
 //
 //                Entity enemy;
 //                {
-//                    enemy = m_Coordinator.CreateEntity();
+//                    enemy = gCoordinator.CreateEntity();
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Enemy{
 //                            .mSpeed = 1.f
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        RigidBody{
 //                          .velocity = Vec2(0.0f, 0.0f),
@@ -519,7 +642,7 @@
 //                          .fric_coeff = 100
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Transform{
 //                          .position = Vec2(-10, 0),
@@ -528,7 +651,7 @@
 //                        });
 //
 //                    std::string texName = "pink_enemy";
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Sprite{
 //                          .textureName = texName,
@@ -536,7 +659,7 @@
 //                          .flipX = false,
 //                          .flipY = false,
 //                          .UseNativeSize = true,
-//                          .texture = m_ResourcesManager->GetTexture(texName),
+//                          .texture = pResourcesManager->GetTexture(texName),
 //                        });
 //
 //                    // Create collider with two shapes
@@ -563,32 +686,67 @@
 //                    });
 //
 //                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
-//                    m_Coordinator.AddComponent(enemy, enemyCollider);
+//                    gCoordinator.AddComponent(enemy, enemyCollider);
+//
+//                    LuaScript enemyScriptComponent;
+//                    {
+//                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
+//
+//                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                            .name = "speed",
+//                            .value = 100.0f,
+//                            .type = Uma_ECS::LuaVarType::T_FLOAT,
+//                            .min = 0.0f,
+//                            .max = 500.0f,
+//                            .isSlider = true
+//                            });
+//
+//                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                            .name = "name",
+//                            .value = "bird",
+//                            .type = Uma_ECS::LuaVarType::T_STRING,
+//                            .isSlider = false
+//                            });
+//
+//                        // this works just that i didnt want to add this now
+//                        /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+//
+//                        kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+//                           .name = "speed",
+//                           .value = 100.0f,
+//                           .type = Uma_ECS::LuaVarType::T_FLOAT,
+//                           .min = 0.0f,
+//                           .max = 500.0f,
+//                           .isSlider = true
+//                            });*/
+//
+//                        gCoordinator.AddComponent(enemy, enemyScriptComponent);
+//                    }
 //                }
 //
 //                // using 1 enemy to duplicate 2500 times and rand its transform
 //                /*for (size_t i = 0; i < 2500 - 3; i++)
 //                {
-//                    Entity tmp = m_Coordinator.DuplicateEntity(enemy);
+//                    Entity tmp = gCoordinator.DuplicateEntity(enemy);
 //
-//                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                    tf.position = Vec2(randPositionX(generator), randPositionY(generator));
 //                    tf.rotation = Vec2(0, 0);
 //                    tf.scale = Vec2(randScale(generator), randScale(generator));
 //
-//                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                    sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
-//                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //                }*/
 //            }
 //
 //            // create player
-//            m_player = m_Coordinator.CreateEntity();
+//            player = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Transform
 //                    {
 //                        .position = Vec2(0.f, 0.f),
@@ -596,8 +754,8 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
 //                      .acceleration = Vec2(0.0f, 0.0f),
@@ -605,22 +763,22 @@
 //                      .fric_coeff = 5
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Player{
 //                        .mSpeed = 1.f
 //                    });
 //
 //                std::string texName = "player";
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Sprite{
 //                      .textureName = texName,
 //                      .renderLayer = RL_PLAYER,
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
 //
 //                // Create collider with two shapes
@@ -645,14 +803,14 @@
 //                    });
 //
 //                playerCollider.bounds.resize(playerCollider.shapes.size());
-//                m_Coordinator.AddComponent(m_player, playerCollider);
+//                gCoordinator.AddComponent(player, playerCollider);
 //            }
 //
 //            // create camera
-//            m_cam = m_Coordinator.CreateEntity();
+//            cam = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_cam,
+//                gCoordinator.AddComponent(
+//                    cam,
 //                    Transform
 //                    {
 //                        .position = Vec2(400.0f, 300.0f),
@@ -660,14 +818,16 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Camera
 //                    {
 //                        .mZoom = 1.f,
 //                        .followPlayer = true
 //                    });
 //            }
+//
+//            scriptingSystem->CallStart();
 //        }
 //
 //        void DuplicateOrCreateEntity()
@@ -675,7 +835,7 @@
 //            using namespace Uma_ECS;
 //
 //            // find an active entity
-//            auto& eArray = m_Coordinator.GetComponentArray<Uma_ECS::Enemy>();
+//            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
 //
 //            std::default_random_engine generator(std::random_device{}());
 //            std::uniform_real_distribution<float> randPositionX(-400, 400);
@@ -689,15 +849,15 @@
 //
 //                Entity enemy;
 //                {
-//                    enemy = m_Coordinator.CreateEntity();
+//                    enemy = gCoordinator.CreateEntity();
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Enemy{
 //                            .mSpeed = 1.f
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        RigidBody{
 //                          .velocity = Vec2(0.0f, 0.0f),
@@ -706,7 +866,7 @@
 //                          .fric_coeff = 100
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Transform{
 //                          .position = Vec2(-10, 0),
@@ -715,14 +875,14 @@
 //                        });
 //
 //                    std::string texName = "pink_enemy";
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Sprite{
 //                          .textureName = texName,
 //                          .flipX = false,
 //                          .flipY = false,
 //                          .UseNativeSize = true,
-//                          .texture = m_ResourcesManager->GetTexture(texName),
+//                          .texture = pResourcesManager->GetTexture(texName),
 //                        });
 //
 //                    // Create collider with two shapes
@@ -749,12 +909,12 @@
 //                        });
 //
 //                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
-//                    m_Coordinator.AddComponent(enemy, enemyCollider);
+//                    gCoordinator.AddComponent(enemy, enemyCollider);
 //                }
 //
 //                gGameSerializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
 //
-//                Transform& tf = m_Coordinator.GetComponent<Transform>(enemy);
+//                Transform& tf = gCoordinator.GetComponent<Transform>(enemy);
 //
 //                tf.position = Vec2(randPositionX(generator), randPositionY(generator));
 //            }
@@ -762,25 +922,25 @@
 //            {
 //                // duplicate existing entity
 //
-//                Entity tmp = m_Coordinator.DuplicateEntity(eArray.GetEntity(0));
+//                Entity tmp = gCoordinator.DuplicateEntity(eArray.GetEntity(0));
 //
-//                Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                tf.position = Vec2(randPositionX(generator), randPositionY(generator));
 //                tf.rotation = Vec2(0, 0);
 //                tf.scale = Vec2(randScale(generator), randScale(generator));
 //
-//                Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                // set texture randomly
 //                sr.textureName = (randPositionX(generator) > 0.f) ? "pink_enemy" : "enemy";
-//                sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //            }
 //        }
 //
 //        void DestroyRandomEntity()
 //        {
-//            auto& eArray = m_Coordinator.GetComponentArray<Uma_ECS::Enemy>();
+//            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
 //
 //            std::default_random_engine generator(std::random_device{}());
 //            std::uniform_real_distribution<float> randPositionX(-400, 400);
@@ -789,13 +949,13 @@
 //
 //            if (eArray.Size() != 0)
 //            {
-//                m_Coordinator.DestroyEntity(eArray.GetEntity(0));
+//                gCoordinator.DestroyEntity(eArray.GetEntity(0));
 //            }
 //        }
 //
 //        void StressTest()
 //        {
-//            m_Coordinator.DestroyAllEntities();
+//            gCoordinator.DestroyAllEntities();
 //
 //            using namespace Uma_ECS;
 //
@@ -809,15 +969,15 @@
 //
 //                Entity enemy;
 //                {
-//                    enemy = m_Coordinator.CreateEntity();
+//                    enemy = gCoordinator.CreateEntity();
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Enemy{
 //                            .mSpeed = 1.f
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        RigidBody{
 //                          .velocity = Vec2(0.0f, 0.0f),
@@ -826,7 +986,7 @@
 //                          .fric_coeff = 100
 //                        });
 //
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Transform{
 //                          .position = Vec2(-10, 0),
@@ -835,14 +995,14 @@
 //                        });
 //
 //                    std::string texName = "pink_enemy";
-//                    m_Coordinator.AddComponent(
+//                    gCoordinator.AddComponent(
 //                        enemy,
 //                        Sprite{
 //                          .textureName = texName,
 //                          .flipX = false,
 //                          .flipY = false,
 //                          .UseNativeSize = true,
-//                          .texture = m_ResourcesManager->GetTexture(texName),
+//                          .texture = pResourcesManager->GetTexture(texName),
 //                        });
 //
 //                    // Create collider with two shapes
@@ -869,30 +1029,30 @@
 //                        });
 //
 //                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
-//                    m_Coordinator.AddComponent(enemy, enemyCollider);
+//                    gCoordinator.AddComponent(enemy, enemyCollider);
 //                }
 //
 //                // using 1 enemy to duplicate 2500 times and rand its transform
 //                for (size_t i = 0; i < 10000 - 3; i++)
 //                {
-//                    Entity tmp = m_Coordinator.DuplicateEntity(enemy);
+//                    Entity tmp = gCoordinator.DuplicateEntity(enemy);
 //
-//                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+//                    Transform& tf = gCoordinator.GetComponent<Transform>(tmp);
 //
 //                    tf.position = Vec2(randPositionX(generator), randPositionY(generator));
 //
-//                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+//                    Sprite& sr = gCoordinator.GetComponent<Sprite>(tmp);
 //
 //                    //sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
-//                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+//                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
 //                }
 //            }
 //
 //            // create player
-//            m_player = m_Coordinator.CreateEntity();
+//            player = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Transform
 //                    {
 //                        .position = Vec2(0.f, 0.f),
@@ -900,8 +1060,8 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    RigidBody{
 //                      .velocity = Vec2(0.0f, 0.0f),
 //                      .acceleration = Vec2(0.0f, 0.0f),
@@ -909,21 +1069,21 @@
 //                      .fric_coeff = 5
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Player{
 //                        .mSpeed = 1.f
 //                    });
 //
 //                std::string texName = "player";
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Sprite{
 //                      .textureName = texName,
 //                      .flipX = false,
 //                      .flipY = false,
 //                      .UseNativeSize = true,
-//                      .texture = m_ResourcesManager->GetTexture(texName),
+//                      .texture = pResourcesManager->GetTexture(texName),
 //                    });
 //
 //                // Create collider with two shapes
@@ -948,14 +1108,14 @@
 //                    });
 //
 //                playerCollider.bounds.resize(playerCollider.shapes.size());
-//                m_Coordinator.AddComponent(m_player, playerCollider);
+//                gCoordinator.AddComponent(player, playerCollider);
 //            }
 //
 //            // create camera
-//            m_cam = m_Coordinator.CreateEntity();
+//            cam = gCoordinator.CreateEntity();
 //            {
-//                m_Coordinator.AddComponent(
-//                    m_cam,
+//                gCoordinator.AddComponent(
+//                    cam,
 //                    Transform
 //                    {
 //                        .position = Vec2(400.0f, 300.0f),
@@ -963,8 +1123,8 @@
 //                        .scale = Vec2(1,1),
 //                    });
 //
-//                m_Coordinator.AddComponent(
-//                    m_player,
+//                gCoordinator.AddComponent(
+//                    player,
 //                    Camera
 //                    {
 //                        .mZoom = 1.f,
@@ -980,8 +1140,8 @@
 //            //std::default_random_engine generator(std::random_device{}());
 //            //std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 //
-//            auto& eArray = m_Coordinator.GetComponentArray<Uma_ECS::Enemy>();
-//            auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
+//            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+//            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
 //
 //            for (size_t i = 0; i < eArray.Size(); i++)
 //            {
@@ -1000,8 +1160,8 @@
 //            std::default_random_engine generator(std::random_device{}());
 //            std::uniform_real_distribution<float> randfloat(1.0f, 5.0f);
 //
-//            auto& eArray = m_Coordinator.GetComponentArray<Uma_ECS::Enemy>();
-//            auto& rbArray = m_Coordinator.GetComponentArray<Uma_ECS::RigidBody>();
+//            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+//            auto& rbArray = gCoordinator.GetComponentArray<Uma_ECS::RigidBody>();
 //
 //            for (size_t i = 0; i < eArray.Size(); i++)
 //            {
@@ -1018,8 +1178,8 @@
 //            std::default_random_engine generator(std::random_device{}());
 //            std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 //
-//            auto& eArray = m_Coordinator.GetComponentArray<Uma_ECS::Enemy>();
-//            auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
+//            auto& eArray = gCoordinator.GetComponentArray<Uma_ECS::Enemy>();
+//            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
 //
 //            for (size_t i = 0; i < eArray.Size(); i++)
 //            {
@@ -1033,8 +1193,8 @@
 //        {
 //            using namespace Uma_ECS;
 //
-//            auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
-//            auto& cArray = m_Coordinator.GetComponentArray<Uma_ECS::Collider>();
+//            auto& tfArray = gCoordinator.GetComponentArray<Uma_ECS::Transform>();
+//            auto& cArray = gCoordinator.GetComponentArray<Uma_ECS::Collider>();
 //
 //            for (size_t i = 0; i < tfArray.Size(); i++)
 //            {

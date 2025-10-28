@@ -44,3 +44,31 @@ void Uma_ECS::ComponentManager::CloneEntityComponents(Entity src, Entity dest)
         }
     }
 }
+
+std::vector<Uma_ECS::Entity> Uma_ECS::ComponentManager::GetEntitiesByComponentName(const std::string& componentName)
+{
+    std::vector<Entity> entities;
+
+    // Try friendly name first
+    std::string actualTypeName = componentName;
+    auto friendlyIt = aFriendlyNameToTypeName.find(componentName);
+    if (friendlyIt != aFriendlyNameToTypeName.end())
+    {
+        actualTypeName = friendlyIt->second;
+    }
+
+    auto it = aComponentArrays.find(actualTypeName);
+    if (it == aComponentArrays.end())
+    {
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+            "Component not found: " + componentName + " (tried: " + actualTypeName + ")");
+
+        return entities; // doesnt exist
+    }
+
+    auto& componentArray = it->second;
+
+    // You'll need to add a virtual method to BaseComponentArray
+    // to get all entities
+    return componentArray->GetAllEntities();
+}

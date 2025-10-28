@@ -22,9 +22,11 @@ All rights reserved.
 
 #pragma once
 
-#include "../Core/System.hpp"
-#include "../Core/Coordinator.hpp"
+#include "Core/System.hpp"
+#include "Core/Coordinator.hpp"
 #include "Components/Collider.h"
+
+#include "Core/EventSystem.h"
 
 #include <unordered_set>
 
@@ -58,7 +60,7 @@ namespace Uma_ECS
     class CollisionSystem : public ECSSystem
     {
     public:
-        inline void Init(Coordinator* c) { gCoordinator = c; }
+        inline void Init(Coordinator* c, Uma_Engine::EventSystem* e) { gCoordinator = c; pEventSystem = e; }
 
         void Update(float dt);
 
@@ -107,22 +109,42 @@ namespace Uma_ECS
             Entity e,
             const BoundingBox& box);
 
+        // tracking the entity pairs that are currently colliding
+        struct EntityPair
+        {
+            Entity entityA;
+            Entity entityB;
+
+            EntityPair(Entity a, Entity b)
+                : entityA((a < b) ? a : b)
+                , entityB((a < b) ? b : a)
+            {
+            }
+
+            bool operator==(const EntityPair& other) const
+            {
+                return entityA == other.entityA && entityB == other.entityB;
+            }
+        };
+
+        struct EntityPairHash
+        {
+            std::size_t operator()(const EntityPair& p) const
+            {
+                return std::hash<Uma_ECS::Entity>()(p.entityA) ^
+                    (std::hash<Uma_ECS::Entity>()(p.entityB) << 1);
+            }
+        };
+
         // AABB intersection test
         bool CollisionIntersection_RectRect_Static(
             const BoundingBox& lhs,
             const BoundingBox& rhs);
 
         Coordinator* gCoordinator = nullptr;
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
 
-        //// Track which entity pairs we've already resolved this frame
-        //struct PairHash
-        //{
-        //    std::size_t operator()(const std::pair<Entity, Entity>& p) const
-        //    {
-        //        return std::hash<Entity>()(p.first) ^ (std::hash<Entity>()(p.second) << 1);
-        //    }
-        //};
-
-        //std::unordered_set<std::pair<Entity, Entity>, PairHash> resolvedPairsThisFrame;
+        std::unordered_set<EntityPair, EntityPairHash> currentCollisions;
+        std::unordered_set<EntityPair, EntityPairHash> previousCollisions;
     };
 }

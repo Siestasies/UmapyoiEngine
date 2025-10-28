@@ -26,6 +26,10 @@ All rights reserved.
 #include <functional>
 #include <iostream>
 
+//#include "WIP_Scripts/EditorScene.h"
+//#include "WIP_Scripts/TestScene2.h"
+//#include "WIP_Scripts/GraphicTest.h"
+
 namespace Uma_Engine
 {
     class SceneManager : public ISystem

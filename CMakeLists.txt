@@ -57,6 +57,48 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
+# ===== BUILD LUA 5.4.6 FROM SOURCE =====
+message(STATUS "Building Lua 5.4.6 from source...")
+
+FetchContent_Declare(
+    lua
+    URL https://www.lua.org/ftp/lua-5.4.6.tar.gz
+    URL_HASH SHA256=7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
+)
+
+FetchContent_MakeAvailable(lua)
+
+# Collect Lua source files
+file(GLOB LUA_SOURCES "${lua_SOURCE_DIR}/src/*.c")
+list(REMOVE_ITEM LUA_SOURCES 
+    "${lua_SOURCE_DIR}/src/lua.c"    # Remove interpreter
+    "${lua_SOURCE_DIR}/src/luac.c"   # Remove compiler
+)
+
+# Create Lua static library
+add_library(liblua STATIC ${LUA_SOURCES})
+target_include_directories(liblua PUBLIC "${lua_SOURCE_DIR}/src")
+
+if(WIN32)
+    target_compile_definitions(liblua PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
+
+message(STATUS "Lua library created: liblua")
+message(STATUS "Lua include dir: ${lua_SOURCE_DIR}/src")
+
+# ===== ADD SOL2 (HEADER-ONLY) =====
+message(STATUS "Adding Sol2 header library...")
+
+FetchContent_Declare(
+    sol2
+    GIT_REPOSITORY https://github.com/ThePhD/sol2.git
+    GIT_TAG v3.3.1
+)
+
+FetchContent_MakeAvailable(sol2)
+
+message(STATUS "Sol2 headers available at: ${sol2_SOURCE_DIR}/include")
+
 # Build Engine first, then Game
 add_subdirectory(Engine)
 add_subdirectory(Game)

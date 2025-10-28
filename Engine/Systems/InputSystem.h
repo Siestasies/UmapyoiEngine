@@ -24,6 +24,7 @@ All rights reserved.
 
 #include "../Core/SystemType.h"
 #include "Window.hpp"
+#include "Math/Math.h"
 
 namespace Uma_Engine
 {
@@ -156,6 +157,12 @@ namespace Uma_Engine
          * \param y Reference to store the y-coordinate
          */
         static void GetMousePosition(double& x, double& y);
+
+        /**
+         * \brief Gets the current mouse cursor position
+         * \return coordinate of the mouse cursor in Vec2
+         */
+        static Vec2 GetMousePosition();
 
         /**
          * \brief Gets the current mouse cursor x-coordinate

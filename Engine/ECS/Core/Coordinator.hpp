@@ -36,7 +36,7 @@ All rights reserved.
 
 // Event system
 #include "Core/EventSystem.h"
-#include "Core/ECSEvents.h"
+#include "Events/ECSEvents.h"
 
 namespace Uma_ECS
 {
@@ -62,6 +62,39 @@ namespace Uma_ECS
         int GetEntityCount() const;
 
         void DestroyAllEntities();
+
+        template<typename T>
+        std::vector<Entity> GetEntitiesByComponent()
+        {
+            std::vector<Entity> result;
+
+            ComponentArray<T>& arr = aComponentManager->GetComponentArray<T>();
+
+            for (size_t i = 0; i < arr.Size(); ++i)
+            {
+                result.push_back(arr.GetEntity(i));
+            }
+
+            return result;
+        }
+
+        template<typename T>
+        Entity GetEntityByComponent()
+        {
+            ComponentArray<T>& arr = aComponentManager->GetComponentArray<T>();
+            if (arr.Size() > 0)
+            {
+                return arr.GetEntity(0);
+            }
+
+            return static_cast<Entity>(-1); // Invalid entity
+        }
+
+        // Find entities with a component by string name (for Lua)
+        std::vector<Entity> FindEntitiesWithComponentByName(const std::string& componentName);
+
+        // Find first entity with a component by string name (for Lua)
+        Entity FindEntityWithComponentByName(const std::string& componentName);
 
         // Components functions
 

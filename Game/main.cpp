@@ -37,6 +37,8 @@
 #include "Core/EngineConfigSerializer.h"
 #include "Core/FilePaths.h"
 
+#include "FileSystem/DropCallback.hpp"
+
 #define DEBUG
 
 #ifdef DEBUG
@@ -104,6 +106,9 @@ int main()
     scnm->LoadScene("EditorScene");
     // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
+
+    // Setup File Drop Callback
+    glfwSetDropCallback(window.GetGLFWWindow(), Uma_Engine::FileDropHandler::DropCallback);
 
 #ifdef DEBUG
     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");
