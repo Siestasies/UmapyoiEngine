@@ -350,49 +350,55 @@ namespace Uma_Engine
                 0.06f, 0.5f, 1.0f, 0.5f);
 
             // SCREEN SPACE TEXT
-            // Title
-            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene", 25.0f, 550.0f, 1.0f);
+            // Title - top left
+            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene",
+                -0.95f, 0.88f, 1.0f);
 
-            // Instructions
-            gTestGraphics->DrawTextScreen("ui", "Press WASD to move", 25.0f, 25.0f, 1.0f, 0.7f, 0.7f, 0.7f);
+            // Instructions - bottom left
+            gTestGraphics->DrawTextScreen("ui", "Press WASD to move",
+                -0.95f, -0.92f, 2.0f, 0.7f, 0.7f, 0.7f);
 
-            // Position
+            // Position info - bottom left
             std::string coordsText = "Pos: (" +
                 std::to_string(static_cast<int>(playerTransform.position.x)) + ", " +
                 std::to_string(static_cast<int>(playerTransform.position.y)) + ")";
-            gTestGraphics->DrawTextScreen("ui", coordsText, 25.0f, 75.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+            gTestGraphics->DrawTextScreen("ui", coordsText,
+                -0.95f, -0.82f, 2.0f, 0.0f, 1.0f, 0.0f);
 
             // Speed display
             float speed = sqrtf(playerRB.velocity.x * playerRB.velocity.x +
                 playerRB.velocity.y * playerRB.velocity.y);
             std::string speedText = "Speed: " + std::to_string(static_cast<int>(speed));
-            gTestGraphics->DrawTextScreen("ui", speedText, 25.0f, 125.0f, 1.0f, 1.0f, 1.0f, 0.0f);
+            gTestGraphics->DrawTextScreen("ui", speedText,
+                -0.95f, -0.72f, 2.0f, 1.0f, 1.0f, 0.0f);
 
             // FPS counter
             std::string fpsText = "FPS: " + std::to_string(currentFPS);
-            gTestGraphics->DrawTextScreen("ui", fpsText, 25.0f, 175.0f, 0.8f, 0.5f, 0.5f, 0.5f);
+            gTestGraphics->DrawTextScreen("ui", fpsText,
+                -0.95f, -0.62f, 2.0f, 0.5f, 0.5f, 0.5f);
 
-            // Draw Fumo Cirno health bar using world-space rendering
+            // Draw health bar
             DrawHealthBar();
         }
 
-        // Draw 5 Fumo Cirno sprites as health UI in screen-space
+        // Draw 5 Fumo Cirno sprites as health UI in screen-space (NDC)
         void DrawHealthBar()
         {
-            // Screen space position
-            float startX = 500.0f;
-            float startY = 400.0f;
+            // NDC coordinates
+            float startX = 0.40f;
+            float startY = 0.75f;
 
             // Health bar label
             gTestGraphics->DrawTextScreen("ui", "Lives:",
                 startX, startY,
-                1.0f, 1.0f, 1.0f, 1.0f);
+                2.0f, 1.0f, 1.0f, 1.0f);
 
-            // Draw 5 Cirno sprites horizontally in screen space
+            // Draw 5 Cirno sprites horizontally
             unsigned int cirnoTexture = gTestResourcesManager->GetTexture("enemy")->tex_id;
-            float iconSize = 40.0f;
-            float spacing = 50.0f;
-            float iconsStartX = startX + 80.0f;
+
+            float iconSize = 0.1f;
+            float spacing = 0.08f;
+            float iconsStartX = startX + 0.18f;
 
             std::vector<Uma_Engine::Sprite_Info> healthIcons;
 
@@ -403,7 +409,7 @@ namespace Uma_Engine
                 // Add Cirno icon
                 healthIcons.push_back(Uma_Engine::Sprite_Info{
                     .tex_id = cirnoTexture,
-                    .pos = Vec2(xPos, startY + 5.0f),
+                    .pos = Vec2(xPos, startY),
                     .scale = Vec2(iconSize, iconSize),
                     .rot = 0.0f,
                     .rot_speed = 0.0f,
@@ -414,12 +420,6 @@ namespace Uma_Engine
 
             // Draw all health icons in one instanced call
             gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons);
-
-            // Health counter text
-            std::string healthText = std::to_string(playerHealth) + "/5";
-            gTestGraphics->DrawTextScreen("ui", healthText,
-                iconsStartX + 80.0f, startY - 30.0f,
-                0.9f, 1.0f, 0.5f, 0.5f);
         }
 
         void UpdatePlayerAnimation()

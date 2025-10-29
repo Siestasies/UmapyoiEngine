@@ -1064,7 +1064,6 @@ void main()
     void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
         float x, float y, float scale, float r, float g, float b)
     {
-        // Check if font exists
         auto it = mFonts.find(fontName);
         if (it == mFonts.end()) {
             std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
@@ -1079,29 +1078,26 @@ void main()
         glUseProgram(mTextShaderProgram);
         glBindVertexArray(font.VAO);
 
-        // Set text color
         glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
 
-        // Set up orthographic projection
-        float left = 0.0f;
-        float right = static_cast<float>(mViewportWidth);
-        float bottom = 0.0f;
-        float top = static_cast<float>(mViewportHeight);
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
-
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-        // Render each character
+        // Calculate aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        float normalizedScale = scale / static_cast<float>(mViewportHeight);
+
         for (char c : text) {
             if (font.characters.find(c) == font.characters.end()) continue;
 
             Character ch = font.characters[c];
 
-            float xpos = x + ch.bearing.x * scale;
-            float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-            float w = ch.size.x * scale;
-            float h = ch.size.y * scale;
+            // Divide X by aspect to maintain proper character proportions
+            float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
+            float ypos = y - ((ch.size.y - ch.bearing.y) * normalizedScale);
+            float w = (ch.size.x * normalizedScale) / aspect;
+            float h = ch.size.y * normalizedScale;
 
             float vertices[6][4] = {
                 { xpos,     ypos + h,   0.0f, 0.0f },
@@ -1116,7 +1112,7 @@ void main()
             glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
             glDrawArrays(GL_TRIANGLES, 0, 6);
 
-            x += ch.advance * scale;
+            x += (ch.advance * normalizedScale) / aspect;
         }
 
         glBindVertexArray(0);
@@ -1131,8 +1127,7 @@ void main()
         return MeasureText(mCurrentFont, text, scale);
     }
 
-    float Graphics::MeasureText(const std::string& fontName, const std::string& text,
-        float scale)
+    float Graphics::MeasureText(const std::string& fontName, const std::string& text, float scale)
     {
         auto it = mFonts.find(fontName);
         if (it == mFonts.end()) {
@@ -1140,11 +1135,14 @@ void main()
         }
 
         FontData& font = it->second;
+
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        float normalizedScale = scale / static_cast<float>(mViewportHeight);
         float width = 0.0f;
 
         for (char c : text) {
             if (font.characters.find(c) != font.characters.end()) {
-                width += font.characters[c].advance * scale;
+                width += (font.characters[c].advance * normalizedScale) / aspect;
             }
         }
 
@@ -1267,13 +1265,12 @@ void main()
 
         glUseProgram(mShaderProgram);
 
-        // Create transformation matrix in screen space
-        glm::mat4 model = glm::mat4(1.0f);
+        // Calculate current aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
 
-        // Translate to screen position
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
 
-        // Rotate around center
         if (rotation != 0.0f)
         {
             model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.0f));
@@ -1281,33 +1278,22 @@ void main()
             model = glm::translate(model, glm::vec3(-size.x * 0.5f, -size.y * 0.5f, 0.0f));
         }
 
-        // Scale to size
-        model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+        model = glm::scale(model, glm::vec3(size.x / aspect, size.y, 1.0f));
 
-        // Set model uniform
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        // Set up orthographic projection for screen space
-        glm::mat4 projection = glm::ortho(
-            0.0f, static_cast<float>(mViewportWidth),
-            0.0f, static_cast<float>(mViewportHeight),
-            -1.0f, 1.0f
-        );
-
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-        // Bind texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        // Draw the quad
         glBindVertexArray(mVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
-        // Restore camera projection
         UpdateProjectionMatrix();
     }
 
@@ -1322,7 +1308,9 @@ void main()
 
         size_t instanceCount = std::min(sprites.size(), MAX_INSTANCES);
 
-        // Build model matrices and UV data
+        // Calculate current aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
         models.reserve(instanceCount);
@@ -1332,56 +1320,43 @@ void main()
         {
             const Sprite_Info& sprite = sprites[i];
 
-            // Build model matrix in screen space
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
             model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
+
+            // Divide X by aspect to make squares square
+            model = glm::scale(model, glm::vec3(sprite.scale.x / aspect, sprite.scale.y, 1.0f));
             models.push_back(model);
 
-            // Build UV data
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
         }
 
         if (models.empty()) return;
 
-        // Upload model matrices
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
 
-        // Upload UV data
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
         glUseProgram(mInstanceShaderProgram);
 
-        // Set screen-space projection matrix
-        glm::mat4 projection = glm::ortho(
-            0.0f, static_cast<float>(mViewportWidth),
-            0.0f, static_cast<float>(mViewportHeight),
-            -1.0f, 1.0f
-        );
-
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-        // Set texture uniform
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
 
-        // Bind texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        // Draw all instances in one call
         glBindVertexArray(mInstanceVAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
 
-        // Cleanup
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        // Restore camera projection
         UpdateProjectionMatrix();
     }
 }
