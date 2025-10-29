@@ -592,7 +592,8 @@ namespace Uma_Engine
 
                     LuaScript enemyScriptComponent;
                     {
-                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
+                        //enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
+                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "testEnemy.lua");
 
                         enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                             .name = "speed",

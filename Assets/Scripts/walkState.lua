@@ -1,18 +1,27 @@
 --imports base class interfaces
-local BaseState = require("base_state")
+local BaseState = require("baseState")
+
+local WalkState = {}
+setmetatable(WalkState, {__index = BaseState})  -- inherit from BaseState
+WalkState.__index = WalkState --for instances to fine walk state
 
 --declare new state which inherits from BaseState
-local walkState = BaseState:new()
-function walkState:enter()
+function WalkState:new(fsm)
+    local instance = BaseState.new(self, fsm) --calls parent constructor
+    return instance
+end
+
+function WalkState:enter()
     
 end
 
-function walkState:exit()
+function WalkState:exit()
 
 end
 
-function walkState:update(dt)
+function WalkState:update(dt)
     --insert implementation here
+    Log("IM WALKING HERE")
 end
 
-return newState
+return WalkState

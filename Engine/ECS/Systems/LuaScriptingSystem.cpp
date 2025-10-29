@@ -68,8 +68,15 @@ namespace Uma_ECS
             sol::lib::base,
             sol::lib::math,
             sol::lib::string,
-            sol::lib::table
+            sol::lib::table,
+            sol::lib::package
         );
+
+        //Set up package.path for require()
+        std::string currentPath = (*sharedLua)["package"]["path"];
+        (*sharedLua)["package"]["path"] = currentPath +
+            ";./Assets/Scripts/?.lua" +
+            ";./Assets/Scripts/States/?.lua";  // Add path for your state files
 
         RegisterLuaAPI();
 

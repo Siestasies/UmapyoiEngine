@@ -5,26 +5,18 @@ local BaseState = {} --its like the declaration of a class in c++
 BaseState.__index = BaseState 
 
 --this is basically a constructor for the inheritance 
-function BaseState:new()
+function BaseState:new(fsm)
     local instance = {
-        fsm = fsm --reference to the state machine
+        fsm = fsm
     }
     setmetatable(instance, self)
     return instance
 end
 
 -- Default implementations (like your virtual functions)
-function BaseState:enter()
-
-end
-
-function BaseState:exit()
-
-end
-
-function BaseState:update(dt)
-    -- Abstract method - must be overridden
-end
+function BaseState:enter() end
+function BaseState:exit() end
+function BaseState:update(dt) end
 
 -- Helper method to change states
 function BaseState:changeState(newStateName)
@@ -42,25 +34,43 @@ end
 
 return BaseState
 
-/*
-how to use?
---imports base class interfaces
-local BaseState = require("base_state")
+--[[
+how to use? template state class
+-- Import the base state class
+local BaseState = require("baseState")
 
---declare new state which inherits from BaseState
-local newState = BaseState:new()
-function newState:enter()
+-- Create the state class
+local EmptyState = {}
 
+-- Set up inheritance from BaseState
+setmetatable(EmptyState, {__index = BaseState})
+EmptyState.__index = EmptyState
+
+-- Constructor - Creates a new instance of this state
+function EmptyState:new(fsm)
+    -- Call parent constructor to set up basic state properties
+    local instance = BaseState.new(self, fsm)
+    
+    -- Add your state-specific variables here
+    
+    return instance
 end
 
-function newState:exit()
-
+-- Called once when entering this state
+function EmptyState:enter()
+    
 end
 
-function newState:update(dt)
-    insert implementation here
+-- Called every frame while in this state
+function EmptyState:update(dt)
+    
 end
 
-return newState
+-- Called once when exiting this state
+function EmptyState:exit()
+    
+end
 
-*/
+--Return the state class so require() works
+return EmptyState
+]]
