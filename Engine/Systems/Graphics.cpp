@@ -1064,6 +1064,107 @@ void main()
     void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
         float x, float y, float scale, float r, float g, float b)
     {
+        auto it = mFonts.find(fontName);
+        if (it == mFonts.end()) {
+            std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+            return;
+        }
+
+        FontData& font = it->second;
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glUseProgram(mTextShaderProgram);
+        glBindVertexArray(font.VAO);
+
+        glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
+
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+        GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Calculate aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        float normalizedScale = scale / static_cast<float>(mViewportHeight);
+
+        for (char c : text) {
+            if (font.characters.find(c) == font.characters.end()) continue;
+
+            Character ch = font.characters[c];
+
+            // Divide X by aspect to maintain proper character proportions
+            float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
+            float ypos = y - ((ch.size.y - ch.bearing.y) * normalizedScale);
+            float w = (ch.size.x * normalizedScale) / aspect;
+            float h = ch.size.y * normalizedScale;
+
+            float vertices[6][4] = {
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos,     ypos,       0.0f, 1.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos + w, ypos + h,   1.0f, 0.0f }
+            };
+
+            glBindTextureUnit(0, ch.textureID);
+            glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            x += (ch.advance * normalizedScale) / aspect;
+        }
+
+        glBindVertexArray(0);
+        glBindTextureUnit(0, 0);
+    }
+
+    float Graphics::MeasureText(const std::string& text, float scale)
+    {
+        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
+            return 0.0f;
+        }
+        return MeasureText(mCurrentFont, text, scale);
+    }
+
+    float Graphics::MeasureText(const std::string& fontName, const std::string& text, float scale)
+    {
+        auto it = mFonts.find(fontName);
+        if (it == mFonts.end()) {
+            return 0.0f;
+        }
+
+        FontData& font = it->second;
+
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        float normalizedScale = scale / static_cast<float>(mViewportHeight);
+        float width = 0.0f;
+
+        for (char c : text) {
+            if (font.characters.find(c) != font.characters.end()) {
+                width += (font.characters[c].advance * normalizedScale) / aspect;
+            }
+        }
+
+        return width;
+    }
+
+    void Graphics::DrawTextWorld(const std::string& text, float x, float y,
+        float scale, float r, float g, float b)
+    {
+        // Use current font
+        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end())
+        {
+            std::cerr << "ERROR: No font loaded" << std::endl;
+            return;
+        }
+
+        DrawTextWorld(mCurrentFont, text, x, y, scale, r, g, b);
+    }
+
+    void Graphics::DrawTextWorld(const std::string& fontName, const std::string& text,
+        float x, float y, float scale, float r, float g, float b)
+    {
         // Check if font exists
         auto it = mFonts.find(fontName);
         if (it == mFonts.end()) {
@@ -1082,22 +1183,25 @@ void main()
         // Set text color
         glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
 
-        // Set up orthographic projection
-        float left = 0.0f;
-        float right = static_cast<float>(mViewportWidth);
-        float bottom = 0.0f;
-        float top = static_cast<float>(mViewportHeight);
+        // Use camera-based projection
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
         glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
         GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-        // Render each character
+        // Render each character in world space
         for (char c : text) {
             if (font.characters.find(c) == font.characters.end()) continue;
 
             Character ch = font.characters[c];
 
+            // Calculate positions in world space
             float xpos = x + ch.bearing.x * scale;
             float ypos = y - (ch.size.y - ch.bearing.y) * scale;
             float w = ch.size.x * scale;
@@ -1116,39 +1220,12 @@ void main()
             glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
             glDrawArrays(GL_TRIANGLES, 0, 6);
 
+            // Advance to next character position
             x += ch.advance * scale;
         }
 
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
-    }
-
-    float Graphics::MeasureText(const std::string& text, float scale)
-    {
-        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
-            return 0.0f;
-        }
-        return MeasureText(mCurrentFont, text, scale);
-    }
-
-    float Graphics::MeasureText(const std::string& fontName, const std::string& text,
-        float scale)
-    {
-        auto it = mFonts.find(fontName);
-        if (it == mFonts.end()) {
-            return 0.0f;
-        }
-
-        FontData& font = it->second;
-        float width = 0.0f;
-
-        for (char c : text) {
-            if (font.characters.find(c) != font.characters.end()) {
-                width += font.characters[c].advance * scale;
-            }
-        }
-
-        return width;
     }
 
     GLuint Graphics::CreateTextShader()
@@ -1179,5 +1256,107 @@ void main()
     )";
 
         return CreateShader(vertexShaderSource, fragmentShaderSource);
+    }
+
+    void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize)
+    {
+        if (!mInitialized || textureID == 0) return;
+
+        glUseProgram(mShaderProgram);
+
+        // Calculate current aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
+
+        if (rotation != 0.0f)
+        {
+            model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.0f));
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::translate(model, glm::vec3(-size.x * 0.5f, -size.y * 0.5f, 0.0f));
+        }
+
+        model = glm::scale(model, glm::vec3(size.x / aspect, size.y, 1.0f));
+
+        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        UpdateProjectionMatrix();
+    }
+
+    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
+    {
+        if (!mInitialized || textureID == 0 || sprites.empty()) return;
+
+        if (sprites.size() > MAX_INSTANCES)
+        {
+            std::cerr << "Warning: Clamping " << sprites.size() << " instances to " << MAX_INSTANCES << std::endl;
+        }
+
+        size_t instanceCount = std::min(sprites.size(), MAX_INSTANCES);
+
+        // Calculate current aspect ratio
+        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+
+        std::vector<glm::mat4> models;
+        std::vector<glm::vec4> uvData;
+        models.reserve(instanceCount);
+        uvData.reserve(instanceCount);
+
+        for (size_t i = 0; i < instanceCount; ++i)
+        {
+            const Sprite_Info& sprite = sprites[i];
+
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
+            model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
+
+            // Divide X by aspect to make squares square
+            model = glm::scale(model, glm::vec3(sprite.scale.x / aspect, sprite.scale.y, 1.0f));
+            models.push_back(model);
+
+            uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
+                sprite.uvSize.x, sprite.uvSize.y));
+        }
+
+        if (models.empty()) return;
+
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
+
+        glUseProgram(mInstanceShaderProgram);
+
+        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glBindVertexArray(mInstanceVAO);
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
+
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        UpdateProjectionMatrix();
     }
 }

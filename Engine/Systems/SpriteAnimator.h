@@ -138,6 +138,11 @@ namespace Uma_Engine
             return !playing;
         }
 
+        const std::unordered_map<std::string, AnimationClip>& GetClips() const
+        {
+            return clips;
+        }
+
     private:
         std::unordered_map<std::string, AnimationClip> clips;
         std::string currentClip;
