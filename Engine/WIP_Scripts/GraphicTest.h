@@ -48,6 +48,7 @@ namespace Uma_Engine
         int frameCount = 0;
         int currentFPS = 0;
         int playerHealth = 5;
+        std::string lastDirection = "down";
 
     public:
         GraphicTest(SystemManager* sm) : pSystemManager(sm) {}
@@ -422,6 +423,7 @@ namespace Uma_Engine
             gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons);
         }
 
+        // UPDATED: Now remembers last direction
         void UpdatePlayerAnimation()
         {
             auto& playerRB = gTestCoordinator.GetComponent<Uma_ECS::RigidBody>(gTestPlayer);
@@ -431,21 +433,21 @@ namespace Uma_Engine
             bool isMoving = (abs(playerRB.velocity.x) > velocityThreshold ||
                 abs(playerRB.velocity.y) > velocityThreshold);
 
-            std::string direction = "down";
-
+            // Determine direction based on velocity
             if (isMoving)
             {
                 if (abs(playerRB.velocity.y) > abs(playerRB.velocity.x))
                 {
-                    direction = (playerRB.velocity.y > 0) ? "up" : "down";
+                    lastDirection = (playerRB.velocity.y > 0) ? "up" : "down";
                 }
                 else
                 {
-                    direction = (playerRB.velocity.x > 0) ? "right" : "left";
+                    lastDirection = (playerRB.velocity.x > 0) ? "right" : "left";
                 }
             }
 
-            std::string desiredAnim = isMoving ? "walk_" + direction : "idle_" + direction;
+            // Use lastDirection for both idle and walk
+            std::string desiredAnim = isMoving ? "walk_" + lastDirection : "idle_" + lastDirection;
 
             if (playerAnimator.animator.GetCurrentClip() != desiredAnim)
             {
