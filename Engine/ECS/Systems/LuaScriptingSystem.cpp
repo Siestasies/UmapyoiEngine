@@ -247,7 +247,7 @@ namespace Uma_ECS
 
         // u need to register any class struct yall need 
 
-        // Register Vec2 with explicit constructor
+        // Register Vec2
         sharedLua->new_usertype<Vec2>("Vec2",
             // Constructors
             sol::constructors<Vec2(), Vec2(float, float)>(),
@@ -263,13 +263,21 @@ namespace Uma_ECS
                 [](const Vec2& v, float s) { return v * s; },
                 [](float s, const Vec2& v) { return v * s; }
             ),
+            sol::meta_function::division, sol::overload(
+                [](const Vec2& v, float s) { return Vec2(v.x / s, v.y / s); }
+            ),
 
-            // Add __call metamethod to make Vec2() work as a function call
-            sol::meta_function::call, sol::overload(
-                []() { return Vec2(); },
-                [](float x, float y) { return Vec2(x, y); }
-            )
+            // String representation for debugging
+            sol::meta_function::to_string, [](const Vec2& v) {
+                return "Vec2(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+            }
         );
+
+        // IMPORTANT: Create a global helper function for Vec2 construction
+        sharedLua->set_function("Vec2", sol::overload(
+            []() { return Vec2(); },
+            [](float x, float y) { return Vec2(x, y); }
+        ));
 
         // need to add more (tf rb for testing now)
         // more...

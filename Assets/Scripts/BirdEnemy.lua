@@ -16,6 +16,9 @@ local playerEntity = -1
 local allEnemies = {}
 local hasLoggedMovement = false
 
+local currentAccel = Vec2(0, 0)
+local accelSmoothFactor = 15.0
+
 function Start()
     Log("========================================")
     Log("COMPREHENSIVE TEST SCRIPT STARTED")
@@ -364,33 +367,34 @@ function Update(dt)
     end
     
     -- Movement test (continuous input)
-    -- if HasTransform() and HasRigidBody() then
-    --     local rb = GetRigidBody()
-    --     local moveVec = Vec2(0, 0)
-    --     
-    --     if KeyDown(KEY_W) then
-    --         moveVec.y = moveVec.y + 1
-    --         if not hasLoggedMovement then
-    --             Log("[INPUT] W is held down")
-    --             hasLoggedMovement = true
-    --         end
-    --     end
-    --     if KeyDown(KEY_S) then moveVec.y = moveVec.y - 1 end
-    --     if KeyDown(KEY_A) then moveVec.x = moveVec.x - 1 end
-    --     if KeyDown(KEY_D) then moveVec.x = moveVec.x + 1 end
-    --     
-    --     -- Apply movement
-    --     if moveVec.x ~= 0 or moveVec.y ~= 0 then
-    --         rb.acceleration = moveVec * speed
-    --     else
-    --         hasLoggedMovement = false
-    --     end
-    --     
-    --     -- Key release test
-    --     if KeyReleased(KEY_W) then
-    --         Log("[INPUT] W released")
-    --     end
-    -- end
+    if HasTransform() and HasRigidBody() then
+        local rb = GetRigidBody()
+        local moveVec = Vec2(0, 0)
+        
+        if KeyDown(KEY_I) then
+            moveVec.y = moveVec.y + 1
+            if not hasLoggedMovement then
+                Log("[INPUT] I is held down")
+                hasLoggedMovement = true
+            end
+        end
+        if KeyDown(KEY_K) then moveVec.y = moveVec.y - 1 end
+        if KeyDown(KEY_J) then moveVec.x = moveVec.x - 1 end
+        if KeyDown(KEY_L) then moveVec.x = moveVec.x + 1 end
+        
+        -- Apply movement
+        if moveVec.x ~= 0 or moveVec.y ~= 0 then
+            local targetAccel = moveVec * speed
+            -- Smooth interpolation like player
+            currentAccel = currentAccel + (targetAccel - currentAccel) * accelSmoothFactor * dt
+            rb.acceleration = currentAccel
+        else
+            -- Smooth to zero
+            currentAccel = currentAccel + (Vec2(0, 0) - currentAccel) * accelSmoothFactor * dt
+            rb.acceleration = currentAccel
+            hasLoggedMovement = false
+        end
+    end
     
     -- Jump/move up test
     if KeyPressed(KEY_SPACE) then

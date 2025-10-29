@@ -98,12 +98,21 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
                 shape.offset.x * tf.scale.x,
                 shape.offset.y * tf.scale.y
             };
-            Vec2 worldPosition = tf.prevPos + worldOffset;
 
-            // Update runtime bounding box
+            Vec2 currentWorldPos = tf.position + worldOffset;
+            Vec2 prevWorldPos = tf.prevPos + worldOffset;
+
             Vec2 halfSize = scaledSize * 0.5f;
-            c.bounds[i].min = worldPosition - halfSize;
-            c.bounds[i].max = worldPosition + halfSize;
+
+            // Calculate bounds that encompass both positions
+            c.bounds[i].min = Vec2{
+                min(currentWorldPos.x - halfSize.x, prevWorldPos.x - halfSize.x),
+                min(currentWorldPos.y - halfSize.y, prevWorldPos.y - halfSize.y)
+            };
+            c.bounds[i].max = Vec2{
+                max(currentWorldPos.x + halfSize.x, prevWorldPos.x + halfSize.x),
+                max(currentWorldPos.y + halfSize.y, prevWorldPos.y + halfSize.y)
+            };
         }
     }
 }
@@ -125,9 +134,14 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     for (const auto& entity : aEntities)
     {
         auto& collider = cArray.GetData(entity);
-        if (!collider.shapes.empty() && collider.shapes[0].isActive)
+
+        // Insert entity into grid based on ALL active shapes, not just shape[0]
+        for (size_t i = 0; i < collider.shapes.size(); ++i)
         {
-            InsertIntoGrid(grid, entity, collider.bounds[0]);
+            if (collider.shapes[i].isActive)
+            {
+                InsertIntoGrid(grid, entity, collider.bounds[i]);
+            }
         }
     }
 

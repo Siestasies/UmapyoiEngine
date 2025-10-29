@@ -32,11 +32,13 @@ namespace Uma_ECS
     enum RenderLayer : LayerMask
     {
         RL_NONE = 1 << 0,
-        RL_WALL = 1 << 1,
-        RL_ENV = 1 << 2,
-        RL_ENEMY = 1 << 3,
-        RL_PLAYER = 1 << 4,
-        RL_UI = 1 << 5
+        RL_WALL_TOP = 1 << 1,
+        RL_FLOOR = 1 << 2,
+        RL_ENV = 1 << 3,
+        RL_ENEMY = 1 << 4,
+        RL_PLAYER = 1 << 5,
+        RL_WALL_BTM = 1 << 6,
+        RL_UI = 1 << 7
     };
 
 

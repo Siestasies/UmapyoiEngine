@@ -358,23 +358,6 @@ namespace Uma_Engine
 
                     GetCoordinator().AddComponent(kappa, kappaScriptComponent);
                 }
-
-                //LuaScript kappaScaleScript;
-                //{
-                //    kappaScaleScript.scriptPath = Uma_FilePath::SCRIPT_DIR + "kappaScale.lua";
-
-                //    // Optional: Pre-define exposed variables (or let Lua auto-discover)
-                //    kappaScaleScript.exposedVariables.push_back(Uma_ECS::LuaVariable{
-                //        .name = "speed",
-                //        .value = 100.0f,
-                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
-                //        .min = 0.0f,
-                //        .max = 500.0f,
-                //        .isSlider = true
-                //        });
-
-                //    GetCoordinator().AddComponent(kappa, kappaScaleScript);
-                //}
             }
 
             Entity wall;
@@ -393,7 +376,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     wall,
                     Transform{
-                      .position = Vec2(20, 0),
+                      .position = Vec2(-20, 0),
                       .rotation = Vec2(0, 0),
                       .scale = Vec2(1.f, 1.f)
                     });
@@ -403,7 +386,7 @@ namespace Uma_Engine
                     wall,
                     Sprite{
                       .textureName = texName,
-                      .renderLayer = RL_WALL,
+                      .renderLayer = RL_WALL_TOP,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
@@ -428,25 +411,32 @@ namespace Uma_Engine
                 for (size_t i = 0; i < 5; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
-
+                
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-
                     tf.position = Vec2(20 + (i * 5), 0);
-
+                
+                    Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
+                    collider.shapes[0].autoFitToSprite = false;
+                    collider.shapes[0].size = Vec2(5, 1);
+                    collider.shapes[0].offset = Vec2(0, -2.0);
+                    collider.shapes[0].layer = CL_WALL;
+                    collider.shapes[0].colliderMask = CL_PLAYER | CL_ENEMY;  // Blocks entities,
+                
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-
+                
                     // set texture randomly
                     sr.textureName = "wall_btm";
+                    sr.renderLayer = RL_WALL_BTM;
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
-                for (size_t i = 0; i < 6; i++)
+                for (size_t i = 0; i < 8; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                    tf.position = Vec2(15 + (6 * 5), 5 + (i * 5));
+                    tf.position = Vec2(15 + (6 * 5), 0 + (i * 5));
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
@@ -470,6 +460,8 @@ namespace Uma_Engine
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
             }
+
+            GetCoordinator().DestroyEntity(wall);
 
             Entity floor;
             {
@@ -497,7 +489,7 @@ namespace Uma_Engine
                     floor,
                     Sprite{
                       .textureName = texName,
-                      .renderLayer = RL_WALL,
+                      .renderLayer = RL_FLOOR,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
@@ -519,12 +511,6 @@ namespace Uma_Engine
 
             // create entities
             {
-                //std::default_random_engine generator;
-                //std::uniform_real_distribution<float> randPositionX(-1920.f * 0.1f, 1920.f * 0.1f);
-                //std::uniform_real_distribution<float> randPositionY(-1080.f * 0.1f, 1080.f * 0.1f);
-                ////std::uniform_real_distribution<float> randRotation(10.0f, 15.0f);
-                //std::uniform_real_distribution<float> randScale(1.f, 1.f);
-
                 Entity enemy;
                 {
                     enemy = GetCoordinator().CreateEntity();
@@ -540,8 +526,8 @@ namespace Uma_Engine
                         RigidBody{
                           .velocity = Vec2(0.0f, 0.0f),
                           .acceleration = Vec2(0.0f, 0.0f),
-                          .accel_strength = 200,
-                          .fric_coeff = 100
+                          .accel_strength = 500,
+                          .fric_coeff = 5
                         });
 
                     GetCoordinator().AddComponent(
@@ -578,14 +564,14 @@ namespace Uma_Engine
                     };
 
                     enemyCollider.shapes.push_back(ColliderShape{
-                        .size = Vec2(2.f, 0.5f),
-                        .offset = Vec2(0.f, -2.f),
+                        .size = Vec2(2.f, 0.7f),
+                        .offset = Vec2(0.f, -2.0f),  // Changed from -2.f to -1.0f
                         .purpose = ColliderPurpose::Physics,
                         .layer = CL_ENEMY,
                         .colliderMask = CL_WALL,
                         .isActive = true,
                         .autoFitToSprite = false
-                        });
+                                            });
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
                     GetCoordinator().AddComponent(enemy, enemyCollider);
