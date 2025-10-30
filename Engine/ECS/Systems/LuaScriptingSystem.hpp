@@ -85,12 +85,6 @@ namespace Uma_ECS
 
         // Register component types
         void RegisterComponentTypes();
-
-        // Register entity manipulation
-        void RegisterEntityManipulation();
-
-        // on entity destroy
-        void OnEntityDestroyed(Entity entity) override; 
         
 
         std::shared_ptr<sol::state> sharedLua;

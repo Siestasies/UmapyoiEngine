@@ -365,14 +365,6 @@ function Update(dt)
             Log("[INPUT] Collider debug: " .. tostring(collider.showBBox))
         end
     end
-
-    if KeyPressed(KEY_8) then
-        local newEntity = CreateEntity()
-    end
-
-    if KeyPressed(KEY_9) then
-        DestroyEntity(EntityID)
-    end
     
     -- Movement test (continuous input)
     if HasTransform() and HasRigidBody() then

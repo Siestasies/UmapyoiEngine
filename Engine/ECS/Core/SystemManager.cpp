@@ -30,8 +30,6 @@ void Uma_ECS::SystemManager::EntityDestroyed(Entity entity)
         // getting the system from the map
         auto const& system = pair.second;
 
-        system->OnEntityDestroyed(entity);
-
         auto& entities = system->aEntities;
         for (size_t i = 0; i < entities.size(); ++i) 
         {
