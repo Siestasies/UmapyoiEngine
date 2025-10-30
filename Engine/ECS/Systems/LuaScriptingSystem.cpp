@@ -80,6 +80,11 @@ namespace Uma_ECS
 
         RegisterLuaAPI();
 
+        // Load the module helper and make it global
+        sharedLua->script_file("./Assets/Scripts/ModuleHelper.lua");
+        sol::function createModule = (*sharedLua)["CreateModule"];
+        sharedLua->set_function("CreateModule", createModule);
+
         RegisterEventListeners();
     }
 
