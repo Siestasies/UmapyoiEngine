@@ -22,6 +22,7 @@
 #include "Core/EventSystem.h"
 #include "Core/FilePaths.h"
 #include <GLFW/glfw3.h>
+#include "Core/GameSerializer.h"
 
 // Global variables
 Uma_Engine::HybridInputSystem* gTestInputSystem;
@@ -50,11 +51,16 @@ namespace Uma_Engine
         int playerHealth = 5;
         std::string lastDirection = "down";
 
+        Uma_Engine::GameSerializer gGameSerializer;
+        std::string currSceneName;
+
     public:
         GraphicTest(SystemManager* sm) : pSystemManager(sm) {}
 
         void OnLoad() override
         {
+            currSceneName = "test_graphics.json";
+
             gTestInputSystem = pSystemManager->GetSystem<HybridInputSystem>();
             gTestGraphics = pSystemManager->GetSystem<Graphics>();
             gTestResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -81,9 +87,23 @@ namespace Uma_Engine
             gTestCoordinator.RegisterComponent<Animator>();
 
             SetupSystems();
-            CreateEntities();
 
-            std::cout << "GraphicTest Scene Loaded!" << std::endl;
+            gGameSerializer.Register(gTestResourcesManager);
+            gGameSerializer.Register(&gTestCoordinator);
+
+            // Check if save file exists
+            std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+            std::ifstream file(filepath);
+
+            if (file.good())
+            {
+                file.close();
+                LoadScene();
+            }
+            else
+            {
+                CreateEntities();
+            }
         }
 
         void LoadAllTextures()
@@ -298,6 +318,19 @@ namespace Uma_Engine
             }
         }
 
+        void LoadScene()
+        {
+            std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+            gGameSerializer.load(filepath);
+
+            // Reassign entity references after loading
+            auto& playerArray = gTestCoordinator.GetComponentArray<Uma_ECS::Player>();
+            auto& cameraArray = gTestCoordinator.GetComponentArray<Uma_ECS::Camera>();
+
+            if (playerArray.Size() > 0) gTestPlayer = playerArray.GetEntity(0);
+            if (cameraArray.Size() > 0) gTestCam = cameraArray.GetEntity(0);
+        }
+
         void Update(float dt) override
         {
             // FPS calculation
@@ -308,6 +341,22 @@ namespace Uma_Engine
                 currentFPS = frameCount;
                 frameCount = 0;
                 fpsTimer = 0.0f;
+            }
+
+            // Save to file
+            if (gTestInputSystem->KeyPressed(GLFW_KEY_1))
+            {
+                std::string filepath = Uma_FilePath::SCENES_DIR + currSceneName;
+                gGameSerializer.save(filepath);
+                std::cout << "Scene saved to: " << filepath << std::endl;
+            }
+
+            // Load from file
+            if (gTestInputSystem->KeyPressed(GLFW_KEY_2))
+            {
+                gTestCoordinator.DestroyAllEntities();
+                LoadScene();
+                std::cout << "Scene reloaded!" << std::endl;
             }
 
             // Update systems in order
@@ -423,7 +472,6 @@ namespace Uma_Engine
             gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons);
         }
 
-        // UPDATED: Now remembers last direction
         void UpdatePlayerAnimation()
         {
             auto& playerRB = gTestCoordinator.GetComponent<Uma_ECS::RigidBody>(gTestPlayer);
