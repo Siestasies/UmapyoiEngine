@@ -65,6 +65,7 @@ namespace Uma_ECS
         void Update(float dt);
 
     private:
+
         // Bounding box update
         void UpdateBoundingBoxes();
 

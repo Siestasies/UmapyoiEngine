@@ -33,5 +33,11 @@ namespace Uma_ECS
 
         std::vector<Entity> aEntities;
 
+        virtual void OnEntityDestroyed(Entity entity)
+        {
+            // Default implementation does nothing
+            (void)entity;
+        }
+
     };
 }

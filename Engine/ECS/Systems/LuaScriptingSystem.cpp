@@ -166,11 +166,22 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::Shutdown()
     {
-        if (!pCoordinator) return;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "LuaScriptingSystem::Shutdown() starting");
+
+        // DON'T set pCoordinator to nullptr here!
+        // Entities might still be getting destroyed after this call
+
+        if (!pCoordinator)
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Shutdown called but pCoordinator already null");
+            return;
+        }
 
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
-        // First pass: Call OnDestroy and clear all Lua references
+        // First pass: Call OnDestroy for all active scripts
         for (auto const& entity : aEntities)
         {
             if (!scriptArray.Has(entity)) continue;
@@ -181,7 +192,6 @@ namespace Uma_ECS
             {
                 if (script.isEnabled && script.isInitialized)
                 {
-                    // Wrap in try-catch in case Lua state is already invalid
                     try
                     {
                         CallLuaFunction(script, "OnDestroy");
@@ -209,7 +219,7 @@ namespace Uma_ECS
                 script.hasError = false;
             }
 
-            // CRITICAL: Clear the scripts vector completely
+            // Clear the scripts vector completely
             scriptComponent.scripts.clear();
 
             // Detach the Lua state reference
@@ -233,10 +243,8 @@ namespace Uma_ECS
         // Clear the shared state
         sharedLua = nullptr;
 
-        // Clear coordinator reference
-        pCoordinator = nullptr;
-        pEventSystem = nullptr;
-        pInputSystem = nullptr;
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "LuaScriptingSystem::Shutdown() completed");
     }
 
     void LuaScriptingSystem::RegisterLuaAPI()
@@ -292,6 +300,45 @@ namespace Uma_ECS
         RegisterUtilityFUnctions();
         RegisterCrossEntityAccess();
         RegisterEntityQueries();
+        RegisterEntityManipulation();
+    }
+
+    void LuaScriptingSystem::RegisterEntityManipulation()
+    {
+        sharedLua->set_function("CreateEntity", [&]() 
+            {
+                try
+                {
+                    Entity e = pCoordinator->CreateEntity();
+                    std::string debug = "created entity : " + std::to_string(e);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+
+                    return e;
+                }
+                catch (...)
+                {
+                    std::string debug = "failed to create entity : ";
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+                
+            });
+
+        sharedLua->set_function("DestroyEntity", [&](const Entity& entity)
+            {
+                try
+                {
+                    pCoordinator->DestroyEntity(entity);
+                    std::string debug = "destroyed entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+                catch (...)
+                {
+                    std::string debug = "failed to destroy entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+                
+                
+            });
     }
 
     void LuaScriptingSystem::RegisterComponentTypes()
@@ -1069,5 +1116,98 @@ namespace Uma_ECS
             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
                 "Lua Exception in " + std::string(funcName) + "(): " + script.errorMessage);
         }
+    }
+
+    void LuaScriptingSystem::OnEntityDestroyed(Entity entity)
+    {
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "=== LuaScriptingSystem::OnEntityDestroyed called for entity: " + std::to_string(entity));
+
+        // If pCoordinator is null, it means Shutdown() was already called
+        // and all Lua scripts have been cleaned up globally
+        if (!pCoordinator)
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Coordinator already null - scripts cleaned up in Shutdown()");
+            return;
+        }
+
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+        if (!scriptArray.Has(entity))
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Entity " + std::to_string(entity) + " has no LuaScript component");
+            return;
+        }
+
+        auto& scriptComponent = scriptArray.GetData(entity);
+
+        // If scripts are already empty, they were cleaned up in Shutdown()
+        if (scriptComponent.scripts.empty())
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Scripts already cleared for entity " + std::to_string(entity));
+            return;
+        }
+
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "Cleaning up " + std::to_string(scriptComponent.scripts.size()) + " scripts");
+
+        // Clean up each script instance
+        for (size_t i = 0; i < scriptComponent.scripts.size(); ++i)
+        {
+            auto& script = scriptComponent.scripts[i];
+
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Cleaning script " + std::to_string(i) + ": " + script.scriptPath);
+
+            if (script.isEnabled && script.isInitialized)
+            {
+                try
+                {
+                    CallLuaFunction(script, "OnDestroy");
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                        "Called OnDestroy successfully");
+                }
+                catch (const std::exception& e)
+                {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Error calling OnDestroy: " + std::string(e.what()));
+                }
+                catch (...)
+                {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Unknown error calling OnDestroy");
+                }
+            }
+
+            // Clear all function references explicitly
+            script.callbacks.onCollisionFunc = sol::nil;
+            script.callbacks.onCollisionEnterFunc = sol::nil;
+            script.callbacks.onCollisionExitFunc = sol::nil;
+            script.callbacks.onTriggerEnterFunc = sol::nil;
+            script.callbacks.onTriggerExitFunc = sol::nil;
+
+            // Reset cache
+            script.callbacks = LuaScriptInstance::CallbackCache{};
+
+            // Clear environment
+            script.scriptEnv = sol::nil;
+
+            script.isInitialized = false;
+            script.hasError = false;
+
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Script " + std::to_string(i) + " cleaned up");
+        }
+
+        // Clear the scripts vector completely
+        scriptComponent.scripts.clear();
+
+        // Detach the Lua state reference
+        scriptComponent.lua = nullptr;
+
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "=== LuaScriptingSystem::OnEntityDestroyed completed for entity: " + std::to_string(entity));
     }
 }
