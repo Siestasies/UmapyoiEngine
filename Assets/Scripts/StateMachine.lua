@@ -1,11 +1,11 @@
 local StateMachine = {}
 StateMachine.__index = StateMachine
 
-function StateMachine:new()
+function StateMachine:new(entityId)
     local instance = {
         currentState = nil,
         states = {},
-        entityId = EntityID  -- Use global EntityID from API
+        entityId = entityId
     }
     setmetatable(instance, self)
     return instance

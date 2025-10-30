@@ -1,6 +1,18 @@
+-- Make engine functions available to modules
+_G.HasTransform = HasTransform
+_G.HasRigidBody = HasRigidBody
+_G.GetRigidBody = GetRigidBody
+_G.GetTransform = GetTransform
+_G.Vec2 = Vec2
+_G.KeyPressed = KeyPressed
+_G.KEY_U = KEY_U
+_G.Log = Log
+_G.LogError = LogError
+
 --basically include
 local StateMachine = require("StateMachine")
 local WalkState = require("WalkState")
+local TestState = require("TestState")
 
 ExposedVars = {
     speed = 100.0,
@@ -21,11 +33,12 @@ function Start()
 
     Log("My Name is: " .. name);
 
-    -- Create state machine for this entity
-    fsm = StateMachine:new()
+    local capturedId = EntityID
+    fsm = StateMachine:new(capturedId)
     --add states here
     fsm:addState("WalkState", WalkState)
-
+    fsm:addState("TestState",TestState)
+    --add whatever state else
     -- Set initial state
     fsm:changeState("WalkState")
     

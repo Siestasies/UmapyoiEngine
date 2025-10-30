@@ -7,7 +7,7 @@ WalkState.__index = WalkState --for instances to fine walk state
 
 --declare new state which inherits from BaseState
 function WalkState:new(fsm)
-    local instance = BaseState.new(self, fsm) --calls parent constructor
+    local instance = BaseState.new(self, fsm)
     return instance
 end
 
@@ -21,7 +21,31 @@ end
 
 function WalkState:update(dt)
     --insert implementation here
-    Log("IM WALKING HERE")
+    --Log("IM WALKING HERE")
+    local transform = GetTransform()
+    if HasTransform() and HasRigidBody() then
+        -- local rb = GetRigidBody()
+        -- local moveVec = Vec2.new(-1, 0)
+
+        -- -- Apply movement
+        -- if moveVec.x ~= 0 or moveVec.y ~= 0 then
+        --     local targetAccel = moveVec * speed
+        --     -- Smooth interpolation like player
+        --     currentAccel = currentAccel + (targetAccel - currentAccel) * accelSmoothFactor * dt
+        --     rb.acceleration = currentAccel
+        -- else
+        --     -- Smooth to zero
+        --     currentAccel = currentAccel + (Vec2(0, 0) - currentAccel) * accelSmoothFactor * dt
+        --     rb.acceleration = currentAccel
+        --     hasLoggedMovement = false
+        -- end
+        transform.position.x = transform.position.x + dt * 100;
+    end
+
+    if KeyPressed(KEY_U) then
+        Log("pressed")
+        self.fsm:changeState("TestState")
+    end
 end
 
 return WalkState
