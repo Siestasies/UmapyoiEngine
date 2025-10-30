@@ -26,8 +26,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 39.722,
-                        "y": 9.617
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -338,8 +338,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 39.722,
-                        "y": 9.617
+                        "x": 400.0,
+                        "y": 300.0
                     },
                     "rotation": {
                         "x": 0.0,

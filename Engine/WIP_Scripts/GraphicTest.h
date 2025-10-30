@@ -104,6 +104,7 @@ namespace Uma_Engine
             {
                 CreateEntities();
             }
+            gGameSerializer.save(filepath);
         }
 
         void LoadAllTextures()
