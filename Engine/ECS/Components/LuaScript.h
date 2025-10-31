@@ -189,7 +189,7 @@ namespace Uma_ECS
 		{
 				std::vector<LuaScriptInstance> scripts;
 
-				std::shared_ptr<sol::state> lua;
+				//std::shared_ptr<sol::state> lua;
 
 				// add script 
 				void AddScript(const std::string& scriptPath)

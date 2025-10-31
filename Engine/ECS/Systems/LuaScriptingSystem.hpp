@@ -9,7 +9,8 @@
 #include "Debugging/Debugger.hpp"
 #include "../Core/Coordinator.hpp"
 
-
+#define SOL_ALL_SAFETIES_ON 1
+#define SOL_PRINT_ERRORS 1
 #include <sol/sol.hpp>
 #include <memory>
 
@@ -23,6 +24,8 @@ namespace Uma_ECS
         void Update(float dt);
         void Shutdown();
 
+        void Restart();
+
         void CallStart();
 
     private:
@@ -31,7 +34,7 @@ namespace Uma_ECS
         void InitializeScripts(Entity entity, LuaScript& scriptComponent);
 
         // Initialize a single script instance
-        void InitializeScript(Entity entity, LuaScriptInstance& script, std::shared_ptr<sol::state> lua);
+        void InitializeScript(Entity entity, LuaScriptInstance& script);
 
         void RegisterLuaAPI();
         
@@ -42,7 +45,9 @@ namespace Uma_ECS
         void ReloadScript(Entity entity, size_t scriptIndex);
         void SyncVariablesToLua(LuaScriptInstance& script);
         void SyncVariablesFromLua(LuaScriptInstance& script);
-        void CallLuaFunction(LuaScriptInstance& script, const char* funcName, float dt = 0.f);
+
+        template<typename... Args>
+        void CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args);
 
         // NEW SHIT TO DO 
         void RegisterEventListeners();                          // basically subscribe to event then trigger the func
@@ -52,13 +57,6 @@ namespace Uma_ECS
             Entity owner,
             Entity other,
             const char* callbackName);
-
-        void CacheCallbacks(LuaScriptInstance& script);         // caching the callback (stroing the callbacks in the script instance)
-
-        // thi is to call the cached callbacks of the script
-        // eg onCollisionEnter, OnTriggerExit, etc...
-        template <typename... Args>
-        void CallCachedFunction(LuaScriptInstance& script, sol::protected_function& func, Args&&... args);
         
         // These are all callback events
         void OnCollisionEnterEvent(Entity entityA, Entity entityB);
@@ -85,6 +83,12 @@ namespace Uma_ECS
 
         // Register component types
         void RegisterComponentTypes();
+
+        // Register entity manipulation
+        void RegisterEntityManipulation();
+
+        // on entity destroy
+        void OnEntityDestroyed(Entity entity) override; 
         
 
         std::shared_ptr<sol::state> sharedLua;

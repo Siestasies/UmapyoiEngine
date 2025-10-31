@@ -81,6 +81,11 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
 # Create the Uma_Engine library
 add_library(Uma_Engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
+# Add /bigobj flag for MSVC to handle large object files (Sol2 + ECS templates)
+if(MSVC)
+    target_compile_options(Uma_Engine PRIVATE /bigobj)
+endif()
+
 # FMOD configuration
 set(FMOD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fmod")
 add_library(fmod STATIC IMPORTED)

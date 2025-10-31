@@ -60,9 +60,9 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntity(Entity entity)
     {
+        aSystemManager->EntityDestroyed(entity);
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
-        aSystemManager->EntityDestroyed(entity);
         pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(entity, GetEntityCount());
 
         std::string log;

@@ -368,7 +368,7 @@ namespace Uma_Engine
                 {
                     pEventSystem->Emit<StressTestRequestEvent>();
                 }
-                if (ImGui::Button("Spawn 2.5k in VP", { 160, 50 }))
+                if (ImGui::Button("Spawn Default", { 160, 50 }))
                 {
                     pEventSystem->Emit<ShowEntityInVPRequestEvent>();
                 }

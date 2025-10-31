@@ -30,7 +30,7 @@ All rights reserved.
 
 #include <unordered_set>
 
-const float CELL_SIZE = 100.0f; // Tune based on your game world
+const float CELL_SIZE = 300.f; // Tune based on your game world
 
 namespace Uma_ECS
 {
@@ -49,7 +49,7 @@ namespace Uma_ECS
     {
         std::size_t operator()(const Cell& c) const
         {
-            return (std::hash<int>()(c.x) ^ (std::hash<int>()(c.y) << 1));
+            return std::hash<int>()(c.x) * 73856093 ^ std::hash<int>()(c.y) * 19349663;
         }
     };
 
@@ -65,6 +65,7 @@ namespace Uma_ECS
         void Update(float dt);
 
     private:
+
         // Bounding box update
         void UpdateBoundingBoxes();
 
