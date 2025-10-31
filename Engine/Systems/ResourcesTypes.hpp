@@ -77,11 +77,4 @@ namespace Uma_Engine
 		unsigned int fontSize = 0;
 		std::string filePath;
 	};
-
-	struct Shader
-	{
-		unsigned int program_id = 0;
-		std::string vertexPath;
-		std::string fragmentPath;
-	};
 }
