@@ -35,6 +35,9 @@ namespace Uma_ECS
         void Update(float dt);
         void ApplyVelocity(float dt); // Apply velocities to positions
 
+        // this have to be done before updating in the fixed timestamp
+        void SavePrevPos();
+
         void PrintLog();
 
     private:

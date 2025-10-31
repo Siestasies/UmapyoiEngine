@@ -723,74 +723,168 @@ namespace Uma_Engine
 
         void StressTest()
         {
+            // please do this only in debug mode
+            // so what the test is about:
+            // 10k entities
+            // rand position rand velocity with texture
+            // without collision
+            // without lua scripts
             using namespace Uma_ECS;
-
+            GetLuascriptingSystem().Shutdown();
             GetCoordinator().DestroyAllEntities();
-
-            std::default_random_engine generator;
-            std::uniform_real_distribution<float> randPosX(-1920.f, 1920.f);
-            std::uniform_real_distribution<float> randPosY(-1080.f, 1080.f);
-
-            // Create base enemy
-            Entity enemy = m_Scene->CreateEntity();
+           
+            // create entities
             {
-                GetCoordinator().AddComponent(enemy, Enemy{ .mSpeed = 1.f });
-                GetCoordinator().AddComponent(enemy, RigidBody{
-                    .velocity = Vec2(0.0f, 0.0f),
-                    .acceleration = Vec2(0.0f, 0.0f),
-                    .accel_strength = 200,
-                    .fric_coeff = 100
+                Entity enemy;
+                {
+                    enemy = GetCoordinator().CreateEntity();
+
+                    GetCoordinator().AddComponent(
+                        enemy,
+                        Enemy{
+                            .mSpeed = 1.f
+                        });
+
+                    GetCoordinator().AddComponent(
+                        enemy,
+                        RigidBody{
+                          .velocity = Vec2(0.0f, 0.0f),
+                          .acceleration = Vec2(0.0f, 0.0f),
+                          .accel_strength = 300,
+                          .fric_coeff = 0
+                        });
+
+                    GetCoordinator().AddComponent(
+                        enemy,
+                        Transform{
+                          .position = Vec2(-10, 0),
+                          .rotation = Vec2(0, 0),
+                          .scale = Vec2(2.f, 2.f)
+                        });
+
+                    std::string texName = "pink_enemy";
+                    GetCoordinator().AddComponent(
+                        enemy,
+                        Sprite{
+                          .textureName = texName,
+                          .renderLayer = RL_ENEMY,
+                          .flipX = false,
+                          .flipY = false,
+                          .UseNativeSize = true,
+                          .texture = GetResources()->GetTexture(texName),
+                        });
+                }
+
+                // using 1 enemy to duplicate 2500 times and rand its transform
+                std::random_device rd;
+                std::mt19937 generator(rd());
+
+                // Define spawn area (adjust these values to fit your level bounds)
+                std::uniform_real_distribution<float> randPositionX(-50.0f, 100.0f);
+                std::uniform_real_distribution<float> randPositionY(-50.0f, 100.0f);
+
+                for (size_t i = 0; i < 10000; i++)
+                {
+                    Entity tmp = GetCoordinator().DuplicateEntity(enemy);
+
+                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+                    tf.position = Vec2(randPositionX(generator), randPositionY(generator));
+                    tf.rotation = Vec2(0, 0);
+
+                    RigidBody& rb = GetCoordinator().GetComponent<RigidBody>(tmp);
+
+                    // Random velocity distribution (adjust ranges as needed)
+                    std::uniform_real_distribution<float> randVelocity(-50.0f, 50.0f);
+
+                    rb.velocity = Vec2(randVelocity(generator), randVelocity(generator));
+                }
+            }
+
+            // create player
+            m_Scene->m_player = GetCoordinator().CreateEntity();
+            {
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
+                    Transform
+                    {
+                        .position = Vec2(0.f, 0.f),
+                        .rotation = Vec2(0.f, 0.f),
+                        .scale = Vec2(1,1),
                     });
 
-                GetCoordinator().AddComponent(enemy, Transform{
-                    .position = Vec2(-10, 0),
-                    .rotation = Vec2(0, 0),
-                    .scale = Vec2(1.f, 1.f)
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 300,
+                      .fric_coeff = 5
                     });
 
-                std::string texName = "pink_enemy";
-                GetCoordinator().AddComponent(enemy, Sprite{
-                    .textureName = texName,
-                    .flipX = false,
-                    .flipY = false,
-                    .UseNativeSize = true,
-                    .texture = GetResources()->GetTexture(texName),
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
+                    Player{
+                        .mSpeed = 1.f
                     });
 
-                Collider enemyCollider;
-                enemyCollider.shapes[0] = ColliderShape{
-                    .size = Vec2(3.f, 3.f),
-                    .offset = Vec2(0.f, 1.f),
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_ENEMY,
-                    .colliderMask = CL_PLAYER | CL_PROJECTILE,
-                    .isActive = true,
-                    .autoFitToSprite = false
+                std::string texName = "player";
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
+                    Sprite{
+                      .textureName = texName,
+                      .renderLayer = RL_PLAYER,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = GetResources()->GetTexture(texName),
+                    });
+
+                // Create collider with two shapes
+                Collider playerCollider;
+
+                playerCollider.shapes[0] = ColliderShape{
+                        .purpose = ColliderPurpose::Physics,
+                        .layer = CL_PLAYER,
+                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
+                        .isActive = true,
+                        .autoFitToSprite = true
                 };
 
-                enemyCollider.shapes.push_back(ColliderShape{
-                    .size = Vec2(2.f, 0.5f),
-                    .offset = Vec2(0.f, -2.f),
-                    .purpose = ColliderPurpose::Environment,
-                    .layer = CL_WALL,
+                playerCollider.shapes.push_back(ColliderShape{
+                    .size = Vec2(7.0f, 0.5f),
+                    .offset = Vec2(0, -2.75f),
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_PLAYER,
                     .colliderMask = CL_WALL,
                     .isActive = true,
                     .autoFitToSprite = false
                     });
 
-                enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                GetCoordinator().AddComponent(enemy, enemyCollider);
+                playerCollider.bounds.resize(playerCollider.shapes.size());
+                GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
             }
 
-            // Duplicate 10000 times
-            for (size_t i = 0; i < 10000; i++)
+            // create camera
+            m_Scene->m_cam = GetCoordinator().CreateEntity();
             {
-                Entity tmp = GetCoordinator().DuplicateEntity(enemy);
-                Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                tf.position = Vec2(randPosX(generator), randPosY(generator));
-            }
+                GetCoordinator().AddComponent(
+                    m_Scene->m_cam,
+                    Transform
+                    {
+                        .position = Vec2(400.0f, 300.0f),
+                        .rotation = Vec2(0,0),
+                        .scale = Vec2(1,1),
+                    });
 
-            std::cout << "Stress test: 10000 entities spawned" << std::endl;
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
+                    Camera
+                    {
+                        .mZoom = 1.f,
+                        .followPlayer = true
+                    });
+            }
+            GetLuascriptingSystem().Restart();
         }
 
         void DuplicateOrCreateEntity()

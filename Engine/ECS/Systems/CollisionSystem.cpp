@@ -45,8 +45,6 @@ void Uma_ECS::CollisionSystem::Update(float dt)
     UpdateBoundingBoxes();
 
     UpdateCollision(dt);
-
-    DebugRender();
 }
 
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
@@ -578,9 +576,33 @@ void Uma_ECS::CollisionSystem::DebugRender()
             const auto& shape = c.shapes[i];
             if (!shape.isActive) continue;
 
-            // ✅ OPTION 1: Draw the ACTUAL collision bounds (swept AABB)
-            // This shows what the collision system is actually checking
-            const BoundingBox& collisionBounds = c.bounds[i];
+            // Recalculate bounds using interpolated renderPos for smooth visualization
+            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
+            Vec2 scaledSize = Vec2{
+                effectiveSize.x * tf.scale.x,
+                effectiveSize.y * tf.scale.y
+            };
+
+            Vec2 worldOffset = Vec2{
+                shape.offset.x * tf.scale.x,
+                shape.offset.y * tf.scale.y
+            };
+
+            Vec2 halfSize = scaledSize * 0.5f;
+
+            // Use renderPos (interpolated) instead of position
+            Vec2 renderWorldPos = tf.renderPos + worldOffset;
+
+            // Calculate bounds for visualization
+            BoundingBox visualBounds;
+            visualBounds.min = Vec2{
+                renderWorldPos.x - halfSize.x,
+                renderWorldPos.y - halfSize.y
+            };
+            visualBounds.max = Vec2{
+                renderWorldPos.x + halfSize.x,
+                renderWorldPos.y + halfSize.y
+            };
 
             LayerMask effectiveLayer = c.GetEffectiveLayer(i);
             LayerMask effectiveMask = c.GetEffectiveMask(i);
@@ -618,8 +640,8 @@ void Uma_ECS::CollisionSystem::DebugRender()
                 }
             }
 
-            // Draw the swept bounds (what collision system uses)
-            pGraphics->DrawDebugRect(collisionBounds, r, g, b); // Lower alpha for swept
+            // Draw render bounds with full opacity
+            pGraphics->DrawDebugRect(visualBounds, r, g, b);
         }
     }
 }

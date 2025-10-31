@@ -41,7 +41,7 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         auto& tf = tfArray.GetData(entity);
 
         // Store previous position
-        tf.prevPos = tf.position;
+        //tf.prevPos = tf.position;
 
         // Rotation update
         tf.rotation.x += tf.rotation.y;
@@ -63,7 +63,17 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
     }
 }
 
-// NEW METHOD: Apply position after collision resolution
+void Uma_ECS::PhysicsSystem::SavePrevPos()
+{
+    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+    for (size_t i = 0; i < tfArray.Size(); ++i)
+    {
+        auto& tf = tfArray.GetComponentAt(i);
+        tf.prevPos = tf.position;  // Save current as previous
+    }
+}
+
+//Apply position after collision resolution
 void Uma_ECS::PhysicsSystem::ApplyVelocity(float dt)
 {
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
@@ -73,6 +83,8 @@ void Uma_ECS::PhysicsSystem::ApplyVelocity(float dt)
     {
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
+
+        //tf.prevPos = tf.position;
 
         // Now apply the (collision-corrected) velocity to position
         tf.position += rb.velocity * dt;

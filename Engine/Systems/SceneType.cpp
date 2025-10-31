@@ -110,6 +110,9 @@ namespace Uma_Engine
             m_SmoothedDt = 0.9f * m_SmoothedDt + 0.1f * dt;
         }
 
+        // save prev pos
+        m_PhysicsSystem->SavePrevPos();
+
         // Fixed timestep physics loop
         m_Accumulator += dt;
 
