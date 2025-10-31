@@ -86,10 +86,10 @@ namespace Uma_ECS
             auto& scriptComponent = scriptArray.GetData(entity);
 
             // Initialize scripts if needed
-            if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
+           /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
             {
                 InitializeScripts(entity, scriptComponent);
-            }
+            }*/
 
             // update each script instance
             for (auto& script : scriptComponent.scripts)
@@ -114,7 +114,7 @@ namespace Uma_ECS
 
                     if (!script.isInitialized)
                     {
-                        InitializeScript(entity, script, scriptComponent.lua);
+                        InitializeScript(entity, script);
                     }
 
                     CallLuaFunction(script, "OnEnable");
@@ -122,7 +122,7 @@ namespace Uma_ECS
 
                 if (!script.isInitialized)
                 {
-                    InitializeScript(entity, script, scriptComponent.lua);
+                    InitializeScript(entity, script);
                 }
 
                 if (script.isVariableDirty) // oni update when there is changes being made
@@ -221,9 +221,6 @@ namespace Uma_ECS
 
             // Clear the scripts vector completely
             scriptComponent.scripts.clear();
-
-            // Detach the Lua state reference
-            scriptComponent.lua = nullptr;
         }
 
         // Force garbage collection on shared state before clearing
@@ -598,69 +595,76 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
     {
-        scriptComponent.lua = sharedLua;
-
         for (auto& script : scriptComponent.scripts)
         {
             if (!script.isInitialized)
             {
-                InitializeScript(entity, script, scriptComponent.lua);
+                InitializeScript(entity, script);
             }
         }
     }
 
-    void LuaScriptingSystem::InitializeScript(Entity entity, LuaScriptInstance& script, std::shared_ptr<sol::state> lua)
+    void LuaScriptingSystem::InitializeScript(Entity entity, LuaScriptInstance& script)
     {
-        script.scriptEnv = sol::environment(*lua, sol::create, lua->globals());
+        if (!sharedLua || !sharedLua->lua_state())
+        {
+            script.hasError = true;
+            script.errorMessage = "Shared Lua state is invalid";
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Cannot initialize script: Shared Lua state is invalid");
+            return;
+        }
+
+        script.scriptEnv = sol::environment(*sharedLua, sol::create, sharedLua->globals());
 
             // Bind entity-specific functions to this environment
-       BindEntityAPI(entity, script.scriptEnv);
+        BindEntityAPI(entity, script.scriptEnv);
 
        // load and run the script
-       try
-       {
-           auto result = lua->script_file(script.scriptPath, script.scriptEnv);
+        try
+        {
+            auto result = sharedLua->script_file(script.scriptPath, script.scriptEnv);
 
-           // it has problem running the script
-           if (!result.valid())
-           {
-               sol::error err = result;
-               script.hasError = true;
-               script.errorMessage = err.what();
+            // it has problem running the script
+            if (!result.valid())
+            {
+                sol::error err = result;
+                script.hasError = true;
+                script.errorMessage = err.what();
 
-               Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                   "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
 
-               return;
-           }
-       }
-       catch (const sol::error& e)
-       {
-           script.hasError = true;
-           script.errorMessage = e.what();
+                return;
+            }
+        }
+        catch (const sol::error& e)
+        {    
+            script.hasError = true;
+            script.errorMessage = e.what();
 
-           Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-               "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Lua Error loading " + script.scriptPath + ": " + script.errorMessage);
 
-           return;
-       }
+            return;
+        }
 
-       // store entity ID in environment 
-       script.scriptEnv["EntityID"] = entity;
+        // store entity ID in environment 
+        script.scriptEnv["EntityID"] = entity;
 
-       // Discover exposed variables
-       DiscoverExposedVariables(script);
+        // Discover exposed variables
+        DiscoverExposedVariables(script);
 
-       // Sync variables to Lua BEFORE calling Start()
-       SyncVariablesToLua(script);
+        // Sync variables to Lua BEFORE calling Start()
+        SyncVariablesToLua(script);
 
-       // cache the function to the callback
-       CacheCallbacks(script);
+        // cache the function to the callback
+        CacheCallbacks(script);
 
-       script.isVariableDirty = false;
-       script.isInitialized = true;
+        script.isVariableDirty = false;
+        script.isInitialized = true;
 
-       Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
            "Lua script loaded: " + script.scriptPath);
     }
 
@@ -963,7 +967,7 @@ namespace Uma_ECS
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
         if (!scriptArray.Has(entity)) return;
-
+        
         auto& scriptComponent = scriptArray.GetData(entity);
         if (scriptIndex >= scriptComponent.scripts.size()) return;
 
@@ -977,7 +981,7 @@ namespace Uma_ECS
         script.isInitialized = false;
         script.hasError = false;
 
-        InitializeScript(entity, script, scriptComponent.lua);
+        InitializeScript(entity, script);
 
         // Restore variable values where names match
         for (auto& newVar : script.exposedVariables)
@@ -1203,9 +1207,6 @@ namespace Uma_ECS
 
         // Clear the scripts vector completely
         scriptComponent.scripts.clear();
-
-        // Detach the Lua state reference
-        scriptComponent.lua = nullptr;
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
             "=== LuaScriptingSystem::OnEntityDestroyed completed for entity: " + std::to_string(entity));

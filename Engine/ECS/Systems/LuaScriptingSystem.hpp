@@ -31,7 +31,7 @@ namespace Uma_ECS
         void InitializeScripts(Entity entity, LuaScript& scriptComponent);
 
         // Initialize a single script instance
-        void InitializeScript(Entity entity, LuaScriptInstance& script, std::shared_ptr<sol::state> lua);
+        void InitializeScript(Entity entity, LuaScriptInstance& script);
 
         void RegisterLuaAPI();
         
