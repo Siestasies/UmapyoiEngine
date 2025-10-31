@@ -24,6 +24,8 @@ namespace Uma_ECS
         void Update(float dt);
         void Shutdown();
 
+        void Restart();
+
         void CallStart();
 
     private:

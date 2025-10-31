@@ -224,6 +224,7 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
+            GetLuascriptingSystem().Shutdown();
             GetCoordinator().DestroyAllEntities();
 
             // Create player
@@ -290,6 +291,8 @@ namespace Uma_Engine
                     .followPlayer = true
                     });
             }
+
+            GetLuascriptingSystem().Restart();
         }
 
         void SpawnDefaultEntities()

@@ -77,6 +77,21 @@ namespace Uma_ECS
         RegisterEventListeners();
     }
 
+    void LuaScriptingSystem::Restart()
+    {
+        Shutdown();
+
+        sharedLua = std::make_shared<sol::state>();
+        sharedLua->open_libraries(
+            sol::lib::base,
+            sol::lib::math,
+            sol::lib::string,
+            sol::lib::table
+        );
+
+         RegisterLuaAPI();
+    }
+
     void LuaScriptingSystem::Update(float dt)
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
@@ -182,8 +197,21 @@ namespace Uma_ECS
         {
             auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
+            std::vector<Entity> allEntities;
+
+            // Get all entities that have LuaScript components
+            for (size_t i = 0; i < scriptArray.Size(); ++i)
+            {
+                Entity entity = scriptArray.GetEntity(i);
+                allEntities.push_back(entity);
+            }
+
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                "Found " + std::to_string(allEntities.size()) + " entities with scripts");
+
+
             // Call OnDestroy while Lua is alive
-            for (auto const& entity : aEntities)
+            for (auto const& entity : allEntities)
             {
                 if (!scriptArray.Has(entity)) continue;
 
@@ -209,7 +237,7 @@ namespace Uma_ECS
             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
                 "Clearing all environments");
 
-            for (auto const& entity : aEntities)
+            for (auto const& entity : allEntities)
             {
                 if (!scriptArray.Has(entity)) continue;
 
@@ -246,7 +274,14 @@ namespace Uma_ECS
         // Clear C++ structures (environments already nil)
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
-        for (auto const& entity : aEntities)
+        std::vector<Entity> remainingEntities;
+        for (size_t i = 0; i < scriptArray.Size(); ++i)
+        {
+            Entity entity = scriptArray.GetEntity(i);
+            remainingEntities.push_back(entity);
+        }
+
+        for (auto const& entity : remainingEntities)
         {
             if (!scriptArray.Has(entity)) continue;
 
@@ -1204,7 +1239,7 @@ namespace Uma_ECS
                 }
             }
 
-            // CRITICAL: Clear environment if Lua is valid
+            // CRITICAL: Clear environment properly
             if (luaValid)
             {
                 try
@@ -1212,7 +1247,15 @@ namespace Uma_ECS
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
                         "Clearing environment for: " + script.scriptPath);
 
+                    // First set to nil
                     script.scriptEnv = sol::nil;
+
+                    // Then create a new empty environment to replace it
+                    // This ensures the old one is properly destroyed
+                    script.scriptEnv = sol::environment(*sharedLua, sol::create, sharedLua->globals());
+
+                    // Then immediately clear the new one
+                    script.scriptEnv = sol::lua_nil;
                 }
                 catch (const std::exception& e)
                 {
@@ -1227,11 +1270,12 @@ namespace Uma_ECS
             }
 
             // Always clear C++ structures
-            //script.callbacks = LuaScriptInstance::CallbackCache{};
             script.isInitialized = false;
             script.hasError = false;
         }
 
+        // CLEAR THE ENTIRE SCRIPTS VECTOR
+        // This will call destructors on all script instances
         scriptComponent.scripts.clear();
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,

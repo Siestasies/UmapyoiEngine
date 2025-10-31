@@ -185,6 +185,7 @@ namespace Uma_Engine
 
             // Helper accessors for scripts
             Uma_ECS::Coordinator& GetCoordinator() { return m_Scene->GetCoordinator(); }
+            Uma_ECS::LuaScriptingSystem& GetLuascriptingSystem() { return *m_Scene->m_LuaScriptingSystem; }
             Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
             Uma_Engine::Sound* GetSound() { return m_Scene->GetSound(); }
