@@ -1996,7 +1996,7 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "accel_strength": 500.0,
+                    "accel_strength": 300.0,
                     "fric_coeff": 5.0
                 },
                 "struct Uma_ECS::Collider": {

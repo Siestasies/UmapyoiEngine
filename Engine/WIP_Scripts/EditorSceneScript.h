@@ -650,7 +650,7 @@ namespace Uma_Engine
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 500,
+                      .accel_strength = 300,
                       .fric_coeff = 5
                     });
 

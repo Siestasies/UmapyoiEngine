@@ -396,6 +396,7 @@ namespace Uma_Engine
         // Physics runs at FIXED timestep
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
+
         if (m_PhysicsSystem)
             m_PhysicsSystem->ApplyVelocity(m_FixedTimeStep);
 

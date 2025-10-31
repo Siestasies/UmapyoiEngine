@@ -10,10 +10,16 @@
 \par    DigiPen login: waimen.leong
 
 \brief
-Implements Unity-style collision detection and resolution using spatial hashing and contact normals.
+Implements AABB collision detection and resolution using spatial hashing for broadphase optimization.
 
-Updates axis-aligned bounding boxes from transform and collider data, then performs collision tests
-using spatial grid partitioning. Resolves collisions with velocity projection for smooth wall sliding.
+Features swept bounding boxes covering entity movement paths to prevent tunneling through objects.
+Uses axis-of-minimum-penetration method for accurate collision normal calculation and Baumgarte
+stabilization for gradual position correction. Supports three collision purposes: Physics (entity-entity),
+Environment (static walls), and Trigger (non-blocking detection zones). Resolves collisions through
+velocity projection with separate handling for normal (penetrating) and tangent (sliding) components.
+Implements layer-based filtering via bitmask operations and tracks collision state transitions to emit
+OnCollisionEnter, OnCollision, OnCollisionExit, OnTriggerEnter, OnTrigger, and OnTriggerExit events.
+Spatial grid partitioning reduces collision checks from O(n²) to near O(n) for sparse entity distributions.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -54,13 +60,11 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
-        // Ensure bounds array matches shapes array
         if (c.bounds.size() != c.shapes.size())
         {
             c.bounds.resize(c.shapes.size());
         }
 
-        // Get sprite size if available
         Vec2 spriteSize{ 1.0f, 1.0f };
         if (sArray.Has(entity))
         {
@@ -71,46 +75,56 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
             }
         }
 
-        // Update each shape's bounding box
         for (size_t i = 0; i < c.shapes.size(); ++i)
         {
             const auto& shape = c.shapes[i];
             if (!shape.isActive) continue;
 
-            // Determine actual size based on autoFitToSprite flag
-            Vec2 effectiveSize;
-            if (shape.autoFitToSprite)
-            {
-                effectiveSize = spriteSize;
-            }
-            else
-            {
-                effectiveSize = shape.size;
-            }
-
-            // Scale by transform
+            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
             Vec2 scaledSize = Vec2{
                 effectiveSize.x * tf.scale.x,
                 effectiveSize.y * tf.scale.y
             };
 
-            // Calculate world position with offset
             Vec2 worldOffset = Vec2{
                 shape.offset.x * tf.scale.x,
                 shape.offset.y * tf.scale.y
             };
 
-            Vec2 currentWorldPos = tf.position + worldOffset;
             Vec2 halfSize = scaledSize * 0.5f;
 
-            // Simple, tight bounds
-            c.bounds[i].min = Vec2{
+            // SWEPT: Cover both current AND previous position
+            Vec2 currentWorldPos = tf.position + worldOffset;
+            Vec2 prevWorldPos = tf.prevPos + worldOffset;
+
+            // Calculate bounds at current position
+            Vec2 currentMin = Vec2{
                 currentWorldPos.x - halfSize.x,
                 currentWorldPos.y - halfSize.y
             };
-            c.bounds[i].max = Vec2{
+            Vec2 currentMax = Vec2{
                 currentWorldPos.x + halfSize.x,
                 currentWorldPos.y + halfSize.y
+            };
+
+            // Calculate bounds at previous position
+            Vec2 prevMin = Vec2{
+                prevWorldPos.x - halfSize.x,
+                prevWorldPos.y - halfSize.y
+            };
+            Vec2 prevMax = Vec2{
+                prevWorldPos.x + halfSize.x,
+                prevWorldPos.y + halfSize.y
+            };
+
+            // Combine to create swept AABB
+            c.bounds[i].min = Vec2{
+                min(currentMin.x, prevMin.x),
+                min(currentMin.y, prevMin.y)
+            };
+            c.bounds[i].max = Vec2{
+                max(currentMax.x, prevMax.x),
+                max(currentMax.y, prevMax.y)
             };
         }
     }
@@ -356,168 +370,151 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     bool e1CanMove, bool e2CanMove,
     RigidBody* rb1, RigidBody* rb2)
 {
-    // Collision resolution constants
-    const float POSITION_CORRECTION = 0.4f;  // 40% position correction per frame
-    const float PENETRATION_SLOP = 0.01f;    // Allow small overlap to prevent jitter
-    const float WALL_FRICTION = 0.98f;        // Sliding friction (98% retention)
-    const float RESTITUTION = 0.0f;           // Bounciness (0 = no bounce for top-down)
-
-    // Calculate centers and half-extents
+    // Calculate penetration on both axes
     Vec2 center1 = (box1.min + box1.max) * 0.5f;
     Vec2 center2 = (box2.min + box2.max) * 0.5f;
     Vec2 halfSize1 = (box1.max - box1.min) * 0.5f;
     Vec2 halfSize2 = (box2.max - box2.min) * 0.5f;
 
-    // Calculate overlap on both axes
+    // Calculate delta between centers
     Vec2 delta = center1 - center2;
-    Vec2 overlap = Vec2{
-        halfSize1.x + halfSize2.x - std::abs(delta.x),
-        halfSize1.y + halfSize2.y - std::abs(delta.y)
-    };
+
+    // Calculate overlap on each axis (penetration depth)
+    float overlapX = halfSize1.x + halfSize2.x - std::abs(delta.x);
+    float overlapY = halfSize1.y + halfSize2.y - std::abs(delta.y);
 
     // Early exit if not overlapping
-    if (overlap.x <= 0 || overlap.y <= 0)
+    if (overlapX <= 0 || overlapY <= 0)
         return;
 
-    // ═══════════════════════════════════════════════════════════
-    // Determine collision normal and penetration depth
-    // ═══════════════════════════════════════════════════════════
+    // Find axis of minimum penetration
     Vec2 normal{ 0, 0 };
     float penetration = 0;
 
-    if (overlap.x < overlap.y)
+    // Use the axis with SMALLER overlap (minimum penetration)
+    if (overlapX < overlapY)
     {
-        // Collision on X axis (vertical wall)
+        // Collision on X axis (vertical surface)
         normal.x = (delta.x > 0) ? 1.0f : -1.0f;
         normal.y = 0;
-        penetration = overlap.x;
+        penetration = overlapX;
     }
     else
     {
-        // Collision on Y axis (horizontal wall)
+        // Collision on Y axis (horizontal surface)
         normal.x = 0;
         normal.y = (delta.y > 0) ? 1.0f : -1.0f;
-        penetration = overlap.y;
+        penetration = overlapY;
     }
 
-    // ═══════════════════════════════════════════════════════════
-    // Case 1: Both entities can move (dynamic vs dynamic)
-    // ═══════════════════════════════════════════════════════════
+    // Position correction with Baumgarte stabilization
+    const float BAUMGARTE_COEFF = 0.2f;  // 20% correction (reduced from 40%)
+    const float PENETRATION_SLOP = 0.01f; // Allow small overlap
+
+    float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * BAUMGARTE_COEFF;
+
     if (e1CanMove && e2CanMove)
     {
-        // Apply position correction with slop
-        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
+        // Both dynamic - split correction by mass ratio
+        float totalMass = 2.0f; // Assuming equal mass; use actual masses if available
         tf1.position += normal * (correctionAmount * 0.5f);
         tf2.position -= normal * (correctionAmount * 0.5f);
-
-        if (rb1 && rb2)
-        {
-            // Calculate relative velocity
-            Vec2 relVel = rb1->velocity - rb2->velocity;
-            float velAlongNormal = relVel.x * normal.x + relVel.y * normal.y;
-
-            // Only resolve if moving towards each other
-            if (velAlongNormal < 0)
-            {
-                // Calculate impulse (simple equal mass assumption)
-                float impulse = -(1.0f + RESTITUTION) * velAlongNormal * 0.5f;
-
-                // Apply impulse to both objects
-                rb1->velocity.x += normal.x * impulse;
-                rb1->velocity.y += normal.y * impulse;
-                rb2->velocity.x -= normal.x * impulse;
-                rb2->velocity.y -= normal.y * impulse;
-
-                // Apply friction to tangential velocity
-                Vec2 tangent{ -normal.y, normal.x };
-                float tangentVel1 = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
-                float tangentVel2 = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
-
-                rb1->velocity.x = normal.x * (rb1->velocity.x * normal.x + rb1->velocity.y * normal.y) +
-                    tangent.x * tangentVel1 * WALL_FRICTION;
-                rb1->velocity.y = normal.y * (rb1->velocity.x * normal.x + rb1->velocity.y * normal.y) +
-                    tangent.y * tangentVel1 * WALL_FRICTION;
-
-                rb2->velocity.x = normal.x * (rb2->velocity.x * normal.x + rb2->velocity.y * normal.y) +
-                    tangent.x * tangentVel2 * WALL_FRICTION;
-                rb2->velocity.y = normal.y * (rb2->velocity.x * normal.x + rb2->velocity.y * normal.y) +
-                    tangent.y * tangentVel2 * WALL_FRICTION;
-            }
-        }
     }
-    // ═══════════════════════════════════════════════════════════
-    // Case 2: Entity 1 can move, Entity 2 is static (vs wall/environment)
-    // ═══════════════════════════════════════════════════════════
-    else if (e1CanMove && rb1)
+    else if (e1CanMove)
     {
-        // Apply gradual position correction
-        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
         tf1.position += normal * correctionAmount;
+    }
+    else if (e2CanMove)
+    {
+        tf2.position -= normal * correctionAmount;
+    }
 
-        // Calculate velocity along collision normal
-        float velAlongNormal = rb1->velocity.x * normal.x + rb1->velocity.y * normal.y;
+    // Velocity-based impulse resolution
 
-        // Only resolve if moving INTO the wall
+    if (e1CanMove && e2CanMove && rb1 && rb2)
+    {
+        // Dynamic vs Dynamic
+        Vec2 relativeVel = rb1->velocity - rb2->velocity;
+        float velAlongNormal = relativeVel.x * normal.x + relativeVel.y * normal.y;
+
+        // Only resolve if moving towards each other
         if (velAlongNormal < 0)
         {
-            // Remove velocity component going into wall
+            const float RESTITUTION = 0.0f; // No bounce for top-down
+            float impulse = -(1.0f + RESTITUTION) * velAlongNormal * 0.5f;
+
+            Vec2 impulseVec = normal * impulse;
+            rb1->velocity += impulseVec;
+            rb2->velocity -= impulseVec;
+
+            // Apply friction to tangent velocity
+            const float FRICTION = 0.95f;
+            Vec2 tangent{ -normal.y, normal.x };
+
+            // Project velocity onto tangent and apply friction
+            float tangentVel1 = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+            float tangentVel2 = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
+
+            rb1->velocity -= tangent * (tangentVel1 * (1.0f - FRICTION));
+            rb2->velocity -= tangent * (tangentVel2 * (1.0f - FRICTION));
+        }
+    }
+    else if (e1CanMove && rb1)
+    {
+        // Dynamic vs Static
+        float velAlongNormal = rb1->velocity.x * normal.x + rb1->velocity.y * normal.y;
+
+        // Only resolve if moving into the wall
+        if (velAlongNormal < 0)
+        {
+            // Remove normal component of velocity
             rb1->velocity.x -= normal.x * velAlongNormal;
             rb1->velocity.y -= normal.y * velAlongNormal;
 
-            // Apply friction to sliding velocity (perpendicular to normal)
-            Vec2 tangent{ -normal.y, normal.x };  // Perpendicular vector
-            float velAlongTangent = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+            // Apply friction to sliding velocity
+            const float WALL_FRICTION = 0.95f;
+            Vec2 tangent{ -normal.y, normal.x };
+            float tangentVel = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
 
-            // Reconstruct velocity: 0 along normal + damped tangent
-            rb1->velocity.x = tangent.x * velAlongTangent * WALL_FRICTION;
-            rb1->velocity.y = tangent.y * velAlongTangent * WALL_FRICTION;
+            // Reduce tangent velocity by friction
+            rb1->velocity.x = tangent.x * tangentVel * WALL_FRICTION;
+            rb1->velocity.y = tangent.y * tangentVel * WALL_FRICTION;
 
-            // Handle acceleration (for continuous input like WASD)
+            // Handle acceleration more carefully
             float accelAlongNormal = rb1->acceleration.x * normal.x + rb1->acceleration.y * normal.y;
 
-            // Only zero acceleration if pushing into wall AND deeply penetrating
-            if (accelAlongNormal < 0 && penetration > PENETRATION_SLOP * 2.0f)
+            // Only remove normal acceleration if pushing into wall
+            if (accelAlongNormal < 0)
             {
                 rb1->acceleration.x -= normal.x * accelAlongNormal;
                 rb1->acceleration.y -= normal.y * accelAlongNormal;
             }
         }
     }
-    // ═══════════════════════════════════════════════════════════
-    // Case 3: Entity 2 can move, Entity 1 is static
-    // ═══════════════════════════════════════════════════════════
     else if (e2CanMove && rb2)
     {
-        // Apply gradual position correction (opposite direction)
-        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
-        tf2.position -= normal * correctionAmount;
+        // Static vs Dynamic (same as above but flipped)
+        Vec2 flippedNormal = normal * -1.0f;
+        float velAlongNormal = rb2->velocity.x * flippedNormal.x + rb2->velocity.y * flippedNormal.y;
 
-        // Calculate velocity along collision normal (flip sign for entity 2)
-        float velAlongNormal = rb2->velocity.x * (-normal.x) + rb2->velocity.y * (-normal.y);
-
-        // Only resolve if moving INTO the wall
         if (velAlongNormal < 0)
         {
-            // Remove velocity component going into wall
-            rb2->velocity.x -= (-normal.x) * velAlongNormal;
-            rb2->velocity.y -= (-normal.y) * velAlongNormal;
+            rb2->velocity.x -= flippedNormal.x * velAlongNormal;
+            rb2->velocity.y -= flippedNormal.y * velAlongNormal;
 
-            // Apply friction to sliding velocity
-            Vec2 tangent{ normal.y, -normal.x };  // Perpendicular (flipped for entity 2)
-            float velAlongTangent = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
+            const float WALL_FRICTION = 0.95f;
+            Vec2 tangent{ -flippedNormal.y, flippedNormal.x };
+            float tangentVel = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
 
-            // Reconstruct velocity with friction
-            rb2->velocity.x = tangent.x * velAlongTangent * WALL_FRICTION;
-            rb2->velocity.y = tangent.y * velAlongTangent * WALL_FRICTION;
+            rb2->velocity.x = tangent.x * tangentVel * WALL_FRICTION;
+            rb2->velocity.y = tangent.y * tangentVel * WALL_FRICTION;
 
-            // Handle acceleration
-            float accelAlongNormal = rb2->acceleration.x * (-normal.x) + rb2->acceleration.y * (-normal.y);
+            float accelAlongNormal = rb2->acceleration.x * flippedNormal.x + rb2->acceleration.y * flippedNormal.y;
 
-            // Only zero acceleration if pushing into wall AND deeply penetrating
-            if (accelAlongNormal < 0 && penetration > PENETRATION_SLOP * 2.0f)
+            if (accelAlongNormal < 0)
             {
-                rb2->acceleration.x -= (-normal.x) * accelAlongNormal;
-                rb2->acceleration.y -= (-normal.y) * accelAlongNormal;
+                rb2->acceleration.x -= flippedNormal.x * accelAlongNormal;
+                rb2->acceleration.y -= flippedNormal.y * accelAlongNormal;
             }
         }
     }
