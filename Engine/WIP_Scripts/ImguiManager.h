@@ -31,6 +31,13 @@ struct GLFWwindow;
 
 namespace Uma_Engine
 {
+    enum class PlayState
+    {
+        Stopped,
+        Playing,
+        Paused
+    };
+
     class ImguiManager : public ISystem, public IWindowSystem
     {   
         public:
@@ -49,11 +56,17 @@ namespace Uma_Engine
             bool IsInitialized() const { return m_initialized; }
 
             // for window controls
+            bool IsPlaying() const { return m_playState == PlayState::Playing; }
+            bool IsPaused() const { return m_playState == PlayState::Paused; }
+            bool IsStopped() const { return m_playState == PlayState::Stopped; }
             void ShowEngineDebug(bool show) { m_showEngineDebug = show; }
             void ShowEventDebug(bool show) { m_showEventDebug = show; }
             void ShowDemoWindow(bool show) { m_showDemoWindow = show; }
             void ShowPerformanceWindow(bool show) { m_showPerformanceWindow = show; }
             void ShowSystemsWindow(bool show) { m_showSystemsWindow = show; }
+
+            EventSystem* GetESHandler() { if (!pEventSystem) return pEventSystem; }
+            SystemManager* GetSMHandler() { if (!pSystemManager) return pSystemManager; }
 
         private:
             // bigger space stuff
@@ -65,6 +78,7 @@ namespace Uma_Engine
             void CreateHierarchyWindow();
             void CreateInspectorWindow();
 
+            void CreateEditorControlBar();
             void CreateSystemsWindow();
             void CreatePerformanceWindow();
             void CreateEngineDebugWindow(float fps, float deltaTime);
@@ -89,6 +103,8 @@ namespace Uma_Engine
             bool m_showDemoWindow;
             bool m_showPerformanceWindow;
             bool m_showSystemsWindow;
+            bool m_showEditorControlBar;
+            PlayState m_playState = PlayState::Stopped;
 
             // values that need to keep track
             int mEntityCount;

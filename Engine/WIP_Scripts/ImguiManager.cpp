@@ -111,6 +111,9 @@ namespace Uma_Engine
 
         CreateDockspace();
 
+        // play stop bar
+        CreateEditorControlBar();
+
         // call for windows to be shown
         float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
         CreateDebugWindows(currentFps, deltaTime);
@@ -158,6 +161,124 @@ namespace Uma_Engine
             return;
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    // ACTUAL EDITOR METHODS
+
+    void ImguiManager::CreateEditorControlBar()
+    {
+        if (!m_showEditorControlBar)
+            return;
+
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 40));
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4));
+
+        if (ImGui::Begin("##EditorControlBar", nullptr, flags))
+        {
+            // Center the buttons
+            float buttonWidth = 80.0f;
+            float spacing = 8.0f;
+            float totalWidth = (buttonWidth * 3) + (spacing * 2);
+            float offset = (ImGui::GetWindowWidth() - totalWidth) * 0.5f;
+
+            ImGui::SetCursorPosX(offset);
+
+            // Play Button
+            bool isPlaying = (m_playState == PlayState::Playing);
+            if (isPlaying)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.6f, 0.15f, 1.0f));
+            }
+
+            if (ImGui::Button("Play", ImVec2(buttonWidth, 0)))
+            {
+                if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
+                {
+                    m_playState = PlayState::Playing;
+                }
+            }
+
+            if (isPlaying)
+            {
+                ImGui::PopStyleColor(3);
+            }
+
+            ImGui::SameLine();
+
+            // Pause Button
+            bool isPaused = (m_playState == PlayState::Paused);
+            if (isPaused)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.7f, 0.7f, 0.2f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.8f, 0.8f, 0.3f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.6f, 0.15f, 1.0f));
+            }
+
+            if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
+            {
+                if (m_playState == PlayState::Playing)
+                {
+                    m_playState = PlayState::Paused;
+                }
+                else if (m_playState == PlayState::Paused)
+                {
+                    m_playState = PlayState::Playing;
+                }
+            }
+
+            if (isPaused)
+            {
+                ImGui::PopStyleColor(3);
+            }
+
+            ImGui::SameLine();
+
+            // Stop Button
+            if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
+            {
+                m_playState = PlayState::Stopped;
+                pEventSystem->Emit<ShowEntityInVPRequestEvent>();
+            }
+
+            // Show current state text on the right
+            ImGui::SameLine();
+            ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 150);
+
+            const char* stateText = "Stopped";
+            ImVec4 stateColor = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
+
+            switch (m_playState)
+            {
+            case PlayState::Playing:
+                stateText = "Playing";
+                stateColor = ImVec4(0.2f, 1.0f, 0.2f, 1.0f);
+                break;
+            case PlayState::Paused:
+                stateText = "Paused";
+                stateColor = ImVec4(1.0f, 1.0f, 0.2f, 1.0f);
+                break;
+            case PlayState::Stopped:
+                stateText = "Stopped";
+                stateColor = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
+                break;
+            }
+
+            ImGui::TextColored(stateColor, "%s", stateText);
+        }
+
+        ImGui::End();
+        ImGui::PopStyleVar(2);
     }
 
     void ImguiManager::CreateDebugWindows(float fps, float deltaTime)
@@ -686,5 +807,4 @@ namespace Uma_Engine
         }
         ImGui::End();
     }
-
 }

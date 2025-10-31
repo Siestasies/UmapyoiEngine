@@ -19,6 +19,7 @@ All rights reserved.
 #pragma once
 #include "SceneType.h"
 #include "Core/SystemType.h"
+#include "ImguiManager.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -42,6 +43,8 @@ namespace Uma_Engine
         void Shutdown() override;
 
         // ==================== Scene Management ====================
+
+        void SetImguiHandler(ImguiManager* im) { imHandler = im; }
 
         // Create a new empty scene
         std::shared_ptr<Scene> CreateScene(const std::string& name, const std::string& filepath = "");
@@ -148,5 +151,7 @@ namespace Uma_Engine
 
         // Currently active scene
         std::shared_ptr<Scene> m_ActiveScene;
+
+        ImguiManager* imHandler;
     };
 }

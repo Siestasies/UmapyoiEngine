@@ -8,7 +8,6 @@ namespace Uma_Engine
     void SceneManager::Init()
     {
         std::cout << "SceneManager: Initialized" << std::endl;
-
         // Scripts will be registered externally
         // Scenes will be created on-demand
     }
@@ -21,8 +20,22 @@ namespace Uma_Engine
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
-            m_ActiveScene->Update(dt);
-            m_ActiveScene->Render();
+            if (imHandler->IsPlaying())
+            {
+                m_ActiveScene->Update(dt);
+            }
+            else if (imHandler->IsPaused())
+            {
+                m_ActiveScene->Update(0.f);
+            }
+            else
+            {
+                // things that need to be constantly updated no matter what
+                // shoudlnt affect game stop?
+                m_ActiveScene->UpdateSelective(0.f);
+            }
+
+
         }
 
         // Update all loaded scenes if using additive loading
@@ -31,7 +44,6 @@ namespace Uma_Engine
             if (scene != m_ActiveScene && scene->IsLoaded())
             {
                 scene->Update(dt);
-                scene->Render();
             }
         }
 

@@ -90,20 +90,24 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene
-    auto scnm = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+    auto scn_mgr = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
 
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    auto imgui_mgr = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
     // Initialize all systems
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
-    scnm->SetSystemManager(&systemManager);
-    scnm->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
-    auto editorScene = scnm->CreateScene("EditorScene", "Assets/Scenes/test_collider.json");
-    scnm->AttachScriptToScene("EditorScene", "EditorBehavior");
-    scnm->LoadScene("EditorScene");
+    // SCENE MANAGER SETTINGS
+    scn_mgr->SetImguiHandler(imgui_mgr);
+    scn_mgr->SetSystemManager(&systemManager);
+    // FAKE - this is basically to call events for imgui/editor buttons
+    scn_mgr->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
+    auto editorScene = scn_mgr->CreateScene("GameScene1", "Assets/Scenes/test_collider.json");
+    scn_mgr->AttachScriptToScene("GameScene1", "EditorBehavior");
+    scn_mgr->LoadScene("GameScene1");
+
     // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
 
@@ -126,8 +130,6 @@ int main()
     int frameCount = 0;
 
     std::stringstream newTitle;
-
-    bool test = false;
 
     while (!window.ShouldClose())
     {
@@ -159,12 +161,6 @@ int main()
         // always update before systemmanager updates
         window.Update();
 
-        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_V))
-        {
-            
-            test = test ? false : true;
-        }
-
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
@@ -174,10 +170,7 @@ int main()
             Uma_Engine::Debugger::TestCrash();
         }
 
-        if (!test)
-            systemManager.Update(deltaTime);
-        else 
-            systemManager.Update(0.f);
+        systemManager.Update(deltaTime);
     }
 
     systemManager.Shutdown();

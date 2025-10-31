@@ -105,16 +105,13 @@ namespace Uma_Engine
         }
     }
 
-    void Scene::Render()
+    void Scene::UpdateSelective(float dt)
     {
-        if (m_State != SceneState::SCENE_RUNNING)
-            return;
+        if (m_Graphics)
+            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);
 
-        // Call OnRender for all attached scripts
-        for (auto& script : m_AttachedScripts)
-        {
-            script->OnRender();
-        }
+        if (m_RenderingSystem)
+            m_RenderingSystem->Update(dt);
     }
 
     // SCRIPT STUFF
