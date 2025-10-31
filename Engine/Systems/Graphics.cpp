@@ -88,13 +88,15 @@ out vec4 color;
 uniform sampler2D image;
 uniform vec3 debugColor;
 uniform int useDebugColor;
+uniform vec3 tintColor;
 
 void main()
 {
     if (useDebugColor == 1) {
         color = vec4(debugColor, 1.0);
     } else {
-        color = texture(image, TexCoords);
+        vec4 texColor = texture(image, TexCoords);
+        color = vec4(texColor.rgb * tintColor, texColor.a);
     }
 }
 )";
@@ -129,10 +131,12 @@ in vec2 TexCoords;
 out vec4 color;
 
 uniform sampler2D image;
+uniform vec3 tintColor;
 
 void main()
 {
-    color = texture(image, TexCoords);
+    vec4 texColor = texture(image, TexCoords);
+    color = vec4(texColor.rgb * tintColor, texColor.a);
 }
 )";
 
@@ -348,12 +352,15 @@ void main()
         cam.zoom = zoom;
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint)
     {
         if (!mInitialized || textureID == 0) return;
 
         // Use shader program
         glUseProgram(mShaderProgram);
+
+        GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
+        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
 
         // Create transformation matrix
         glm::mat4 model = glm::mat4(1.0f);
@@ -385,6 +392,9 @@ void main()
         if (!mInitialized || textureID == 0) return;
 
         glUseProgram(mShaderProgram);
+
+        GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
+        glUniform3f(tintLoc, 1.0f, 1.0f, 1.0f);
 
         // Scale quad to fill entire NDC space
         glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f));
@@ -451,6 +461,7 @@ void main()
         // Set uniforms
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
         glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
+        glUniform3f(glGetUniformLocation(mShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
 
         return true;
     }
@@ -786,12 +797,18 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+        // Set default uniforms
+        glUseProgram(mInstanceShaderProgram);
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+        glUniform3f(glGetUniformLocation(mInstanceShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
+
         return true;
     }
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites)
+        std::vector<Sprite_Info> const& sprites,
+        const Vec3& tint)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -835,6 +852,10 @@ void main()
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
         glUseProgram(mInstanceShaderProgram);
+
+        // Set tint uniform
+        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
+        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
 
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
@@ -1259,11 +1280,15 @@ void main()
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
-        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize)
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint)
     {
         if (!mInitialized || textureID == 0) return;
 
         glUseProgram(mShaderProgram);
+
+        // Set tint uniform
+        GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
+        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
 
         // Calculate current aspect ratio
         float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
@@ -1297,7 +1322,7 @@ void main()
         UpdateProjectionMatrix();
     }
 
-    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
+    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites, const Vec3& tint)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -1341,6 +1366,9 @@ void main()
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
         glUseProgram(mInstanceShaderProgram);
+
+        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
+        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
 
         glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
