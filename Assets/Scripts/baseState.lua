@@ -5,9 +5,10 @@ local BaseState = {} --its like the declaration of a class in c++
 BaseState.__index = BaseState 
 
 --this is basically a constructor for the inheritance 
-function BaseState:new(fsm)
+function BaseState:new(fsm, parent)
     local instance = {
-        fsm = fsm
+        fsm = fsm,
+        parent = parent
     }
     setmetatable(instance, self)
     return instance
@@ -32,45 +33,63 @@ function BaseState:isCurrentState()
     return self.fsm and self.fsm:getCurrentState() == self
 end
 
+--Helper to safely access parent
+function BaseState:getParent()
+    return self.parent
+end
+
 return BaseState
 
 --[[
-how to use? template state class
--- Import the base state class
-local BaseState = require("baseState")
+HOW TO USE: Template State Class
 
--- Create the state class
-local EmptyState = {}
-
--- Set up inheritance from BaseState
-setmetatable(EmptyState, {__index = BaseState})
-EmptyState.__index = EmptyState
-
--- Constructor - Creates a new instance of this state
-function EmptyState:new(fsm)
+This template provides a starting point for creating individual states in your FSM.
+Each state can access:
+  - self.fsm: Reference to the finite state machine
+  - self.parent: Reference to the parent entity (e.g., enemy, player, NPC)
+  
+Usage Example:
+  local entity = { health = 100, position = {x=0, y=0} }
+  local fsm = FSM:new(entity)
+  local myState = MyState:new(fsm, entity)
+  
+  -- Import the base state class
+  local BaseState = require("baseState")
+  
+  -- Create the state class
+  local EmptyState = {}
+  
+  -- Set up inheritance from BaseState
+  setmetatable(EmptyState, {__index = BaseState})
+  EmptyState.__index = EmptyState
+  
+  -- Constructor - Creates a new instance of this state
+  function EmptyState:new(fsm, parent)
     -- Call parent constructor to set up basic state properties
-    local instance = BaseState.new(self, fsm)
+    local instance = BaseState.new(self, fsm, parent)
     
     -- Add your state-specific variables here
-    
     return instance
 end
 
 -- Called once when entering this state
 function EmptyState:enter()
-    
+
 end
 
 -- Called every frame while in this state
 function EmptyState:update(dt)
-    
 end
 
 -- Called once when exiting this state
 function EmptyState:exit()
-    
+    -- Cleanup state-specific logic here
+    -- Example: Reset parent properties
+    -- if self.parent then
+    --     self.parent.isAnimating = false
+    -- end
 end
 
---Return the state class so require() works
+-- Return the state class so require() works
 return EmptyState
 ]]

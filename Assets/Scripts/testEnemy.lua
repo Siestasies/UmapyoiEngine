@@ -1,14 +1,3 @@
--- Make engine functions available to modules
-_G.HasTransform = HasTransform
-_G.HasRigidBody = HasRigidBody
-_G.GetRigidBody = GetRigidBody
-_G.GetTransform = GetTransform
-_G.Vec2 = Vec2
-_G.KeyPressed = KeyPressed
-_G.KEY_U = KEY_U
-_G.Log = Log
-_G.LogError = LogError
-
 --basically include
 local StateMachine = require("StateMachine")
 local WalkState = require("WalkState")
@@ -33,8 +22,8 @@ function Start()
 
     Log("My Name is: " .. name);
 
-    local capturedId = EntityID
-    fsm = StateMachine:new(capturedId)
+    thisEntity = GetEntity(EntityID)
+    fsm = StateMachine:new(thisEntity)
     --add states here
     fsm:addState("WalkState", WalkState)
     fsm:addState("TestState",TestState)

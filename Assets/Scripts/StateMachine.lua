@@ -1,19 +1,22 @@
 local StateMachine = {}
 StateMachine.__index = StateMachine
 
-function StateMachine:new(entityId)
+-- Constructor now accepts the parent entity object
+function StateMachine:new(parent)
     local instance = {
         currentState = nil,
         states = {},
-        entityId = entityId
+        parent = parent,  -- Store reference to parent entity
+        entityId = parent and parent.id or nil  -- Optional: keep ID if parent has one
     }
     setmetatable(instance, self)
     return instance
 end
 
+-- Create state instances with both FSM and parent references
 function StateMachine:addState(name, stateClass)
-    -- Create new instance of state for this FSM
-    local state = stateClass:new(self)
+    -- Pass both self (the FSM) and the parent entity to the state
+    local state = stateClass:new(self, self.parent)
     self.states[name] = state
 end
 
@@ -45,6 +48,11 @@ function StateMachine:getCurrentStateName()
         end
     end
     return "None"
+end
+
+-- Optional: Helper to get parent entity
+function StateMachine:getParent()
+    return self.parent
 end
 
 return StateMachine

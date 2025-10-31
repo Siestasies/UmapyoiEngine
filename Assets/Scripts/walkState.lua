@@ -6,8 +6,8 @@ setmetatable(WalkState, {__index = BaseState})  -- inherit from BaseState
 WalkState.__index = WalkState --for instances to fine walk state
 
 --declare new state which inherits from BaseState
-function WalkState:new(fsm)
-    local instance = BaseState.new(self, fsm)
+function WalkState:new(fsm, parent)
+    local instance = BaseState.new(self, fsm, parent)
     return instance
 end
 
@@ -20,10 +20,11 @@ function WalkState:exit()
 end
 
 function WalkState:update(dt)
-    --insert implementation here
-    --Log("IM WALKING HERE")
-    local transform = GetTransform()
-    if HasTransform() and HasRigidBody() then
+    if not self.parent or not self.parent.isValid then
+        return
+    end
+    local transform = self.parent.GetTransform()
+    if self.parent.HasTransform() and self.parent.HasRigidBody() then
         -- local rb = GetRigidBody()
         -- local moveVec = Vec2.new(-1, 0)
 
