@@ -470,7 +470,8 @@ namespace Uma_Engine
             }
 
             // Draw all health icons in one instanced call
-            gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons);
+            // Tinted red
+            gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons, Vec3{1.0f, 0.f, 0.f});
         }
 
         void UpdatePlayerAnimation()

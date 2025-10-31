@@ -258,27 +258,17 @@ namespace Uma_Engine
 
         // Sprite rendering
 
-        /**
-         * \brief Draws a single sprite
-         * \param textureID OpenGL texture ID
-         * \param position Sprite position in world space
-         * \param scale Sprite scale
-         * \param rotation Sprite rotation in degrees
-         */
         void DrawSprite(unsigned int textureID,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
-            float rotation = 0.0f);
+            float rotation = 0.0f,
+            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
 
-        /**
-         * \brief Draws multiple sprites in a single instanced draw call
-         * \param textureID OpenGL texture ID shared by all sprites
-         * \param sprites Vector of sprite information
-         */
         void DrawSpritesInstanced(
             unsigned int textureID,
             //const Vec2& textureSize,
-            std::vector<Sprite_Info> const& sprites);
+            std::vector<Sprite_Info> const& sprites,
+            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
 
         // Draw background image
 
@@ -384,7 +374,8 @@ namespace Uma_Engine
         void DrawTextWorld(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
-            const Vec2& uvSize = Vec2(1.0f, 1.0f));
-        void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
+            const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
+        void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites,
+            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
     };
 }
