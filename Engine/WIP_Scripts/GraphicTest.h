@@ -69,9 +69,8 @@ namespace Uma_Engine
             LoadAllTextures();
 
             std::string fontPath = Uma_FilePath::ASSET_ROOT + "fonts/";
-            gTestGraphics->LoadFont("title", fontPath + "Urbanist-Regular.ttf", 48);
-            gTestGraphics->LoadFont("ui", fontPath + "Neucha.ttf", 24);
-            gTestGraphics->SetCurrentFont("ui");
+            gTestResourcesManager->LoadFont("title", fontPath + "Urbanist-Regular.ttf", 48);
+            gTestResourcesManager->LoadFont("ui", fontPath + "Neucha.ttf", 24);
 
             using namespace Uma_ECS;
             gTestCoordinator.Init(gTestEventSystem);
@@ -382,51 +381,65 @@ namespace Uma_Engine
             auto& playerAnimator = gTestCoordinator.GetComponent<Uma_ECS::Animator>(gTestPlayer);
             auto& playerRB = gTestCoordinator.GetComponent<Uma_ECS::RigidBody>(gTestPlayer);
 
-            // WORLD SPACE TEXT
-            // Player label
-            float textOffsetY = 8.0f;
-            std::string playerLabel = "Player";
-            float labelWidth = gTestGraphics->MeasureText("ui", playerLabel, 0.08f);
-            gTestGraphics->DrawTextWorld("ui", playerLabel,
-                playerTransform.position.x - (labelWidth * 0.5f),
-                playerTransform.position.y + textOffsetY,
-                0.08f, 1.0f, 1.0f, 1.0f);
+            // Get fonts for rendering
+            FontData* uiFont = gTestResourcesManager->GetFont("ui");
+            FontData* titleFont = gTestResourcesManager->GetFont("title");
 
-            // Animation state
-            std::string animState = playerAnimator.animator.GetCurrentClip();
-            float animWidth = gTestGraphics->MeasureText("ui", animState, 0.06f);
-            gTestGraphics->DrawTextWorld("ui", animState,
-                playerTransform.position.x - (animWidth * 0.5f),
-                playerTransform.position.y + textOffsetY + 2.0f,
-                0.06f, 0.5f, 1.0f, 0.5f);
+            // WORLD SPACE TEXT
+            if (uiFont)
+            {
+                // Player label
+                float textOffsetY = 8.0f;
+                std::string playerLabel = "Player";
+                float labelWidth = gTestGraphics->MeasureText(*uiFont, playerLabel, 0.08f);
+                gTestGraphics->DrawTextWorld(*uiFont, playerLabel,
+                    playerTransform.position.x - (labelWidth * 0.5f),
+                    playerTransform.position.y + textOffsetY,
+                    0.08f, 1.0f, 1.0f, 1.0f);
+
+                // Animation state
+                std::string animState = playerAnimator.animator.GetCurrentClip();
+                float animWidth = gTestGraphics->MeasureText(*uiFont, animState, 0.06f);
+                gTestGraphics->DrawTextWorld(*uiFont, animState,
+                    playerTransform.position.x - (animWidth * 0.5f),
+                    playerTransform.position.y + textOffsetY + 2.0f,
+                    0.06f, 0.5f, 1.0f, 0.5f);
+            }
 
             // SCREEN SPACE TEXT
             // Title - top left
-            gTestGraphics->DrawTextScreen("title", "GraphicTest Scene",
-                -0.95f, 0.88f, 1.0f);
+            if (titleFont)
+            {
+                gTestGraphics->DrawTextScreen(*titleFont, "GraphicTest Scene",
+                    -0.95f, 0.88f, 1.0f);
+            }
 
-            // Instructions - bottom left
-            gTestGraphics->DrawTextScreen("ui", "Press WASD to move",
-                -0.95f, -0.92f, 2.0f, 0.7f, 0.7f, 0.7f);
+            // UI Text
+            if (uiFont)
+            {
+                // Instructions - bottom left
+                gTestGraphics->DrawTextScreen(*uiFont, "Press WASD to move",
+                    -0.95f, -0.92f, 2.0f, 0.7f, 0.7f, 0.7f);
 
-            // Position info - bottom left
-            std::string coordsText = "Pos: (" +
-                std::to_string(static_cast<int>(playerTransform.position.x)) + ", " +
-                std::to_string(static_cast<int>(playerTransform.position.y)) + ")";
-            gTestGraphics->DrawTextScreen("ui", coordsText,
-                -0.95f, -0.82f, 2.0f, 0.0f, 1.0f, 0.0f);
+                // Position info - bottom left
+                std::string coordsText = "Pos: (" +
+                    std::to_string(static_cast<int>(playerTransform.position.x)) + ", " +
+                    std::to_string(static_cast<int>(playerTransform.position.y)) + ")";
+                gTestGraphics->DrawTextScreen(*uiFont, coordsText,
+                    -0.95f, -0.82f, 2.0f, 0.0f, 1.0f, 0.0f);
 
-            // Speed display
-            float speed = sqrtf(playerRB.velocity.x * playerRB.velocity.x +
-                playerRB.velocity.y * playerRB.velocity.y);
-            std::string speedText = "Speed: " + std::to_string(static_cast<int>(speed));
-            gTestGraphics->DrawTextScreen("ui", speedText,
-                -0.95f, -0.72f, 2.0f, 1.0f, 1.0f, 0.0f);
+                // Speed display
+                float speed = sqrtf(playerRB.velocity.x * playerRB.velocity.x +
+                    playerRB.velocity.y * playerRB.velocity.y);
+                std::string speedText = "Speed: " + std::to_string(static_cast<int>(speed));
+                gTestGraphics->DrawTextScreen(*uiFont, speedText,
+                    -0.95f, -0.72f, 2.0f, 1.0f, 1.0f, 0.0f);
 
-            // FPS counter
-            std::string fpsText = "FPS: " + std::to_string(currentFPS);
-            gTestGraphics->DrawTextScreen("ui", fpsText,
-                -0.95f, -0.62f, 2.0f, 0.5f, 0.5f, 0.5f);
+                // FPS counter
+                std::string fpsText = "FPS: " + std::to_string(currentFPS);
+                gTestGraphics->DrawTextScreen(*uiFont, fpsText,
+                    -0.95f, -0.62f, 2.0f, 0.5f, 0.5f, 0.5f);
+            }
 
             // Draw health bar
             DrawHealthBar();
@@ -435,14 +448,19 @@ namespace Uma_Engine
         // Draw 5 Fumo Cirno sprites as health UI in screen-space (NDC)
         void DrawHealthBar()
         {
+            FontData* uiFont = gTestResourcesManager->GetFont("ui");
+
             // NDC coordinates
             float startX = 0.40f;
             float startY = 0.75f;
 
             // Health bar label
-            gTestGraphics->DrawTextScreen("ui", "Lives:",
-                startX, startY,
-                2.0f, 1.0f, 1.0f, 1.0f);
+            if (uiFont)
+            {
+                gTestGraphics->DrawTextScreen(*uiFont, "Lives:",
+                    startX, startY,
+                    2.0f, 1.0f, 1.0f, 1.0f);
+            }
 
             // Draw 5 Cirno sprites horizontally
             unsigned int cirnoTexture = gTestResourcesManager->GetTexture("enemy")->tex_id;
@@ -471,7 +489,7 @@ namespace Uma_Engine
 
             // Draw all health icons in one instanced call
             // Tinted red
-            gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons, Vec3{1.0f, 0.f, 0.f});
+            gTestGraphics->DrawSpritesScreenInstanced(cirnoTexture, healthIcons, Vec3{ 1.0f, 0.f, 0.f });
         }
 
         void UpdatePlayerAnimation()
@@ -512,6 +530,7 @@ namespace Uma_Engine
             std::cout << "GraphicTest Scene Unloaded" << std::endl;
             gTestCoordinator.DestroyAllEntities();
             gTestResourcesManager->UnloadAllTextures();
+            gTestResourcesManager->UnloadAllFonts();
         }
     };
 }

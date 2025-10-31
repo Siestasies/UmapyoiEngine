@@ -922,35 +922,40 @@ void main()
 
     void Graphics::ShutdownTextRenderer()
     {
-        // Clean up all fonts
-        for (auto& [name, fontData] : mFonts) 
-        {
-            for (auto& [c, character] : fontData.characters) 
-            {
-                glDeleteTextures(1, &character.textureID);
-            }
-            glDeleteVertexArrays(1, &fontData.VAO);
-            glDeleteBuffers(1, &fontData.VBO);
-        }
-        mFonts.clear();
-        mCurrentFont.clear();
-
-        // Delete shader program
-        if (mTextShaderProgram) 
+        if (mTextShaderProgram)
         {
             glDeleteProgram(mTextShaderProgram);
             mTextShaderProgram = 0;
         }
     }
 
-    bool Graphics::LoadFont(const std::string& fontName, const std::string& fontPath,
-        unsigned int fontSize)
+    void Graphics::UnloadFontData(FontData& fontData)
     {
+        // Clean up specified font resources
+        for (auto& [c, character] : fontData.characters)
+        {
+            glDeleteTextures(1, &character.textureID);
+        }
+        glDeleteVertexArrays(1, &fontData.VAO);
+        glDeleteBuffers(1, &fontData.VBO);
+
+        // Clear data
+        fontData.characters.clear();
+        fontData.VAO = 0;
+        fontData.VBO = 0;
+    }
+
+    FontData Graphics::LoadFontFromFile(const std::string& fontPath, unsigned int fontSize)
+    {
+        FontData newFont = {};
+        newFont.fontSize = fontSize;
+        newFont.filePath = fontPath;
+
         // Initialize FreeType
         FT_Library ft;
         if (FT_Init_FreeType(&ft)) {
             std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-            return false;
+            return newFont; // Return empty struct
         }
 
         // Load font face
@@ -958,7 +963,7 @@ void main()
         if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
             std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
             FT_Done_FreeType(ft);
-            return false;
+            return newFont; // Return empty struct
         }
 
         // Set font size
@@ -967,76 +972,44 @@ void main()
         // Disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        // Create new FontData
-        FontData newFont;
-        newFont.fontSize = fontSize;
-
-        // Create VAO and VBO for this font
         glCreateVertexArrays(1, &newFont.VAO);
         glCreateBuffers(1, &newFont.VBO);
-
-        // Allocate storage for quad data
         glNamedBufferStorage(newFont.VBO, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_STORAGE_BIT);
-
-        // Set vertex attributes
         glEnableVertexArrayAttrib(newFont.VAO, 0);
         glVertexArrayAttribFormat(newFont.VAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
         glVertexArrayAttribBinding(newFont.VAO, 0, 0);
-
-        // Bind VBO to VAO
         glVertexArrayVertexBuffer(newFont.VAO, 0, newFont.VBO, 0, 4 * sizeof(float));
 
         // Load ASCII characters (32-126)
-        for (unsigned char c = 32; c < 127; c++) 
+        for (unsigned char c = 32; c < 127; c++)
         {
-            // Load character glyph
+            // ... (FT_Load_Char) ...
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
                 std::cerr << "WARNING: Failed to load Glyph '" << c << "'" << std::endl;
                 continue;
             }
 
-            // Create texture
             GLuint texture;
             glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-
-            // Allocate texture storage
-            glTextureStorage2D(
-                texture,
-                1,  // mipmap levels
-                GL_R8,  // internal format
-                face->glyph->bitmap.width,
-                face->glyph->bitmap.rows
-            );
-
-            // Upload pixel data
+            glTextureStorage2D(texture, 1, GL_R8, face->glyph->bitmap.width, face->glyph->bitmap.rows);
             if (face->glyph->bitmap.buffer) {
-                glTextureSubImage2D(
-                    texture,
-                    0,      // mipmap level
-                    0, 0,   // x, y offset
-                    face->glyph->bitmap.width,
-                    face->glyph->bitmap.rows,
-                    GL_RED,
-                    GL_UNSIGNED_BYTE,
-                    face->glyph->bitmap.buffer
-                );
+                glTextureSubImage2D(texture, 0, 0, 0, face->glyph->bitmap.width, face->glyph->bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
             }
-
-            // Set texture parameters
             glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
             // Store character
-            Character character = 
+            Character character =
             {
                 texture,
                 Vec2(static_cast<float>(face->glyph->bitmap.width), static_cast<float>(face->glyph->bitmap.rows)),
                 Vec2(static_cast<float>(face->glyph->bitmap_left), static_cast<float>(face->glyph->bitmap_top)),
                 static_cast<float>(face->glyph->advance.x >> 6)
             };
+            // Store in the newFont's map
             newFont.characters[c] = character;
         }
 
@@ -1044,54 +1017,18 @@ void main()
         FT_Done_Face(face);
         FT_Done_FreeType(ft);
 
-        // Store font in map
-        mFonts[fontName] = newFont;
-
-        // Set as current font to the first
-        if (mCurrentFont.empty()) {
-            mCurrentFont = fontName;
-        }
-
-        std::cout << "Font loaded successfully: " << fontName << " (" << fontPath << ", size: " << fontSize << ")" << std::endl;
-        return true;
+        std::cout << "Font loaded from file: " << fontPath << " (size: " << fontSize << ")" << std::endl;
+        return newFont;
     }
 
-    void Graphics::SetCurrentFont(const std::string& fontName)
-    {
-        auto it = mFonts.find(fontName);
-        if (it != mFonts.end()) 
-        {
-            mCurrentFont = fontName;
-        }
-        else 
-        {
-            std::cerr << "WARNING: Font '" << fontName << "' not found" << std::endl;
-        }
-    }
-
-    void Graphics::DrawTextScreen(const std::string& text, float x, float y,
-        float scale, float r, float g, float b)
-    {
-        // Use current font
-        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) 
-        {
-            std::cerr << "ERROR: No font loaded" << std::endl;
-            return;
-        }
-
-        DrawTextScreen(mCurrentFont, text, x, y, scale, r, g, b);
-    }
-
-    void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
+    void Graphics::DrawTextScreen(const FontData& font, const std::string& text,
         float x, float y, float scale, float r, float g, float b)
     {
-        auto it = mFonts.find(fontName);
-        if (it == mFonts.end()) {
-            std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+        if (font.VAO == 0)
+        {
+            std::cerr << "ERROR: Invalid FontData passed to DrawTextScreen" << std::endl;
             return;
         }
-
-        FontData& font = it->second;
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1109,10 +1046,12 @@ void main()
         float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
         float normalizedScale = scale / static_cast<float>(mViewportHeight);
 
-        for (char c : text) {
-            if (font.characters.find(c) == font.characters.end()) continue;
+        for (char c : text)
+        {
+            auto char_it = font.characters.find(c);
+            if (char_it == font.characters.end()) continue;
 
-            Character ch = font.characters[c];
+            Character ch = char_it->second;
 
             // Divide X by aspect to maintain proper character proportions
             float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
@@ -1120,7 +1059,8 @@ void main()
             float w = (ch.size.x * normalizedScale) / aspect;
             float h = ch.size.y * normalizedScale;
 
-            float vertices[6][4] = {
+            float vertices[6][4] =
+            {
                 { xpos,     ypos + h,   0.0f, 0.0f },
                 { xpos,     ypos,       0.0f, 1.0f },
                 { xpos + w, ypos,       1.0f, 1.0f },
@@ -1140,60 +1080,37 @@ void main()
         glBindTextureUnit(0, 0);
     }
 
-    float Graphics::MeasureText(const std::string& text, float scale)
+    float Graphics::MeasureText(const FontData& font, const std::string& text, float scale)
     {
-        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
+        if (font.VAO == 0) 
+        {
             return 0.0f;
         }
-        return MeasureText(mCurrentFont, text, scale);
-    }
-
-    float Graphics::MeasureText(const std::string& fontName, const std::string& text, float scale)
-    {
-        auto it = mFonts.find(fontName);
-        if (it == mFonts.end()) {
-            return 0.0f;
-        }
-
-        FontData& font = it->second;
 
         float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
         float normalizedScale = scale / static_cast<float>(mViewportHeight);
         float width = 0.0f;
 
-        for (char c : text) {
-            if (font.characters.find(c) != font.characters.end()) {
-                width += (font.characters[c].advance * normalizedScale) / aspect;
+        for (char c : text)
+        {
+            auto char_it = font.characters.find(c);
+            if (char_it != font.characters.end())
+            {
+                width += (char_it->second.advance * normalizedScale) / aspect;
             }
         }
 
         return width;
     }
 
-    void Graphics::DrawTextWorld(const std::string& text, float x, float y,
-        float scale, float r, float g, float b)
-    {
-        // Use current font
-        if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end())
-        {
-            std::cerr << "ERROR: No font loaded" << std::endl;
-            return;
-        }
-
-        DrawTextWorld(mCurrentFont, text, x, y, scale, r, g, b);
-    }
-
-    void Graphics::DrawTextWorld(const std::string& fontName, const std::string& text,
+    void Graphics::DrawTextWorld(const FontData& font, const std::string& text,
         float x, float y, float scale, float r, float g, float b)
     {
-        // Check if font exists
-        auto it = mFonts.find(fontName);
-        if (it == mFonts.end()) {
-            std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+        if (font.VAO == 0) 
+        {
+            std::cerr << "ERROR: Invalid FontData passed to DrawTextWorld" << std::endl;
             return;
         }
-
-        FontData& font = it->second;
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1218,9 +1135,10 @@ void main()
 
         // Render each character in world space
         for (char c : text) {
-            if (font.characters.find(c) == font.characters.end()) continue;
+            auto char_it = font.characters.find(c);
+            if (char_it == font.characters.end()) continue;
 
-            Character ch = font.characters[c];
+            Character ch = char_it->second;
 
             // Calculate positions in world space
             float xpos = x + ch.bearing.x * scale;
@@ -1248,6 +1166,312 @@ void main()
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
     }
+
+    //bool Graphics::LoadFont(const std::string& fontName, const std::string& fontPath,
+    //    unsigned int fontSize)
+    //{
+    //    // Initialize FreeType
+    //    FT_Library ft;
+    //    if (FT_Init_FreeType(&ft)) {
+    //        std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+    //        return false;
+    //    }
+
+    //    // Load font face
+    //    FT_Face face;
+    //    if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
+    //        std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
+    //        FT_Done_FreeType(ft);
+    //        return false;
+    //    }
+
+    //    // Set font size
+    //    FT_Set_Pixel_Sizes(face, 0, fontSize);
+
+    //    // Disable byte-alignment restriction
+    //    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    //    // Create new FontData
+    //    FontData newFont;
+    //    newFont.fontSize = fontSize;
+
+    //    // Create VAO and VBO for this font
+    //    glCreateVertexArrays(1, &newFont.VAO);
+    //    glCreateBuffers(1, &newFont.VBO);
+
+    //    // Allocate storage for quad data
+    //    glNamedBufferStorage(newFont.VBO, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+    //    // Set vertex attributes
+    //    glEnableVertexArrayAttrib(newFont.VAO, 0);
+    //    glVertexArrayAttribFormat(newFont.VAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
+    //    glVertexArrayAttribBinding(newFont.VAO, 0, 0);
+
+    //    // Bind VBO to VAO
+    //    glVertexArrayVertexBuffer(newFont.VAO, 0, newFont.VBO, 0, 4 * sizeof(float));
+
+    //    // Load ASCII characters (32-126)
+    //    for (unsigned char c = 32; c < 127; c++) 
+    //    {
+    //        // Load character glyph
+    //        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+    //        {
+    //            std::cerr << "WARNING: Failed to load Glyph '" << c << "'" << std::endl;
+    //            continue;
+    //        }
+
+    //        // Create texture
+    //        GLuint texture;
+    //        glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+
+    //        // Allocate texture storage
+    //        glTextureStorage2D(
+    //            texture,
+    //            1,  // mipmap levels
+    //            GL_R8,  // internal format
+    //            face->glyph->bitmap.width,
+    //            face->glyph->bitmap.rows
+    //        );
+
+    //        // Upload pixel data
+    //        if (face->glyph->bitmap.buffer) {
+    //            glTextureSubImage2D(
+    //                texture,
+    //                0,      // mipmap level
+    //                0, 0,   // x, y offset
+    //                face->glyph->bitmap.width,
+    //                face->glyph->bitmap.rows,
+    //                GL_RED,
+    //                GL_UNSIGNED_BYTE,
+    //                face->glyph->bitmap.buffer
+    //            );
+    //        }
+
+    //        // Set texture parameters
+    //        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    //        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    //        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    //        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    //        // Store character
+    //        Character character = 
+    //        {
+    //            texture,
+    //            Vec2(static_cast<float>(face->glyph->bitmap.width), static_cast<float>(face->glyph->bitmap.rows)),
+    //            Vec2(static_cast<float>(face->glyph->bitmap_left), static_cast<float>(face->glyph->bitmap_top)),
+    //            static_cast<float>(face->glyph->advance.x >> 6)
+    //        };
+    //        newFont.characters[c] = character;
+    //    }
+
+    //    // Clean up FreeType
+    //    FT_Done_Face(face);
+    //    FT_Done_FreeType(ft);
+
+    //    // Store font in map
+    //    mFonts[fontName] = newFont;
+
+    //    // Set as current font to the first
+    //    if (mCurrentFont.empty()) {
+    //        mCurrentFont = fontName;
+    //    }
+
+    //    std::cout << "Font loaded successfully: " << fontName << " (" << fontPath << ", size: " << fontSize << ")" << std::endl;
+    //    return true;
+    //}
+
+    //void Graphics::SetCurrentFont(const std::string& fontName)
+    //{
+    //    auto it = mFonts.find(fontName);
+    //    if (it != mFonts.end()) 
+    //    {
+    //        mCurrentFont = fontName;
+    //    }
+    //    else 
+    //    {
+    //        std::cerr << "WARNING: Font '" << fontName << "' not found" << std::endl;
+    //    }
+    //}
+
+    //void Graphics::DrawTextScreen(const std::string& text, float x, float y,
+    //    float scale, float r, float g, float b)
+    //{
+    //    // Use current font
+    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) 
+    //    {
+    //        std::cerr << "ERROR: No font loaded" << std::endl;
+    //        return;
+    //    }
+
+    //    DrawTextScreen(mCurrentFont, text, x, y, scale, r, g, b);
+    //}
+
+    //void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
+    //    float x, float y, float scale, float r, float g, float b)
+    //{
+    //    auto it = mFonts.find(fontName);
+    //    if (it == mFonts.end()) {
+    //        std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+    //        return;
+    //    }
+
+    //    FontData& font = it->second;
+
+    //    glEnable(GL_BLEND);
+    //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //    glUseProgram(mTextShaderProgram);
+    //    glBindVertexArray(font.VAO);
+
+    //    glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
+
+    //    glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
+    //    GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
+    //    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+    //    // Calculate aspect ratio
+    //    float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+    //    float normalizedScale = scale / static_cast<float>(mViewportHeight);
+
+    //    for (char c : text) {
+    //        if (font.characters.find(c) == font.characters.end()) continue;
+
+    //        Character ch = font.characters[c];
+
+    //        // Divide X by aspect to maintain proper character proportions
+    //        float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
+    //        float ypos = y - ((ch.size.y - ch.bearing.y) * normalizedScale);
+    //        float w = (ch.size.x * normalizedScale) / aspect;
+    //        float h = ch.size.y * normalizedScale;
+
+    //        float vertices[6][4] = {
+    //            { xpos,     ypos + h,   0.0f, 0.0f },
+    //            { xpos,     ypos,       0.0f, 1.0f },
+    //            { xpos + w, ypos,       1.0f, 1.0f },
+    //            { xpos,     ypos + h,   0.0f, 0.0f },
+    //            { xpos + w, ypos,       1.0f, 1.0f },
+    //            { xpos + w, ypos + h,   1.0f, 0.0f }
+    //        };
+
+    //        glBindTextureUnit(0, ch.textureID);
+    //        glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
+    //        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //        x += (ch.advance * normalizedScale) / aspect;
+    //    }
+
+    //    glBindVertexArray(0);
+    //    glBindTextureUnit(0, 0);
+    //}
+
+    //float Graphics::MeasureText(const std::string& text, float scale)
+    //{
+    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
+    //        return 0.0f;
+    //    }
+    //    return MeasureText(mCurrentFont, text, scale);
+    //}
+
+    //float Graphics::MeasureText(const std::string& fontName, const std::string& text, float scale)
+    //{
+    //    auto it = mFonts.find(fontName);
+    //    if (it == mFonts.end()) {
+    //        return 0.0f;
+    //    }
+
+    //    FontData& font = it->second;
+
+    //    float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+    //    float normalizedScale = scale / static_cast<float>(mViewportHeight);
+    //    float width = 0.0f;
+
+    //    for (char c : text) {
+    //        if (font.characters.find(c) != font.characters.end()) {
+    //            width += (font.characters[c].advance * normalizedScale) / aspect;
+    //        }
+    //    }
+
+    //    return width;
+    //}
+
+    //void Graphics::DrawTextWorld(const std::string& text, float x, float y,
+    //    float scale, float r, float g, float b)
+    //{
+    //    // Use current font
+    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end())
+    //    {
+    //        std::cerr << "ERROR: No font loaded" << std::endl;
+    //        return;
+    //    }
+
+    //    DrawTextWorld(mCurrentFont, text, x, y, scale, r, g, b);
+    //}
+
+    //void Graphics::DrawTextWorld(const std::string& fontName, const std::string& text,
+    //    float x, float y, float scale, float r, float g, float b)
+    //{
+    //    // Check if font exists
+    //    auto it = mFonts.find(fontName);
+    //    if (it == mFonts.end()) {
+    //        std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
+    //        return;
+    //    }
+
+    //    FontData& font = it->second;
+
+    //    glEnable(GL_BLEND);
+    //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //    glUseProgram(mTextShaderProgram);
+    //    glBindVertexArray(font.VAO);
+
+    //    // Set text color
+    //    glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
+
+    //    // Use camera-based projection
+    //    float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+    //    float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+    //    float left = cam.pos.x - halfWidth;
+    //    float right = cam.pos.x + halfWidth;
+    //    float bottom = cam.pos.y - halfHeight;
+    //    float top = cam.pos.y + halfHeight;
+    //    glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+    //    GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
+    //    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+    //    // Render each character in world space
+    //    for (char c : text) {
+    //        if (font.characters.find(c) == font.characters.end()) continue;
+
+    //        Character ch = font.characters[c];
+
+    //        // Calculate positions in world space
+    //        float xpos = x + ch.bearing.x * scale;
+    //        float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+    //        float w = ch.size.x * scale;
+    //        float h = ch.size.y * scale;
+
+    //        float vertices[6][4] = {
+    //            { xpos,     ypos + h,   0.0f, 0.0f },
+    //            { xpos,     ypos,       0.0f, 1.0f },
+    //            { xpos + w, ypos,       1.0f, 1.0f },
+    //            { xpos,     ypos + h,   0.0f, 0.0f },
+    //            { xpos + w, ypos,       1.0f, 1.0f },
+    //            { xpos + w, ypos + h,   1.0f, 0.0f }
+    //        };
+
+    //        glBindTextureUnit(0, ch.textureID);
+    //        glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
+    //        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    //        // Advance to next character position
+    //        x += ch.advance * scale;
+    //    }
+
+    //    glBindVertexArray(0);
+    //    glBindTextureUnit(0, 0);
+    //}
 
     GLuint Graphics::CreateTextShader()
     {

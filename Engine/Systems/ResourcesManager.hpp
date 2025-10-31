@@ -52,7 +52,7 @@ namespace Uma_Engine
         void UnloadTexture(const std::string& textureName);
         Texture* GetTexture(const std::string& textureName);
         bool HasTexture(const std::string& textureName) const;
-        void PrintLoadedTextureNames() const; // Print all loaded texture names (for debug)
+        void PrintLoadedTextureNames() const; // For debug
         void UnloadAllTextures();
         
         // Audio
@@ -69,6 +69,14 @@ namespace Uma_Engine
         void Deserialize(const rapidjson::Value& in) override;
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void DeserializePrefab(const rapidjson::Value& in) override;
+
+        // Font
+        bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
+        void UnloadFont(const std::string& fontName);
+        FontData* GetFont(const std::string& fontName);
+        bool HasFont(const std::string& fontName) const;
+        void PrintLoadedFontNames() const; // For debug
+        void UnloadAllFonts();
         
     private:
         std::unordered_map<std::string, Texture> mTextures{};
@@ -76,5 +84,7 @@ namespace Uma_Engine
 
         std::unordered_map<std::string, SoundInfo> mSoundList{};
         Sound* mSound = nullptr;
+
+        std::unordered_map<std::string, FontData> mFonts{};
     };
 }

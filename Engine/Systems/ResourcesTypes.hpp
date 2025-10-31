@@ -26,6 +26,7 @@ All rights reserved.
 #include "Math/Math.h"
 
 #include <string>
+#include <map>
 
 // forward declare
 struct FMOD_SYSTEM;
@@ -57,6 +58,23 @@ namespace Uma_Engine
 		FMOD_SOUND* sound = nullptr;
 		FMOD_CHANNEL* channel = nullptr;
 		SoundType type = SoundType::END;
+		std::string filePath;
+	};
+
+	struct Character
+	{
+		unsigned int textureID;
+		Vec2   size;    // Size of glyph
+		Vec2   bearing; // Offset from baseline to left/top of glyph
+		float  advance; // Offset to advance to next glyph
+	};
+
+	struct FontData
+	{
+		std::map<char, Character> characters;
+		unsigned int VAO = 0;
+		unsigned int VBO = 0;
+		unsigned int fontSize = 0;
 		std::string filePath;
 	};
 }

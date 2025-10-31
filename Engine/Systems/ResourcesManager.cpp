@@ -55,6 +55,7 @@ namespace Uma_Engine
     {
         std::cout << "ResourcesManager: Unloading all textures" << std::endl;
         UnloadAllTextures();
+        UnloadAllFonts();
         UnloadAllSound();
     }
 
@@ -150,6 +151,32 @@ namespace Uma_Engine
         }
         out.AddMember("textures", texturesArr, allocator);
 
+        rapidjson::Value fontsArr(rapidjson::kArrayType);
+        for (const auto& font : mFonts)
+        {
+            rapidjson::Value fontObj(rapidjson::kObjectType);
+
+            // Name
+            rapidjson::Value nameVal;
+            nameVal.SetString(font.first.c_str(), static_cast<rapidjson::SizeType>(font.first.size()), allocator);
+            fontObj.AddMember("name", nameVal, allocator);
+
+            // Path
+            rapidjson::Value pathVal;
+            pathVal.SetString(font.second.filePath.c_str(),
+                static_cast<rapidjson::SizeType>(font.second.filePath.size()),
+                allocator);
+            fontObj.AddMember("path", pathVal, allocator);
+
+            // Size
+            rapidjson::Value sizeVal;
+            sizeVal.SetUint(font.second.fontSize);
+            fontObj.AddMember("size", sizeVal, allocator);
+
+            fontsArr.PushBack(fontObj, allocator);
+        }
+        out.AddMember("fonts", fontsArr, allocator);
+
         // sound
         rapidjson::Value audioArr(rapidjson::kArrayType);
         for (const auto& sound : mSoundList)
@@ -192,6 +219,21 @@ namespace Uma_Engine
                     std::string path = texVal["path"].GetString();
 
                     LoadTexture(name, path); // reuse your existing loader
+                }
+            }
+        }
+
+        if (in.HasMember("fonts") && in["fonts"].IsArray())
+        {
+            for (const auto& fontVal : in["fonts"].GetArray())
+            {
+                if (fontVal.HasMember("name") && fontVal.HasMember("path") && fontVal.HasMember("size"))
+                {
+                    std::string name = fontVal["name"].GetString();
+                    std::string path = fontVal["path"].GetString();
+                    unsigned int size = fontVal["size"].GetUint();
+
+                    LoadFont(name, path, size);
                 }
             }
         }
@@ -261,5 +303,80 @@ namespace Uma_Engine
     {
         // we are not using this function in resources manager 
         (void)in;
+    }
+
+    bool ResourcesManager::LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize)
+    {
+        assert(mGraphics != nullptr && "Error: Graphics system is not initialized.");
+
+        // Check if font is already loaded
+        if (HasFont(fontName))
+        {
+            std::cout << "Warning: Font '" << fontName << "' is already loaded!" << std::endl;
+            return true;
+        }
+
+        // Load font data
+        FontData fontData = mGraphics->LoadFontFromFile(filePath, fontSize);
+
+        // Check for loading failure
+        if (fontData.VAO == 0)
+        {
+            std::cerr << "Error: Failed to load font file: " << filePath << std::endl;
+            return false;
+        }
+
+        // Store in map
+        mFonts[fontName] = fontData;
+        std::cout << "Font '" << fontName << "' loaded and managed." << std::endl;
+        return true;
+    }
+
+    FontData* ResourcesManager::GetFont(const std::string& fontName)
+    {
+        auto it = mFonts.find(fontName);
+        return (it != mFonts.end()) ? &it->second : nullptr;
+    }
+
+    bool ResourcesManager::HasFont(const std::string& fontName) const
+    {
+        return mFonts.find(fontName) != mFonts.end();
+    }
+
+    void ResourcesManager::PrintLoadedFontNames() const
+    {
+        std::cout << "Loaded fonts (" << mFonts.size() << "):" << std::endl;
+        for (const auto& pair : mFonts)
+        {
+            std::cout << "  - " << pair.first << " (Size: " << pair.second.fontSize << ")" << std::endl;
+        }
+    }
+
+    void ResourcesManager::UnloadFont(const std::string& fontName)
+    {
+        auto it = mFonts.find(fontName);
+        if (it != mFonts.end())
+        {
+            // Unload font data
+            mGraphics->UnloadFontData(it->second);
+
+            // Remove from map
+            mFonts.erase(it);
+            std::cout << "Font '" << fontName << "' unloaded" << std::endl;
+        }
+        else
+        {
+            std::cout << "Warning: Font does not exist: '" << fontName << "'" << std::endl;
+        }
+    }
+
+    void ResourcesManager::UnloadAllFonts()
+    {
+        for (auto& pair : mFonts)
+        {
+            mGraphics->UnloadFontData(pair.second);
+        }
+        mFonts.clear();
+        std::cout << "All fonts unloaded" << std::endl;
     }
 }
