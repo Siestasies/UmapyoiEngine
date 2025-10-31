@@ -5,12 +5,10 @@ local BaseState = {} --its like the declaration of a class in c++
 BaseState.__index = BaseState 
 
 --this is basically a constructor for the inheritance 
-function BaseState:new(fsm, parent)
-    local instance = {
-        fsm = fsm,
-        parent = parent
-    }
-    setmetatable(instance, self)
+function BaseState.new(class, fsm, parent)
+    local instance = setmetatable({}, class)  -- Use the class passed in
+    instance.fsm = fsm
+    instance.parent = parent
     return instance
 end
 
@@ -50,35 +48,59 @@ Each state can access:
   
 Usage Example:
   local entity = { health = 100, position = {x=0, y=0} }
-  local fsm = FSM:new(entity)
-  local myState = MyState:new(fsm, entity)
+  local fsm = StateMachine:new(entity)
   
-  -- Import the base state class
-  local BaseState = require("baseState")
-  
-  -- Create the state class
-  local EmptyState = {}
-  
-  -- Set up inheritance from BaseState
-  setmetatable(EmptyState, {__index = BaseState})
-  EmptyState.__index = EmptyState
-  
-  -- Constructor - Creates a new instance of this state
-  function EmptyState:new(fsm, parent)
+  -- In your main script:
+  fsm:addState("MyState", MyState)  -- Pass the class, not an instance
+  fsm:changeState("MyState")
+
+---------------------------------template------------------------------------
+-- Import the base state class
+local BaseState = require("baseState")
+
+-- Create the state class
+local EmptyState = {}
+
+-- Set up inheritance from BaseState
+setmetatable(EmptyState, {__index = BaseState})
+EmptyState.__index = EmptyState
+
+-- Constructor - Creates a new instance of this state
+function EmptyState:new(fsm, parent)
     -- Call parent constructor to set up basic state properties
+    -- This creates an instance with EmptyState as its metatable
     local instance = BaseState.new(self, fsm, parent)
     
     -- Add your state-specific variables here
+    -- instance.speed = 100
+    -- instance.myProperty = "value"
+    -- instance.counter = 0
+    
     return instance
 end
 
 -- Called once when entering this state
 function EmptyState:enter()
-
+    -- Initialize or reset state-specific logic
+    -- Example: Set parent properties
+    -- if self.parent then
+    --     self.parent.isAnimating = true
+    -- end
+    
+    print("Entered EmptyState")
 end
 
 -- Called every frame while in this state
 function EmptyState:update(dt)
+    -- Update state logic here
+    -- Access state properties with self.
+    -- Access parent entity with self.parent
+    -- Access FSM with self.fsm
+    
+    -- Example: Check for state transitions
+    -- if someCondition then
+    --     self.fsm:changeState("OtherState")
+    -- end
 end
 
 -- Called once when exiting this state
@@ -88,6 +110,8 @@ function EmptyState:exit()
     -- if self.parent then
     --     self.parent.isAnimating = false
     -- end
+    
+    print("Exited EmptyState")
 end
 
 -- Return the state class so require() works

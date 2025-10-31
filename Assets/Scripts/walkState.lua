@@ -1,51 +1,52 @@
---imports base class interfaces
 local BaseState = require("baseState")
+local Vec2 = require("Vec2")
 
 local WalkState = {}
-setmetatable(WalkState, {__index = BaseState})  -- inherit from BaseState
-WalkState.__index = WalkState --for instances to fine walk state
+setmetatable(WalkState, {__index = BaseState})
+WalkState.__index = WalkState
 
---declare new state which inherits from BaseState
 function WalkState:new(fsm, parent)
-    local instance = BaseState.new(self, fsm, parent)
+    --Pass WalkState or self
+    local instance = BaseState.new(WalkState, fsm, parent)
+    
+    instance.speed = 100
+    instance.currentAccel = Vec2.new(0, 0)
+    instance.accelSmoothFactor = 15.0
+    
     return instance
 end
 
 function WalkState:enter()
-    
+    Log("entering walk state")
 end
 
 function WalkState:exit()
-
+    Log("leaving walk")
 end
 
 function WalkState:update(dt)
     if not self.parent or not self.parent.isValid then
         return
     end
-    local transform = self.parent.GetTransform()
-    if self.parent.HasTransform() and self.parent.HasRigidBody() then
-        -- local rb = GetRigidBody()
-        -- local moveVec = Vec2.new(-1, 0)
-
-        -- -- Apply movement
-        -- if moveVec.x ~= 0 or moveVec.y ~= 0 then
-        --     local targetAccel = moveVec * speed
-        --     -- Smooth interpolation like player
-        --     currentAccel = currentAccel + (targetAccel - currentAccel) * accelSmoothFactor * dt
-        --     rb.acceleration = currentAccel
-        -- else
-        --     -- Smooth to zero
-        --     currentAccel = currentAccel + (Vec2(0, 0) - currentAccel) * accelSmoothFactor * dt
-        --     rb.acceleration = currentAccel
-        --     hasLoggedMovement = false
-        -- end
-        transform.position.x = transform.position.x + dt * 100;
+    
+    if self.parent:HasTransform() and self.parent:HasRigidBody() then
+        local rb = self.parent:GetRigidBody()
+        local moveVec = Vec2.new(1, 0)
+        
+        if moveVec.x ~= 0 or moveVec.y ~= 0 then
+            local targetAccel = moveVec * self.speed  -- FIX: Add self.
+            self.currentAccel = self.currentAccel + (targetAccel - self.currentAccel) * self.accelSmoothFactor * dt
+            rb.acceleration.x = self.currentAccel.x
+            rb.acceleration.y = self.currentAccel.y
+        else
+            self.currentAccel = self.currentAccel + (Vec2.new(0, 0) - self.currentAccel) * self.accelSmoothFactor * dt
+            rb.acceleration = self.currentAccel
+        end
     end
-
-    if KeyPressed(KEY_U) then
+    
+    if KeyPressed(KEY_M) then
         Log("pressed")
-        self.fsm:changeState("TestState")
+        self.fsm:changeState("IdleState")
     end
 end
 

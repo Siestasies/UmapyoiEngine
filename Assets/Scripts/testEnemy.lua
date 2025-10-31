@@ -1,7 +1,8 @@
 --basically include
 local StateMachine = require("StateMachine")
 local WalkState = require("WalkState")
-local TestState = require("TestState")
+local ChaseState = require("ChaseState")
+local IdleState = require("IdleState")
 
 ExposedVars = {
     speed = 100.0,
@@ -23,13 +24,15 @@ function Start()
     Log("My Name is: " .. name);
 
     thisEntity = GetEntity(EntityID)
+
     fsm = StateMachine:new(thisEntity)
     --add states here
     fsm:addState("WalkState", WalkState)
-    fsm:addState("TestState",TestState)
+    fsm:addState("ChaseState", ChaseState)
+    fsm:addState("IdleState", IdleState)
     --add whatever state else
     -- Set initial state
-    fsm:changeState("WalkState")
+    fsm:changeState("IdleState")
     
     local myTransform = GetTransform(EntityID)
     if myTransform then
