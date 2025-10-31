@@ -49,38 +49,38 @@ namespace Uma_ECS
 
 				
 				// CALLBACK CACHE: Store which callbacks exist + their functions
-				struct CallbackCache
-				{
-						// Collision callbacks
-						bool hasOnCollision = false;
-						bool hasOnCollisionEnter = false;
-						bool hasOnCollisionExit = false;
+				//struct CallbackCache
+				//{
+				//		// Collision callbacks
+				//		bool hasOnCollision = false;
+				//		bool hasOnCollisionEnter = false;
+				//		bool hasOnCollisionExit = false;
 
-						// Trigger callbacks
-						bool hasOnTriggerEnter = false;
-						bool hasOnTriggerExit = false;
+				//		// Trigger callbacks
+				//		bool hasOnTriggerEnter = false;
+				//		bool hasOnTriggerExit = false;
 
-						//// Damage/Health callbacks
-						//bool hasOnDamage = false;
-						//bool hasOnHeal = false;
-						//bool hasOnDeath = false;
+				//		//// Damage/Health callbacks
+				//		//bool hasOnDamage = false;
+				//		//bool hasOnHeal = false;
+				//		//bool hasOnDeath = false;
 
-						//// Interaction callbacks
-						//bool hasOnInteract = false;
-						//bool hasOnPickup = false;
+				//		//// Interaction callbacks
+				//		//bool hasOnInteract = false;
+				//		//bool hasOnPickup = false;
 
-						// Cached function references (avoids repeated Lua table lookups)
-						sol::protected_function onCollisionFunc;
-						sol::protected_function onCollisionEnterFunc;
-						sol::protected_function onCollisionExitFunc;
-						sol::protected_function onTriggerEnterFunc;
-						sol::protected_function onTriggerExitFunc;
-						//sol::protected_function onDamageFunc;
-						//sol::protected_function onHealFunc;
-						//sol::protected_function onDeathFunc;
-						//sol::protected_function onInteractFunc;
-						//sol::protected_function onPickupFunc;
-				} callbacks;
+				//		// Cached function references (avoids repeated Lua table lookups)
+				//		sol::protected_function onCollisionFunc;
+				//		sol::protected_function onCollisionEnterFunc;
+				//		sol::protected_function onCollisionExitFunc;
+				//		sol::protected_function onTriggerEnterFunc;
+				//		sol::protected_function onTriggerExitFunc;
+				//		//sol::protected_function onDamageFunc;
+				//		//sol::protected_function onHealFunc;
+				//		//sol::protected_function onDeathFunc;
+				//		//sol::protected_function onInteractFunc;
+				//		//sol::protected_function onPickupFunc;
+				//} callbacks;
 
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{
