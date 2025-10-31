@@ -45,15 +45,17 @@ void Uma_ECS::CollisionSystem::Update(float dt)
     UpdateBoundingBoxes();
 
     UpdateCollision(dt);
+
+    DebugRender();
 }
 
 void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
     if (aEntities.empty()) return;
 
-    auto& cArray = gCoordinator->GetComponentArray<Collider>();
-    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
-    auto& sArray = gCoordinator->GetComponentArray<Sprite>();
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& sArray = pCoordinator->GetComponentArray<Sprite>();
 
     for (auto const& entity : aEntities)
     {
@@ -134,9 +136,9 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 {
     if (aEntities.empty()) return;
 
-    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
-    auto& cArray = gCoordinator->GetComponentArray<Collider>();
-    auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
     previousCollisions = std::move(currentCollisions);
     currentCollisions.clear();
@@ -541,6 +543,85 @@ Vec2 Uma_ECS::CollisionSystem::GetCollisionNormal(
     }
 
     return delta;
+}
+
+void Uma_ECS::CollisionSystem::DebugRender()
+{
+    if (!pGraphics) return;
+
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& sArray = pCoordinator->GetComponentArray<Sprite>();
+
+    for (const auto& entity : aEntities)
+    {
+        if (!cArray.Has(entity)) continue;
+
+        auto& c = cArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
+
+        if (!c.showBBox) continue;
+
+        // Get sprite size if available
+        Vec2 spriteSize{ 1.0f, 1.0f };
+        if (sArray.Has(entity))
+        {
+            auto& s = sArray.GetData(entity);
+            if (s.texture)
+            {
+                spriteSize = s.texture->GetNativeSize();
+            }
+        }
+
+        for (size_t i = 0; i < c.shapes.size(); ++i)
+        {
+            const auto& shape = c.shapes[i];
+            if (!shape.isActive) continue;
+
+            // ✅ OPTION 1: Draw the ACTUAL collision bounds (swept AABB)
+            // This shows what the collision system is actually checking
+            const BoundingBox& collisionBounds = c.bounds[i];
+
+            LayerMask effectiveLayer = c.GetEffectiveLayer(i);
+            LayerMask effectiveMask = c.GetEffectiveMask(i);
+
+            // Determine color based on purpose
+            float r = 1.f, g = 0.f, b = 0.f;
+
+            if (shape.purpose == ColliderPurpose::Trigger)
+            {
+                // Triggers: Blue
+                r = 0.f; g = 0.f; b = 1.f;
+            }
+            else if (shape.purpose == ColliderPurpose::Environment)
+            {
+                // Walls: Green
+                r = 0.f; g = 1.f; b = 0.f;
+            }
+            else if (shape.purpose == ColliderPurpose::Physics)
+            {
+                // Check what it collides with
+                if (effectiveMask & CL_WALL)
+                {
+                    // Feet (collides with walls): green
+                    r = 0.f; g = 1.f; b = 0.f;
+                }
+                else if (effectiveMask & CL_ENEMY || effectiveMask & CL_PLAYER)
+                {
+                    // Body (collides with enemies / player): Red
+                    r = 1.f; g = 0.f; b = 0.f;
+                }
+                else
+                {
+                    // Other physics: Purple
+                    r = 1.f; g = 0.f; b = 1.f;
+                }
+            }
+
+            // Draw the swept bounds (what collision system uses)
+            pGraphics->DrawDebugRect(collisionBounds, r, g, b); // Lower alpha for swept
+        }
+    }
 }
 
 void Uma_ECS::CollisionSystem::InsertIntoGrid(

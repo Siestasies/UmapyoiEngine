@@ -333,7 +333,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Collider>());
             m_Coordinator.SetSystemSignature<Uma_ECS::CollisionSystem>(sign);
         }
-        m_CollisionSystem->Init(&m_Coordinator, m_EventSystem);
+        m_CollisionSystem->Init(&m_Coordinator, m_EventSystem, m_Graphics);
 
         // Rendering System
         m_RenderingSystem = m_Coordinator.RegisterSystem<Uma_ECS::RenderingSystem>();
@@ -389,6 +389,9 @@ namespace Uma_Engine
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
+
+        if (m_CollisionSystem)
+            m_CollisionSystem->DebugRender();
     }
 
     void Scene::FixedUpdateECSSystems()
@@ -403,6 +406,5 @@ namespace Uma_Engine
         // Collision detection runs at FIXED timestep
         if (m_CollisionSystem)
             m_CollisionSystem->Update(m_FixedTimeStep);
-
     }
 }
