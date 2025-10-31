@@ -827,13 +827,7 @@ namespace Uma_ECS
         return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
     });
 
-        BIND_COMPONENT_GETTER(Transform);
-        BIND_COMPONENT_GETTER(RigidBody);
-        BIND_COMPONENT_GETTER(Sprite);
-        BIND_COMPONENT_GETTER(Collider);
-        BIND_COMPONENT_GETTER(Player);
-        BIND_COMPONENT_GETTER(Enemy);
-        BIND_COMPONENT_GETTER(Camera);
+        COMPONENT_LIST
 
 #undef BIND_COMPONENT_GETTER
 #undef COMPONENT_LIST
