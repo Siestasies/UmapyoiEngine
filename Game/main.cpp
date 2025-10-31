@@ -127,6 +127,8 @@ int main()
 
     std::stringstream newTitle;
 
+    bool test = false;
+
     while (!window.ShouldClose())
     {
         // calc dt
@@ -157,6 +159,12 @@ int main()
         // always update before systemmanager updates
         window.Update();
 
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_V))
+        {
+            
+            test = test ? false : true;
+        }
+
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
@@ -166,7 +174,10 @@ int main()
             Uma_Engine::Debugger::TestCrash();
         }
 
-        systemManager.Update(deltaTime);
+        if (!test)
+            systemManager.Update(deltaTime);
+        else 
+            systemManager.Update(0.f);
     }
 
     systemManager.Shutdown();

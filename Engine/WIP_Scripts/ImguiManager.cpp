@@ -417,6 +417,15 @@ namespace Uma_Engine
         ImGui::End();
     }
 
+    void ImguiManager::AddConsoleLog(const std::string& message)
+    {
+        logsVec.push_back(message);
+
+        // dont go beyond 100 messgaes shown
+        if (logsVec.size() > 100)
+            logsVec.erase(logsVec.begin());
+    }
+
     void ImguiManager::CreateDockspace()
     {
         // Create main dockspace window
@@ -467,15 +476,6 @@ namespace Uma_Engine
         }
 
         ImGui::End();
-    }
-
-    void ImguiManager::AddConsoleLog(const std::string& message)
-    {
-        logsVec.push_back(message);
-
-        // dont go beyond 100 messgaes shown
-        if (logsVec.size() > 100)
-            logsVec.erase(logsVec.begin());
     }
 
     void ImguiManager::InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport) {
