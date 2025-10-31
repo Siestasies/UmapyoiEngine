@@ -38,7 +38,10 @@ namespace Uma_Engine
         std::string windowTitle = "My Game Engine";
 
         // Performance / timing
-        //int targetFPS = 60;
+        // Physics timing
+        float fixedTimeStep = 1.0f / 60.0f;  // 60 FPS physics
+        float maxFrameTime = 0.25f;           // Cap to prevent spiral of death
+        int maxPhysicsSteps = 5;              // Max physics updates per frame
 
         // Debug / development options
         //bool enableDebugOverlay = false;

@@ -33,6 +33,7 @@ namespace Uma_ECS
         inline void Init(Coordinator* c) { gCoordinator = c; }
 
         void Update(float dt);
+        void ApplyVelocity(float dt); // Apply velocities to positions
 
         void PrintLog();
 

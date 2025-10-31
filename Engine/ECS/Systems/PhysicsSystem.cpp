@@ -40,63 +40,43 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
+        // Store previous position
         tf.prevPos = tf.position;
 
-        tf.rotation.x += tf.rotation.y; // I added this wai men
+        // Rotation update
+        tf.rotation.x += tf.rotation.y;
 
-        // Apply acceleration
+
+
+        // Apply acceleration to velocity
         rb.velocity += rb.acceleration * dt;
 
-        // Apply smooth friction
+        // Apply friction
         rb.velocity *= std::exp(-rb.fric_coeff * dt);
 
-        const float epsilon = 0.01f;
+        // Clamp small velocities
+        const float epsilon = 0.1f;
         if (std::abs(rb.velocity.x) < epsilon) rb.velocity.x = 0.f;
         if (std::abs(rb.velocity.y) < epsilon) rb.velocity.y = 0.f;
 
-        tf.position += rb.velocity * dt;
 
-        //rb.acceleration = { 0, 0 };
     }
+}
 
-    //// Get dense component arrays once
-    //auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
-    //auto& tfArray = gCoordinator->GetComponentArray<Transform>();
+// NEW METHOD: Apply position after collision resolution
+void Uma_ECS::PhysicsSystem::ApplyVelocity(float dt)
+{
+    auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
-    //if (rbArray.Size() == 0 ||
-    //    tfArray.Size() == 0)
-    //{
-    //    return;
-    //}
+    for (auto const& entity : aEntities)
+    {
+        auto& rb = rbArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
 
-    //// Iterate over the smaller array for efficiency (here, RigidBody)
-    //for (size_t i = 0; i < rbArray.Size(); ++i)
-    //{
-    //    Entity e = rbArray.GetEntity(i);
-
-    //    if (tfArray.Has(e))  // check if Transform exists
-    //    {
-    //        auto& rb = rbArray.GetComponentAt(i);
-    //        auto& tf = tfArray.GetData(e);
-
-    //        // set prev pos
-    //        tf.prevPos = tf.position;
-
-    //        rb.velocity += rb.acceleration * dt;
-
-    //        rb.velocity -= rb.velocity * rb.fric_coeff * dt;
-
-    //        tf.position += rb.velocity * dt;
-
-    //        rb.acceleration = { 0,0 };
-
-    //        // tmp
-    //        /*if (tf.position.y <= 0)
-    //        {
-    //            tf.position.y += 1080.f;
-    //        }*/
-    //    }
-    //}
+        // Now apply the (collision-corrected) velocity to position
+        tf.position += rb.velocity * dt;
+    }
 }
 
 void Uma_ECS::PhysicsSystem::PrintLog()

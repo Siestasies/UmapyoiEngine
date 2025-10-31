@@ -36,6 +36,14 @@ namespace Uma_ECS
         Vec2 scale{};
         Vec2 prevPos{}; // shdnt edit this value manually
 
+        // run time data
+        Vec2 renderPos{};
+
+        void UpdateRenderPosition(float alpha)
+        {
+            renderPos = prevPos + (position - prevPos) * alpha;
+        }
+
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();

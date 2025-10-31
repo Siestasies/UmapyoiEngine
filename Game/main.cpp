@@ -102,6 +102,7 @@ int main()
     scnm->SetSystemManager(&systemManager);
     scnm->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
     auto editorScene = scnm->CreateScene("EditorScene", "Assets/Scenes/test_collider.json");
+    editorScene->g_EngineConfig = gEngineConfig;
     scnm->AttachScriptToScene("EditorScene", "EditorBehavior");
     scnm->LoadScene("EditorScene");
     // Connect InputSystem to EventSystem

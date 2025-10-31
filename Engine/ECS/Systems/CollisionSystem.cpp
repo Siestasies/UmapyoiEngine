@@ -37,6 +37,7 @@ All rights reserved.
 void Uma_ECS::CollisionSystem::Update(float dt)
 {
     UpdateBoundingBoxes();
+
     UpdateCollision(dt);
 }
 
@@ -100,18 +101,16 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
             };
 
             Vec2 currentWorldPos = tf.position + worldOffset;
-            Vec2 prevWorldPos = tf.prevPos + worldOffset;
-
             Vec2 halfSize = scaledSize * 0.5f;
 
-            // Calculate bounds that encompass both positions
+            // Simple, tight bounds
             c.bounds[i].min = Vec2{
-                min(currentWorldPos.x - halfSize.x, prevWorldPos.x - halfSize.x),
-                min(currentWorldPos.y - halfSize.y, prevWorldPos.y - halfSize.y)
+                currentWorldPos.x - halfSize.x,
+                currentWorldPos.y - halfSize.y
             };
             c.bounds[i].max = Vec2{
-                max(currentWorldPos.x + halfSize.x, prevWorldPos.x + halfSize.x),
-                max(currentWorldPos.y + halfSize.y, prevWorldPos.y + halfSize.y)
+                currentWorldPos.x + halfSize.x,
+                currentWorldPos.y + halfSize.y
             };
         }
     }
@@ -357,6 +356,12 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     bool e1CanMove, bool e2CanMove,
     RigidBody* rb1, RigidBody* rb2)
 {
+    // Collision resolution constants
+    const float POSITION_CORRECTION = 0.4f;  // 40% position correction per frame
+    const float PENETRATION_SLOP = 0.01f;    // Allow small overlap to prevent jitter
+    const float WALL_FRICTION = 0.98f;        // Sliding friction (98% retention)
+    const float RESTITUTION = 0.0f;           // Bounciness (0 = no bounce for top-down)
+
     // Calculate centers and half-extents
     Vec2 center1 = (box1.min + box1.max) * 0.5f;
     Vec2 center2 = (box2.min + box2.max) * 0.5f;
@@ -375,122 +380,146 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
         return;
 
     // ═══════════════════════════════════════════════════════════
-    // UNITY-STYLE: Find contact normal and penetration depth
+    // Determine collision normal and penetration depth
     // ═══════════════════════════════════════════════════════════
-
     Vec2 normal{ 0, 0 };
     float penetration = 0;
 
     if (overlap.x < overlap.y)
     {
-        // Collision on X axis (vertical surface)
+        // Collision on X axis (vertical wall)
         normal.x = (delta.x > 0) ? 1.0f : -1.0f;
         normal.y = 0;
         penetration = overlap.x;
     }
     else
     {
-        // Collision on Y axis (horizontal surface)
+        // Collision on Y axis (horizontal wall)
         normal.x = 0;
         normal.y = (delta.y > 0) ? 1.0f : -1.0f;
         penetration = overlap.y;
     }
 
-    // ═══ DEBUG LOGGING ═══
-    //std::cout << "e1CanMove: " << e1CanMove << ", e2CanMove: " << e2CanMove << "\n";
-    //std::cout << "Normal: (" << normal.x << ", " << normal.y << ")\n";
-    //if (rb1) std::cout << "e1 velocity: (" << rb1->velocity.x << ", " << rb1->velocity.y << ")\n";
-    //if (rb2) std::cout << "e2 velocity: (" << rb2->velocity.x << ", " << rb2->velocity.y << ")\n";
-    // ═══════════════════════
-
     // ═══════════════════════════════════════════════════════════
-    // RESOLVE COLLISION
+    // Case 1: Both entities can move (dynamic vs dynamic)
     // ═══════════════════════════════════════════════════════════
-
     if (e1CanMove && e2CanMove)
     {
-        // ───────────────────────────────────────────────────────
-        // Both dynamic (Player vs Player, Enemy vs Enemy)
-        // ───────────────────────────────────────────────────────
-
-        // Push both apart
-        tf1.position += normal * (penetration * 0.5f);
-        tf2.position -= normal * (penetration * 0.5f);
+        // Apply position correction with slop
+        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
+        tf1.position += normal * (correctionAmount * 0.5f);
+        tf2.position -= normal * (correctionAmount * 0.5f);
 
         if (rb1 && rb2)
         {
-            // Simple impulse resolution
+            // Calculate relative velocity
             Vec2 relVel = rb1->velocity - rb2->velocity;
             float velAlongNormal = relVel.x * normal.x + relVel.y * normal.y;
 
-            if (velAlongNormal < 0) // Moving towards each other
+            // Only resolve if moving towards each other
+            if (velAlongNormal < 0)
             {
-                float restitution = 0.3f; // Bounciness
-                float impulse = -(1.0f + restitution) * velAlongNormal / 2.0f;
+                // Calculate impulse (simple equal mass assumption)
+                float impulse = -(1.0f + RESTITUTION) * velAlongNormal * 0.5f;
 
+                // Apply impulse to both objects
                 rb1->velocity.x += normal.x * impulse;
                 rb1->velocity.y += normal.y * impulse;
                 rb2->velocity.x -= normal.x * impulse;
                 rb2->velocity.y -= normal.y * impulse;
+
+                // Apply friction to tangential velocity
+                Vec2 tangent{ -normal.y, normal.x };
+                float tangentVel1 = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+                float tangentVel2 = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
+
+                rb1->velocity.x = normal.x * (rb1->velocity.x * normal.x + rb1->velocity.y * normal.y) +
+                    tangent.x * tangentVel1 * WALL_FRICTION;
+                rb1->velocity.y = normal.y * (rb1->velocity.x * normal.x + rb1->velocity.y * normal.y) +
+                    tangent.y * tangentVel1 * WALL_FRICTION;
+
+                rb2->velocity.x = normal.x * (rb2->velocity.x * normal.x + rb2->velocity.y * normal.y) +
+                    tangent.x * tangentVel2 * WALL_FRICTION;
+                rb2->velocity.y = normal.y * (rb2->velocity.x * normal.x + rb2->velocity.y * normal.y) +
+                    tangent.y * tangentVel2 * WALL_FRICTION;
             }
         }
     }
+    // ═══════════════════════════════════════════════════════════
+    // Case 2: Entity 1 can move, Entity 2 is static (vs wall/environment)
+    // ═══════════════════════════════════════════════════════════
     else if (e1CanMove && rb1)
     {
-        // Push out of wall
-        tf1.position += normal * penetration;
+        // Apply gradual position correction
+        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
+        tf1.position += normal * correctionAmount;
 
+        // Calculate velocity along collision normal
         float velAlongNormal = rb1->velocity.x * normal.x + rb1->velocity.y * normal.y;
 
-        if (velAlongNormal < 0) // Moving into wall
+        // Only resolve if moving INTO the wall
+        if (velAlongNormal < 0)
         {
-            // Zero velocity going into wall
+            // Remove velocity component going into wall
             rb1->velocity.x -= normal.x * velAlongNormal;
             rb1->velocity.y -= normal.y * velAlongNormal;
 
-            // CRITICAL FOR TOP-DOWN: Also zero acceleration into wall
+            // Apply friction to sliding velocity (perpendicular to normal)
+            Vec2 tangent{ -normal.y, normal.x };  // Perpendicular vector
+            float velAlongTangent = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+
+            // Reconstruct velocity: 0 along normal + damped tangent
+            rb1->velocity.x = tangent.x * velAlongTangent * WALL_FRICTION;
+            rb1->velocity.y = tangent.y * velAlongTangent * WALL_FRICTION;
+
+            // Handle acceleration (for continuous input like WASD)
             float accelAlongNormal = rb1->acceleration.x * normal.x + rb1->acceleration.y * normal.y;
-            if (accelAlongNormal < 0)
+
+            // Only zero acceleration if pushing into wall AND deeply penetrating
+            if (accelAlongNormal < 0 && penetration > PENETRATION_SLOP * 2.0f)
             {
                 rb1->acceleration.x -= normal.x * accelAlongNormal;
                 rb1->acceleration.y -= normal.y * accelAlongNormal;
             }
         }
     }
+    // ═══════════════════════════════════════════════════════════
+    // Case 3: Entity 2 can move, Entity 1 is static
+    // ═══════════════════════════════════════════════════════════
     else if (e2CanMove && rb2)
     {
-        // Push out of wall
-        tf2.position -= normal * penetration;
+        // Apply gradual position correction (opposite direction)
+        float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * POSITION_CORRECTION;
+        tf2.position -= normal * correctionAmount;
 
-        // ═══════════════════════════════════════════════════════════
-        // TOP-DOWN FIX: Zero velocity AND acceleration on wall hit
-        // ═══════════════════════════════════════════════════════════
+        // Calculate velocity along collision normal (flip sign for entity 2)
+        float velAlongNormal = rb2->velocity.x * (-normal.x) + rb2->velocity.y * (-normal.y);
 
-        float velAlongNormal = rb2->velocity.x * normal.x + rb2->velocity.y * normal.y;
-
-        if (velAlongNormal > 0) // Moving into wall
+        // Only resolve if moving INTO the wall
+        if (velAlongNormal < 0)
         {
-            //std::stringstream ss{ "" };
-            //ss << "Player Movement (b): " << rb2->velocity;
-            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            // Remove velocity component going into wall
+            rb2->velocity.x -= (-normal.x) * velAlongNormal;
+            rb2->velocity.y -= (-normal.y) * velAlongNormal;
 
-            // Zero velocity going into wall
-            rb2->velocity.x -= normal.x * velAlongNormal;
-            rb2->velocity.y -= normal.y * velAlongNormal;
+            // Apply friction to sliding velocity
+            Vec2 tangent{ normal.y, -normal.x };  // Perpendicular (flipped for entity 2)
+            float velAlongTangent = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
 
-            //ss << "Player Movement (a): " << rb2->velocity;
-            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            // Reconstruct velocity with friction
+            rb2->velocity.x = tangent.x * velAlongTangent * WALL_FRICTION;
+            rb2->velocity.y = tangent.y * velAlongTangent * WALL_FRICTION;
 
-            // CRITICAL FOR TOP-DOWN: Also zero acceleration into wall
-            float accelAlongNormal = rb2->acceleration.x * normal.x + rb2->acceleration.y * normal.y;
-            if (accelAlongNormal > 0)
+            // Handle acceleration
+            float accelAlongNormal = rb2->acceleration.x * (-normal.x) + rb2->acceleration.y * (-normal.y);
+
+            // Only zero acceleration if pushing into wall AND deeply penetrating
+            if (accelAlongNormal < 0 && penetration > PENETRATION_SLOP * 2.0f)
             {
-                rb2->acceleration.x -= normal.x * accelAlongNormal;
-                rb2->acceleration.y -= normal.y * accelAlongNormal;
+                rb2->acceleration.x -= (-normal.x) * accelAlongNormal;
+                rb2->acceleration.y -= (-normal.y) * accelAlongNormal;
             }
         }
-
-
     }
 }
 
