@@ -12,47 +12,6 @@
 
 #include <functional>
 
-// --------------------------------------------------
-// |          Component Getter Macro                |
-// --------------------------------------------------
-
-#define BIND_COMPONENT_GETTER(ComponentType) \
-    env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
-        if (!pCoordinator->HasActiveEntity(entity)) { \
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, \
-                "Lua: Tried to access " #ComponentType " on destroyed entity"); \
-            return nullptr; \
-        } \
-        auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
-        if (!arr.Has(entity)) { \
-            return nullptr; \
-        } \
-        return &arr.GetData(entity); \
-    }); \
-    env.set_function("Has" #ComponentType, [this, entity]() -> bool { \
-        if (!pCoordinator->HasActiveEntity(entity)) return false; \
-        return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
-    });
-
-// SCRAPED METHOD NOT QUITE PRACTICAL
-//// --------------------------------------------------
-//// |            Input System Macro                  |
-//// --------------------------------------------------
-//
-//// InputSystem Functions
-//#define BIND_INPUT_FUNCTION(FuncName) \
-//    sharedLua->set_function(#FuncName, [this](int param) -> bool \
-//    { \
-//        if (!pInputSystem) \
-//        { \
-//            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, \
-//                "Lua: Input System not available for " #FuncName); \
-//            return false; \
-//        } \
-//        return pInputSystem->FuncName(param); \
-//    } \
-//    );
-
 namespace Uma_ECS
 {
     
@@ -715,58 +674,11 @@ namespace Uma_ECS
         // Sync variables to Lua BEFORE calling Start()
         SyncVariablesToLua(script);
 
-        // cache the function to the callback
-        CacheCallbacks(script);
-
         script.isVariableDirty = false;
         script.isInitialized = true;
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
            "Lua script loaded: " + script.scriptPath);
-    }
-
-    void LuaScriptingSystem::CacheCallbacks(LuaScriptInstance& script)
-    {
-        /*sol::optional<sol::protected_function> onCollision = script.scriptEnv["OnCollision"];
-        if (onCollision)
-        {
-            script.callbacks.hasOnCollision = true;
-            script.callbacks.onCollisionFunc = *onCollision;
-        }*/
-    }
-
-    template <typename... Args>
-    void LuaScriptingSystem::CallCachedFunction(LuaScriptInstance& script, 
-                                                sol::protected_function& func, 
-                                                Args&&... args)
-    {
-        if (!func.valid() || func == sol::nil)
-        {
-            return;
-        }
-
-        try
-        {
-            auto result = func(std::forward<Args>(args)...);
-
-            if (!result.valid())
-            {
-                sol::error err = result;
-                script.hasError = true;
-                script.errorMessage = err.what();
-
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    script.scriptPath + " callback error: " + script.errorMessage);
-            }
-        }
-        catch (const sol::error& e)
-        {
-            script.hasError = true;
-            script.errorMessage = e.what();
-
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                script.scriptPath + " callback exception: " + script.errorMessage);
-        }
     }
 
     void LuaScriptingSystem::RegisterEventListeners()
@@ -867,7 +779,7 @@ namespace Uma_ECS
         Entity other,
         const char* callbackName)
     {
-        /*if (!scriptArray.Has(owner)) return;
+        if (!scriptArray.Has(owner)) return;
 
         auto& scriptComponent = scriptArray.GetData(owner);
 
@@ -875,36 +787,45 @@ namespace Uma_ECS
         {
             if (!script.isEnabled || script.hasError) continue;
 
-            sol::optional<sol::protected_function> callback =
-                script.scriptEnv[callbackName];
-
-            if (callback)
-            {
-                CallCachedFunction(script, *callback, other);
-            }
-        }*/
+            CallLuaFunction(script, callbackName, other);
+        }
     }
      
-    // basically setting up functions that lua script can use 
-    // eg. get transform/rigidbody or other of entity
+    // this function is to allow the luascript to be able to get other component 
+    // of this entity
+    // key difference from register LUA API is that this is only for the entity 
+    // that owns the script (non global)
     void LuaScriptingSystem::BindEntityAPI(Entity entity, sol::environment& env)
     {
-        // Get components THIS IS UGLY
-        // CAN BE OPTIMISED
-        /*env.set_function("GetTransform", [this, entity]() -> Transform& 
-            {
-                return pCoordinator->GetComponent<Transform>(entity);
-            });
+       // USING MARCO TO DO THE JOB 
+       // More effecient
 
-        env.set_function("GetRigidBody", [this, entity]() -> RigidBody& 
-            {
-                return pCoordinator->GetComponent<RigidBody>(entity);
-            });
+#define COMPONENT_LIST \
+        BIND_COMPONENT_GETTER(Transform)   \
+        BIND_COMPONENT_GETTER(RigidBody)   \
+        BIND_COMPONENT_GETTER(Sprite)      \
+        BIND_COMPONENT_GETTER(Collider)    \
+        BIND_COMPONENT_GETTER(Player)      \
+        BIND_COMPONENT_GETTER(Enemy)       \
+        BIND_COMPONENT_GETTER(Camera)
 
-        env.set_function("GetSprite", [this, entity]() -> Sprite& 
-            {
-                return pCoordinator->GetComponent<Sprite>(entity);
-            });*/
+#define BIND_COMPONENT_GETTER(ComponentType) \
+    env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
+        if (!pCoordinator->HasActiveEntity(entity)) { \
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, \
+                "Lua: Tried to access " #ComponentType " on destroyed entity"); \
+            return nullptr; \
+        } \
+        auto& arr = pCoordinator->GetComponentArray<ComponentType>(); \
+        if (!arr.Has(entity)) { \
+            return nullptr; \
+        } \
+        return &arr.GetData(entity); \
+    }); \
+    env.set_function("Has" #ComponentType, [this, entity]() -> bool { \
+        if (!pCoordinator->HasActiveEntity(entity)) return false; \
+        return pCoordinator->GetComponentArray<ComponentType>().Has(entity); \
+    });
 
         BIND_COMPONENT_GETTER(Transform);
         BIND_COMPONENT_GETTER(RigidBody);
@@ -914,10 +835,8 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Enemy);
         BIND_COMPONENT_GETTER(Camera);
 
-
-        // debugging
-
-
+#undef BIND_COMPONENT_GETTER
+#undef COMPONENT_LIST
     }
 
     void LuaScriptingSystem::DiscoverExposedVariables(LuaScriptInstance& script)
@@ -1139,7 +1058,8 @@ namespace Uma_ECS
 
     // Invoking the Lua code
     // BISMILLAH PLEASE WORK
-    void LuaScriptingSystem::CallLuaFunction(LuaScriptInstance& script, const char* funcName, float dt)
+    template<typename... Args>
+    void LuaScriptingSystem::CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args)
     {
         try
         {
@@ -1148,16 +1068,7 @@ namespace Uma_ECS
             if (!func)
                 return;
 
-            sol::protected_function_result result;
-
-            if (std::string(funcName) == "Update")
-            {
-                result = (*func)(dt);
-            }
-            else
-            {
-                result = (*func)();
-            }
+            auto result = (*func)(std::forward<Args>(args)...);
 
             if (!result.valid())
             {
