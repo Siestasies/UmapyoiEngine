@@ -715,14 +715,14 @@ namespace Uma_Engine
                 };
 
                 playerCollider.shapes.push_back(ColliderShape{
-                    .size = Vec2(7.0f, 0.5f),
+                    .size = Vec2(7.0f, 2.f),
                     .offset = Vec2(0, -2.75f),
                     .purpose = ColliderPurpose::Physics,
                     .layer = CL_PLAYER,
                     .colliderMask = CL_WALL,
                     .isActive = true,
                     .autoFitToSprite = false
-                    });
+                });
 
                 playerCollider.bounds.resize(playerCollider.shapes.size());
                 GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);

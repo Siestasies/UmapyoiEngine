@@ -52,20 +52,20 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
     "entities": [
         {
-            "id": 38,
+            "id": 39,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -138,72 +138,11 @@
             }
         },
         {
-            "id": 40,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "position": {
-                        "x": 20.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
-                    "layer": 64,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 4294967295,
-                    "showBBox": true,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": -2.0
-                            },
-                            "size": {
-                                "x": 5.0,
-                                "y": 1.0
-                            },
-                            "purpose": 1,
-                            "layer": 8,
-                            "colliderMask": 6,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                }
-            }
-        },
-        {
             "id": 41,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 25.0,
+                        "x": 20.0,
                         "y": 0.0
                     },
                     "rotation": {
@@ -264,7 +203,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 30.0,
+                        "x": 25.0,
                         "y": 0.0
                     },
                     "rotation": {
@@ -325,7 +264,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 35.0,
+                        "x": 30.0,
                         "y": 0.0
                     },
                     "rotation": {
@@ -386,7 +325,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 40.0,
+                        "x": 35.0,
                         "y": 0.0
                     },
                     "rotation": {
@@ -447,7 +386,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 45.0,
+                        "x": 40.0,
                         "y": 0.0
                     },
                     "rotation": {
@@ -461,8 +400,8 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
-                    "layer": 2,
+                    "textureName": "wall_btm",
+                    "layer": 64,
                     "flipX": false,
                     "flipY": false,
                     "Native": true
@@ -487,17 +426,17 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 0.0
+                                "y": -2.0
                             },
                             "size": {
-                                "x": 0.0,
-                                "y": 0.0
+                                "x": 5.0,
+                                "y": 1.0
                             },
                             "purpose": 1,
                             "layer": 8,
                             "colliderMask": 6,
                             "isActive": true,
-                            "autoFitToSprite": true
+                            "autoFitToSprite": false
                         }
                     ]
                 }
@@ -509,7 +448,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 5.0
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -570,7 +509,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 10.0
+                        "y": 5.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -631,7 +570,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 15.0
+                        "y": 10.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -692,7 +631,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 20.0
+                        "y": 15.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -753,7 +692,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 25.0
+                        "y": 20.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -814,7 +753,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 30.0
+                        "y": 25.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -875,7 +814,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 45.0,
-                        "y": 35.0
+                        "y": 30.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -935,7 +874,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 20.0,
+                        "x": 45.0,
                         "y": 35.0
                     },
                     "rotation": {
@@ -949,7 +888,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "textureName": "wall_right",
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
@@ -996,7 +935,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 25.0,
+                        "x": 20.0,
                         "y": 35.0
                     },
                     "rotation": {
@@ -1057,7 +996,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 30.0,
+                        "x": 25.0,
                         "y": 35.0
                     },
                     "rotation": {
@@ -1118,7 +1057,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 35.0,
+                        "x": 30.0,
                         "y": 35.0
                     },
                     "rotation": {
@@ -1179,7 +1118,7 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 40.0,
+                        "x": 35.0,
                         "y": 35.0
                     },
                     "rotation": {
@@ -1240,22 +1179,22 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 20.0,
-                        "y": 7.5
+                        "x": 40.0,
+                        "y": 35.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
+                    "textureName": "wall_top",
+                    "layer": 2,
                     "flipX": false,
                     "flipY": false,
                     "Native": true
@@ -1271,6 +1210,28 @@
                     },
                     "accel_strength": 200.0,
                     "fric_coeff": 100.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 4294967295,
+                    "showBBox": true,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 6,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
                 }
             }
         },
@@ -1319,7 +1280,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 20.0,
-                        "y": 17.5
+                        "y": 7.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1358,7 +1319,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 20.0,
-                        "y": 27.5
+                        "y": 17.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1396,8 +1357,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 25.0,
-                        "y": 7.5
+                        "x": 20.0,
+                        "y": 27.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1436,7 +1397,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 25.0,
-                        "y": 17.5
+                        "y": 7.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1475,7 +1436,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 25.0,
-                        "y": 27.5
+                        "y": 17.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1513,8 +1474,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 30.0,
-                        "y": 7.5
+                        "x": 25.0,
+                        "y": 27.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1553,7 +1514,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 30.0,
-                        "y": 17.5
+                        "y": 7.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1592,7 +1553,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 30.0,
-                        "y": 27.5
+                        "y": 17.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1630,8 +1591,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 35.0,
-                        "y": 7.5
+                        "x": 30.0,
+                        "y": 27.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1670,7 +1631,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 35.0,
-                        "y": 17.5
+                        "y": 7.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1709,7 +1670,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 35.0,
-                        "y": 27.5
+                        "y": 17.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1747,8 +1708,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 40.0,
-                        "y": 7.5
+                        "x": 35.0,
+                        "y": 27.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1787,7 +1748,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 40.0,
-                        "y": 17.5
+                        "y": 7.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1826,7 +1787,7 @@
                 "struct Uma_ECS::Transform": {
                     "position": {
                         "x": 40.0,
-                        "y": 27.5
+                        "y": 17.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1864,8 +1825,47 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": -28.029,
-                        "y": 28.399
+                        "x": 40.0,
+                        "y": 27.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "floor_tatami",
+                    "layer": 4,
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 200.0,
+                    "fric_coeff": 100.0
+                }
+            }
+        },
+        {
+            "id": 75,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "position": {
+                        "x": -15.68,
+                        "y": 12.052
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1956,17 +1956,17 @@
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "rotationSpeed",
+                                    "name": "testCounter",
                                     "type": 0,
-                                    "value": 45.0,
+                                    "value": 36786.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "testCounter",
+                                    "name": "rotationSpeed",
                                     "type": 0,
-                                    "value": 10178.0,
+                                    "value": 45.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -1997,7 +1997,7 @@
             }
         },
         {
-            "id": 75,
+            "id": 76,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -2012,7 +2012,7 @@
                         "x": 0.5,
                         "y": 0.5
                     },
-                    "parent": 74
+                    "parent": 75
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
@@ -2058,12 +2058,12 @@
             }
         },
         {
-            "id": 76,
+            "id": 77,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": -11.365,
-                        "y": 24.27
+                        "x": -1.591,
+                        "y": 14.118
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2124,7 +2124,7 @@
                             },
                             "size": {
                                 "x": 7.0,
-                                "y": 0.5
+                                "y": 2.0
                             },
                             "purpose": 0,
                             "layer": 2,
@@ -2141,7 +2141,7 @@
             }
         },
         {
-            "id": 77,
+            "id": 78,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
