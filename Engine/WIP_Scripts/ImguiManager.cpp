@@ -205,6 +205,7 @@ namespace Uma_Engine
             {
                 if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
                 {
+                    pEventSystem->Emit<PlaySceneRequest>();
                     m_playState = PlayState::Playing;
                 }
             }
@@ -227,6 +228,7 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
+                pEventSystem->Emit<PauseSceneRequest>();
                 if (m_playState == PlayState::Playing)
                 {
                     m_playState = PlayState::Paused;
@@ -247,8 +249,9 @@ namespace Uma_Engine
             // Stop Button
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
+                pEventSystem->Emit<StopSceneRequest>();
                 m_playState = PlayState::Stopped;
-                pEventSystem->Emit<LoadSceneRequestEvent>("fuck u");
+                pEventSystem->Emit<LoadSceneRequestEvent>("random string");
             }
 
             // Show current state text on the right

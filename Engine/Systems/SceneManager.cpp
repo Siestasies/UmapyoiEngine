@@ -1,4 +1,8 @@
 #include "SceneManager.h"
+
+#include "Core/EventSystem.h"
+#include "../Events/IMGUIEvents.h"
+
 #include <algorithm>
 
 namespace Uma_Engine
@@ -9,6 +13,29 @@ namespace Uma_Engine
         std::cout << "SceneManager: Initialized" << std::endl;
         // Scripts will be registered externally
         // Scenes will be created on-demand
+
+        playMode = PLAYMODE::PM_STOP;
+
+        // sub to events
+        EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
+
+        eventSystem->Subscribe<PlaySceneRequest>(
+            [&](const PlaySceneRequest& e) {
+                playMode = PLAYMODE::PM_PLAY;
+            }
+        );
+
+        eventSystem->Subscribe<PauseSceneRequest>(
+            [&](const PauseSceneRequest& e) {
+                playMode = PLAYMODE::PM_PAUSE;
+            }
+        );
+
+        eventSystem->Subscribe<StopSceneRequest>(
+            [&](const StopSceneRequest& e) {
+                playMode = PLAYMODE::PM_STOP;
+            }
+        );
     }
 
     void SceneManager::Update(float dt)
@@ -16,14 +43,16 @@ namespace Uma_Engine
         // Update loading scenes first
         UpdateLoadingScenes();
 
+        std::cout << "play mode : " << playMode << std::endl;
+
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
-            if (imHandler->IsPlaying())
+            if (playMode == PLAYMODE::PM_PLAY)
             {
                 m_ActiveScene->Update(dt);
             }
-            else if (imHandler->IsPaused())
+            else if (playMode == PLAYMODE::PM_PAUSE)
             {
                 m_ActiveScene->Update(0.f);
             }

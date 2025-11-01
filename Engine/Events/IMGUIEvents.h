@@ -156,4 +156,22 @@ namespace Uma_Engine
     public:
         std::string filepath;
     };
+
+    class PlaySceneRequest : public Event
+    {
+    public:
+        PlaySceneRequest() { priority = Priority::High; }
+    };
+
+    class StopSceneRequest : public Event
+    {
+    public:
+        StopSceneRequest() { priority = Priority::High; }
+    };
+
+    class PauseSceneRequest : public Event
+    {
+    public:
+        PauseSceneRequest() { priority = Priority::High; }
+    };
 }

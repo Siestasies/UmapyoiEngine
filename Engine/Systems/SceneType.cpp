@@ -156,6 +156,9 @@ namespace Uma_Engine
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
+
+        if (m_TransformSystem)
+            m_TransformSystem->UpdateWorldTransform();
     }
 
     // SCRIPT STUFF
@@ -250,10 +253,8 @@ namespace Uma_Engine
 
     void Scene::Deserialize(const std::string& filepath)
     {
-        // play
         if (filepath.empty())
             gGameSerializer.load(m_FilePath);
-        // unplay
     }
 
     // INTERNALS
@@ -413,12 +414,6 @@ namespace Uma_Engine
     {
         if (m_PlayerController)
             m_PlayerController->Update(dt);
-
-        /*if (m_PhysicsSystem)
-            m_PhysicsSystem->Update(m_SmoothedDt);*/
-
-       /* if (m_CollisionSystem)
-            m_CollisionSystem->Update(dt);*/
 
         if (m_LuaScriptingSystem)
             m_LuaScriptingSystem->Update(dt);

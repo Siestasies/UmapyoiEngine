@@ -29,6 +29,14 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    enum PLAYMODE
+    {
+        PM_PLAY,
+        PM_PAUSE,
+        PM_STOP
+    };
+
+
     class SceneManager : public ISystem
     {
     public:
@@ -102,5 +110,7 @@ namespace Uma_Engine
         std::shared_ptr<Scene> m_ActiveScene;
 
         ImguiManager* imHandler;
+
+        PLAYMODE playMode = PLAYMODE::PM_STOP;
     };
 }
