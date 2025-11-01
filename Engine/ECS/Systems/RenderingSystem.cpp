@@ -98,21 +98,21 @@ namespace Uma_ECS
             if (sr.UseNativeSize)
             {
                 spriteScale = sr.texture->GetNativeSize();
-                spriteScale.x *= tf.scale.x;
-                spriteScale.y *= tf.scale.y;
+                spriteScale.x *= tf.worldScale.x;
+                spriteScale.y *= tf.worldScale.y;
             }
             else
             {
-                spriteScale = tf.scale;
+                spriteScale = tf.worldScale;
             }
 
             sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
                 {
                     .tex_id = sr.texture->tex_id,
                     //.tex_size = sr.texture->tex_size,
-                    .pos = tf.position,
+                    .pos = tf.worldPosition,
                     .scale = spriteScale,
-                    .rot = tf.rotation.x,
+                    .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
                 });
         }

@@ -24,6 +24,7 @@ All rights reserved.
 #pragma once
 
 #include "../../Math/Math.h"
+#include <optional>
 //#include "Core/SerializationBase.h"
 
 namespace Uma_ECS
@@ -38,6 +39,16 @@ namespace Uma_ECS
 
         // run time data
         Vec2 renderPos{};
+
+        // gameobject grouping
+        std::optional<Entity> parent;
+        std::vector<Entity> children;
+
+        // Cached world-space transforms (updated by TransformSystem)
+        Vec2 worldPosition{};
+        Vec2 worldScale{ 1.0f, 1.0f };
+        float worldRotation{};
+        bool isDirty = true;
 
         void UpdateRenderPosition(float alpha)
         {
@@ -67,6 +78,14 @@ namespace Uma_ECS
             value.AddMember("scale", scl, allocator);
 
             // prev pos is runtime object no need to save
+            if (parent.has_value())
+            {
+                value.AddMember("parent", parent.value(), allocator);
+            }
+            else
+            {
+                value.AddMember("parent", -1, allocator);  // Use -1 for JSON compatibility
+            }
         }
 
         // Deserialize from JSON
@@ -86,6 +105,25 @@ namespace Uma_ECS
 
             // Reset prevPos automatically
             prevPos = position;
+
+            if (value.HasMember("parent"))
+            {
+                int parentID = value["parent"].GetInt();
+                if (parent >= 0)
+                {
+                    parent = static_cast<Entity>(parentID);
+                }
+                else
+                {
+                    parent = std::nullopt;
+                }
+            }
+
+            // Reset world transforms
+            worldPosition = position;
+            worldScale = scale;
+            worldRotation = rotation.x;
+            isDirty = true;
         }
     };
 }

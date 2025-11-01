@@ -82,19 +82,19 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.scale.x,
-                effectiveSize.y * tf.scale.y
+                effectiveSize.x * tf.worldScale.x,
+                effectiveSize.y * tf.worldScale.y
             };
 
             Vec2 worldOffset = Vec2{
-                shape.offset.x * tf.scale.x,
-                shape.offset.y * tf.scale.y
+                shape.offset.x * tf.worldScale.x,
+                shape.offset.y * tf.worldScale.y
             };
 
             Vec2 halfSize = scaledSize * 0.5f;
 
             // SWEPT: Cover both current AND previous position
-            Vec2 currentWorldPos = tf.position + worldOffset;
+            Vec2 currentWorldPos = tf.worldPosition + worldOffset;
             Vec2 prevWorldPos = tf.prevPos + worldOffset;
 
             // Calculate bounds at current position

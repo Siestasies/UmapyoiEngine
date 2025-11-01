@@ -317,6 +317,15 @@ namespace Uma_Engine
         }
         m_PlayerController->Init(m_EventSystem, m_HybridInputSystem, &m_Coordinator);
 
+        // Transform System
+        m_TransformSystem = m_Coordinator.RegisterSystem<Uma_ECS::TransformSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::TransformSystem>(sign);
+        }
+        m_TransformSystem->Init(&m_Coordinator);
+
         // Physics System
         m_PhysicsSystem = m_Coordinator.RegisterSystem<Uma_ECS::PhysicsSystem>();
         {
@@ -402,6 +411,9 @@ namespace Uma_Engine
         // Physics runs at FIXED timestep
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
+
+        if (m_TransformSystem)
+            m_TransformSystem->UpdateWorldTransform();
 
         if (m_PhysicsSystem)
             m_PhysicsSystem->ApplyVelocity(m_FixedTimeStep);

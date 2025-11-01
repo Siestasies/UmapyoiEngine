@@ -26,6 +26,7 @@ All rights reserved.
 #include "ECS/Systems/RenderingSystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
 #include "ECS/Systems/LuaScriptingSystem.hpp"
+#include "ECS/Systems/TransformSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -131,6 +132,7 @@ namespace Uma_Engine
             // ECS related
             using Coordinator = Uma_ECS::Coordinator;
             Coordinator m_Coordinator;
+            std::shared_ptr<Uma_ECS::TransformSystem> m_TransformSystem;
             std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
             std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
             std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;

@@ -96,6 +96,12 @@ namespace Uma_ECS
         // Find first entity with a component by string name (for Lua)
         Entity FindEntityWithComponentByName(const std::string& componentName);
 
+        void SetParent(Entity child, Entity parent);
+        void RemoveParent(Entity child);
+        std::optional<Entity> GetParent(Entity entity);
+        std::vector<Entity> GetChildren(Entity entity);
+        void DestroyEntityAndChildren(Entity entity);
+
         // Components functions
 
         template<typename T>

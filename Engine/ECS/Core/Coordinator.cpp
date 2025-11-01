@@ -30,6 +30,8 @@ All rights reserved.
 #include <fstream>
 #include <rapidjson/document.h>
 
+#include "Components/Transform.h"
+
 namespace Uma_ECS
 {
     void Coordinator::Init(Uma_Engine::EventSystem* eventSystem)
@@ -60,6 +62,36 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntity(Entity entity)
     {
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(entity))
+        {
+            auto& tf = tfArray.GetData(entity);
+
+            // Remove from parent's children list
+            if (tf.parent.has_value())
+            {
+                auto& parentTf = tfArray.GetData(tf.parent.value());
+                auto it = std::find(parentTf.children.begin(),
+                    parentTf.children.end(), entity);
+                if (it != parentTf.children.end())
+                {
+                    parentTf.children.erase(it);
+                }
+            }
+
+            // Orphan children (convert to world position so they stay in place)
+            for (Entity child : tf.children)
+            {
+                if (tfArray.Has(child))
+                {
+                    auto& childTf = tfArray.GetData(child);
+                    childTf.parent = std::nullopt;  // Clear the optional
+                    childTf.position = childTf.worldPosition;
+                }
+            }
+        }
+
+        // Original destroy logic
         aSystemManager->EntityDestroyed(entity);
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
@@ -130,6 +162,120 @@ namespace Uma_ECS
         }
 
         return result[0];
+    }
+
+    void Coordinator::SetParent(Entity child, Entity parent)
+    {
+        if (child == parent)
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Cannot set entity as its own parent");
+            return;
+        }
+
+        // check for circular dependency
+        std::optional<Entity> checkEntity = parent;
+        while (checkEntity.has_value())
+        {
+            if (checkEntity.value() == child)
+            {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                    "Circular parent-child relationship detected");
+                return;
+            }
+            checkEntity = GetParent(checkEntity.value());
+        }
+
+        auto& childTf = GetComponent<Transform>(child);
+
+        // remove from old parent
+        if (childTf.parent.has_value())
+        {
+            auto& oldParentTf = GetComponent<Transform>(childTf.parent.value());
+            auto it = std::find(oldParentTf.children.begin(), oldParentTf.children.end(), child);
+            if (it != oldParentTf.children.end())
+            {
+                oldParentTf.children.erase(it);
+            }
+        }
+
+        // set new parent
+        childTf.parent = parent;
+
+        auto& parentTf = GetComponent<Transform>(parent);
+        parentTf.children.push_back(child);
+
+        // Convert world position to local position relative to new parent
+        childTf.position = childTf.worldPosition - parentTf.worldPosition;
+        childTf.isDirty = true;
+    }
+
+    void Coordinator::RemoveParent(Entity child)
+    {
+        auto& childTf = GetComponent<Transform>(child);
+
+        if (!childTf.parent.has_value())
+        {
+            // this entity doesnt have any parent
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Entity doesnt have any parent");
+            return;
+        }
+
+        // have a parent
+        auto& parentTf = GetComponent<Transform>(childTf.parent.value());
+        auto it = std::find(std::begin(parentTf.children), std::end(parentTf.children), child);
+        if (it != std::end(parentTf.children))
+        {
+            parentTf.children.erase(it);
+        }
+
+        childTf.parent = std::nullopt;
+        childTf.position = childTf.worldPosition;
+        childTf.isDirty = true;
+    }
+
+    std::optional<Entity> Coordinator::GetParent(Entity entity)
+    {
+        if (!aEntityManager->IsEntityActive(entity))
+        {
+            return std::nullopt;
+        }
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (!tfArray.Has(entity))
+        {
+            return std::nullopt;
+        }
+
+        return tfArray.GetData(entity).parent;
+    }
+
+    std::vector<Entity> Coordinator::GetChildren(Entity entity)
+    {
+        if (!aEntityManager->IsEntityActive(entity))
+            return {};
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (!tfArray.Has(entity))
+            return {};
+
+        return tfArray.GetData(entity).children;
+    }
+
+    void Coordinator::DestroyEntityAndChildren(Entity entity)
+    {
+        // Get children before destroying parent
+        std::vector<Entity> children = GetChildren(entity);
+
+        // Recursively destroy children first
+        for (Entity child : children)
+        {
+            DestroyEntityAndChildren(child);
+        }
+
+        // Destroy this entity
+        DestroyEntity(entity);
     }
 
     void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
