@@ -52,7 +52,8 @@ namespace Uma_ECS
             sol::lib::base,
             sol::lib::math,
             sol::lib::string,
-            sol::lib::table
+            sol::lib::table,
+            sol::lib::package
         );
 
          RegisterLuaAPI();
@@ -67,7 +68,7 @@ namespace Uma_ECS
             auto& scriptComponent = scriptArray.GetData(entity);
 
             // Initialize scripts if needed
-           /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
+            /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
             {
                 InitializeScripts(entity, scriptComponent);
             }*/
