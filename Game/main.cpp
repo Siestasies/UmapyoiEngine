@@ -105,7 +105,8 @@ int main()
     // FAKE - this is basically to call events for imgui/editor buttons
     scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
     scn_mgr->RegisterScript<Uma_Engine::EditorScript>("EditorBehaviour");
-    auto editorScene = scn_mgr->CreateScene("GameScene1", "test_collider.json");
+
+    auto editorScene = scn_mgr->CreateScene("GameScene1", "test_collider.scn");
     editorScene->g_EngineConfig = gEngineConfig;
     scn_mgr->AttachScriptToScene("GameScene1", "GameBehaviour");
     scn_mgr->AttachScriptToScene("GameScene1", "EditorBehaviour");

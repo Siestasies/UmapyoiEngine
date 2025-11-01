@@ -219,10 +219,7 @@ namespace Uma_Engine
         {
             std::string filepath = m_CurrentSceneName;
 
-            GameSerializer serializer;
-            serializer.Register(GetResources());
-            serializer.Register(&GetCoordinator());
-            serializer.save(filepath);
+            m_Scene->gGameSerializer.save(filepath);
 
             std::cout << "Scene saved to: " << filepath << std::endl;
         }
@@ -233,10 +230,7 @@ namespace Uma_Engine
 
             std::string filepath = m_CurrentSceneName;
 
-            GameSerializer serializer;
-            serializer.Register(GetResources());
-            serializer.Register(&GetCoordinator());
-            serializer.load(filepath);
+            m_Scene->gGameSerializer.load(filepath);
 
             std::cout << "Scene loaded from: " << filepath << std::endl;
         }
@@ -1044,12 +1038,12 @@ namespace Uma_Engine
 
         void LoadPrefab(std::string prefab_name)
         {
-           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name + ".json");
+           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab");
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)
         {
-            m_Scene->gGameSerializer.savePrefab(entity, Uma_FilePath::PREFAB_DIR + prefab_name + ".json");
+            m_Scene->gGameSerializer.savePrefab(entity, Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab");
         }
 
         void ChangeAllEnemyRot(float rot)
