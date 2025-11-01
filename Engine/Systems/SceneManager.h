@@ -33,7 +33,6 @@ namespace Uma_Engine
     {
     public:
         // ISYSTEM OVERRIDES
-
         void Init() override;
         void Update(float dt) override;
         void Shutdown() override;

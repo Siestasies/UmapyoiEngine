@@ -1,109 +1,82 @@
+/*!
+\file   EditorScript.h
+\par    Project: GAM200
+
+\brief
+Editor behavior script that handles all editor-specific functionality.
+This replaces the old EditorScene class inheritance approach.
+*/
 #pragma once
-
-// ECS Core
-#include "ECS/Core/Coordinator.hpp"
-
-// ECS Systems
-#include "ECS/Systems/PhysicsSystem.hpp"
-#include "ECS/Systems/PlayerControllerSystem.hpp"
-#include "ECS/Systems/RenderingSystem.hpp"
-#include "ECS/Systems/CollisionSystem.hpp"
-#include "ECS/Systems/LuaScriptingSystem.hpp"
-
-// ECS Components
-#include "ECS/Components/Transform.h"
-#include "ECS/Components/RigidBody.h"
-#include "ECS/Components/Player.h"
-#include "ECS/Components/Sprite.h"
-#include "ECS/Components/Collider.h"
-#include "ECS/Components/Camera.h"
-#include "ECS/Components/Enemy.h"
-#include "ECS/Components/LuaScript.h"
-
-// Engine Systems
-#include "Systems/InputSystem.h"
-#include "WIP_Scripts/Test_Input_Events.h"
-#include "Systems/Graphics.hpp"
-#include "Systems/Sound.hpp"
-#include "Systems/ResourcesManager.hpp"
-#include "Systems/CameraSystem.hpp"
-#include "../Core/SystemManager.h"
-#include "../Core/EventSystem.h"
-#include "../Events/ECSEvents.h"
-#include "../Events/IMGUIEvents.h"
-
+#include "SceneType.h"
 #include "Core/GameSerializer.h"
-// Engine Settings
 #include "Core/FilePaths.h"
-
 #include <random>
 
 namespace Uma_Engine
 {
-    class ImguiEventsManager
+    class EditorScript : public SceneScript
     {
-    private:
-        Uma_Engine::SystemManager* m_SystemManager;
-        Uma_Engine::HybridInputSystem* m_HybridInputSystem;
-        Uma_Engine::ResourcesManager* m_ResourcesManager;
-        Uma_Engine::EventSystem* m_eventSystem;
-
-        Uma_ECS::Coordinator m_Coordinator;
-        std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
-        std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
-        std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
-        std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
-        std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
-        std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
-
     public:
-        ImguiEventsManager()
+        EditorScript() : SceneScript("Editor") {}
+
+        void OnAttach(Scene* scene) override
         {
-            m_SystemManager = nullptr;
-            m_HybridInputSystem = nullptr;
-            m_ResourcesManager = nullptr;
-            m_eventSystem = nullptr;
+            SceneScript::OnAttach(scene);
+            m_CurrentSceneName = scene->GetFilePath();
+            std::cout << "EditorScript attached" << std::endl;
         }
-        void Init (SystemManager* sm)
+
+        void OnLoad() override
         {
-            m_SystemManager = sm;
-            m_HybridInputSystem = sm->GetSystem<HybridInputSystem>();
-            m_ResourcesManager = sm->GetSystem<ResourcesManager>();
-            m_eventSystem = sm->GetSystem<EventSystem>();
+            std::cout << "EditorScript: OnLoad" << std::endl;
 
             SubscribeToEvents();
         }
 
+        void OnUnload() override
+        {
+            std::cout << "EditorScript: OnUnload" << std::endl;
+        
+        }
+
+        void OnUpdate(float dt) override
+        {
+            HandleEditorInput();
+        }
+
+    private:
+        std::string m_CurrentSceneName;
+
         void SubscribeToEvents()
         {
-                auto eventSystem = m_eventSystem;
-                auto& coordinator = m_Coordinator;
- 
+            auto eventSystem = GetEvents();
+            auto& coordinator = GetCoordinator();
+
             // Query active entities
-            m_eventSystem->Subscribe<QueryActiveEntitiesEvent>(
+            eventSystem->Subscribe<QueryActiveEntitiesEvent>(
                 [&coordinator](const QueryActiveEntitiesEvent& e) {
                     e.mActiveEntityCnt = coordinator.GetEntityCount();
                 }
             );
 
             // Save scene
-            //m_eventSystem->Subscribe<SaveSceneRequestEvent>(
-            //    [this](const SaveSceneRequestEvent& e) {
-            //        (void)e;
-            //        SaveScene();
-            //    }
-            //);
+            eventSystem->Subscribe<SaveSceneRequestEvent>(
+                [this](const SaveSceneRequestEvent& e) {
+                    (void)e;
+                    SaveScene();
+                }
+            );
 
-            //// Load scene
-            //m_eventSystem->Subscribe<LoadSceneRequestEvent>(
-            //    [this](const LoadSceneRequestEvent& e) {
-            //        (void)e;
-            //        LoadScene();
-            //    }
-            //);
+            // Load scene
+            eventSystem->Subscribe<LoadSceneRequestEvent>(
+                [this](const LoadSceneRequestEvent& e) {
+                    (void)e;
+                    LoadScene();
+                }
+            );
 
             // Clear scene
-            m_eventSystem->Subscribe<ClearSceneRequestEvent>(
+            eventSystem->Subscribe<ClearSceneRequestEvent>(
                 [this](const ClearSceneRequestEvent& e) {
                     (void)e;
                     ResetScene();
@@ -111,7 +84,7 @@ namespace Uma_Engine
             );
 
             // Stress test
-            m_eventSystem->Subscribe<StressTestRequestEvent>(
+            eventSystem->Subscribe<StressTestRequestEvent>(
                 [this](const StressTestRequestEvent& e) {
                     (void)e;
                     StressTest();
@@ -119,7 +92,7 @@ namespace Uma_Engine
             );
 
             // Show default entities in viewport
-            m_eventSystem->Subscribe<ShowEntityInVPRequestEvent>(
+            eventSystem->Subscribe<ShowEntityInVPRequestEvent>(
                 [this](const ShowEntityInVPRequestEvent& e) {
                     (void)e;
                     SpawnDefaultEntities();
@@ -127,35 +100,35 @@ namespace Uma_Engine
             );
 
             // Change enemy rotation
-            m_eventSystem->Subscribe<ChangeEnemyRotRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyRotRequestEvent>(
                 [this](const ChangeEnemyRotRequestEvent& e) {
                     ChangeAllEnemyRot(e.rot);
                 }
             );
 
             // Change enemy X position
-            m_eventSystem->Subscribe<ChangeEnemyXposRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyXposRequestEvent>(
                 [this](const ChangeEnemyXposRequestEvent& e) {
                     ChangeAllEnemyXPos(e.xpos);
                 }
             );
 
             // Change enemy scale
-            m_eventSystem->Subscribe<ChangeEnemyScaleRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyScaleRequestEvent>(
                 [this](const ChangeEnemyScaleRequestEvent& e) {
                     ChangeAllEnemyScale(e.scale);
                 }
             );
 
             // Show bounding boxes
-            m_eventSystem->Subscribe<ShowBBoxRequestEvent>(
+            eventSystem->Subscribe<ShowBBoxRequestEvent>(
                 [this](const ShowBBoxRequestEvent& e) {
                     ShowBBox(e.show);
                 }
             );
 
             // Clone entity
-            m_eventSystem->Subscribe<CloneEntityRequestEvent>(
+            eventSystem->Subscribe<CloneEntityRequestEvent>(
                 [this](const CloneEntityRequestEvent& e) {
                     (void)e;
                     DuplicateOrCreateEntity();
@@ -163,7 +136,7 @@ namespace Uma_Engine
             );
 
             // Load prefab
-            m_eventSystem->Subscribe<LoadPrefabRequestEvent>(
+            eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
                     LoadPrefab();
@@ -171,7 +144,7 @@ namespace Uma_Engine
             );
 
             // Destroy entity
-            m_eventSystem->Subscribe<DestroyEntityRequestEvent>(
+            eventSystem->Subscribe<DestroyEntityRequestEvent>(
                 [this](const DestroyEntityRequestEvent& e) {
                     (void)e;
                     DestroyRandomEntity();
@@ -179,65 +152,104 @@ namespace Uma_Engine
             );
         }
 
-    private:
+        void HandleEditorInput()
+        {
+            auto input = GetInput();
 
-        //void SaveScene()
-        //{
-        //    std::string filepath = Uma_FilePath::SCENES_DIR + m_CurrentSceneName;
+            // Save to file
+            if (input->KeyPressed(GLFW_KEY_1))
+            {
+                SaveScene();
+            }
 
-        //    GameSerializer serializer;
-        //    serializer.Register(m_ResourcesManager);
-        //    serializer.Register(&m_Coordinator);
-        //    serializer.save(filepath);
+            // Load from file
+            if (input->KeyPressed(GLFW_KEY_2))
+            {
+                LoadScene();
+            }
 
-        //    std::cout << "Scene saved to: " << filepath << std::endl;
-        //}
+            // Reset scene
+            if (input->KeyPressed(GLFW_KEY_3))
+            {
+                ResetScene();
+            }
 
-        //void LoadScene()
-        //{
-        //    m_Coordinator.DestroyAllEntities();
+            // Spawn default entities
+            if (input->KeyPressed(GLFW_KEY_4))
+            {
+                GetCoordinator().DestroyAllEntities();
+                SpawnDefaultEntities();
+            }
 
-        //    std::string filepath = Uma_FilePath::SCENES_DIR + m_CurrentSceneName;
+            // Play sound effects
+            if (input->KeyPressed(GLFW_KEY_P))
+            {
+                GetSound()->playSound(GetResources()->GetSound("explosion"));
+            }
 
-        //    GameSerializer serializer;
-        //    serializer.Register(m_ResourcesManager);
-        //    serializer.Register(&m_Coordinator);
-        //    serializer.load(filepath);
+            if (input->KeyPressed(GLFW_KEY_O))
+            {
+                GetSound()->playSound(GetResources()->GetSound("cave"));
+            }
+        }
 
-        //    std::cout << "Scene loaded from: " << filepath << std::endl;
-        //}
+        void SaveScene()
+        {
+            std::string filepath = m_CurrentSceneName;
+
+            GameSerializer serializer;
+            serializer.Register(GetResources());
+            serializer.Register(&GetCoordinator());
+            serializer.save(filepath);
+
+            std::cout << "Scene saved to: " << filepath << std::endl;
+        }
+
+        void LoadScene()
+        {
+            GetCoordinator().DestroyAllEntities();
+
+            std::string filepath = m_CurrentSceneName;
+
+            GameSerializer serializer;
+            serializer.Register(GetResources());
+            serializer.Register(&GetCoordinator());
+            serializer.load(filepath);
+
+            std::cout << "Scene loaded from: " << filepath << std::endl;
+        }
 
         void ResetScene()
         {
             using namespace Uma_ECS;
 
-            m_Coordinator.DestroyAllEntities();
+            GetCoordinator().DestroyAllEntities();
 
             // Create player
-            Entity player = m_Coordinator.CreateEntity();
+            Entity player = m_Scene->CreateEntity();
             {
-                m_Coordinator.AddComponent(player, Transform{
+                GetCoordinator().AddComponent(player, Transform{
                     .position = Vec2(0.f, 0.f),
                     .rotation = Vec2(0.f, 0.f),
                     .scale = Vec2(1, 1),
                     });
 
-                m_Coordinator.AddComponent(player, RigidBody{
+                GetCoordinator().AddComponent(player, RigidBody{
                     .velocity = Vec2(0.0f, 0.0f),
                     .acceleration = Vec2(0.0f, 0.0f),
                     .accel_strength = 500,
                     .fric_coeff = 5
                     });
 
-                m_Coordinator.AddComponent(player, Player{ .mSpeed = 1.f });
+                GetCoordinator().AddComponent(player, Player{ .mSpeed = 1.f });
 
                 std::string texName = "player";
-                m_Coordinator.AddComponent(player, Sprite{
+                GetCoordinator().AddComponent(player, Sprite{
                     .textureName = texName,
                     .flipX = false,
                     .flipY = false,
                     .UseNativeSize = true,
-                    .texture = m_ResourcesManager->GetTexture(texName),
+                    .texture = GetResources()->GetTexture(texName),
                     });
 
                 Collider playerCollider;
@@ -260,19 +272,19 @@ namespace Uma_Engine
                     });
 
                 playerCollider.bounds.resize(playerCollider.shapes.size());
-                m_Coordinator.AddComponent(player, playerCollider);
+                GetCoordinator().AddComponent(player, playerCollider);
             }
 
             // Create camera
-            Entity cam = m_Coordinator.CreateEntity();
+            Entity cam = m_Scene->CreateEntity();
             {
-                m_Coordinator.AddComponent(cam, Transform{
+                GetCoordinator().AddComponent(cam, Transform{
                     .position = Vec2(400.0f, 300.0f),
                     .rotation = Vec2(0, 0),
                     .scale = Vec2(1, 1),
                     });
 
-                m_Coordinator.AddComponent(player, Camera{
+                GetCoordinator().AddComponent(player, Camera{
                     .mZoom = 1.f,
                     .followPlayer = true
                     });
@@ -281,15 +293,15 @@ namespace Uma_Engine
 
         void SpawnDefaultEntities()
         {
-            m_Coordinator.DestroyAllEntities();
+            GetCoordinator().DestroyAllEntities();
 
             using namespace Uma_ECS;
 
             Entity kappa;
             {
-                kappa = m_Coordinator.CreateEntity();
+                kappa = GetCoordinator().CreateEntity();
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     kappa,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
@@ -298,7 +310,7 @@ namespace Uma_Engine
                       .fric_coeff = 100
                     });
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     kappa,
                     Transform{
                       .position = Vec2(30, 35),
@@ -307,7 +319,7 @@ namespace Uma_Engine
                     });
 
                 std::string texName = "kappa_statue";
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     kappa,
                     Sprite{
                       .textureName = texName,
@@ -315,7 +327,7 @@ namespace Uma_Engine
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
-                      .texture = m_ResourcesManager->GetTexture(texName),
+                      .texture = GetResources()->GetTexture(texName),
                     });
 
                 LuaScript kappaScriptComponent;
@@ -343,7 +355,7 @@ namespace Uma_Engine
                        .isSlider = true
                         });*/
 
-                    m_Coordinator.AddComponent(kappa, kappaScriptComponent);
+                    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
                 }
 
                 //LuaScript kappaScaleScript;
@@ -360,15 +372,15 @@ namespace Uma_Engine
                 //        .isSlider = true
                 //        });
 
-                //    m_Coordinator.AddComponent(kappa, kappaScaleScript);
+                //    GetCoordinator().AddComponent(kappa, kappaScaleScript);
                 //}
             }
 
             Entity wall;
             {
-                wall = m_Coordinator.CreateEntity();
+                wall = GetCoordinator().CreateEntity();
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     wall,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
@@ -377,7 +389,7 @@ namespace Uma_Engine
                       .fric_coeff = 100
                     });
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     wall,
                     Transform{
                       .position = Vec2(20, 0),
@@ -386,7 +398,7 @@ namespace Uma_Engine
                     });
 
                 std::string texName = "wall_top";
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     wall,
                     Sprite{
                       .textureName = texName,
@@ -394,7 +406,7 @@ namespace Uma_Engine
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
-                      .texture = m_ResourcesManager->GetTexture(texName),
+                      .texture = GetResources()->GetTexture(texName),
                     });
 
                 // Create collider with two shapes
@@ -410,59 +422,59 @@ namespace Uma_Engine
                 };
 
                 wallCollider.bounds.resize(wallCollider.shapes.size());
-                m_Coordinator.AddComponent(wall, wallCollider);
+                GetCoordinator().AddComponent(wall, wallCollider);
 
                 for (size_t i = 0; i < 5; i++)
                 {
-                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
-                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(20 + (i * 5), 0);
 
-                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     // set texture randomly
                     sr.textureName = "wall_btm";
-                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+                    sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
                 for (size_t i = 0; i < 6; i++)
                 {
-                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
-                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(15 + (6 * 5), 5 + (i * 5));
 
-                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     // set texture randomly
                     sr.textureName = "wall_right";
-                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+                    sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
                 for (size_t i = 0; i < 5; i++)
                 {
-                    Entity tmp = m_Coordinator.DuplicateEntity(wall);
+                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
-                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(20 + (i * 5), 15 + (4 * 5));
 
-                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     // set texture randomly
                     sr.textureName = "wall_top";
-                    sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+                    sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
             }
 
             Entity floor;
             {
-                floor = m_Coordinator.CreateEntity();
+                floor = GetCoordinator().CreateEntity();
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     floor,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
@@ -471,7 +483,7 @@ namespace Uma_Engine
                       .fric_coeff = 100
                     });
 
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     floor,
                     Transform{
                       .position = Vec2(20, 7.5),
@@ -480,7 +492,7 @@ namespace Uma_Engine
                     });
 
                 std::string texName = "floor_tatami";
-                m_Coordinator.AddComponent(
+                GetCoordinator().AddComponent(
                     floor,
                     Sprite{
                       .textureName = texName,
@@ -488,16 +500,16 @@ namespace Uma_Engine
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
-                      .texture = m_ResourcesManager->GetTexture(texName),
+                      .texture = GetResources()->GetTexture(texName),
                     });
 
                 for (size_t i = 0; i < 5; i++)
                 {
                     for (size_t j = 0; j < 3; j++)
                     {
-                        Entity tmp = m_Coordinator.DuplicateEntity(floor);
+                        Entity tmp = GetCoordinator().DuplicateEntity(floor);
 
-                        Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
                         tf.position = Vec2(20 + (i * 5), 7.5 + (j * 10));
                     }
@@ -514,15 +526,15 @@ namespace Uma_Engine
 
                 Entity enemy;
                 {
-                    enemy = m_Coordinator.CreateEntity();
+                    enemy = GetCoordinator().CreateEntity();
 
-                    m_Coordinator.AddComponent(
+                    GetCoordinator().AddComponent(
                         enemy,
                         Enemy{
                             .mSpeed = 1.f
                         });
 
-                    m_Coordinator.AddComponent(
+                    GetCoordinator().AddComponent(
                         enemy,
                         RigidBody{
                           .velocity = Vec2(0.0f, 0.0f),
@@ -531,7 +543,7 @@ namespace Uma_Engine
                           .fric_coeff = 100
                         });
 
-                    m_Coordinator.AddComponent(
+                    GetCoordinator().AddComponent(
                         enemy,
                         Transform{
                           .position = Vec2(-10, 0),
@@ -540,7 +552,7 @@ namespace Uma_Engine
                         });
 
                     std::string texName = "pink_enemy";
-                    m_Coordinator.AddComponent(
+                    GetCoordinator().AddComponent(
                         enemy,
                         Sprite{
                           .textureName = texName,
@@ -548,7 +560,7 @@ namespace Uma_Engine
                           .flipX = false,
                           .flipY = false,
                           .UseNativeSize = true,
-                          .texture = m_ResourcesManager->GetTexture(texName),
+                          .texture = GetResources()->GetTexture(texName),
                         });
 
                     // Create collider with two shapes
@@ -575,7 +587,7 @@ namespace Uma_Engine
                         });
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                    m_Coordinator.AddComponent(enemy, enemyCollider);
+                    GetCoordinator().AddComponent(enemy, enemyCollider);
 
                     LuaScript enemyScriptComponent;
                     {
@@ -609,22 +621,22 @@ namespace Uma_Engine
                            .isSlider = true
                             });*/
 
-                        m_Coordinator.AddComponent(enemy, enemyScriptComponent);
+                        GetCoordinator().AddComponent(enemy, enemyScriptComponent);
                     }
                 }
 
                 // using 1 enemy to duplicate 2500 times and rand its transform
                 /*for (size_t i = 0; i < 2500 - 3; i++)
                 {
-                    Entity tmp = m_Coordinator.DuplicateEntity(enemy);
+                    Entity tmp = GetCoordinator().DuplicateEntity(enemy);
 
-                    Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
                     tf.position = Vec2(randPositionX(generator), randPositionY(generator));
                     tf.rotation = Vec2(0, 0);
                     tf.scale = Vec2(randScale(generator), randScale(generator));
 
-                    Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
                     sr.texture = pResourcesManager->GetTexture(sr.textureName);
@@ -632,10 +644,10 @@ namespace Uma_Engine
             }
 
             // create player
-            Entity m_player = m_Coordinator.CreateEntity();
+            m_Scene->m_player = GetCoordinator().CreateEntity();
             {
-                m_Coordinator.AddComponent(
-                    m_player,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
                     Transform
                     {
                         .position = Vec2(0.f, 0.f),
@@ -643,8 +655,8 @@ namespace Uma_Engine
                         .scale = Vec2(1,1),
                     });
 
-                m_Coordinator.AddComponent(
-                    m_player,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
@@ -652,22 +664,22 @@ namespace Uma_Engine
                       .fric_coeff = 5
                     });
 
-                m_Coordinator.AddComponent(
-                    m_player,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
                     Player{
                         .mSpeed = 1.f
                     });
 
                 std::string texName = "player";
-                m_Coordinator.AddComponent(
-                    m_player,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
                     Sprite{
                       .textureName = texName,
                       .renderLayer = RL_PLAYER,
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
-                      .texture = m_ResourcesManager->GetTexture(texName),
+                      .texture = GetResources()->GetTexture(texName),
                     });
 
                 // Create collider with two shapes
@@ -692,14 +704,14 @@ namespace Uma_Engine
                     });
 
                 playerCollider.bounds.resize(playerCollider.shapes.size());
-                m_Coordinator.AddComponent(m_player, playerCollider);
+                GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
             }
 
             // create camera
-            Entity m_cam = m_Coordinator.CreateEntity();
+            m_Scene->m_cam = GetCoordinator().CreateEntity();
             {
-                m_Coordinator.AddComponent(
-                    m_cam,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_cam,
                     Transform
                     {
                         .position = Vec2(400.0f, 300.0f),
@@ -707,8 +719,8 @@ namespace Uma_Engine
                         .scale = Vec2(1,1),
                     });
 
-                m_Coordinator.AddComponent(
-                    m_player,
+                GetCoordinator().AddComponent(
+                    m_Scene->m_player,
                     Camera
                     {
                         .mZoom = 1.f,
@@ -716,43 +728,43 @@ namespace Uma_Engine
                     });
             }
 
-            m_LuaScriptingSystem->CallStart();
+            m_Scene->m_LuaScriptingSystem->CallStart();
         }
 
         void StressTest()
         {
             using namespace Uma_ECS;
 
-            m_Coordinator.DestroyAllEntities();
+            GetCoordinator().DestroyAllEntities();
 
             std::default_random_engine generator;
             std::uniform_real_distribution<float> randPosX(-1920.f, 1920.f);
             std::uniform_real_distribution<float> randPosY(-1080.f, 1080.f);
 
             // Create base enemy
-            Entity enemy = m_Coordinator.CreateEntity();
+            Entity enemy = m_Scene->CreateEntity();
             {
-                m_Coordinator.AddComponent(enemy, Enemy{ .mSpeed = 1.f });
-                m_Coordinator.AddComponent(enemy, RigidBody{
+                GetCoordinator().AddComponent(enemy, Enemy{ .mSpeed = 1.f });
+                GetCoordinator().AddComponent(enemy, RigidBody{
                     .velocity = Vec2(0.0f, 0.0f),
                     .acceleration = Vec2(0.0f, 0.0f),
                     .accel_strength = 200,
                     .fric_coeff = 100
                     });
 
-                m_Coordinator.AddComponent(enemy, Transform{
+                GetCoordinator().AddComponent(enemy, Transform{
                     .position = Vec2(-10, 0),
                     .rotation = Vec2(0, 0),
                     .scale = Vec2(1.f, 1.f)
                     });
 
                 std::string texName = "pink_enemy";
-                m_Coordinator.AddComponent(enemy, Sprite{
+                GetCoordinator().AddComponent(enemy, Sprite{
                     .textureName = texName,
                     .flipX = false,
                     .flipY = false,
                     .UseNativeSize = true,
-                    .texture = m_ResourcesManager->GetTexture(texName),
+                    .texture = GetResources()->GetTexture(texName),
                     });
 
                 Collider enemyCollider;
@@ -777,14 +789,14 @@ namespace Uma_Engine
                     });
 
                 enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                m_Coordinator.AddComponent(enemy, enemyCollider);
+                GetCoordinator().AddComponent(enemy, enemyCollider);
             }
 
             // Duplicate 10000 times
             for (size_t i = 0; i < 10000; i++)
             {
-                Entity tmp = m_Coordinator.DuplicateEntity(enemy);
-                Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                Entity tmp = GetCoordinator().DuplicateEntity(enemy);
+                Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
                 tf.position = Vec2(randPosX(generator), randPosY(generator));
             }
 
@@ -795,7 +807,7 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& eArray = m_Coordinator.GetComponentArray<Enemy>();
+            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
 
             std::default_random_engine generator(std::random_device{}());
             std::uniform_real_distribution<float> randPos(-400, 400);
@@ -803,30 +815,30 @@ namespace Uma_Engine
             if (eArray.Size() == 0)
             {
                 // Create new enemy and save as prefab
-                Entity enemy = m_Coordinator.CreateEntity();
+                Entity enemy = m_Scene->CreateEntity();
                 {
-                    m_Coordinator.AddComponent(enemy, Enemy{ .mSpeed = 1.f });
+                    GetCoordinator().AddComponent(enemy, Enemy{ .mSpeed = 1.f });
 
-                    m_Coordinator.AddComponent(enemy, RigidBody{
+                    GetCoordinator().AddComponent(enemy, RigidBody{
                         .velocity = Vec2(0.0f, 0.0f),
                         .acceleration = Vec2(0.0f, 0.0f),
                         .accel_strength = 200,
                         .fric_coeff = 100
                         });
 
-                    m_Coordinator.AddComponent(enemy, Transform{
+                    GetCoordinator().AddComponent(enemy, Transform{
                         .position = Vec2(-10, 0),
                         .rotation = Vec2(0, 0),
                         .scale = Vec2(1.f, 1.f)
                         });
 
                     std::string texName = "pink_enemy";
-                    m_Coordinator.AddComponent(enemy, Sprite{
+                    GetCoordinator().AddComponent(enemy, Sprite{
                         .textureName = texName,
                         .flipX = false,
                         .flipY = false,
                         .UseNativeSize = true,
-                        .texture = m_ResourcesManager->GetTexture(texName),
+                        .texture = GetResources()->GetTexture(texName),
                         });
 
                     Collider enemyCollider;
@@ -851,28 +863,28 @@ namespace Uma_Engine
                         });
 
                     enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                    m_Coordinator.AddComponent(enemy, enemyCollider);
+                    GetCoordinator().AddComponent(enemy, enemyCollider);
                 }
 
                 // Save as prefab
                 GameSerializer serializer;
-                serializer.Register(m_ResourcesManager);
-                serializer.Register(&m_Coordinator);
+                serializer.Register(GetResources());
+                serializer.Register(&GetCoordinator());
                 serializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
 
-                Transform& tf = m_Coordinator.GetComponent<Transform>(enemy);
+                Transform& tf = GetCoordinator().GetComponent<Transform>(enemy);
                 tf.position = Vec2(randPos(generator), randPos(generator));
             }
             else
             {
                 // Duplicate existing entity
-                Entity tmp = m_Coordinator.DuplicateEntity(eArray.GetEntity(0));
-                Transform& tf = m_Coordinator.GetComponent<Transform>(tmp);
+                Entity tmp = GetCoordinator().DuplicateEntity(eArray.GetEntity(0));
+                Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
                 tf.position = Vec2(randPos(generator), randPos(generator));
 
-                Sprite& sr = m_Coordinator.GetComponent<Sprite>(tmp);
+                Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
                 sr.textureName = (randPos(generator) > 0.f) ? "pink_enemy" : "enemy";
-                sr.texture = m_ResourcesManager->GetTexture(sr.textureName);
+                sr.texture = GetResources()->GetTexture(sr.textureName);
             }
         }
 
@@ -880,18 +892,18 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& eArray = m_Coordinator.GetComponentArray<Enemy>();
+            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
             if (eArray.Size() != 0)
             {
-                m_Coordinator.DestroyEntity(eArray.GetEntity(0));
+                GetCoordinator().DestroyEntity(eArray.GetEntity(0));
             }
         }
 
         void LoadPrefab()
         {
             GameSerializer serializer;
-            serializer.Register(m_ResourcesManager);
-            serializer.Register(&m_Coordinator);
+            serializer.Register(GetResources());
+            serializer.Register(&GetCoordinator());
             serializer.loadPrefab(Uma_FilePath::PREFAB_DIR + "enemy.json");
         }
 
@@ -899,8 +911,8 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& eArray = m_Coordinator.GetComponentArray<Enemy>();
-            auto& tfArray = m_Coordinator.GetComponentArray<Transform>();
+            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
+            auto& tfArray = GetCoordinator().GetComponentArray<Transform>();
 
             for (size_t i = 0; i < eArray.Size(); i++)
             {
@@ -913,8 +925,8 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& eArray = m_Coordinator.GetComponentArray<Enemy>();
-            auto& rbArray = m_Coordinator.GetComponentArray<RigidBody>();
+            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
+            auto& rbArray = GetCoordinator().GetComponentArray<RigidBody>();
 
             for (size_t i = 0; i < eArray.Size(); i++)
             {
@@ -930,8 +942,8 @@ namespace Uma_Engine
             std::default_random_engine generator(std::random_device{}());
             std::uniform_real_distribution<float> randScale(10.0f, 15.0f);
 
-            auto& eArray = m_Coordinator.GetComponentArray<Enemy>();
-            auto& tfArray = m_Coordinator.GetComponentArray<Transform>();
+            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
+            auto& tfArray = GetCoordinator().GetComponentArray<Transform>();
 
             for (size_t i = 0; i < eArray.Size(); i++)
             {
@@ -944,8 +956,8 @@ namespace Uma_Engine
         {
             using namespace Uma_ECS;
 
-            auto& tfArray = m_Coordinator.GetComponentArray<Transform>();
-            auto& cArray = m_Coordinator.GetComponentArray<Collider>();
+            auto& tfArray = GetCoordinator().GetComponentArray<Transform>();
+            auto& cArray = GetCoordinator().GetComponentArray<Collider>();
 
             for (size_t i = 0; i < tfArray.Size(); i++)
             {
@@ -956,6 +968,5 @@ namespace Uma_Engine
                 c.showBBox = isShow;
             }
         }
-
-	};
+    };
 }
