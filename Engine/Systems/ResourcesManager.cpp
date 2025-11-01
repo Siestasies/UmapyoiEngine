@@ -299,10 +299,11 @@ namespace Uma_Engine
         (void)allocator;
     }
 
-    void ResourcesManager::DeserializePrefab(const rapidjson::Value& in)
+    Entity ResourcesManager::DeserializePrefab(const rapidjson::Value& in)
     {
         // we are not using this function in resources manager 
         (void)in;
+        return static_cast<Entity>(-1);
     }
 
     bool ResourcesManager::LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize)

@@ -27,6 +27,7 @@ All rights reserved.
 #include "Components/Collider.h"
 
 #include "Core/EventSystem.h"
+#include "../Systems/Graphics.hpp"
 
 #include <unordered_set>
 
@@ -53,6 +54,33 @@ namespace Uma_ECS
         }
     };
 
+    // tracking the entity pairs that are currently colliding
+    struct EntityPair
+    {
+        Entity entityA;
+        Entity entityB;
+
+        EntityPair(Entity a, Entity b)
+            : entityA((a < b) ? a : b)
+            , entityB((a < b) ? b : a)
+        {
+        }
+
+        bool operator==(const EntityPair& other) const
+        {
+            return entityA == other.entityA && entityB == other.entityB;
+        }
+    };
+
+    struct EntityPairHash
+    {
+        std::size_t operator()(const EntityPair& p) const
+        {
+            return std::hash<Uma_ECS::Entity>()(p.entityA) ^
+                (std::hash<Uma_ECS::Entity>()(p.entityB) << 1);
+        }
+    };
+
     struct Transform;
     struct Collider;
     struct RigidBody;
@@ -60,9 +88,15 @@ namespace Uma_ECS
     class CollisionSystem : public ECSSystem
     {
     public:
-        inline void Init(Coordinator* c, Uma_Engine::EventSystem* e) { gCoordinator = c; pEventSystem = e; }
+        inline void Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::Graphics* g) 
+        { 
+            pCoordinator = c;
+            pEventSystem = e; 
+            pGraphics = g;
+        }
 
         void Update(float dt);
+        void DebugRender();
 
     private:
 
@@ -71,6 +105,11 @@ namespace Uma_ECS
 
         // Collision detection and resolution
         void UpdateCollision(float dt);
+
+        Entity GetPhysicsEntity(
+            Entity entity, 
+            ComponentArray<Transform>& tfArray, 
+            ComponentArray<RigidBody>& rbArray);
 
         void CheckEntityPairCollision(
             Entity e1, Entity e2,
@@ -110,39 +149,14 @@ namespace Uma_ECS
             Entity e,
             const BoundingBox& box);
 
-        // tracking the entity pairs that are currently colliding
-        struct EntityPair
-        {
-            Entity entityA;
-            Entity entityB;
-
-            EntityPair(Entity a, Entity b)
-                : entityA((a < b) ? a : b)
-                , entityB((a < b) ? b : a)
-            {
-            }
-
-            bool operator==(const EntityPair& other) const
-            {
-                return entityA == other.entityA && entityB == other.entityB;
-            }
-        };
-
-        struct EntityPairHash
-        {
-            std::size_t operator()(const EntityPair& p) const
-            {
-                return std::hash<Uma_ECS::Entity>()(p.entityA) ^
-                    (std::hash<Uma_ECS::Entity>()(p.entityB) << 1);
-            }
-        };
-
         // AABB intersection test
         bool CollisionIntersection_RectRect_Static(
             const BoundingBox& lhs,
             const BoundingBox& rhs);
 
-        Coordinator* gCoordinator = nullptr;
+
+        Coordinator* pCoordinator = nullptr;
+        Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
 
         std::unordered_set<EntityPair, EntityPairHash> currentCollisions;

@@ -87,6 +87,21 @@ namespace Uma_Engine
             return;
 
         // Smooth delta time
+        /*if (m_FirstFrame)
+        {
+            m_SmoothedDt = dt;
+            m_FirstFrame = false;
+        }
+        else
+        {
+            m_SmoothedDt = 0.9f * m_SmoothedDt + 0.1f * dt;
+        }*/
+
+        // Cap dt to prevent spiral of death
+        if (dt > g_EngineConfig.maxFrameTime)
+            dt = g_EngineConfig.maxFrameTime;
+
+        // Smooth delta time for rendering
         if (m_FirstFrame)
         {
             m_SmoothedDt = dt;
@@ -96,6 +111,33 @@ namespace Uma_Engine
         {
             m_SmoothedDt = 0.9f * m_SmoothedDt + 0.1f * dt;
         }
+
+        // save prev pos
+        m_PhysicsSystem->SavePrevPos();
+
+        // Fixed timestep physics loop
+        m_Accumulator += dt;
+
+        int physicsSteps = 0;
+        while (m_Accumulator >= m_FixedTimeStep && physicsSteps < g_EngineConfig.maxPhysicsSteps)
+        {
+            // Update physics and collision at fixed rate
+            FixedUpdateECSSystems();
+
+            m_Accumulator -= m_FixedTimeStep;
+            physicsSteps++;
+        }
+
+        // Calculate interpolation alpha
+        float alpha = m_Accumulator / m_FixedTimeStep;
+
+        // Update render positions for smooth interpolation
+       /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
+        for (size_t i = 0; i < tfArray.Size(); ++i)
+        {
+            auto& tf = tfArray.GetComponentAt(i);
+            tf.UpdateRenderPosition(alpha);
+        }*/
 
         // Update ECS systems
         UpdateECSSystems(dt);
@@ -244,6 +286,8 @@ namespace Uma_Engine
             Deserialize();
         }
 
+        m_FixedTimeStep = g_EngineConfig.fixedTimeStep;
+
         m_LoadProgress = 1.0f;
     }
 
@@ -278,6 +322,15 @@ namespace Uma_Engine
         }
         m_PlayerController->Init(m_EventSystem, m_HybridInputSystem, &m_Coordinator);
 
+        // Transform System
+        m_TransformSystem = m_Coordinator.RegisterSystem<Uma_ECS::TransformSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::TransformSystem>(sign);
+        }
+        m_TransformSystem->Init(&m_Coordinator);
+
         // Physics System
         m_PhysicsSystem = m_Coordinator.RegisterSystem<Uma_ECS::PhysicsSystem>();
         {
@@ -297,7 +350,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Collider>());
             m_Coordinator.SetSystemSignature<Uma_ECS::CollisionSystem>(sign);
         }
-        m_CollisionSystem->Init(&m_Coordinator, m_EventSystem);
+        m_CollisionSystem->Init(&m_Coordinator, m_EventSystem, m_Graphics);
 
         // Rendering System
         m_RenderingSystem = m_Coordinator.RegisterSystem<Uma_ECS::RenderingSystem>();
@@ -357,11 +410,11 @@ namespace Uma_Engine
         if (m_PlayerController)
             m_PlayerController->Update(dt);
 
-        if (m_PhysicsSystem)
-            m_PhysicsSystem->Update(m_SmoothedDt);
+        /*if (m_PhysicsSystem)
+            m_PhysicsSystem->Update(m_SmoothedDt);*/
 
-        if (m_CollisionSystem)
-            m_CollisionSystem->Update(dt);
+       /* if (m_CollisionSystem)
+            m_CollisionSystem->Update(dt);*/
 
         if (m_LuaScriptingSystem)
             m_LuaScriptingSystem->Update(dt);
@@ -375,7 +428,24 @@ namespace Uma_Engine
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
 
-        if (m_UISystem)
-            m_UISystem->Update(dt);
+        if (m_CollisionSystem)
+            m_CollisionSystem->DebugRender();
+    }
+
+    void Scene::FixedUpdateECSSystems()
+    {
+        // Physics runs at FIXED timestep
+        if (m_PhysicsSystem)
+            m_PhysicsSystem->Update(m_FixedTimeStep);
+
+        if (m_TransformSystem)
+            m_TransformSystem->UpdateWorldTransform();
+
+        if (m_PhysicsSystem)
+            m_PhysicsSystem->ApplyVelocity(m_FixedTimeStep);
+
+        // Collision detection runs at FIXED timestep
+        if (m_CollisionSystem)
+            m_CollisionSystem->Update(m_FixedTimeStep);
     }
 }

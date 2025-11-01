@@ -30,6 +30,8 @@ All rights reserved.
 #include <fstream>
 #include <rapidjson/document.h>
 
+#include "Components/Transform.h"
+
 namespace Uma_ECS
 {
     void Coordinator::Init(Uma_Engine::EventSystem* eventSystem)
@@ -60,6 +62,36 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntity(Entity entity)
     {
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(entity))
+        {
+            auto& tf = tfArray.GetData(entity);
+
+            // Remove from parent's children list
+            if (tf.parent.has_value())
+            {
+                auto& parentTf = tfArray.GetData(tf.parent.value());
+                auto it = std::find(parentTf.children.begin(),
+                    parentTf.children.end(), entity);
+                if (it != parentTf.children.end())
+                {
+                    parentTf.children.erase(it);
+                }
+            }
+
+            // Orphan children (convert to world position so they stay in place)
+            for (Entity child : tf.children)
+            {
+                if (tfArray.Has(child))
+                {
+                    auto& childTf = tfArray.GetData(child);
+                    childTf.parent = std::nullopt;  // Clear the optional
+                    childTf.position = childTf.worldPosition;
+                }
+            }
+        }
+
+        // Original destroy logic
         aSystemManager->EntityDestroyed(entity);
         aEntityManager->DestroyEntity(entity);
         aComponentManager->EntityDestroyed(entity);
@@ -132,6 +164,120 @@ namespace Uma_ECS
         return result[0];
     }
 
+    void Coordinator::SetParent(Entity child, Entity parent)
+    {
+        if (child == parent)
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Cannot set entity as its own parent");
+            return;
+        }
+
+        // check for circular dependency
+        std::optional<Entity> checkEntity = parent;
+        while (checkEntity.has_value())
+        {
+            if (checkEntity.value() == child)
+            {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                    "Circular parent-child relationship detected");
+                return;
+            }
+            checkEntity = GetParent(checkEntity.value());
+        }
+
+        auto& childTf = GetComponent<Transform>(child);
+
+        // remove from old parent
+        if (childTf.parent.has_value())
+        {
+            auto& oldParentTf = GetComponent<Transform>(childTf.parent.value());
+            auto it = std::find(oldParentTf.children.begin(), oldParentTf.children.end(), child);
+            if (it != oldParentTf.children.end())
+            {
+                oldParentTf.children.erase(it);
+            }
+        }
+
+        // set new parent
+        childTf.parent = parent;
+
+        auto& parentTf = GetComponent<Transform>(parent);
+        parentTf.children.push_back(child);
+
+        // Convert world position to local position relative to new parent
+        //childTf.position = childTf.worldPosition - parentTf.worldPosition;
+        childTf.isDirty = true;
+    }
+
+    void Coordinator::RemoveParent(Entity child)
+    {
+        auto& childTf = GetComponent<Transform>(child);
+
+        if (!childTf.parent.has_value())
+        {
+            // this entity doesnt have any parent
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Entity doesnt have any parent");
+            return;
+        }
+
+        // have a parent
+        auto& parentTf = GetComponent<Transform>(childTf.parent.value());
+        auto it = std::find(std::begin(parentTf.children), std::end(parentTf.children), child);
+        if (it != std::end(parentTf.children))
+        {
+            parentTf.children.erase(it);
+        }
+
+        childTf.parent = std::nullopt;
+        childTf.position = childTf.worldPosition;
+        childTf.isDirty = true;
+    }
+
+    std::optional<Entity> Coordinator::GetParent(Entity entity)
+    {
+        if (!aEntityManager->IsEntityActive(entity))
+        {
+            return std::nullopt;
+        }
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (!tfArray.Has(entity))
+        {
+            return std::nullopt;
+        }
+
+        return tfArray.GetData(entity).parent;
+    }
+
+    std::vector<Entity> Coordinator::GetChildren(Entity entity)
+    {
+        if (!aEntityManager->IsEntityActive(entity))
+            return {};
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (!tfArray.Has(entity))
+            return {};
+
+        return tfArray.GetData(entity).children;
+    }
+
+    void Coordinator::DestroyEntityAndChildren(Entity entity)
+    {
+        // Get children before destroying parent
+        std::vector<Entity> children = GetChildren(entity);
+
+        // Recursively destroy children first
+        for (Entity child : children)
+        {
+            DestroyEntityAndChildren(child);
+        }
+
+        // Destroy this entity
+        DestroyEntity(entity);
+    }
+
     void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
     {
         out.SetArray();
@@ -156,15 +302,70 @@ namespace Uma_ECS
     {
         assert(in.IsArray());
 
+        // Map old entity IDs to new entity IDs
+        std::unordered_map<Entity, Entity> entityIDMap;
+
+        // First pass: Create all entities
         for (auto& entityVal : in.GetArray())
         {
-            Entity entity = CreateEntity(); // new ID
+            Entity oldID = entityVal["id"].GetUint();
+            Entity newID = CreateEntity();
+            entityIDMap[oldID] = newID;
+
             const auto& comps = entityVal["components"];
-            Signature sign = aComponentManager->DeserializeAll(entity, comps);
-            aEntityManager->SetSignature(entity, sign);
-            aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
+            Signature sign = aComponentManager->DeserializeAll(newID, comps);
+            aEntityManager->SetSignature(newID, sign);
         }
 
+        // Second pass: Remap parent-child relationships
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        for (size_t i = 0; i < tfArray.Size(); ++i)
+        {
+            Entity entity = tfArray.GetEntity(i);
+            auto& tf = tfArray.GetData(entity);
+
+            // Remap parent ID
+            if (tf.parent.has_value())
+            {
+                Entity oldParentID = tf.parent.value();
+
+                auto it = entityIDMap.find(oldParentID);
+                if (it != entityIDMap.end())
+                {
+                    Entity newParentID = it->second;
+                    tf.parent = newParentID;
+
+                    // Add to parent's children
+                    auto& parentTf = tfArray.GetData(newParentID);
+                    parentTf.children.push_back(entity);
+                }
+                else
+                {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Invalid parent ID during deserialization");
+                    tf.parent = std::nullopt;
+                }
+            }
+
+            // Remap children IDs
+            std::vector<Entity> newChildren;
+            for (Entity oldChildID : tf.children)
+            {
+                auto it = entityIDMap.find(oldChildID);
+                if (it != entityIDMap.end())
+                {
+                    newChildren.push_back(it->second);
+                }
+            }
+            tf.children = std::move(newChildren);
+        }
+
+        // Third pass: Update systems
+        for (auto& pair : entityIDMap)
+        {
+            Entity newID = pair.second;
+            aSystemManager->EntitySignatureChanged(newID, GetEntitySignature(newID));
+        }
     }
 
     void Coordinator::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
@@ -172,20 +373,206 @@ namespace Uma_ECS
         if (!aEntityManager->IsEntityActive(entity)) return;
 
         out.SetObject();
-        
-        out.AddMember("id", entity, allocator);
 
-        rapidjson::Value comps(rapidjson::kObjectType);
-        aComponentManager->SerializeAll(entity, comps, allocator);
-        out.AddMember("components", comps, allocator);
+        // Serialize the entire hierarchy starting from this entity
+        rapidjson::Value entitiesArray(rapidjson::kArrayType);
+
+        std::vector<Entity> hierarchyEntities;
+        CollectHierarchy(entity, hierarchyEntities);
+
+        // Create ID mapping for the prefab (starting from 0)
+        std::unordered_map<Entity, Entity> worldToPrefabID;
+        for (size_t i = 0; i < hierarchyEntities.size(); ++i)
+        {
+            worldToPrefabID[hierarchyEntities[i]] = static_cast<Entity>(i);
+        }
+
+        // Serialize each entity with remapped IDs
+        for (Entity e : hierarchyEntities)
+        {
+            rapidjson::Value entityObj(rapidjson::kObjectType);
+
+            Entity prefabID = worldToPrefabID[e];
+            entityObj.AddMember("id", prefabID, allocator);
+
+            // Serialize components
+            rapidjson::Value comps(rapidjson::kObjectType);
+            aComponentManager->SerializeAll(e, comps, allocator);
+
+            // Remap parent and children IDs in Transform component
+            if (comps.HasMember("struct Uma_ECS::Transform")) // Use your actual type name
+            {
+                auto& transformComp = comps["struct Uma_ECS::Transform"];
+
+                // Remap parent
+                if (transformComp.HasMember("parent"))
+                {
+                    int oldParentID = transformComp["parent"].GetInt();
+                    if (oldParentID >= 0)
+                    {
+                        auto it = worldToPrefabID.find(static_cast<Entity>(oldParentID));
+                        if (it != worldToPrefabID.end())
+                        {
+                            transformComp["parent"] = it->second;
+                        }
+                        else
+                        {
+                            // Parent is outside hierarchy - make this a root
+                            transformComp["parent"] = -1;
+                        }
+                    }
+                }
+
+                // Remap children
+                if (transformComp.HasMember("children"))
+                {
+                    auto& childrenArray = transformComp["children"];
+                    for (auto& childVal : childrenArray.GetArray())
+                    {
+                        Entity oldChildID = childVal.GetUint();
+                        auto it = worldToPrefabID.find(oldChildID);
+                        if (it != worldToPrefabID.end())
+                        {
+                            childVal = it->second;
+                        }
+                    }
+                }
+            }
+
+            entityObj.AddMember("components", comps, allocator);
+            entitiesArray.PushBack(entityObj, allocator);
+        }
+
+        out.AddMember("entities", entitiesArray, allocator);
+        out.AddMember("rootEntity", worldToPrefabID[entity], allocator);
     }
 
-    void Coordinator::DeserializePrefab(const rapidjson::Value& in)
+    // Helper function to collect entire hierarchy
+    void Coordinator::CollectHierarchy(Entity root, std::vector<Entity>& outEntities)
     {
-        Entity entity = CreateEntity(); // new ID
-        const auto& comps = in["components"];
-        Signature sign = aComponentManager->DeserializeAll(entity, comps);
-        aEntityManager->SetSignature(entity, sign);
-        aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
+        outEntities.push_back(root);
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(root))
+        {
+            auto& tf = tfArray.GetData(root);
+            for (Entity child : tf.children)
+            {
+                CollectHierarchy(child, outEntities); // Recursive
+            }
+        }
+    }
+
+    Entity Coordinator::DeserializePrefab(const rapidjson::Value& in)
+    {
+        if (!in.HasMember("entities") || !in["entities"].IsArray())
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Invalid prefab format: missing entities array");
+            return static_cast<Entity>(-1);
+        }
+
+        const auto& entitiesArray = in["entities"];
+
+        // Map prefab IDs to new world IDs
+        std::unordered_map<Entity, Entity> prefabToWorldID;
+
+        // First pass: Create all entities
+        for (const auto& entityVal : entitiesArray.GetArray())
+        {
+            Entity prefabID = entityVal["id"].GetUint();
+            Entity newWorldID = CreateEntity();
+            prefabToWorldID[prefabID] = newWorldID;
+
+            const auto& comps = entityVal["components"];
+            Signature sign = aComponentManager->DeserializeAll(newWorldID, comps);
+            aEntityManager->SetSignature(newWorldID, sign);
+        }
+
+        // Second pass: Remap parent-child relationships
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+
+        for (const auto& entityVal : entitiesArray.GetArray())
+        {
+            Entity prefabID = entityVal["id"].GetUint();
+            Entity worldID = prefabToWorldID[prefabID];
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            // Remap parent
+            if (tf.parent.has_value())
+            {
+                Entity oldParentID = tf.parent.value();
+                auto it = prefabToWorldID.find(oldParentID);
+
+                if (it != prefabToWorldID.end())
+                {
+                    tf.parent = it->second;
+                }
+                else
+                {
+                    // Parent not in prefab - clear it
+                    tf.parent = std::nullopt;
+                }
+            }
+
+            // Remap children
+            std::vector<Entity> remappedChildren;
+            for (Entity oldChildID : tf.children)
+            {
+                auto it = prefabToWorldID.find(oldChildID);
+                if (it != prefabToWorldID.end())
+                {
+                    remappedChildren.push_back(it->second);
+                }
+            }
+            tf.children = std::move(remappedChildren);
+        }
+
+        // Third pass: Rebuild parent-child relationships (ensure consistency)
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            if (tf.parent.has_value())
+            {
+                Entity parentID = tf.parent.value();
+
+                if (tfArray.Has(parentID))
+                {
+                    auto& parentTf = tfArray.GetData(parentID);
+
+                    // Ensure child is in parent's children list
+                    if (std::find(parentTf.children.begin(), parentTf.children.end(), worldID)
+                        == parentTf.children.end())
+                    {
+                        parentTf.children.push_back(worldID);
+                    }
+                }
+            }
+        }
+
+        // Fourth pass: Update systems
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+            aSystemManager->EntitySignatureChanged(worldID, GetEntitySignature(worldID));
+        }
+
+        // Return the root entity
+        if (in.HasMember("rootEntity"))
+        {
+            Entity prefabRootID = in["rootEntity"].GetUint();
+            return prefabToWorldID[prefabRootID];
+        }
+
+        // Fallback: return first entity
+        return prefabToWorldID.begin()->second;
     }
 }

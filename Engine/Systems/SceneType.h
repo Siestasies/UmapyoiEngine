@@ -27,6 +27,7 @@ All rights reserved.
 #include "ECS/Systems/CollisionSystem.hpp"
 #include "ECS/Systems/LuaScriptingSystem.hpp"
 #include "../Engine/UI/Systems/UISystem.h"
+#include "ECS/Systems/TransformSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -62,6 +63,7 @@ All rights reserved.
 #include "Core/GameSerializer.h"
 
 // Engine Settings
+#include "Core/EngineConfig.h"
 #include "Core/FilePaths.h"
 
 // debug
@@ -134,10 +136,12 @@ namespace Uma_Engine
             Uma_Engine::Sound* m_Sound;
             Uma_Engine::ResourcesManager* m_ResourcesManager;
             Uma_Engine::EventSystem* m_EventSystem;
+            Uma_Engine::EngineConfig g_EngineConfig;
 
             // ECS related
             using Coordinator = Uma_ECS::Coordinator;
             Coordinator m_Coordinator;
+            std::shared_ptr<Uma_ECS::TransformSystem> m_TransformSystem;
             std::shared_ptr<Uma_ECS::PhysicsSystem> m_PhysicsSystem;
             std::shared_ptr<Uma_ECS::CollisionSystem> m_CollisionSystem;
             std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
@@ -156,10 +160,12 @@ namespace Uma_Engine
             Uma_Engine::GameSerializer gGameSerializer;
             // Attached scripts
             std::vector<std::shared_ptr<SceneScript>> m_AttachedScripts;
+
         private:
             void InitializeECS();
             void InitializeUISystem();
             void UpdateECSSystems(float dt);
+            void FixedUpdateECSSystems();
             void LoadInternal();
 
             // Scene metadata
@@ -171,6 +177,11 @@ namespace Uma_Engine
             // Delta time smoothing
             float m_SmoothedDt = 0.0f;
             bool m_FirstFrame = true;
+
+            // fixed timestamp accumulator
+            float m_Accumulator = 0.0f;
+            float m_FixedTimeStep = 1.0f / 60.0f;  // Will be set from config
+
             // Async loading
             std::future<void> m_LoadFuture;
 

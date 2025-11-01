@@ -10,10 +10,16 @@
 \par    DigiPen login: waimen.leong
 
 \brief
-Implements Unity-style collision detection and resolution using spatial hashing and contact normals.
+Implements AABB collision detection and resolution using spatial hashing for broadphase optimization.
 
-Updates axis-aligned bounding boxes from transform and collider data, then performs collision tests
-using spatial grid partitioning. Resolves collisions with velocity projection for smooth wall sliding.
+Features swept bounding boxes covering entity movement paths to prevent tunneling through objects.
+Uses axis-of-minimum-penetration method for accurate collision normal calculation and Baumgarte
+stabilization for gradual position correction. Supports three collision purposes: Physics (entity-entity),
+Environment (static walls), and Trigger (non-blocking detection zones). Resolves collisions through
+velocity projection with separate handling for normal (penetrating) and tangent (sliding) components.
+Implements layer-based filtering via bitmask operations and tracks collision state transitions to emit
+OnCollisionEnter, OnCollision, OnCollisionExit, OnTriggerEnter, OnTrigger, and OnTriggerExit events.
+Spatial grid partitioning reduces collision checks from O(n²) to near O(n) for sparse entity distributions.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -37,6 +43,7 @@ All rights reserved.
 void Uma_ECS::CollisionSystem::Update(float dt)
 {
     UpdateBoundingBoxes();
+
     UpdateCollision(dt);
 }
 
@@ -44,22 +51,20 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 {
     if (aEntities.empty()) return;
 
-    auto& cArray = gCoordinator->GetComponentArray<Collider>();
-    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
-    auto& sArray = gCoordinator->GetComponentArray<Sprite>();
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& sArray = pCoordinator->GetComponentArray<Sprite>();
 
     for (auto const& entity : aEntities)
     {
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
-        // Ensure bounds array matches shapes array
         if (c.bounds.size() != c.shapes.size())
         {
             c.bounds.resize(c.shapes.size());
         }
 
-        // Get sprite size if available
         Vec2 spriteSize{ 1.0f, 1.0f };
         if (sArray.Has(entity))
         {
@@ -70,49 +75,62 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
             }
         }
 
-        // Update each shape's bounding box
         for (size_t i = 0; i < c.shapes.size(); ++i)
         {
             const auto& shape = c.shapes[i];
             if (!shape.isActive) continue;
 
-            // Determine actual size based on autoFitToSprite flag
-            Vec2 effectiveSize;
-            if (shape.autoFitToSprite)
-            {
-                effectiveSize = spriteSize;
-            }
-            else
-            {
-                effectiveSize = shape.size;
-            }
-
-            // Scale by transform
+            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.scale.x,
-                effectiveSize.y * tf.scale.y
+                effectiveSize.x * tf.worldScale.x,
+                effectiveSize.y * tf.worldScale.y
             };
 
-            // Calculate world position with offset
             Vec2 worldOffset = Vec2{
-                shape.offset.x * tf.scale.x,
-                shape.offset.y * tf.scale.y
+                shape.offset.x * tf.worldScale.x,
+                shape.offset.y * tf.worldScale.y
             };
-
-            Vec2 currentWorldPos = tf.position + worldOffset;
-            Vec2 prevWorldPos = tf.prevPos + worldOffset;
 
             Vec2 halfSize = scaledSize * 0.5f;
 
-            // Calculate bounds that encompass both positions
+            // SWEPT: Cover both current AND previous position
+            Vec2 currentWorldPos = tf.worldPosition + worldOffset;
+            Vec2 prevWorldPos = tf.prevWorldPos + worldOffset;
+
+            // Calculate bounds at current position
+            Vec2 currentMin = Vec2{
+                currentWorldPos.x - halfSize.x,
+                currentWorldPos.y - halfSize.y
+            };
+            Vec2 currentMax = Vec2{
+                currentWorldPos.x + halfSize.x,
+                currentWorldPos.y + halfSize.y
+            };
+
+            // Calculate bounds at previous position
+            Vec2 prevMin = Vec2{
+                prevWorldPos.x - halfSize.x,
+                prevWorldPos.y - halfSize.y
+            };
+            Vec2 prevMax = Vec2{
+                prevWorldPos.x + halfSize.x,
+                prevWorldPos.y + halfSize.y
+            };
+
+            // Combine to create swept AABB
             c.bounds[i].min = Vec2{
-                min(currentWorldPos.x - halfSize.x, prevWorldPos.x - halfSize.x),
-                min(currentWorldPos.y - halfSize.y, prevWorldPos.y - halfSize.y)
+                min(currentMin.x, prevMin.x),
+                min(currentMin.y, prevMin.y)
             };
             c.bounds[i].max = Vec2{
-                max(currentWorldPos.x + halfSize.x, prevWorldPos.x + halfSize.x),
-                max(currentWorldPos.y + halfSize.y, prevWorldPos.y + halfSize.y)
+                max(currentMax.x, prevMax.x),
+                max(currentMax.y, prevMax.y)
             };
+
+            /*if (tf.parent.has_value())
+            {
+                std::cout << "bound : " << c.bounds[i].min << " | " << c.bounds[i].max << std::endl;
+            }*/
         }
     }
 }
@@ -121,9 +139,9 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 {
     if (aEntities.empty()) return;
 
-    auto& tfArray = gCoordinator->GetComponentArray<Transform>();
-    auto& cArray = gCoordinator->GetComponentArray<Collider>();
-    auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
     previousCollisions = std::move(currentCollisions);
     currentCollisions.clear();
@@ -173,6 +191,23 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     }
 }
 
+Uma_ECS::Entity Uma_ECS::CollisionSystem::GetPhysicsEntity(Entity entity, ComponentArray<Transform>& tfArray, ComponentArray<RigidBody>& rbArray)
+{
+    Entity curr = entity;
+
+    // Walk up to find root entity
+    while (tfArray.Has(curr) && tfArray.GetData(curr).parent.has_value())
+    {
+        curr = tfArray.GetData(curr).parent.value();
+    }
+
+    // Only return root if it has RigidBody, otherwise return invalid
+    if (rbArray.Has(curr))
+        return curr;
+
+    return static_cast<Entity>(-1);  // Return invalid if no physics
+}
+
 void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     Entity e1, Entity e2,
     ComponentArray<Transform>& tfArray,
@@ -188,24 +223,27 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     if (c1.shapes.empty() || c2.shapes.empty()) return;
     if (!c1.shapes[0].isActive || !c2.shapes[0].isActive) return;
 
-    // Check if entities have RigidBody (dynamic vs static)
-    bool e1HasRb = rbArray.Has(e1);
-    bool e2HasRb = rbArray.Has(e2);
+    // Get physics entities FIRST
+    Entity physicsEntity1 = GetPhysicsEntity(e1, tfArray, rbArray);
+    Entity physicsEntity2 = GetPhysicsEntity(e2, tfArray, rbArray);
+
+    // Check if PHYSICS entities have RigidBody
+    bool e1HasRb = (physicsEntity1 != static_cast<Entity>(-1));
+    bool e2HasRb = (physicsEntity2 != static_cast<Entity>(-1));
 
     // Skip if both static (optimization)
     if (!e1HasRb && !e2HasRb)
         return;
 
-    // Broad phase: check primary bounds
-    /*if (!CollisionIntersection_RectRect_Static(c1.bounds[0], c2.bounds[0]))
-        return;*/
+    // Get components from physics entities
+    Transform* tf1 = e1HasRb ? &tfArray.GetData(physicsEntity1) : nullptr;
+    Transform* tf2 = e2HasRb ? &tfArray.GetData(physicsEntity2) : nullptr;
 
-    // Get components
-    auto& tf1 = tfArray.GetData(e1);
-    auto& tf2 = tfArray.GetData(e2);
+    RigidBody* rb1 = e1HasRb ? &rbArray.GetData(physicsEntity1) : nullptr;
+    RigidBody* rb2 = e2HasRb ? &rbArray.GetData(physicsEntity2) : nullptr;
 
-    RigidBody* rb1 = e1HasRb ? &rbArray.GetData(e1) : nullptr;
-    RigidBody* rb2 = e2HasRb ? &rbArray.GetData(e2) : nullptr;
+    // Handle case where one entity doesn't have physics
+    if (!tf1 || !tf2) return;
 
     // Narrow phase: check all shape pairs
     for (size_t i = 0; i < c1.shapes.size(); ++i)
@@ -224,22 +262,20 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
             LayerMask layer2 = c2.GetEffectiveLayer(j);
             LayerMask mask2 = c2.GetEffectiveMask(j);
 
-            // checking if these 2 mask shd collide with each other
             if (!((layer1 & mask2) && (mask1 & layer2)))
                 continue;
 
             // Purpose filtering
-            // checking whether these 2 purpose shd collide with each other
             if (!ShouldPurposesCollide(shape1.purpose, shape2.purpose))
                 continue;
 
             // Collision test
             if (CollisionIntersection_RectRect_Static(c1.bounds[i], c2.bounds[j]))
             {
-                // handle the collision
+                // Pass physics entities and their transforms
                 HandleShapeCollision(
-                    e1, e2,
-                    tf1, tf2,
+                    physicsEntity1, physicsEntity2,
+                    *tf1, *tf2,
                     rb1, rb2,
                     c1.bounds[i], c2.bounds[j],
                     shape1.purpose, shape2.purpose
@@ -357,99 +393,120 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     bool e1CanMove, bool e2CanMove,
     RigidBody* rb1, RigidBody* rb2)
 {
-    // Calculate centers and half-extents
+    // Calculate penetration on both axes
     Vec2 center1 = (box1.min + box1.max) * 0.5f;
     Vec2 center2 = (box2.min + box2.max) * 0.5f;
     Vec2 halfSize1 = (box1.max - box1.min) * 0.5f;
     Vec2 halfSize2 = (box2.max - box2.min) * 0.5f;
 
-    // Calculate overlap on both axes
+    // Calculate delta between centers
     Vec2 delta = center1 - center2;
-    Vec2 overlap = Vec2{
-        halfSize1.x + halfSize2.x - std::abs(delta.x),
-        halfSize1.y + halfSize2.y - std::abs(delta.y)
-    };
+
+    // Calculate overlap on each axis (penetration depth)
+    float overlapX = halfSize1.x + halfSize2.x - std::abs(delta.x);
+    float overlapY = halfSize1.y + halfSize2.y - std::abs(delta.y);
 
     // Early exit if not overlapping
-    if (overlap.x <= 0 || overlap.y <= 0)
+    if (overlapX <= 0 || overlapY <= 0)
         return;
 
-    // ═══════════════════════════════════════════════════════════
-    // UNITY-STYLE: Find contact normal and penetration depth
-    // ═══════════════════════════════════════════════════════════
-
+    // Find axis of minimum penetration
     Vec2 normal{ 0, 0 };
     float penetration = 0;
 
-    if (overlap.x < overlap.y)
+    // Use the axis with SMALLER overlap (minimum penetration)
+    if (overlapX < overlapY)
     {
         // Collision on X axis (vertical surface)
         normal.x = (delta.x > 0) ? 1.0f : -1.0f;
         normal.y = 0;
-        penetration = overlap.x;
+        penetration = overlapX;
     }
     else
     {
         // Collision on Y axis (horizontal surface)
         normal.x = 0;
         normal.y = (delta.y > 0) ? 1.0f : -1.0f;
-        penetration = overlap.y;
+        penetration = overlapY;
     }
 
-    // ═══ DEBUG LOGGING ═══
-    //std::cout << "e1CanMove: " << e1CanMove << ", e2CanMove: " << e2CanMove << "\n";
-    //std::cout << "Normal: (" << normal.x << ", " << normal.y << ")\n";
-    //if (rb1) std::cout << "e1 velocity: (" << rb1->velocity.x << ", " << rb1->velocity.y << ")\n";
-    //if (rb2) std::cout << "e2 velocity: (" << rb2->velocity.x << ", " << rb2->velocity.y << ")\n";
-    // ═══════════════════════
+    // Position correction with Baumgarte stabilization
+    const float BAUMGARTE_COEFF = 0.2f;  // 20% correction (reduced from 40%)
+    const float PENETRATION_SLOP = 0.01f; // Allow small overlap
 
-    // ═══════════════════════════════════════════════════════════
-    // RESOLVE COLLISION
-    // ═══════════════════════════════════════════════════════════
+    float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * BAUMGARTE_COEFF;
 
     if (e1CanMove && e2CanMove)
     {
-        // ───────────────────────────────────────────────────────
-        // Both dynamic (Player vs Player, Enemy vs Enemy)
-        // ───────────────────────────────────────────────────────
+        // Both dynamic - split correction by mass ratio
+        float totalMass = 2.0f; // Assuming equal mass; use actual masses if available
+        tf1.position += normal * (correctionAmount * 0.5f);
+        tf2.position -= normal * (correctionAmount * 0.5f);
+    }
+    else if (e1CanMove)
+    {
+        tf1.position += normal * correctionAmount;
+    }
+    else if (e2CanMove)
+    {
+        tf2.position -= normal * correctionAmount;
+    }
 
-        // Push both apart
-        tf1.position += normal * (penetration * 0.5f);
-        tf2.position -= normal * (penetration * 0.5f);
+    // Velocity-based impulse resolution
 
-        if (rb1 && rb2)
+    if (e1CanMove && e2CanMove && rb1 && rb2)
+    {
+        // Dynamic vs Dynamic
+        Vec2 relativeVel = rb1->velocity - rb2->velocity;
+        float velAlongNormal = relativeVel.x * normal.x + relativeVel.y * normal.y;
+
+        // Only resolve if moving towards each other
+        if (velAlongNormal < 0)
         {
-            // Simple impulse resolution
-            Vec2 relVel = rb1->velocity - rb2->velocity;
-            float velAlongNormal = relVel.x * normal.x + relVel.y * normal.y;
+            const float RESTITUTION = 0.0f; // No bounce for top-down
+            float impulse = -(1.0f + RESTITUTION) * velAlongNormal * 0.5f;
 
-            if (velAlongNormal < 0) // Moving towards each other
-            {
-                float restitution = 0.3f; // Bounciness
-                float impulse = -(1.0f + restitution) * velAlongNormal / 2.0f;
+            Vec2 impulseVec = normal * impulse;
+            rb1->velocity += impulseVec;
+            rb2->velocity -= impulseVec;
 
-                rb1->velocity.x += normal.x * impulse;
-                rb1->velocity.y += normal.y * impulse;
-                rb2->velocity.x -= normal.x * impulse;
-                rb2->velocity.y -= normal.y * impulse;
-            }
+            // Apply friction to tangent velocity
+            const float FRICTION = 0.95f;
+            Vec2 tangent{ -normal.y, normal.x };
+
+            // Project velocity onto tangent and apply friction
+            float tangentVel1 = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+            float tangentVel2 = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
+
+            rb1->velocity -= tangent * (tangentVel1 * (1.0f - FRICTION));
+            rb2->velocity -= tangent * (tangentVel2 * (1.0f - FRICTION));
         }
     }
     else if (e1CanMove && rb1)
     {
-        // Push out of wall
-        tf1.position += normal * penetration;
-
+        // Dynamic vs Static
         float velAlongNormal = rb1->velocity.x * normal.x + rb1->velocity.y * normal.y;
 
-        if (velAlongNormal < 0) // Moving into wall
+        // Only resolve if moving into the wall
+        if (velAlongNormal < 0)
         {
-            // Zero velocity going into wall
+            // Remove normal component of velocity
             rb1->velocity.x -= normal.x * velAlongNormal;
             rb1->velocity.y -= normal.y * velAlongNormal;
 
-            // CRITICAL FOR TOP-DOWN: Also zero acceleration into wall
+            // Apply friction to sliding velocity
+            const float WALL_FRICTION = 0.95f;
+            Vec2 tangent{ -normal.y, normal.x };
+            float tangentVel = rb1->velocity.x * tangent.x + rb1->velocity.y * tangent.y;
+
+            // Reduce tangent velocity by friction
+            rb1->velocity.x = tangent.x * tangentVel * WALL_FRICTION;
+            rb1->velocity.y = tangent.y * tangentVel * WALL_FRICTION;
+
+            // Handle acceleration more carefully
             float accelAlongNormal = rb1->acceleration.x * normal.x + rb1->acceleration.y * normal.y;
+
+            // Only remove normal acceleration if pushing into wall
             if (accelAlongNormal < 0)
             {
                 rb1->acceleration.x -= normal.x * accelAlongNormal;
@@ -459,38 +516,30 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     }
     else if (e2CanMove && rb2)
     {
-        // Push out of wall
-        tf2.position -= normal * penetration;
+        // Static vs Dynamic (same as above but flipped)
+        Vec2 flippedNormal = normal * -1.0f;
+        float velAlongNormal = rb2->velocity.x * flippedNormal.x + rb2->velocity.y * flippedNormal.y;
 
-        // ═══════════════════════════════════════════════════════════
-        // TOP-DOWN FIX: Zero velocity AND acceleration on wall hit
-        // ═══════════════════════════════════════════════════════════
-
-        float velAlongNormal = rb2->velocity.x * normal.x + rb2->velocity.y * normal.y;
-
-        if (velAlongNormal > 0) // Moving into wall
+        if (velAlongNormal < 0)
         {
-            //std::stringstream ss{ "" };
-            //ss << "Player Movement (b): " << rb2->velocity;
-            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            rb2->velocity.x -= flippedNormal.x * velAlongNormal;
+            rb2->velocity.y -= flippedNormal.y * velAlongNormal;
 
-            // Zero velocity going into wall
-            rb2->velocity.x -= normal.x * velAlongNormal;
-            rb2->velocity.y -= normal.y * velAlongNormal;
+            const float WALL_FRICTION = 0.95f;
+            Vec2 tangent{ -flippedNormal.y, flippedNormal.x };
+            float tangentVel = rb2->velocity.x * tangent.x + rb2->velocity.y * tangent.y;
 
-            //ss << "Player Movement (a): " << rb2->velocity;
-            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            rb2->velocity.x = tangent.x * tangentVel * WALL_FRICTION;
+            rb2->velocity.y = tangent.y * tangentVel * WALL_FRICTION;
 
-            // CRITICAL FOR TOP-DOWN: Also zero acceleration into wall
-            float accelAlongNormal = rb2->acceleration.x * normal.x + rb2->acceleration.y * normal.y;
-            if (accelAlongNormal > 0)
+            float accelAlongNormal = rb2->acceleration.x * flippedNormal.x + rb2->acceleration.y * flippedNormal.y;
+
+            if (accelAlongNormal < 0)
             {
-                rb2->acceleration.x -= normal.x * accelAlongNormal;
-                rb2->acceleration.y -= normal.y * accelAlongNormal;
+                rb2->acceleration.x -= flippedNormal.x * accelAlongNormal;
+                rb2->acceleration.y -= flippedNormal.y * accelAlongNormal;
             }
         }
-
-
     }
 }
 
@@ -515,6 +564,109 @@ Vec2 Uma_ECS::CollisionSystem::GetCollisionNormal(
     }
 
     return delta;
+}
+
+void Uma_ECS::CollisionSystem::DebugRender()
+{
+    if (!pGraphics) return;
+
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& sArray = pCoordinator->GetComponentArray<Sprite>();
+
+    for (const auto& entity : aEntities)
+    {
+        if (!cArray.Has(entity)) continue;
+
+        auto& c = cArray.GetData(entity);
+        auto& tf = tfArray.GetData(entity);
+
+        if (!c.showBBox) continue;
+
+        // Get sprite size if available
+        Vec2 spriteSize{ 1.0f, 1.0f };
+        if (sArray.Has(entity))
+        {
+            auto& s = sArray.GetData(entity);
+            if (s.texture)
+            {
+                spriteSize = s.texture->GetNativeSize();
+            }
+        }
+
+        for (size_t i = 0; i < c.shapes.size(); ++i)
+        {
+            const auto& shape = c.shapes[i];
+            if (!shape.isActive) continue;
+
+            // Recalculate bounds using interpolated renderPos for smooth visualization
+            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
+            Vec2 scaledSize = Vec2{
+                effectiveSize.x * tf.scale.x,
+                effectiveSize.y * tf.scale.y
+            };
+
+            Vec2 worldOffset = Vec2{
+                shape.offset.x * tf.scale.x,
+                shape.offset.y * tf.scale.y
+            };
+
+            Vec2 halfSize = scaledSize * 0.5f;
+
+            // Use renderPos (interpolated) instead of position
+            Vec2 renderWorldPos = tf.prevWorldPos + worldOffset;
+
+            // Calculate bounds for visualization
+            BoundingBox visualBounds;
+            visualBounds.min = Vec2{
+                renderWorldPos.x - halfSize.x,
+                renderWorldPos.y - halfSize.y
+            };
+            visualBounds.max = Vec2{
+                renderWorldPos.x + halfSize.x,
+                renderWorldPos.y + halfSize.y
+            };
+
+            LayerMask effectiveLayer = c.GetEffectiveLayer(i);
+            LayerMask effectiveMask = c.GetEffectiveMask(i);
+
+            // Determine color based on purpose
+            float r = 1.f, g = 0.f, b = 0.f;
+
+            if (shape.purpose == ColliderPurpose::Trigger)
+            {
+                // Triggers: Blue
+                r = 0.f; g = 0.f; b = 1.f;
+            }
+            else if (shape.purpose == ColliderPurpose::Environment)
+            {
+                // Walls: Green
+                r = 0.f; g = 1.f; b = 0.f;
+            }
+            else if (shape.purpose == ColliderPurpose::Physics)
+            {
+                // Check what it collides with
+                if (effectiveMask & CL_WALL)
+                {
+                    // Feet (collides with walls): green
+                    r = 0.f; g = 1.f; b = 0.f;
+                }
+                else if (effectiveMask & CL_ENEMY || effectiveMask & CL_PLAYER)
+                {
+                    // Body (collides with enemies / player): Red
+                    r = 1.f; g = 0.f; b = 0.f;
+                }
+                else
+                {
+                    // Other physics: Purple
+                    r = 1.f; g = 0.f; b = 1.f;
+                }
+            }
+
+            // Draw render bounds with full opacity
+            pGraphics->DrawDebugRect(visualBounds, r, g, b);
+        }
+    }
 }
 
 void Uma_ECS::CollisionSystem::InsertIntoGrid(

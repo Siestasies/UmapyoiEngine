@@ -357,9 +357,54 @@ namespace Uma_ECS
                     std::string debug = "failed to destroy entity : " + std::to_string(entity);
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
                 }
-                
-                
             });
+
+        sharedLua->set_function("SetParent", [&](Entity child, Entity parent) {
+            try {
+                pCoordinator->SetParent(child, parent);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Failed to set parent relationship");
+            }
+            });
+
+        sharedLua->set_function("RemoveParent", [&](Entity child) {
+            try {
+                pCoordinator->RemoveParent(child);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Failed to remove parent");
+            }
+            });
+
+        // ============ UPDATED: Return -1 for Lua if no parent ============
+        sharedLua->set_function("GetParent", [&](Entity entity) -> int {
+            auto parent = pCoordinator->GetParent(entity);
+            return parent.has_value() ? static_cast<int>(parent.value()) : -1;
+            });
+
+        // ============ NEW: Check if entity has parent ============
+        sharedLua->set_function("HasParent", [&](Entity entity) -> bool {
+            return pCoordinator->GetParent(entity).has_value();
+            });
+
+        sharedLua->set_function("GetChildren", [&](Entity entity) -> std::vector<Entity> {
+            return pCoordinator->GetChildren(entity);
+            });
+
+        sharedLua->set_function("DestroyWithChildren", [&](Entity entity) {
+            try {
+                pCoordinator->DestroyEntityAndChildren(entity);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Failed to destroy entity hierarchy");
+            }
+            });
+
+        // add component remove component
     }
 
     void LuaScriptingSystem::RegisterComponentTypes()

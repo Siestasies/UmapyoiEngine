@@ -96,6 +96,12 @@ namespace Uma_ECS
         // Find first entity with a component by string name (for Lua)
         Entity FindEntityWithComponentByName(const std::string& componentName);
 
+        void SetParent(Entity child, Entity parent);
+        void RemoveParent(Entity child);
+        std::optional<Entity> GetParent(Entity entity);
+        std::vector<Entity> GetChildren(Entity entity);
+        void DestroyEntityAndChildren(Entity entity);
+
         // Components functions
 
         template<typename T>
@@ -181,8 +187,10 @@ namespace Uma_ECS
         std::string GetSerializerName() const override { return "coordinator"; };  // e.g. "coordinator", "resources_manager"
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void Deserialize(const rapidjson::Value& in) override;
+
+        void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
-        void DeserializePrefab(const rapidjson::Value& in) override;
+        Entity DeserializePrefab(const rapidjson::Value& in) override;
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

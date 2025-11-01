@@ -106,6 +106,7 @@ int main()
     scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
     scn_mgr->RegisterScript<Uma_Engine::EditorScript>("EditorBehaviour");
     auto editorScene = scn_mgr->CreateScene("GameScene1", "test_collider.json");
+    editorScene->g_EngineConfig = gEngineConfig;
     scn_mgr->AttachScriptToScene("GameScene1", "GameBehaviour");
     scn_mgr->AttachScriptToScene("GameScene1", "EditorBehaviour");
     scn_mgr->LoadScene("GameScene1");

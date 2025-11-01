@@ -38,7 +38,7 @@ namespace Uma_Engine
         virtual void Deserialize(const rapidjson::Value& in) = 0;
 
         virtual void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) = 0;
-        virtual void DeserializePrefab(const rapidjson::Value& in) = 0;
+        virtual Entity DeserializePrefab(const rapidjson::Value& in) = 0;
 
         virtual ~ISerializer() = default;
     };

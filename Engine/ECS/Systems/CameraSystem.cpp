@@ -52,6 +52,7 @@ namespace Uma_ECS
             auto& player_tf = tfArray.GetData(player);
 
             cam_tf.position = player_tf.position;
+            cam_tf.worldPosition = player_tf.position;
         }
     }
 }

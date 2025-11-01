@@ -24,6 +24,7 @@ All rights reserved.
 #pragma once
 
 #include "../../Math/Math.h"
+#include <optional>
 //#include "Core/SerializationBase.h"
 
 namespace Uma_ECS
@@ -35,6 +36,26 @@ namespace Uma_ECS
         Vec2 rotation{};
         Vec2 scale{};
         Vec2 prevPos{}; // shdnt edit this value manually
+
+        // run time data
+        //Vec2 renderPos{};
+
+        // gameobject grouping
+        std::optional<Entity> parent;
+        std::vector<Entity> children;
+
+        // Cached world-space transforms (updated by TransformSystem)
+        Vec2 worldPosition{};
+        Vec2 worldScale{ 1.0f, 1.0f };
+        float worldRotation{};
+        Vec2 prevWorldPos{};
+
+        bool isDirty = true;
+
+        /*void UpdateRenderPosition(float alpha)
+        {
+            renderPos = prevPos + (position - prevPos) * alpha;
+        }*/
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
@@ -59,6 +80,14 @@ namespace Uma_ECS
             value.AddMember("scale", scl, allocator);
 
             // prev pos is runtime object no need to save
+            if (parent.has_value())
+            {
+                value.AddMember("parent", parent.value(), allocator);
+            }
+            else
+            {
+                value.AddMember("parent", -1, allocator);  // Use -1 for JSON compatibility
+            }
         }
 
         // Deserialize from JSON
@@ -76,8 +105,29 @@ namespace Uma_ECS
             scale.x = scl["x"].GetFloat();
             scale.y = scl["y"].GetFloat();
 
-            // Reset prevPos automatically
             prevPos = position;
+
+            if (value.HasMember("parent"))
+            {
+                int parentID = value["parent"].GetInt();
+                if (parentID >= 0)
+                {
+                    parent = static_cast<Entity>(parentID);
+                }
+                else
+                {
+                    parent = std::nullopt;
+                }
+            }
+
+            // Don't deserialize children - will be rebuilt in Coordinator::Deserialize
+            children.clear();
+
+            // Reset world transforms
+            worldPosition = position;
+            worldScale = scale;
+            worldRotation = rotation.x;
+            isDirty = true;
         }
     };
 }
