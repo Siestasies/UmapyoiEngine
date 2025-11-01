@@ -140,7 +140,7 @@ namespace Uma_Engine
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
-                    LoadPrefab();
+                    LoadPrefab("bird");
                 }
             );
 
@@ -662,6 +662,7 @@ namespace Uma_Engine
 
                 GetCoordinator().SetParent(en, enemy);
             }
+            SavePrefab("bird", enemy);
 
             // create player
             m_Scene->m_player = GetCoordinator().CreateEntity();
@@ -1013,12 +1014,14 @@ namespace Uma_Engine
             }
         }
 
-        void LoadPrefab()
+        void LoadPrefab(std::string prefab_name)
         {
-            GameSerializer serializer;
-            serializer.Register(GetResources());
-            serializer.Register(&GetCoordinator());
-            serializer.loadPrefab(Uma_FilePath::PREFAB_DIR + "enemy.json");
+           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name + ".json");
+        }
+
+        void SavePrefab(std::string prefab_name, Entity entity)
+        {
+            m_Scene->gGameSerializer.savePrefab(entity, Uma_FilePath::PREFAB_DIR + prefab_name + ".json");
         }
 
         void ChangeAllEnemyRot(float rot)

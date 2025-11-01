@@ -373,20 +373,206 @@ namespace Uma_ECS
         if (!aEntityManager->IsEntityActive(entity)) return;
 
         out.SetObject();
-        
-        out.AddMember("id", entity, allocator);
 
-        rapidjson::Value comps(rapidjson::kObjectType);
-        aComponentManager->SerializeAll(entity, comps, allocator);
-        out.AddMember("components", comps, allocator);
+        // Serialize the entire hierarchy starting from this entity
+        rapidjson::Value entitiesArray(rapidjson::kArrayType);
+
+        std::vector<Entity> hierarchyEntities;
+        CollectHierarchy(entity, hierarchyEntities);
+
+        // Create ID mapping for the prefab (starting from 0)
+        std::unordered_map<Entity, Entity> worldToPrefabID;
+        for (size_t i = 0; i < hierarchyEntities.size(); ++i)
+        {
+            worldToPrefabID[hierarchyEntities[i]] = static_cast<Entity>(i);
+        }
+
+        // Serialize each entity with remapped IDs
+        for (Entity e : hierarchyEntities)
+        {
+            rapidjson::Value entityObj(rapidjson::kObjectType);
+
+            Entity prefabID = worldToPrefabID[e];
+            entityObj.AddMember("id", prefabID, allocator);
+
+            // Serialize components
+            rapidjson::Value comps(rapidjson::kObjectType);
+            aComponentManager->SerializeAll(e, comps, allocator);
+
+            // Remap parent and children IDs in Transform component
+            if (comps.HasMember("struct Uma_ECS::Transform")) // Use your actual type name
+            {
+                auto& transformComp = comps["struct Uma_ECS::Transform"];
+
+                // Remap parent
+                if (transformComp.HasMember("parent"))
+                {
+                    int oldParentID = transformComp["parent"].GetInt();
+                    if (oldParentID >= 0)
+                    {
+                        auto it = worldToPrefabID.find(static_cast<Entity>(oldParentID));
+                        if (it != worldToPrefabID.end())
+                        {
+                            transformComp["parent"] = it->second;
+                        }
+                        else
+                        {
+                            // Parent is outside hierarchy - make this a root
+                            transformComp["parent"] = -1;
+                        }
+                    }
+                }
+
+                // Remap children
+                if (transformComp.HasMember("children"))
+                {
+                    auto& childrenArray = transformComp["children"];
+                    for (auto& childVal : childrenArray.GetArray())
+                    {
+                        Entity oldChildID = childVal.GetUint();
+                        auto it = worldToPrefabID.find(oldChildID);
+                        if (it != worldToPrefabID.end())
+                        {
+                            childVal = it->second;
+                        }
+                    }
+                }
+            }
+
+            entityObj.AddMember("components", comps, allocator);
+            entitiesArray.PushBack(entityObj, allocator);
+        }
+
+        out.AddMember("entities", entitiesArray, allocator);
+        out.AddMember("rootEntity", worldToPrefabID[entity], allocator);
     }
 
-    void Coordinator::DeserializePrefab(const rapidjson::Value& in)
+    // Helper function to collect entire hierarchy
+    void Coordinator::CollectHierarchy(Entity root, std::vector<Entity>& outEntities)
     {
-        Entity entity = CreateEntity(); // new ID
-        const auto& comps = in["components"];
-        Signature sign = aComponentManager->DeserializeAll(entity, comps);
-        aEntityManager->SetSignature(entity, sign);
-        aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
+        outEntities.push_back(root);
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(root))
+        {
+            auto& tf = tfArray.GetData(root);
+            for (Entity child : tf.children)
+            {
+                CollectHierarchy(child, outEntities); // Recursive
+            }
+        }
+    }
+
+    Entity Coordinator::DeserializePrefab(const rapidjson::Value& in)
+    {
+        if (!in.HasMember("entities") || !in["entities"].IsArray())
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Invalid prefab format: missing entities array");
+            return static_cast<Entity>(-1);
+        }
+
+        const auto& entitiesArray = in["entities"];
+
+        // Map prefab IDs to new world IDs
+        std::unordered_map<Entity, Entity> prefabToWorldID;
+
+        // First pass: Create all entities
+        for (const auto& entityVal : entitiesArray.GetArray())
+        {
+            Entity prefabID = entityVal["id"].GetUint();
+            Entity newWorldID = CreateEntity();
+            prefabToWorldID[prefabID] = newWorldID;
+
+            const auto& comps = entityVal["components"];
+            Signature sign = aComponentManager->DeserializeAll(newWorldID, comps);
+            aEntityManager->SetSignature(newWorldID, sign);
+        }
+
+        // Second pass: Remap parent-child relationships
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+
+        for (const auto& entityVal : entitiesArray.GetArray())
+        {
+            Entity prefabID = entityVal["id"].GetUint();
+            Entity worldID = prefabToWorldID[prefabID];
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            // Remap parent
+            if (tf.parent.has_value())
+            {
+                Entity oldParentID = tf.parent.value();
+                auto it = prefabToWorldID.find(oldParentID);
+
+                if (it != prefabToWorldID.end())
+                {
+                    tf.parent = it->second;
+                }
+                else
+                {
+                    // Parent not in prefab - clear it
+                    tf.parent = std::nullopt;
+                }
+            }
+
+            // Remap children
+            std::vector<Entity> remappedChildren;
+            for (Entity oldChildID : tf.children)
+            {
+                auto it = prefabToWorldID.find(oldChildID);
+                if (it != prefabToWorldID.end())
+                {
+                    remappedChildren.push_back(it->second);
+                }
+            }
+            tf.children = std::move(remappedChildren);
+        }
+
+        // Third pass: Rebuild parent-child relationships (ensure consistency)
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            if (tf.parent.has_value())
+            {
+                Entity parentID = tf.parent.value();
+
+                if (tfArray.Has(parentID))
+                {
+                    auto& parentTf = tfArray.GetData(parentID);
+
+                    // Ensure child is in parent's children list
+                    if (std::find(parentTf.children.begin(), parentTf.children.end(), worldID)
+                        == parentTf.children.end())
+                    {
+                        parentTf.children.push_back(worldID);
+                    }
+                }
+            }
+        }
+
+        // Fourth pass: Update systems
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+            aSystemManager->EntitySignatureChanged(worldID, GetEntitySignature(worldID));
+        }
+
+        // Return the root entity
+        if (in.HasMember("rootEntity"))
+        {
+            Entity prefabRootID = in["rootEntity"].GetUint();
+            return prefabToWorldID[prefabRootID];
+        }
+
+        // Fallback: return first entity
+        return prefabToWorldID.begin()->second;
     }
 }

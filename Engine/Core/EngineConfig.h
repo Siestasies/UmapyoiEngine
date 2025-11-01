@@ -88,10 +88,11 @@ namespace Uma_Engine
             (void)allocator;
         }
 
-        void DeserializePrefab(const rapidjson::Value& in) override
+        Entity DeserializePrefab(const rapidjson::Value& in) override
         {
             // we are not using this function in Engine Config 
             (void)in;
+            return static_cast<Entity>(-1);
         }
     };
 }

@@ -1,0 +1,173 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "position": {
+                            "x": -10.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 2.0,
+                            "y": 2.0
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "pink_enemy",
+                        "layer": 16,
+                        "flipX": false,
+                        "flipY": false,
+                        "Native": true
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 500.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 4294967295,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                },
+                                "size": {
+                                    "x": 3.0,
+                                    "y": 3.0
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 18,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -2.0
+                                },
+                                "size": {
+                                    "x": 2.0,
+                                    "y": 0.699
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/BirdEnemy.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "speed",
+                                        "type": 0,
+                                        "value": 100.0,
+                                        "min": 0.0,
+                                        "max": 500.0,
+                                        "isSlider": true
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": 3,
+                                        "value": "bird",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Enemy": {
+                        "mSpeed": 1.0
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "position": {
+                            "x": -2.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "kappa_statue",
+                        "layer": 16,
+                        "flipX": false,
+                        "flipY": false,
+                        "Native": true
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 500.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 4294967295,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 2.0,
+                                    "y": 2.0
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    }
+}
