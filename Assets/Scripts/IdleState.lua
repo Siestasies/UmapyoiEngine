@@ -21,16 +21,11 @@ end
 -- Called once when entering this state
 function IdleState:enter()
     Log("entering idle")
-    if self.parent:HasRigidBody() then
-        rb = self.parent:GetRigidBody()
-        rb.acceleration.x = 0
-        rb.acceleration.y = 0
-    end
 end
 
 -- Called every frame while in this state
 function IdleState:update(dt)
-    if KeyPressed(KEY_N) then
+    if KeyPressed(KEY_M) then
         self.fsm:changeState("WalkState")
     end
     if KeyPressed(KEY_B) then

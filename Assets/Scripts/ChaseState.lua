@@ -26,6 +26,11 @@ end
 
 function ChaseState:exit()
     Log("leaving the chase state")
+    if self.parent:HasRigidBody() then
+        rb = self.parent:GetRigidBody()
+        rb.acceleration.x = 0
+        rb.acceleration.y = 0
+    end
 end
 
 function ChaseState:update(dt)
@@ -60,7 +65,9 @@ function ChaseState:update(dt)
     end
     
     if KeyPressed(KEY_M) then
-        Log("pressed")
+        self.fsm:changeState("WalkState")
+    end
+    if KeyPressed(KEY_N) then
         self.fsm:changeState("IdleState")
     end
 end
