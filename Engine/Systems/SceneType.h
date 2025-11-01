@@ -26,6 +26,7 @@ All rights reserved.
 #include "ECS/Systems/RenderingSystem.hpp"
 #include "ECS/Systems/CollisionSystem.hpp"
 #include "ECS/Systems/LuaScriptingSystem.hpp"
+#include "../Engine/UI/Systems/UISystem.h"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -36,6 +37,14 @@ All rights reserved.
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/LuaScript.h"
+#include "ECS/Components/Animator.h"
+
+// UI Components
+#include "../UI/Components/RectTransform.h"
+#include "../UI/Components/Canvas.h"
+#include "../UI/Components/Image.h"
+#include "../UI/Components/Button.h"
+#include "../UI/Components/Text.h"
 
 // Engine Systems
 #include "Systems/InputSystem.h"
@@ -136,6 +145,9 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
 
+            // ECS UI related
+            std::shared_ptr<Uma_UI::UISystem> m_UISystem;
+
             // temp need to remove oneday
             Uma_ECS::Entity m_player;
             Uma_ECS::Entity m_cam;
@@ -146,6 +158,7 @@ namespace Uma_Engine
             std::vector<std::shared_ptr<SceneScript>> m_AttachedScripts;
         private:
             void InitializeECS();
+            void InitializeUISystem();
             void UpdateECSSystems(float dt);
             void LoadInternal();
 

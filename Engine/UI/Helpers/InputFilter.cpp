@@ -1,17 +1,3 @@
-/*!
-\file   InputFilter.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
-\par    Section A
-\par    Software Engineering Project 3
-
-\brief
-Implementation of InputFilter - queries UISystem for input consumption state.
-
-All content (C) 2025 DigiPen Institute of Technology Singapore.
-All rights reserved.
-*/
-
 #include "../Helpers/InputFilter.h"
 #include "../Systems/UISystem.h"
 

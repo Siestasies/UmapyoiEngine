@@ -29,8 +29,26 @@ namespace Uma_Engine
         {
             std::cout << "EditorSceneScript: OnLoad" << std::endl;
 
+            m_Canvas = m_Scene->CreateEntity();
+            GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
+                {
+                .sortingOrder = 0,
+                .referenceResolution = Vec2(1280.f, 720.f),
+                .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
+                .matchWidthOrHeight = 0.5f
+                });
+
+            if (!GetResources()->GetTexture("whitePixel")) GetResources()->LoadTexture("whitePixel", "Assets/whitePixel.png");
+
+            // Ensure font exists (size 48)
+            GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
+
+
             // Subscribe to editor events
             SubscribeToEvents();
+
+            CreateButtonWithText("Hello", Vec2(0, 0), Vec2(500, 200), m_Canvas,
+                [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
         void OnUnload() override
@@ -47,6 +65,8 @@ namespace Uma_Engine
 
     private:
         std::string m_CurrentSceneName = "test_collider.json";
+
+        Entity m_Canvas{};
 
         void SubscribeToEvents()
         {
@@ -957,6 +977,73 @@ namespace Uma_Engine
                 auto& c = cArray.GetData(tfArray.GetEntity(i));
                 c.showBBox = isShow;
             }
+        }
+
+        Uma_ECS::Entity CreateButtonWithText(
+            const std::string& label,
+            Vec2               anchoredPos,
+            Vec2               size,
+            Uma_ECS::Entity    canvas,
+            std::function<void(Uma_ECS::Entity)> onClick)
+        {
+            using namespace Uma_ECS;
+            Coordinator& coord = GetCoordinator();
+
+            /* ---------- button entity ---------- */
+            Entity btn = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_UI::RectTransform>(btn, 
+                {
+                .anchorMin = Vec2(0.5f, 0.5f),
+                .anchorMax = Vec2(0.5f, 0.5f),
+                .pivot = Vec2(0.5f, 0.5f),
+                .anchoredPosition = anchoredPos,
+                .sizeDelta = size,
+                .parent = canvas
+                });
+
+            coord.AddComponent<Uma_UI::Image>(btn, 
+                {
+                .textureName = "whitePixel",
+                .color = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
+                .visible = true
+                });
+
+            coord.AddComponent<Uma_UI::Button>(btn, 
+                {
+                .interactable = true,
+                .normalColor = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
+                .hoverColor = Uma_UI::Colour(0.3f, 0.7f, 1.f, 1.f),
+                .pressedColor = Uma_UI::Colour(0.1f, 0.4f, 0.9f, 1.f),
+                .disabledColor = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
+                });
+
+            auto& button = coord.GetComponent<Uma_UI::Button>(btn);
+            button.onClick = std::move(onClick);
+
+            /* ---------- text child ---------- */
+            Entity txt = m_Scene->CreateEntity();
+            coord.AddComponent<Uma_UI::RectTransform>(txt, 
+                {
+                .anchorMin = Vec2(0.5f, 0.5f),
+                .anchorMax = Vec2(0.5f, 0.5f),
+                .pivot = Vec2(0.5f, 0.5f),
+                .anchoredPosition = Vec2(0,0),
+                .sizeDelta = size,
+                .parent = btn
+                });
+
+            coord.AddComponent<Uma_UI::Text>(txt, 
+                {
+                .text = label,
+                .fontName = "default",
+                .fontSize = 28.f,
+                .color = Uma_UI::Colour::White(),
+                .alignment = Uma_UI::TextAlignment::Center,
+                .visible = true
+                });
+
+            return btn;
         }
     };
 }

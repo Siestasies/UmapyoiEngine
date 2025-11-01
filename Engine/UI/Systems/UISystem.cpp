@@ -5,6 +5,7 @@
 
 #include <GLFW/glfw3.h>
 #include <algorithm>
+#include <map>
 
 namespace Uma_UI
 {
@@ -62,6 +63,15 @@ namespace Uma_UI
     {
         mHitTestCache.clear();
         mDrawList.clear();
+
+        mMouseButtonDown = false;
+        mMouseButtonDownLastFrame = false;
+        mMouseConsumedThisFrame = false;
+
+        pCoordinator = nullptr;
+        pEventSystem = nullptr;
+        pGraphics = nullptr;
+        pResourcesManager = nullptr;
     }
 
     void UISystem::LayoutPass()
@@ -302,16 +312,25 @@ namespace Uma_UI
             mDrawList.push_back(sprite);
         }
 
-        // Render all sprites
-        if (!mDrawList.empty() && mDrawList[0].tex_id != 0)
+        if (!mDrawList.empty())
         {
-            // Group by texture and render
-            // For simplicity, render all with same texture
-            pGraphics->DrawSpritesScreenInstanced(
-                mDrawList[0].tex_id,
-                mDrawList,
-                Vec3(1.0f, 1.0f, 1.0f)
-            );
+            // Group sprites by texture ID for instanced rendering
+            std::map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> batchedSprites;
+
+            for (const auto& sprite : mDrawList)
+            {
+                batchedSprites[sprite.tex_id].push_back(sprite);
+            }
+
+            // Render each texture batch ONCE
+            for (const auto& [texId, sprites] : batchedSprites)
+            {
+                pGraphics->DrawSpritesScreenInstanced(
+                    texId,
+                    sprites,
+                    Vec3(1.0f, 1.0f, 1.0f)
+                );
+            }
         }
 
         // Render text elements
@@ -473,19 +492,55 @@ namespace Uma_UI
     {
         std::vector<std::pair<Uma_ECS::Entity, int>> entities;
 
-        // Collect all entities with Canvas components
-        auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
-        for (size_t i = 0; i < canvasArray.Size(); ++i)
+        auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
+
+        for (size_t i = 0; i < rectArray.Size(); ++i)
         {
-            Uma_ECS::Entity entity = canvasArray.GetEntity(i);
-            auto& canvas = canvasArray.GetComponentAt(i);
-            entities.push_back({entity, canvas.sortingOrder});
+            Uma_ECS::Entity entity = rectArray.GetEntity(i);
+            int sortingOrder = 0;
+
+            auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
+            if (canvasArray.Has(entity))
+            {
+                // Use Coordinator to get component
+                sortingOrder = pCoordinator->GetComponent<Canvas>(entity).sortingOrder;
+            }
+            else
+            {
+                auto& rect = rectArray.GetComponentAt(i);
+                Uma_ECS::Entity current = rect.parent;
+
+                while (current != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    if (canvasArray.Has(current))
+                    {
+                        // Use Coordinator to get component
+                        sortingOrder = pCoordinator->GetComponent<Canvas>(current).sortingOrder;
+                        break;
+                    }
+
+                    if (rectArray.Has(current))
+                    {
+                        // Use Coordinator to get component
+                        current = pCoordinator->GetComponent<RectTransform>(current).parent;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            entities.push_back({ entity, sortingOrder });
         }
 
-        // Sort by sorting order
-        std::sort(entities.begin(), entities.end(), [](const auto& lhs, const auto& rhs) { return lhs.second < rhs.second; });
+        std::sort(entities.begin(), entities.end(),
+            [](const auto& lhs, const auto& rhs) {
+                if (lhs.second != rhs.second)
+                    return lhs.second < rhs.second;
+                return lhs.first < rhs.first;
+            });
 
-        // Extract entity IDs
         std::vector<Uma_ECS::Entity> result;
         result.reserve(entities.size());
         for (const auto& [entity, order] : entities)

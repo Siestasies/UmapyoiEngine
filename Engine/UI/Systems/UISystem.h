@@ -26,16 +26,16 @@ namespace Uma_UI
      *        2. InputPass - raycast mouse, update button states, emit events
      *        3. BuildDrawListPass - generate sprite draw list for renderer
      */
-    class UISystem : public Uma_Engine::ISystem
+    class UISystem : public Uma_ECS::ECSSystem
     {
     public:
         UISystem() = default;
         ~UISystem() = default;
 
         // ISystem interface
-        void Init() override;
-        void Update(float dt) override;
-        void Shutdown() override;
+        void Init();
+        void Update(float dt);
+        void Shutdown();
 
         // Pass 1: Layout computation
         void LayoutPass();

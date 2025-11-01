@@ -61,6 +61,8 @@ namespace Uma_Engine
 
         m_LuaScriptingSystem->Shutdown();
 
+        m_UISystem->Shutdown();
+
         // Destroy entities
         m_Coordinator.DestroyAllEntities();
 
@@ -261,6 +263,12 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::Player>();
         m_Coordinator.RegisterComponent<Uma_ECS::Enemy>();
         m_Coordinator.RegisterComponent<Uma_ECS::LuaScript>();
+        m_Coordinator.RegisterComponent<Uma_ECS::Animator>();
+        m_Coordinator.RegisterComponent<Uma_UI::RectTransform>();
+        m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
+        m_Coordinator.RegisterComponent<Uma_UI::Image>();
+        m_Coordinator.RegisterComponent<Uma_UI::Button>();
+        m_Coordinator.RegisterComponent<Uma_UI::Text>();
 
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -322,8 +330,29 @@ namespace Uma_Engine
         }
         m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
 
+        InitializeUISystem();
+
         gGameSerializer.Register(m_ResourcesManager);
         gGameSerializer.Register(&m_Coordinator);
+    }
+
+    void Scene::InitializeUISystem()
+    {
+        m_UISystem = m_Coordinator.RegisterSystem<Uma_UI::UISystem>();
+        {
+            // 1. RectTransform  (mandatory for layout)
+            // 2. Image OR Text  (at least one drawable)
+            // 3. Button         (optional interactable)
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_UI::RectTransform>());
+            m_Coordinator.SetSystemSignature<Uma_UI::UISystem>(sign);
+        }
+
+        m_UISystem->SetCoordinator(&m_Coordinator);
+        m_UISystem->SetEventSystem(m_EventSystem);
+        m_UISystem->SetGraphics(m_Graphics);
+        m_UISystem->SetResourcesManager(m_ResourcesManager);
+        m_UISystem->Init();
     }
 
     void Scene::UpdateECSSystems(float dt)
@@ -348,5 +377,8 @@ namespace Uma_Engine
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
+
+        if (m_UISystem)
+            m_UISystem->Update(dt);
     }
 }

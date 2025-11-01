@@ -84,7 +84,6 @@ int main()
 
     // Register your other systems normally
     systemManager.RegisterSystem<Uma_Engine::Debugger>();
-
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
     systemManager.RegisterSystem<Uma_Engine::Sound>();
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
