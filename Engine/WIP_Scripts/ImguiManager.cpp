@@ -248,7 +248,7 @@ namespace Uma_Engine
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
                 m_playState = PlayState::Stopped;
-                pEventSystem->Emit<ShowEntityInVPRequestEvent>();
+                pEventSystem->Emit<LoadSceneRequestEvent>("fuck u");
             }
 
             // Show current state text on the right
