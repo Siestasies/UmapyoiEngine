@@ -633,7 +633,7 @@ namespace Uma_Engine
                       .scale = Vec2(0.5f, 0.5f)
                     });
 
-                std::string texName = "enemy";
+                std::string texName = "kappa_statue";
                 GetCoordinator().AddComponent(
                     en,
                     Sprite{

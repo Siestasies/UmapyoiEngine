@@ -38,7 +38,7 @@ namespace Uma_ECS
         Vec2 prevPos{}; // shdnt edit this value manually
 
         // run time data
-        Vec2 renderPos{};
+        //Vec2 renderPos{};
 
         // gameobject grouping
         std::optional<Entity> parent;
@@ -52,10 +52,10 @@ namespace Uma_ECS
 
         bool isDirty = true;
 
-        void UpdateRenderPosition(float alpha)
+        /*void UpdateRenderPosition(float alpha)
         {
             renderPos = prevPos + (position - prevPos) * alpha;
-        }
+        }*/
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

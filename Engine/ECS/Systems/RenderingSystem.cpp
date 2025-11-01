@@ -142,5 +142,7 @@ namespace Uma_ECS
 
                 return spriteA.renderLayer < spriteB.renderLayer;
             });
+
+        
     }
 }

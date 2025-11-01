@@ -130,12 +130,12 @@ namespace Uma_Engine
         float alpha = m_Accumulator / m_FixedTimeStep;
 
         // Update render positions for smooth interpolation
-        auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
+       /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
         for (size_t i = 0; i < tfArray.Size(); ++i)
         {
             auto& tf = tfArray.GetComponentAt(i);
             tf.UpdateRenderPosition(alpha);
-        }
+        }*/
 
         // Update ECS systems
         UpdateECSSystems(dt);

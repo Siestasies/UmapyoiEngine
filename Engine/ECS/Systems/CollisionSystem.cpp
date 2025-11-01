@@ -95,7 +95,7 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
             // SWEPT: Cover both current AND previous position
             Vec2 currentWorldPos = tf.worldPosition + worldOffset;
-            Vec2 prevWorldPos = tf.prevPos + worldOffset;
+            Vec2 prevWorldPos = tf.prevWorldPos + worldOffset;
 
             // Calculate bounds at current position
             Vec2 currentMin = Vec2{
@@ -126,6 +126,11 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
                 max(currentMax.x, prevMax.x),
                 max(currentMax.y, prevMax.y)
             };
+
+            /*if (tf.parent.has_value())
+            {
+                std::cout << "bound : " << c.bounds[i].min << " | " << c.bounds[i].max << std::endl;
+            }*/
         }
     }
 }
@@ -609,7 +614,7 @@ void Uma_ECS::CollisionSystem::DebugRender()
             Vec2 halfSize = scaledSize * 0.5f;
 
             // Use renderPos (interpolated) instead of position
-            Vec2 renderWorldPos = tf.renderPos + worldOffset;
+            Vec2 renderWorldPos = tf.prevWorldPos + worldOffset;
 
             // Calculate bounds for visualization
             BoundingBox visualBounds;
