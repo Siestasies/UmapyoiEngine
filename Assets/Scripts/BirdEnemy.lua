@@ -371,7 +371,7 @@ function Update(dt)
     end
 
     if KeyPressed(KEY_9) then
-        DestroyEntity(EntityID)
+        DestroyWithChildren(EntityID)
     end
     
     -- Movement test (continuous input)

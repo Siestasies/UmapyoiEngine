@@ -286,6 +286,8 @@ namespace Uma_Engine
         if (!m_FilePath.empty())
         {
             Deserialize();
+
+            m_LuaScriptingSystem->CallStart();
         }
 
         m_FixedTimeStep = g_EngineConfig.fixedTimeStep;
