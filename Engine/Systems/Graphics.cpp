@@ -141,6 +141,34 @@ void main()
 }
 )";
 
+    const std::string debugLineVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec2 vertex;
+layout (location = 1) in mat4 instanceModel;
+layout (location = 5) in vec3 instanceColor;
+
+out vec3 Color;
+
+uniform mat4 projection;
+
+void main()
+{
+    Color = instanceColor;
+    gl_Position = projection * instanceModel * vec4(vertex, 0.0, 1.0);
+}
+)";
+
+    const std::string debugLineFragmentShaderSource = R"(
+#version 450 core
+in vec3 Color;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(Color, 1.0);
+}
+)";
+
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
         mViewportWidth(800), mViewportHeight(600) {}
@@ -199,17 +227,25 @@ void main()
             return;
         }
 
+        if (!InitializeDebugRenderer())
+        {
+            std::cerr << "Failed to initialize debug renderer!" << std::endl;
+            return;
+        }
+
+        if (!InitializeTextRenderer())
+        {
+            std::cerr << "Failed to initialize text renderer" << std::endl;
+        }
+
         // init cam info
-        cam = {
+        cam = 
+        {
             .pos = {0,0},
             .zoom = 1.f
         };
 
         UpdateProjectionMatrix();
-
-        if (!InitializeTextRenderer()) {
-            std::cerr << "Failed to initialize text renderer" << std::endl;
-        }
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
@@ -244,6 +280,7 @@ void main()
             ShutdownTextRenderer();
             ShutdownRenderer();
             ShutdownInstancedRenderer();
+            ShutdownDebugRenderer();
 
             mInitialized = false;
         }
@@ -807,6 +844,62 @@ void main()
         return true;
     }
 
+    bool Graphics::InitializeDebugRenderer()
+    {
+        // Create shader
+        mDebugLineShaderProgram = CreateShader(debugLineVertexShaderSource, debugLineFragmentShaderSource);
+        if (mDebugLineShaderProgram == 0)
+        {
+            std::cerr << "Failed to create debug line shader!" << std::endl;
+            return false;
+        }
+
+        float lineVertices[] = 
+        {
+            -0.5f, 0.0f,
+             0.5f, 0.0f
+        };
+
+        // Create VAO and VBO for line geometry
+        glGenVertexArrays(1, &mDebugLineVAO);
+        glGenBuffers(1, &mDebugLineVBO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, mDebugLineVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(lineVertices), lineVertices, GL_STATIC_DRAW);
+
+        glBindVertexArray(mDebugLineVAO);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+        // Create instance VBO for matrices
+        glGenBuffers(1, &mDebugLineInstanceVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mDebugLineInstanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
+
+        for (int i = 0; i < 4; ++i)
+        {
+            glEnableVertexAttribArray(1 + i);
+            glVertexAttribPointer(1 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+                (void*)(sizeof(glm::vec4) * i));
+            glVertexAttribDivisor(1 + i, 1);
+        }
+
+        // Create instance VBO for colors
+        glGenBuffers(1, &mDebugLineColorVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mDebugLineColorVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
+
+        glEnableVertexAttribArray(5);
+        glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+        glVertexAttribDivisor(5, 1);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        std::cout << "Debug renderer initialized" << std::endl;
+        return true;
+    }
+
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
         std::vector<Sprite_Info> const& sprites,
@@ -906,6 +999,30 @@ void main()
         if (mInstanceShaderProgram != 0) {
             glDeleteProgram(mInstanceShaderProgram);
             mInstanceShaderProgram = 0;
+        }
+    }
+
+    void Graphics::ShutdownDebugRenderer()
+    {
+        if (mDebugLineVAO != 0) {
+            glDeleteVertexArrays(1, &mDebugLineVAO);
+            mDebugLineVAO = 0;
+        }
+        if (mDebugLineVBO != 0) {
+            glDeleteBuffers(1, &mDebugLineVBO);
+            mDebugLineVBO = 0;
+        }
+        if (mDebugLineInstanceVBO != 0) {
+            glDeleteBuffers(1, &mDebugLineInstanceVBO);
+            mDebugLineInstanceVBO = 0;
+        }
+        if (mDebugLineColorVBO != 0) {
+            glDeleteBuffers(1, &mDebugLineColorVBO);
+            mDebugLineColorVBO = 0;
+        }
+        if (mDebugLineShaderProgram != 0) {
+            glDeleteProgram(mDebugLineShaderProgram);
+            mDebugLineShaderProgram = 0;
         }
     }
 
@@ -1169,312 +1286,6 @@ void main()
         glBindTextureUnit(0, 0);
     }
 
-    //bool Graphics::LoadFont(const std::string& fontName, const std::string& fontPath,
-    //    unsigned int fontSize)
-    //{
-    //    // Initialize FreeType
-    //    FT_Library ft;
-    //    if (FT_Init_FreeType(&ft)) {
-    //        std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-    //        return false;
-    //    }
-
-    //    // Load font face
-    //    FT_Face face;
-    //    if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
-    //        std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
-    //        FT_Done_FreeType(ft);
-    //        return false;
-    //    }
-
-    //    // Set font size
-    //    FT_Set_Pixel_Sizes(face, 0, fontSize);
-
-    //    // Disable byte-alignment restriction
-    //    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-    //    // Create new FontData
-    //    FontData newFont;
-    //    newFont.fontSize = fontSize;
-
-    //    // Create VAO and VBO for this font
-    //    glCreateVertexArrays(1, &newFont.VAO);
-    //    glCreateBuffers(1, &newFont.VBO);
-
-    //    // Allocate storage for quad data
-    //    glNamedBufferStorage(newFont.VBO, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_STORAGE_BIT);
-
-    //    // Set vertex attributes
-    //    glEnableVertexArrayAttrib(newFont.VAO, 0);
-    //    glVertexArrayAttribFormat(newFont.VAO, 0, 4, GL_FLOAT, GL_FALSE, 0);
-    //    glVertexArrayAttribBinding(newFont.VAO, 0, 0);
-
-    //    // Bind VBO to VAO
-    //    glVertexArrayVertexBuffer(newFont.VAO, 0, newFont.VBO, 0, 4 * sizeof(float));
-
-    //    // Load ASCII characters (32-126)
-    //    for (unsigned char c = 32; c < 127; c++) 
-    //    {
-    //        // Load character glyph
-    //        if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-    //        {
-    //            std::cerr << "WARNING: Failed to load Glyph '" << c << "'" << std::endl;
-    //            continue;
-    //        }
-
-    //        // Create texture
-    //        GLuint texture;
-    //        glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-
-    //        // Allocate texture storage
-    //        glTextureStorage2D(
-    //            texture,
-    //            1,  // mipmap levels
-    //            GL_R8,  // internal format
-    //            face->glyph->bitmap.width,
-    //            face->glyph->bitmap.rows
-    //        );
-
-    //        // Upload pixel data
-    //        if (face->glyph->bitmap.buffer) {
-    //            glTextureSubImage2D(
-    //                texture,
-    //                0,      // mipmap level
-    //                0, 0,   // x, y offset
-    //                face->glyph->bitmap.width,
-    //                face->glyph->bitmap.rows,
-    //                GL_RED,
-    //                GL_UNSIGNED_BYTE,
-    //                face->glyph->bitmap.buffer
-    //            );
-    //        }
-
-    //        // Set texture parameters
-    //        glTextureParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    //        glTextureParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    //        glTextureParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //        glTextureParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //        // Store character
-    //        Character character = 
-    //        {
-    //            texture,
-    //            Vec2(static_cast<float>(face->glyph->bitmap.width), static_cast<float>(face->glyph->bitmap.rows)),
-    //            Vec2(static_cast<float>(face->glyph->bitmap_left), static_cast<float>(face->glyph->bitmap_top)),
-    //            static_cast<float>(face->glyph->advance.x >> 6)
-    //        };
-    //        newFont.characters[c] = character;
-    //    }
-
-    //    // Clean up FreeType
-    //    FT_Done_Face(face);
-    //    FT_Done_FreeType(ft);
-
-    //    // Store font in map
-    //    mFonts[fontName] = newFont;
-
-    //    // Set as current font to the first
-    //    if (mCurrentFont.empty()) {
-    //        mCurrentFont = fontName;
-    //    }
-
-    //    std::cout << "Font loaded successfully: " << fontName << " (" << fontPath << ", size: " << fontSize << ")" << std::endl;
-    //    return true;
-    //}
-
-    //void Graphics::SetCurrentFont(const std::string& fontName)
-    //{
-    //    auto it = mFonts.find(fontName);
-    //    if (it != mFonts.end()) 
-    //    {
-    //        mCurrentFont = fontName;
-    //    }
-    //    else 
-    //    {
-    //        std::cerr << "WARNING: Font '" << fontName << "' not found" << std::endl;
-    //    }
-    //}
-
-    //void Graphics::DrawTextScreen(const std::string& text, float x, float y,
-    //    float scale, float r, float g, float b)
-    //{
-    //    // Use current font
-    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) 
-    //    {
-    //        std::cerr << "ERROR: No font loaded" << std::endl;
-    //        return;
-    //    }
-
-    //    DrawTextScreen(mCurrentFont, text, x, y, scale, r, g, b);
-    //}
-
-    //void Graphics::DrawTextScreen(const std::string& fontName, const std::string& text,
-    //    float x, float y, float scale, float r, float g, float b)
-    //{
-    //    auto it = mFonts.find(fontName);
-    //    if (it == mFonts.end()) {
-    //        std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
-    //        return;
-    //    }
-
-    //    FontData& font = it->second;
-
-    //    glEnable(GL_BLEND);
-    //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //    glUseProgram(mTextShaderProgram);
-    //    glBindVertexArray(font.VAO);
-
-    //    glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
-
-    //    glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-    //    GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
-    //    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
-
-    //    // Calculate aspect ratio
-    //    float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
-    //    float normalizedScale = scale / static_cast<float>(mViewportHeight);
-
-    //    for (char c : text) {
-    //        if (font.characters.find(c) == font.characters.end()) continue;
-
-    //        Character ch = font.characters[c];
-
-    //        // Divide X by aspect to maintain proper character proportions
-    //        float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
-    //        float ypos = y - ((ch.size.y - ch.bearing.y) * normalizedScale);
-    //        float w = (ch.size.x * normalizedScale) / aspect;
-    //        float h = ch.size.y * normalizedScale;
-
-    //        float vertices[6][4] = {
-    //            { xpos,     ypos + h,   0.0f, 0.0f },
-    //            { xpos,     ypos,       0.0f, 1.0f },
-    //            { xpos + w, ypos,       1.0f, 1.0f },
-    //            { xpos,     ypos + h,   0.0f, 0.0f },
-    //            { xpos + w, ypos,       1.0f, 1.0f },
-    //            { xpos + w, ypos + h,   1.0f, 0.0f }
-    //        };
-
-    //        glBindTextureUnit(0, ch.textureID);
-    //        glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
-    //        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    //        x += (ch.advance * normalizedScale) / aspect;
-    //    }
-
-    //    glBindVertexArray(0);
-    //    glBindTextureUnit(0, 0);
-    //}
-
-    //float Graphics::MeasureText(const std::string& text, float scale)
-    //{
-    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end()) {
-    //        return 0.0f;
-    //    }
-    //    return MeasureText(mCurrentFont, text, scale);
-    //}
-
-    //float Graphics::MeasureText(const std::string& fontName, const std::string& text, float scale)
-    //{
-    //    auto it = mFonts.find(fontName);
-    //    if (it == mFonts.end()) {
-    //        return 0.0f;
-    //    }
-
-    //    FontData& font = it->second;
-
-    //    float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
-    //    float normalizedScale = scale / static_cast<float>(mViewportHeight);
-    //    float width = 0.0f;
-
-    //    for (char c : text) {
-    //        if (font.characters.find(c) != font.characters.end()) {
-    //            width += (font.characters[c].advance * normalizedScale) / aspect;
-    //        }
-    //    }
-
-    //    return width;
-    //}
-
-    //void Graphics::DrawTextWorld(const std::string& text, float x, float y,
-    //    float scale, float r, float g, float b)
-    //{
-    //    // Use current font
-    //    if (mCurrentFont.empty() || mFonts.find(mCurrentFont) == mFonts.end())
-    //    {
-    //        std::cerr << "ERROR: No font loaded" << std::endl;
-    //        return;
-    //    }
-
-    //    DrawTextWorld(mCurrentFont, text, x, y, scale, r, g, b);
-    //}
-
-    //void Graphics::DrawTextWorld(const std::string& fontName, const std::string& text,
-    //    float x, float y, float scale, float r, float g, float b)
-    //{
-    //    // Check if font exists
-    //    auto it = mFonts.find(fontName);
-    //    if (it == mFonts.end()) {
-    //        std::cerr << "ERROR: Font '" << fontName << "' not found" << std::endl;
-    //        return;
-    //    }
-
-    //    FontData& font = it->second;
-
-    //    glEnable(GL_BLEND);
-    //    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    //    glUseProgram(mTextShaderProgram);
-    //    glBindVertexArray(font.VAO);
-
-    //    // Set text color
-    //    glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
-
-    //    // Use camera-based projection
-    //    float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-    //    float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
-    //    float left = cam.pos.x - halfWidth;
-    //    float right = cam.pos.x + halfWidth;
-    //    float bottom = cam.pos.y - halfHeight;
-    //    float top = cam.pos.y + halfHeight;
-    //    glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
-
-    //    GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
-    //    glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
-
-    //    // Render each character in world space
-    //    for (char c : text) {
-    //        if (font.characters.find(c) == font.characters.end()) continue;
-
-    //        Character ch = font.characters[c];
-
-    //        // Calculate positions in world space
-    //        float xpos = x + ch.bearing.x * scale;
-    //        float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-    //        float w = ch.size.x * scale;
-    //        float h = ch.size.y * scale;
-
-    //        float vertices[6][4] = {
-    //            { xpos,     ypos + h,   0.0f, 0.0f },
-    //            { xpos,     ypos,       0.0f, 1.0f },
-    //            { xpos + w, ypos,       1.0f, 1.0f },
-    //            { xpos,     ypos + h,   0.0f, 0.0f },
-    //            { xpos + w, ypos,       1.0f, 1.0f },
-    //            { xpos + w, ypos + h,   1.0f, 0.0f }
-    //        };
-
-    //        glBindTextureUnit(0, ch.textureID);
-    //        glNamedBufferSubData(font.VBO, 0, sizeof(vertices), vertices);
-    //        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    //        // Advance to next character position
-    //        x += ch.advance * scale;
-    //    }
-
-    //    glBindVertexArray(0);
-    //    glBindTextureUnit(0, 0);
-    //}
-
     GLuint Graphics::CreateTextShader()
     {
         const char* vertexShaderSource = R"(
@@ -1612,5 +1423,130 @@ void main()
         glBindTexture(GL_TEXTURE_2D, 0);
 
         UpdateProjectionMatrix();
+    }
+
+    void Graphics::DrawDebugLinesInstanced(const std::vector<DebugLineInfo>& lines)
+    {
+        if (!mInitialized || lines.empty()) return;
+
+        size_t instanceCount = std::min(lines.size(), MAX_INSTANCES);
+
+        // Build model matrices and colors for each line
+        std::vector<glm::mat4> models;
+        std::vector<glm::vec3> colors;
+        models.reserve(instanceCount);
+        colors.reserve(instanceCount);
+
+        for (size_t i = 0; i < instanceCount; ++i)
+        {
+            const DebugLineInfo& line = lines[i];
+
+            // Calculate line properties
+            float dx = line.end.x - line.start.x;
+            float dy = line.end.y - line.start.y;
+            float length = sqrtf(dx * dx + dy * dy);
+
+            if (length < 0.001f) continue; // Skip zero-length lines
+
+            float angle = atan2f(dy, dx);
+            Vec2 center = Vec2((line.start.x + line.end.x) * 0.5f,
+                (line.start.y + line.end.y) * 0.5f);
+
+            // Build transformation matrix
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+            model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
+            model = glm::scale(model, glm::vec3(length, 2.0f, 1.0f));
+
+            models.push_back(model);
+            colors.push_back(glm::vec3(line.color.x, line.color.y, line.color.z));
+        }
+
+        if (models.empty()) return;
+
+        // Upload model matrices to GPU
+        glBindBuffer(GL_ARRAY_BUFFER, mDebugLineInstanceVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::mat4) * models.size(), models.data());
+
+        // Upload colors to GPU
+        glBindBuffer(GL_ARRAY_BUFFER, mDebugLineColorVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colors.size(), colors.data());
+
+        // Use debug shader
+        glUseProgram(mDebugLineShaderProgram);
+
+        // Calculate projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mDebugLineShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        // Draw all lines in one call
+        glBindVertexArray(mDebugLineVAO);
+        glDrawArraysInstanced(GL_LINES, 0, 2, static_cast<GLsizei>(models.size()));
+        glBindVertexArray(0);
+    }
+
+    void Graphics::AddDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b,
+        std::vector<DebugLineInfo>& outLines)
+    {
+        Vec3 color(r, g, b);
+        float halfW = size.x * 0.5f;
+        float halfH = size.y * 0.5f;
+
+        // Bottom line
+        outLines.push_back({ Vec2(center.x - halfW, center.y - halfH), Vec2(center.x + halfW, center.y - halfH), color });
+        // Right line
+        outLines.push_back({ Vec2(center.x + halfW, center.y - halfH), Vec2(center.x + halfW, center.y + halfH), color });
+        // Top line
+        outLines.push_back({ Vec2(center.x + halfW, center.y + halfH), Vec2(center.x - halfW, center.y + halfH), color });
+        // Left line
+        outLines.push_back({ Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), color });
+    }
+
+    void Graphics::AddDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b,
+        std::vector<DebugLineInfo>& outLines)
+    {
+        Vec3 color(r, g, b);
+
+        // Bottom line
+        outLines.push_back({ Vec2(bbox.min.x, bbox.min.y), Vec2(bbox.max.x, bbox.min.y), color });
+        // Right line
+        outLines.push_back({ Vec2(bbox.max.x, bbox.min.y), Vec2(bbox.max.x, bbox.max.y), color });
+        // Top line
+        outLines.push_back({ Vec2(bbox.max.x, bbox.max.y), Vec2(bbox.min.x, bbox.max.y), color });
+        // Left line
+        outLines.push_back({ Vec2(bbox.min.x, bbox.max.y), Vec2(bbox.min.x, bbox.min.y), color });
+    }
+
+    void Graphics::AddDebugCircle(const Vec2& center, float radius, float r, float g, float b,
+        std::vector<DebugLineInfo>& outLines)
+    {
+        Vec3 color(r, g, b);
+        const int segments = 24;
+        const float angleStep = 2.0f * 3.14159f / segments;
+
+        for (int i = 0; i < segments; ++i)
+        {
+            float angle1 = i * angleStep;
+            float angle2 = (i + 1) * angleStep;
+
+            Vec2 p1 = Vec2(center.x + cosf(angle1) * radius, center.y + sinf(angle1) * radius);
+            Vec2 p2 = Vec2(center.x + cosf(angle2) * radius, center.y + sinf(angle2) * radius);
+
+            outLines.push_back({ p1, p2, color });
+        }
+    }
+
+    void Graphics::AddDebugPoint(const Vec2& position, float r, float g, float b,
+        std::vector<DebugLineInfo>& outLines)
+    {
+        AddDebugRect(position, Vec2(6.0f, 6.0f), r, g, b, outLines);
     }
 }
