@@ -30,7 +30,7 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
-#include "WIP_Scripts/EditorSceneScript.h"
+#include "WIP_Scripts/GameSceneScript.h"
 
 #include "WIP_Scripts/ImguiManager.h"
 #include "Core/EngineConfig.h"
@@ -103,9 +103,9 @@ int main()
     scn_mgr->SetImguiHandler(imgui_mgr);
     scn_mgr->SetSystemManager(&systemManager);
     // FAKE - this is basically to call events for imgui/editor buttons
-    scn_mgr->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
-    auto editorScene = scn_mgr->CreateScene("GameScene1", "Assets/Scenes/test_collider.json");
-    scn_mgr->AttachScriptToScene("GameScene1", "EditorBehavior");
+    scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
+    auto editorScene = scn_mgr->CreateScene("GameScene1", "test_collider.json");
+    scn_mgr->AttachScriptToScene("GameScene1", "GameBehaviour");
     scn_mgr->LoadScene("GameScene1");
 
     // Connect InputSystem to EventSystem

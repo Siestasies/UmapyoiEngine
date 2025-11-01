@@ -22,6 +22,7 @@ All rights reserved.
 #include "Events/DebugEvents.h"
 #include "Events/ECSEvents.h"
 #include "FileSystem/FileSystem.hpp"
+#include "WIP_Scripts/ImguiEventsManager.h"
 
 #include "Core/FilePaths.h"
 #include <iostream>
@@ -94,6 +95,7 @@ namespace Uma_Engine
             std::vector<std::string> logsVec;
             EventSystem* pEventSystem;
             FileBrowser fileBrowser;
+            ImguiEventsManager imEventsHandler;
             //Entity m_selectedEntity;  // Assuming you have an Entity type
             //std::vector<Entity> m_sceneEntities;  // Cache of all entities in scene
 

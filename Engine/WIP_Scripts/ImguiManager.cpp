@@ -24,6 +24,7 @@ namespace Uma_Engine
         , mEntityCount(0)
         , windowWidth(1920)
         , windowHeight(1080)
+        , imEventsHandler()
     {
         // init array
         for (int i = 0; i < 120; ++i)
@@ -45,6 +46,8 @@ namespace Uma_Engine
         {
             return;
         }
+
+        imEventsHandler.Init(pSystemManager);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
