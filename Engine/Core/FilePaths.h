@@ -35,6 +35,7 @@ namespace Uma_FilePath
     // Assets
     inline const std::string TEXTURES_DIR = ASSET_ROOT + "Textures/";
     inline const std::string AUDIO_DIR = ASSET_ROOT + "Audios/";
+    inline const std::string FONTS_DIR = ASSET_ROOT + "Fonts/";
 
     // Scenes
     inline const std::string SCENES_DIR = ASSET_ROOT + "Scenes/";

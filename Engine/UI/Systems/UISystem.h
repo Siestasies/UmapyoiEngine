@@ -102,6 +102,6 @@ namespace Uma_UI
 
         unsigned int GetOrLoadTexture(const std::string& textureName, const std::string& fallbackPath = "");
 
-        bool EnsureFontLoaded(const std::string& fontName, const std::string& fallbackPath = "");
+        bool EnsureFontLoaded(const std::string& fontName);
     };
 }

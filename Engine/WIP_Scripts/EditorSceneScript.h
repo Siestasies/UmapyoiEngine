@@ -41,7 +41,8 @@ namespace Uma_Engine
             if (!GetResources()->GetTexture("whitePixel")) GetResources()->LoadTexture("whitePixel", "Assets/whitePixel.png");
 
             // Ensure font exists (size 48)
-            GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
+            //GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
+            GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
 
 
             // Subscribe to editor events

@@ -2,6 +2,7 @@
 #include "../Helpers/Layout.h"
 #include "../Helpers/Input.h"
 #include "../../Events/WindowEvents.h"
+#include "Systems/ResourcesTypes.hpp"
 
 #include <GLFW/glfw3.h>
 #include <algorithm>
@@ -362,8 +363,10 @@ namespace Uma_UI
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
 
+            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
+
             // Compute alignment offset
-            float textWidth = pGraphics->MeasureText(text.fontName, text.text, text.fontSize);
+            float textWidth = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
             float alignX = 0.0f;
 
             switch (text.alignment)
@@ -381,7 +384,7 @@ namespace Uma_UI
 
             // Draw text
             pGraphics->DrawTextScreen(
-                text.fontName,
+                *uiFont,
                 text.text,
                 alignX,
                 rectTransform.computedRect.Center().y,
@@ -582,21 +585,23 @@ namespace Uma_UI
         return 0;
     }
 
-    bool UISystem::EnsureFontLoaded(const std::string& fontName, const std::string& fallbackPath)
+    bool UISystem::EnsureFontLoaded(const std::string& fontName)
     {
         if (!pGraphics || fontName.empty())
         {
             return false;
         }
 
+        Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(fontName);
+
         // If MeasureText returns 0, font might not be loaded
-        float testWidth = pGraphics->MeasureText(fontName, "test", 24.0f);
+        float testWidth = pGraphics->MeasureText(*uiFont, "test", 24.0f);
 
         // If font appears unloaded and we have a fallback path, try to load it
-        if (testWidth <= 0.0f && !fallbackPath.empty())
+       /* if (testWidth <= 0.0f && !fallbackPath.empty())
         {
             return pGraphics->LoadFont(fontName, fallbackPath, 48);
-        }
+        }*/
 
         return testWidth > 0.0f;
     }
