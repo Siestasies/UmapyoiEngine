@@ -18,6 +18,18 @@
                 "path": "Assets/bg.png"
             }
         ],
+        "fonts": [
+            {
+                "name": "title",
+                "path": "Assets/fonts/Urbanist-Regular.ttf",
+                "size": 48
+            },
+            {
+                "name": "ui",
+                "path": "Assets/fonts/Neucha.ttf",
+                "size": 24
+            }
+        ],
         "sounds": []
     },
     "entities": [
@@ -26,8 +38,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 7.859,
+                        "y": 13.585
                     },
                     "rotation": {
                         "x": 0.0,
@@ -50,12 +62,12 @@
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0.022,
+                        "y": 0.029
                     },
                     "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": 0.12,
+                        "y": 0.156
                     },
                     "accel_strength": 500.0,
                     "fric_coeff": 20.0
@@ -338,8 +350,8 @@
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
-                        "x": 400.0,
-                        "y": 300.0
+                        "x": 7.859,
+                        "y": 13.585
                     },
                     "rotation": {
                         "x": 0.0,
