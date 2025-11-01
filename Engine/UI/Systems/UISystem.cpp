@@ -195,12 +195,12 @@ namespace Uma_UI
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
 
-            // FIXED: Apply aspect correction to hit test rect (same as rendering)
             Uma_UI::Rect hitRect = rectTransform.computedRect;
-            hitRect.width /= aspect;  // Correct width for aspect ratio
+            hitRect.width /= aspect;
 
             mHitTestCache.push_back({entity, hitRect});
         }
+
         // Raycast to find topmost hit
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
 
