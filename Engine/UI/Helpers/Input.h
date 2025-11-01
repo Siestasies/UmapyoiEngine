@@ -31,29 +31,29 @@ namespace Uma_UI
 
     /**
      * \brief Test if NDC point is inside a rect
-     * \param pointNDC Point in NDC space
+     * \param point Point in NDC space
      * \param rect Rectangle to test
      * \return true if point is inside rect
      */
-    inline bool IsPointInRect(const Vec2& pointNDC, const Rect& rect)
+    inline bool IsPointInRect(const Vec2& point, const Rect& rect)
     {
-        return rect.Contains(pointNDC);
+        return rect.Contains(point);
     }
 
     /**
      * \brief Find topmost UI element at pointer position
-     * \param pointerNDC Pointer position in NDC
+     * \param point Pointer position in NDC
      * \param rects List of UI rects with entity IDs
      * \return Entity ID of topmost hit, or -1 if none
      *
      * Note: rects should be pre-sorted by render order (back to front)
      */
-    inline Uma_ECS::Entity RaycastUI(const Vec2& pointerNDC, const std::vector<std::pair<Uma_ECS::Entity, Rect>>& rects)
+    inline Uma_ECS::Entity RaycastUI(const Vec2& point, const std::vector<std::pair<Uma_ECS::Entity, Rect>>& rects)
     {
         // Iterate backwards (front to back in render order)
         for (auto it = rects.rbegin(); it != rects.rend(); ++it)
         {
-            if (IsPointInRect(pointerNDC, it->second))
+            if (IsPointInRect(point, it->second))
             {
                 return it->first;
             }

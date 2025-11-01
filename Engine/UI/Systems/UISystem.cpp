@@ -8,6 +8,30 @@
 #include <algorithm>
 #include <map>
 
+namespace
+{
+    struct SpriteWithColor
+    {
+        Uma_Engine::Sprite_Info sprite;
+        Uma_UI::Colour colour;
+    };
+
+    struct BatchKey
+    {
+        unsigned int texId;
+        Uma_UI::Colour colour;
+
+        bool operator<(const BatchKey& other) const
+        {
+            if (texId != other.texId) return texId < other.texId;
+            if (colour.r != other.colour.r) return colour.r < other.colour.r;
+            if (colour.g != other.colour.g) return colour.g < other.colour.g;
+            if (colour.b != other.colour.b) return colour.b < other.colour.b;
+            return colour.a < other.colour.a;
+        }
+    };
+}
+
 namespace Uma_UI
 {
     void UISystem::Init()
@@ -42,7 +66,6 @@ namespace Uma_UI
         pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) { mScreenSize.x = e.width, mScreenSize.y = e.height; });
 
         mHitTestCache.clear();
-        mDrawList.clear();
     }
 
     void UISystem::Update(float dt)
@@ -63,7 +86,6 @@ namespace Uma_UI
     void UISystem::Shutdown()
     {
         mHitTestCache.clear();
-        mDrawList.clear();
 
         mMouseButtonDown = false;
         mMouseButtonDownLastFrame = false;
@@ -159,14 +181,25 @@ namespace Uma_UI
         // Build hit test cache (all UI elements with RectTransform)
         mHitTestCache.clear();
 
+        // Get aspect ratio (same as Graphics uses)
+        float aspect = mScreenSize.x / mScreenSize.y;
+
         auto sortedEntities = GetSortedUIEntities();
         for (Uma_ECS::Entity entity : sortedEntities)
         {
-            if (pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-            {
-                auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-                mHitTestCache.push_back({ entity, rectTransform.computedRect });
-            }
+            if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
+                continue;
+
+            bool hasButton = pCoordinator->GetComponentArray<Button>().Has(entity);
+            if (!hasButton)
+                continue;
+
+            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
+
+            Uma_UI::Rect hitRect = rectTransform.computedRect;
+            hitRect.width /= aspect;
+
+            mHitTestCache.push_back({entity, hitRect});
         }
 
         // Raycast to find topmost hit
@@ -251,7 +284,7 @@ namespace Uma_UI
             // Update hover tracking
             button.wasHoveredLastFrame = isHovered;
 
-            // Update button visual (changes Image color)
+            // Update button visual (changes Image colour)
             UpdateButtonVisual(entity);
         }
     }
@@ -259,7 +292,7 @@ namespace Uma_UI
 
     void UISystem::BuildDrawListPass()
     {
-        mDrawList.clear();
+        std::vector<SpriteWithColor> spritesWithColours;
 
         if (!pResourcesManager)
         {
@@ -310,28 +343,23 @@ namespace Uma_UI
             sprite.uvSize = Vec2(1.0f, 1.0f);
             sprite.tex_id = texId;
 
-            mDrawList.push_back(sprite);
+            spritesWithColours.push_back({sprite, image.colour});
         }
 
-        if (!mDrawList.empty())
+        std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
+        for (const auto& swc : spritesWithColours)
         {
-            // Group sprites by texture ID for instanced rendering
-            std::map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> batchedSprites;
+            BatchKey key{ swc.sprite.tex_id, swc.colour };
+            batches[key].push_back(swc.sprite);
+        }
 
-            for (const auto& sprite : mDrawList)
-            {
-                batchedSprites[sprite.tex_id].push_back(sprite);
-            }
-
-            // Render each texture batch ONCE
-            for (const auto& [texId, sprites] : batchedSprites)
-            {
-                pGraphics->DrawSpritesScreenInstanced(
-                    texId,
-                    sprites,
-                    Vec3(1.0f, 1.0f, 1.0f)
-                );
-            }
+        for (const auto& [key, sprites] : batches)
+        {
+            pGraphics->DrawSpritesScreenInstanced(
+                key.texId,
+                sprites,
+                Vec3(key.colour.r, key.colour.g, key.colour.b)
+            );
         }
 
         // Render text elements
@@ -366,34 +394,39 @@ namespace Uma_UI
             Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
 
             // Compute alignment offset
-            float textWidth = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
-            float alignX = 0.0f;
+            float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
 
+            float alignX = 0.0f;
             switch (text.alignment)
             {
             case TextAlignment::Left:
                 alignX = rectTransform.computedRect.Left();
                 break;
             case TextAlignment::Center:
-                alignX = rectTransform.computedRect.Center().x - textWidth * 0.5f;
+                alignX = rectTransform.computedRect.Center().x - textWidthNDC * 0.5f;
                 break;
             case TextAlignment::Right:
-                alignX = rectTransform.computedRect.Right() - textWidth;
+                alignX = rectTransform.computedRect.Right() - textWidthNDC;
                 break;
             }
 
-            // Draw text
+            float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
+            float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
+
             pGraphics->DrawTextScreen(
                 *uiFont,
                 text.text,
-                alignX,
-                rectTransform.computedRect.Center().y,
+                alignX,     // NDC
+                alignY,     // NDC
                 text.fontSize,
-                text.color.r,
-                text.color.g,
-                text.color.b
+                text.colour.r,
+                text.colour.g,
+                text.colour.b
             );
         }
+
+        batches.clear();
+        spritesWithColours.clear();
     }
 
     Vec2 UISystem::GetMousePosition() const
@@ -473,20 +506,20 @@ namespace Uma_UI
         auto& button = pCoordinator->GetComponent<Button>(entity);
         auto& image = pCoordinator->GetComponent<Image>(entity);
 
-        // Update image color based on button state
+        // Update image colour based on button state
         switch (button.currentState)
         {
         case ButtonState::Normal:
-            image.color = button.normalColor;
+            image.colour = button.normalColour;
             break;
         case ButtonState::Hovered:
-            image.color = button.hoverColor;
+            image.colour = button.hoverColour;
             break;
         case ButtonState::Pressed:
-            image.color = button.pressedColor;
+            image.colour = button.pressedColour;
             break;
         case ButtonState::Disabled:
-            image.color = button.disabledColor;
+            image.colour = button.disabledColour;
             break;
         }
     }
