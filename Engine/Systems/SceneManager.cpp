@@ -43,8 +43,6 @@ namespace Uma_Engine
         // Update loading scenes first
         UpdateLoadingScenes();
 
-        std::cout << "play mode : " << playMode << std::endl;
-
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {

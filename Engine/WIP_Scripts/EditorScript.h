@@ -31,6 +31,17 @@ namespace Uma_Engine
             std::cout << "EditorScript: OnLoad" << std::endl;
 
             m_Canvas = m_Scene->CreateEntity();
+            GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
+                {
+                .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
+                .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
+                .pivot = Vec2(0.5f, 0.5f),          // Center pivot
+                .anchoredPosition = Vec2(0, 0),     // No offset
+                .sizeDelta = Vec2(0, 0),            // Stretch to fill
+                .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
+                });
+
+
             GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
                 {
                 .sortingOrder = 0,
@@ -49,7 +60,7 @@ namespace Uma_Engine
             // Subscribe to editor events
             SubscribeToEvents();
 
-            CreateButtonWithText("Hello", Vec2(0, 0), Vec2(500, 500), m_Canvas,
+            CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
                 [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
@@ -301,7 +312,7 @@ namespace Uma_Engine
                     .scale = Vec2(1, 1),
                     });
 
-                GetCoordinator().AddComponent(player, Camera{
+                GetCoordinator().AddComponent(cam, Camera{
                     .mZoom = 1.f,
                     .followPlayer = true
                     });
@@ -763,7 +774,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(
-                    m_Scene->m_player,
+                    m_Scene->m_cam,
                     Camera
                     {
                         .mZoom = 1.f,
@@ -930,7 +941,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(
-                    m_Scene->m_player,
+                    m_Scene->m_cam,
                     Camera
                     {
                         .mZoom = 1.f,
@@ -1134,17 +1145,17 @@ namespace Uma_Engine
             coord.AddComponent<Uma_UI::Image>(btn, 
                 {
                 .textureName = "whitePixel",
-                .color = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
+                .colour = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
                 .visible = true
                 });
 
             coord.AddComponent<Uma_UI::Button>(btn, 
                 {
                 .interactable = true,
-                .normalColor = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
-                .hoverColor = Uma_UI::Colour(0.3f, 0.7f, 1.f, 1.f),
-                .pressedColor = Uma_UI::Colour(0.1f, 0.4f, 0.9f, 1.f),
-                .disabledColor = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
+                .normalColour = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
+                .hoverColour = Uma_UI::Colour(0.3f, 0.7f, 1.f, 1.f),
+                .pressedColour = Uma_UI::Colour(0.1f, 0.4f, 0.9f, 1.f),
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
                 });
 
             auto& button = coord.GetComponent<Uma_UI::Button>(btn);
@@ -1166,8 +1177,8 @@ namespace Uma_Engine
                 {
                 .text = label,
                 .fontName = "default",
-                .fontSize = 28.f,
-                .color = Uma_UI::Colour::White(),
+                .fontSize = 1.f,
+                .colour = Uma_UI::Colour::Black(),
                 .alignment = Uma_UI::TextAlignment::Center,
                 .visible = true
                 });

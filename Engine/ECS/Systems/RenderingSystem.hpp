@@ -37,8 +37,6 @@ namespace Uma_ECS
 
         void Update(float dt);
 
-        void SortEntitiesByLayer(std::vector<Entity>& sorted);
-
     private:
 
         Coordinator* pCoordinator = nullptr;

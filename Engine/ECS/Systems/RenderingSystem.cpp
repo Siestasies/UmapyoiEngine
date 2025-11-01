@@ -57,7 +57,6 @@ namespace Uma_ECS
         auto& srArray = pCoordinator->GetComponentArray<Sprite>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
-        auto& pArray = pCoordinator->GetComponentArray<Player>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
 
         // one camera for now
@@ -67,12 +66,18 @@ namespace Uma_ECS
 
         pGraphics->SetCamInfo(cam_tf.position, 10);
 
-        // need to sort the entities before rendering based on their layer
-        SortEntitiesByLayer(aEntities);
+        // Structure to hold sprite info WITH layer information
+        struct LayeredSprite
+        {
+            Uma_Engine::Sprite_Info info;
+            LayerMask layer;
+            unsigned int texId;
+        };
 
-        // Iterate over the smaller array for efficiency (here, RigidBody)
-        std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
+        std::vector<LayeredSprite> allSprites;
+        allSprites.reserve(aEntities.size());
 
+        // Gather all sprite info with layer data
         for (const auto& entity : aEntities)
         {
             auto& sr = srArray.GetData(entity);
@@ -93,9 +98,6 @@ namespace Uma_ECS
                 continue;
             }
 
-            // if use native
-            // the the tf scale will be scaling the tex size with its aspect ratio
-            // else it will be using the transform scale
             Vec2 spriteScale;
             if (sr.UseNativeSize)
             {
@@ -119,45 +121,55 @@ namespace Uma_ECS
                 uvSize = animator.uvSize;
             }
 
-            sorted_sprites[sr.texture->tex_id].push_back(Uma_Engine::Sprite_Info
-                {
+            allSprites.push_back(LayeredSprite{
+                .info = Uma_Engine::Sprite_Info{
                     .tex_id = sr.texture->tex_id,
-                    //.tex_size = sr.texture->tex_size,
                     .pos = tf.worldPosition,
                     .scale = spriteScale,
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
                     .uvOffset = uvOffset,
                     .uvSize = uvSize
+                },
+                .layer = sr.renderLayer,
+                .texId = sr.texture->tex_id
                 });
         }
 
-        for (const auto& pair : sorted_sprites)
-        {
-            const std::vector<Uma_Engine::Sprite_Info>& sprites = pair.second;
-
-            pGraphics->DrawSpritesInstanced(
-                pair.first,
-                sprites
-            );
-        }
-    }
-
-    void RenderingSystem::SortEntitiesByLayer(std::vector<Entity>& sorted)
-    {
-        // sort it
-
-        auto& srArray = pCoordinator->GetComponentArray<Sprite>();
-
-        std::sort(sorted.begin(), sorted.end(),
-            [&srArray](Entity const& a, Entity const& b)
+        // Sort by layer FIRST, then by texture (for batching within same layer)
+        std::sort(allSprites.begin(), allSprites.end(),
+            [](const LayeredSprite& a, const LayeredSprite& b)
             {
-                auto& spriteA = srArray.GetData(a);
-                auto& spriteB = srArray.GetData(b);
-
-                return spriteA.renderLayer < spriteB.renderLayer;
+                if (a.layer != b.layer)
+                    return a.layer < b.layer;  // Sort by layer first
+                return a.texId < b.texId;      // Then by texture for batching
             });
 
-        
+        // Now group by texture and render in layer order
+        std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
+        LayerMask currentLayer = 0;
+
+        for (const auto& layeredSprite : allSprites)
+        {
+            // If we've moved to a new layer, flush previous batches
+            if (layeredSprite.layer != currentLayer && !sorted_sprites.empty())
+            {
+                // Render all batches from previous layer
+                for (const auto& pair : sorted_sprites)
+                {
+                    pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                }
+                sorted_sprites.clear();
+                currentLayer = layeredSprite.layer;
+            }
+
+            sorted_sprites[layeredSprite.texId].push_back(layeredSprite.info);
+        }
+
+        // Render remaining batches
+        for (const auto& pair : sorted_sprites)
+        {
+            pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+        }
     }
 }

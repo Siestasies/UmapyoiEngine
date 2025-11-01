@@ -154,11 +154,14 @@ namespace Uma_Engine
         if (m_Graphics)
             m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);
 
+        if (m_TransformSystem)
+            m_TransformSystem->UpdateWorldTransform();
+
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
 
-        if (m_TransformSystem)
-            m_TransformSystem->UpdateWorldTransform();
+        if (m_UISystem)
+            m_UISystem->Update(dt);
     }
 
     // SCRIPT STUFF
@@ -429,6 +432,9 @@ namespace Uma_Engine
 
         if (m_CollisionSystem)
             m_CollisionSystem->DebugRender();
+
+        if (m_UISystem)
+            m_UISystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()
