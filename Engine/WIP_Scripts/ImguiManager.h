@@ -23,14 +23,6 @@ All rights reserved.
 #include "Events/ECSEvents.h"
 #include "FileSystem/FileSystem.hpp"
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_internal.h"
-
 #include "Core/FilePaths.h"
 #include <iostream>
 #include <random>
@@ -39,195 +31,96 @@ struct GLFWwindow;
 
 namespace Uma_Engine
 {
+    enum class PlayState
+    {
+        Stopped,
+        Playing,
+        Paused
+    };
+
     class ImguiManager : public ISystem, public IWindowSystem
     {   
         public:
-            ImguiManager()
-                : m_initialized(false)
-                , ds_initialized(false)
-                , m_window(nullptr)
-                , m_showEngineDebug(true)
-                , m_showEventDebug(true)
-                , m_showDemoWindow(false)
-                , m_showPerformanceWindow(true)
-                , m_showSystemsWindow(true)
-                , m_historyOffset(0)
-                , pEventSystem(nullptr)
-                , mEntityCount(0)
-                , windowWidth(1920)
-                , windowHeight(1080)
-            {
-                // init array
-                for (int i = 0; i < 120; ++i)
-                {
-                    m_fpsHistory[i] = 0.0f;
-                    m_dtHistory[i] = 0.0f;
-                }
-            }
+            ImguiManager();
 
             // isystem stuff
-            void Init() override
-            {
-                if (m_initialized)
-                {
-                    return;
-                }
-
-                if (!m_window)
-                {
-                    return;
-                }
-
-                IMGUI_CHECKVERSION();
-                ImGui::CreateContext();
-                ImGuiIO& io = ImGui::GetIO();
-                io.IniFilename = "imgui.ini";
-
-                io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-                io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-                io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-                ImGui::StyleColorsDark();
-
-                // set font and font size
-                float fontSize = 16.f;
-                io.Fonts->AddFontDefault();
-
-                std::string path = Uma_FilePath::ASSET_ROOT + "Roboto-Medium.ttf";
-
-                io.FontDefault = io.Fonts->AddFontFromFileTTF(path.c_str(), fontSize);
-
-                // set up backend stuff
-                ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-                const char* glsl_version = "#version 130";
-                ImGui_ImplOpenGL3_Init(glsl_version);
-
-                // event listeners
-                pEventSystem = pSystemManager->GetSystem<EventSystem>();
-
-                pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-
-                pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
-                pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
-
-                m_initialized = true;
-            }
-
-            void Update(float deltaTime) override
-            {
-                if (!m_initialized)
-                {
-                    return;
-                }
-
-                static float fpsAccumulator = 0.0f;
-                static int frameCount = 0;
-                static float lastFpsUpdate = 0.0f;
-
-                fpsAccumulator += deltaTime;
-                frameCount++;
-
-                // update every 0.1 seconds
-                if (fpsAccumulator >= 0.1f)
-                {
-                    float fps = frameCount / fpsAccumulator;
-                    m_fpsHistory[m_historyOffset] = fps;
-                    m_dtHistory[m_historyOffset] = (deltaTime * 1000.0f);
-                    m_historyOffset = (m_historyOffset + 1) % 120;
-
-                    fpsAccumulator = 0.0f;
-                    frameCount = 0;
-                }
-
-                StartFrame();
-
-                CreateDockspace();
-
-                // call for windows to be shown
-                float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
-                CreateDebugWindows(currentFps, deltaTime);
-
-                fileBrowser.Render();
-
-                Render();
-            }
-
-            void Shutdown() override
-            {
-                if (!m_initialized)
-                    return;
-
-                ImGui_ImplOpenGL3_Shutdown();
-                ImGui_ImplGlfw_Shutdown();
-                ImGui::DestroyContext();
-
-                m_initialized = false;
-                std::cout << "imgui SHUTDOWN" << std::endl;
-            }
-
-            void SetWindow(GLFWwindow* window) override
-            {
-                m_window = window;
-                if (!m_initialized && m_window)
-                    Init();
-            }
+            void Init() override;
+            void Update(float deltaTime) override;
+            void Shutdown() override;
+            void SetWindow(GLFWwindow* window) override;
 
             // ImGui-specific methods
-            void StartFrame()
-            {
-                if (!m_initialized)
-                    return;
-
-                // start imgui fram
-                ImGui_ImplOpenGL3_NewFrame();
-                ImGui_ImplGlfw_NewFrame();
-                ImGui::NewFrame();
-            }
-
-            void Render()
-            {
-                if (!m_initialized)
-                    return;
-                ImGui::Render();
-                ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            }
-
-            void CreateDebugWindows(float fps, float deltaTime)
-            {
-                if (!m_initialized)
-                    return;
-
-                CreateEngineDebugWindow(fps, deltaTime);
-                CreatePerformanceWindow();
-
-                if (m_showSystemsWindow)
-                {
-                    CreateSystemsWindow();
-                    CreateEntityDebugWindow();
-                    CreateConsoleWindow();
-                    CreateSerializationDebugWindow();
-                    CreateEntityPropertyWindow();
-                }
-
-                if (m_showDemoWindow)
-                {
-                    ImGui::ShowDemoWindow(&m_showDemoWindow);
-                }
-            }
-
+            void StartFrame();
+            void Render();
+            void CreateDebugWindows(float fps, float deltaTime);
             bool IsInitialized() const { return m_initialized; }
 
             // for window controls
+            bool IsPlaying() const { return m_playState == PlayState::Playing; }
+            bool IsPaused() const { return m_playState == PlayState::Paused; }
+            bool IsStopped() const { return m_playState == PlayState::Stopped; }
             void ShowEngineDebug(bool show) { m_showEngineDebug = show; }
             void ShowEventDebug(bool show) { m_showEventDebug = show; }
             void ShowDemoWindow(bool show) { m_showDemoWindow = show; }
             void ShowPerformanceWindow(bool show) { m_showPerformanceWindow = show; }
             void ShowSystemsWindow(bool show) { m_showSystemsWindow = show; }
 
-        private:
-            // helper functions
+            EventSystem* GetESHandler() { if (!pEventSystem) return pEventSystem; }
+            SystemManager* GetSMHandler() { if (!pSystemManager) return pSystemManager; }
 
-            void CreateSystemsWindow()
+        private:
+            // bigger space stuff
+            bool windowsInit(const char* filename = "imgui.ini");
+            void CreateDockspace();
+            void InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport);
+
+            // helper functions
+            void CreateHierarchyWindow();
+            void CreateInspectorWindow();
+
+            
+            void CreateEditorControlBar();
+            void CreateSystemsWindow();
+            void CreatePerformanceWindow();
+            void CreateEngineDebugWindow(float fps, float deltaTime);
+            void CreateSerializationDebugWindow();
+            void CreateEntityDebugWindow();
+            void CreateEntityPropertyWindow();
+            void CreateConsoleWindow();
+            void AddConsoleLog(const std::string& message);
+
+            bool m_initialized;
+            bool ds_initialized;
+            GLFWwindow* m_window;
+            std::vector<std::string> logsVec;
+            EventSystem* pEventSystem;
+            FileBrowser fileBrowser;
+            //Entity m_selectedEntity;  // Assuming you have an Entity type
+            //std::vector<Entity> m_sceneEntities;  // Cache of all entities in scene
+
+            // show or not
+            bool m_showEngineDebug;
+            bool m_showEventDebug;
+            bool m_showDemoWindow;
+            bool m_showPerformanceWindow;
+            bool m_showSystemsWindow;
+            bool m_showEditorControlBar;
+            PlayState m_playState = PlayState::Stopped;
+
+            // values that need to keep track
+            int mEntityCount;
+            int windowWidth, windowHeight;
+
+            // performance window vars
+            float m_fpsHistory[120];
+            float m_dtHistory[120];
+            int m_historyOffset;
+    };
+}
+
+// shah fallback plan
+/*
+void CreateSystemsWindow()
             {
                 if (!m_showSystemsWindow)
                 {
@@ -464,7 +357,7 @@ namespace Uma_Engine
                 ImGui::SetNextWindowSize(viewport->WorkSize);
                 ImGui::SetNextWindowViewport(viewport->ID);
 
-                ImGuiWindowFlags window_flags = /*ImGuiWindowFlags_MenuBar |*/ ImGuiWindowFlags_NoDocking;
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
                 window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
                 window_flags |= ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
                 window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
@@ -548,32 +441,5 @@ namespace Uma_Engine
             bool windowsInit(const char* filename = "imgui.ini")
             {
                 return std::ifstream(filename).good();
-            }
-
-            bool m_initialized;
-            bool ds_initialized;
-            GLFWwindow* m_window;
-
-            // show or not
-            bool m_showEngineDebug;
-            bool m_showEventDebug;
-            bool m_showDemoWindow;
-            bool m_showPerformanceWindow;
-            bool m_showSystemsWindow;
-
-            // values that need to keep track
-            int mEntityCount;
-            int windowWidth, windowHeight;
-
-            // performance window vars
-            float m_fpsHistory[120];
-            float m_dtHistory[120];
-            int m_historyOffset;
-            // debug var
-            std::vector<std::string> logsVec;
-
-            EventSystem* pEventSystem;
-
-            FileBrowser fileBrowser;
-    };
-}
+            } 
+            */

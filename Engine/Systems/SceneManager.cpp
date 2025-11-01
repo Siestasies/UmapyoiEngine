@@ -3,12 +3,10 @@
 
 namespace Uma_Engine
 {
-    // ==================== ISystem Interface ====================
-
+    // ISYSTEM OVERRIDES
     void SceneManager::Init()
     {
         std::cout << "SceneManager: Initialized" << std::endl;
-
         // Scripts will be registered externally
         // Scenes will be created on-demand
     }
@@ -21,8 +19,22 @@ namespace Uma_Engine
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
-            m_ActiveScene->Update(dt);
-            m_ActiveScene->Render();
+            if (imHandler->IsPlaying())
+            {
+                m_ActiveScene->Update(dt);
+            }
+            else if (imHandler->IsPaused())
+            {
+                m_ActiveScene->Update(0.f);
+            }
+            else
+            {
+                // things that need to be constantly updated no matter what
+                // shoudlnt affect game stop?
+                m_ActiveScene->UpdateSelective(0.f);
+            }
+
+
         }
 
         // Update all loaded scenes if using additive loading
@@ -31,7 +43,6 @@ namespace Uma_Engine
             if (scene != m_ActiveScene && scene->IsLoaded())
             {
                 scene->Update(dt);
-                scene->Render();
             }
         }
 
@@ -48,8 +59,7 @@ namespace Uma_Engine
         m_ScriptFactories.clear();
     }
 
-    // ==================== Scene Management ====================
-
+    // SCENE MANAGEMENT STUFF
     std::shared_ptr<Scene> SceneManager::CreateScene(const std::string& name, const std::string& filepath)
     {
         // Check if scene already exists
@@ -60,7 +70,7 @@ namespace Uma_Engine
         }
 
         // Create new scene
-        auto scene = std::make_shared<Scene>(name, filepath, pSystemManager);
+        auto scene = std::make_shared<Scene>(name, Uma_FilePath::SCENES_DIR + filepath, pSystemManager);
         m_Scenes[name] = scene;
 
         std::cout << "Scene '" << name << "' created" << std::endl;
@@ -237,8 +247,7 @@ namespace Uma_Engine
         return (it != m_Scenes.end()) ? it->second : nullptr;
     }
 
-    // ==================== Script Registry ====================
-
+    // SCRIPT STUFF
     std::shared_ptr<SceneScript> SceneManager::CreateScript(const std::string& scriptName)
     {
         auto it = m_ScriptFactories.find(scriptName);
@@ -292,8 +301,7 @@ namespace Uma_Engine
         return names;
     }
 
-    // ==================== Scene Queries ====================
-
+    // SCENE STUFF
     bool SceneManager::HasScene(const std::string& name) const
     {
         return m_Scenes.find(name) != m_Scenes.end();
@@ -357,8 +365,6 @@ namespace Uma_Engine
     {
         return m_ActiveScene ? m_ActiveScene->GetName() : "";
     }
-
-    // ==================== Internal Helpers ====================
 
     void SceneManager::UpdateLoadingScenes()
     {

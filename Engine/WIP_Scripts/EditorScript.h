@@ -1,5 +1,5 @@
 /*!
-\file   EditorSceneScript.h
+\file   EditorScript.h
 \par    Project: GAM200
 
 \brief
@@ -14,20 +14,21 @@ This replaces the old EditorScene class inheritance approach.
 
 namespace Uma_Engine
 {
-    class EditorSceneScript : public SceneScript
+    class EditorScript : public SceneScript
     {
     public:
-        EditorSceneScript() : SceneScript("EditorBehavior") {}
+        EditorScript() : SceneScript("Editor") {}
 
         void OnAttach(Scene* scene) override
         {
             SceneScript::OnAttach(scene);
-            std::cout << "EditorSceneScript attached" << std::endl;
+            m_CurrentSceneName = scene->GetFilePath();
+            std::cout << "EditorScript attached" << std::endl;
         }
 
         void OnLoad() override
         {
-            std::cout << "EditorSceneScript: OnLoad" << std::endl;
+            std::cout << "EditorScript: OnLoad" << std::endl;
 
             m_Canvas = m_Scene->CreateEntity();
             GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
@@ -54,18 +55,17 @@ namespace Uma_Engine
 
         void OnUnload() override
         {
-            std::cout << "EditorSceneScript: OnUnload" << std::endl;
-            // Events will be automatically unsubscribed when scene is destroyed
+            std::cout << "EditorScript: OnUnload" << std::endl;
+        
         }
 
         void OnUpdate(float dt) override
         {
-            // Handle editor-specific keyboard shortcuts
             HandleEditorInput();
         }
 
     private:
-        std::string m_CurrentSceneName = "test_collider.json";
+        std::string m_CurrentSceneName;
 
         Entity m_Canvas{};
 
@@ -217,7 +217,7 @@ namespace Uma_Engine
 
         void SaveScene()
         {
-            std::string filepath = Uma_FilePath::SCENES_DIR + m_CurrentSceneName;
+            std::string filepath = m_CurrentSceneName;
 
             GameSerializer serializer;
             serializer.Register(GetResources());
@@ -231,7 +231,7 @@ namespace Uma_Engine
         {
             GetCoordinator().DestroyAllEntities();
 
-            std::string filepath = Uma_FilePath::SCENES_DIR + m_CurrentSceneName;
+            std::string filepath = m_CurrentSceneName;
 
             GameSerializer serializer;
             serializer.Register(GetResources());

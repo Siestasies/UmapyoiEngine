@@ -94,7 +94,7 @@ namespace Uma_Engine
             void LoadAsync();
             void Unload();
             void Update(float dt);
-            void Render();
+            void UpdateSelective(float dt);
 
             // Script management
             void AttachScript(std::shared_ptr<SceneScript> script);
@@ -188,7 +188,6 @@ namespace Uma_Engine
             virtual void OnLoad() {}
             virtual void OnUnload() {}
             virtual void OnUpdate(float dt) {}
-            virtual void OnRender() {}
 
             const std::string& GetName() const { return m_Name; }
 

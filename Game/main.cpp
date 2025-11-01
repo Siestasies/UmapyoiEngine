@@ -30,7 +30,8 @@
 #include "Systems/SceneType.h"
 #include "Systems/SceneManager.h"
 
-#include "WIP_Scripts/EditorSceneScript.h"
+#include "WIP_Scripts/GameSceneScript.h"
+#include "WIP_Scripts/EditorScript.h"
 
 #include "WIP_Scripts/ImguiManager.h"
 #include "Core/EngineConfig.h"
@@ -89,20 +90,26 @@ int main()
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene
-    auto scnm = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+    auto scn_mgr = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
 
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    auto imgui_mgr = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
     // Initialize all systems
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
-    scnm->SetSystemManager(&systemManager);
-    scnm->RegisterScript<Uma_Engine::EditorSceneScript>("EditorBehavior");
-    auto editorScene = scnm->CreateScene("EditorScene", "Assets/Scenes/test_collider.json");
-    scnm->AttachScriptToScene("EditorScene", "EditorBehavior");
-    scnm->LoadScene("EditorScene");
+    // SCENE MANAGER SETTINGS
+    scn_mgr->SetImguiHandler(imgui_mgr);
+    scn_mgr->SetSystemManager(&systemManager);
+    // FAKE - this is basically to call events for imgui/editor buttons
+    scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
+    scn_mgr->RegisterScript<Uma_Engine::EditorScript>("EditorBehaviour");
+    auto editorScene = scn_mgr->CreateScene("GameScene1", "test_collider.json");
+    scn_mgr->AttachScriptToScene("GameScene1", "GameBehaviour");
+    scn_mgr->AttachScriptToScene("GameScene1", "EditorBehaviour");
+    scn_mgr->LoadScene("GameScene1");
+
     // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);
 
