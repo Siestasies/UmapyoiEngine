@@ -598,7 +598,7 @@ namespace Uma_UI
         float testWidth = pGraphics->MeasureText(*uiFont, "test", 24.0f);
 
         // If font appears unloaded and we have a fallback path, try to load it
-       /* if (testWidth <= 0.0f && !fallbackPath.empty())
+        /* if (testWidth <= 0.0f && !fallbackPath.empty())
         {
             return pGraphics->LoadFont(fontName, fallbackPath, 48);
         }*/
