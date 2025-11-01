@@ -28,8 +28,15 @@ namespace Uma_ECS
             sol::lib::base,
             sol::lib::math,
             sol::lib::string,
-            sol::lib::table
+            sol::lib::table,
+            sol::lib::package
         );
+
+        //Set up package.path for require()
+        std::string currentPath = (*sharedLua)["package"]["path"];
+        (*sharedLua)["package"]["path"] = currentPath +
+            ";./Assets/Scripts/?.lua" +
+            ";./Assets/Scripts/States/?.lua";  // Add path for your state files
 
         RegisterLuaAPI();
 
@@ -1010,6 +1017,7 @@ namespace Uma_ECS
             {"KEY_A", GLFW_KEY_A},
             {"KEY_S", GLFW_KEY_S},
             {"KEY_D", GLFW_KEY_D},
+            {"KEY_U",GLFW_KEY_U},
             {"KEY_SPACE", GLFW_KEY_SPACE},
             {"KEY_SHIFT", GLFW_KEY_LEFT_SHIFT},
             {"KEY_CTRL", GLFW_KEY_LEFT_CONTROL},
