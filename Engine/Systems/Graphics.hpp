@@ -224,6 +224,8 @@ namespace Uma_Engine
          */
         void SetWindow(GLFWwindow* window) override;
 
+        GLFWwindow* GetWindow() const { return mWindow; }
+
         // Background operations
 
         /**
@@ -292,6 +294,11 @@ namespace Uma_Engine
          * \param height Viewport height in pixels
          */
         void SetViewport(int width, int height);
+
+        int GetViewportWidth() const { return mViewportWidth; }
+
+        int GetViewportHeight() const { return mViewportHeight; }
+
 
         // Camera access
         /*Camera2D& GetCamera() { return mCamera; }

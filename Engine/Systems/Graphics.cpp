@@ -37,6 +37,7 @@ All rights reserved.
 */
 
 #include "Systems/Graphics.hpp"
+#include "../Events/WindowEvents.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -556,6 +557,7 @@ void main()
     void Graphics::OnWindowResize(int width, int height)
     {
         if (!mInitialized) return;
+        pSystemManager->GetSystem<EventSystem>()->Emit<WindowResizeEvent>(width, height);
         SetViewport(width, height);
     }
 

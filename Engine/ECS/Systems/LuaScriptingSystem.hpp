@@ -4,7 +4,7 @@
 #include "../Components/LuaScript.h"
 
 // Engine systems
-#include "WIP_Scripts/Test_Input_Events.h"
+#include "Systems/HybridInputSystem.h"
 #include "Core/EventSystem.h"
 #include "Debugging/Debugger.hpp"
 #include "../Core/Coordinator.hpp"
