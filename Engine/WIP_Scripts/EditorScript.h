@@ -620,16 +620,23 @@ namespace Uma_Engine
                         });
 
                     // this works just that i didnt want to add this now
-                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+                    enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "testEnemy.lua");
 
-                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                    enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                        .name = "speed",
                        .value = 100.0f,
                        .type = Uma_ECS::LuaVarType::T_FLOAT,
                        .min = 0.0f,
                        .max = 500.0f,
                        .isSlider = true
-                        });*/
+                        });
+
+                    enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                       .name = "name",
+                       .value = "bird",
+                       .type = Uma_ECS::LuaVarType::T_STRING,
+                       .isSlider = false
+                        });
 
                     GetCoordinator().AddComponent(enemy, enemyScriptComponent);
                 }

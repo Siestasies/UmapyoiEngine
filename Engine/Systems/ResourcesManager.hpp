@@ -68,7 +68,7 @@ namespace Uma_Engine
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void Deserialize(const rapidjson::Value& in) override;
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
-        void DeserializePrefab(const rapidjson::Value& in) override;
+        Entity DeserializePrefab(const rapidjson::Value& in) override;
 
         // Font
         bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
