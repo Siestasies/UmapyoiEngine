@@ -301,7 +301,7 @@ namespace Uma_Engine
                     .scale = Vec2(1, 1),
                     });
 
-                GetCoordinator().AddComponent(player, Camera{
+                GetCoordinator().AddComponent(cam, Camera{
                     .mZoom = 1.f,
                     .followPlayer = true
                     });
@@ -763,7 +763,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(
-                    m_Scene->m_player,
+                    m_Scene->m_cam,
                     Camera
                     {
                         .mZoom = 1.f,
@@ -930,7 +930,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(
-                    m_Scene->m_player,
+                    m_Scene->m_cam,
                     Camera
                     {
                         .mZoom = 1.f,
