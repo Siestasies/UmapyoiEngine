@@ -20,7 +20,7 @@ namespace Uma_UI
 
         // Styling
         float fontSize = 24.0f;
-        Uma_UI::Colour color = Uma_UI::Colour::Black();
+        Uma_UI::Colour colour = Uma_UI::Colour::Black();
         Uma_UI::TextAlignment alignment = Uma_UI::TextAlignment::Center;
 
         bool visible = true;
@@ -41,11 +41,11 @@ namespace Uma_UI
             value.AddMember("fontSize", fontSize, allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
-            col.AddMember("r", color.r, allocator);
-            col.AddMember("g", color.g, allocator);
-            col.AddMember("b", color.b, allocator);
-            col.AddMember("a", color.a, allocator);
-            value.AddMember("color", col, allocator);
+            col.AddMember("r", colour.r, allocator);
+            col.AddMember("g", colour.g, allocator);
+            col.AddMember("b", colour.b, allocator);
+            col.AddMember("a", colour.a, allocator);
+            value.AddMember("colour", col, allocator);
 
             value.AddMember("alignment", static_cast<int>(alignment), allocator);
             value.AddMember("visible", visible, allocator);
@@ -57,11 +57,11 @@ namespace Uma_UI
             fontName = value["fontName"].GetString();
             fontSize = value["fontSize"].GetFloat();
 
-            const auto& col = value["color"];
-            color.r = col["r"].GetFloat();
-            color.g = col["g"].GetFloat();
-            color.b = col["b"].GetFloat();
-            color.a = col["a"].GetFloat();
+            const auto& col = value["colour"];
+            colour.r = col["r"].GetFloat();
+            colour.g = col["g"].GetFloat();
+            colour.b = col["b"].GetFloat();
+            colour.a = col["a"].GetFloat();
 
             alignment = static_cast<Uma_UI::TextAlignment>(value["alignment"].GetInt());
             visible = value["visible"].GetBool();

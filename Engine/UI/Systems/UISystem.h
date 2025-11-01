@@ -32,7 +32,6 @@ namespace Uma_UI
         UISystem() = default;
         ~UISystem() = default;
 
-        // ISystem interface
         void Init();
         void Update(float dt);
         void Shutdown();
@@ -84,9 +83,6 @@ namespace Uma_UI
 
         // Hit testing cache (sorted by render order)
         std::vector<std::pair<Uma_ECS::Entity, Uma_UI::Rect>> mHitTestCache;
-
-        // Draw list (output for renderer)
-        std::vector<Uma_Engine::Sprite_Info> mDrawList;
 
         // Helper: Compute rect for entity
         Uma_UI::Rect ComputeRectForEntity(Uma_ECS::Entity entity, float canvasScale);

@@ -18,7 +18,7 @@ namespace Uma_UI
         std::string textureName = "";
 
         // Visual
-        Uma_UI::Colour color = Uma_UI::Colour::White();  // Color tint
+        Uma_UI::Colour colour = Uma_UI::Colour::White();  // Color tint
         bool visible = true;
 
         // Serialization
@@ -31,10 +31,10 @@ namespace Uma_UI
                 allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
-            col.AddMember("r", color.r, allocator);
-            col.AddMember("g", color.g, allocator);
-            col.AddMember("b", color.b, allocator);
-            col.AddMember("a", color.a, allocator);
+            col.AddMember("r", colour.r, allocator);
+            col.AddMember("g", colour.g, allocator);
+            col.AddMember("b", colour.b, allocator);
+            col.AddMember("a", colour.a, allocator);
             value.AddMember("color", col, allocator);
 
             value.AddMember("visible", visible, allocator);
@@ -45,10 +45,10 @@ namespace Uma_UI
             textureName = value["textureName"].GetString();
 
             const auto& col = value["color"];
-            color.r = col["r"].GetFloat();
-            color.g = col["g"].GetFloat();
-            color.b = col["b"].GetFloat();
-            color.a = col["a"].GetFloat();
+            colour.r = col["r"].GetFloat();
+            colour.g = col["g"].GetFloat();
+            colour.b = col["b"].GetFloat();
+            colour.a = col["a"].GetFloat();
 
             visible = value["visible"].GetBool();
         }
