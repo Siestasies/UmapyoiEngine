@@ -106,6 +106,11 @@ namespace Uma_ECS
         // Collision detection and resolution
         void UpdateCollision(float dt);
 
+        Entity GetPhysicsEntity(
+            Entity entity, 
+            ComponentArray<Transform>& tfArray, 
+            ComponentArray<RigidBody>& rbArray);
+
         void CheckEntityPairCollision(
             Entity e1, Entity e2,
             ComponentArray<Transform>& tfArray,

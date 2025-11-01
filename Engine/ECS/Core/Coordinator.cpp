@@ -206,7 +206,7 @@ namespace Uma_ECS
         parentTf.children.push_back(child);
 
         // Convert world position to local position relative to new parent
-        childTf.position = childTf.worldPosition - parentTf.worldPosition;
+        //childTf.position = childTf.worldPosition - parentTf.worldPosition;
         childTf.isDirty = true;
     }
 

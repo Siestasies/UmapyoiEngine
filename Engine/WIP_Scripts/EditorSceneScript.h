@@ -513,124 +513,154 @@ namespace Uma_Engine
             }
 
             // create entities
+            Entity enemy;
             {
-                Entity enemy;
+                enemy = GetCoordinator().CreateEntity();
+
+                GetCoordinator().AddComponent(
+                    enemy,
+                    Enemy{
+                        .mSpeed = 1.f
+                    });
+
+                GetCoordinator().AddComponent(
+                    enemy,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 500,
+                      .fric_coeff = 5
+                    });
+
+                GetCoordinator().AddComponent(
+                    enemy,
+                    Transform{
+                      .position = Vec2(-10, 0),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(2.f, 2.f)
+                    });
+
+                std::string texName = "pink_enemy";
+                GetCoordinator().AddComponent(
+                    enemy,
+                    Sprite{
+                      .textureName = texName,
+                      .renderLayer = RL_ENEMY,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = GetResources()->GetTexture(texName),
+                    });
+
+                // Create collider with two shapes
+                Collider enemyCollider;
+
+                enemyCollider.shapes[0] = ColliderShape{
+                    .size = Vec2(3.f, 3.f),
+                    .offset = Vec2(0.f, 1.f),
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_ENEMY,
+                    .colliderMask = CL_PLAYER | CL_PROJECTILE,
+                    .isActive = true,
+                    .autoFitToSprite = false
+                };
+
+                enemyCollider.shapes.push_back(ColliderShape{
+                    .size = Vec2(2.f, 0.7f),
+                    .offset = Vec2(0.f, -2.0f),  // Changed from -2.f to -1.0f
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_ENEMY,
+                    .colliderMask = CL_WALL,
+                    .isActive = true,
+                    .autoFitToSprite = false
+                    });
+
+                enemyCollider.bounds.resize(enemyCollider.shapes.size());
+                GetCoordinator().AddComponent(enemy, enemyCollider);
+
+                LuaScript enemyScriptComponent;
                 {
-                    enemy = GetCoordinator().CreateEntity();
+                    enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Enemy{
-                            .mSpeed = 1.f
+                    enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                        .name = "speed",
+                        .value = 100.0f,
+                        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                        .min = 0.0f,
+                        .max = 500.0f,
+                        .isSlider = true
                         });
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        RigidBody{
-                          .velocity = Vec2(0.0f, 0.0f),
-                          .acceleration = Vec2(0.0f, 0.0f),
-                          .accel_strength = 500,
-                          .fric_coeff = 5
+                    enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                        .name = "name",
+                        .value = "bird",
+                        .type = Uma_ECS::LuaVarType::T_STRING,
+                        .isSlider = false
                         });
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Transform{
-                          .position = Vec2(-10, 0),
-                          .rotation = Vec2(0, 0),
-                          .scale = Vec2(2.f, 2.f)
-                        });
+                    // this works just that i didnt want to add this now
+                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
 
-                    std::string texName = "pink_enemy";
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Sprite{
-                          .textureName = texName,
-                          .renderLayer = RL_ENEMY,
-                          .flipX = false,
-                          .flipY = false,
-                          .UseNativeSize = true,
-                          .texture = GetResources()->GetTexture(texName),
-                        });
+                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                       .name = "speed",
+                       .value = 100.0f,
+                       .type = Uma_ECS::LuaVarType::T_FLOAT,
+                       .min = 0.0f,
+                       .max = 500.0f,
+                       .isSlider = true
+                        });*/
 
-                    // Create collider with two shapes
-                    Collider enemyCollider;
-
-                    enemyCollider.shapes[0] = ColliderShape{
-                        .size = Vec2(3.f, 3.f),
-                        .offset = Vec2(0.f, 1.f),
-                        .purpose = ColliderPurpose::Physics,
-                        .layer = CL_ENEMY,
-                        .colliderMask = CL_PLAYER | CL_PROJECTILE,
-                        .isActive = true,
-                        .autoFitToSprite = false
-                    };
-
-                    enemyCollider.shapes.push_back(ColliderShape{
-                        .size = Vec2(2.f, 0.7f),
-                        .offset = Vec2(0.f, -2.0f),  // Changed from -2.f to -1.0f
-                        .purpose = ColliderPurpose::Physics,
-                        .layer = CL_ENEMY,
-                        .colliderMask = CL_WALL,
-                        .isActive = true,
-                        .autoFitToSprite = false
-                                            });
-
-                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                    GetCoordinator().AddComponent(enemy, enemyCollider);
-
-                    LuaScript enemyScriptComponent;
-                    {
-                        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
-
-                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                            .name = "speed",
-                            .value = 100.0f,
-                            .type = Uma_ECS::LuaVarType::T_FLOAT,
-                            .min = 0.0f,
-                            .max = 500.0f,
-                            .isSlider = true
-                            });
-
-                        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                            .name = "name",
-                            .value = "bird",
-                            .type = Uma_ECS::LuaVarType::T_STRING,
-                            .isSlider = false
-                            });
-
-                        // this works just that i didnt want to add this now
-                        /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
-
-                        kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                           .name = "speed",
-                           .value = 100.0f,
-                           .type = Uma_ECS::LuaVarType::T_FLOAT,
-                           .min = 0.0f,
-                           .max = 500.0f,
-                           .isSlider = true
-                            });*/
-
-                        GetCoordinator().AddComponent(enemy, enemyScriptComponent);
-                    }
+                    GetCoordinator().AddComponent(enemy, enemyScriptComponent);
                 }
+            }
+            {
+                Entity en = GetCoordinator().CreateEntity();
 
-                // using 1 enemy to duplicate 2500 times and rand its transform
-                /*for (size_t i = 0; i < 2500 - 3; i++)
-                {
-                    Entity tmp = GetCoordinator().DuplicateEntity(enemy);
+                GetCoordinator().AddComponent(
+                    en,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 500,
+                      .fric_coeff = 5
+                    });
 
-                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+                GetCoordinator().AddComponent(
+                    en,
+                    Transform{
+                      .position = Vec2(-2, 0),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(0.5f, 0.5f)
+                    });
 
-                    tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                    tf.rotation = Vec2(0, 0);
-                    tf.scale = Vec2(randScale(generator), randScale(generator));
+                std::string texName = "enemy";
+                GetCoordinator().AddComponent(
+                    en,
+                    Sprite{
+                      .textureName = texName,
+                      .renderLayer = RL_ENEMY,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = GetResources()->GetTexture(texName),
+                    });
 
-                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
+                // Create collider with two shapes
+                Collider enemyCollider;
 
-                    sr.textureName = (i > 1250) ? "pink_enemy" : "enemy";
-                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
-                }*/
+                enemyCollider.shapes[0] = ColliderShape{
+                    .size = Vec2(2.f, 2.f),
+                    .offset = Vec2(0.f, 0.f),  // Changed from -2.f to -1.0f
+                    .purpose = ColliderPurpose::Physics,
+                    .layer = CL_ENEMY,
+                    .colliderMask = CL_WALL,
+                    .isActive = true,
+                    .autoFitToSprite = false
+                };
+                enemyCollider.bounds.resize(enemyCollider.shapes.size());
+                GetCoordinator().AddComponent(en, enemyCollider);
+
+                GetCoordinator().SetParent(en, enemy);
             }
 
             // create player

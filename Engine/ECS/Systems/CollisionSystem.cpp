@@ -186,6 +186,23 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     }
 }
 
+Uma_ECS::Entity Uma_ECS::CollisionSystem::GetPhysicsEntity(Entity entity, ComponentArray<Transform>& tfArray, ComponentArray<RigidBody>& rbArray)
+{
+    Entity curr = entity;
+
+    // Walk up to find root entity
+    while (tfArray.Has(curr) && tfArray.GetData(curr).parent.has_value())
+    {
+        curr = tfArray.GetData(curr).parent.value();
+    }
+
+    // Only return root if it has RigidBody, otherwise return invalid
+    if (rbArray.Has(curr))
+        return curr;
+
+    return static_cast<Entity>(-1);  // Return invalid if no physics
+}
+
 void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     Entity e1, Entity e2,
     ComponentArray<Transform>& tfArray,
@@ -201,24 +218,27 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     if (c1.shapes.empty() || c2.shapes.empty()) return;
     if (!c1.shapes[0].isActive || !c2.shapes[0].isActive) return;
 
-    // Check if entities have RigidBody (dynamic vs static)
-    bool e1HasRb = rbArray.Has(e1);
-    bool e2HasRb = rbArray.Has(e2);
+    // Get physics entities FIRST
+    Entity physicsEntity1 = GetPhysicsEntity(e1, tfArray, rbArray);
+    Entity physicsEntity2 = GetPhysicsEntity(e2, tfArray, rbArray);
+
+    // Check if PHYSICS entities have RigidBody
+    bool e1HasRb = (physicsEntity1 != static_cast<Entity>(-1));
+    bool e2HasRb = (physicsEntity2 != static_cast<Entity>(-1));
 
     // Skip if both static (optimization)
     if (!e1HasRb && !e2HasRb)
         return;
 
-    // Broad phase: check primary bounds
-    /*if (!CollisionIntersection_RectRect_Static(c1.bounds[0], c2.bounds[0]))
-        return;*/
+    // Get components from physics entities
+    Transform* tf1 = e1HasRb ? &tfArray.GetData(physicsEntity1) : nullptr;
+    Transform* tf2 = e2HasRb ? &tfArray.GetData(physicsEntity2) : nullptr;
 
-    // Get components
-    auto& tf1 = tfArray.GetData(e1);
-    auto& tf2 = tfArray.GetData(e2);
+    RigidBody* rb1 = e1HasRb ? &rbArray.GetData(physicsEntity1) : nullptr;
+    RigidBody* rb2 = e2HasRb ? &rbArray.GetData(physicsEntity2) : nullptr;
 
-    RigidBody* rb1 = e1HasRb ? &rbArray.GetData(e1) : nullptr;
-    RigidBody* rb2 = e2HasRb ? &rbArray.GetData(e2) : nullptr;
+    // Handle case where one entity doesn't have physics
+    if (!tf1 || !tf2) return;
 
     // Narrow phase: check all shape pairs
     for (size_t i = 0; i < c1.shapes.size(); ++i)
@@ -237,22 +257,20 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
             LayerMask layer2 = c2.GetEffectiveLayer(j);
             LayerMask mask2 = c2.GetEffectiveMask(j);
 
-            // checking if these 2 mask shd collide with each other
             if (!((layer1 & mask2) && (mask1 & layer2)))
                 continue;
 
             // Purpose filtering
-            // checking whether these 2 purpose shd collide with each other
             if (!ShouldPurposesCollide(shape1.purpose, shape2.purpose))
                 continue;
 
             // Collision test
             if (CollisionIntersection_RectRect_Static(c1.bounds[i], c2.bounds[j]))
             {
-                // handle the collision
+                // Pass physics entities and their transforms
                 HandleShapeCollision(
-                    e1, e2,
-                    tf1, tf2,
+                    physicsEntity1, physicsEntity2,
+                    *tf1, *tf2,
                     rb1, rb2,
                     c1.bounds[i], c2.bounds[j],
                     shape1.purpose, shape2.purpose

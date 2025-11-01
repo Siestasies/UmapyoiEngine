@@ -45,7 +45,12 @@ namespace Uma_ECS
         {
             // Child entity - apply parent transforms
 
-            // Rotate local position by parent rotation
+            // ADD DEBUG LOGGING HERE
+            std::cout << "Entity " << entity << " (child):\n";
+            std::cout << "  Local pos: (" << tf.position.x << ", " << tf.position.y << ")\n";
+            std::cout << "  Parent world pos: (" << parentWorldPos.x << ", " << parentWorldPos.y << ")\n";
+            std::cout << "  Parent world scale: (" << parentWorldScale.x << ", " << parentWorldScale.y << ")\n";
+
             float cosRot = std::cos(parentWorldRot);
             float sinRot = std::sin(parentWorldRot);
 
@@ -53,15 +58,15 @@ namespace Uma_ECS
             rotatedPos.x = tf.position.x * cosRot - tf.position.y * sinRot;
             rotatedPos.y = tf.position.x * sinRot + tf.position.y * cosRot;
 
-            // Scale by parent scale and add parent position
+            std::cout << "  Rotated pos: (" << rotatedPos.x << ", " << rotatedPos.y << ")\n";
+
             tf.worldPosition.x = parentWorldPos.x + rotatedPos.x * parentWorldScale.x;
             tf.worldPosition.y = parentWorldPos.y + rotatedPos.y * parentWorldScale.y;
 
-            // Combine scales
+            std::cout << "  Final world pos: (" << tf.worldPosition.x << ", " << tf.worldPosition.y << ")\n";
+
             tf.worldScale.x = tf.scale.x * parentWorldScale.x;
             tf.worldScale.y = tf.scale.y * parentWorldScale.y;
-
-            // Add rotations
             tf.worldRotation = parentWorldRot + tf.rotation.x;
         }
 

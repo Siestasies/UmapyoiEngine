@@ -70,6 +70,7 @@ void Uma_ECS::PhysicsSystem::SavePrevPos()
     {
         auto& tf = tfArray.GetComponentAt(i);
         tf.prevPos = tf.position;  // Save current as previous
+        tf.prevWorldPos = tf.worldPosition;
     }
 }
 

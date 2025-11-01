@@ -48,6 +48,8 @@ namespace Uma_ECS
         Vec2 worldPosition{};
         Vec2 worldScale{ 1.0f, 1.0f };
         float worldRotation{};
+        Vec2 prevWorldPos{};
+
         bool isDirty = true;
 
         void UpdateRenderPosition(float alpha)
