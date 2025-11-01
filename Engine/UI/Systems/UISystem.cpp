@@ -180,6 +180,9 @@ namespace Uma_UI
         // Build hit test cache (all UI elements with RectTransform)
         mHitTestCache.clear();
 
+        // Get aspect ratio (same as Graphics uses)
+        float aspect = mScreenSize.x / mScreenSize.y;
+
         auto sortedEntities = GetSortedUIEntities();
         for (Uma_ECS::Entity entity : sortedEntities)
         {
@@ -191,9 +194,13 @@ namespace Uma_UI
                 continue;
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            mHitTestCache.push_back({entity, rectTransform.computedRect});
-        }
 
+            // FIXED: Apply aspect correction to hit test rect (same as rendering)
+            Uma_UI::Rect hitRect = rectTransform.computedRect;
+            hitRect.width /= aspect;  // Correct width for aspect ratio
+
+            mHitTestCache.push_back({entity, hitRect});
+        }
         // Raycast to find topmost hit
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
 
@@ -413,6 +420,9 @@ namespace Uma_UI
                 text.colour.b
             );
         }
+
+        batches.clear();
+        spritesWithColours.clear();
     }
 
     Vec2 UISystem::GetMousePosition() const
