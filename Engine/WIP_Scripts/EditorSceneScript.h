@@ -47,7 +47,7 @@ namespace Uma_Engine
             // Subscribe to editor events
             SubscribeToEvents();
 
-            CreateButtonWithText("Hello", Vec2(0, 0), Vec2(500, 200), m_Canvas,
+            CreateButtonWithText("Hello", Vec2(0, 0), Vec2(500, 500), m_Canvas,
                 [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
