@@ -302,15 +302,70 @@ namespace Uma_ECS
     {
         assert(in.IsArray());
 
+        // Map old entity IDs to new entity IDs
+        std::unordered_map<Entity, Entity> entityIDMap;
+
+        // First pass: Create all entities
         for (auto& entityVal : in.GetArray())
         {
-            Entity entity = CreateEntity(); // new ID
+            Entity oldID = entityVal["id"].GetUint();
+            Entity newID = CreateEntity();
+            entityIDMap[oldID] = newID;
+
             const auto& comps = entityVal["components"];
-            Signature sign = aComponentManager->DeserializeAll(entity, comps);
-            aEntityManager->SetSignature(entity, sign);
-            aSystemManager->EntitySignatureChanged(entity, GetEntitySignature(entity));
+            Signature sign = aComponentManager->DeserializeAll(newID, comps);
+            aEntityManager->SetSignature(newID, sign);
         }
 
+        // Second pass: Remap parent-child relationships
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        for (size_t i = 0; i < tfArray.Size(); ++i)
+        {
+            Entity entity = tfArray.GetEntity(i);
+            auto& tf = tfArray.GetData(entity);
+
+            // Remap parent ID
+            if (tf.parent.has_value())
+            {
+                Entity oldParentID = tf.parent.value();
+
+                auto it = entityIDMap.find(oldParentID);
+                if (it != entityIDMap.end())
+                {
+                    Entity newParentID = it->second;
+                    tf.parent = newParentID;
+
+                    // Add to parent's children
+                    auto& parentTf = tfArray.GetData(newParentID);
+                    parentTf.children.push_back(entity);
+                }
+                else
+                {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        "Invalid parent ID during deserialization");
+                    tf.parent = std::nullopt;
+                }
+            }
+
+            // Remap children IDs
+            std::vector<Entity> newChildren;
+            for (Entity oldChildID : tf.children)
+            {
+                auto it = entityIDMap.find(oldChildID);
+                if (it != entityIDMap.end())
+                {
+                    newChildren.push_back(it->second);
+                }
+            }
+            tf.children = std::move(newChildren);
+        }
+
+        // Third pass: Update systems
+        for (auto& pair : entityIDMap)
+        {
+            Entity newID = pair.second;
+            aSystemManager->EntitySignatureChanged(newID, GetEntitySignature(newID));
+        }
     }
 
     void Coordinator::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)

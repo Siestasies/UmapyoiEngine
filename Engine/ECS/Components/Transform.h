@@ -105,13 +105,12 @@ namespace Uma_ECS
             scale.x = scl["x"].GetFloat();
             scale.y = scl["y"].GetFloat();
 
-            // Reset prevPos automatically
             prevPos = position;
 
             if (value.HasMember("parent"))
             {
                 int parentID = value["parent"].GetInt();
-                if (parent >= 0)
+                if (parentID >= 0)
                 {
                     parent = static_cast<Entity>(parentID);
                 }
@@ -120,6 +119,9 @@ namespace Uma_ECS
                     parent = std::nullopt;
                 }
             }
+
+            // Don't deserialize children - will be rebuilt in Coordinator::Deserialize
+            children.clear();
 
             // Reset world transforms
             worldPosition = position;
