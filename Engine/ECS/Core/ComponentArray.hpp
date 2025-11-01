@@ -104,8 +104,8 @@ namespace Uma_ECS
             aIndexToEntity[index_to_remove] = last_entity;
 
             // Clear the removed entity's mapping
-            aEntityToIndex[entity] = 0;
-            aIndexToEntity[last_index] = 0;  // Clear the now-unused slot
+            aEntityToIndex[entity] = MAX_ENTITIES;
+            aIndexToEntity[last_index] = MAX_ENTITIES;  // Clear the now-unused slot
 
             --mSize;
 
@@ -165,9 +165,12 @@ namespace Uma_ECS
         std::vector<Entity> GetAllEntities() const override
         {
             std::vector<Entity> result;
-            //result.reserve(mSize);
+            result.reserve(mSize);
 
-            for_each(std::begin(aIndexToEntity), std::end(aIndexToEntity), [&result](const Entity& e) {result.push_back(e); });
+            for (size_t i = 0; i < mSize; ++i)
+            {
+                result.push_back(aIndexToEntity[i]);
+            }
 
             return result;
         }

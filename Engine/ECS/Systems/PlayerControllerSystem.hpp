@@ -49,6 +49,7 @@ namespace Uma_ECS
         }
         
         void Update(float dt);
+
     private:
         void OnKeyPress(const Uma_Engine::KeyPressEvent& event);
         void OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event);
