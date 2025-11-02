@@ -9,6 +9,7 @@
 #include "../Components/Enemy.h"
 
 #include "Events/CollisionEvent.h"
+#include "Events/AudioEvents.h"
 
 #include <functional>
 
@@ -659,6 +660,23 @@ namespace Uma_ECS
         // Add time access
         sharedLua->set_function("GetDeltaTime", [this]() {
             return lastDeltaTime; // Store in class
+            });
+
+        // play audio
+        sharedLua->set_function("PlaySound", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopSound", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopSoundEvent>(audioName);
+            });
+
+        sharedLua->set_function("PlayMusic", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlayMusicEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopMusic", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopMusicEvent>(audioName);
             });
     }
 

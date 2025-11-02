@@ -20,11 +20,15 @@ All rights reserved.
 #include <iostream>
 #include <filesystem>
 
+#include "Events/AudioEvents.h"
+
+#include "Debugging/Debugger.hpp"
+
 #define DEBUG
 
 namespace Uma_Engine {
 
-    SoundManager::SoundManager() : pFmodSystem(nullptr)
+    SoundManager::SoundManager() : pFmodSystem(nullptr) 
     {
 
     }
@@ -84,6 +88,39 @@ namespace Uma_Engine {
 
         // Set 3D settings (doppler scale, distance factor, rolloff scale)
         FMOD_System_Set3DSettings(pFmodSystem, 1.0f, 1.0f, 1.0f);
+        pEventSystem = pSystemManager->GetSystem<EventSystem>();
+        pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+
+        if (pEventSystem && pResourcesManager)
+        {
+            pEventSystem->Subscribe<Uma_Engine::PlaySoundEvent>(
+                [this](const PlaySoundEvent& e)
+                {
+                    playSound(pResourcesManager->GetSound(e.soundName), e.loop, e.volume, 1.f);
+                });
+
+            pEventSystem->Subscribe<Uma_Engine::StopSoundEvent>(
+                [this](const StopSoundEvent& e)
+                {
+                    stopSound(pResourcesManager->GetSound(e.soundName));
+                });
+
+            pEventSystem->Subscribe<Uma_Engine::PlayMusicEvent>(
+                [this](const PlayMusicEvent& e)
+                {
+                    playSound(pResourcesManager->GetSound(e.musicName), e.loop, e.volume, 1.f);
+                });
+
+            pEventSystem->Subscribe<Uma_Engine::StopMusicEvent>(
+                [this](const StopMusicEvent& e)
+                {
+                    stopSound(pResourcesManager->GetSound(e.musicName));
+                });
+        }
+        else
+        {
+            Debugger::Log(WarningLevel::eWarning, "Audio Manager did not subscribe to the audio events");
+        }
 
         return;
     }
@@ -155,7 +192,7 @@ namespace Uma_Engine {
         }
     }
 
-	void SoundManager::release()
+	void SoundManager::release() 
     {
 		if (!pFmodSystem) return;
 		stopAllSounds();
