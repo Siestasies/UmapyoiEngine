@@ -16,7 +16,7 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "Sound.hpp"
+#include "SoundManager.hpp"
 #include <iostream>
 #include <filesystem>
 
@@ -24,17 +24,17 @@ All rights reserved.
 
 namespace Uma_Engine {
 
-    Sound::Sound() : pFmodSystem(nullptr) 
+    SoundManager::SoundManager() : pFmodSystem(nullptr)
     {
 
     }
 
-    Sound::~Sound()
+    SoundManager::~SoundManager()
     {
         //Shutdown();
     }
 
-    void Sound::Init()
+    void SoundManager::Init()
     {
         FMOD_RESULT result = FMOD_System_Create(&pFmodSystem, FMOD_VERSION);
         if (result != FMOD_OK) {
@@ -85,14 +85,14 @@ namespace Uma_Engine {
         return;
     }
 
-    void Sound::Shutdown()
+    void SoundManager::Shutdown()
     {
 #ifdef DEBUG
         std::cout << "sound shutdown\n";
 #endif // DEBUG
     }
 
-    void Sound::Update(float dt)
+    void SoundManager::Update(float dt)
     {
         (void)dt;
 
@@ -101,7 +101,7 @@ namespace Uma_Engine {
         }
     }
 
-    SoundInfo Sound::loadSound(const std::string& filePath, SoundType type)
+    SoundInfo SoundManager::loadSound(const std::string& filePath, SoundType type)
     {
         SoundInfo info;
         info.type = type;
@@ -134,7 +134,7 @@ namespace Uma_Engine {
         return info;
     }
 
-    void Sound::unloadSound(FMOD_SOUND* sound)
+    void SoundManager::unloadSound(FMOD_SOUND* sound)
     {
         //goes thru the map and looks for the sound file if it is found release it and removes it from the map
         if (pFmodSystem) {
@@ -142,7 +142,7 @@ namespace Uma_Engine {
         }
     }
 
-	void Sound::release() 
+	void SoundManager::release()
     {
 		if (!pFmodSystem) return;
 		stopAllSounds();
@@ -159,7 +159,7 @@ namespace Uma_Engine {
 		pFmodSystem = nullptr;
 	}
 
-    void Sound::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
+    void SoundManager::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
     {
         if (!pFmodSystem) return;
         stopAllSounds();
@@ -177,7 +177,7 @@ namespace Uma_Engine {
         mSoundList.clear();
     }
 
-    void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
+    void SoundManager::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
     {
         if (!pFmodSystem) { //check if fmod has been init
             return;
@@ -221,7 +221,7 @@ namespace Uma_Engine {
         return;
     }
 
-    void Sound::stopSound(SoundInfo& info)
+    void SoundManager::stopSound(SoundInfo& info)
     {
         FMOD_RESULT result = FMOD_Channel_Stop(info.channel);
         if (result != FMOD_OK) {
@@ -229,7 +229,7 @@ namespace Uma_Engine {
         }
     }
 
-    void Sound::stopAllSounds()
+    void SoundManager::stopAllSounds()
     {
         FMOD_RESULT result = FMOD_ChannelGroup_Stop(Master);
         if (result != FMOD_OK) {
@@ -237,27 +237,27 @@ namespace Uma_Engine {
         }
     }
 
-    void Sound::pauseSound(SoundInfo& info, bool pause)
+    void SoundManager::pauseSound(SoundInfo& info, bool pause)
     {
         FMOD_Channel_SetPaused(info.channel, pause);
     }
 
-    void Sound::pauseAllSounds(bool pause)
+    void SoundManager::pauseAllSounds(bool pause)
     {
         FMOD_ChannelGroup_SetPaused(Master, pause);
     }
 
-    void Sound::setSoundVolume(SoundInfo& info, float volume)
+    void SoundManager::setSoundVolume(SoundInfo& info, float volume)
     {
         FMOD_Channel_SetVolume(info.channel, volume);
     }
 
-    void Sound::setSoundPitch(SoundInfo& info, float pitch)
+    void SoundManager::setSoundPitch(SoundInfo& info, float pitch)
     {
         FMOD_Channel_SetPitch(info.channel, pitch);
     }
 
-    void Sound::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {
+    void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {
         if (type == SoundType::SFX) {
             FMOD_ChannelGroup_SetVolume(SFX, volume);
         }

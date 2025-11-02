@@ -38,11 +38,11 @@ struct FMOD_CHANNEL;
 namespace Uma_Engine
 {
 
-		class Sound : public ISystem 
+		class SoundManager : public ISystem
 		{
 				public:
-				Sound();
-				~Sound();
+				SoundManager();
+				~SoundManager();
 
 				// Initialize and cleanup
 				void Init() override;
