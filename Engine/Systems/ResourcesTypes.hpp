@@ -62,7 +62,8 @@ namespace Uma_Engine
 		SoundType type = SoundType::END;
 		std::string filePath;
 
-		FMOD_VECTOR pos;
+		FMOD_VECTOR pos{};
+		FMOD_VECTOR vel{};
 	};
 
 	struct Character

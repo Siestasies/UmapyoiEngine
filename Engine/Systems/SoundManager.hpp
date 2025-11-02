@@ -80,7 +80,7 @@ namespace Uma_Engine
 				*/
 				void playSound(SoundInfo& info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
-				void playSound(SoundInfo& info, float x, float y, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+				void playSound(SoundInfo& info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
 				/*!
 				*\brief stops the sound from playing
@@ -131,7 +131,7 @@ namespace Uma_Engine
 				void setChannelGroupVolume(float volume, SoundType type);
 
 				//set the listener position for the update loop to update
-				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
+				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
 
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;

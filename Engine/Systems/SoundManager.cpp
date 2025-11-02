@@ -110,7 +110,7 @@ namespace Uma_Engine {
         }
     }
 
-    SoundInfo Sound::loadSound(const std::string& filePath, SoundType type, bool is3D)
+    SoundInfo SoundManager::loadSound(const std::string& filePath, SoundType type, bool is3D)
     {
         SoundInfo info;
         info.type = type;
@@ -190,7 +190,7 @@ namespace Uma_Engine {
         mSoundList.clear();
     }
 
-    void Sound::playSound(SoundInfo& info, float x, float y, int loopCount, float volume, float pitch)
+    void SoundManager::playSound(SoundInfo& info, FMOD_VECTOR pos, FMOD_VECTOR vel, int loopCount, float volume, float pitch)
     {
         if (!pFmodSystem) { //check if fmod has been init
             return;
@@ -219,11 +219,11 @@ namespace Uma_Engine {
         // Set volume and pitch
         FMOD_Channel_SetVolume(info.channel, volume);
         FMOD_Channel_SetPitch(info.channel, pitch);
-        FMOD_Sound_SetLoopCount(info.sound, loopCount);
 
         FMOD_Channel_SetMode(info.channel, FMOD_3D);
-        info.pos = { x,y,0 };
-        FMOD_Channel_Set3DAttributes(info.channel, &info.pos, nullptr);
+        info.pos = pos;
+        info.vel = vel;
+        FMOD_Channel_Set3DAttributes(info.channel, &info.pos, &info.vel);
         FMOD_Channel_Set3DMinMaxDistance(info.channel, 1.0f, 1000.0f);
 
         //add the channel to its respective group channel
@@ -236,7 +236,7 @@ namespace Uma_Engine {
         return;
     }
 
-    void Sound::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
+    void SoundManager::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
     {
         if (!pFmodSystem) { //check if fmod has been init
             return;
@@ -265,7 +265,6 @@ namespace Uma_Engine {
         // Set volume and pitch
         FMOD_Channel_SetVolume(info.channel, volume);
         FMOD_Channel_SetPitch(info.channel, pitch);
-        FMOD_Sound_SetLoopCount(info.sound, loopCount);
 
         //add the channel to its respective group channel
         if (info.type == SoundType::SFX) {
@@ -325,8 +324,9 @@ namespace Uma_Engine {
         }
     }
 
-    void Sound::setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& forward, const FMOD_VECTOR& up) {
+    void SoundManager::setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up) {
         listenerPos = pos;
+        listenerVel = vel;
         listenerForward = forward;
         listenerUp = up;
     }

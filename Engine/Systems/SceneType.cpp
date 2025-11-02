@@ -319,6 +319,9 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
 
+        //test
+        m_Coordinator.RegisterComponent<Uma_ECS::Listener>();
+        
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
         {
@@ -388,6 +391,17 @@ namespace Uma_Engine
         }
         m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
 
+        //test
+        m_AudioSystem = m_Coordinator.RegisterSystem<Uma_ECS::AudioSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Listener>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
+        }
+        m_AudioSystem->Init(m_Sound, &m_Coordinator);
+
         InitializeUISystem();
 
         gGameSerializer.Register(m_ResourcesManager);
@@ -435,6 +449,9 @@ namespace Uma_Engine
 
         if (m_UISystem)
             m_UISystem->Update(dt);
+
+        if (m_AudioSystem)
+            m_AudioSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()
