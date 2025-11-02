@@ -77,7 +77,7 @@ namespace Uma_Engine
             // helper functions
             void CreateHierarchyWindow();
             void CreateInspectorWindow();
-
+            void SceneManagerWindow();
             
             void CreateEditorControlBar();
             void CreateSystemsWindow();
@@ -93,6 +93,9 @@ namespace Uma_Engine
             bool ds_initialized;
             GLFWwindow* m_window;
             std::vector<std::string> logsVec;
+            std::vector<std::string> sceneNames;
+            std::vector<std::string> scenePaths;
+            int activeSceneIndex;
             EventSystem* pEventSystem;
             FileBrowser fileBrowser;
             //Entity m_selectedEntity;  // Assuming you have an Entity type

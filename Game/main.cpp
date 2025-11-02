@@ -100,7 +100,6 @@ int main()
     systemManager.SetWindow(window.GetGLFWWindow());
 
     // SCENE MANAGER SETTINGS
-    scn_mgr->SetImguiHandler(imgui_mgr);
     scn_mgr->SetSystemManager(&systemManager);
     // FAKE - this is basically to call events for imgui/editor buttons
     scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");

@@ -89,11 +89,18 @@ namespace Uma_Engine
                 }
             );
 
-            // Load scene
-            eventSystem->Subscribe<LoadSceneRequestEvent>(
-                [this](const LoadSceneRequestEvent& e) {
+            // Load scene from path (for new scenes)
+            //eventSystem->Subscribe<LoadSceneRequestEvent>(
+            //    [this](const LoadSceneRequestEvent& e) {
+            //        LoadScene(e.filepath);
+            //    }
+            //);
+
+            // reload the current scene
+            eventSystem->Subscribe<ReLoadSceneRequestEvent>(
+                [this](const ReLoadSceneRequestEvent& e) {
                     (void)e;
-                    LoadScene();
+                    ReLoadScene();
                 }
             );
 
@@ -187,7 +194,7 @@ namespace Uma_Engine
             // Load from file
             if (input->KeyPressed(GLFW_KEY_2))
             {
-                LoadScene();
+                ReLoadScene();
             }
 
             // Reset scene
@@ -224,7 +231,16 @@ namespace Uma_Engine
             std::cout << "Scene saved to: " << filepath << std::endl;
         }
 
-        void LoadScene()
+        //void LoadScene(const std::string& filepath)
+        //{
+        //    GetCoordinator().DestroyAllEntities();
+
+        //    m_Scene->gGameSerializer.load(filepath);
+
+        //    std::cout << "Scene loaded from: " << filepath << std::endl;
+        //}
+
+        void ReLoadScene()
         {
             GetCoordinator().DestroyAllEntities();
 

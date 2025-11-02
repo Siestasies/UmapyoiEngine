@@ -45,11 +45,9 @@ namespace Uma_Engine
         void Update(float dt) override;
         void Shutdown() override;
 
-        // SCENE MANAGEMENT STUFF
-        void SetImguiHandler(ImguiManager* im) { imHandler = im; }
-
         // Create a new empty scene
         std::shared_ptr<Scene> CreateScene(const std::string& name, const std::string& filepath = "");
+        void CreateNewScene();
         // Load scene synchronously (blocks until loaded)
         std::shared_ptr<Scene> LoadScene(const std::string& name, bool additive = false);
         // Load scene asynchronously (non-blocking)
@@ -109,7 +107,7 @@ namespace Uma_Engine
         std::vector<std::shared_ptr<Scene>> m_LoadingScenes;
         std::shared_ptr<Scene> m_ActiveScene;
 
-        ImguiManager* imHandler;
+        static int sceneNo;
 
         PLAYMODE playMode = PLAYMODE::PM_STOP;
     };

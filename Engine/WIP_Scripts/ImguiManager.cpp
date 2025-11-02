@@ -72,12 +72,11 @@ namespace Uma_Engine
 
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
-
         pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-
         pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
-
+        pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
+            { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         m_initialized = true;
     }
 
@@ -113,6 +112,8 @@ namespace Uma_Engine
 
         // play stop bar
         CreateEditorControlBar();
+
+        SceneManagerWindow();
 
         // call for windows to be shown
         float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
@@ -251,7 +252,7 @@ namespace Uma_Engine
             {
                 pEventSystem->Emit<StopSceneRequest>();
                 m_playState = PlayState::Stopped;
-                pEventSystem->Emit<LoadSceneRequestEvent>("random string");
+                pEventSystem->Emit<ReLoadSceneRequestEvent>();
             }
 
             // Show current state text on the right
@@ -407,7 +408,7 @@ namespace Uma_Engine
         if (ImGui::Button("Load Scene", { 100, 50 }))
         {
             // load scene from this file
-            pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            //pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
         }
         if (ImGui::Button("Save Scene", { 100, 50 }))
         {
@@ -808,6 +809,48 @@ namespace Uma_Engine
 
             ImGui::EndPopup();
         }
+        ImGui::End();
+    }
+
+    void ImguiManager::SceneManagerWindow() {
+        ImGui::Begin("Scene Manager");
+
+        // Button to create a new scene
+        if (ImGui::Button("Create New Scene")) {
+            pEventSystem->Emit<CreateNewSceneRequest>();
+        }
+
+        // Button to delete the selected scene
+        if (ImGui::Button("Delete Selected Scene")) {
+            //DeleteSelectedScene();
+        }
+
+        //list of loaded scenes
+        ImGui::BeginChild("SceneList", ImVec2(0, 200), true);
+        int selectedSceneIndex = -1;
+        for (int i = 0; i < sceneNames.size(); i++)
+        {
+            bool isSelected = (selectedSceneIndex == i);
+            bool isActive = (i == activeSceneIndex);
+
+            std::string extra = (isActive ? " (Active)" : "");
+            std::string sceneLabel = sceneNames[i] + extra;
+
+            if (ImGui::Selectable(sceneLabel.c_str(), isSelected))
+            {
+                selectedSceneIndex = i;
+            }
+
+            // detect double click
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+            {
+                // get filepath
+                // LOADING .SCN FILE NOT LOAD SCENE
+                pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
+            }
+        }
+        ImGui::EndChild();
+
         ImGui::End();
     }
 }
