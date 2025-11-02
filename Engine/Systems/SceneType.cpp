@@ -267,7 +267,7 @@ namespace Uma_Engine
         // Get system handles
         m_HybridInputSystem = m_SystemManager->GetSystem<HybridInputSystem>();
         m_Graphics = m_SystemManager->GetSystem<Graphics>();
-        m_Sound = m_SystemManager->GetSystem<Sound>();
+        m_Sound = m_SystemManager->GetSystem<SoundManager>();
         m_EventSystem = m_SystemManager->GetSystem<EventSystem>();
         m_ResourcesManager = m_SystemManager->GetSystem<ResourcesManager>();
 

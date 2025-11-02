@@ -1,5 +1,5 @@
 /*!
-\file   Sound.hpp
+\file   SoundManager.hpp
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -28,6 +28,9 @@ All rights reserved.
 #include "SystemType.h"
 #include "ResourcesTypes.hpp"
 
+#include "Core/EventSystem.h"
+#include "../Systems/ResourcesManager.hpp"
+
 using SoundInfo = Uma_Engine::SoundInfo;
 using SoundType = Uma_Engine::SoundType;
 
@@ -38,11 +41,11 @@ struct FMOD_CHANNEL;
 namespace Uma_Engine
 {
 
-		class Sound : public ISystem 
+		class SoundManager : public ISystem 
 		{
 				public:
-				Sound();
-				~Sound();
+				SoundManager();
+				~SoundManager();
 
 				// Initialize and cleanup
 				void Init() override;
@@ -141,6 +144,9 @@ namespace Uma_Engine
 				FMOD_CHANNELGROUP* Master = nullptr;
 
 				FMOD_SOUNDGROUP* SFX_SG = nullptr;
+
+				EventSystem* pEventSystem = nullptr;
+				ResourcesManager* pResourcesManager = nullptr;
 
 				// Helper functions
 				//std::string getFullPath(const std::string& fileName) const;

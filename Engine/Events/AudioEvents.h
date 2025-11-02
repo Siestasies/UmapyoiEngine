@@ -29,12 +29,12 @@ namespace Uma_Engine
     class PlaySoundEvent : public Event
     {
     public:
-        PlaySoundEvent(const std::string& soundName, float volume = 1.0f, bool loop = false) : soundName(soundName), volume(volume), loop(loop) { priority = Priority::Low; }
+        PlaySoundEvent(const std::string& soundName, float volume = 1.0f, int loop = 0) : soundName(soundName), volume(volume), loop(loop) { priority = Priority::Low; }
 
     public:
         std::string soundName;
         float volume;
-        bool loop;
+        int loop;
     };
 
     class StopSoundEvent : public Event
@@ -49,17 +49,19 @@ namespace Uma_Engine
     class PlayMusicEvent : public Event
     {
     public:
-        PlayMusicEvent(const std::string& musicName, float volume = 1.0f, bool loop = true) : musicName(musicName), volume(volume), loop(loop) { priority = Priority::Low; }
+        PlayMusicEvent(const std::string& musicName, float volume = 1.0f, int loop = 0) : musicName(musicName), volume(volume), loop(loop) { priority = Priority::Low; }
 
     public:
         std::string musicName;
         float volume;
-        bool loop;
+        int loop;
     };
 
     class StopMusicEvent : public Event
     {
     public:
-        StopMusicEvent() { priority = Priority::Low; }
+        StopMusicEvent(const std::string& musicName) : musicName(musicName) { priority = Priority::Low; }
+
+        std::string musicName;
     };
 }

@@ -12,6 +12,9 @@ This replaces the old EditorScene class inheritance approach.
 #include "Core/FilePaths.h"
 #include <random>
 
+// events
+#include <Events/AudioEvents.h>
+
 namespace Uma_Engine
 {
     class EditorScript : public SceneScript
@@ -30,38 +33,38 @@ namespace Uma_Engine
         {
             std::cout << "EditorScript: OnLoad" << std::endl;
 
-            m_Canvas = m_Scene->CreateEntity();
-            GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
-                {
-                .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
-                .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
-                .pivot = Vec2(0.5f, 0.5f),          // Center pivot
-                .anchoredPosition = Vec2(0, 0),     // No offset
-                .sizeDelta = Vec2(0, 0),            // Stretch to fill
-                .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
-                });
+            //m_Canvas = m_Scene->CreateEntity();
+            //GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
+            //    {
+            //    .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
+            //    .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
+            //    .pivot = Vec2(0.5f, 0.5f),          // Center pivot
+            //    .anchoredPosition = Vec2(0, 0),     // No offset
+            //    .sizeDelta = Vec2(0, 0),            // Stretch to fill
+            //    .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
+            //    });
 
 
-            GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
-                {
-                .sortingOrder = 0,
-                .referenceResolution = Vec2(1280.f, 720.f),
-                .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
-                .matchWidthOrHeight = 0.5f
-                });
+            //GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
+            //    {
+            //    .sortingOrder = 0,
+            //    .referenceResolution = Vec2(1280.f, 720.f),
+            //    .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
+            //    .matchWidthOrHeight = 0.5f
+            //    });
 
-            if (!GetResources()->GetTexture("whitePixel")) GetResources()->LoadTexture("whitePixel", "Assets/whitePixel.png");
+            //if (!GetResources()->GetTexture("whitePixel")) GetResources()->LoadTexture("whitePixel", "Assets/whitePixel.png");
 
-            // Ensure font exists (size 48)
-            //GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
-            GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
+            //// Ensure font exists (size 48)
+            ////GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
+            //GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
 
 
             // Subscribe to editor events
             SubscribeToEvents();
 
-            CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
-                [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
+            /*CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
+                [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});*/
         }
 
         void OnUnload() override
@@ -217,7 +220,8 @@ namespace Uma_Engine
             // Play sound effects
             if (input->KeyPressed(GLFW_KEY_P))
             {
-                GetSound()->playSound(GetResources()->GetSound("explosion"));
+                //GetSound()->playSound(GetResources()->GetSound("explosion"));
+                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1, 0);
             }
 
             if (input->KeyPressed(GLFW_KEY_O))
