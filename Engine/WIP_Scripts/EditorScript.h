@@ -226,7 +226,8 @@ namespace Uma_Engine
 
             if (input->KeyPressed(GLFW_KEY_O))
             {
-                GetSound()->playSound(GetResources()->GetSound("cave"));
+                //GetSound()->playSound(GetResources()->GetSound("cave"));
+                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("cave", 1, 0);
             }
         }
 
