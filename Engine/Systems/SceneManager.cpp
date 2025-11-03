@@ -23,27 +23,37 @@ namespace Uma_Engine
 
         eventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
 
         eventSystem->Subscribe<PauseSceneRequest>(
             [&](const PauseSceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_PAUSE;
             }
         );
 
         eventSystem->Subscribe<StopSceneRequest>(
             [&](const StopSceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_STOP;
             }
         );
 
-        eventSystem->Subscribe<CreateNewSceneRequest>
-            ([this](const CreateNewSceneRequest& e) {CreateNewScene(); });
+        eventSystem->Subscribe<CreateNewSceneRequest>(
+            [this](const CreateNewSceneRequest& e) {
+                (void)e;
+                CreateNewScene(); 
+            }
+        );
 
-        eventSystem->Subscribe<LoadSceneRequestEvent>
-            ([this](const LoadSceneRequestEvent& e) {LoadScene(e.name, false); });
+        eventSystem->Subscribe<LoadSceneRequestEvent>(
+            [this](const LoadSceneRequestEvent& e) {
+                LoadScene(e.name, false); 
+            }
+        );
     }
 
     void SceneManager::Update(float dt)

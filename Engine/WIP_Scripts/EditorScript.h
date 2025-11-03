@@ -61,6 +61,7 @@ namespace Uma_Engine
 
         void OnUpdate(float dt) override
         {
+            UNREFERENCED_PARAMETER(dt);
             HandleEditorInput();
         }
 
@@ -442,12 +443,12 @@ namespace Uma_Engine
                 wallCollider.bounds.resize(wallCollider.shapes.size());
                 GetCoordinator().AddComponent(wall, wallCollider);
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
                 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.position = Vec2(20 + (i * 5), 0);
+                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), 0.f);
                 
                     Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
                     collider.shapes[0].autoFitToSprite = false;
@@ -464,13 +465,13 @@ namespace Uma_Engine
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
-                for (size_t i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                    tf.position = Vec2(15 + (6 * 5), 0 + (i * 5));
+                    tf.position = Vec2(static_cast<float>(15 + (6 * 5)), static_cast<float>(0 + (i * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
@@ -479,13 +480,13 @@ namespace Uma_Engine
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                    tf.position = Vec2(20 + (i * 5), 15 + (4 * 5));
+                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(15 + (4 * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
@@ -530,15 +531,15 @@ namespace Uma_Engine
                       .texture = GetResources()->GetTexture(texName),
                     });
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    for (size_t j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; j++)
                     {
                         Entity tmp = GetCoordinator().DuplicateEntity(floor);
 
                         Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                        tf.position = Vec2(20 + (i * 5), 7.5 + (j * 10));
+                        tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(7.5 + (j * 10)) );
                     }
                 }
             }

@@ -198,7 +198,7 @@ namespace Uma_Engine
             virtual void OnDetach() {}
             virtual void OnLoad() {}
             virtual void OnUnload() {}
-            virtual void OnUpdate(float dt) {}
+            virtual void OnUpdate(float dt) { UNREFERENCED_PARAMETER(dt); }
 
             const std::string& GetName() const { return m_Name; }
 

@@ -596,8 +596,8 @@ namespace Uma_Engine
                     }
                 }
             }
-            if (!has_layout);
-            InitDockspace(ds_id, viewport);
+            if (!has_layout)
+                InitDockspace(ds_id, viewport);
         }
 
         ImGui::End();
@@ -844,8 +844,6 @@ namespace Uma_Engine
             // detect double click
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
-                // get filepath
-                // LOADING .SCN FILE NOT LOAD SCENE
                 pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
             }
         }

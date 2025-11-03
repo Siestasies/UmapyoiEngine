@@ -93,7 +93,7 @@ int main()
     auto scn_mgr = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
 
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-    auto imgui_mgr = systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
+    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
 
     // Initialize all systems
     systemManager.Init();

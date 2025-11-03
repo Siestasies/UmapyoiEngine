@@ -129,7 +129,7 @@ namespace Uma_Engine
         }
 
         // Calculate interpolation alpha
-        float alpha = m_Accumulator / m_FixedTimeStep;
+        //float alpha = m_Accumulator / m_FixedTimeStep;
 
         // Update render positions for smooth interpolation
        /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
