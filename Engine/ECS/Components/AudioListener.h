@@ -2,7 +2,7 @@
 
 namespace Uma_ECS
 {
-	struct Listener {
+	struct AudioListener {
 		//empty on purpose this is js to tag the listener
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override

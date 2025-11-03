@@ -39,7 +39,7 @@ All rights reserved.
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/LuaScript.h"
 #include "ECS/Components/Animator.h"
-#include "ECS/Components/Listener.h"
+#include "ECS/Components/AudioListner.h"
 
 // UI Components
 #include "../UI/Components/RectTransform.h"
@@ -221,5 +221,8 @@ namespace Uma_Engine
             Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
             Uma_Engine::EventSystem* GetEvents() { return m_Scene->GetEventSystem(); }
+
+            //testing
+            //::audioSys * GetEvents() { return m_Scene->GetEventSystem(); }
     };
 }

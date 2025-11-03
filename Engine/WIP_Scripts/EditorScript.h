@@ -763,6 +763,9 @@ namespace Uma_Engine
 
                 playerCollider.bounds.resize(playerCollider.shapes.size());
                 GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
+
+                AudioListener audioListner;
+                GetCoordinator().AddComponent(m_Scene->m_player, audioListner);
             }
 
             // create camera
