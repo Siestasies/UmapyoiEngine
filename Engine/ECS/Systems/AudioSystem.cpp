@@ -1,6 +1,6 @@
 #include "AudioSystem.hpp"
 
-#include "../Components/Listener.h"
+#include "../Components/AudioListener.h"
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
 
@@ -16,7 +16,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c)
 
 void Uma_ECS::AudioSystem::Update(float dt)
 {
-    auto& listenerArray = pCoordinator->GetComponentArray<Listener>();
+    auto& listenerArray = pCoordinator->GetComponentArray<AudioListener>();
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 

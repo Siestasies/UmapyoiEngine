@@ -320,7 +320,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
 
         //test
-        m_Coordinator.RegisterComponent<Uma_ECS::Listener>();
+        m_Coordinator.RegisterComponent<Uma_ECS::AudioListener>();
         
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -397,7 +397,7 @@ namespace Uma_Engine
             Uma_ECS::Signature sign;
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
-            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Listener>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioListener>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
         }
         m_AudioSystem->Init(m_Sound, &m_Coordinator);
