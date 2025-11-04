@@ -60,14 +60,17 @@ namespace Uma_ECS
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
 
         // one camera for now
-        Entity camera = camArray.GetEntity(0);
-        auto& cam_tf = tfArray.GetData(camera);
-        auto& cam_c = camArray.GetData(camera);
-
-        // Only update graphics camera if not using editor camera
-        if (mUpdateCamera)
+        if (camArray.Size() > 0)
         {
-            pGraphics->SetCamInfo(cam_tf.position, 10.f);
+            Entity camera = camArray.GetEntity(0);
+            auto& cam_tf = tfArray.GetData(camera);
+            auto& cam_c = camArray.GetData(camera);
+
+            // Only update graphics camera if not using editor camera
+            if (mUpdateCamera)
+            {
+                pGraphics->SetCamInfo(cam_tf.position, 10.f);
+            }
         }
 
         // Structure to hold sprite info WITH layer information
