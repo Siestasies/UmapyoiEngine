@@ -21,6 +21,7 @@ All rights reserved.
 #include <filesystem>
 
 #include "Events/AudioEvents.h"
+#include "Events/IMGUIEvents.h"
 
 #include "Debugging/Debugger.hpp"
 
@@ -120,6 +121,27 @@ namespace Uma_Engine {
                 [this](const PlaySound3DEvent& e) {
                     FMOD_VECTOR position = { e.x,e.y };
                     playSound(pResourcesManager->GetSound(e.soundName), position, listenerVel, e.loop, e.volume, 1.f);
+                });
+
+            // subscribe to play maode changes events (TEMP SOLUTION)
+            pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest>(
+                [this](const Uma_Engine::PlaySceneRequest& e)
+                {
+                    // do nothing
+                    pauseAllSounds(false);
+                });
+
+            pEventSystem->Subscribe<Uma_Engine::PauseSceneRequest>(
+                [this](const Uma_Engine::PauseSceneRequest& e)
+                {
+                    // do nothing
+                    pauseAllSounds(true);
+                });
+
+            pEventSystem->Subscribe<Uma_Engine::StopSceneRequest>(
+                [this](const Uma_Engine::StopSceneRequest& e)
+                {
+                    stopAllSounds();
                 });
         }
         else
@@ -266,7 +288,7 @@ namespace Uma_Engine {
         info.pos = pos;
         info.vel = vel;
         FMOD_Channel_Set3DAttributes(info.channel, &info.pos, &info.vel);
-        FMOD_Channel_Set3DMinMaxDistance(info.channel, 1.0f, 1000.0f);
+        FMOD_Channel_Set3DMinMaxDistance(info.channel, 100.0f, 1000.0f);
 
         //add the channel to its respective group channel
         if (info.type == SoundType::SFX) {
