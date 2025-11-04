@@ -142,10 +142,7 @@ namespace Uma_Engine
     class SaveSceneRequestEvent : public Event
     {
     public:
-        SaveSceneRequestEvent(const std::string& filepath = "") : filepath(filepath) { priority = Priority::Normal; }
-
-    public:
-        std::string filepath;
+        SaveSceneRequestEvent() { priority = Priority::High; }
     };
 
     class LoadSceneRequestEvent : public Event
@@ -185,6 +182,14 @@ namespace Uma_Engine
     {
     public:
         CreateNewSceneRequest() { priority = Priority::High; }
+    };
+
+    class DeleteCurrSceneRequest : public Event
+    {
+    public:
+        DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    public:
+        std::string name;
     };
 
     class SceneInfoRequest : public Event

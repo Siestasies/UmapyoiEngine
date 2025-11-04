@@ -49,6 +49,12 @@ namespace Uma_Engine
             }
         );
 
+        eventSystem->Subscribe<DeleteCurrSceneRequest>(
+            [this](const DeleteCurrSceneRequest& e) {
+                RemoveScene(e.name);
+            }
+        );
+
         eventSystem->Subscribe<LoadSceneRequestEvent>(
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false); 
@@ -168,24 +174,9 @@ namespace Uma_Engine
         }
 
         // passing message using event system
-        std::vector<std::string> vec = GetAllSceneNames();
-        std::vector<std::string> vec2;
-        int no = 0;
-        int index = 0;
-        for (const auto& pair : m_Scenes)
-        {
-            //vec.push_back(pair.first);
-            vec2.push_back(pair.second->GetFilePath());
-            if (pair.second == m_ActiveScene)
-            {
-                index = no;
-            }
-            ++no;
-        }
-        EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
-        eventSystem->Emit<SceneInfoRequest>(vec, vec2, index);
+        UpdateIMGUIWindow();
 
-        std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
+        std::cout << "xxxxxxxxxxxxxxxxxxxxxxScene '" << name << "' loaded" << (additive ? " additively" : "") << "xxxxxxxxxxxxxxxxxxxxxx" << std::endl;
         return scene;
     }
 
@@ -258,11 +249,11 @@ namespace Uma_Engine
         }
 
         // Don't remove active scene
-        if (m_ActiveScene && m_ActiveScene->GetName() == name)
-        {
-            std::cout << "Cannot remove active scene '" << name << "'. Switch scenes first." << std::endl;
-            return;
-        }
+        //if (m_ActiveScene && m_ActiveScene->GetName() == name)
+        //{
+        //    std::cout << "Cannot remove active scene '" << name << "'. Switch scenes first." << std::endl;
+        //    return;
+        //}
 
         // Unload if loaded
         if (IsSceneLoaded(name))
@@ -273,6 +264,8 @@ namespace Uma_Engine
         // Remove from map
         m_Scenes.erase(name);
         std::cout << "Scene '" << name << "' removed" << std::endl;
+        LoadScene("GameScene1");
+        UpdateIMGUIWindow();
     }
 
     void SceneManager::UnloadAllScenes()
@@ -481,5 +474,25 @@ namespace Uma_Engine
                 }),
             m_LoadedScenes.end()
         );
+    }
+
+    void SceneManager::UpdateIMGUIWindow()
+    {
+        std::vector<std::string> vec = GetAllSceneNames();
+        std::vector<std::string> vec2;
+        int no = 0;
+        int index = 0;
+        for (const auto& pair : m_Scenes)
+        {
+            //vec.push_back(pair.first);
+            vec2.push_back(pair.second->GetFilePath());
+            if (pair.second == m_ActiveScene)
+            {
+                index = no;
+            }
+            ++no;
+        }
+        EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
+        eventSystem->Emit<SceneInfoRequest>(vec, vec2, index);
     }
 }

@@ -97,6 +97,7 @@ namespace Uma_Engine
     private:
         void UpdateLoadingScenes();
         void RemoveUnloadedScenes();
+        void UpdateIMGUIWindow();
 
         // Script factory type
         using ScriptFactory = std::function<std::shared_ptr<SceneScript>()>;

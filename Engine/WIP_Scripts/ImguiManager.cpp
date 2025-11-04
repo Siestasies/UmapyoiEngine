@@ -55,7 +55,7 @@ namespace Uma_Engine
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-        ImGui::StyleColorsDark();
+        ImGui::StyleColorsLight();
 
         // set font and font size
         float fontSize = 16.f;
@@ -229,13 +229,14 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<PauseSceneRequest>();
                 if (m_playState == PlayState::Playing)
                 {
+                    pEventSystem->Emit<PauseSceneRequest>();
                     m_playState = PlayState::Paused;
                 }
                 else if (m_playState == PlayState::Paused)
                 {
+                    pEventSystem->Emit<PlaySceneRequest>();
                     m_playState = PlayState::Playing;
                 }
             }
@@ -398,9 +399,13 @@ namespace Uma_Engine
     void ImguiManager::CreateSerializationDebugWindow()
     {
         bool b = true;
+        ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+        if (m_playState != PlayState::Stopped) {
+            flags |= ImGuiWindowFlags_NoInputs;
+        }
         //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
         //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
-        ImGui::Begin("Serialization Debug", &b);
+        ImGui::Begin("Serialization Debug", &b, flags);
 
         // get entity count here
         ImGui::Separator();
@@ -413,7 +418,7 @@ namespace Uma_Engine
         if (ImGui::Button("Save Scene", { 100, 50 }))
         {
             // save scene into this file
-            pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            pEventSystem->Emit<SaveSceneRequestEvent>();
         }
         if (ImGui::Button("Destroy All", { 100, 50 }))
         {
@@ -821,8 +826,9 @@ namespace Uma_Engine
         }
 
         // Button to delete the selected scene
-        if (ImGui::Button("Delete Selected Scene")) {
-            //DeleteSelectedScene();
+        if (ImGui::Button("Delete Current Scene"))
+        {
+             pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
         //list of loaded scenes

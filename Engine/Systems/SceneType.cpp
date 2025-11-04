@@ -254,7 +254,9 @@ namespace Uma_Engine
     void Scene::Deserialize(const std::string& filepath)
     {
         if (filepath.empty())
+        {
             gGameSerializer.load(m_FilePath);
+        }
     }
 
     // INTERNALS

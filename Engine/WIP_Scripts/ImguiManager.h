@@ -98,8 +98,6 @@ namespace Uma_Engine
             int activeSceneIndex;
             EventSystem* pEventSystem;
             FileBrowser fileBrowser;
-            //Entity m_selectedEntity;  // Assuming you have an Entity type
-            //std::vector<Entity> m_sceneEntities;  // Cache of all entities in scene
 
             // show or not
             bool m_showEngineDebug;
@@ -108,11 +106,11 @@ namespace Uma_Engine
             bool m_showPerformanceWindow;
             bool m_showSystemsWindow;
             bool m_showEditorControlBar;
-            PlayState m_playState = PlayState::Stopped;
 
             // values that need to keep track
             int mEntityCount;
             int windowWidth, windowHeight;
+            PlayState m_playState = PlayState::Stopped;
 
             // performance window vars
             float m_fpsHistory[120];

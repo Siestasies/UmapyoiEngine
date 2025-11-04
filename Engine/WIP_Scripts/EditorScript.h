@@ -225,6 +225,7 @@ namespace Uma_Engine
 
         void SaveScene()
         {
+            // SAVE to scene path that this script is attached to
             std::string filepath = m_CurrentSceneName;
 
             m_Scene->gGameSerializer.save(filepath);
