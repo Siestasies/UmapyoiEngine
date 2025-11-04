@@ -60,21 +60,24 @@ namespace Uma_Engine
             //GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
 
 
-            // Subscribe to editor events
+            //// Subscribe to editor events
             SubscribeToEvents();
 
-            /*CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
-                [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});*/
+            //CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
+            //    [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
         void OnUnload() override
         {
             std::cout << "EditorScript: OnUnload" << std::endl;
         
+            // unsub the events
+            UnsubscribeEvents();
         }
 
         void OnUpdate(float dt) override
         {
+            UNREFERENCED_PARAMETER(dt);
             HandleEditorInput();
         }
 
@@ -83,109 +86,145 @@ namespace Uma_Engine
 
         Entity m_Canvas{};
 
+        std::vector<std::shared_ptr<IEventListener>> m_EventListeners;
+
         void SubscribeToEvents()
         {
-            auto eventSystem = GetEvents();
+            auto eventSystem = GetEventSystem();
             auto& coordinator = GetCoordinator();
 
             // Query active entities
-            eventSystem->Subscribe<QueryActiveEntitiesEvent>(
-                [&coordinator](const QueryActiveEntitiesEvent& e) {
-                    e.mActiveEntityCnt = coordinator.GetEntityCount();
-                }
-            );
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<QueryActiveEntitiesEvent>(
+                    [&coordinator](const QueryActiveEntitiesEvent& e) {
+                        e.mActiveEntityCnt = coordinator.GetEntityCount();
+                    }
+                ));
 
             // Save scene
+            m_EventListeners.push_back(
             eventSystem->Subscribe<SaveSceneRequestEvent>(
                 [this](const SaveSceneRequestEvent& e) {
                     (void)e;
                     SaveScene();
                 }
-            );
+            ));
 
-            // Load scene
-            eventSystem->Subscribe<LoadSceneRequestEvent>(
-                [this](const LoadSceneRequestEvent& e) {
+            // Load scene from path (for new scenes)
+            //eventSystem->Subscribe<LoadSceneRequestEvent>(
+            //    [this](const LoadSceneRequestEvent& e) {
+            //        LoadScene(e.filepath);
+            //    }
+            //);
+
+            // reload the current scene
+            m_EventListeners.push_back(
+            eventSystem->Subscribe<ReLoadSceneRequestEvent>(
+                [this](const ReLoadSceneRequestEvent& e) {
                     (void)e;
-                    LoadScene();
+                    ReLoadScene();
                 }
-            );
+            ));
 
             // Clear scene
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ClearSceneRequestEvent>(
                 [this](const ClearSceneRequestEvent& e) {
                     (void)e;
                     ResetScene();
                 }
-            );
+            ));
 
             // Stress test
+            m_EventListeners.push_back(
             eventSystem->Subscribe<StressTestRequestEvent>(
                 [this](const StressTestRequestEvent& e) {
                     (void)e;
                     StressTest();
                 }
-            );
+            ));
 
             // Show default entities in viewport
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ShowEntityInVPRequestEvent>(
                 [this](const ShowEntityInVPRequestEvent& e) {
                     (void)e;
                     SpawnDefaultEntities();
                 }
-            );
+            ));
 
             // Change enemy rotation
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyRotRequestEvent>(
                 [this](const ChangeEnemyRotRequestEvent& e) {
                     ChangeAllEnemyRot(e.rot);
                 }
-            );
+            ));
 
             // Change enemy X position
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyXposRequestEvent>(
                 [this](const ChangeEnemyXposRequestEvent& e) {
                     ChangeAllEnemyXPos(e.xpos);
                 }
-            );
+            ));
 
             // Change enemy scale
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyScaleRequestEvent>(
                 [this](const ChangeEnemyScaleRequestEvent& e) {
                     ChangeAllEnemyScale(e.scale);
                 }
-            );
+            ));
 
             // Show bounding boxes
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ShowBBoxRequestEvent>(
                 [this](const ShowBBoxRequestEvent& e) {
                     ShowBBox(e.show);
                 }
-            );
+            ));
 
             // Clone entity
+            m_EventListeners.push_back(
             eventSystem->Subscribe<CloneEntityRequestEvent>(
                 [this](const CloneEntityRequestEvent& e) {
                     (void)e;
                     DuplicateOrCreateEntity();
                 }
-            );
+            ));
 
             // Load prefab
+            m_EventListeners.push_back(
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
                     LoadPrefab("bird");
                 }
-            );
+            ));
 
             // Destroy entity
+            m_EventListeners.push_back(
             eventSystem->Subscribe<DestroyEntityRequestEvent>(
                 [this](const DestroyEntityRequestEvent& e) {
                     (void)e;
                     DestroyRandomEntity();
                 }
-            );
+            ));
+        }
+
+        void UnsubscribeEvents()
+        {
+            auto eventSystem = GetEventSystem();
+
+            for (auto listener : m_EventListeners)
+            {
+                eventSystem->UnsubscribeListener(listener);
+            }
+
+            m_EventListeners.clear();
+
+            std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
         }
 
         void HandleEditorInput()
@@ -201,7 +240,7 @@ namespace Uma_Engine
             // Load from file
             if (input->KeyPressed(GLFW_KEY_2))
             {
-                LoadScene();
+                ReLoadScene();
             }
 
             // Reset scene
@@ -236,6 +275,7 @@ namespace Uma_Engine
 
         void SaveScene()
         {
+            // SAVE to scene path that this script is attached to
             std::string filepath = m_CurrentSceneName;
 
             m_Scene->gGameSerializer.save(filepath);
@@ -243,7 +283,16 @@ namespace Uma_Engine
             std::cout << "Scene saved to: " << filepath << std::endl;
         }
 
-        void LoadScene()
+        //void LoadScene(const std::string& filepath)
+        //{
+        //    GetCoordinator().DestroyAllEntities();
+
+        //    m_Scene->gGameSerializer.load(filepath);
+
+        //    std::cout << "Scene loaded from: " << filepath << std::endl;
+        //}
+
+        void ReLoadScene()
         {
             GetCoordinator().DestroyAllEntities();
 
@@ -445,12 +494,12 @@ namespace Uma_Engine
                 wallCollider.bounds.resize(wallCollider.shapes.size());
                 GetCoordinator().AddComponent(wall, wallCollider);
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
                 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.position = Vec2(20 + (i * 5), 0);
+                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), 0.f);
                 
                     Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
                     collider.shapes[0].autoFitToSprite = false;
@@ -467,13 +516,13 @@ namespace Uma_Engine
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
-                for (size_t i = 0; i < 8; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                    tf.position = Vec2(15 + (6 * 5), 0 + (i * 5));
+                    tf.position = Vec2(static_cast<float>(15 + (6 * 5)), static_cast<float>(0 + (i * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
@@ -482,13 +531,13 @@ namespace Uma_Engine
                     sr.texture = GetResources()->GetTexture(sr.textureName);
                 }
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                    tf.position = Vec2(20 + (i * 5), 15 + (4 * 5));
+                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(15 + (4 * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
@@ -533,15 +582,15 @@ namespace Uma_Engine
                       .texture = GetResources()->GetTexture(texName),
                     });
 
-                for (size_t i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    for (size_t j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; j++)
                     {
                         Entity tmp = GetCoordinator().DuplicateEntity(floor);
 
                         Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
 
-                        tf.position = Vec2(20 + (i * 5), 7.5 + (j * 10));
+                        tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(7.5 + (j * 10)) );
                     }
                 }
             }

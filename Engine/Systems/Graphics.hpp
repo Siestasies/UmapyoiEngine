@@ -38,13 +38,12 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
-    /*struct Character
+    struct DebugLineInfo
     {
-        GLuint textureID;
-        Vec2   size;
-        Vec2   bearing;
-        float  advance;
-    };*/
+        Vec2 start;
+        Vec2 end;
+        Vec3 color;
+    };
 
     /**
      * \struct Cam_Info
@@ -85,28 +84,23 @@ namespace Uma_Engine
         //mat4 mprojectionMatrix;
         Cam_Info cam;
 
-        // Rendering resources
+        // Rendering
         GLuint mVAO, mVBO;
         GLuint mShaderProgram;
 
-        // Instanced rendering resources
+        // Instanced rendering
         GLuint mInstanceVBO;
         GLuint mInstanceVAO;
         GLuint mInstanceShaderProgram;
-
         GLuint mInstanceUVVBO;
 
-        // TEXT RENDERING
-        /*struct FontData 
-        {
-            std::map<char, Character> characters;
-            GLuint VAO;
-            GLuint VBO;
-            unsigned int fontSize;
-        };*/
+        GLuint mDebugLineVAO;
+        GLuint mDebugLineVBO;
+        GLuint mDebugLineInstanceVBO;
+        GLuint mDebugLineColorVBO;
+        GLuint mDebugLineShaderProgram;
 
-        /*std::map<std::string, FontData> mFonts;
-        std::string mCurrentFont;*/
+        // Text rendering
         GLuint mTextShaderProgram;
 
         // Viewport size
@@ -115,6 +109,8 @@ namespace Uma_Engine
         // Helper functions
         bool InitializeTextRenderer();
         void ShutdownTextRenderer();
+        bool InitializeDebugRenderer();
+        void ShutdownDebugRenderer();
         GLuint CreateTextShader();
 
         /**
@@ -369,6 +365,12 @@ namespace Uma_Engine
          * \param b Blue component (0.0 to 1.0)
          */
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
+
+        void DrawDebugLinesInstanced(const std::vector<DebugLineInfo>& lines);
+        static void AddDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+        static void AddDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+        static void AddDebugCircle(const Vec2& center, float radius, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+        static void AddDebugPoint(const Vec2& position, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
 
         FontData LoadFontFromFile(const std::string& fontPath, unsigned int fontSize = 48);
         void UnloadFontData(FontData& fontData);

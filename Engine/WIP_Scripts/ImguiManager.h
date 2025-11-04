@@ -89,6 +89,7 @@ namespace Uma_Engine
         void InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport);
 
         // Window creation functions
+        void SceneManagerWindow();
         void CreateHierarchyWindow();
         void CreateInspectorWindow();
         void CreateEditorControlBar();
@@ -114,6 +115,9 @@ namespace Uma_Engine
         std::vector<std::string> logsVec;
         EventSystem* pEventSystem;
         FileBrowser fileBrowser;
+        std::vector<std::string> sceneNames;
+        std::vector<std::string> scenePaths;
+        int activeSceneIndex;
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;

@@ -59,6 +59,8 @@ namespace Uma_Engine
             script->OnUnload();
         }
 
+        gGameSerializer.ShutDown();
+
         m_LuaScriptingSystem->Shutdown();
 
         m_UISystem->Shutdown();
@@ -129,7 +131,7 @@ namespace Uma_Engine
         }
 
         // Calculate interpolation alpha
-        float alpha = m_Accumulator / m_FixedTimeStep;
+        //float alpha = m_Accumulator / m_FixedTimeStep;
 
         // Update render positions for smooth interpolation
        /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
@@ -257,7 +259,9 @@ namespace Uma_Engine
     void Scene::Deserialize(const std::string& filepath)
     {
         if (filepath.empty())
+        {
             gGameSerializer.load(m_FilePath);
+        }
     }
 
     // INTERNALS

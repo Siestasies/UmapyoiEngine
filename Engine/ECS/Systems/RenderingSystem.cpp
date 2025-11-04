@@ -64,7 +64,11 @@ namespace Uma_ECS
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 
-        pGraphics->SetCamInfo(cam_tf.position, 10);
+        // Only update graphics camera if not using editor camera
+        if (mUpdateCamera)
+        {
+            pGraphics->SetCamInfo(cam_tf.position, 10.f);
+        }
 
         // Structure to hold sprite info WITH layer information
         struct LayeredSprite

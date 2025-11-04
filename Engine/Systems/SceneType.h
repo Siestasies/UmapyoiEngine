@@ -205,7 +205,7 @@ namespace Uma_Engine
             virtual void OnDetach() {}
             virtual void OnLoad() {}
             virtual void OnUnload() {}
-            virtual void OnUpdate(float dt) {}
+            virtual void OnUpdate(float dt) { UNREFERENCED_PARAMETER(dt); }
 
             const std::string& GetName() const { return m_Name; }
 
@@ -220,9 +220,6 @@ namespace Uma_Engine
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
             Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
-            Uma_Engine::EventSystem* GetEvents() { return m_Scene->GetEventSystem(); }
-
-            //testing
-            //::audioSys * GetEvents() { return m_Scene->GetEventSystem(); }
+            Uma_Engine::EventSystem* GetEventSystem() { return m_Scene->GetEventSystem(); }
     };
 }

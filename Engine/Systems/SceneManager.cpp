@@ -5,6 +5,8 @@
 
 #include <algorithm>
 
+int Uma_Engine::SceneManager::sceneNo = 0;
+
 namespace Uma_Engine
 {
     // ISYSTEM OVERRIDES
@@ -16,24 +18,55 @@ namespace Uma_Engine
 
         playMode = PLAYMODE::PM_STOP;
 
+        // Initialize editor camera
+        m_EditorCamera.SetPosition(Vec2(0.0f, 0.0f));
+        m_EditorCamera.SetZoom(10.0f);
+        m_EditorCamera.SetPanSpeed(500.0f);
+        m_EditorCamera.SetZoomSpeed(1.0f);
+        m_EditorCamera.SetZoomLimits(0.1f, 20.0f);
+        m_EditorCamera.SetActive(false);
+        m_UseEditorCamera = false;
+
         // sub to events
         EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
 
         eventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
 
         eventSystem->Subscribe<PauseSceneRequest>(
             [&](const PauseSceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_PAUSE;
             }
         );
 
         eventSystem->Subscribe<StopSceneRequest>(
             [&](const StopSceneRequest& e) {
+                (void)e;
                 playMode = PLAYMODE::PM_STOP;
+            }
+        );
+
+        eventSystem->Subscribe<CreateNewSceneRequest>(
+            [this](const CreateNewSceneRequest& e) {
+                (void)e;
+                CreateNewScene(); 
+            }
+        );
+
+        eventSystem->Subscribe<DeleteCurrSceneRequest>(
+            [this](const DeleteCurrSceneRequest& e) {
+                RemoveScene(e.name);
+            }
+        );
+
+        eventSystem->Subscribe<LoadSceneRequestEvent>(
+            [this](const LoadSceneRequestEvent& e) {
+                LoadScene(e.name, false); 
             }
         );
     }
@@ -46,6 +79,61 @@ namespace Uma_Engine
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
+            // Auto-switch camera based on play mode
+            if (playMode == PLAYMODE::PM_STOP || playMode == PLAYMODE::PM_PAUSE)
+            {
+                // Use editor camera when stopped or paused
+                if (!m_UseEditorCamera)
+                {
+                    m_UseEditorCamera = true;
+                    m_EditorCamera.SetActive(true);
+
+                    // Tell RenderingSystem to not override camera
+                    if (m_ActiveScene->m_RenderingSystem)
+                    {
+                        m_ActiveScene->m_RenderingSystem->SetUpdateCamera(false);
+                    }
+
+                    std::cout << "Switched to editor camera" << std::endl;
+                }
+            }
+            else
+            {
+                // Use game camera when playing
+                if (m_UseEditorCamera)
+                {
+                    m_UseEditorCamera = false;
+                    m_EditorCamera.SetActive(false);
+
+                    // Tell RenderingSystem to update camera
+                    if (m_ActiveScene->m_RenderingSystem)
+                    {
+                        m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
+                    }
+
+                    std::cout << "Switched to game camera" << std::endl;
+                }
+            }
+
+            // Update editor camera if active
+            if (m_UseEditorCamera)
+            {
+                // Get input and graphics from scene
+                auto* input = m_ActiveScene->GetInputSystem();
+                auto* graphics = m_ActiveScene->GetGraphics();
+
+                if (input)
+                {
+                    m_EditorCamera.Update(input, dt);
+
+                    // Update graphics system with editor camera
+                    if (graphics)
+                    {
+                        graphics->SetCamInfo(m_EditorCamera.GetPosition(), m_EditorCamera.GetZoom());
+                    }
+                }
+            }
+
             if (playMode == PLAYMODE::PM_PLAY)
             {
                 m_ActiveScene->Update(dt);
@@ -57,11 +145,9 @@ namespace Uma_Engine
             else
             {
                 // things that need to be constantly updated no matter what
-                // shoudlnt affect game stop?
+                // shouldn't affect game stop?
                 m_ActiveScene->UpdateSelective(0.f);
             }
-
-
         }
 
         // Update all loaded scenes if using additive loading
@@ -87,6 +173,15 @@ namespace Uma_Engine
     }
 
     // SCENE MANAGEMENT STUFF
+    void SceneManager::CreateNewScene()
+    {
+        std::string name = "Scene" + std::to_string(sceneNo);
+        ++sceneNo;
+        CreateScene(name, "test_default.scn");
+        AttachScriptToScene(name, "EditorBehaviour");
+        LoadScene(name);
+    }
+
     std::shared_ptr<Scene> SceneManager::CreateScene(const std::string& name, const std::string& filepath)
     {
         // Check if scene already exists
@@ -140,7 +235,10 @@ namespace Uma_Engine
             m_ActiveScene = scene;
         }
 
-        std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
+        // passing message using event system
+        UpdateIMGUIWindow();
+
+        std::cout << "xxxxxxxxxxxxxxxxxxxxxxScene '" << name << "' loaded" << (additive ? " additively" : "") << "xxxxxxxxxxxxxxxxxxxxxx" << std::endl;
         return scene;
     }
 
@@ -213,11 +311,11 @@ namespace Uma_Engine
         }
 
         // Don't remove active scene
-        if (m_ActiveScene && m_ActiveScene->GetName() == name)
-        {
-            std::cout << "Cannot remove active scene '" << name << "'. Switch scenes first." << std::endl;
-            return;
-        }
+        //if (m_ActiveScene && m_ActiveScene->GetName() == name)
+        //{
+        //    std::cout << "Cannot remove active scene '" << name << "'. Switch scenes first." << std::endl;
+        //    return;
+        //}
 
         // Unload if loaded
         if (IsSceneLoaded(name))
@@ -228,6 +326,8 @@ namespace Uma_Engine
         // Remove from map
         m_Scenes.erase(name);
         std::cout << "Scene '" << name << "' removed" << std::endl;
+        LoadScene("GameScene1");
+        UpdateIMGUIWindow();
     }
 
     void SceneManager::UnloadAllScenes()
@@ -436,5 +536,25 @@ namespace Uma_Engine
                 }),
             m_LoadedScenes.end()
         );
+    }
+
+    void SceneManager::UpdateIMGUIWindow()
+    {
+        std::vector<std::string> vec = GetAllSceneNames();
+        std::vector<std::string> vec2;
+        int no = 0;
+        int index = 0;
+        for (const auto& pair : m_Scenes)
+        {
+            //vec.push_back(pair.first);
+            vec2.push_back(pair.second->GetFilePath());
+            if (pair.second == m_ActiveScene)
+            {
+                index = no;
+            }
+            ++no;
+        }
+        EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
+        eventSystem->Emit<SceneInfoRequest>(vec, vec2, index);
     }
 }

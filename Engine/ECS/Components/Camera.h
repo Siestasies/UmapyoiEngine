@@ -27,7 +27,7 @@ namespace Uma_ECS
 {
     struct Camera
     {
-        float mZoom{}; // default to 1.0f
+        float mZoom{10.f}; // default to 10.0f
         bool followPlayer{};
         //float viewportWidth;
         //float viewportHeight;
