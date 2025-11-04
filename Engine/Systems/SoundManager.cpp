@@ -96,9 +96,7 @@ namespace Uma_Engine {
             pEventSystem->Subscribe<Uma_Engine::PlaySoundEvent>(
                 [this](const PlaySoundEvent& e)
                 {
-                    //playSound(pResourcesManager->GetSound(e.soundName), e.loop, e.volume, 1.f);
-                    FMOD_VECTOR position = {};
-                    playSound(pResourcesManager->GetSound(e.soundName), position, listenerVel, e.loop, e.volume, 1.f);
+                    playSound(pResourcesManager->GetSound(e.soundName), e.loop, e.volume, 1.f);
                 });
 
             pEventSystem->Subscribe<Uma_Engine::StopSoundEvent>(
@@ -117,6 +115,11 @@ namespace Uma_Engine {
                 [this](const StopMusicEvent& e)
                 {
                     stopSound(pResourcesManager->GetSound(e.musicName));
+                });
+            pEventSystem->Subscribe<Uma_Engine::PlaySound3DEvent>(
+                [this](const PlaySound3DEvent& e) {
+                    FMOD_VECTOR position = { e.x,e.y };
+                    playSound(pResourcesManager->GetSound(e.soundName), position, listenerVel, e.loop, e.volume, 1.f);
                 });
         }
         else
