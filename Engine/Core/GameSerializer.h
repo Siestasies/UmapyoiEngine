@@ -161,5 +161,10 @@ namespace Uma_Engine
 
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
+
+        void ShutDown()
+        {
+            serializers.clear();
+        }
     };
 }

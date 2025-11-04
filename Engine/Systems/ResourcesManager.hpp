@@ -37,7 +37,7 @@ namespace Uma_Engine
 {
     class Graphics;
 
-    class Sound;
+    class SoundManager;
 
     class ResourcesManager : public ISystem, public ISerializer
     {
@@ -83,7 +83,7 @@ namespace Uma_Engine
         Graphics* mGraphics = nullptr;
 
         std::unordered_map<std::string, SoundInfo> mSoundList{};
-        Sound* mSound = nullptr;
+        SoundManager* mSound = nullptr;
 
         std::unordered_map<std::string, FontData> mFonts{};
     };

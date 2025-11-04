@@ -38,6 +38,7 @@ namespace Uma_Engine
 
         void OnUpdate(float dt) override
         {
+            UNREFERENCED_PARAMETER(dt);
         }
 
     private:

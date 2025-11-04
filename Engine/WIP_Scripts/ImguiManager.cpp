@@ -57,7 +57,7 @@ namespace Uma_Engine
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-        ImGui::StyleColorsDark();
+        ImGui::StyleColorsLight();
 
         // set font and font size
         float fontSize = 16.f;
@@ -74,12 +74,11 @@ namespace Uma_Engine
 
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
-
         pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-
         pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
-
+        pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
+            { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         m_initialized = true;
     }
 
@@ -115,6 +114,8 @@ namespace Uma_Engine
 
         // play stop bar
         CreateEditorControlBar();
+
+        SceneManagerWindow();
 
         // call for windows to be shown
         float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
@@ -233,13 +234,14 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<PauseSceneRequest>();
                 if (m_playState == PlayState::Playing)
                 {
+                    pEventSystem->Emit<PauseSceneRequest>();
                     m_playState = PlayState::Paused;
                 }
                 else if (m_playState == PlayState::Paused)
                 {
+                    pEventSystem->Emit<PlaySceneRequest>();
                     m_playState = PlayState::Playing;
                 }
             }
@@ -256,7 +258,7 @@ namespace Uma_Engine
             {
                 pEventSystem->Emit<StopSceneRequest>();
                 m_playState = PlayState::Stopped;
-                pEventSystem->Emit<LoadSceneRequestEvent>("random string");
+                pEventSystem->Emit<ReLoadSceneRequestEvent>();
             }
 
             // Show current state text on the right
@@ -396,7 +398,14 @@ namespace Uma_Engine
     void ImguiManager::CreateSerializationDebugWindow()
     {
         bool b = true;
-        ImGui::Begin("Serialization Debug", &b);
+        ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+        if (m_playState != PlayState::Stopped) {
+            flags |= ImGuiWindowFlags_NoInputs;
+        }
+        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
+        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
+        ImGui::Begin("Serialization Debug", &b, flags);
+        //ImGui::Begin("Serialization Debug", &b);
 
         // get entity count here
         ImGui::Separator();
@@ -404,12 +413,12 @@ namespace Uma_Engine
         if (ImGui::Button("Load Scene", { 100, 50 }))
         {
             // load scene from this file
-            pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            //pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
         }
         if (ImGui::Button("Save Scene", { 100, 50 }))
         {
             // save scene into this file
-            pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            pEventSystem->Emit<SaveSceneRequestEvent>();
         }
         if (ImGui::Button("Destroy All", { 100, 50 }))
         {
@@ -586,8 +595,8 @@ namespace Uma_Engine
                     }
                 }
             }
-            if (!has_layout);
-            InitDockspace(ds_id, viewport);
+            if (!has_layout)
+                InitDockspace(ds_id, viewport);
         }
 
         ImGui::End();
@@ -971,6 +980,47 @@ namespace Uma_Engine
 
             ImGui::EndPopup();
         }
+        ImGui::End();
+    }
+
+    void ImguiManager::SceneManagerWindow() {
+        ImGui::Begin("Scene Manager");
+
+        // Button to create a new scene
+        if (ImGui::Button("Create New Scene")) {
+            pEventSystem->Emit<CreateNewSceneRequest>();
+        }
+
+        // Button to delete the selected scene
+        if (ImGui::Button("Delete Current Scene"))
+        {
+             pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+        }
+
+        //list of loaded scenes
+        ImGui::BeginChild("SceneList", ImVec2(0, 200), true);
+        int selectedSceneIndex = -1;
+        for (int i = 0; i < sceneNames.size(); i++)
+        {
+            bool isSelected = (selectedSceneIndex == i);
+            bool isActive = (i == activeSceneIndex);
+
+            std::string extra = (isActive ? " (Active)" : "");
+            std::string sceneLabel = sceneNames[i] + extra;
+
+            if (ImGui::Selectable(sceneLabel.c_str(), isSelected))
+            {
+                selectedSceneIndex = i;
+            }
+
+            // detect double click
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+            {
+                pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
+            }
+        }
+        ImGui::EndChild();
+
         ImGui::End();
     }
 }

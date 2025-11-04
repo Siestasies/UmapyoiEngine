@@ -8,8 +8,6 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
-#include "Events/CollisionEvent.h"
-
 #include <functional>
 
 namespace Uma_ECS
@@ -40,7 +38,7 @@ namespace Uma_ECS
 
         RegisterLuaAPI();
 
-        RegisterEventListeners();
+        SubscribeToEvents();
     }
 
     void LuaScriptingSystem::Restart()
@@ -156,6 +154,8 @@ namespace Uma_ECS
             sharedLua = nullptr;
             return;
         }
+
+        UnsubscribeEvents();
 
         // Check if Lua is valid
         bool luaValid = sharedLua && sharedLua->lua_state();
@@ -660,6 +660,23 @@ namespace Uma_ECS
         sharedLua->set_function("GetDeltaTime", [this]() {
             return lastDeltaTime; // Store in class
             });
+
+        // play audio
+        sharedLua->set_function("PlaySound", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopSound", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopSoundEvent>(audioName);
+            });
+
+        sharedLua->set_function("PlayMusic", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlayMusicEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopMusic", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopMusicEvent>(audioName);
+            });
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
@@ -734,43 +751,61 @@ namespace Uma_ECS
            "Lua script loaded: " + script.scriptPath);
     }
 
-    void LuaScriptingSystem::RegisterEventListeners()
+    void LuaScriptingSystem::UnsubscribeEvents()
     {
+        for (auto listener : aEventListeners)
+        {
+            pEventSystem->UnsubscribeListener(listener);
+        }
+
+        aEventListeners.clear();
+
+        std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
+    }
+
+    void LuaScriptingSystem::SubscribeToEvents()
+    {
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent>(
             [this](const Uma_Engine::OnCollisionEnterEvent& e)
             {
                 OnCollisionEnterEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent>(
             [this](const Uma_Engine::OnCollisionEvent& e)
             {
                 OnCollisionEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent>(
             [this](const Uma_Engine::OnCollisionExitEvent& e)
             {
                 OnCollisionExitEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent>(
             [this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
                 OnTriggerEnterEvent(e.trigger, e.entity);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent>(
             [this](const Uma_Engine::OnTriggerEvent& e)
             {
                 OnTriggerEvent(e.trigger, e.entity);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent>(
             [this](const Uma_Engine::OnTriggerExitEvent& e)
             {
                 OnTriggerExitEvent(e.trigger, e.entity);
-            });
+            }));
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
@@ -784,6 +819,7 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::OnCollisionEnterEvent(Entity entityA, Entity entityB)
     {
+        pCoordinator->GetSerializerName();
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
         // Notify both entities
