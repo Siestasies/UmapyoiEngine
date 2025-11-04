@@ -574,6 +574,9 @@ void Uma_ECS::CollisionSystem::DebugRender()
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& sArray = pCoordinator->GetComponentArray<Sprite>();
 
+    // Container to collect all debug lines
+    std::vector<Uma_Engine::DebugLineInfo> debug_lines;
+
     for (const auto& entity : aEntities)
     {
         if (!cArray.Has(entity)) continue;
@@ -599,8 +602,9 @@ void Uma_ECS::CollisionSystem::DebugRender()
             const auto& shape = c.shapes[i];
             if (!shape.isActive) continue;
 
-            // Recalculate bounds using interpolated renderPos for smooth visualization
+            // Calculate bounds using current position
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
+
             Vec2 scaledSize = Vec2{
                 effectiveSize.x * tf.scale.x,
                 effectiveSize.y * tf.scale.y
@@ -614,7 +618,10 @@ void Uma_ECS::CollisionSystem::DebugRender()
             Vec2 halfSize = scaledSize * 0.5f;
 
             // Use renderPos (interpolated) instead of position
-            Vec2 renderWorldPos = tf.prevWorldPos + worldOffset;
+            //Vec2 renderWorldPos = tf.prevWorldPos + worldOffset;
+
+            // Use current position
+            Vec2 renderWorldPos = tf.worldPosition + worldOffset;
 
             // Calculate bounds for visualization
             BoundingBox visualBounds;
@@ -663,9 +670,15 @@ void Uma_ECS::CollisionSystem::DebugRender()
                 }
             }
 
-            // Draw render bounds with full opacity
-            pGraphics->DrawDebugRect(visualBounds, r, g, b);
+            // Add rectangle to batch render
+            Uma_Engine::Graphics::AddDebugRect(visualBounds, r, g, b, debug_lines);
         }
+    }
+
+    // Draw all debug lines in one call
+    if (!debug_lines.empty())
+    {
+        pGraphics->DrawDebugLinesInstanced(debug_lines);
     }
 }
 

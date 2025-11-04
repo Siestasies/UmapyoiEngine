@@ -18,6 +18,15 @@ namespace Uma_Engine
 
         playMode = PLAYMODE::PM_STOP;
 
+        // Initialize editor camera
+        m_EditorCamera.SetPosition(Vec2(0.0f, 0.0f));
+        m_EditorCamera.SetZoom(10.0f);
+        m_EditorCamera.SetPanSpeed(500.0f);
+        m_EditorCamera.SetZoomSpeed(1.0f);
+        m_EditorCamera.SetZoomLimits(0.1f, 20.0f);
+        m_EditorCamera.SetActive(false);
+        m_UseEditorCamera = false;
+
         // sub to events
         EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
 
@@ -70,6 +79,61 @@ namespace Uma_Engine
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
+            // Auto-switch camera based on play mode
+            if (playMode == PLAYMODE::PM_STOP || playMode == PLAYMODE::PM_PAUSE)
+            {
+                // Use editor camera when stopped or paused
+                if (!m_UseEditorCamera)
+                {
+                    m_UseEditorCamera = true;
+                    m_EditorCamera.SetActive(true);
+
+                    // Tell RenderingSystem to not override camera
+                    if (m_ActiveScene->m_RenderingSystem)
+                    {
+                        m_ActiveScene->m_RenderingSystem->SetUpdateCamera(false);
+                    }
+
+                    std::cout << "Switched to editor camera" << std::endl;
+                }
+            }
+            else
+            {
+                // Use game camera when playing
+                if (m_UseEditorCamera)
+                {
+                    m_UseEditorCamera = false;
+                    m_EditorCamera.SetActive(false);
+
+                    // Tell RenderingSystem to update camera
+                    if (m_ActiveScene->m_RenderingSystem)
+                    {
+                        m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
+                    }
+
+                    std::cout << "Switched to game camera" << std::endl;
+                }
+            }
+
+            // Update editor camera if active
+            if (m_UseEditorCamera)
+            {
+                // Get input and graphics from scene
+                auto* input = m_ActiveScene->GetInputSystem();
+                auto* graphics = m_ActiveScene->GetGraphics();
+
+                if (input)
+                {
+                    m_EditorCamera.Update(input, dt);
+
+                    // Update graphics system with editor camera
+                    if (graphics)
+                    {
+                        graphics->SetCamInfo(m_EditorCamera.GetPosition(), m_EditorCamera.GetZoom());
+                    }
+                }
+            }
+
             if (playMode == PLAYMODE::PM_PLAY)
             {
                 m_ActiveScene->Update(dt);
@@ -81,11 +145,9 @@ namespace Uma_Engine
             else
             {
                 // things that need to be constantly updated no matter what
-                // shoudlnt affect game stop?
+                // shouldn't affect game stop?
                 m_ActiveScene->UpdateSelective(0.f);
             }
-
-
         }
 
         // Update all loaded scenes if using additive loading

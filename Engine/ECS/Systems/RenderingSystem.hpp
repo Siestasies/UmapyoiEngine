@@ -37,10 +37,14 @@ namespace Uma_ECS
 
         void Update(float dt);
 
+        void SetUpdateCamera(bool update) { mUpdateCamera = update; }
+
     private:
 
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
+
+        bool mUpdateCamera = true;
     };
 }

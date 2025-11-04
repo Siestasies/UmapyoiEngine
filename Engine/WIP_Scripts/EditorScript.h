@@ -60,11 +60,11 @@ namespace Uma_Engine
             //GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
 
 
-            // Subscribe to editor events
+            //// Subscribe to editor events
             SubscribeToEvents();
 
-            /*CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
-                [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});*/
+            //CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
+            //    [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
         void OnUnload() override

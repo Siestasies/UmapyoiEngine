@@ -1,0 +1,90 @@
+#include "EditorCamera.h"
+#include "Systems/HybridInputSystem.h"
+#include <GLFW/glfw3.h>
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+
+namespace Uma_Engine
+{
+    void EditorCamera::Update(HybridInputSystem* input, float dt)
+    {
+        if (!input || !m_IsActive) return;
+
+        // WASD for panning
+        Vec2 movement(0, 0);
+        if (input->KeyDown(GLFW_KEY_W)) movement.y += 1;
+        if (input->KeyDown(GLFW_KEY_S)) movement.y -= 1;
+        if (input->KeyDown(GLFW_KEY_A)) movement.x -= 1;
+        if (input->KeyDown(GLFW_KEY_D)) movement.x += 1;
+
+        // Speed boost with shift
+        float currentSpeed = m_PanSpeed;
+        if (input->KeyDown(GLFW_KEY_LEFT_SHIFT))
+        {
+            currentSpeed *= 2.0f;
+        }
+
+        // Apply movement
+        if (movement.x != 0 || movement.y != 0)
+        {
+            float length = std::sqrt(movement.x * movement.x + movement.y * movement.y);
+            if (length > 0)
+            {
+                movement.x /= length;
+                movement.y /= length;
+            }
+
+            m_Position += movement * currentSpeed * dt / m_Zoom;
+        }
+
+        // Store previous mouse position for delta calculation
+        static double prevMouseX = 0;
+        static double prevMouseY = 0;
+
+        double mouseX = input->GetMouseX();
+        double mouseY = input->GetMouseY();
+
+        // Middle mouse button drag to pan
+        if (input->MouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE))
+        {
+            double deltaX = mouseX - prevMouseX;
+            double deltaY = mouseY - prevMouseY;
+
+            m_Position.x -= static_cast<float>(deltaX) / m_Zoom;
+            m_Position.y += static_cast<float>(deltaY) / m_Zoom;
+        }
+
+        // Update previous mouse position
+        prevMouseX = mouseX;
+        prevMouseY = mouseY;
+
+        // Reset camera with R key
+        if (input->KeyPressed(GLFW_KEY_R))
+        {
+            Reset();
+            std::cout << "[EditorCamera] Reset to origin" << std::endl;
+        }
+
+        // Q to zoom out, E to zoom in
+        if (input->KeyDown(GLFW_KEY_Q))
+        {
+            SetZoom(m_Zoom - m_ZoomSpeed * 5.0f * dt);
+        }
+        if (input->KeyDown(GLFW_KEY_E))
+        {
+            SetZoom(m_Zoom + m_ZoomSpeed * 5.0f * dt);
+        }
+    }
+
+    void EditorCamera::Reset()
+    {
+        m_Position = Vec2(0.0f, 0.0f);
+        m_Zoom = 10.0f;
+    }
+
+    void EditorCamera::SetZoom(float zoom)
+    {
+        m_Zoom = std::clamp(zoom, m_MinZoom, m_MaxZoom);
+    }
+}
