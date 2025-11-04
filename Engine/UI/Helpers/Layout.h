@@ -73,6 +73,16 @@ namespace Uma_UI
     }
 
     /**
+     * \brief Get screen-space rect (full screen in NDC)
+     * \return NDC rect covering entire screen centered at origin
+     */
+    inline Rect GetScreenRect()
+    {
+        // FIXED: Center at (0,0), size (2.0, 2.0) covers [-1,1] in both axes
+        return Rect(0.0f, 0.0f, 2.0f, 2.0f);
+    }
+
+    /**
      * \brief Compute final NDC rect from RectTransform + parent rect + canvas scale
      * \param rectTransform RectTransform to compute
      * \param parentRect Parent's computed NDC rect (or screen rect if root)
@@ -88,16 +98,15 @@ namespace Uma_UI
         float screenWidth,
         float screenHeight)
     {
-        // 1. Compute anchor positions in parent space (NDC)
+        // 1. Get parent bounds in NDC
         float parentLeft = parentRect.Left();
         float parentRight = parentRect.Right();
         float parentBottom = parentRect.Bottom();
         float parentTop = parentRect.Top();
-
         float parentWidth = parentRect.width;
         float parentHeight = parentRect.height;
 
-        // Anchor corners in parent's NDC space
+        // 2. Compute anchor positions in parent's NDC space
         Vec2 anchorMinNDC(
             parentLeft + rectTransform.anchorMin.x * parentWidth,
             parentBottom + rectTransform.anchorMin.y * parentHeight
@@ -108,73 +117,71 @@ namespace Uma_UI
             parentBottom + rectTransform.anchorMax.y * parentHeight
         );
 
-        // 2. Compute size in pixels (scaled by canvas)
+        // 3. Convert sizeDelta from pixels to NDC
         Vec2 sizePixels = rectTransform.sizeDelta * canvasScale;
+        Vec2 sizeNDC = PixelSizeToNDC(sizePixels, screenWidth, screenHeight);
 
-        // If stretching, size is determined by anchor distance + offset
+        // 4. Convert anchoredPosition from pixels to NDC
+        Vec2 anchoredPosPixels = rectTransform.anchoredPosition * canvasScale;
+        // FIXED: Convert offset correctly - it's a relative offset, not absolute position
+        Vec2 anchoredPosNDC = PixelSizeToNDC(anchoredPosPixels, screenWidth, screenHeight);
+
+        // 5. Compute final rect based on anchor mode
         float finalWidthNDC;
         float finalHeightNDC;
+        float finalCenterX;
+        float finalCenterY;
 
+        // Horizontal computation
         if (rectTransform.IsStretchingHorizontal())
         {
-            // Width = distance between anchors + left/right offsets
-            finalWidthNDC = (anchorMaxNDC.x - anchorMinNDC.x) +
-                PixelSizeToNDC(Vec2(sizePixels.x, 0.0f), screenWidth, screenHeight).x;
+            // Stretching: width = distance between anchors + sizeDelta offsets
+            float anchorSpanNDC = anchorMaxNDC.x - anchorMinNDC.x;
+            finalWidthNDC = anchorSpanNDC + sizeNDC.x;
+            // Center between anchors plus offset
+            finalCenterX = (anchorMinNDC.x + anchorMaxNDC.x) * 0.5f + anchoredPosNDC.x;
         }
         else
         {
-            // Fixed width
-            finalWidthNDC = PixelSizeToNDC(Vec2(sizePixels.x, 0.0f), screenWidth, screenHeight).x;
+            // Not stretching: fixed width from sizeDelta
+            finalWidthNDC = sizeNDC.x;
+            // Position at anchor point plus offset, adjusted by pivot
+            float anchorX = anchorMinNDC.x;  // anchorMin == anchorMax when not stretching
+            finalCenterX = anchorX + anchoredPosNDC.x + finalWidthNDC * (0.5f - rectTransform.pivot.x);
         }
 
+        // Vertical computation
         if (rectTransform.IsStretchingVertical())
         {
-            // Height = distance between anchors + bottom/top offsets
-            finalHeightNDC = (anchorMaxNDC.y - anchorMinNDC.y) +
-                PixelSizeToNDC(Vec2(0.0f, sizePixels.y), screenWidth, screenHeight).y;
+            // Stretching: height = distance between anchors + sizeDelta offsets
+            float anchorSpanNDC = anchorMaxNDC.y - anchorMinNDC.y;
+            finalHeightNDC = anchorSpanNDC + sizeNDC.y;
+            // Center between anchors plus offset
+            finalCenterY = (anchorMinNDC.y + anchorMaxNDC.y) * 0.5f + anchoredPosNDC.y;
         }
         else
         {
-            // Fixed height
-            finalHeightNDC = PixelSizeToNDC(Vec2(0.0f, sizePixels.y), screenWidth, screenHeight).y;
+            // Not stretching: fixed height from sizeDelta
+            finalHeightNDC = sizeNDC.y;
+            // Position at anchor point plus offset, adjusted by pivot
+            float anchorY = anchorMinNDC.y;  // anchorMin == anchorMax when not stretching
+            finalCenterY = anchorY + anchoredPosNDC.y + finalHeightNDC * (0.5f - rectTransform.pivot.y);
         }
 
-        // 3. Compute center based on anchored position and pivot
-        Vec2 anchorCenterNDC(
-            (anchorMinNDC.x + anchorMaxNDC.x) * 0.5f,
-            (anchorMinNDC.y + anchorMaxNDC.y) * 0.5f
-        );
-
-        Vec2 offsetNDC = PixelToNDC(
-            rectTransform.anchoredPosition * canvasScale,
-            screenWidth,
-            screenHeight
-        ) - Vec2(0.0f, 0.0f); // Offset from origin
-
-        // Adjust for pivot
-        Vec2 pivotOffsetNDC(
-            (0.5f - rectTransform.pivot.x) * finalWidthNDC,
-            (0.5f - rectTransform.pivot.y) * finalHeightNDC
-        );
-
-        Vec2 centerNDC = anchorCenterNDC + offsetNDC + pivotOffsetNDC;
-
-        // 4. Return final rect
-        Rect result;
-        result.x = centerNDC.x;
-        result.y = centerNDC.y;
-        result.width = finalWidthNDC;
-        result.height = finalHeightNDC;
-
-        return result;
+        // 6. Return final rect with center and size
+        return Rect(finalCenterX, finalCenterY, finalWidthNDC, finalHeightNDC);
     }
 
     /**
-     * \brief Get screen-space rect (full screen in NDC)
-     * \return NDC rect covering entire screen
+     * \brief Convert NDC position to screen pixels
+     * \param ndcX X position in NDC
+     * \param ndcY Y position in NDC
+     * \param screenWidth Screen width in pixels
+     * \param screenHeight Screen height in pixels
+     * \return Position in pixel space
      */
-    inline Rect GetScreenRect()
+    inline Vec2 NDCToScreen(float ndcX, float ndcY, float screenWidth, float screenHeight)
     {
-        return Rect(0.0f, 0.0f, 2.0f, 2.0f);  // [-1,1] in both axes
+        return NDCToPixel(Vec2(ndcX, ndcY), screenWidth, screenHeight);
     }
 }

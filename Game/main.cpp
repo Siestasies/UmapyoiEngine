@@ -19,7 +19,7 @@
 #include "Core/SystemManager.h"
 #include "Core/EventSystem.h"
 #include "Systems/ResourcesManager.hpp"
-#include "Systems/Sound.hpp"
+#include "Systems/SoundManager.hpp"
 #include "Systems/HybridInputSystem.h"
 
 #include "WIP_Scripts/Test_Graphics.h"
@@ -86,7 +86,7 @@ int main()
     // Register your other systems normally
     systemManager.RegisterSystem<Uma_Engine::Debugger>();
     systemManager.RegisterSystem<Uma_Engine::Graphics>();
-    systemManager.RegisterSystem<Uma_Engine::Sound>();
+    systemManager.RegisterSystem<Uma_Engine::SoundManager>();
     systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
 
     // scene

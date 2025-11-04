@@ -1,4 +1,5 @@
 #include "ImguiManager.h"
+#include "SceneManager.h"  // Include here in .cpp instead of .h
 
 //#include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -10,7 +11,7 @@
 
 namespace Uma_Engine
 {
-	ImguiManager::ImguiManager()
+    ImguiManager::ImguiManager()
         : m_initialized(false)
         , ds_initialized(false)
         , m_window(nullptr)
@@ -24,6 +25,7 @@ namespace Uma_Engine
         , mEntityCount(0)
         , windowWidth(1920)
         , windowHeight(1080)
+        , m_selectedEntity(static_cast<Uma_ECS::Entity>(-1))
     {
         // init array
         for (int i = 0; i < 120; ++i)
@@ -318,8 +320,6 @@ namespace Uma_Engine
         {
             return;
         }
-        //ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.25f), ImGuiCond_Once);
         ImGui::Begin("Systems Monitor", &m_showSystemsWindow);
 
         if (pSystemManager)
@@ -353,8 +353,6 @@ namespace Uma_Engine
             return;
         }
 
-        //ImGui::SetNextWindowPos(ImVec2(0, windowHeight * 0.25f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.2f), ImGuiCond_Once);
         ImGui::Begin("Performance Monitor", &m_showPerformanceWindow);
 
         // FPS graph
@@ -373,8 +371,6 @@ namespace Uma_Engine
             return;
         }
 
-        //ImGui::SetNextWindowPos(ImVec2(0.f, windowHeight * 0.45f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.2f, windowHeight * 0.225f), ImGuiCond_Once);
         ImGui::Begin("Engine Debug", &m_showEngineDebug);
 
         // some stats
@@ -406,6 +402,7 @@ namespace Uma_Engine
         //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
         //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
         ImGui::Begin("Serialization Debug", &b, flags);
+        //ImGui::Begin("Serialization Debug", &b);
 
         // get entity count here
         ImGui::Separator();
@@ -432,8 +429,6 @@ namespace Uma_Engine
     void ImguiManager::CreateEntityDebugWindow()
     {
         bool b = true;
-        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.9f, 0.f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.1f, windowHeight * 0.315f), ImGuiCond_Once);
         ImGui::Begin("Entity Debug", &b);
 
         // get entity count here
@@ -468,8 +463,6 @@ namespace Uma_Engine
     void ImguiManager::CreateEntityPropertyWindow()
     {
         bool b = true;
-        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.315f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.21f), ImGuiCond_Once);
         ImGui::Begin("Entity Run Time Property", &b);
 
         ImGui::Separator();
@@ -518,8 +511,6 @@ namespace Uma_Engine
 
     void ImguiManager::CreateConsoleWindow()
     {
-        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, windowHeight * 0.525f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.18f, windowHeight * 0.25f), ImGuiCond_Once);
         bool b = true;
         ImGui::Begin("Console", &b);
         // to clear the console
@@ -623,6 +614,8 @@ namespace Uma_Engine
         if (!windowsInit())
         {
             // Dock windows to their initial positions
+            ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
+            ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
             ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
             ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
             ImGui::DockBuilderDockWindow("File Browser", dock_id_bottom);
@@ -641,6 +634,8 @@ namespace Uma_Engine
         return std::ifstream(filename).good();
     }
 
+    // ========== HIERARCHY WINDOW IMPLEMENTATION ==========
+
     void ImguiManager::CreateHierarchyWindow()
     {
         bool b = true;
@@ -650,20 +645,19 @@ namespace Uma_Engine
         ImGui::Text("Scene Entities: %d", mEntityCount);
         ImGui::Separator();
 
-        // Refresh button to update entity list
-        if (ImGui::Button("Refresh"))
+        // Create new entity button
+        if (ImGui::Button("Create Entity"))
         {
-            // TODO: Call your ECS system to get all entities
-            // Example: m_sceneEntities = pEntityManager->GetAllEntities();
+            pEventSystem->Emit<SpawnEntityRequestEvent>();
         }
 
         ImGui::SameLine();
 
-        // Create new entity button
-        if (ImGui::Button("Create Game Object"))
+        // Delete selected entity button
+        if (ImGui::Button("Delete Selected") && m_selectedEntity != static_cast<Uma_ECS::Entity>(-1))
         {
-            // TODO: Create new entity through your ECS
-            // Example: pEntityManager->CreateEntity();
+            pEventSystem->Emit<DestroyEntityRequestEvent>(m_selectedEntity);
+            m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
         }
 
         ImGui::Separator();
@@ -671,50 +665,205 @@ namespace Uma_Engine
         // Scrollable region for entity list
         ImGui::BeginChild("EntityList", ImVec2(0, 0), true);
 
-        // Display all entities
-        // TODO: Replace this with actual entity retrieval from your ECS
-        for (int i = 0; i < mEntityCount; ++i)
+        // Get coordinator from scene manager
+        auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+        if (!sceneManager)
         {
-            // Generate unique ID for each selectable
-            ImGui::PushID(i);
+            ImGui::EndChild();
+            ImGui::End();
+            return;
+        }
 
-            // Create selectable item for each entity
-            // TODO: Get actual entity name from your ECS
-            std::string entityName = "Entity " + std::to_string(i);
+        auto activeScene = sceneManager->GetActiveScene();
+        if (!activeScene)
+        {
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No active scene");
+            ImGui::EndChild();
+            ImGui::End();
+            return;
+        }
 
-            // Check if this entity is selected
-            //bool isSelected = (m_selectedEntity.GetID() == i);  // Adjust based on your Entity implementation
+        auto& coordinator = activeScene->GetCoordinator();
+        auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
 
-            if (ImGui::Selectable(entityName.c_str(), false))
+        // Build a list of root entities (entities with no parent)
+        std::vector<Uma_ECS::Entity> rootEntities;
+        for (size_t i = 0; i < transformArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = transformArray.GetEntity(i);
+            auto& transform = transformArray.GetData(entity);
+
+            if (!transform.parent.has_value())
             {
-                // TODO: Set selected entity from your ECS
-                // m_selectedEntity = m_sceneEntities[i];
-                //m_selectedEntity = Entity(i);  // Placeholder
+                rootEntities.push_back(entity);
             }
+        }
 
-            // Right-click context menu
-            if (ImGui::BeginPopupContextItem())
-            {
-                if (ImGui::MenuItem("Delete"))
-                {
-                    // TODO: Delete entity through your ECS
-                    // pEntityManager->DestroyEntity(entity);
-                }
-
-                if (ImGui::MenuItem("Duplicate"))
-                {
-                    // TODO: Duplicate entity through your ECS
-                    // pEntityManager->DuplicateEntity(entity);
-                }
-
-                ImGui::EndPopup();
-            }
-
-            ImGui::PopID();
+        // Render each root entity and its children recursively
+        for (Uma_ECS::Entity rootEntity : rootEntities)
+        {
+            RenderEntityNode(rootEntity, coordinator, transformArray);
         }
 
         ImGui::EndChild();
         ImGui::End();
+    }
+
+    void ImguiManager::RenderEntityNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
+        Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray)
+    {
+        if (!coordinator.HasActiveEntity(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+        bool hasChildren = !transform.children.empty();
+
+        // Generate entity name based on components
+        std::string entityName = GetEntityDisplayName(entity, coordinator);
+
+        // Setup tree node flags
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        if (!hasChildren)
+            flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+        if (m_selectedEntity == entity)
+            flags |= ImGuiTreeNodeFlags_Selected;
+
+        // Push unique ID for this entity
+        ImGui::PushID(static_cast<int>(entity));
+
+        // Render tree node
+        bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
+
+        // Handle selection
+        if (ImGui::IsItemClicked())
+        {
+            m_selectedEntity = entity;
+        }
+
+        // Right-click context menu
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::MenuItem("Create Child"))
+            {
+                Uma_ECS::Entity child = coordinator.CreateEntity();
+                coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .position = Vec2(0, 0),
+                    .rotation = Vec2(0, 0),
+                    .scale = Vec2(1, 1)
+                    });
+                coordinator.SetParent(child, entity);
+            }
+
+            if (ImGui::MenuItem("Duplicate"))
+            {
+                Uma_ECS::Entity duplicate = coordinator.DuplicateEntity(entity);
+
+                // If the entity had a parent, set the duplicate to have the same parent
+                if (transform.parent.has_value())
+                {
+                    coordinator.SetParent(duplicate, transform.parent.value());
+                }
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Delete"))
+            {
+                pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+            }
+
+            if (ImGui::MenuItem("Delete with Children"))
+            {
+                coordinator.DestroyEntityAndChildren(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+            }
+
+            ImGui::EndPopup();
+        }
+
+        // Drag and drop for reparenting
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
+            ImGui::Text("Reparent: %s", entityName.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            {
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+
+                // Don't allow setting parent to itself or to its own children
+                if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
+                {
+                    coordinator.SetParent(droppedEntity, entity);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        // Render children recursively
+        if (nodeOpen && hasChildren)
+        {
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                RenderEntityNode(child, coordinator, transformArray);
+            }
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
+
+    std::string ImguiManager::GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator)
+    {
+        std::string name = "Entity " + std::to_string(entity);
+
+        // Add component indicators
+        if (coordinator.GetComponentArray<Uma_ECS::Player>().Has(entity))
+            name = "[Player] " + name;
+        else if (coordinator.GetComponentArray<Uma_ECS::Enemy>().Has(entity))
+            name = "[Enemy] " + name;
+        else if (coordinator.GetComponentArray<Uma_ECS::Camera>().Has(entity))
+            name = "[Camera] " + name;
+        else if (coordinator.GetComponentArray<Uma_ECS::Sprite>().Has(entity))
+        {
+            auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
+            if (!sprite.textureName.empty())
+                name = "[" + sprite.textureName + "] " + name;
+        }
+
+        return name;
+    }
+
+    bool ImguiManager::IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
+        Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray)
+    {
+        if (!transformArray.Has(potentialChild))
+            return false;
+
+        auto& transform = transformArray.GetData(potentialChild);
+
+        if (!transform.parent.has_value())
+            return false;
+
+        Uma_ECS::Entity parent = transform.parent.value();
+
+        if (parent == potentialParent)
+            return true;
+
+        return IsChildOf(parent, potentialParent, transformArray);
     }
 
     void ImguiManager::CreateInspectorWindow()
@@ -723,58 +872,72 @@ namespace Uma_Engine
         ImGui::Begin("Inspector", &b);
 
         // Check if an entity is selected
-        //if (!m_selectedEntity.IsValid())  // Adjust based on your Entity implementation
-        //{
-        //    ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No entity selected");
-        //    ImGui::End();
-        //    return;
-        //}
+        if (m_selectedEntity == static_cast<Uma_ECS::Entity>(-1))
+        {
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No entity selected");
+            ImGui::End();
+            return;
+        }
+
+        // Get coordinator from scene manager
+        auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+        if (!sceneManager || !sceneManager->GetActiveScene())
+        {
+            ImGui::End();
+            return;
+        }
+
+        auto& coordinator = sceneManager->GetActiveScene()->GetCoordinator();
+
+        if (!coordinator.HasActiveEntity(m_selectedEntity))
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Selected entity is no longer valid");
+            m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+            ImGui::End();
+            return;
+        }
 
         // Display entity ID
-        ImGui::Text("Entity ID: %d", /*m_selectedEntity.GetID()*/1);
+        ImGui::Text("Entity ID: %d", m_selectedEntity);
         ImGui::Separator();
 
         // Entity Name Field
-        static char entityName[128] = "Entity";
-        ImGui::Text("Name:");
-        ImGui::SameLine();
-        if (ImGui::InputText("##EntityName", entityName, sizeof(entityName)))
-        {
-            // TODO: Update entity name in your ECS
-        }
+        std::string entityName = GetEntityDisplayName(m_selectedEntity, coordinator);
+        ImGui::Text("Name: %s", entityName.c_str());
 
         ImGui::Separator();
         ImGui::Spacing();
 
         // ========== Transform Component ==========
-        if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+        auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+        if (transformArray.Has(m_selectedEntity))
         {
-            // TODO: Get actual transform component from entity
-            static float position[3] = { 0.0f, 0.0f, 0.0f };
-            static float rotation[3] = { 0.0f, 0.0f, 0.0f };
-            static float scale[3] = { 1.0f, 1.0f, 1.0f };
-
-            ImGui::Indent();
-
-            ImGui::Text("Position");
-            if (ImGui::DragFloat3("##Position", position, 0.1f))
+            if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                // TODO: Update transform component
-            }
+                auto& transform = transformArray.GetData(m_selectedEntity);
 
-            ImGui::Text("Rotation");
-            if (ImGui::DragFloat3("##Rotation", rotation, 1.0f))
-            {
-                // TODO: Update transform component
-            }
+                ImGui::Indent();
 
-            ImGui::Text("Scale");
-            if (ImGui::DragFloat3("##Scale", scale, 0.1f))
-            {
-                // TODO: Update transform component
-            }
+                float position[2] = { transform.position.x, transform.position.y };
+                if (ImGui::DragFloat2("Position", position, 0.1f))
+                {
+                    transform.position = Vec2(position[0], position[1]);
+                }
 
-            ImGui::Unindent();
+                float rotation = transform.rotation.x;
+                if (ImGui::DragFloat("Rotation", &rotation, 1.0f))
+                {
+                    transform.rotation.x = rotation;
+                }
+
+                float scale[2] = { transform.scale.x, transform.scale.y };
+                if (ImGui::DragFloat2("Scale", scale, 0.1f))
+                {
+                    transform.scale = Vec2(scale[0], scale[1]);
+                }
+
+                ImGui::Unindent();
+            }
         }
 
         // ========== Add Component Button ==========
@@ -792,24 +955,24 @@ namespace Uma_Engine
             ImGui::Text("Select Component Type:");
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Mesh Renderer"))
+            if (ImGui::MenuItem("Sprite"))
             {
-                // TODO: Add mesh renderer component
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Sprite{});
             }
 
-            if (ImGui::MenuItem("Rigidbody"))
+            if (ImGui::MenuItem("RigidBody"))
             {
-                // TODO: Add rigidbody component
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::RigidBody{});
             }
 
             if (ImGui::MenuItem("Collider"))
             {
-                // TODO: Add collider component
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Collider{});
             }
 
-            if (ImGui::MenuItem("Script"))
+            if (ImGui::MenuItem("Camera"))
             {
-                // TODO: Add script component
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Camera{});
             }
 
             ImGui::EndPopup();

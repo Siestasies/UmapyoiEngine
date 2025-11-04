@@ -24,7 +24,7 @@ All rights reserved.
 
 #include "ResourcesManager.hpp"
 #include "../Systems/Graphics.hpp"
-#include "../Systems/Sound.hpp"
+#include "../Systems/SoundManager.hpp"
 #include "../../Core/SystemManager.h"
 
 #include <cassert>
@@ -37,7 +37,7 @@ namespace Uma_Engine
     void ResourcesManager::Init()
     {
         mGraphics = pSystemManager->GetSystem<Graphics>();
-        mSound = pSystemManager->GetSystem<Sound>();
+        mSound = pSystemManager->GetSystem<SoundManager>();
 
         assert(mGraphics != nullptr && "Error: Graphics system failed to initialize");
         assert(mSound != nullptr && "Error: Sound system failed to initialize");
