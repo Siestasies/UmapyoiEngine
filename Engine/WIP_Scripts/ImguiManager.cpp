@@ -194,6 +194,9 @@ namespace Uma_Engine
 
             ImGui::SetCursorPosX(offset);
 
+            // scene view / game view indicator
+
+
             // Play Button
             bool isPlaying = (m_playState == PlayState::Playing);
             if (isPlaying)
@@ -258,7 +261,7 @@ namespace Uma_Engine
 
             // Show current state text on the right
             ImGui::SameLine();
-            ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 150);
+            ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
 
             const char* stateText = "Stopped";
             ImVec4 stateColor = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
@@ -266,15 +269,15 @@ namespace Uma_Engine
             switch (m_playState)
             {
             case PlayState::Playing:
-                stateText = "Playing";
+                stateText = "Game View";
                 stateColor = ImVec4(0.2f, 1.0f, 0.2f, 1.0f);
                 break;
             case PlayState::Paused:
-                stateText = "Paused";
+                stateText = "Game Paused";
                 stateColor = ImVec4(1.0f, 1.0f, 0.2f, 1.0f);
                 break;
             case PlayState::Stopped:
-                stateText = "Stopped";
+                stateText = "Scene View";
                 stateColor = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
                 break;
             }
