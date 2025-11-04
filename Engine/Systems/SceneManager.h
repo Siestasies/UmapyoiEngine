@@ -26,6 +26,7 @@ All rights reserved.
 #include <memory>
 #include <functional>
 #include <iostream>
+#include "Systems/EditorCamera.h"
 
 namespace Uma_Engine
 {
@@ -61,6 +62,10 @@ namespace Uma_Engine
 
         std::shared_ptr<Scene> GetScene(const std::string& name);
         std::shared_ptr<Scene> GetActiveScene() { return m_ActiveScene; }
+
+        // Editor camera access
+        Uma_Engine::EditorCamera& GetEditorCamera() { return m_EditorCamera; }
+        bool IsUsingEditorCamera() const { return m_UseEditorCamera; }
 
         // SCRIPT STUFF
         // Register a script factory (for creating scripts by name)
@@ -112,5 +117,9 @@ namespace Uma_Engine
         ImguiManager* imHandler;
 
         PLAYMODE playMode = PLAYMODE::PM_STOP;
+
+        // Editor camera
+        Uma_Engine::EditorCamera m_EditorCamera;
+        bool m_UseEditorCamera = false;
     };
 }
