@@ -57,6 +57,8 @@ namespace Uma_Engine
         {
             std::cout << "EditorScript: OnUnload" << std::endl;
         
+            // unsub the events
+            UnsubscribeEvents();
         }
 
         void OnUpdate(float dt) override
@@ -70,25 +72,29 @@ namespace Uma_Engine
 
         Entity m_Canvas{};
 
+        std::vector<std::shared_ptr<IEventListener>> m_EventListeners;
+
         void SubscribeToEvents()
         {
-            auto eventSystem = GetEvents();
+            auto eventSystem = GetEventSystem();
             auto& coordinator = GetCoordinator();
 
             // Query active entities
-            eventSystem->Subscribe<QueryActiveEntitiesEvent>(
-                [&coordinator](const QueryActiveEntitiesEvent& e) {
-                    e.mActiveEntityCnt = coordinator.GetEntityCount();
-                }
-            );
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<QueryActiveEntitiesEvent>(
+                    [&coordinator](const QueryActiveEntitiesEvent& e) {
+                        e.mActiveEntityCnt = coordinator.GetEntityCount();
+                    }
+                ));
 
             // Save scene
+            m_EventListeners.push_back(
             eventSystem->Subscribe<SaveSceneRequestEvent>(
                 [this](const SaveSceneRequestEvent& e) {
                     (void)e;
                     SaveScene();
                 }
-            );
+            ));
 
             // Load scene from path (for new scenes)
             //eventSystem->Subscribe<LoadSceneRequestEvent>(
@@ -98,88 +104,113 @@ namespace Uma_Engine
             //);
 
             // reload the current scene
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ReLoadSceneRequestEvent>(
                 [this](const ReLoadSceneRequestEvent& e) {
                     (void)e;
                     ReLoadScene();
                 }
-            );
+            ));
 
             // Clear scene
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ClearSceneRequestEvent>(
                 [this](const ClearSceneRequestEvent& e) {
                     (void)e;
                     ResetScene();
                 }
-            );
+            ));
 
             // Stress test
+            m_EventListeners.push_back(
             eventSystem->Subscribe<StressTestRequestEvent>(
                 [this](const StressTestRequestEvent& e) {
                     (void)e;
                     StressTest();
                 }
-            );
+            ));
 
             // Show default entities in viewport
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ShowEntityInVPRequestEvent>(
                 [this](const ShowEntityInVPRequestEvent& e) {
                     (void)e;
                     SpawnDefaultEntities();
                 }
-            );
+            ));
 
             // Change enemy rotation
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyRotRequestEvent>(
                 [this](const ChangeEnemyRotRequestEvent& e) {
                     ChangeAllEnemyRot(e.rot);
                 }
-            );
+            ));
 
             // Change enemy X position
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyXposRequestEvent>(
                 [this](const ChangeEnemyXposRequestEvent& e) {
                     ChangeAllEnemyXPos(e.xpos);
                 }
-            );
+            ));
 
             // Change enemy scale
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ChangeEnemyScaleRequestEvent>(
                 [this](const ChangeEnemyScaleRequestEvent& e) {
                     ChangeAllEnemyScale(e.scale);
                 }
-            );
+            ));
 
             // Show bounding boxes
+            m_EventListeners.push_back(
             eventSystem->Subscribe<ShowBBoxRequestEvent>(
                 [this](const ShowBBoxRequestEvent& e) {
                     ShowBBox(e.show);
                 }
-            );
+            ));
 
             // Clone entity
+            m_EventListeners.push_back(
             eventSystem->Subscribe<CloneEntityRequestEvent>(
                 [this](const CloneEntityRequestEvent& e) {
                     (void)e;
                     DuplicateOrCreateEntity();
                 }
-            );
+            ));
 
             // Load prefab
+            m_EventListeners.push_back(
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
                     LoadPrefab("bird");
                 }
-            );
+            ));
 
             // Destroy entity
+            m_EventListeners.push_back(
             eventSystem->Subscribe<DestroyEntityRequestEvent>(
                 [this](const DestroyEntityRequestEvent& e) {
                     (void)e;
                     DestroyRandomEntity();
                 }
-            );
+            ));
+        }
+
+        void UnsubscribeEvents()
+        {
+            auto eventSystem = GetEventSystem();
+
+            for (auto listener : m_EventListeners)
+            {
+                eventSystem->UnsubscribeListener(listener);
+            }
+
+            m_EventListeners.clear();
+
+            std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
         }
 
         void HandleEditorInput()

@@ -59,6 +59,8 @@ namespace Uma_Engine
             script->OnUnload();
         }
 
+        gGameSerializer.ShutDown();
+
         m_LuaScriptingSystem->Shutdown();
 
         m_UISystem->Shutdown();

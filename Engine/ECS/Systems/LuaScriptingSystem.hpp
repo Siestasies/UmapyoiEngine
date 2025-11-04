@@ -9,6 +9,8 @@
 #include "Debugging/Debugger.hpp"
 #include "../Core/Coordinator.hpp"
 
+#include "Events/CollisionEvent.h"
+
 #define SOL_ALL_SAFETIES_ON 1
 #define SOL_PRINT_ERRORS 1
 #include <sol/sol.hpp>
@@ -50,7 +52,8 @@ namespace Uma_ECS
         void CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args);
 
         // NEW SHIT TO DO 
-        void RegisterEventListeners();                          // basically subscribe to event then trigger the func
+        void SubscribeToEvents();                          // basically subscribe to event then trigger the func
+        void UnsubscribeEvents();                          // basically unsubscribe events
 
         void NotifyScripts(                                     // this is to let the Lua script to know that there are                                                     
             ComponentArray<LuaScript>& scriptArray,             // events triggering the script
@@ -92,6 +95,8 @@ namespace Uma_ECS
         
 
         std::shared_ptr<sol::state> sharedLua;
+
+        std::vector<std::shared_ptr<Uma_Engine::IEventListener>> aEventListeners;
 
         // supporting systems
         Uma_Engine::EventSystem* pEventSystem = nullptr;

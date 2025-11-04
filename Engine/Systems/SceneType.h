@@ -213,6 +213,6 @@ namespace Uma_Engine
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
             Uma_Engine::Sound* GetSound() { return m_Scene->GetSound(); }
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
-            Uma_Engine::EventSystem* GetEvents() { return m_Scene->GetEventSystem(); }
+            Uma_Engine::EventSystem* GetEventSystem() { return m_Scene->GetEventSystem(); }
     };
 }
