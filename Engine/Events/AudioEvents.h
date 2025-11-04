@@ -64,4 +64,15 @@ namespace Uma_Engine
 
         std::string musicName;
     };
+
+    class PlaySound3DEvent : public Event
+    {
+    public:
+        PlaySound3DEvent(const std::string& soundName, float x, float y, float volume = 1.0f, int loop = 0) : soundName(soundName), x(x), y(y), volume(volume), loop(loop) { priority = Priority::Low; }
+
+    public:
+        std::string soundName;
+        float x, y, volume;
+        int loop;
+    };
 }

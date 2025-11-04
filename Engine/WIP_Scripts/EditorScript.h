@@ -260,12 +260,16 @@ namespace Uma_Engine
             if (input->KeyPressed(GLFW_KEY_P))
             {
                 //GetSound()->playSound(GetResources()->GetSound("explosion"));
-                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1, 0);
+                //m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1, 0);
+
+                //used for entities with position
+                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
             }
 
             if (input->KeyPressed(GLFW_KEY_O))
             {
-                GetSound()->playSound(GetResources()->GetSound("cave"));
+                //GetSound()->playSound(GetResources()->GetSound("cave"));
+                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("cave", 1, 0);
             }
         }
 
@@ -812,6 +816,9 @@ namespace Uma_Engine
 
                 playerCollider.bounds.resize(playerCollider.shapes.size());
                 GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
+
+                AudioListener audioListner;
+                GetCoordinator().AddComponent(m_Scene->m_player, audioListner);
             }
 
             // create camera

@@ -39,6 +39,7 @@ All rights reserved.
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/LuaScript.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/AudioListener.h"
 
 // UI Components
 #include "../UI/Components/RectTransform.h"
@@ -58,6 +59,9 @@ All rights reserved.
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"
 #include "../Events/IMGUIEvents.h"
+
+//test
+#include "../Systems/AudioSystem.hpp"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -148,6 +152,9 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
+
+            //testing
+            std::shared_ptr<Uma_ECS::AudioSystem> m_AudioSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;

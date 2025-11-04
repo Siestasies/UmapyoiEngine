@@ -34,10 +34,6 @@ All rights reserved.
 using SoundInfo = Uma_Engine::SoundInfo;
 using SoundType = Uma_Engine::SoundType;
 
-struct FMOD_SYSTEM;
-struct FMOD_SOUND;
-struct FMOD_CHANNEL;
-
 namespace Uma_Engine
 {
 
@@ -58,7 +54,7 @@ namespace Uma_Engine
 				*\param filePath, type
 				*\return struct SoundInfo that contains the sound, channel and type
 				*/ 
-				SoundInfo loadSound(const std::string& filePath, SoundType type);
+				SoundInfo loadSound(const std::string& filePath, SoundType type, bool is3D = false);
 
 				/*!
 				*\brief unload the sound 
@@ -85,7 +81,9 @@ namespace Uma_Engine
 				*\param volume - volume of the sound
 				*\param pitch - pitch of the sound
 				*/
-				void playSound(SoundInfo& info,int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+				void playSound(SoundInfo& info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+
+				void playSound(SoundInfo& info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
 				/*!
 				*\brief stops the sound from playing
@@ -135,6 +133,9 @@ namespace Uma_Engine
 				*/
 				void setChannelGroupVolume(float volume, SoundType type);
 
+				//set the listener position for the update loop to update
+				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
+
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
@@ -151,6 +152,12 @@ namespace Uma_Engine
 				// Helper functions
 				//std::string getFullPath(const std::string& fileName) const;
 				//void checkFMODError(int result, const std::string& operation) const;
+
+				//for 3d sound
+				FMOD_VECTOR listenerPos = { 0.0f, 0.0f, 0.0f };
+				FMOD_VECTOR listenerVel = { 0.0f, 0.0f, 0.0f };
+				FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 1.0f };
+				FMOD_VECTOR listenerUp = { 0.0f, 1.0f, 0.0f };
 		};
 }
 
