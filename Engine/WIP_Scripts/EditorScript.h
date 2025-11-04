@@ -834,7 +834,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(
-                    m_Scene->m_player,
+                    m_Scene->m_cam,
                     Camera
                     {
                         .mZoom = 1.f,

@@ -54,6 +54,7 @@ namespace Uma_Engine
         // Load scene asynchronously (non-blocking)
         void LoadSceneAsync(const std::string& name, bool additive = false);
         void UnloadScene(const std::string& name);
+        void SaveScene(const std::string& name);
         void RemoveScene(const std::string& name);
         void UnloadAllScenes();
         void SetActiveScene(const std::string& name);

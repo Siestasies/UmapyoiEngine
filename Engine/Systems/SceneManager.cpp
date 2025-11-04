@@ -64,6 +64,12 @@ namespace Uma_Engine
             }
         );
 
+        eventSystem->Subscribe<SaveCurrSceneRequest>(
+            [this](const SaveCurrSceneRequest& e) {
+                SaveScene(e.name);
+            }
+        );
+
         eventSystem->Subscribe<LoadSceneRequestEvent>(
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false); 
@@ -302,6 +308,19 @@ namespace Uma_Engine
         std::cout << "Scene '" << name << "' unloaded" << std::endl;
     }
 
+    void SceneManager::SaveScene(const std::string& name)
+    {
+        if (!HasScene(name))
+        {
+            std::cout << "Scene '" << name << "' does not exist!" << std::endl;
+            return;
+        }
+
+        auto scene = m_Scenes[name];
+
+        scene->gGameSerializer.save(scene->GetFilePath());
+    }
+
     void SceneManager::RemoveScene(const std::string& name)
     {
         if (!HasScene(name))
@@ -329,6 +348,8 @@ namespace Uma_Engine
         LoadScene("GameScene1");
         UpdateIMGUIWindow();
     }
+
+
 
     void SceneManager::UnloadAllScenes()
     {

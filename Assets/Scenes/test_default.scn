@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -63,20 +63,20 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
     "entities": [
         {
-            "id": 118,
+            "id": 198,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -149,7 +149,7 @@
             }
         },
         {
-            "id": 120,
+            "id": 200,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -210,7 +210,7 @@
             }
         },
         {
-            "id": 121,
+            "id": 201,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -271,7 +271,7 @@
             }
         },
         {
-            "id": 122,
+            "id": 202,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -332,7 +332,7 @@
             }
         },
         {
-            "id": 123,
+            "id": 203,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -393,7 +393,7 @@
             }
         },
         {
-            "id": 124,
+            "id": 204,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -454,7 +454,7 @@
             }
         },
         {
-            "id": 125,
+            "id": 205,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -515,7 +515,7 @@
             }
         },
         {
-            "id": 126,
+            "id": 206,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -576,7 +576,7 @@
             }
         },
         {
-            "id": 127,
+            "id": 207,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -637,7 +637,7 @@
             }
         },
         {
-            "id": 128,
+            "id": 208,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -698,7 +698,7 @@
             }
         },
         {
-            "id": 129,
+            "id": 209,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -759,7 +759,7 @@
             }
         },
         {
-            "id": 130,
+            "id": 210,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -820,7 +820,7 @@
             }
         },
         {
-            "id": 131,
+            "id": 211,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -881,7 +881,7 @@
             }
         },
         {
-            "id": 132,
+            "id": 212,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -942,7 +942,7 @@
             }
         },
         {
-            "id": 133,
+            "id": 213,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1003,7 +1003,7 @@
             }
         },
         {
-            "id": 134,
+            "id": 214,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1064,7 +1064,7 @@
             }
         },
         {
-            "id": 135,
+            "id": 215,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1125,7 +1125,7 @@
             }
         },
         {
-            "id": 136,
+            "id": 216,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1186,7 +1186,7 @@
             }
         },
         {
-            "id": 137,
+            "id": 217,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1247,7 +1247,7 @@
             }
         },
         {
-            "id": 138,
+            "id": 218,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1286,7 +1286,7 @@
             }
         },
         {
-            "id": 139,
+            "id": 219,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1325,7 +1325,7 @@
             }
         },
         {
-            "id": 140,
+            "id": 220,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1364,7 +1364,7 @@
             }
         },
         {
-            "id": 141,
+            "id": 221,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1403,7 +1403,7 @@
             }
         },
         {
-            "id": 142,
+            "id": 222,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1442,7 +1442,7 @@
             }
         },
         {
-            "id": 143,
+            "id": 223,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1481,7 +1481,7 @@
             }
         },
         {
-            "id": 144,
+            "id": 224,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1520,7 +1520,7 @@
             }
         },
         {
-            "id": 145,
+            "id": 225,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1559,7 +1559,7 @@
             }
         },
         {
-            "id": 146,
+            "id": 226,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1598,7 +1598,7 @@
             }
         },
         {
-            "id": 147,
+            "id": 227,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1637,7 +1637,7 @@
             }
         },
         {
-            "id": 148,
+            "id": 228,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1676,7 +1676,7 @@
             }
         },
         {
-            "id": 149,
+            "id": 229,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1715,7 +1715,7 @@
             }
         },
         {
-            "id": 150,
+            "id": 230,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1754,7 +1754,7 @@
             }
         },
         {
-            "id": 151,
+            "id": 231,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1793,7 +1793,7 @@
             }
         },
         {
-            "id": 152,
+            "id": 232,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1832,7 +1832,7 @@
             }
         },
         {
-            "id": 153,
+            "id": 233,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1871,7 +1871,7 @@
             }
         },
         {
-            "id": 154,
+            "id": 234,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -1967,9 +1967,17 @@
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "moveDistance",
+                                    "name": "isActive",
+                                    "type": 2,
+                                    "value": true,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "testCounter",
                                     "type": 0,
-                                    "value": 50.0,
+                                    "value": 0.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -1983,17 +1991,9 @@
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "testCounter",
+                                    "name": "moveDistance",
                                     "type": 0,
-                                    "value": 0.0,
+                                    "value": 50.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -2038,7 +2038,7 @@
             }
         },
         {
-            "id": 155,
+            "id": 235,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -2053,7 +2053,7 @@
                         "x": 0.5,
                         "y": 0.5
                     },
-                    "parent": 154
+                    "parent": 234
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
@@ -2099,7 +2099,7 @@
             }
         },
         {
-            "id": 156,
+            "id": 236,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -2175,15 +2175,11 @@
                         }
                     ]
                 },
-                "struct Uma_ECS::Camera": {
-                    "zoom": 1.0,
-                    "followPlayer": true
-                },
                 "struct Uma_ECS::AudioListener": null
             }
         },
         {
-            "id": 157,
+            "id": 237,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "position": {
@@ -2199,6 +2195,10 @@
                         "y": 1.0
                     },
                     "parent": -1
+                },
+                "struct Uma_ECS::Camera": {
+                    "zoom": 1.0,
+                    "followPlayer": true
                 }
             }
         }

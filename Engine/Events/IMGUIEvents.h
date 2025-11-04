@@ -187,9 +187,15 @@ namespace Uma_Engine
     class DeleteCurrSceneRequest : public Event
     {
     public:
+        std::string name;
         DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+    class SaveCurrSceneRequest : public Event
+    {
     public:
         std::string name;
+        SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
     };
 
     class SceneInfoRequest : public Event

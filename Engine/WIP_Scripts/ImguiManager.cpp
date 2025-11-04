@@ -1059,6 +1059,12 @@ namespace Uma_Engine
              pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
+        if (ImGui::Button("Save Scene"))
+        {
+            // save scene into this file
+            pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
+        }
+
         //list of loaded scenes
         ImGui::BeginChild("SceneList", ImVec2(0, 200), true);
         int selectedSceneIndex = -1;
