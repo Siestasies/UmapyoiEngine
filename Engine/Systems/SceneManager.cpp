@@ -175,9 +175,9 @@ namespace Uma_Engine
     // SCENE MANAGEMENT STUFF
     void SceneManager::CreateNewScene()
     {
-        std::string name = "Scene" + std::to_string(sceneNo);
+        std::string name = "scene" + std::to_string(sceneNo) + ".scn";
         ++sceneNo;
-        CreateScene(name, "test_default.scn");
+        CreateScene(name, name);
         AttachScriptToScene(name, "EditorBehaviour");
         LoadScene(name);
     }
@@ -238,7 +238,7 @@ namespace Uma_Engine
         // passing message using event system
         UpdateIMGUIWindow();
 
-        std::cout << "xxxxxxxxxxxxxxxxxxxxxxScene '" << name << "' loaded" << (additive ? " additively" : "") << "xxxxxxxxxxxxxxxxxxxxxx" << std::endl;
+        std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
         return scene;
     }
 

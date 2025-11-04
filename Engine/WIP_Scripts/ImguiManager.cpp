@@ -1050,6 +1050,7 @@ namespace Uma_Engine
 
         // Button to create a new scene
         if (ImGui::Button("Create New Scene")) {
+            m_playState = PlayState::Stopped;
             pEventSystem->Emit<CreateNewSceneRequest>();
         }
 
@@ -1078,6 +1079,7 @@ namespace Uma_Engine
             // detect double click
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
+                m_playState = PlayState::Stopped;
                 pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
             }
         }
