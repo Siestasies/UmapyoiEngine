@@ -117,6 +117,15 @@ namespace Uma_ECS
                 spriteScale = tf.worldScale;
             }
 
+            if (sr.flipX)
+            {
+                spriteScale.x = -spriteScale.x;
+            }
+            if (sr.flipY)
+            {
+                spriteScale.y = -spriteScale.y;
+            }
+
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
             Vec2 uvSize(1.0f, 1.0f);

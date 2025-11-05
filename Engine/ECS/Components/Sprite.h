@@ -48,8 +48,8 @@ namespace Uma_ECS
         // pointer pointing to the texture in resources manager
         std::string textureName{};
         LayerMask renderLayer = RL_NONE;
-        bool flipX{};
-        bool flipY{};
+        bool flipX{ false };
+        bool flipY{ false };
         bool UseNativeSize{};
         Uma_Engine::Texture* texture = nullptr;
 
