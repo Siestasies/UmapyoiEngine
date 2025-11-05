@@ -1408,7 +1408,10 @@ namespace Uma_Engine
                     if (FileBrowser::fileExists(mScriptName))
                     {
                         if (ImGui::Button("Add", ImVec2(-1, 0)))
+                        {
                             luaScript.AddScript(mScriptName);
+                            pEventSystem->Emit<CallLuaToInitScript>(entity);
+                        }
                     }
                     else
                     {
