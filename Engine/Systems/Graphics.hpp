@@ -38,6 +38,29 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    struct RectInfo
+    {
+        Vec2 center;
+        Vec2 size;
+        Vec3 color;
+        float alpha;
+    };
+
+    struct CircleInfo
+    {
+        Vec2 center;
+        float radius;
+        Vec3 color;
+        float alpha;
+    };
+
+    struct TriangleInfo
+    {
+        Vec2 p1, p2, p3;
+        Vec3 color;
+        float alpha;
+    };
+
     struct DebugLineInfo
     {
         Vec2 start;
@@ -97,11 +120,17 @@ namespace Uma_Engine
         GLuint mInstanceUVVBO;
         GLuint mInstanceTintVBO;
 
+        // Debug rendering
         GLuint mDebugLineVAO;
         GLuint mDebugLineVBO;
         GLuint mDebugLineInstanceVBO;
         GLuint mDebugLineColorVBO;
         GLuint mDebugLineShaderProgram;
+
+        // Shapes rendering
+        GLuint mShapeVAO;
+        GLuint mShapeVBO;
+        GLuint mShapeShaderProgram;
 
         // Text rendering
         GLuint mTextShaderProgram;
@@ -114,6 +143,9 @@ namespace Uma_Engine
         void ShutdownTextRenderer();
         bool InitializeDebugRenderer();
         void ShutdownDebugRenderer();
+        bool InitializeShapeRenderer();
+        void ShutdownShapeRenderer();
+
         GLuint CreateTextShader();
 
         /**
@@ -381,18 +413,16 @@ namespace Uma_Engine
         float MeasureText(const FontData& font, const std::string& text, float scale = 1.0f);
         void DrawTextWorld(const FontData& font, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
-        /*bool LoadFont(const std::string& fontName, const std::string& fontPath, unsigned int fontSize = 48);
-        void SetCurrentFont(const std::string& fontName);
-        std::string GetCurrentFont() const { return mCurrentFont; }
-        void DrawTextScreen(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextScreen(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        float MeasureText(const std::string& text, float scale = 1.0f);
-        float MeasureText(const std::string& fontName, const std::string& text, float scale = 1.0f);
-        void DrawTextWorld(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextWorld(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);*/
-
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
             const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f);
         void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
+
+        void DrawFilledRect(const Vec2& center, const Vec2& size,
+            float r, float g, float b, float alpha = 1.0f);
+        void DrawFilledCircle(const Vec2& center, float radius,
+            float r, float g, float b, float alpha = 1.0f,
+            int segments = 24);
+        void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3,
+            float r, float g, float b, float alpha = 1.0f);
     };
 }
