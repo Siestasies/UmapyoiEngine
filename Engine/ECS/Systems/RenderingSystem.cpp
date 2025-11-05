@@ -9,7 +9,7 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
-\co-author Javier Chua Dong Qing (Animator, FlipScale)
+\co-author Javier Chua Dong Qing (EditorCamera, Animator, FlipScale)
 \par       E-mail: javierdongqing.chua@digipen.edu
 \par       DigiPen login: javierdongqing.chua
 
