@@ -102,6 +102,11 @@ namespace Uma_Engine
             ImGui::End();
         }
 
+        static bool fileExists(std::string filepath)
+        {
+            return (fs::exists(filepath));
+        }
+
         void setEventSystem(EventSystem* es)
         {
             pEventSystem = es;

@@ -108,12 +108,16 @@ namespace Uma_Engine
         bool IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
 
+        // Inspector helper functions
+        bool DisplayComponent(Uma_ECS::Coordinator&, Uma_ECS::ComponentType, Uma_ECS::Entity&);
+
         bool m_initialized;
         bool ds_initialized;
         GLFWwindow* m_window;
         std::vector<std::string> logsVec;
         EventSystem* pEventSystem;
-        FileBrowser fileBrowser;
+        FileBrowser mfileBrowser;
+        std::string mScriptName;
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;
