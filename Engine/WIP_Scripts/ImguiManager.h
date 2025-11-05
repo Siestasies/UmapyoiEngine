@@ -89,7 +89,7 @@ namespace Uma_Engine
 
     private:
         // bigger space stuff
-        bool windowsInit(const char* filename = "imgui.ini");
+        bool WindowsInit(std::string filename = Uma_FilePath::CONFIG_ROOT + "imgui.ini");
         void CreateDockspace();
         void InitDockspace(ImGuiID dockspace_id, ImGuiViewport* viewport);
 

@@ -9,6 +9,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 
+#include "Core/FilePaths.h"
+
 #include <unordered_map>
 
 namespace Uma_Engine
@@ -655,7 +657,7 @@ namespace Uma_Engine
 
             // Check for docking data
             bool has_layout = false;
-            std::ifstream file("imgui.ini");
+            std::ifstream file(Uma_FilePath::CONFIG_ROOT + "imgui.ini");
             if (file.good())
             {
                 std::string line;
@@ -687,7 +689,7 @@ namespace Uma_Engine
         ImGuiID dock_id_left = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Left, 0.15f, nullptr, &dock_main_id);
         ImGuiID dock_id_right = ImGui::DockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.15f, nullptr, &dock_main_id);
 
-        if (!windowsInit())
+        if (!WindowsInit())
         {
             // Dock windows to their initial positions
             ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
@@ -705,7 +707,7 @@ namespace Uma_Engine
         ImGui::DockBuilderFinish(dockspace_id);
     };
 
-    bool ImguiManager::windowsInit(const char* filename)
+    bool ImguiManager::WindowsInit(std::string filename)
     {
         return std::ifstream(filename).good();
     }
