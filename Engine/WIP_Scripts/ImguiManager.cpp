@@ -711,23 +711,6 @@ namespace Uma_Engine
         ImGui::Text("Scene Entities: %d", mEntityCount);
         ImGui::Separator();
 
-        // Create new entity button
-        if (ImGui::Button("Create Entity"))
-        {
-            pEventSystem->Emit<SpawnEntityRequestEvent>();
-        }
-
-        ImGui::SameLine();
-
-        // Delete selected entity button
-        if (ImGui::Button("Delete Selected") && m_selectedEntity != static_cast<Uma_ECS::Entity>(-1))
-        {
-            pEventSystem->Emit<DestroyEntityRequestEvent>(m_selectedEntity);
-            m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
-        }
-
-        ImGui::Separator();
-
         // Scrollable region for entity list
         ImGui::BeginChild("EntityList", ImVec2(0, 0), true);
 
@@ -811,6 +794,17 @@ namespace Uma_Engine
         // Right-click context menu
         if (ImGui::BeginPopupContextItem())
         {
+            if (ImGui::MenuItem("Create Child"))
+            {
+                Uma_ECS::Entity child = coordinator.CreateEntity();
+                coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .position = Vec2(0, 0),
+                    .rotation = Vec2(0, 0),
+                    .scale = Vec2(1, 1)
+                    });
+                coordinator.SetParent(child, entity);
+            }
+
             if (ImGui::MenuItem("Create Child"))
             {
                 Uma_ECS::Entity child = coordinator.CreateEntity();
