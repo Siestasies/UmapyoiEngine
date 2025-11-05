@@ -127,6 +127,10 @@ namespace Uma_ECS
                 uvOffset = animator.uvOffset;
                 uvSize = animator.uvSize;
             }
+            else
+            {
+                sr.GetUVs(uvOffset, uvSize);
+            }
 
             allSprites.push_back(LayeredSprite{
                 .info = Uma_Engine::Sprite_Info{
