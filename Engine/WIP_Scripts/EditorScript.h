@@ -415,6 +415,8 @@ namespace Uma_Engine
                       .flipY = false,
                       .UseNativeSize = true,
                       .texture = GetResources()->GetTexture(texName),
+                      .tintColor = Vec3(1.0f, 0.5f, 1.0f),
+                      .alpha = 0.5f
                     });
 
                 LuaScript kappaScriptComponent;

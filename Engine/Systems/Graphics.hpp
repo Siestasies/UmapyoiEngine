@@ -71,6 +71,8 @@ namespace Uma_Engine
 
         Vec2 uvOffset{ 0.0f, 0.0f };  // UV offset (default = full texture)
         Vec2 uvSize{ 1.0f, 1.0f };    // UV size (default = full texture)
+        Vec3 tintColor{ 1.0f, 1.0f, 1.0f };  // RGB multiplier
+        float alpha{ 1.0f };                 // Opacity
     };
 
     class Graphics : public ISystem, public IWindowSystem
@@ -93,6 +95,7 @@ namespace Uma_Engine
         GLuint mInstanceVAO;
         GLuint mInstanceShaderProgram;
         GLuint mInstanceUVVBO;
+        GLuint mInstanceTintVBO;
 
         GLuint mDebugLineVAO;
         GLuint mDebugLineVBO;
@@ -260,13 +263,12 @@ namespace Uma_Engine
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
             float rotation = 0.0f,
-            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
+            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f),
+            float alpha = 1.0f);
 
         void DrawSpritesInstanced(
             unsigned int textureID,
-            //const Vec2& textureSize,
-            std::vector<Sprite_Info> const& sprites,
-            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
+            std::vector<Sprite_Info> const& sprites);
 
         // Draw background image
 
@@ -390,8 +392,7 @@ namespace Uma_Engine
         void DrawTextWorld(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);*/
 
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
-            const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
-        void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites,
-            const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f));
+            const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f);
+        void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
     };
 }

@@ -136,7 +136,9 @@ namespace Uma_ECS
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
                     .uvOffset = uvOffset,
-                    .uvSize = uvSize
+                    .uvSize = uvSize,
+                    .tintColor = sr.tintColor,
+                    .alpha = sr.alpha
                 },
                 .layer = sr.renderLayer,
                 .texId = sr.texture->tex_id

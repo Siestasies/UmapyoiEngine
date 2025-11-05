@@ -53,6 +53,9 @@ namespace Uma_ECS
         bool UseNativeSize{};
         Uma_Engine::Texture* texture = nullptr;
 
+        Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);
+        float alpha = 1.0f;
+
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -67,6 +70,14 @@ namespace Uma_ECS
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
             value.AddMember("Native", UseNativeSize, allocator);
+
+            rapidjson::Value tintArray(rapidjson::kArrayType);
+            tintArray.PushBack(tintColor.x, allocator);
+            tintArray.PushBack(tintColor.y, allocator);
+            tintArray.PushBack(tintColor.z, allocator);
+            value.AddMember("tintColor", tintArray, allocator);
+
+            value.AddMember("alpha", alpha, allocator);
         }
 
         // Deserialize from JSON
@@ -82,6 +93,22 @@ namespace Uma_ECS
             flipX = value["flipX"].GetBool();
             flipY = value["flipY"].GetBool();
             UseNativeSize = value["Native"].GetBool();
+
+            if (value.HasMember("tintColor") && value["tintColor"].IsArray())
+            {
+                const auto& tintArray = value["tintColor"].GetArray();
+                if (tintArray.Size() >= 3)
+                {
+                    tintColor.x = tintArray[0].GetFloat();
+                    tintColor.y = tintArray[1].GetFloat();
+                    tintColor.z = tintArray[2].GetFloat();
+                }
+            }
+
+            if (value.HasMember("alpha"))
+            {
+                alpha = value["alpha"].GetFloat();
+            }
         }
     };
 }

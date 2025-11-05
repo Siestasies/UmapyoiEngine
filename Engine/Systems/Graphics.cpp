@@ -90,6 +90,7 @@ uniform sampler2D image;
 uniform vec3 debugColor;
 uniform int useDebugColor;
 uniform vec3 tintColor;
+uniform float alpha;
 
 void main()
 {
@@ -97,7 +98,7 @@ void main()
         color = vec4(debugColor, 1.0);
     } else {
         vec4 texColor = texture(image, TexCoords);
-        color = vec4(texColor.rgb * tintColor, texColor.a);
+        color = vec4(texColor.rgb * tintColor, texColor.a * alpha);
     }
 }
 )";
@@ -109,8 +110,10 @@ void main()
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
 layout (location = 5) in vec4 instanceUV; // <vec2 uvOffset, vec2 uvSize>
+layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
 
 out vec2 TexCoords;
+out vec4 Tint;
 
 uniform mat4 projection;
 
@@ -119,6 +122,9 @@ void main()
     // Apply UV transformation
     vec2 uv = vertex.zw;
     TexCoords = instanceUV.xy + uv * instanceUV.zw;
+    
+    // Pass tint to fragment shader
+    Tint = instanceTint;
     
     gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
 }
@@ -129,15 +135,16 @@ void main()
     const std::string instancedFragmentShaderSource = R"(
 #version 450 core
 in vec2 TexCoords;
+in vec4 Tint;
 out vec4 color;
 
 uniform sampler2D image;
-uniform vec3 tintColor;
 
 void main()
 {
     vec4 texColor = texture(image, TexCoords);
-    color = vec4(texColor.rgb * tintColor, texColor.a);
+    // Apply tint to RGB and alpha separately
+    color = vec4(texColor.rgb * Tint.rgb, texColor.a * Tint.a);
 }
 )";
 
@@ -390,7 +397,7 @@ void main()
         cam.zoom = zoom;
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint, float alpha)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -399,6 +406,9 @@ void main()
 
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, alpha);
 
         // Create transformation matrix
         glm::mat4 model = glm::mat4(1.0f);
@@ -433,6 +443,9 @@ void main()
 
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, 1.0f, 1.0f, 1.0f);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, 1.0f);
 
         // Scale quad to fill entire NDC space
         glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f));
@@ -500,6 +513,7 @@ void main()
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
         glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
         glUniform3f(glGetUniformLocation(mShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
+        glUniform1f(glGetUniformLocation(mShaderProgram, "alpha"), 1.0f);
 
         return true;
     }
@@ -832,6 +846,16 @@ void main()
         glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(5, 1);
 
+        // Create instance VBO for Tint
+        glGenBuffers(1, &mInstanceTintVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
+
+        // Set up Tint attribute
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
+        glVertexAttribDivisor(6, 1);
+
         // Unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -839,7 +863,6 @@ void main()
         // Set default uniforms
         glUseProgram(mInstanceShaderProgram);
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
-        glUniform3f(glGetUniformLocation(mInstanceShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
 
         return true;
     }
@@ -902,8 +925,7 @@ void main()
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites,
-        const Vec3& tint)
+        std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -917,8 +939,10 @@ void main()
         // Build model matrices and UV data
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
+        std::vector<glm::vec4> tintData;
         models.reserve(instanceCount);
         uvData.reserve(instanceCount);
+        tintData.reserve(instanceCount);
 
         for (size_t i = 0; i < instanceCount; ++i)
         {
@@ -934,6 +958,10 @@ void main()
             // Build UV data
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
+
+            // Build tint data
+            tintData.push_back(glm::vec4(sprite.tintColor.x, sprite.tintColor.y,
+                sprite.tintColor.z, sprite.alpha));
         }
 
         if (models.empty()) return;
@@ -946,11 +974,11 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        // Upload tint data
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        // Set tint uniform
-        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
-        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+        glUseProgram(mInstanceShaderProgram);
 
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
@@ -995,6 +1023,10 @@ void main()
         if (mInstanceUVVBO != 0) {
             glDeleteBuffers(1, &mInstanceUVVBO);
             mInstanceUVVBO = 0;
+        }
+        if (mInstanceTintVBO != 0) {
+            glDeleteBuffers(1, &mInstanceTintVBO);
+            mInstanceTintVBO = 0;
         }
         if (mInstanceShaderProgram != 0) {
             glDeleteProgram(mInstanceShaderProgram);
@@ -1317,7 +1349,7 @@ void main()
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
-        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint)
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -1326,6 +1358,9 @@ void main()
         // Set tint uniform
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, alpha);
 
         // Calculate current aspect ratio
         float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
@@ -1359,7 +1394,7 @@ void main()
         UpdateProjectionMatrix();
     }
 
-    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites, const Vec3& tint)
+    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -1375,8 +1410,10 @@ void main()
 
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
+        std::vector<glm::vec4> tintData;
         models.reserve(instanceCount);
         uvData.reserve(instanceCount);
+        tintData.reserve(instanceCount);
 
         for (size_t i = 0; i < instanceCount; ++i)
         {
@@ -1392,6 +1429,8 @@ void main()
 
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
+            tintData.push_back(glm::vec4(sprite.tintColor.x, sprite.tintColor.y,
+                sprite.tintColor.z, sprite.alpha));
         }
 
         if (models.empty()) return;
@@ -1402,10 +1441,10 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
-        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+        glUseProgram(mInstanceShaderProgram);
 
         glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
