@@ -39,48 +39,14 @@ namespace Uma_ECS
 
 				// runtime data dont need serialization
 				//std::shared_ptr<sol::state> lua;		// Sol state instead of lua_State*
-				sol::environment scriptEnv;					// Isolated environment per script
+				std::shared_ptr<sol::environment> scriptEnv;					// Isolated environment per script
 				bool isInitialized = false;
 				bool hasError = false;
 				std::string errorMessage;
 				bool isEnabled = true;
 				bool isVariableDirty = false;				// set this to true when user set sth to the imgui
 				bool wasEnabledLastFrame = false;		// keep track whether the script was previously being eanbled / disabled
-
 				
-				// CALLBACK CACHE: Store which callbacks exist + their functions
-				struct CallbackCache
-				{
-						// Collision callbacks
-						bool hasOnCollision = false;
-						bool hasOnCollisionEnter = false;
-						bool hasOnCollisionExit = false;
-
-						// Trigger callbacks
-						bool hasOnTriggerEnter = false;
-						bool hasOnTriggerExit = false;
-
-						//// Damage/Health callbacks
-						//bool hasOnDamage = false;
-						//bool hasOnHeal = false;
-						//bool hasOnDeath = false;
-
-						//// Interaction callbacks
-						//bool hasOnInteract = false;
-						//bool hasOnPickup = false;
-
-						// Cached function references (avoids repeated Lua table lookups)
-						sol::protected_function onCollisionFunc;
-						sol::protected_function onCollisionEnterFunc;
-						sol::protected_function onCollisionExitFunc;
-						sol::protected_function onTriggerEnterFunc;
-						sol::protected_function onTriggerExitFunc;
-						//sol::protected_function onDamageFunc;
-						//sol::protected_function onHealFunc;
-						//sol::protected_function onDeathFunc;
-						//sol::protected_function onInteractFunc;
-						//sol::protected_function onPickupFunc;
-				} callbacks;
 
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{
