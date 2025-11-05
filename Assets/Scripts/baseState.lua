@@ -1,10 +1,35 @@
+--[[!
+@file   baseState.lua
+@par    Project: GAM200
+@par    Course: CSD2401
+@par    Section A
+@par    Software Engineering Project 3
+
+@author Koh Kai Yang (100%)
+@par    E-mail: k.kaiyang@digipen.edu
+@par    DigiPen login: k.kaiyang
+
+@brief
+This is the implementation of the state class to be inherited by other states
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+]]
+
 -- base_state.lua
 local BaseState = {} --its like the declaration of a class in c++
 
 --this provides a reference back to base class in case an implementation is missing in the child
 BaseState.__index = BaseState 
 
---this is basically a constructor for the inheritance 
+--this is basically a constructor for the inheritance
+--[[!
+    @brief constructor for the state machine
+    @param class - the class to be passed in
+    @param fsm - reference to the state machine
+    @param parent - takes in the script of the entity that holds the states in order to use exposed function from c++
+    @return instance of this state
+]]
 function BaseState.new(class, fsm, parent)
     local instance = setmetatable({}, class)  -- Use the class passed in
     instance.fsm = fsm
@@ -13,11 +38,27 @@ function BaseState.new(class, fsm, parent)
 end
 
 -- Default implementations (like your virtual functions)
+--[[!
+    @brief virtual function for enter
+]]
 function BaseState:enter() end
+
+--[[!
+    @brief virtual function for exit
+]]
 function BaseState:exit() end
+
+--[[!
+    @brief virtual function for enter
+    @param dt - passed in the delta time for updates using delta time
+]]
 function BaseState:update(dt) end
 
 -- Helper method to change states
+--[[!
+    @brief change state function using the fsm
+    @param newStateName - name of the state to be changed
+]]
 function BaseState:changeState(newStateName)
     if self.fsm then
         self.fsm:changeState(newStateName)
@@ -27,6 +68,10 @@ function BaseState:changeState(newStateName)
 end
 
 -- Helper to check current state
+--[[!
+    @brief helper function that checks what is the current state
+    @return returns the current state
+]]
 function BaseState:isCurrentState()
     return self.fsm and self.fsm:getCurrentState() == self
 end
@@ -37,6 +82,8 @@ function BaseState:getParent()
 end
 
 return BaseState
+
+--reference of how to use the state class
 
 --[[
 HOW TO USE: Template State Class
