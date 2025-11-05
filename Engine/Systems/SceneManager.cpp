@@ -175,7 +175,7 @@ namespace Uma_Engine
     // SCENE MANAGEMENT STUFF
     void SceneManager::CreateNewScene()
     {
-        std::string name = "scene" + std::to_string(sceneNo) + ".scn";
+        std::string name = "Scene" + std::to_string(sceneNo) + ".scn";
         ++sceneNo;
         CreateScene(name, name);
         AttachScriptToScene(name, "EditorBehaviour");
@@ -201,6 +201,12 @@ namespace Uma_Engine
 
     std::shared_ptr<Scene> SceneManager::LoadScene(const std::string& name, bool additive)
     {
+        if (isUnloading)
+        {
+            std::cout << "A scene is unloading... try again later.\n";
+            return nullptr;
+        }
+
         // Check if scene exists
         if (!HasScene(name))
         {
@@ -214,6 +220,10 @@ namespace Uma_Engine
             std::cout << "Scene '" << name << "' is already loaded!" << std::endl;
             return m_Scenes[name];
         }
+
+        // call for stop mode
+        EventSystem* esHandler = pSystemManager->GetSystem<EventSystem>();
+        esHandler->Emit<IMGUIStopRequest>();
 
         auto scene = m_Scenes[name];
 
@@ -237,6 +247,7 @@ namespace Uma_Engine
 
         // passing message using event system
         UpdateIMGUIWindow();
+
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
         return scene;
@@ -282,6 +293,7 @@ namespace Uma_Engine
 
     void SceneManager::UnloadScene(const std::string& name)
     {
+        isUnloading = true;
         if (!HasScene(name))
         {
             std::cout << "Scene '" << name << "' does not exist!" << std::endl;
@@ -299,6 +311,7 @@ namespace Uma_Engine
             m_ActiveScene = nullptr;
         }
 
+        isUnloading = false;
         std::cout << "Scene '" << name << "' unloaded" << std::endl;
     }
 
@@ -307,6 +320,12 @@ namespace Uma_Engine
         if (!HasScene(name))
         {
             std::cout << "Scene '" << name << "' does not exist!" << std::endl;
+            return;
+        }
+
+        if (m_Scenes.size() == 1)
+        {
+            std::cout << "Cannot remove because this is the last scene!\n";
             return;
         }
 
@@ -326,7 +345,7 @@ namespace Uma_Engine
         // Remove from map
         m_Scenes.erase(name);
         std::cout << "Scene '" << name << "' removed" << std::endl;
-        LoadScene("GameScene1");
+        LoadScene(m_Scenes.begin()->second->GetName());
         UpdateIMGUIWindow();
     }
 

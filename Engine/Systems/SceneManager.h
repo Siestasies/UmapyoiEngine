@@ -117,6 +117,8 @@ namespace Uma_Engine
 
         PLAYMODE playMode = PLAYMODE::PM_STOP;
 
+        bool isUnloading = false;
+
         // Editor camera
         Uma_Engine::EditorCamera m_EditorCamera;
         bool m_UseEditorCamera = false;

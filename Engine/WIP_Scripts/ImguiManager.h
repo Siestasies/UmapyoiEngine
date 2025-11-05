@@ -75,7 +75,6 @@ namespace Uma_Engine
         bool IsStopped() const { return m_playState == PlayState::Stopped; }
         void ShowEngineDebug(bool show) { m_showEngineDebug = show; }
         void ShowEventDebug(bool show) { m_showEventDebug = show; }
-        void ShowDemoWindow(bool show) { m_showDemoWindow = show; }
         void ShowPerformanceWindow(bool show) { m_showPerformanceWindow = show; }
         void ShowSystemsWindow(bool show) { m_showSystemsWindow = show; }
 
@@ -96,7 +95,6 @@ namespace Uma_Engine
         void CreateSystemsWindow();
         void CreatePerformanceWindow();
         void CreateEngineDebugWindow(float fps, float deltaTime);
-        void CreateSerializationDebugWindow();
         void CreateEntityDebugWindow();
         void CreateEntityPropertyWindow();
         void CreateConsoleWindow();
@@ -125,7 +123,6 @@ namespace Uma_Engine
         // show or not
         bool m_showEngineDebug;
         bool m_showEventDebug;
-        bool m_showDemoWindow;
         bool m_showPerformanceWindow;
         bool m_showSystemsWindow;
         bool m_showEditorControlBar;
