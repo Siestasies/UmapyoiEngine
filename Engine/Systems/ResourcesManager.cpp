@@ -301,12 +301,10 @@ namespace Uma_Engine
         return false;
     }
 
-    SoundInfo& ResourcesManager::GetSound(const std::string& name) 
+    SoundInfo* ResourcesManager::GetSound(const std::string& name) 
     {
-        if (HasSound(name))
-            return mSoundList.find(name)->second;
-        else
-            throw std::invalid_argument("Sound not found");
+        auto it = mSoundList.find(name);
+        return (it != mSoundList.end()) ? &it->second : nullptr;
     }
 
     void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)

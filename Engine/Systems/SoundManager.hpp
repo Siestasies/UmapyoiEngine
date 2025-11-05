@@ -81,15 +81,15 @@ namespace Uma_Engine
 				*\param volume - volume of the sound
 				*\param pitch - pitch of the sound
 				*/
-				void playSound(SoundInfo& info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+				void playSound(SoundInfo* info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
-				void playSound(SoundInfo& info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
+				void playSound(SoundInfo* info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
 				/*!
 				*\brief stops the sound from playing
 				*\param info - sound info
 				*/
-				void stopSound(SoundInfo& info);
+				void stopSound(SoundInfo* info);
 
 				/*!
 				*\brief stops all sound from playing
@@ -101,7 +101,7 @@ namespace Uma_Engine
 				*\param info - sound info
 				*\param pause - true to pause
 				*/
-				void pauseSound(SoundInfo& info, bool pause = true);
+				void pauseSound(SoundInfo* info, bool pause = true);
 
 				/*!
 				*\brief pauses all sound
@@ -115,14 +115,14 @@ namespace Uma_Engine
 				*\param info - the info for sound info
 				*\param volume - volume to set the sound to
 				*/
-				void setSoundVolume(SoundInfo& info, float volume);
+				void setSoundVolume(SoundInfo* info, float volume);
 
 				/*!
 				*\brief set the pitch of a sound
 				*\param info - the info for sound info
 				*\param volume - pitch to set the sound to
 				*/
-				void setSoundPitch(SoundInfo& info, float pitch);
+				void setSoundPitch(SoundInfo* info, float pitch);
 
 				//toggle volume groups i.e. SFX,BGM,MASTER
 				//default value is master 

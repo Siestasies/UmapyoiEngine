@@ -213,28 +213,36 @@ namespace Uma_Engine {
 
     void SoundManager::unloadSound(FMOD_SOUND* sound)
     {
+        if (!sound)
+        {
+            Debugger::Log(WarningLevel::eWarning, "unload sound : sound doesnt exsists");
+            return;
+        }
+
         //goes thru the map and looks for the sound file if it is found release it and removes it from the map
         if (pFmodSystem) {
             FMOD_Sound_Release(sound);
         }
     }
 
-	void SoundManager::release() 
+    void SoundManager::release() 
     {
-		if (!pFmodSystem) return;
-		stopAllSounds();
-		if (SFX) {
-			FMOD_ChannelGroup_Release(SFX);
-			SFX = nullptr;
-		}
-		if (BGM) {
-			FMOD_ChannelGroup_Release(BGM);
-			BGM = nullptr;
-		}
-		FMOD_System_Close(pFmodSystem);
-		FMOD_System_Release(pFmodSystem);
-		pFmodSystem = nullptr;
-	}
+        if (!pFmodSystem) return;
+        stopAllSounds();
+        if (SFX) 
+        {
+            FMOD_ChannelGroup_Release(SFX);
+            SFX = nullptr;
+        }
+        if (BGM) 
+        {
+            FMOD_ChannelGroup_Release(BGM);
+            BGM = nullptr;
+        }
+        FMOD_System_Close(pFmodSystem);
+        FMOD_System_Release(pFmodSystem);
+        pFmodSystem = nullptr;
+    }
 
     void SoundManager::unloadAllSounds(std::unordered_map<std::string, SoundInfo>& mSoundList)
     {
@@ -254,9 +262,11 @@ namespace Uma_Engine {
         mSoundList.clear();
     }
 
-    void SoundManager::playSound(SoundInfo& info, FMOD_VECTOR pos, FMOD_VECTOR vel, int loopCount, float volume, float pitch)
+    void SoundManager::playSound(SoundInfo* info, FMOD_VECTOR pos, FMOD_VECTOR vel, int loopCount, float volume, float pitch)
     {
-        if (!pFmodSystem) { //check if fmod has been init
+        if (!pFmodSystem || !info) { //check if fmod has been init
+
+            Debugger::Log(WarningLevel::eWarning, "play sound : sound doesnt exsists");
             return;
         }
 
@@ -264,45 +274,46 @@ namespace Uma_Engine {
         FMOD_RESULT result;
 
         if (loopCount >= 0) {
-            FMOD_Sound_SetLoopCount(info.sound, loopCount);
+            FMOD_Sound_SetLoopCount(info->sound, loopCount);
         }
         //play in whichever channel group that it was set to
-        if (info.type == SoundType::SFX) {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, SFX, false, &info.channel);
+        if (info->type == SoundType::SFX) {
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, SFX, false, &info->channel);
         }
-        else if (info.type == SoundType::BGM) {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, BGM, false, &info.channel);
+        else if (info->type == SoundType::BGM) {
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, BGM, false, &info->channel);
         }
         else {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, nullptr, false, &info.channel);
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, nullptr, false, &info->channel);
         }
         if (result != FMOD_OK) {
             return;
         }
 
         // Set volume and pitch
-        FMOD_Channel_SetVolume(info.channel, volume);
-        FMOD_Channel_SetPitch(info.channel, pitch);
+        FMOD_Channel_SetVolume(info->channel, volume);
+        FMOD_Channel_SetPitch(info->channel, pitch);
 
-        FMOD_Channel_SetMode(info.channel, FMOD_3D);
-        info.pos = pos;
-        info.vel = vel;
-        FMOD_Channel_Set3DAttributes(info.channel, &info.pos, &info.vel);
-        FMOD_Channel_Set3DMinMaxDistance(info.channel, 100.0f, 1000.0f);
+        FMOD_Channel_SetMode(info->channel, FMOD_3D);
+        info->pos = pos;
+        info->vel = vel;
+        FMOD_Channel_Set3DAttributes(info->channel, &info->pos, &info->vel);
+        FMOD_Channel_Set3DMinMaxDistance(info->channel, 100.0f, 1000.0f);
 
         //add the channel to its respective group channel
-        if (info.type == SoundType::SFX) {
-            FMOD_Channel_SetChannelGroup(info.channel, SFX);
+        if (info->type == SoundType::SFX) {
+            FMOD_Channel_SetChannelGroup(info->channel, SFX);
         }
-        else if (info.type == SoundType::BGM) {
-            FMOD_Channel_SetChannelGroup(info.channel, BGM);
+        else if (info->type == SoundType::BGM) {
+            FMOD_Channel_SetChannelGroup(info->channel, BGM);
         }
         return;
     }
 
-    void SoundManager::playSound(SoundInfo& info, int loopCount, float volume, float pitch)
+    void SoundManager::playSound(SoundInfo* info, int loopCount, float volume, float pitch)
     {
-        if (!pFmodSystem) { //check if fmod has been init
+        if (!pFmodSystem || !info) { //check if fmod has been init
+            Debugger::Log(WarningLevel::eWarning, "play sound : sound doesnt exsists");
             return;
         }
 
@@ -310,39 +321,45 @@ namespace Uma_Engine {
         FMOD_RESULT result;
 
         if (loopCount >= 0) {
-            FMOD_Sound_SetLoopCount(info.sound, loopCount);
+            FMOD_Sound_SetLoopCount(info->sound, loopCount);
         }
         //play in whichever channel group that it was set to
-        if (info.type == SoundType::SFX) {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, SFX, false, &info.channel);
+        if (info->type == SoundType::SFX) {
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, SFX, false, &info->channel);
         }
-        else if (info.type == SoundType::BGM) {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, BGM, false, &info.channel);
+        else if (info->type == SoundType::BGM) {
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, BGM, false, &info->channel);
         }
         else {
-            result = FMOD_System_PlaySound(pFmodSystem, info.sound, nullptr, false, &info.channel);
+            result = FMOD_System_PlaySound(pFmodSystem, info->sound, nullptr, false, &info->channel);
         }
         if (result != FMOD_OK) {
             return;
         }
 
         // Set volume and pitch
-        FMOD_Channel_SetVolume(info.channel, volume);
-        FMOD_Channel_SetPitch(info.channel, pitch);
+        FMOD_Channel_SetVolume(info->channel, volume);
+        FMOD_Channel_SetPitch(info->channel, pitch);
 
         //add the channel to its respective group channel
-        if (info.type == SoundType::SFX) {
-            FMOD_Channel_SetChannelGroup(info.channel, SFX);
+        if (info->type == SoundType::SFX) {
+            FMOD_Channel_SetChannelGroup(info->channel, SFX);
         }
-        else if (info.type == SoundType::BGM) {
-            FMOD_Channel_SetChannelGroup(info.channel, BGM);
+        else if (info->type == SoundType::BGM) {
+            FMOD_Channel_SetChannelGroup(info->channel, BGM);
         }
         return;
     }
 
-    void SoundManager::stopSound(SoundInfo& info)
+    void SoundManager::stopSound(SoundInfo* info)
     {
-        FMOD_RESULT result = FMOD_Channel_Stop(info.channel);
+        if (!info)
+        {
+            Debugger::Log(WarningLevel::eWarning, "stop sound : sound doesnt exsists");
+            return;
+        }
+
+        FMOD_RESULT result = FMOD_Channel_Stop(info->channel);
         if (result != FMOD_OK) {
             return;
         }
@@ -356,9 +373,9 @@ namespace Uma_Engine {
         }
     }
 
-    void SoundManager::pauseSound(SoundInfo& info, bool pause)
+    void SoundManager::pauseSound(SoundInfo* info, bool pause)
     {
-        FMOD_Channel_SetPaused(info.channel, pause);
+        FMOD_Channel_SetPaused(info->channel, pause);
     }
 
     void SoundManager::pauseAllSounds(bool pause)
@@ -366,14 +383,26 @@ namespace Uma_Engine {
         FMOD_ChannelGroup_SetPaused(Master, pause);
     }
 
-    void SoundManager::setSoundVolume(SoundInfo& info, float volume)
+    void SoundManager::setSoundVolume(SoundInfo* info, float volume)
     {
-        FMOD_Channel_SetVolume(info.channel, volume);
+        if (!info)
+        {
+            Debugger::Log(WarningLevel::eWarning, "set vol : sound doesnt exsists");
+            return;
+        }
+
+        FMOD_Channel_SetVolume(info->channel, volume);
     }
 
-    void SoundManager::setSoundPitch(SoundInfo& info, float pitch)
+    void SoundManager::setSoundPitch(SoundInfo* info, float pitch)
     {
-        FMOD_Channel_SetPitch(info.channel, pitch);
+        if (!info)
+        {
+            Debugger::Log(WarningLevel::eWarning, "set pitch : sound doesnt exsists");
+            return;
+        }
+
+        FMOD_Channel_SetPitch(info->channel, pitch);
     }
 
     void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {

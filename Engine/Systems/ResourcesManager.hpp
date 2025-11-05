@@ -60,7 +60,7 @@ namespace Uma_Engine
         bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
         void UnloadSound(const std::string& name);
         bool HasSound(const std::string& name);
-        SoundInfo& GetSound(const std::string& name);
+        SoundInfo* GetSound(const std::string& name);
         void UnloadAllSound();
         const std::unordered_map<std::string, SoundInfo>& GetLoadedSounds() const;
 
