@@ -794,15 +794,9 @@ namespace Uma_Engine
         // Right-click context menu
         if (ImGui::BeginPopupContextItem())
         {
-            if (ImGui::MenuItem("Create Child"))
+            if (ImGui::MenuItem("Create New"))
             {
-                Uma_ECS::Entity child = coordinator.CreateEntity();
-                coordinator.AddComponent(child, Uma_ECS::Transform{
-                    .position = Vec2(0, 0),
-                    .rotation = Vec2(0, 0),
-                    .scale = Vec2(1, 1)
-                    });
-                coordinator.SetParent(child, entity);
+                pEventSystem->Emit<SpawnEntityRequestEvent>();
             }
 
             if (ImGui::MenuItem("Create Child"))
