@@ -31,6 +31,9 @@ namespace Uma_ECS
         bool followPlayer{};
         //float viewportWidth;
         //float viewportHeight;
+        Vec2 mShakeOffset{ 0.0f, 0.0f };
+        float mShakeTimer{ 0.0f };
+        float mShakeIntensity{ 0.0f };
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

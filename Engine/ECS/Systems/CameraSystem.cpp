@@ -55,6 +55,27 @@ namespace Uma_ECS
             // camera must be in root
             cam_tf.position = player_tf.worldPosition;
         }
+
+        // Camera shake
+        if (cam_c.mShakeTimer > 0.0f)
+        {
+            cam_c.mShakeTimer -= dt;
+
+            if (cam_c.mShakeTimer <= 0.0f)
+            {
+                // Timer ended, reset
+                cam_c.mShakeOffset = Vec2(0.0f, 0.0f);
+                cam_c.mShakeIntensity = 0.0f;
+            }
+            else
+            {
+                // Still shaking, calculate a new random offset
+                float offsetX = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * cam_c.mShakeIntensity;
+                float offsetY = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * cam_c.mShakeIntensity;
+                cam_c.mShakeOffset = Vec2(offsetX, offsetY);
+            }
+        }
+        cam_tf.position += cam_c.mShakeOffset;
     }
 }
 
