@@ -97,6 +97,23 @@ namespace Uma_Engine
                 ImGui::End();
             }
 
+            static bool fileExists(std::string filepath)
+            {
+                if (!fs::exists(filepath))
+                    return false;
+
+                std::filesystem::path fileParent(filepath);
+                fileParent = fileParent.parent_path();
+                std::string filename = filepath;
+                filename = filename.erase(0, 15);
+                for (const auto& entry : std::filesystem::directory_iterator(fileParent)) {
+                    if (entry.path().filename() == filename) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         private:
             // Files
             fs::path mCurrPath;

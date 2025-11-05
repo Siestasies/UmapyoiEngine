@@ -112,15 +112,22 @@ namespace Uma_Engine
         bool IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
 
+        // Inspector helper functions
+        bool DisplayComponent(Uma_ECS::Coordinator&, Uma_ECS::ComponentType, Uma_ECS::Entity&);
+
         bool m_initialized;
         bool ds_initialized;
         GLFWwindow* m_window;
         std::vector<std::string> logsVec;
+
         EventSystem* pEventSystem = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
+        FileBrowser mfileBrowser;
+        
         std::vector<std::string> sceneNames;
         std::vector<std::string> scenePaths;
         int activeSceneIndex;
+        std::string mScriptName;
 
         // holded in external scripts
         FileBrowser fileBrowser;

@@ -204,6 +204,13 @@ namespace Uma_Engine
         SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
     };
 
+    class CallLuaToInitScript : public Event
+    {
+    public:
+        Uma_ECS::Entity en;
+        CallLuaToInitScript(Uma_ECS::Entity const& e) : en(e) { priority = Priority::High; }
+    };
+
     class SceneInfoRequest : public Event
     {
     public:

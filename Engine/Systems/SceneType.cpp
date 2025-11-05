@@ -153,8 +153,8 @@ namespace Uma_Engine
 
     void Scene::UpdateSelective(float dt)
     {
-        if (m_Graphics)
-            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);
+       /* if (m_Graphics)
+            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
 
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();
@@ -442,8 +442,8 @@ namespace Uma_Engine
         if (m_CameraSystem)
             m_CameraSystem->Update(dt);
 
-        if (m_Graphics)
-            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);
+       /* if (m_Graphics)
+            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
