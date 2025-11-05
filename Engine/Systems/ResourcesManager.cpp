@@ -57,6 +57,8 @@ namespace Uma_Engine
         UnloadAllTextures();
         UnloadAllFonts();
         UnloadAllSound();
+
+        mSound->release();
     }
 
     bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
@@ -285,7 +287,7 @@ namespace Uma_Engine
     void ResourcesManager::UnloadAllSound() 
     {
         mSound->unloadAllSounds(mSoundList);
-        mSound->release();
+       /* mSound->release();*/
     }
 
     const std::unordered_map<std::string, SoundInfo>& ResourcesManager::GetLoadedSounds() const

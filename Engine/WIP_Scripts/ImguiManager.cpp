@@ -1035,12 +1035,6 @@ namespace Uma_Engine
 
         if (ImGui::Button("Save Current Scene"))
         {
-            pEventSystem->Emit<SaveSceneRequestEvent>();
-        }
-
-        if (ImGui::Button("Save Scene"))
-        {
-            // save scene into this file
             pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
