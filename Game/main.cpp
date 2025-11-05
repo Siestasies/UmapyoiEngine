@@ -105,11 +105,11 @@ int main()
     scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
     scn_mgr->RegisterScript<Uma_Engine::EditorScript>("EditorBehaviour");
 
-    auto editorScene = scn_mgr->CreateScene("GameScene1", "test_default.scn");
+    auto editorScene = scn_mgr->CreateScene("test_default.scn", "test_default.scn");
     editorScene->g_EngineConfig = gEngineConfig;
-    scn_mgr->AttachScriptToScene("GameScene1", "GameBehaviour");
-    scn_mgr->AttachScriptToScene("GameScene1", "EditorBehaviour");
-    scn_mgr->LoadScene("GameScene1");
+    scn_mgr->AttachScriptToScene("test_default.scn", "GameBehaviour");
+    scn_mgr->AttachScriptToScene("test_default.scn", "EditorBehaviour");
+    scn_mgr->LoadScene("test_default.scn");
 
     // Connect InputSystem to EventSystem
     inputSystem->SetEventSystem(eventSystem);

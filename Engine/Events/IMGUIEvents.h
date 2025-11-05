@@ -154,6 +154,12 @@ namespace Uma_Engine
         std::string name;
     };
 
+    class IMGUIStopRequest : public Event
+    {
+    public:
+        IMGUIStopRequest() { priority = Priority::High; }
+    };
+
     class ReLoadSceneRequestEvent : public Event
     {
     public:

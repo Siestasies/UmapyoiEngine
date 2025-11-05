@@ -30,6 +30,7 @@ All rights reserved.
 #include <vector>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -83,6 +84,29 @@ namespace Uma_Engine
 
         void load(const std::string& filename)
         {
+            // Use std::filesystem to explicitly check if the file exists
+            if (!std::filesystem::exists(filename))
+            {
+                std::string log;
+                std::stringstream ss(log);
+                ss << "File does not exist: " << filename;
+                Debugger::Log(WarningLevel::eCritical, ss.str());
+
+                // If the file doesn't exist, create an empty one
+                std::ofstream ofs(filename);  // Create the file if it doesn't exist
+                ofs.close();
+                // copy file from test_base file
+                std::filesystem::copy_file(
+                    "Assets/Scenes/test_base.scn",
+                    filename,
+                    std::filesystem::copy_options::overwrite_existing
+                );
+
+                std::stringstream createLog;
+                createLog << "Created an empty file: " << filename;
+                Debugger::Log(WarningLevel::eCritical, createLog.str());
+            }
+
             std::ifstream ifs(filename);
             rapidjson::IStreamWrapper isw(ifs);
             rapidjson::Document doc;

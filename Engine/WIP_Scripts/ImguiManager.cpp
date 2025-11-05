@@ -21,7 +21,6 @@ namespace Uma_Engine
         , m_window(nullptr)
         , m_showEngineDebug(true)
         , m_showEventDebug(true)
-        , m_showDemoWindow(false)
         , m_showPerformanceWindow(true)
         , m_showSystemsWindow(true)
         , m_historyOffset(0)
@@ -120,7 +119,7 @@ namespace Uma_Engine
         style.GrabRounding = 4.0f; // Rounded corners for scrollbar handles and sliders
         style.ScrollbarRounding = 4.0f; // Rounded corners for scrollbar
 
-        // Padding adjustments (similar to Unity’s compact UI)
+        // Padding adjustments (similar to Unityï¿½s compact UI)
         style.FramePadding = ImVec2(8.0f, 6.0f); // Padding inside input fields and buttons
         style.ItemSpacing = ImVec2(6.0f, 4.0f); // Space between items
         style.WindowPadding = ImVec2(8.0f, 8.0f); // Padding inside window borders
@@ -146,6 +145,8 @@ namespace Uma_Engine
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
+        pEventSystem->Subscribe<IMGUIStopRequest>([this](const IMGUIStopRequest& e)
+             { m_playState = PlayState::Stopped; });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -377,19 +378,10 @@ namespace Uma_Engine
         CreateHierarchyWindow();
         CreateInspectorWindow();
 
-        if (m_showSystemsWindow)
-        {
-            CreateSystemsWindow();
-            CreateEntityDebugWindow();
-            CreateConsoleWindow();
-            CreateSerializationDebugWindow();
-            CreateEntityPropertyWindow();
-        }
-
-        if (m_showDemoWindow)
-        {
-            ImGui::ShowDemoWindow(&m_showDemoWindow);
-        }
+		CreateSystemsWindow();
+		CreateEntityDebugWindow();
+		CreateConsoleWindow();
+		CreateEntityPropertyWindow();
     }
 
     void ImguiManager::CreateSystemsWindow()
@@ -466,40 +458,6 @@ namespace Uma_Engine
         ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
         ImGui::Text("Renderer: %s", glGetString(GL_RENDERER));
         ImGui::Text("Vendor: %s", glGetString(GL_VENDOR));
-
-        ImGui::End();
-    }
-
-    void ImguiManager::CreateSerializationDebugWindow()
-    {
-        bool b = true;
-        ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-        if (m_playState != PlayState::Stopped) {
-            flags |= ImGuiWindowFlags_NoInputs;
-        }
-        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
-        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
-        ImGui::Begin("Serialization Debug", &b, flags);
-        //ImGui::Begin("Serialization Debug", &b);
-
-        // get entity count here
-        ImGui::Separator();
-
-        if (ImGui::Button("Load Scene", { 100, 50 }))
-        {
-            // load scene from this file
-            //pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
-        }
-        if (ImGui::Button("Save Scene", { 100, 50 }))
-        {
-            // save scene into this file
-            pEventSystem->Emit<SaveSceneRequestEvent>();
-        }
-        if (ImGui::Button("Destroy All", { 100, 50 }))
-        {
-            // destroy entities within the scene lol
-            pEventSystem->Emit<ClearSceneRequestEvent>();
-        }
 
         ImGui::End();
     }
@@ -1058,18 +1016,26 @@ namespace Uma_Engine
         ImGui::End();
     }
 
-    void ImguiManager::SceneManagerWindow() {
+    void ImguiManager::SceneManagerWindow()
+    {
         ImGui::Begin("Scene Manager");
 
         // Button to create a new scene
         if (ImGui::Button("Create New Scene")) {
+            pEventSystem->Emit<StopSceneRequest>();
             pEventSystem->Emit<CreateNewSceneRequest>();
         }
 
         // Button to delete the selected scene
-        if (ImGui::Button("Delete Current Scene"))
+        if (ImGui::Button("Remove Current Scene"))
         {
-             pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+            pEventSystem->Emit<StopSceneRequest>();
+            pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+        }
+
+        if (ImGui::Button("Save Current Scene"))
+        {
+            pEventSystem->Emit<SaveSceneRequestEvent>();
         }
 
         if (ImGui::Button("Save Scene"))
@@ -1097,6 +1063,7 @@ namespace Uma_Engine
             // detect double click
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
+                pEventSystem->Emit<StopSceneRequest>();
                 pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
             }
         }
