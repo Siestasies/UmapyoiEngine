@@ -1,6 +1,18 @@
 --! @file Vec2.lua
+--! @par    Project: GAM200
+--! @par    Course: CSD2401
+--! @par    Section A
+--! @par    Software Engineering Project 3
+
+--! @author Leong Wai Men (100%)
+--! @par    E-mail: waimen.leong@digipen.edu
+--! @par    DigiPen login: waimen.leong
+
 --! @brief Lua-side Vec2 implementation that mirrors the C++ registered type
 --! @details Use this for pure Lua calculations or when C++ Vec2 isn't available
+
+--! All content (C) 2025 DigiPen Institute of Technology Singapore.
+--! All rights reserved.
 
 --! @class Vec2
 --! @brief A 2D vector class with mathematical operations and utilities
