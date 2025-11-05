@@ -235,7 +235,7 @@ namespace Uma_Engine
             double deltaX = currMouseX - prevMouseX;
             double deltaY = currMouseY - prevMouseY;
 
-            if (std::abs(deltaX) > 0.1 || std::abs(deltaY) > 0.1)
+            if (std::abs(deltaX) > 0.0001 || std::abs(deltaY) > 0.0001)
             {
                 // Block mouse move events when over UI (prevents camera rotation, etc.)
                 if (Uma_UI::InputFilter::IsMouseOverUI())

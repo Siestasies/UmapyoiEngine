@@ -81,7 +81,6 @@ namespace Uma_Engine
         float dragStartRotation = 0.0f;
         Vec2 dragStartScale{};
         Vec2 dragPrevMouse{};
-        bool dragFirstFrame;
 
         // System state
         bool enabled = true;
