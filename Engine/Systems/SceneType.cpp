@@ -165,6 +165,9 @@ namespace Uma_Engine
         if (m_UISystem)
             m_UISystem->Update(dt);
 
+        if (m_CollisionSystem)
+            m_CollisionSystem->DebugRender();
+
         if (m_CameraSystem)
             m_CameraSystem->Update(dt);
     }
