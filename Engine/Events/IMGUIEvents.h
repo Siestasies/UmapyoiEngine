@@ -142,19 +142,22 @@ namespace Uma_Engine
     class SaveSceneRequestEvent : public Event
     {
     public:
-        SaveSceneRequestEvent(const std::string& filepath = "") : filepath(filepath) { priority = Priority::Normal; }
-
-    public:
-        std::string filepath;
+        SaveSceneRequestEvent() { priority = Priority::High; }
     };
 
     class LoadSceneRequestEvent : public Event
     {
     public:
-        LoadSceneRequestEvent(const std::string& filepath) : filepath(filepath) { priority = Priority::High; }
+        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
 
     public:
-        std::string filepath;
+        std::string name;
+    };
+
+    class ReLoadSceneRequestEvent : public Event
+    {
+    public:
+        ReLoadSceneRequestEvent() { priority = Priority::High; }
     };
 
     class PlaySceneRequest : public Event
@@ -173,5 +176,36 @@ namespace Uma_Engine
     {
     public:
         PauseSceneRequest() { priority = Priority::High; }
+    };
+
+    class CreateNewSceneRequest : public Event
+    {
+    public:
+        CreateNewSceneRequest() { priority = Priority::High; }
+    };
+
+    class DeleteCurrSceneRequest : public Event
+    {
+    public:
+        std::string name;
+        DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+    class SaveCurrSceneRequest : public Event
+    {
+    public:
+        std::string name;
+        SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+    class SceneInfoRequest : public Event
+    {
+    public:
+        SceneInfoRequest(const std::vector<std::string>& vec, const std::vector<std::string>& vec2, int x)
+            : sceneNames(vec), scenePaths(vec2), activeSceneIndex(x) { priority = Priority::High; }
+    public:
+        std::vector<std::string> sceneNames;
+        std::vector<std::string> scenePaths;
+        int activeSceneIndex;
     };
 }

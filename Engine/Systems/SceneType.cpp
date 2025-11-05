@@ -59,14 +59,16 @@ namespace Uma_Engine
             script->OnUnload();
         }
 
-        m_LuaScriptingSystem->Shutdown();
-
-        m_UISystem->Shutdown();
+        gGameSerializer.ShutDown();
 
         // Destroy entities
         m_Coordinator.DestroyAllEntities();
 
+        m_LuaScriptingSystem->Shutdown();
         
+        m_UISystem->Shutdown();
+
+
         // Unload resources
         if (m_ResourcesManager)
         {
@@ -129,7 +131,7 @@ namespace Uma_Engine
         }
 
         // Calculate interpolation alpha
-        float alpha = m_Accumulator / m_FixedTimeStep;
+        //float alpha = m_Accumulator / m_FixedTimeStep;
 
         // Update render positions for smooth interpolation
        /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
@@ -257,7 +259,9 @@ namespace Uma_Engine
     void Scene::Deserialize(const std::string& filepath)
     {
         if (filepath.empty())
+        {
             gGameSerializer.load(m_FilePath);
+        }
     }
 
     // INTERNALS
@@ -267,7 +271,7 @@ namespace Uma_Engine
         // Get system handles
         m_HybridInputSystem = m_SystemManager->GetSystem<HybridInputSystem>();
         m_Graphics = m_SystemManager->GetSystem<Graphics>();
-        m_Sound = m_SystemManager->GetSystem<Sound>();
+        m_Sound = m_SystemManager->GetSystem<SoundManager>();
         m_EventSystem = m_SystemManager->GetSystem<EventSystem>();
         m_ResourcesManager = m_SystemManager->GetSystem<ResourcesManager>();
 
@@ -319,6 +323,9 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
 
+        //test
+        m_Coordinator.RegisterComponent<Uma_ECS::AudioListener>();
+        
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
         {
@@ -388,6 +395,17 @@ namespace Uma_Engine
         }
         m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
 
+        //test
+        m_AudioSystem = m_Coordinator.RegisterSystem<Uma_ECS::AudioSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioListener>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
+        }
+        m_AudioSystem->Init(m_Sound, &m_Coordinator);
+
         InitializeUISystem();
 
         gGameSerializer.Register(m_ResourcesManager);
@@ -435,6 +453,9 @@ namespace Uma_Engine
 
         if (m_UISystem)
             m_UISystem->Update(dt);
+
+        if (m_AudioSystem)
+            m_AudioSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()

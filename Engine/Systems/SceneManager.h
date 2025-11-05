@@ -26,6 +26,7 @@ All rights reserved.
 #include <memory>
 #include <functional>
 #include <iostream>
+#include "Systems/EditorCamera.h"
 
 namespace Uma_Engine
 {
@@ -45,22 +46,25 @@ namespace Uma_Engine
         void Update(float dt) override;
         void Shutdown() override;
 
-        // SCENE MANAGEMENT STUFF
-        void SetImguiHandler(ImguiManager* im) { imHandler = im; }
-
         // Create a new empty scene
         std::shared_ptr<Scene> CreateScene(const std::string& name, const std::string& filepath = "");
+        void CreateNewScene();
         // Load scene synchronously (blocks until loaded)
         std::shared_ptr<Scene> LoadScene(const std::string& name, bool additive = false);
         // Load scene asynchronously (non-blocking)
         void LoadSceneAsync(const std::string& name, bool additive = false);
         void UnloadScene(const std::string& name);
+        void SaveScene(const std::string& name);
         void RemoveScene(const std::string& name);
         void UnloadAllScenes();
         void SetActiveScene(const std::string& name);
 
         std::shared_ptr<Scene> GetScene(const std::string& name);
         std::shared_ptr<Scene> GetActiveScene() { return m_ActiveScene; }
+
+        // Editor camera access
+        Uma_Engine::EditorCamera& GetEditorCamera() { return m_EditorCamera; }
+        bool IsUsingEditorCamera() const { return m_UseEditorCamera; }
 
         // SCRIPT STUFF
         // Register a script factory (for creating scripts by name)
@@ -99,6 +103,7 @@ namespace Uma_Engine
     private:
         void UpdateLoadingScenes();
         void RemoveUnloadedScenes();
+        void UpdateIMGUIWindow();
 
         // Script factory type
         using ScriptFactory = std::function<std::shared_ptr<SceneScript>()>;
@@ -109,8 +114,12 @@ namespace Uma_Engine
         std::vector<std::shared_ptr<Scene>> m_LoadingScenes;
         std::shared_ptr<Scene> m_ActiveScene;
 
-        ImguiManager* imHandler;
+        static int sceneNo;
 
         PLAYMODE playMode = PLAYMODE::PM_STOP;
+
+        // Editor camera
+        Uma_Engine::EditorCamera m_EditorCamera;
+        bool m_UseEditorCamera = false;
     };
 }

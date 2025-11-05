@@ -8,8 +8,6 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
-#include "Events/CollisionEvent.h"
-
 #include <functional>
 
 namespace Uma_ECS
@@ -40,7 +38,7 @@ namespace Uma_ECS
 
         RegisterLuaAPI();
 
-        RegisterEventListeners();
+        SubscribeToEvents();
     }
 
     void LuaScriptingSystem::Restart()
@@ -157,31 +155,25 @@ namespace Uma_ECS
             return;
         }
 
-        // Check if Lua is valid
+        UnsubscribeEvents();
+
         bool luaValid = sharedLua && sharedLua->lua_state();
+
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+        std::vector<Entity> allEntities;
+        allEntities.reserve(scriptArray.Size());
+
+        for (size_t i = 0; i < scriptArray.Size(); ++i)
+            allEntities.push_back(scriptArray.GetEntity(i));
+
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "Found " + std::to_string(allEntities.size()) + " entities with scripts");
 
         if (luaValid)
         {
-            auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
-
-            std::vector<Entity> allEntities;
-
-            // Get all entities that have LuaScript components
-            for (size_t i = 0; i < scriptArray.Size(); ++i)
-            {
-                Entity entity = scriptArray.GetEntity(i);
-                allEntities.push_back(entity);
-            }
-
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "Found " + std::to_string(allEntities.size()) + " entities with scripts");
-
-
-            // Call OnDestroy while Lua is alive
             for (auto const& entity : allEntities)
             {
                 if (!scriptArray.Has(entity)) continue;
-
                 auto& scriptComponent = scriptArray.GetData(entity);
 
                 for (auto& script : scriptComponent.scripts)
@@ -192,81 +184,41 @@ namespace Uma_ECS
                         {
                             CallLuaFunction(script, "OnDestroy");
                         }
-                        catch (...)
+                        catch (...) {}
+                    }
+
+                    // Clear and reset the environment safely
+                    if (script.scriptEnv)
+                    {
+                        try
                         {
-                            // Ignore errors during shutdown
+                            script.scriptEnv->clear();
+                            script.scriptEnv.reset();
                         }
+                        catch (...) {}
                     }
+
+                    script.isInitialized = false;
+                    script.hasError = false;
                 }
+
+                scriptComponent.scripts.clear();
             }
 
-            // Clear ALL environments while Lua is still alive
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "Clearing all environments");
-
-            for (auto const& entity : allEntities)
-            {
-                if (!scriptArray.Has(entity)) continue;
-
-                auto& scriptComponent = scriptArray.GetData(entity);
-
-                for (auto& script : scriptComponent.scripts)
-                {
-                    try
-                    {
-                        script.scriptEnv = sol::nil;
-                    }
-                    catch (...)
-                    {
-                        // Ignore
-                    }
-                }
-            }
-
-            // Run GC
             try
             {
                 sharedLua->collect_garbage();
                 sharedLua->collect_garbage();
             }
-            catch (...)
-            {
-                // Ignore
-            }
+            catch (...) {}
         }
 
-        // Destroy Lua state
         sharedLua = nullptr;
-
-        // Clear C++ structures (environments already nil)
-        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
-
-        std::vector<Entity> remainingEntities;
-        for (size_t i = 0; i < scriptArray.Size(); ++i)
-        {
-            Entity entity = scriptArray.GetEntity(i);
-            remainingEntities.push_back(entity);
-        }
-
-        for (auto const& entity : remainingEntities)
-        {
-            if (!scriptArray.Has(entity)) continue;
-
-            auto& scriptComponent = scriptArray.GetData(entity);
-
-            for (auto& script : scriptComponent.scripts)
-            {
-                //script.callbacks = LuaScriptInstance::CallbackCache{};
-                script.isInitialized = false;
-                script.hasError = false;
-            }
-
-            scriptComponent.scripts.clear();
-        }
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
             "LuaScriptingSystem::Shutdown() completed");
     }
+
 
     void LuaScriptingSystem::RegisterLuaAPI()
     {
@@ -660,6 +612,23 @@ namespace Uma_ECS
         sharedLua->set_function("GetDeltaTime", [this]() {
             return lastDeltaTime; // Store in class
             });
+
+        // play audio
+        sharedLua->set_function("PlaySound", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopSound", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopSoundEvent>(audioName);
+            });
+
+        sharedLua->set_function("PlayMusic", [this](const std::string& audioName, float vol, int loop) {
+            pEventSystem->Emit<Uma_Engine::PlayMusicEvent>(audioName, vol, loop);
+            });
+
+        sharedLua->set_function("StopMusic", [this](const std::string& audioName) {
+            pEventSystem->Emit<Uma_Engine::StopMusicEvent>(audioName);
+            });
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
@@ -684,15 +653,15 @@ namespace Uma_ECS
             return;
         }
 
-        script.scriptEnv = sol::environment(*sharedLua, sol::create, sharedLua->globals());
+        script.scriptEnv = std::make_shared<sol::environment>(*sharedLua, sol::create, sharedLua->globals());
 
             // Bind entity-specific functions to this environment
-        BindEntityAPI(entity, script.scriptEnv);
+        BindEntityAPI(entity, (*script.scriptEnv));
 
        // load and run the script
         try
         {
-            auto result = sharedLua->script_file(script.scriptPath, script.scriptEnv);
+            auto result = sharedLua->script_file(script.scriptPath, *script.scriptEnv);
 
             // it has problem running the script
             if (!result.valid())
@@ -719,7 +688,7 @@ namespace Uma_ECS
         }
 
         // store entity ID in environment 
-        script.scriptEnv["EntityID"] = entity;
+        (*script.scriptEnv)["EntityID"] = entity;
 
         // Discover exposed variables
         DiscoverExposedVariables(script);
@@ -734,43 +703,61 @@ namespace Uma_ECS
            "Lua script loaded: " + script.scriptPath);
     }
 
-    void LuaScriptingSystem::RegisterEventListeners()
+    void LuaScriptingSystem::UnsubscribeEvents()
     {
+        for (auto listener : aEventListeners)
+        {
+            pEventSystem->UnsubscribeListener(listener);
+        }
+
+        aEventListeners.clear();
+
+        std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
+    }
+
+    void LuaScriptingSystem::SubscribeToEvents()
+    {
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent>(
             [this](const Uma_Engine::OnCollisionEnterEvent& e)
             {
                 OnCollisionEnterEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent>(
             [this](const Uma_Engine::OnCollisionEvent& e)
             {
                 OnCollisionEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent>(
             [this](const Uma_Engine::OnCollisionExitEvent& e)
             {
                 OnCollisionExitEvent(e.entityA, e.entityB);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent>(
             [this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
                 OnTriggerEnterEvent(e.trigger, e.entity);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent>(
             [this](const Uma_Engine::OnTriggerEvent& e)
             {
                 OnTriggerEvent(e.trigger, e.entity);
-            });
+            }));
 
+        aEventListeners.push_back(
         pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent>(
             [this](const Uma_Engine::OnTriggerExitEvent& e)
             {
                 OnTriggerExitEvent(e.trigger, e.entity);
-            });
+            }));
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
@@ -784,6 +771,7 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::OnCollisionEnterEvent(Entity entityA, Entity entityB)
     {
+        pCoordinator->GetSerializerName();
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
         // Notify both entities
@@ -888,7 +876,7 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::DiscoverExposedVariables(LuaScriptInstance& script)
     {
-        sol::optional<sol::table> exposedVars = script.scriptEnv["ExposedVars"];
+        sol::optional<sol::table> exposedVars = (*script.scriptEnv)["ExposedVars"];
 
         if (!exposedVars) return;
 
@@ -942,16 +930,16 @@ namespace Uma_ECS
             switch (var.type)
             {
             case LuaVarType::T_FLOAT:
-                script.scriptEnv[var.name] = std::get<float>(var.value);
+                (*script.scriptEnv)[var.name] = std::get<float>(var.value);
                 break;
             case LuaVarType::T_INT:
-                script.scriptEnv[var.name] = std::get<int>(var.value);
+                (*script.scriptEnv)[var.name] = std::get<int>(var.value);
                 break;
             case LuaVarType::T_BOOL:
-                script.scriptEnv[var.name] = std::get<bool>(var.value);
+                (*script.scriptEnv)[var.name] = std::get<bool>(var.value);
                 break;
             case LuaVarType::T_STRING:
-                script.scriptEnv[var.name] = std::get<std::string>(var.value);
+                (*script.scriptEnv)[var.name] = std::get<std::string>(var.value);
                 break;
             }
         }
@@ -961,7 +949,7 @@ namespace Uma_ECS
     {
         for (auto& var : script.exposedVariables)
         {
-            sol::object value = script.scriptEnv[var.name];
+            sol::object value = (*script.scriptEnv)[var.name];
 
             switch (var.type)
             {
@@ -1000,7 +988,7 @@ namespace Uma_ECS
         std::vector<LuaVariable> oldVars = script.exposedVariables;
 
         // Clear and reinitialize
-        script.scriptEnv = sol::nil;
+        (*script.scriptEnv) = sol::nil;
         script.isInitialized = false;
         script.hasError = false;
 
@@ -1111,7 +1099,7 @@ namespace Uma_ECS
     {
         try
         {
-            sol::optional<sol::protected_function> func = script.scriptEnv[funcName];
+            sol::optional<sol::protected_function> func = (*script.scriptEnv)[funcName];
 
             if (!func)
                 return;
@@ -1144,100 +1132,56 @@ namespace Uma_ECS
             "=== OnEntityDestroyed START for entity: " + std::to_string(entity));
 
         if (!pCoordinator)
-        {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "pCoordinator is null - early exit");
             return;
-        }
 
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
         if (!scriptArray.Has(entity))
-        {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "Entity has no LuaScript component");
             return;
-        }
 
         auto& scriptComponent = scriptArray.GetData(entity);
 
         if (scriptComponent.scripts.empty())
-        {
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "Scripts already cleared");
             return;
-        }
 
-        // Check if Lua is still valid
-        bool luaValid = sharedLua && sharedLua->lua_state();
-
-        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-            "Lua valid: " + std::string(luaValid ? "yes" : "no") +
-            ", cleaning " + std::to_string(scriptComponent.scripts.size()) + " scripts");
+        bool luaValid = (sharedLua && sharedLua->lua_state());
 
         for (auto& script : scriptComponent.scripts)
         {
-            // Call OnDestroy if Lua is valid
+            // Safe OnDestroy
             if (luaValid && script.isEnabled && script.isInitialized)
             {
                 try
                 {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                        "Calling OnDestroy for: " + script.scriptPath);
-
                     CallLuaFunction(script, "OnDestroy");
                 }
-                catch (const std::exception& e)
-                {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                        "OnDestroy error: " + std::string(e.what()));
-                }
-                catch (...)
-                {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                        "OnDestroy unknown error");
-                }
+                catch (...) { /* ignore */ }
             }
 
-            // CRITICAL: Clear environment properly
-            if (luaValid)
+            // Safe environment cleanup
+            if (script.scriptEnv)
             {
                 try
                 {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                        "Clearing environment for: " + script.scriptPath);
+                    // Only clear if Lua still valid
+                    if (luaValid)
+                        (*script.scriptEnv) = sol::nil;
 
-                    // First set to nil
-                    script.scriptEnv = sol::nil;
-
-                    // Then create a new empty environment to replace it
-                    // This ensures the old one is properly destroyed
-                    script.scriptEnv = sol::environment(*sharedLua, sol::create, sharedLua->globals());
-
-                    // Then immediately clear the new one
-                    script.scriptEnv = sol::lua_nil;
+                    // Release the shared_ptr entirely
+                    script.scriptEnv.reset();
                 }
-                catch (const std::exception& e)
-                {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                        "Environment clear error: " + std::string(e.what()));
-                }
-                catch (...)
-                {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                        "Environment clear unknown error");
-                }
+                catch (...) { /* ignore */ }
             }
 
-            // Always clear C++ structures
+            // Clear C++ state
             script.isInitialized = false;
             script.hasError = false;
         }
 
-        // CLEAR THE ENTIRE SCRIPTS VECTOR
-        // This will call destructors on all script instances
+        // Let vector destructor run — shared_ptr handles Lua env memory safely
         scriptComponent.scripts.clear();
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
             "=== OnEntityDestroyed COMPLETE for entity: " + std::to_string(entity));
     }
+
 }

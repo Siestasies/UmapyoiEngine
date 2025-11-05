@@ -51,8 +51,9 @@ namespace Uma_ECS
             Entity player = pArray.GetEntity(0);
             auto& player_tf = tfArray.GetData(player);
 
-            cam_tf.position = player_tf.position;
-            cam_tf.worldPosition = player_tf.position;
+            // set the pos of camera to be the player world pos
+            // camera must be in root
+            cam_tf.position = player_tf.worldPosition;
         }
     }
 }

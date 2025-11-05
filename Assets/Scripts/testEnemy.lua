@@ -78,6 +78,10 @@ function Update(dt)
         Log("components are missing");
     end
 
+    if KeyReleased(KEY_V) then 
+        PlaySound("explosion", 1, 0)
+    end
+
     --if KeyPressed(KEY_W) then 
     --    Log("W IS PRESSED")
     --elseif KeyDown(KEY_W) then 

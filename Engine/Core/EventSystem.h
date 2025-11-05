@@ -77,13 +77,15 @@ namespace Uma_Engine
 
         // Subscribe to an event type with callback
         template<typename T>
-        void Subscribe(std::function<void(const T&)> callback)
+        std::shared_ptr<EventListener<T>> Subscribe(std::function<void(const T&)> callback)
         {
             static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
 
             std::type_index typeIndex = std::type_index(typeid(T));
             auto listener = std::make_shared<EventListener<T>>(callback);
             listeners[typeIndex].push_back(listener);
+
+            return listener;
         }
 
         // Unsubscribe a specific listener
@@ -93,6 +95,20 @@ namespace Uma_Engine
             std::type_index typeIndex = std::type_index(typeid(T));
             auto& listenerList = listeners[typeIndex];
             listenerList.erase(std::remove(listenerList.begin(), listenerList.end(), listener), listenerList.end());
+        }
+
+        // Unsubscribe 
+        void UnsubscribeListener(std::shared_ptr<IEventListener> listener)
+        {
+            for (auto& [typeIndex, listenerList] : listeners)
+            {
+                auto it = std::find(listenerList.begin(), listenerList.end(), listener);
+                if (it != listenerList.end())
+                {
+                    listenerList.erase(it);
+                    return;
+                }
+            }
         }
 
         // Immediately dispatch an event for critical/real-time events

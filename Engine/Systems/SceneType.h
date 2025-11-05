@@ -39,6 +39,7 @@ All rights reserved.
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/LuaScript.h"
 #include "ECS/Components/Animator.h"
+#include "ECS/Components/AudioListener.h"
 
 // UI Components
 #include "../UI/Components/RectTransform.h"
@@ -51,13 +52,16 @@ All rights reserved.
 #include "Systems/InputSystem.h"
 #include "Systems/HybridInputSystem.h"
 #include "Systems/Graphics.hpp"
-#include "Systems/Sound.hpp"
+#include "Systems/SoundManager.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/CameraSystem.hpp"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"
 #include "../Events/IMGUIEvents.h"
+
+//test
+#include "../Systems/AudioSystem.hpp"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -124,7 +128,7 @@ namespace Uma_Engine
             //SystemManager* GetSystemManager() { return m_SystemManager; }
             Uma_Engine::HybridInputSystem* GetInputSystem() { return m_HybridInputSystem; }
             Uma_Engine::Graphics* GetGraphics() { return m_Graphics; }
-            Uma_Engine::Sound* GetSound() { return m_Sound; }
+            Uma_Engine::SoundManager* GetSound() { return m_Sound; }
             Uma_Engine::ResourcesManager* GetResourcesManager() { return m_ResourcesManager; }
             Uma_Engine::EventSystem* GetEventSystem() { return m_EventSystem; }
 
@@ -133,7 +137,7 @@ namespace Uma_Engine
             Uma_Engine::SystemManager* m_SystemManager;
             Uma_Engine::HybridInputSystem* m_HybridInputSystem;
             Uma_Engine::Graphics* m_Graphics;
-            Uma_Engine::Sound* m_Sound;
+            Uma_Engine::SoundManager* m_Sound;
             Uma_Engine::ResourcesManager* m_ResourcesManager;
             Uma_Engine::EventSystem* m_EventSystem;
             Uma_Engine::EngineConfig g_EngineConfig;
@@ -148,6 +152,9 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
+
+            //testing
+            std::shared_ptr<Uma_ECS::AudioSystem> m_AudioSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;
@@ -198,7 +205,7 @@ namespace Uma_Engine
             virtual void OnDetach() {}
             virtual void OnLoad() {}
             virtual void OnUnload() {}
-            virtual void OnUpdate(float dt) {}
+            virtual void OnUpdate(float dt) { UNREFERENCED_PARAMETER(dt); }
 
             const std::string& GetName() const { return m_Name; }
 
@@ -211,8 +218,8 @@ namespace Uma_Engine
             Uma_ECS::LuaScriptingSystem& GetLuascriptingSystem() { return *m_Scene->m_LuaScriptingSystem; }
             Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
-            Uma_Engine::Sound* GetSound() { return m_Scene->GetSound(); }
+            Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
-            Uma_Engine::EventSystem* GetEvents() { return m_Scene->GetEventSystem(); }
+            Uma_Engine::EventSystem* GetEventSystem() { return m_Scene->GetEventSystem(); }
     };
 }

@@ -58,7 +58,69 @@ namespace Uma_Engine
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
-        ImGui::StyleColorsDark();
+        ImGuiStyle& style = ImGui::GetStyle();
+        ImVec4* colors = style.Colors;
+
+        // Text and background colors
+        colors[ImGuiCol_Text] = ImVec4(0.90f, 0.90f, 0.90f, 1.00f); // Light text
+        colors[ImGuiCol_WindowBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f); // Dark background (Unity's blackish background)
+        colors[ImGuiCol_ChildBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Light dark child window background
+        colors[ImGuiCol_Border] = ImVec4(0.50f, 0.50f, 0.50f, 0.50f); // Dark gray border
+        colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f); // No border shadow
+
+        // Button colors
+        colors[ImGuiCol_Button] = ImVec4(0.21f, 0.44f, 0.77f, 0.80f); // Light blue button
+        colors[ImGuiCol_ButtonHovered] = ImVec4(0.22f, 0.51f, 0.94f, 1.00f); // Light blue on hover
+        colors[ImGuiCol_ButtonActive] = ImVec4(0.13f, 0.33f, 0.59f, 1.00f); // Darker blue when pressed
+
+        // Header colors
+        colors[ImGuiCol_Header] = ImVec4(0.14f, 0.35f, 0.58f, 0.60f); // Header background color (slightly faded blue)
+        colors[ImGuiCol_HeaderHovered] = ImVec4(0.19f, 0.42f, 0.73f, 0.80f); // Header hover color (brighter blue)
+        colors[ImGuiCol_HeaderActive] = ImVec4(0.12f, 0.30f, 0.52f, 0.80f); // Header active (selected) color
+
+        // Frame (input fields, etc.) colors
+        colors[ImGuiCol_FrameBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f); // Dark gray frame background (input fields, combo boxes)
+        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Frame background when hovered
+        colors[ImGuiCol_FrameBgActive] = ImVec4(0.34f, 0.34f, 0.34f, 1.00f); // Active frame background (when clicked)
+
+        colors[ImGuiCol_TitleBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Window title background
+        colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.20f, 0.20f, 0.20f, 0.75f); // Collapsed window title background
+        colors[ImGuiCol_TitleBgActive] = ImVec4(0.23f, 0.23f, 0.23f, 1.00f); // Active window title background
+
+        // Scrollbar and grab colors
+        colors[ImGuiCol_ScrollbarBg] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Scrollbar background
+        colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Scrollbar grab (blue)
+        colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.25f, 0.56f, 0.92f, 1.00f); // Scrollbar grab hover color
+        colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.20f, 0.45f, 0.77f, 1.00f); // Scrollbar grab active color
+
+        // Tab colors
+        colors[ImGuiCol_Tab] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Default tab background color
+        colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Tab hovered color
+        colors[ImGuiCol_TabActive] = ImVec4(0.14f, 0.35f, 0.59f, 1.00f); // Tab active color
+
+        // Menu and menu bar colors
+        colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f); // Menu bar background
+
+        // Disabled item colors
+        colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f); // Disabled text color
+        colors[ImGuiCol_Separator] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Separator line color
+        colors[ImGuiCol_SeparatorHovered] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f); // Hovered separator color
+        colors[ImGuiCol_SeparatorActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f); // Active separator color
+
+        // Tooltip and popup colors
+        colors[ImGuiCol_PopupBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Popup background color
+        // Adjusting style values
+        style.WindowRounding = 4.0f; // Rounded corners for windows
+        style.ChildRounding = 4.0f; // Rounded corners for child windows
+        style.FrameRounding = 4.0f; // Rounded corners for input frames
+        style.GrabRounding = 4.0f; // Rounded corners for scrollbar handles and sliders
+        style.ScrollbarRounding = 4.0f; // Rounded corners for scrollbar
+
+        // Padding adjustments (similar to Unity’s compact UI)
+        style.FramePadding = ImVec2(8.0f, 6.0f); // Padding inside input fields and buttons
+        style.ItemSpacing = ImVec2(6.0f, 4.0f); // Space between items
+        style.WindowPadding = ImVec2(8.0f, 8.0f); // Padding inside window borders
+
 
         // set font and font size
         float fontSize = 16.f;
@@ -75,12 +137,11 @@ namespace Uma_Engine
 
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
-
         pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-
         pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
-
+        pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
+            { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         m_initialized = true;
     }
 
@@ -116,6 +177,8 @@ namespace Uma_Engine
 
         // play stop bar
         CreateEditorControlBar();
+
+        SceneManagerWindow();
 
         // call for windows to be shown
         float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
@@ -195,6 +258,9 @@ namespace Uma_Engine
 
             ImGui::SetCursorPosX(offset);
 
+            // scene view / game view indicator
+
+
             // Play Button
             bool isPlaying = (m_playState == PlayState::Playing);
             if (isPlaying)
@@ -231,13 +297,14 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<PauseSceneRequest>();
                 if (m_playState == PlayState::Playing)
                 {
+                    pEventSystem->Emit<PauseSceneRequest>();
                     m_playState = PlayState::Paused;
                 }
                 else if (m_playState == PlayState::Paused)
                 {
+                    pEventSystem->Emit<PlaySceneRequest>();
                     m_playState = PlayState::Playing;
                 }
             }
@@ -254,12 +321,12 @@ namespace Uma_Engine
             {
                 pEventSystem->Emit<StopSceneRequest>();
                 m_playState = PlayState::Stopped;
-                pEventSystem->Emit<LoadSceneRequestEvent>("random string");
+                pEventSystem->Emit<ReLoadSceneRequestEvent>();
             }
 
             // Show current state text on the right
             ImGui::SameLine();
-            ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 150);
+            ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
 
             const char* stateText = "Stopped";
             ImVec4 stateColor = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
@@ -267,15 +334,15 @@ namespace Uma_Engine
             switch (m_playState)
             {
             case PlayState::Playing:
-                stateText = "Playing";
+                stateText = "Game View";
                 stateColor = ImVec4(0.2f, 1.0f, 0.2f, 1.0f);
                 break;
             case PlayState::Paused:
-                stateText = "Paused";
+                stateText = "Game Paused";
                 stateColor = ImVec4(1.0f, 1.0f, 0.2f, 1.0f);
                 break;
             case PlayState::Stopped:
-                stateText = "Stopped";
+                stateText = "Scene View";
                 stateColor = ImVec4(1.0f, 0.4f, 0.4f, 1.0f);
                 break;
             }
@@ -394,7 +461,14 @@ namespace Uma_Engine
     void ImguiManager::CreateSerializationDebugWindow()
     {
         bool b = true;
-        ImGui::Begin("Serialization Debug", &b);
+        ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+        if (m_playState != PlayState::Stopped) {
+            flags |= ImGuiWindowFlags_NoInputs;
+        }
+        //ImGui::SetNextWindowPos(ImVec2(windowWidth * 0.82f, 0.f), ImGuiCond_Once);
+        //ImGui::SetNextWindowSize(ImVec2(windowWidth * 0.08f, windowHeight * 0.315f), ImGuiCond_Once);
+        ImGui::Begin("Serialization Debug", &b, flags);
+        //ImGui::Begin("Serialization Debug", &b);
 
         // get entity count here
         ImGui::Separator();
@@ -402,12 +476,12 @@ namespace Uma_Engine
         if (ImGui::Button("Load Scene", { 100, 50 }))
         {
             // load scene from this file
-            pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            //pEventSystem->Emit<LoadSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
         }
         if (ImGui::Button("Save Scene", { 100, 50 }))
         {
             // save scene into this file
-            pEventSystem->Emit<SaveSceneRequestEvent>("../../../../Assets/Scenes/NEW.json");
+            pEventSystem->Emit<SaveSceneRequestEvent>();
         }
         if (ImGui::Button("Destroy All", { 100, 50 }))
         {
@@ -584,8 +658,8 @@ namespace Uma_Engine
                     }
                 }
             }
-            if (!has_layout);
-            InitDockspace(ds_id, viewport);
+            if (!has_layout)
+                InitDockspace(ds_id, viewport);
         }
 
         ImGui::End();
@@ -1504,6 +1578,53 @@ namespace Uma_Engine
 
             ImGui::EndPopup();
         }
+        ImGui::End();
+    }
+
+    void ImguiManager::SceneManagerWindow() {
+        ImGui::Begin("Scene Manager");
+
+        // Button to create a new scene
+        if (ImGui::Button("Create New Scene")) {
+            pEventSystem->Emit<CreateNewSceneRequest>();
+        }
+
+        // Button to delete the selected scene
+        if (ImGui::Button("Delete Current Scene"))
+        {
+             pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+        }
+
+        if (ImGui::Button("Save Scene"))
+        {
+            // save scene into this file
+            pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
+        }
+
+        //list of loaded scenes
+        ImGui::BeginChild("SceneList", ImVec2(0, 200), true);
+        int selectedSceneIndex = -1;
+        for (int i = 0; i < sceneNames.size(); i++)
+        {
+            bool isSelected = (selectedSceneIndex == i);
+            bool isActive = (i == activeSceneIndex);
+
+            std::string extra = (isActive ? " (Active)" : "");
+            std::string sceneLabel = sceneNames[i] + extra;
+
+            if (ImGui::Selectable(sceneLabel.c_str(), isSelected))
+            {
+                selectedSceneIndex = i;
+            }
+
+            // detect double click
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+            {
+                pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
+            }
+        }
+        ImGui::EndChild();
+
         ImGui::End();
     }
 }
