@@ -54,6 +54,7 @@ namespace Uma_Engine
         bool HasTexture(const std::string& textureName) const;
         void PrintLoadedTextureNames() const; // For debug
         void UnloadAllTextures();
+        const std::unordered_map<std::string, Texture>& GetLoadedTextures() const;
         
         // Audio
         bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
@@ -61,6 +62,16 @@ namespace Uma_Engine
         bool HasSound(const std::string& name);
         SoundInfo& GetSound(const std::string& name);
         void UnloadAllSound();
+        const std::unordered_map<std::string, SoundInfo>& GetLoadedSounds() const;
+
+        // Font
+        bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
+        void UnloadFont(const std::string& fontName);
+        FontData* GetFont(const std::string& fontName);
+        bool HasFont(const std::string& fontName) const;
+        void PrintLoadedFontNames() const; // For debug
+        void UnloadAllFonts();
+        const std::unordered_map<std::string, FontData>& GetLoadedFonts() const;
         
         // serializer
         const char* GetSectionName() const override { return "resources"; };  // e.g. "entities", "resources"
@@ -70,13 +81,9 @@ namespace Uma_Engine
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         Entity DeserializePrefab(const rapidjson::Value& in) override;
 
-        // Font
-        bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
-        void UnloadFont(const std::string& fontName);
-        FontData* GetFont(const std::string& fontName);
-        bool HasFont(const std::string& fontName) const;
-        void PrintLoadedFontNames() const; // For debug
-        void UnloadAllFonts();
+        
+        
+        
         
     private:
         std::unordered_map<std::string, Texture> mTextures{};

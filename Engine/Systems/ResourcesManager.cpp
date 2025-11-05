@@ -126,6 +126,12 @@ namespace Uma_Engine
         std::cout << "All textures unloaded" << std::endl;
     }
 
+    const std::unordered_map<std::string, Texture>& ResourcesManager::GetLoadedTextures() const
+    {
+        // TODO: insert return statement here
+        return mTextures;
+    }
+
     void ResourcesManager::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
     {
         out.SetObject();
@@ -267,13 +273,25 @@ namespace Uma_Engine
 
     void ResourcesManager::UnloadSound(const std::string& name) 
     {
-        mSound->unloadSound(mSoundList.find(name)->second.sound);
+        FMOD_SOUND* sound = mSoundList.find(name)->second.sound;
+
+        if (sound)
+        {
+            mSound->unloadSound(mSoundList.find(name)->second.sound);
+            mSoundList.erase(name);
+        }
     }
 
     void ResourcesManager::UnloadAllSound() 
     {
         mSound->unloadAllSounds(mSoundList);
         mSound->release();
+    }
+
+    const std::unordered_map<std::string, SoundInfo>& ResourcesManager::GetLoadedSounds() const
+    {
+        // TODO: insert return statement here
+        return mSoundList;
     }
 
     bool ResourcesManager::HasSound(const std::string& name) 
@@ -379,5 +397,10 @@ namespace Uma_Engine
         }
         mFonts.clear();
         std::cout << "All fonts unloaded" << std::endl;
+    }
+    const std::unordered_map<std::string, FontData>& ResourcesManager::GetLoadedFonts() const
+    {
+        // TODO: insert return statement here
+        return mFonts;
     }
 }

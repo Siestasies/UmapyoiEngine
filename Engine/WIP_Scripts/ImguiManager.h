@@ -22,7 +22,10 @@ All rights reserved.
 #include "Events/IMGUIEvents.h"
 #include "Events/DebugEvents.h"
 #include "Events/ECSEvents.h"
+
+// external window script
 #include "FileSystem/FileSystem.hpp"
+#include "FileSystem/ResourcesWindow.hpp"
 // Forward declaration instead of include to avoid circular dependency
 // #include "SceneManager.h"
 
@@ -33,6 +36,8 @@ All rights reserved.
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Sprite.h"
+
+#include"Systems/ResourcesManager.hpp"
 
 #include "Core/FilePaths.h"
 #include <iostream>
@@ -113,11 +118,16 @@ namespace Uma_Engine
         bool ds_initialized;
         GLFWwindow* m_window;
         std::vector<std::string> logsVec;
-        EventSystem* pEventSystem;
-        FileBrowser fileBrowser;
+        EventSystem* pEventSystem = nullptr;
+        ResourcesManager* pResourcesManager = nullptr;
         std::vector<std::string> sceneNames;
         std::vector<std::string> scenePaths;
         int activeSceneIndex;
+
+        // holded in external scripts
+        FileBrowser fileBrowser;
+        ResourcesWindow resourcesWindow;
+
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;

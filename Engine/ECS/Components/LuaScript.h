@@ -38,7 +38,6 @@ namespace Uma_ECS
 				std::vector<LuaVariable> exposedVariables;
 
 				// runtime data dont need serialization
-				//std::shared_ptr<sol::state> lua;		// Sol state instead of lua_State*
 				std::shared_ptr<sol::environment> scriptEnv;					// Isolated environment per script
 				bool isInitialized = false;
 				bool hasError = false;
@@ -46,6 +45,15 @@ namespace Uma_ECS
 				bool isEnabled = true;
 				bool isVariableDirty = false;				// set this to true when user set sth to the imgui
 				bool wasEnabledLastFrame = false;		// keep track whether the script was previously being eanbled / disabled
+
+				// this sol::environment is really pain in the ass to deal with
+				// the purpose of making it a shared ptr
+				// is beacause sol::environment is not compatible with being moving around
+				// but my component array remove data by swaping it to the last and pop it to remove
+				// then it caused sol::environment to crash
+				// hence i made it as a shared ptr so it can be moved smoothly 
+				// it has more freedom and dont need me to handle the destrruction
+				// fuiyooo
 				
 
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const

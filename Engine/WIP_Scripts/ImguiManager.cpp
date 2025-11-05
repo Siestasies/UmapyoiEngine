@@ -9,6 +9,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 
+#include <unordered_map>
+
 namespace Uma_Engine
 {
     ImguiManager::ImguiManager()
@@ -22,6 +24,7 @@ namespace Uma_Engine
         , m_showSystemsWindow(true)
         , m_historyOffset(0)
         , pEventSystem(nullptr)
+        , pResourcesManager(nullptr)
         , mEntityCount(0)
         , windowWidth(1920)
         , windowHeight(1080)
@@ -141,6 +144,12 @@ namespace Uma_Engine
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
+
+        // resources manager
+        pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+
+        resourcesWindow.SetResourcesManager(pResourcesManager);
+
         m_initialized = true;
     }
 
@@ -184,6 +193,8 @@ namespace Uma_Engine
         CreateDebugWindows(currentFps, deltaTime);
 
         fileBrowser.Render();
+
+        resourcesWindow.Render();
 
         Render();
     }
@@ -1091,4 +1102,6 @@ namespace Uma_Engine
 
         ImGui::End();
     }
+
+    // In your ImGui editor code (probably in EditorLayer or similar)
 }
