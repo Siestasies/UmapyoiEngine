@@ -21,6 +21,7 @@
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/SoundManager.hpp"
 #include "Systems/HybridInputSystem.h"
+#include "Editor/Core/EditorSystem.h"
 
 #include "WIP_Scripts/Test_Graphics.h"
 
@@ -91,6 +92,9 @@ int main()
 
     // scene
     auto scn_mgr = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
+    
+    // Editor system
+    systemManager.RegisterSystem<Uma_Engine::EditorSystem>();
 
     //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
     systemManager.RegisterSystem<Uma_Engine::ImguiManager>();

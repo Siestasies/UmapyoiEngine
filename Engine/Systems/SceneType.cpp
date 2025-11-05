@@ -274,6 +274,7 @@ namespace Uma_Engine
         m_Sound = m_SystemManager->GetSystem<SoundManager>();
         m_EventSystem = m_SystemManager->GetSystem<EventSystem>();
         m_ResourcesManager = m_SystemManager->GetSystem<ResourcesManager>();
+        m_EditorSystem = m_SystemManager->GetSystem<EditorSystem>();
 
         m_LoadProgress = 0.2f;
 

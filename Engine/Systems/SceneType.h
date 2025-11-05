@@ -55,6 +55,7 @@ All rights reserved.
 #include "Systems/SoundManager.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/CameraSystem.hpp"
+#include <Editor/Core/EditorSystem.h>
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"
@@ -140,6 +141,7 @@ namespace Uma_Engine
             Uma_Engine::SoundManager* m_Sound;
             Uma_Engine::ResourcesManager* m_ResourcesManager;
             Uma_Engine::EventSystem* m_EventSystem;
+            Uma_Engine::EditorSystem* m_EditorSystem;
             Uma_Engine::EngineConfig g_EngineConfig;
 
             // ECS related
