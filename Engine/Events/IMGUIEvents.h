@@ -148,10 +148,8 @@ namespace Uma_Engine
     class LoadSceneRequestEvent : public Event
     {
     public:
-        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
-
-    public:
         std::string name;
+        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
     };
 
     class IMGUIStopRequest : public Event

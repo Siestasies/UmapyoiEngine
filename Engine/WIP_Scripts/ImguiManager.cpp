@@ -154,6 +154,8 @@ namespace Uma_Engine
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
+        fileBrowser.setEventSystem(pEventSystem);
+
         m_initialized = true;
     }
 
@@ -196,7 +198,7 @@ namespace Uma_Engine
         float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
         CreateDebugWindows(currentFps, deltaTime);
 
-        mfileBrowser.Render();
+        fileBrowser.Render();
 
         resourcesWindow.Render();
 
@@ -679,7 +681,7 @@ namespace Uma_Engine
         ImGui::Begin("Hierarchy", &b);
 
         // Header with entity count
-        ImGui::Text("Scene Entities: %d", mEntityCount);
+        ImGui::Text("%s | Scene Entities: %d", sceneNames[activeSceneIndex].c_str(), mEntityCount);
         ImGui::Separator();
 
         // Scrollable region for entity list

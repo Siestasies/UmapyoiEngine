@@ -122,7 +122,6 @@ namespace Uma_Engine
 
         EventSystem* pEventSystem = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
-        FileBrowser mfileBrowser;
         
         std::vector<std::string> sceneNames;
         std::vector<std::string> scenePaths;
