@@ -38,6 +38,10 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    /**
+     * \struct RectInfo
+     * \brief Information to draw filled rectangle
+     */
     struct RectInfo
     {
         Vec2 center;
@@ -46,6 +50,10 @@ namespace Uma_Engine
         float alpha;
     };
 
+    /**
+     * \struct CircleInfo
+     * \brief Information to draw filled circle
+     */
     struct CircleInfo
     {
         Vec2 center;
@@ -54,6 +62,10 @@ namespace Uma_Engine
         float alpha;
     };
 
+    /**
+     * \struct TriangleInfo
+     * \brief Information to draw filled Triangle
+     */
     struct TriangleInfo
     {
         Vec2 p1, p2, p3;
@@ -61,6 +73,10 @@ namespace Uma_Engine
         float alpha;
     };
 
+    /**
+     * \struct DebugLineInfo
+     * \brief Information to draw a debug line for instanced debug line drawing
+     */
     struct DebugLineInfo
     {
         Vec2 start;
@@ -139,13 +155,44 @@ namespace Uma_Engine
         int mViewportWidth, mViewportHeight;
 
         // Helper functions
+
+        /**
+         * \brief Initializes FreeType text renderer and shader
+         * \return true if initialization succeeded
+         */
         bool InitializeTextRenderer();
+
+        /**
+         * \brief Shuts down the text renderer and releases its resources
+         */
         void ShutdownTextRenderer();
+
+        /**
+         * \brief Initializes instanced debug line renderer and shader
+         * \return true if initialization succeeded
+         */
         bool InitializeDebugRenderer();
+
+        /**
+         * \brief Shuts down the debug line renderer and releases its resources
+         */
         void ShutdownDebugRenderer();
+
+        /**
+         * \brief Initializes the solid shape renderer
+         * \return true if initialization succeeded
+         */
         bool InitializeShapeRenderer();
+
+        /**
+         * \brief Shuts down the solid shape renderer and releases its resources
+         */
         void ShutdownShapeRenderer();
 
+        /**
+         * \brief Compiles and links the text rendering shader
+         * \return OpenGL shader program ID, 0 if failed
+         */
         GLuint CreateTextShader();
 
         /**
@@ -291,6 +338,15 @@ namespace Uma_Engine
 
         // Sprite rendering
 
+        /**
+         * \brief Draws a single sprite
+         * \param textureID OpenGL texture ID
+         * \param position World space position
+         * \param scale World space scale
+         * \param rotation Rotation in degrees
+         * \param tint RGB tint color
+         * \param alpha Opacity
+         */
         void DrawSprite(unsigned int textureID,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
@@ -298,6 +354,11 @@ namespace Uma_Engine
             const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f),
             float alpha = 1.0f);
 
+        /**
+         * \brief Draws a batch of sprites using instanced rendering
+         * \param textureID OpenGL texture ID of batch
+         * \param sprites Vector of Sprite_Info
+         */
         void DrawSpritesInstanced(
             unsigned int textureID,
             std::vector<Sprite_Info> const& sprites);
@@ -325,8 +386,16 @@ namespace Uma_Engine
          */
         void SetViewport(int width, int height);
 
+        /**
+         * \brief Get current viewport width
+         * \return Viewport width in pixels
+         */
         int GetViewportWidth() const { return mViewportWidth; }
 
+        /**
+         * \brief Get current viewport height
+         * \return Viewport height in pixels
+         */
         int GetViewportHeight() const { return mViewportHeight; }
 
 
@@ -400,8 +469,31 @@ namespace Uma_Engine
          */
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
 
+        /**
+         * \brief Draws a batch of debug lines using instanced rendering
+         * \param lines Vector of DebugLineInfo
+         */
         void DrawDebugLinesInstanced(const std::vector<DebugLineInfo>& lines);
+
+        /**
+         * \brief Helper to add 4 lines for a rect to DebugLineInfo vector
+         * \param center Rectangle center
+         * \param size Rectangle size
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+
+        /**
+         * \brief Helper to add 4 lines for bounding box to DebugLineInfo vector
+         * \param bbox Bounding box
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
         static void AddDebugCircle(const Vec2& center, float radius, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
         static void AddDebugPoint(const Vec2& position, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
