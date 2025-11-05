@@ -894,6 +894,15 @@ namespace Uma_Engine
         return IsChildOf(parent, potentialParent, transformArray);
     }
 
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
     bool ImguiManager::DisplayComponent(Uma_ECS::Coordinator& coordinator, Uma_ECS::ComponentType type, Uma_ECS::Entity& entity)
     {
         if (type == coordinator.GetComponentType<Uma_ECS::Transform>())
@@ -1004,15 +1013,25 @@ namespace Uma_Engine
                 ImGui::Checkbox("Flip Y", &sprite.flipY);
                 ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
 
-                // Render layer
-                int renderLayer = 0;
+                // Render layer dropdown
+                const char* renderLayerNames[] = {
+                    "RL_NONE",
+                    "RL_WALL_TOP",
+                    "RL_FLOOR",
+                    "RL_ENV",
+                    "RL_ENEMY",
+                    "RL_PLAYER",
+                    "RL_WALL_BTM",
+                    "RL_UI"
+                };
+
+                int currentRenderLayer = 0;
                 unsigned int rl = static_cast<unsigned int>(sprite.renderLayer);
-                while (rl >>= 1) ++renderLayer;
-                constexpr int maxLayerIndex = std::countr_zero(static_cast<unsigned int>(Uma_ECS::RenderLayer::RL_UI));
-                if (ImGui::InputInt("Render Layer", &renderLayer))
+                while (rl >>= 1) ++currentRenderLayer;
+
+                if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                 {
-                    renderLayer = std::clamp(renderLayer, 0, maxLayerIndex);
-                    sprite.renderLayer = (1u << renderLayer);
+                    sprite.renderLayer = (1u << currentRenderLayer);
                 }
 
                 ImGui::Separator();
@@ -1041,17 +1060,46 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Default Settings");
 
-                int defaultLayer = static_cast<int>(collider.defaultLayer);
-                if (ImGui::InputInt("Default Layer", &defaultLayer))
+                // Collision layer names for dropdowns
+                const char* collisionLayerNames[] = {
+                    "CL_DEFAULT",
+                    "CL_PLAYER",
+                    "CL_ENEMY",
+                    "CL_WALL",
+                    "CL_PROJECTILE",
+                    "CL_PICKUP",
+                    "CL_ALL"
+                };
+
+                // Default Layer dropdown
+                int defaultLayerIndex = 0;
+                unsigned int dl = static_cast<unsigned int>(collider.defaultLayer);
+                if (dl > 0)
                 {
-                    collider.defaultLayer = static_cast<Uma_ECS::LayerMask>(defaultLayer);
+                    while (dl >>= 1) ++defaultLayerIndex;
                 }
 
-                int defaultMask = static_cast<int>(collider.defaultMask);
-                if (ImGui::InputInt("Default Mask", &defaultMask))
+                if (ImGui::Combo("Default Layer", &defaultLayerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
                 {
-                    collider.defaultMask = static_cast<Uma_ECS::LayerMask>(defaultMask);
+                    collider.defaultLayer = (1u << defaultLayerIndex);
                 }
+
+                // Default Mask - using multi-select checkboxes for mask
+                ImGui::Text("Default Mask:");
+                ImGui::Indent();
+                unsigned int tempMask = collider.defaultMask;
+                for (int i = 0; i < IM_ARRAYSIZE(collisionLayerNames); ++i)
+                {
+                    bool isSet = (tempMask & (1u << i)) != 0;
+                    if (ImGui::Checkbox(collisionLayerNames[i], &isSet))
+                    {
+                        if (isSet)
+                            collider.defaultMask |= (1u << i);
+                        else
+                            collider.defaultMask &= ~(1u << i);
+                    }
+                }
+                ImGui::Unindent();
 
                 ImGui::Separator();
                 ImGui::Text("Shapes: %zu", collider.shapes.size());
@@ -1087,30 +1135,37 @@ namespace Uma_Engine
                             shape.purpose = static_cast<Uma_ECS::ColliderPurpose>(currentPurpose);
                         }
 
-                        /*int layer = static_cast<int>(shape.layer);
-                        if (ImGui::InputInt("Layer", &layer))
-                        {
-                            shape.layer = static_cast<Uma_ECS::LayerMask>(layer);
-                        }*/
-                        constexpr int maxLayerIndex = std::countr_zero(static_cast<unsigned int>(Uma_ECS::CollisionLayer::CL_ALL));
-
-                        int layer = 0;
+                        // Layer dropdown
+                        int layerIndex = 0;
                         unsigned int l = static_cast<unsigned int>(shape.layer);
-                        while (l >>= 1) ++layer;
-                        if (ImGui::InputInt("Render Layer", &layer))
+                        if (l > 0)
                         {
-                            layer = std::clamp(layer, 0, maxLayerIndex);
-                            shape.layer = (1u << layer);
+                            while (l >>= 1) ++layerIndex;
                         }
 
-                        int mask = 0;
-                        unsigned int m = static_cast<unsigned int>(shape.colliderMask);
-                        while (m >>= 1) ++mask;
-                        if (ImGui::InputInt("Collider Mask", &mask))
+                        if (ImGui::Combo("Collision Layer", &layerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
                         {
-                            mask = std::clamp(mask, 0, maxLayerIndex);
-                            shape.colliderMask = (1u << mask);
+                            shape.layer = (1u << layerIndex);
                         }
+
+                        // Collider Mask - using multi-select checkboxes
+                        ImGui::Text("Collider Mask:");
+                        ImGui::Indent();
+                        unsigned int tempShapeMask = shape.colliderMask;
+                        for (int j = 0; j < IM_ARRAYSIZE(collisionLayerNames); ++j)
+                        {
+                            ImGui::PushID(j);
+                            bool isSet = (tempShapeMask & (1u << j)) != 0;
+                            if (ImGui::Checkbox(collisionLayerNames[j], &isSet))
+                            {
+                                if (isSet)
+                                    shape.colliderMask |= (1u << j);
+                                else
+                                    shape.colliderMask &= ~(1u << j);
+                            }
+                            ImGui::PopID();
+                        }
+                        ImGui::Unindent();
 
                         if (ImGui::Button("Remove Shape"))
                         {
@@ -1382,43 +1437,99 @@ namespace Uma_Engine
 
                 if (ImGui::Button("Add Script", ImVec2(-1, 0)))
                 {
-                    ImGui::OpenPopup("AddScriptPopup");
+                    ImGui::OpenPopup("Add Lua Script");
                 }
-                if (ImGui::BeginPopup("AddScriptPopup"))
+
+                // Define popup EVERY frame
+                if (ImGui::BeginPopupModal("Add Lua Script", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
                 {
-                    // Texture name input
-                    static char textureBuffer[256];
-                    textureBuffer[255] = '\0';
-                    if (ImGui::InputText("##Script Name", textureBuffer, 256))
+                    ImGui::Text("Script Name:");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(250);
+
+                    static char scriptNameBuffer[256] = "";
+                    if (ImGui::InputText("##scriptname", scriptNameBuffer, IM_ARRAYSIZE(scriptNameBuffer)))
                     {
-                        mScriptName.clear();
-                        mScriptName = textureBuffer;
-                        mScriptName = "Assets/Scripts/" + mScriptName + ".lua";
+                        // Auto-construct full path
+                        mScriptName = "Assets/Scripts/";
+                        mScriptName += scriptNameBuffer;
+                        mScriptName += ".lua";
                     }
+
+                    ImGui::Spacing();
+                    ImGui::TextDisabled("Full Path: %s", mScriptName.c_str());
+                    ImGui::Spacing();
                     ImGui::Separator();
-                    if (FileBrowser::fileExists(mScriptName))
+                    ImGui::Spacing();
+
+                    // Check if script file exists
+                    bool fileExists = FileBrowser::fileExists(mScriptName);
+
+                    // Check if script already added to component
+                    bool scriptExists = false;
+                    for (const auto& script : luaScript.scripts)
                     {
-                        if (ImGui::Button("Add", ImVec2(-1, 0)))
+                        if (script.scriptPath == mScriptName)
                         {
-                            luaScript.AddScript(mScriptName);
-                            pEventSystem->Emit<CallLuaToInitScript>(entity);
+                            scriptExists = true;
+                            break;
                         }
+                    }
+
+                    // Show status message
+                    if (strlen(scriptNameBuffer) == 0)
+                    {
+                        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Enter a script name...");
+                    }
+                    else if (scriptExists)
+                    {
+                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Script already added to this component!");
+                    }
+                    else if (!fileExists)
+                    {
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Script file not found!");
                     }
                     else
                     {
-                        float child_width = ImGui::GetWindowSize().x;
-                        float text_width;
-                        if (mScriptName == "Assets/Scripts/.lua")
-                            text_width = ImGui::CalcTextSize("Enter Script Name").x;
-                        else
-                            text_width = ImGui::CalcTextSize("Script Not Found").x;
-
-                        ImGui::SetCursorPosX((child_width - text_width) * 0.5f);
-                        if (mScriptName == "Assets/Scripts/.lua")
-                            ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Enter Script Name");
-                        else
-                            ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Script Not Found");
+                        ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Script found and ready to add!");
                     }
+
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+
+                    // Add button (only enabled if valid)
+                    if (!fileExists || scriptExists || strlen(scriptNameBuffer) == 0)
+                    {
+                        ImGui::BeginDisabled();
+                    }
+
+                    if (ImGui::Button("Add Script", ImVec2(120, 0)))
+                    {
+                        luaScript.AddScript(mScriptName);
+                        pEventSystem->Emit<CallLuaToInitScript>(entity);
+
+                        // Clear buffer and close
+                        scriptNameBuffer[0] = '\0';
+                        mScriptName = "Assets/Scripts/.lua";
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    if (!fileExists || scriptExists || strlen(scriptNameBuffer) == 0)
+                    {
+                        ImGui::EndDisabled();
+                    }
+
+                    ImGui::SameLine();
+
+                    if (ImGui::Button("Cancel", ImVec2(120, 0)))
+                    {
+                        // Clear buffer and close
+                        scriptNameBuffer[0] = '\0';
+                        mScriptName = "Assets/Scripts/.lua";
+                        ImGui::CloseCurrentPopup();
+                    }
+
                     ImGui::EndPopup();
                 }
 
