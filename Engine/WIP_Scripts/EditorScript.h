@@ -384,67 +384,67 @@ namespace Uma_Engine
 
             using namespace Uma_ECS;
 
-            //Entity kappa;
-            //{
-            //    kappa = GetCoordinator().CreateEntity();
+            Entity kappa;
+            {
+                kappa = GetCoordinator().CreateEntity();
 
-            //    GetCoordinator().AddComponent(
-            //        kappa,
-            //        RigidBody{
-            //          .velocity = Vec2(0.0f, 0.0f),
-            //          .acceleration = Vec2(0.0f, 0.0f),
-            //          .accel_strength = 200,
-            //          .fric_coeff = 100
-            //        });
+                GetCoordinator().AddComponent(
+                    kappa,
+                    RigidBody{
+                      .velocity = Vec2(0.0f, 0.0f),
+                      .acceleration = Vec2(0.0f, 0.0f),
+                      .accel_strength = 200,
+                      .fric_coeff = 100
+                    });
 
-            //    GetCoordinator().AddComponent(
-            //        kappa,
-            //        Transform{
-            //          .position = Vec2(30, 35),
-            //          .rotation = Vec2(0, 0),
-            //          .scale = Vec2(3.f, 3.f)
-            //        });
+                GetCoordinator().AddComponent(
+                    kappa,
+                    Transform{
+                      .position = Vec2(30, 35),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(3.f, 3.f)
+                    });
 
-            //    std::string texName = "kappa_statue";
-            //    GetCoordinator().AddComponent(
-            //        kappa,
-            //        Sprite{
-            //          .textureName = texName,
-            //          .renderLayer = RL_ENV,
-            //          .flipX = false,
-            //          .flipY = false,
-            //          .UseNativeSize = true,
-            //          .texture = GetResources()->GetTexture(texName),
-            //        });
+                std::string texName = "kappa_statue";
+                GetCoordinator().AddComponent(
+                    kappa,
+                    Sprite{
+                      .textureName = texName,
+                      .renderLayer = RL_ENV,
+                      .flipX = false,
+                      .flipY = false,
+                      .UseNativeSize = true,
+                      .texture = GetResources()->GetTexture(texName),
+                    });
 
-            //    LuaScript kappaScriptComponent;
-            //    {
-            //        kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+                LuaScript kappaScriptComponent;
+                {
+                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
 
-            //        kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-            //            .name = "speed",
-            //            .value = 100.0f,
-            //            .type = Uma_ECS::LuaVarType::T_FLOAT,
-            //            .min = 0.0f,
-            //            .max = 500.0f,
-            //            .isSlider = true
-            //            });
+                    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                        .name = "speed",
+                        .value = 100.0f,
+                        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                        .min = 0.0f,
+                        .max = 500.0f,
+                        .isSlider = true
+                        });
 
-            //        // this works just that i didnt want to add this now
-            //        /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+                    // this works just that i didnt want to add this now
+                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
 
-            //        kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-            //           .name = "speed",
-            //           .value = 100.0f,
-            //           .type = Uma_ECS::LuaVarType::T_FLOAT,
-            //           .min = 0.0f,
-            //           .max = 500.0f,
-            //           .isSlider = true
-            //            });*/
+                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                       .name = "speed",
+                       .value = 100.0f,
+                       .type = Uma_ECS::LuaVarType::T_FLOAT,
+                       .min = 0.0f,
+                       .max = 500.0f,
+                       .isSlider = true
+                        });*/
 
-            //        GetCoordinator().AddComponent(kappa, kappaScriptComponent);
-            //    }
-            //}
+                    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
+                }
+            }
 
             Entity wall;
             {
