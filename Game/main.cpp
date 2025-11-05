@@ -170,7 +170,7 @@ int main()
         }
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
         {
-            Uma_Engine::Debugger::TestCrash();
+            //Uma_Engine::Debugger::TestCrash();
         }
 
         systemManager.Update(deltaTime);
