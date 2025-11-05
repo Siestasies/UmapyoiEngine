@@ -595,7 +595,7 @@ namespace Uma_UI
         }
 
         // Check if texture already loaded
-        Uma_Engine::Texture* texture = pResourcesManager->GetTexture(textureName);
+        std::shared_ptr<Uma_Engine::Texture> texture = pResourcesManager->GetTexture(textureName);
         if (texture)
         {
             return texture->tex_id;

@@ -51,7 +51,7 @@ namespace Uma_ECS
         bool flipX{};
         bool flipY{};
         bool UseNativeSize{};
-        Uma_Engine::Texture* texture = nullptr;
+        std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
