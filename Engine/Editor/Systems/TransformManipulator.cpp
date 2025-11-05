@@ -35,8 +35,8 @@ namespace Uma_Engine
         {
             const auto& transform = transformArray.GetData(entity);
             state.dragStartPosition = transform.position;
-            state.dragStartRotation = transform.worldRotation;
-            state.dragStartScale = transform.worldScale;
+            state.dragStartRotation = transform.rotation.x;
+            state.dragStartScale = transform.scale;
         }
         else if (rectTransformArray.Has(entity))
         {
@@ -166,7 +166,7 @@ namespace Uma_Engine
                 Vec2 newLocal = start + parentDelta;
                 transform.position = newLocal;
             }
-            transform.worldPosition = newPos;
+            transform.isDirty = true;
         }
         // UI entities: convert world delta to NDC delta
         else if (rectTransformArray.Has(entity))
@@ -230,8 +230,8 @@ namespace Uma_Engine
         {
             auto& transform = transformArray.GetData(entity);
             Vec2 newScale(
-                transform.worldScale.x * scaleFactor.x,
-                transform.worldScale.y * scaleFactor.y
+                transform.scale.x * scaleFactor.x,
+                transform.scale.y * scaleFactor.y
             );
 
             // Clamp to prevent zero/negative scale
@@ -239,7 +239,7 @@ namespace Uma_Engine
             newScale.y = std::max(0.01f, newScale.y);
 
             transform.scale = newScale;
-            transform.worldScale = newScale;
+            transform.isDirty = true;
         }
         else if (rectTransformArray.Has(entity))
         {
