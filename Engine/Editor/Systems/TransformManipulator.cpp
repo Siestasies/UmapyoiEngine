@@ -8,17 +8,6 @@
 #include <cmath>
 #include <algorithm>
 
-namespace
-{
-    inline Vec2 WorldDeltaToParentSpace(const Vec2& worldDelta, float parentWorldRot)
-    {
-        float s = sin(-parentWorldRot);
-        float c = cos(-parentWorldRot);
-        return Vec2(c * worldDelta.x - s * worldDelta.y,
-            s * worldDelta.x + c * worldDelta.y);
-    }
-}
-
 namespace Uma_Engine
 {
     void TransformManipulator::StartDrag(Uma_ECS::Entity entity, const Vec2& mousePos, GizmoAxis axis, EditorState& state)
@@ -155,17 +144,7 @@ namespace Uma_Engine
                 newPos = SnapToGrid(newPos, config.snapGrid);
             }
 
-            if (!transform.parent.has_value())
-            {
-                transform.position = newPos;
-            }
-            else
-            {
-                const auto& parent = transformArray.GetData(transform.parent.value());
-                Vec2 parentDelta = WorldDeltaToParentSpace(delta, parent.worldRotation);
-                Vec2 newLocal = start + parentDelta;
-                transform.position = newLocal;
-            }
+            transform.position = newPos;
             transform.isDirty = true;
         }
         // UI entities: convert world delta to NDC delta
