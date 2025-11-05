@@ -35,14 +35,14 @@ namespace Uma_Engine
         {
             const auto& transform = transformArray.GetData(entity);
             state.dragStartPosition = transform.position;
-            state.dragStartRotation = transform.rotation.x;
+            state.dragStartRotation = transform.worldRotation;
             state.dragStartScale = transform.worldScale;
         }
         else if (rectTransformArray.Has(entity))
         {
             const auto& rectTransform = rectTransformArray.GetData(entity);
             state.dragStartPosition = rectTransform.anchoredPosition;
-            state.dragStartRotation = 0.0f;  // UI typically doesn't rotate
+            state.dragStartRotation = 0.f;  // UI typically doesn't rotate
             state.dragStartScale = rectTransform.sizeDelta;
         }
     }
