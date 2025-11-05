@@ -199,8 +199,17 @@ namespace Uma_Engine
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
-                    LoadPrefab("bird");
+                    LoadPrefab(e.prefab_name);
                 }
+            ));
+
+            // Save prefab
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<SavePrefabRequestEvent>(
+                    [this](const SavePrefabRequestEvent& e) {
+                        (void)e;
+                        SavePrefab(e.prefab_name, e.entityId);
+                    }
             ));
 
             // Destroy entity
@@ -1109,7 +1118,7 @@ namespace Uma_Engine
 
         void LoadPrefab(std::string prefab_name)
         {
-           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab");
+           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name);
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)

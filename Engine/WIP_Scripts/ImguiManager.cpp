@@ -814,6 +814,13 @@ namespace Uma_Engine
                 }
             }
 
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Save as Prefab"))
+            {
+                pEventSystem->Emit<SavePrefabRequestEvent>(entityName, entity);
+            }
+
             ImGui::EndPopup();
         }
 
