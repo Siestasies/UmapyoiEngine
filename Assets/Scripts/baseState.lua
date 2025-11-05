@@ -1,64 +1,63 @@
---[[!
-@file   baseState.lua
-@par    Project: GAM200
-@par    Course: CSD2401
-@par    Section A
-@par    Software Engineering Project 3
+--! @file   baseState.lua
+--! @par    Project: GAM200
+--! @par    Course: CSD2401
+--! @par    Section A
+--! @par    Software Engineering Project 3
 
-@author Koh Kai Yang (100%)
-@par    E-mail: k.kaiyang@digipen.edu
-@par    DigiPen login: k.kaiyang
+--! @author Koh Kai Yang (100%)
+--! @par    E-mail: k.kaiyang@digipen.edu
+--! @par    DigiPen login: k.kaiyang
 
-@brief
-This is the implementation of the state class to be inherited by other states
+--! @brief Base class for implementing entity behavior states
+--! @details Provides the interface and common functionality for state inheritance.
+--! Derived states should override enter(), exit(), and update() methods.
 
-All content (C) 2025 DigiPen Institute of Technology Singapore.
-All rights reserved.
-]]
+--! All content (C) 2025 DigiPen Institute of Technology Singapore.
+--! All rights reserved.
 
--- base_state.lua
-local BaseState = {} --its like the declaration of a class in c++
+--! @class BaseState
+--! @brief Abstract base class for entity state implementations
+--! @details Implements the state pattern with virtual methods and FSM integration.
+--! Acts as a foundation for creating specialized state classes.
+local BaseState = {}
+BaseState.__index = BaseState
 
---this provides a reference back to base class in case an implementation is missing in the child
-BaseState.__index = BaseState 
 
---this is basically a constructor for the inheritance
---[[!
-    @brief constructor for the state machine
-    @param class - the class to be passed in
-    @param fsm - reference to the state machine
-    @param parent - takes in the script of the entity that holds the states in order to use exposed function from c++
-    @return instance of this state
-]]
+--! @brief Constructor for state instantiation with inheritance
+--! @details Sets up the state instance with FSM and parent entity references.
+--! Uses Lua's metatables to enable inheritance patterns.
+--! @param class table The derived class to instantiate
+--! @param fsm StateMachine Reference to the state machine managing this state
+--! @param parent table The parent entity object with C++ exposed functions
+--! @return BaseState A new state instance with inherited methods
 function BaseState.new(class, fsm, parent)
-    local instance = setmetatable({}, class)  -- Use the class passed in
+    local instance = setmetatable({}, class)
     instance.fsm = fsm
     instance.parent = parent
     return instance
 end
 
--- Default implementations (like your virtual functions)
---[[!
-    @brief virtual function for enter
-]]
+
+--! @brief Virtual method called when entering this state
+--! @details Override this method in derived classes to handle state entry logic
 function BaseState:enter() end
 
---[[!
-    @brief virtual function for exit
-]]
+
+--! @brief Virtual method called when exiting this state
+--! @details Override this method in derived classes to handle state exit cleanup
 function BaseState:exit() end
 
---[[!
-    @brief virtual function for enter
-    @param dt - passed in the delta time for updates using delta time
-]]
+
+--! @brief Virtual method called each frame to update state logic
+--! @details Override this method in derived classes for per-frame updates
+--! @param dt number Delta time since last frame (in seconds)
 function BaseState:update(dt) end
 
--- Helper method to change states
---[[!
-    @brief change state function using the fsm
-    @param newStateName - name of the state to be changed
-]]
+
+--! @brief Transitions the FSM to a different state
+--! @details Convenience method for state transitions using the FSM reference
+--! @param newStateName string The name of the state to transition to
+--! @throws error If FSM reference is unavailable (logs error instead of throwing)
 function BaseState:changeState(newStateName)
     if self.fsm then
         self.fsm:changeState(newStateName)
@@ -67,19 +66,21 @@ function BaseState:changeState(newStateName)
     end
 end
 
--- Helper to check current state
---[[!
-    @brief helper function that checks what is the current state
-    @return returns the current state
-]]
+
+--! @brief Checks if this state is currently active
+--! @return boolean True if this state is the FSM's current state
 function BaseState:isCurrentState()
-    return self.fsm and self.fsm:getCurrentState() == self
+    return self.fsm and self.fsm:getCurrentStateName() == self
 end
 
---Helper to safely access parent
+
+--! @brief Retrieves the parent entity object
+--! @details Provides safe access to the parent entity and its C++ functions
+--! @return table The parent entity that owns this state
 function BaseState:getParent()
     return self.parent
 end
+
 
 return BaseState
 
