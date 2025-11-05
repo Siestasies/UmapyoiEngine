@@ -211,6 +211,21 @@ namespace Uma_Engine
                     DestroyRandomEntity();
                 }
             ));
+
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<SpawnEntityRequestEvent>(
+                    [this](const SpawnEntityRequestEvent& e) {
+                        
+                        Entity en = GetCoordinator().CreateEntity();
+                        GetCoordinator().AddComponent(en, Uma_ECS::Transform
+                            {
+                                .position = Vec2(0.f, 0.f),
+                                .rotation = Vec2(0.f, 0.f),
+                                .scale = Vec2(1, 1),
+                            });
+                        
+                    }
+                ));
         }
 
         void UnsubscribeEvents()

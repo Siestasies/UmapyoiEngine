@@ -12,6 +12,7 @@
 #include "Core/FilePaths.h"
 
 #include <unordered_map>
+#include <algorithm>
 
 namespace Uma_Engine
 {
@@ -1004,10 +1005,14 @@ namespace Uma_Engine
                 ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
 
                 // Render layer
-                int renderLayer = static_cast<int>(sprite.renderLayer);
+                int renderLayer = 0;
+                unsigned int rl = static_cast<unsigned int>(sprite.renderLayer);
+                while (rl >>= 1) ++renderLayer;
+                constexpr int maxLayerIndex = std::countr_zero(static_cast<unsigned int>(Uma_ECS::RenderLayer::RL_UI));
                 if (ImGui::InputInt("Render Layer", &renderLayer))
                 {
-                    sprite.renderLayer = static_cast<Uma_ECS::LayerMask>(renderLayer);
+                    renderLayer = std::clamp(renderLayer, 0, maxLayerIndex);
+                    sprite.renderLayer = (1u << renderLayer);
                 }
 
                 ImGui::Separator();
@@ -1082,16 +1087,29 @@ namespace Uma_Engine
                             shape.purpose = static_cast<Uma_ECS::ColliderPurpose>(currentPurpose);
                         }
 
-                        int layer = static_cast<int>(shape.layer);
+                        /*int layer = static_cast<int>(shape.layer);
                         if (ImGui::InputInt("Layer", &layer))
                         {
                             shape.layer = static_cast<Uma_ECS::LayerMask>(layer);
+                        }*/
+                        constexpr int maxLayerIndex = std::countr_zero(static_cast<unsigned int>(Uma_ECS::CollisionLayer::CL_ALL));
+
+                        int layer = 0;
+                        unsigned int l = static_cast<unsigned int>(shape.layer);
+                        while (l >>= 1) ++layer;
+                        if (ImGui::InputInt("Render Layer", &layer))
+                        {
+                            layer = std::clamp(layer, 0, maxLayerIndex);
+                            shape.layer = (1u << layer);
                         }
 
-                        int mask = static_cast<int>(shape.colliderMask);
+                        int mask = 0;
+                        unsigned int m = static_cast<unsigned int>(shape.colliderMask);
+                        while (m >>= 1) ++mask;
                         if (ImGui::InputInt("Collider Mask", &mask))
                         {
-                            shape.colliderMask = static_cast<Uma_ECS::LayerMask>(mask);
+                            mask = std::clamp(mask, 0, maxLayerIndex);
+                            shape.colliderMask = (1u << mask);
                         }
 
                         if (ImGui::Button("Remove Shape"))
