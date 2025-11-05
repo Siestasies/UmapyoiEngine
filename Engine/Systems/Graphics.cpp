@@ -1511,6 +1511,8 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mDebugLineColorVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colors.size(), colors.data());
 
+        glLineWidth(2.0f);
+
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
