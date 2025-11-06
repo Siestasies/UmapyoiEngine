@@ -176,6 +176,31 @@ void main()
 }
 )";
 
+    const std::string shapeVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec2 position;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * model * vec4(position, 0.0, 1.0);
+}
+)";
+
+    const std::string shapeFragmentShaderSource = R"(
+#version 450 core
+out vec4 FragColor;
+
+uniform vec4 color;
+
+void main()
+{
+    FragColor = color;
+}
+)";
+
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
         mViewportWidth(800), mViewportHeight(600) {}
@@ -231,6 +256,12 @@ void main()
         if (!InitializeInstancedRenderer())
         {
             std::cerr << "Failed to initialize instanced renderer!" << std::endl;
+            return;
+        }
+
+        if (!InitializeShapeRenderer())
+        {
+            std::cerr << "Failed to initialize shape renderer!" << std::endl;
             return;
         }
 
@@ -290,6 +321,7 @@ void main()
             ShutdownRenderer();
             ShutdownInstancedRenderer();
             ShutdownDebugRenderer();
+            ShutdownShapeRenderer();
 
             mInitialized = false;
         }
@@ -922,6 +954,41 @@ void main()
         glBindVertexArray(0);
 
         std::cout << "Debug renderer initialized" << std::endl;
+        return true;
+    }
+
+    bool Graphics::InitializeShapeRenderer()
+    {
+        // Create shader
+        mShapeShaderProgram = CreateShader(
+            shapeVertexShaderSource,
+            shapeFragmentShaderSource
+        );
+
+        if (mShapeShaderProgram == 0)
+        {
+            std::cerr << "Failed to create shape shader!" << std::endl;
+            return false;
+        }
+
+        // Create VAO and VBO
+        glGenVertexArrays(1, &mShapeVAO);
+        glGenBuffers(1, &mShapeVBO);
+
+        glBindVertexArray(mShapeVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+
+        // Reserve space for shapes
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * 1000, nullptr, GL_DYNAMIC_DRAW);
+
+        // Position attribute
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        std::cout << "Shape renderer initialized" << std::endl;
         return true;
     }
 
@@ -1591,5 +1658,181 @@ void main()
         std::vector<DebugLineInfo>& outLines)
     {
         AddDebugRect(position, Vec2(6.0f, 6.0f), r, g, b, outLines);
+    }
+
+    void Graphics::DrawFilledRect(const Vec2& center, const Vec2& size,
+        float r, float g, float b, float alpha)
+    {
+        if (!mInitialized) return;
+
+        // Define rectangle vertices
+        float halfW = size.x * 0.5f;
+        float halfH = size.y * 0.5f;
+
+        float vertices[] = {
+            // Triangle 1
+            -halfW, -halfH,  // Bottom-left
+             halfW, -halfH,  // Bottom-right
+            -halfW,  halfH,  // Top-left
+
+            // Triangle 2
+            -halfW,  halfH,  // Top-left
+             halfW, -halfH,  // Bottom-right
+             halfW,  halfH   // Top-right
+        };
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        // Set model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::DrawFilledCircle(const Vec2& center, float radius,
+        float r, float g, float b, float alpha,
+        int segments)
+    {
+        if (!mInitialized) return;
+
+        // Generate circle vertices using triangle fan
+        std::vector<float> vertices;
+        vertices.reserve((segments + 2) * 2);
+
+        // Center point
+        vertices.push_back(0.0f);
+        vertices.push_back(0.0f);
+
+        // Generate points around circle
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = (float)i / (float)segments * 2.0f * 3.14159265f;
+            vertices.push_back(cosf(angle) * radius);
+            vertices.push_back(sinf(angle) * radius);
+        }
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        // Set model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, segments + 2);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3,
+        float r, float g, float b, float alpha)
+    {
+        if (!mInitialized) return;
+
+        // Triangle vertices
+        float vertices[] = {
+            p1.x, p1.y,
+            p2.x, p2.y,
+            p3.x, p3.y
+        };
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::ShutdownShapeRenderer()
+    {
+        if (mShapeVAO != 0) 
+        {
+            glDeleteVertexArrays(1, &mShapeVAO);
+            mShapeVAO = 0;
+        }
+        if (mShapeVBO != 0) 
+        {
+            glDeleteBuffers(1, &mShapeVBO);
+            mShapeVBO = 0;
+        }
+        if (mShapeShaderProgram != 0) 
+        {
+            glDeleteProgram(mShapeShaderProgram);
+            mShapeShaderProgram = 0;
+        }
     }
 }

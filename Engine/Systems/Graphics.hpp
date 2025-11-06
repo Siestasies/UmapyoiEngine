@@ -38,6 +38,45 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    /**
+     * \struct RectInfo
+     * \brief Information to draw filled rectangle
+     */
+    struct RectInfo
+    {
+        Vec2 center;
+        Vec2 size;
+        Vec3 color;
+        float alpha;
+    };
+
+    /**
+     * \struct CircleInfo
+     * \brief Information to draw filled circle
+     */
+    struct CircleInfo
+    {
+        Vec2 center;
+        float radius;
+        Vec3 color;
+        float alpha;
+    };
+
+    /**
+     * \struct TriangleInfo
+     * \brief Information to draw filled Triangle
+     */
+    struct TriangleInfo
+    {
+        Vec2 p1, p2, p3;
+        Vec3 color;
+        float alpha;
+    };
+
+    /**
+     * \struct DebugLineInfo
+     * \brief Information to draw a debug line for instanced debug line drawing
+     */
     struct DebugLineInfo
     {
         Vec2 start;
@@ -97,11 +136,17 @@ namespace Uma_Engine
         GLuint mInstanceUVVBO;
         GLuint mInstanceTintVBO;
 
+        // Debug rendering
         GLuint mDebugLineVAO;
         GLuint mDebugLineVBO;
         GLuint mDebugLineInstanceVBO;
         GLuint mDebugLineColorVBO;
         GLuint mDebugLineShaderProgram;
+
+        // Shapes rendering
+        GLuint mShapeVAO;
+        GLuint mShapeVBO;
+        GLuint mShapeShaderProgram;
 
         // Text rendering
         GLuint mTextShaderProgram;
@@ -110,10 +155,44 @@ namespace Uma_Engine
         int mViewportWidth, mViewportHeight;
 
         // Helper functions
+
+        /**
+         * \brief Initializes FreeType text renderer and shader
+         * \return true if initialization succeeded
+         */
         bool InitializeTextRenderer();
+
+        /**
+         * \brief Shuts down the text renderer and releases its resources
+         */
         void ShutdownTextRenderer();
+
+        /**
+         * \brief Initializes instanced debug line renderer and shader
+         * \return true if initialization succeeded
+         */
         bool InitializeDebugRenderer();
+
+        /**
+         * \brief Shuts down the debug line renderer and releases its resources
+         */
         void ShutdownDebugRenderer();
+
+        /**
+         * \brief Initializes the solid shape renderer
+         * \return true if initialization succeeded
+         */
+        bool InitializeShapeRenderer();
+
+        /**
+         * \brief Shuts down the solid shape renderer and releases its resources
+         */
+        void ShutdownShapeRenderer();
+
+        /**
+         * \brief Compiles and links the text rendering shader
+         * \return OpenGL shader program ID, 0 if failed
+         */
         GLuint CreateTextShader();
 
         /**
@@ -259,6 +338,15 @@ namespace Uma_Engine
 
         // Sprite rendering
 
+        /**
+         * \brief Draws a single sprite
+         * \param textureID OpenGL texture ID
+         * \param position World space position
+         * \param scale World space scale
+         * \param rotation Rotation in degrees
+         * \param tint RGB tint color
+         * \param alpha Opacity
+         */
         void DrawSprite(unsigned int textureID,
             const Vec2& position,
             const Vec2& scale = Vec2(1.0f, 1.0f),
@@ -266,6 +354,11 @@ namespace Uma_Engine
             const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f),
             float alpha = 1.0f);
 
+        /**
+         * \brief Draws a batch of sprites using instanced rendering
+         * \param textureID OpenGL texture ID of batch
+         * \param sprites Vector of Sprite_Info
+         */
         void DrawSpritesInstanced(
             unsigned int textureID,
             std::vector<Sprite_Info> const& sprites);
@@ -293,8 +386,16 @@ namespace Uma_Engine
          */
         void SetViewport(int width, int height);
 
+        /**
+         * \brief Get current viewport width
+         * \return Viewport width in pixels
+         */
         int GetViewportWidth() const { return mViewportWidth; }
 
+        /**
+         * \brief Get current viewport height
+         * \return Viewport height in pixels
+         */
         int GetViewportHeight() const { return mViewportHeight; }
 
 
@@ -368,8 +469,31 @@ namespace Uma_Engine
          */
         void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
 
+        /**
+         * \brief Draws a batch of debug lines using instanced rendering
+         * \param lines Vector of DebugLineInfo
+         */
         void DrawDebugLinesInstanced(const std::vector<DebugLineInfo>& lines);
+
+        /**
+         * \brief Helper to add 4 lines for a rect to DebugLineInfo vector
+         * \param center Rectangle center
+         * \param size Rectangle size
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+
+        /**
+         * \brief Helper to add 4 lines for bounding box to DebugLineInfo vector
+         * \param bbox Bounding box
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
         static void AddDebugCircle(const Vec2& center, float radius, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
         static void AddDebugPoint(const Vec2& position, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
@@ -381,18 +505,16 @@ namespace Uma_Engine
         float MeasureText(const FontData& font, const std::string& text, float scale = 1.0f);
         void DrawTextWorld(const FontData& font, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
-        /*bool LoadFont(const std::string& fontName, const std::string& fontPath, unsigned int fontSize = 48);
-        void SetCurrentFont(const std::string& fontName);
-        std::string GetCurrentFont() const { return mCurrentFont; }
-        void DrawTextScreen(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextScreen(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        float MeasureText(const std::string& text, float scale = 1.0f);
-        float MeasureText(const std::string& fontName, const std::string& text, float scale = 1.0f);
-        void DrawTextWorld(const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-        void DrawTextWorld(const std::string& fontName, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);*/
-
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
             const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f);
         void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
+
+        void DrawFilledRect(const Vec2& center, const Vec2& size,
+            float r, float g, float b, float alpha = 1.0f);
+        void DrawFilledCircle(const Vec2& center, float radius,
+            float r, float g, float b, float alpha = 1.0f,
+            int segments = 24);
+        void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3,
+            float r, float g, float b, float alpha = 1.0f);
     };
 }

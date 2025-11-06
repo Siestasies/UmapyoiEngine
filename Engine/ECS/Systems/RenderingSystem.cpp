@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
+\author Leong Wai Men (Everything else)
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
+
+\co-author Javier Chua Dong Qing (EditorCamera, Animator, FlipScale)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Implements sprite batching and rendering system that groups sprites by texture ID for instanced drawing.
@@ -17,6 +21,7 @@ Queries camera transform and zoom from Camera component to configure graphics vi
 Validates texture handles before rendering and logs warnings for invalid textures. Builds sorted map of sprites
 grouped by texture ID, then submits batched draw calls through Graphics API for optimal performance.
 Supports single camera setup with entity at index 0.
+Integrates with the Animator component, using its uvOffset and uvSize for rendering
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -116,6 +121,15 @@ namespace Uma_ECS
             else
             {
                 spriteScale = tf.worldScale;
+            }
+
+            if (sr.flipX)
+            {
+                spriteScale.x = -spriteScale.x;
+            }
+            if (sr.flipY)
+            {
+                spriteScale.y = -spriteScale.y;
             }
 
             // Get UV coordinates from animator if present

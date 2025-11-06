@@ -103,6 +103,7 @@ namespace Uma_Engine
         void CreateEntityDebugWindow();
         void CreateEntityPropertyWindow();
         void CreateConsoleWindow();
+        void CreateEditorCameraWindow();
         void AddConsoleLog(const std::string& message);
 
         // Hierarchy helper functions
@@ -144,6 +145,7 @@ namespace Uma_Engine
         bool m_showPerformanceWindow;
         bool m_showSystemsWindow;
         bool m_showEditorControlBar;
+        bool m_showEditorCameraWindow;
         PlayState m_playState = PlayState::Stopped;
 
         // values that need to keep track

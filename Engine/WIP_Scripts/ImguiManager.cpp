@@ -25,6 +25,7 @@ namespace Uma_Engine
         , m_showEngineDebug(true)
         , m_showEventDebug(true)
         , m_showPerformanceWindow(true)
+        , m_showEditorCameraWindow(true)
         , m_showSystemsWindow(true)
         , m_historyOffset(0)
         , pEventSystem(nullptr)
@@ -414,6 +415,7 @@ namespace Uma_Engine
 
         CreateHierarchyWindow();
         CreateInspectorWindow();
+        CreateEditorCameraWindow();
 
 		CreateSystemsWindow();
 		CreateEntityDebugWindow();
@@ -689,6 +691,7 @@ namespace Uma_Engine
             // Dock windows to their initial positions
             ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
             ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+            ImGui::DockBuilderDockWindow("Editor Camera", dock_id_right);
             ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
             ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
             ImGui::DockBuilderDockWindow("File Browser", dock_id_bottom);
@@ -1796,5 +1799,102 @@ namespace Uma_Engine
         ImGui::End();
     }
 
-    // In your ImGui editor code (probably in EditorLayer or similar)
+    void ImguiManager::CreateEditorCameraWindow()
+    {
+        if (!m_showEditorCameraWindow)
+            return;
+
+        auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+        if (!sceneManager)
+            return;
+
+        ImGui::Begin("Editor Camera", &m_showEditorCameraWindow);
+
+        auto& editorCamera = sceneManager->GetEditorCamera();
+
+        // Active status
+        bool isActive = editorCamera.IsActive();
+        if (isActive)
+        {
+            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Status: ACTIVE");
+        }
+        else
+        {
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Status: INACTIVE");
+        }
+
+        ImGui::Separator();
+
+        // Position
+        Vec2 pos = editorCamera.GetPosition();
+        float position[2] = { pos.x, pos.y };
+        if (ImGui::DragFloat2("Position", position, 0.1f))
+        {
+            editorCamera.SetPosition(Vec2(position[0], position[1]));
+        }
+
+        // Zoom
+        float zoom = editorCamera.GetZoom();
+        if (ImGui::DragFloat("Zoom", &zoom, 0.1f, 0.1f, 50.0f))
+        {
+            editorCamera.SetZoom(zoom);
+        }
+
+        ImGui::Separator();
+
+        // Pan Speed
+        static float panSpeed = 500.0f;
+        if (ImGui::DragFloat("Pan Speed", &panSpeed, 10.0f, 10.0f, 2000.0f))
+        {
+            editorCamera.SetPanSpeed(panSpeed);
+        }
+
+        // Zoom Speed
+        static float zoomSpeed = 1.0f;
+        if (ImGui::DragFloat("Zoom Speed", &zoomSpeed, 0.1f, 0.1f, 10.0f))
+        {
+            editorCamera.SetZoomSpeed(zoomSpeed);
+        }
+
+        ImGui::Separator();
+
+        // Zoom Limits
+        static float minZoom = 0.1f;
+        static float maxZoom = 20.0f;
+        bool limitsChanged = false;
+
+        limitsChanged |= ImGui::DragFloat("Min Zoom", &minZoom, 0.1f, 0.01f, maxZoom - 0.1f);
+        limitsChanged |= ImGui::DragFloat("Max Zoom", &maxZoom, 0.1f, minZoom + 0.1f, 100.0f);
+
+        if (limitsChanged)
+        {
+            editorCamera.SetZoomLimits(minZoom, maxZoom);
+        }
+
+        ImGui::Separator();
+
+        // Reset button
+        if (ImGui::Button("Reset Camera", ImVec2(-1, 0)))
+        {
+            editorCamera.Reset();
+            panSpeed = 500.0f;
+            zoomSpeed = 1.0f;
+            minZoom = 0.1f;
+            maxZoom = 20.0f;
+        }
+
+        ImGui::Spacing();
+
+        // Controls info
+        if (ImGui::CollapsingHeader("Controls"))
+        {
+            ImGui::BulletText("WASD - Pan");
+            ImGui::BulletText("Q/E - Zoom");
+            ImGui::BulletText("Middle Mouse - Drag to pan");
+            ImGui::BulletText("Shift - Speed boost");
+            ImGui::BulletText("R - Reset");
+        }
+
+        ImGui::End();
+    }
 }
