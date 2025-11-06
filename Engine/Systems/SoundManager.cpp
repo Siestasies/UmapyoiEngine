@@ -127,18 +127,21 @@ namespace Uma_Engine {
             pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest>(
                 [this](const Uma_Engine::PlaySceneRequest& e)
                 {
+                    (void)(e);
                     pauseAllSounds(false);
                 });
 
             pEventSystem->Subscribe<Uma_Engine::PauseSceneRequest>(
                 [this](const Uma_Engine::PauseSceneRequest& e)
                 {
+                    (void)(e);
                     pauseAllSounds(true);
                 });
 
             pEventSystem->Subscribe<Uma_Engine::StopSceneRequest>(
                 [this](const Uma_Engine::StopSceneRequest& e)
                 {
+                    (void)(e);
                     stopAllSounds();
                 });
         }
