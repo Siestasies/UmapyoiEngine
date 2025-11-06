@@ -835,6 +835,14 @@ namespace Uma_Engine
                 m_HierarchyScrollToBottom = true;
             }
 
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Save as Prefab"))
+            {
+                pEventSystem->Emit<SavePrefabRequestEvent>(entityName, entity);
+                pEventSystem->Emit<RefreshDirectoryRequest>();
+            }
+
             ImGui::EndPopup();
         }
 

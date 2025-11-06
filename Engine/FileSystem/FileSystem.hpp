@@ -125,6 +125,11 @@ namespace Uma_Engine
         void setEventSystem(EventSystem* es)
         {
             pEventSystem = es;
+
+            pEventSystem->Subscribe<RefreshDirectoryRequest>(
+              [this](const RefreshDirectoryRequest& e) {
+                    RefreshDirectory();
+              });
         }
 
     private:
@@ -239,7 +244,8 @@ namespace Uma_Engine
             bDoubleClick = false;
 
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
-            ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y * 0.94f), true);
+            ImGui::CalcTextSize(feedback.c_str());
+            ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y - ImGui::GetTextLineHeight() - 15.f), true);
             for (const auto& entry : aFiles) {
                 // Apply filter
                 if (mFilter[0] != '\0' &&
@@ -275,6 +281,21 @@ namespace Uma_Engine
                     {
                         copySource = entry.path;
                     }
+                }
+
+                if (ImGui::BeginPopupContextItem())
+                {
+                    if (ImGui::MenuItem("Copy"))
+                    {
+                        copySource = entry.path;
+                    }
+                    if (ImGui::MenuItem("Delete"))
+                    {
+                        fs::remove(mSelectedPath);
+                        RefreshDirectory();
+                        mSelectedPath.clear();
+                    }
+                    ImGui::EndPopup();
                 }
 
                 // Drag and drop source
@@ -327,13 +348,17 @@ namespace Uma_Engine
 
         void RenderFeedback()
         {
+            if (feedback.empty())
+                return;
             ImGuiWindowFlags flags = 0;
             flags |= ImGuiWindowFlags_NoScrollbar;          // No scrollbars at all
             flags |= ImGuiWindowFlags_NoScrollWithMouse;    // Can't scroll with mouse wheel
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.f, 5.f));
             ImGui::BeginChild("Feedback", ImVec2(parentSize.x, 0), true, flags);
             ImGui::Text("%s", feedback.c_str());
             ImGui::EndChild();
+            ImGui::PopStyleVar();
         }
 
         bool FileDoubleClickHandler(const File& file)
@@ -357,7 +382,8 @@ namespace Uma_Engine
             }
             else if (ext == ".prefab")
             {
-
+                pEventSystem->Emit<LoadPrefabRequestEvent>(file.name);
+                return true;
             }
             else
             {
