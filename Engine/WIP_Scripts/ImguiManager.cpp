@@ -10,6 +10,7 @@
 #include "imgui_internal.h"
 
 #include "Core/FilePaths.h"
+#include "Events/EditorEvents.h"
 
 #include <unordered_map>
 #include <algorithm>
@@ -24,6 +25,7 @@ namespace Uma_Engine
         , m_showEngineDebug(true)
         , m_showEventDebug(true)
         , m_showPerformanceWindow(true)
+        , m_showEditorCameraWindow(true)
         , m_showSystemsWindow(true)
         , m_historyOffset(0)
         , pEventSystem(nullptr)
@@ -159,6 +161,14 @@ namespace Uma_Engine
                 m_selectedEntity = e.entity;
                 m_HierarchyScrollToBottom = true;
             });
+        pEventSystem->Subscribe<EntityPickedEvent>([this](const EntityPickedEvent& e)
+            { 
+                m_selectedEntity = e.entity;
+            });
+        pEventSystem->Subscribe<EntityDroppedEvent>([this](const EntityDroppedEvent& e)
+            {
+                m_selectedEntity = static_cast<Entity>(-1);
+            });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -175,6 +185,18 @@ namespace Uma_Engine
         if (!m_initialized)
         {
             return;
+        }
+
+        mouseOverUI =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered() ||
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
+
+        if (prevMouseOverUI != mouseOverUI)
+        {
+            // send event
+            prevMouseOverUI = mouseOverUI;
+            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
         static float fpsAccumulator = 0.0f;
@@ -346,9 +368,12 @@ namespace Uma_Engine
             // Stop Button
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<StopSceneRequest>();
-                m_playState = PlayState::Stopped;
-                pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                if (m_playState != PlayState::Stopped)
+                {
+                    pEventSystem->Emit<StopSceneRequest>();
+                    m_playState = PlayState::Stopped;
+                    pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                }
             }
 
             // Show current state text on the right
@@ -391,11 +416,12 @@ namespace Uma_Engine
 
         CreateHierarchyWindow();
         CreateInspectorWindow();
+        CreateEditorCameraWindow();
 
-		CreateSystemsWindow();
-		CreateEntityDebugWindow();
-		CreateConsoleWindow();
-		CreateEntityPropertyWindow();
+		    CreateSystemsWindow();
+		    CreateEntityDebugWindow();
+		    CreateConsoleWindow();
+		    CreateEntityPropertyWindow();
     }
 
     void ImguiManager::CreateSystemsWindow()
@@ -666,6 +692,7 @@ namespace Uma_Engine
             // Dock windows to their initial positions
             ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
             ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
+            ImGui::DockBuilderDockWindow("Editor Camera", dock_id_right);
             ImGui::DockBuilderDockWindow("Console", dock_id_bottom);
             ImGui::DockBuilderDockWindow("Engine Debug", dock_id_bottom);
             ImGui::DockBuilderDockWindow("File Browser", dock_id_bottom);
@@ -779,6 +806,7 @@ namespace Uma_Engine
         if (ImGui::IsItemClicked())
         {
             m_selectedEntity = entity;
+            pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
         }
 
         // Right-click context menu
@@ -833,6 +861,14 @@ namespace Uma_Engine
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
                 m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::Separator();
+
+            if (ImGui::MenuItem("Save as Prefab"))
+            {
+                pEventSystem->Emit<SavePrefabRequestEvent>(entityName, entity);
+                pEventSystem->Emit<RefreshDirectoryRequest>();
             }
 
             ImGui::EndPopup();
@@ -1025,9 +1061,8 @@ namespace Uma_Engine
                 auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
                 ImGui::Indent();
 
-                ImGui::Text("Texture: %s", sprite.textureName.c_str());
-
                 // Texture name input
+                ImGui::Text("Texture: %s", sprite.textureName.c_str());
                 static char textureBuffer[256];
                 strncpy(textureBuffer, sprite.textureName.c_str(), 255);
                 textureBuffer[255] = '\0';
@@ -1037,6 +1072,7 @@ namespace Uma_Engine
                     sprite.texture = nullptr; // Will reload
                 }
 
+                // Flip flags
                 ImGui::Checkbox("Flip X", &sprite.flipX);
                 ImGui::Checkbox("Flip Y", &sprite.flipY);
                 ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
@@ -1052,21 +1088,62 @@ namespace Uma_Engine
                     "RL_WALL_BTM",
                     "RL_UI"
                 };
-
                 int currentRenderLayer = 0;
                 unsigned int rl = static_cast<unsigned int>(sprite.renderLayer);
                 while (rl >>= 1) ++currentRenderLayer;
-
                 if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                 {
                     sprite.renderLayer = (1u << currentRenderLayer);
                 }
 
                 ImGui::Separator();
+                ImGui::Text("Color & Alpha");
+
+                // Tint color (RGB)
+                float tintColorArray[3] = { sprite.tintColor.x, sprite.tintColor.y, sprite.tintColor.z };
+                if (ImGui::ColorEdit3("Tint Color", tintColorArray))
+                {
+                    sprite.tintColor.x = tintColorArray[0];
+                    sprite.tintColor.y = tintColorArray[1];
+                    sprite.tintColor.z = tintColorArray[2];
+                }
+
+                // Alpha (opacity)
+                ImGui::SliderFloat("Alpha", &sprite.alpha, 0.0f, 1.0f, "%.2f");
+
+                ImGui::Separator();
+                ImGui::Text("Sprite Sheet");
+
+                // Sprite sheet grid (columns and rows)
+                float gridArray[2] = { sprite.spriteSheetGrid.x, sprite.spriteSheetGrid.y };
+                if (ImGui::DragFloat2("Grid (Cols x Rows)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
+                {
+                    sprite.spriteSheetGrid.x = gridArray[0];
+                    sprite.spriteSheetGrid.y = gridArray[1];
+                }
+
+                // Sprite cell (which cell to render)
+                float cellArray[2] = { sprite.spriteCell.x, sprite.spriteCell.y };
+                if (ImGui::DragFloat2("Cell (Col, Row)", cellArray, 1.0f, 0.0f,
+                    max(sprite.spriteSheetGrid.x - 1.0f, 0.0f), "%.0f"))
+                {
+                    sprite.spriteCell.x = cellArray[0];
+                    sprite.spriteCell.y = cellArray[1];
+                }
+
+                ImGui::Separator();
+
+                // Texture info (read-only)
                 if (sprite.texture)
                 {
                     ImGui::Text("Texture ID: %u", sprite.texture->tex_id);
                     ImGui::Text("Native Size: %.0f x %.0f", sprite.texture->GetNativeSize().x, sprite.texture->GetNativeSize().y);
+
+                    // Show UV info
+                    Vec2 uvOffset, uvSize;
+                    sprite.GetUVs(uvOffset, uvSize);
+                    ImGui::Text("UV Offset: (%.3f, %.3f)", uvOffset.x, uvOffset.y);
+                    ImGui::Text("UV Size: (%.3f, %.3f)", uvSize.x, uvSize.y);
                 }
                 else
                 {
@@ -1283,53 +1360,122 @@ namespace Uma_Engine
                 auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
                 ImGui::Indent();
 
+                // Auto-play checkbox
                 ImGui::Checkbox("Auto Play", &animator.autoPlay);
 
-                static char initialClipBuffer[128];
-                strncpy(initialClipBuffer, animator.initialClip.c_str(), 127);
-                initialClipBuffer[127] = '\0';
-                if (ImGui::InputText("Initial Clip", initialClipBuffer, 128))
+                // Initial clip input
+                static char initialClipBuffer[256];
+                strncpy(initialClipBuffer, animator.initialClip.c_str(), 255);
+                initialClipBuffer[255] = '\0';
+                if (ImGui::InputText("Initial Clip", initialClipBuffer, 256))
                 {
                     animator.initialClip = initialClipBuffer;
                 }
 
                 ImGui::Separator();
                 ImGui::Text("Current State");
+
+                // Display current clip and playing status
+                ImGui::Text("Current Clip: %s", animator.animator.GetCurrentClip().c_str());
+                ImGui::Text("Is Playing: %s", animator.animator.IsPlaying() ? "Yes" : "No");
+
+                // Current frame UVs (read-only)
                 ImGui::Text("UV Offset: (%.3f, %.3f)", animator.uvOffset.x, animator.uvOffset.y);
                 ImGui::Text("UV Size: (%.3f, %.3f)", animator.uvSize.x, animator.uvSize.y);
 
                 ImGui::Separator();
+                ImGui::Text("Animation Clips");
+
+                // List all clips with play button
                 const auto& clips = animator.animator.GetClips();
-                ImGui::Text("Animation Clips: %zu", clips.size());
-
-                if (!clips.empty())
+                for (const auto& [name, clip] : clips)
                 {
-                    for (const auto& [clipName, clip] : clips)
-                    {
-                        ImGui::PushID(clipName.c_str());
+                    ImGui::PushID(name.c_str());
 
-                        if (ImGui::Button(clipName.c_str(), ImVec2(150, 0)))
+                    if (ImGui::TreeNode(name.c_str()))
+                    {
+                        ImGui::Text("Frames X: %d", clip.framesX);
+                        ImGui::Text("Frames Y: %d", clip.framesY);
+                        ImGui::Text("Start Frame: %d", clip.startFrame);
+                        ImGui::Text("Frame Count: %d", clip.frameCount);
+                        ImGui::Text("Speed: %.2f fps", clip.speed);
+                        ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
+
+                        if (ImGui::Button("Play"))
                         {
-                            animator.animator.Play(clipName);
+                            animator.animator.Play(name);
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Play (Restart)"))
+                        {
+                            animator.animator.Play(name, true);
                         }
 
-                        ImGui::SameLine();
-                        ImGui::Text("Frames: %d, Speed: %.2f, Loop: %s",
-                            clip.frameCount,
-                            clip.speed,
-                            clip.loop ? "Yes" : "No");
+                        // TODO: Add edit/delete functionality if needed
 
-                        ImGui::PopID();
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Add New Clip");
+
+                // Static variables to hold new clip data
+                static char newClipName[256] = "";
+                static int newFramesX = 1;
+                static int newFramesY = 1;
+                static int newStartFrame = 0;
+                static int newFrameCount = 1;
+                static float newSpeed = 10.0f;
+                static bool newLoop = true;
+
+                ImGui::InputText("Clip Name", newClipName, 256);
+                ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100);
+                ImGui::DragInt("Frames Y", &newFramesY, 1.0f, 1, 100);
+                ImGui::DragInt("Start Frame", &newStartFrame, 1.0f, 0, 1000);
+                ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000);
+                ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f);
+                ImGui::Checkbox("Loop", &newLoop);
+
+                if (ImGui::Button("Add Clip"))
+                {
+                    if (strlen(newClipName) > 0)
+                    {
+                        animator.animator.AddClip(
+                            newClipName,
+                            newFramesX,
+                            newFramesY,
+                            newStartFrame,
+                            newFrameCount,
+                            newSpeed,
+                            newLoop
+                        );
+
+                        // Reset input fields
+                        newClipName[0] = '\0';
+                        newFramesX = 1;
+                        newFramesY = 1;
+                        newStartFrame = 0;
+                        newFrameCount = 1;
+                        newSpeed = 10.0f;
+                        newLoop = true;
                     }
                 }
-                else
+
+                // Playback controls
+                ImGui::Separator();
+                ImGui::Text("Playback Controls");
+
+                if (ImGui::Button("Reset"))
                 {
-                    ImGui::TextDisabled("No animation clips available");
+                    animator.animator.Reset();
                 }
 
                 ImGui::Unindent();
             }
-        }
+            }
         else if (type == coordinator.GetComponentType<Uma_ECS::LuaScript>())
         {
             if (ImGui::CollapsingHeader("LuaScript"))
@@ -1708,6 +1854,10 @@ namespace Uma_Engine
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Enemy{});
             }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Animator>()) && ImGui::MenuItem("Animator"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Animator{});
+            }
 
             ImGui::EndPopup();
         }
@@ -1764,5 +1914,102 @@ namespace Uma_Engine
         ImGui::End();
     }
 
-    // In your ImGui editor code (probably in EditorLayer or similar)
+    void ImguiManager::CreateEditorCameraWindow()
+    {
+        if (!m_showEditorCameraWindow)
+            return;
+
+        auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+        if (!sceneManager)
+            return;
+
+        ImGui::Begin("Editor Camera", &m_showEditorCameraWindow);
+
+        auto& editorCamera = sceneManager->GetEditorCamera();
+
+        // Active status
+        bool isActive = editorCamera.IsActive() && !mouseOverUI;
+        if (isActive)
+        {
+            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Status: ACTIVE");
+        }
+        else
+        {
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Status: INACTIVE");
+        }
+
+        ImGui::Separator();
+
+        // Position
+        Vec2 pos = editorCamera.GetPosition();
+        float position[2] = { pos.x, pos.y };
+        if (ImGui::DragFloat2("Position", position, 0.1f))
+        {
+            editorCamera.SetPosition(Vec2(position[0], position[1]));
+        }
+
+        // Zoom
+        float zoom = editorCamera.GetZoom();
+        if (ImGui::DragFloat("Zoom", &zoom, 0.1f, 0.1f, 50.0f))
+        {
+            editorCamera.SetZoom(zoom);
+        }
+
+        ImGui::Separator();
+
+        // Pan Speed
+        static float panSpeed = 500.0f;
+        if (ImGui::DragFloat("Pan Speed", &panSpeed, 10.0f, 10.0f, 2000.0f))
+        {
+            editorCamera.SetPanSpeed(panSpeed);
+        }
+
+        // Zoom Speed
+        static float zoomSpeed = 1.0f;
+        if (ImGui::DragFloat("Zoom Speed", &zoomSpeed, 0.1f, 0.1f, 10.0f))
+        {
+            editorCamera.SetZoomSpeed(zoomSpeed);
+        }
+
+        ImGui::Separator();
+
+        // Zoom Limits
+        static float minZoom = 0.1f;
+        static float maxZoom = 20.0f;
+        bool limitsChanged = false;
+
+        limitsChanged |= ImGui::DragFloat("Min Zoom", &minZoom, 0.1f, 0.01f, maxZoom - 0.1f);
+        limitsChanged |= ImGui::DragFloat("Max Zoom", &maxZoom, 0.1f, minZoom + 0.1f, 100.0f);
+
+        if (limitsChanged)
+        {
+            editorCamera.SetZoomLimits(minZoom, maxZoom);
+        }
+
+        ImGui::Separator();
+
+        // Reset button
+        if (ImGui::Button("Reset Camera", ImVec2(-1, 0)))
+        {
+            editorCamera.Reset();
+            panSpeed = 500.0f;
+            zoomSpeed = 1.0f;
+            minZoom = 0.1f;
+            maxZoom = 20.0f;
+        }
+
+        ImGui::Spacing();
+
+        // Controls info
+        if (ImGui::CollapsingHeader("Controls"))
+        {
+            ImGui::BulletText("WASD - Pan");
+            ImGui::BulletText("Q/E - Zoom");
+            ImGui::BulletText("Middle Mouse - Drag to pan");
+            ImGui::BulletText("Shift - Speed boost");
+            ImGui::BulletText("R - Reset");
+        }
+
+        ImGui::End();
+    }
 }

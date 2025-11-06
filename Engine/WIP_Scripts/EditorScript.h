@@ -34,35 +34,10 @@ namespace Uma_Engine
         {
             std::cout << "EditorScript: OnLoad" << std::endl;
 
-            //m_Canvas = m_Scene->CreateEntity();
-            //GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
-            //    {
-            //    .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
-            //    .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
-            //    .pivot = Vec2(0.5f, 0.5f),          // Center pivot
-            //    .anchoredPosition = Vec2(0, 0),     // No offset
-            //    .sizeDelta = Vec2(0, 0),            // Stretch to fill
-            //    .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
-            //    });
-
-
-            //GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
-            //    {
-            //    .sortingOrder = 0,
-            //    .referenceResolution = Vec2(1280.f, 720.f),
-            //    .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
-            //    .matchWidthOrHeight = 0.5f
-            //    });
-
-            //if (!GetResources()->GetTexture("whitePixel")) GetResources()->LoadTexture("whitePixel", "Assets/whitePixel.png");
-
-            //// Ensure font exists (size 48)
-            ////GetGraphics()->LoadFont("default", "Assets/Fonts/Neucha.ttf", 48);
-            //GetResources()->LoadFont("default", Uma_FilePath::FONTS_DIR + "Neucha.ttf", 48);
-
-
             //// Subscribe to editor events
             SubscribeToEvents();
+
+            //CreateCanvas();
 
             //CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
             //    [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
@@ -200,8 +175,17 @@ namespace Uma_Engine
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
-                    LoadPrefab("bird");
+                    LoadPrefab(e.prefab_name);
                 }
+            ));
+
+            // Save prefab
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<SavePrefabRequestEvent>(
+                    [this](const SavePrefabRequestEvent& e) {
+                        (void)e;
+                        SavePrefab(e.prefab_name, e.entityId);
+                    }
             ));
 
             // Destroy entity
@@ -270,30 +254,6 @@ namespace Uma_Engine
         {
             auto input = GetInput();
 
-            // Save to file
-            if (input->KeyPressed(GLFW_KEY_1))
-            {
-                SaveScene();
-            }
-
-            // Load from file
-            if (input->KeyPressed(GLFW_KEY_2))
-            {
-                ReLoadScene();
-            }
-
-            // Reset scene
-            if (input->KeyPressed(GLFW_KEY_3))
-            {
-                ResetScene();
-            }
-
-            // Spawn default entities
-            if (input->KeyPressed(GLFW_KEY_4))
-            {
-                GetCoordinator().DestroyAllEntities();
-                SpawnDefaultEntities();
-            }
 
             // Play sound effects
             if (input->KeyPressed(GLFW_KEY_P))
@@ -303,12 +263,6 @@ namespace Uma_Engine
 
                 //used for entities with position
                 m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
-            }
-
-            if (input->KeyPressed(GLFW_KEY_O))
-            {
-                //GetSound()->playSound(GetResources()->GetSound("cave"));
-                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("cave", 1, 0);
             }
         }
 
@@ -454,7 +408,7 @@ namespace Uma_Engine
                       .flipX = false,
                       .flipY = false,
                       .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
+                      .texture = GetResources()->GetTexture(texName)
                     });
 
                 //LuaScript kappaScriptComponent;
@@ -1156,7 +1110,9 @@ namespace Uma_Engine
 
         void LoadPrefab(std::string prefab_name)
         {
-           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab");
+           m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name);
+
+           m_Scene->m_LuaScriptingSystem->CallStart();
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)
@@ -1224,6 +1180,29 @@ namespace Uma_Engine
                 auto& c = cArray.GetData(tfArray.GetEntity(i));
                 c.showBBox = isShow;
             }
+        }
+
+        void CreateCanvas()
+        {
+            m_Canvas = m_Scene->CreateEntity();
+            GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
+                {
+                .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
+                .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
+                .pivot = Vec2(0.5f, 0.5f),          // Center pivot
+                .anchoredPosition = Vec2(0, 0),     // No offset
+                .sizeDelta = Vec2(0, 0),            // Stretch to fill
+                .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
+                });
+
+
+            GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
+                {
+                .sortingOrder = 0,
+                .referenceResolution = Vec2(1280.f, 720.f),
+                .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
+                .matchWidthOrHeight = 0.5f
+                });
         }
 
         Uma_ECS::Entity CreateButtonWithText(

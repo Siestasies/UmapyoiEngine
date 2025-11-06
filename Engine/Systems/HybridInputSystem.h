@@ -18,6 +18,9 @@ namespace Uma_Engine
         {
             Uma_Engine::InputSystem::Init();
 
+            prevMouseX = GetMouseX();
+            prevMouseY = GetMouseY();
+
 #ifdef _DEBUG_LOG
             std::cout << "HybridInputSystem: Initialized with UI input filtering" << std::endl;
             std::cout << "  - UI layer: HIGHEST priority (blocks game input)" << std::endl;
@@ -29,14 +32,17 @@ namespace Uma_Engine
 
         void Update(float dt) override
         {
-            double prevMouseX = GetMouseX();
-            double prevMouseY = GetMouseY();
+            double currMouseX = GetMouseX();
+            double currMouseY = GetMouseY();
 
             if (eventSystem)
             {
                 HandleInputEvents(prevMouseX, prevMouseY);
                 Uma_Engine::InputSystem::Update(dt);
             }
+
+            prevMouseX = currMouseX;
+            prevMouseY = currMouseY;
         }
 
         void SetEventSystem(EventSystem* eventSys)
@@ -181,7 +187,9 @@ namespace Uma_Engine
             // ================================================================
             std::vector<int> actionKeys = {
                 GLFW_KEY_SPACE, GLFW_KEY_ENTER,
-                GLFW_KEY_LEFT_SHIFT, GLFW_KEY_LEFT_CONTROL
+                GLFW_KEY_LEFT_SHIFT, GLFW_KEY_LEFT_CONTROL,
+                GLFW_KEY_K, GLFW_KEY_L,
+                GLFW_KEY_SEMICOLON, GLFW_KEY_P
             };
 
             for (int key : actionKeys)
@@ -221,10 +229,13 @@ namespace Uma_Engine
             // ================================================================
             // NORMAL PRIORITY: Mouse movement (blocked if over UI)
             // ================================================================
-            double currentX = GetMouseX();
-            double currentY = GetMouseY();
+            double currMouseX = GetMouseX();
+            double currMouseY = GetMouseY();
 
-            if (abs(currentX - prevMouseX) > 1.0 || abs(currentY - prevMouseY) > 1.0)
+            double deltaX = currMouseX - prevMouseX;
+            double deltaY = currMouseY - prevMouseY;
+
+            if (std::abs(deltaX) > 0.0001 || std::abs(deltaY) > 0.0001)
             {
                 // Block mouse move events when over UI (prevents camera rotation, etc.)
                 if (Uma_UI::InputFilter::IsMouseOverUI())
@@ -235,9 +246,6 @@ namespace Uma_Engine
                     return;  // Don't emit mouse move event
                 }
 
-                double deltaX = currentX - prevMouseX;
-                double deltaY = currentY - prevMouseY;
-
 #ifdef _DEBUG_LOG
                 // Only log significant movements to avoid spam
                 if (abs(deltaX) > 1.0 || abs(deltaY) > 1.0)
@@ -245,11 +253,13 @@ namespace Uma_Engine
                     std::cout << "HybridInputSystem: Mouse moved - EMITTING to queue (Normal priority)" << std::endl;
                 }
 #endif
-                eventSystem->Emit(MouseMoveEvent(currentX, currentY, deltaX, deltaY));
+                eventSystem->Emit<MouseMoveEvent>(currMouseX, currMouseY, deltaX, deltaY);
             }
         }
-
+    private:
         EventSystem* eventSystem = nullptr;
+
+        inline static double prevMouseX = 0.0, prevMouseY = 0.0;
     };
 
     // Simple test listener that logs received events

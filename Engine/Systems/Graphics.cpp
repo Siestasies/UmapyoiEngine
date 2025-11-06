@@ -90,6 +90,7 @@ uniform sampler2D image;
 uniform vec3 debugColor;
 uniform int useDebugColor;
 uniform vec3 tintColor;
+uniform float alpha;
 
 void main()
 {
@@ -97,7 +98,7 @@ void main()
         color = vec4(debugColor, 1.0);
     } else {
         vec4 texColor = texture(image, TexCoords);
-        color = vec4(texColor.rgb * tintColor, texColor.a);
+        color = vec4(texColor.rgb * tintColor, texColor.a * alpha);
     }
 }
 )";
@@ -109,8 +110,10 @@ void main()
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
 layout (location = 5) in vec4 instanceUV; // <vec2 uvOffset, vec2 uvSize>
+layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
 
 out vec2 TexCoords;
+out vec4 Tint;
 
 uniform mat4 projection;
 
@@ -119,6 +122,9 @@ void main()
     // Apply UV transformation
     vec2 uv = vertex.zw;
     TexCoords = instanceUV.xy + uv * instanceUV.zw;
+    
+    // Pass tint to fragment shader
+    Tint = instanceTint;
     
     gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
 }
@@ -129,15 +135,16 @@ void main()
     const std::string instancedFragmentShaderSource = R"(
 #version 450 core
 in vec2 TexCoords;
+in vec4 Tint;
 out vec4 color;
 
 uniform sampler2D image;
-uniform vec3 tintColor;
 
 void main()
 {
     vec4 texColor = texture(image, TexCoords);
-    color = vec4(texColor.rgb * tintColor, texColor.a);
+    // Apply tint to RGB and alpha separately
+    color = vec4(texColor.rgb * Tint.rgb, texColor.a * Tint.a);
 }
 )";
 
@@ -166,6 +173,31 @@ out vec4 FragColor;
 void main()
 {
     FragColor = vec4(Color, 1.0);
+}
+)";
+
+    const std::string shapeVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec2 position;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * model * vec4(position, 0.0, 1.0);
+}
+)";
+
+    const std::string shapeFragmentShaderSource = R"(
+#version 450 core
+out vec4 FragColor;
+
+uniform vec4 color;
+
+void main()
+{
+    FragColor = color;
 }
 )";
 
@@ -227,6 +259,12 @@ void main()
             return;
         }
 
+        if (!InitializeShapeRenderer())
+        {
+            std::cerr << "Failed to initialize shape renderer!" << std::endl;
+            return;
+        }
+
         if (!InitializeDebugRenderer())
         {
             std::cerr << "Failed to initialize debug renderer!" << std::endl;
@@ -283,6 +321,7 @@ void main()
             ShutdownRenderer();
             ShutdownInstancedRenderer();
             ShutdownDebugRenderer();
+            ShutdownShapeRenderer();
 
             mInitialized = false;
         }
@@ -392,7 +431,7 @@ void main()
         cam.zoom = zoom;
     }
 
-    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint)
+    void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint, float alpha)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -401,6 +440,9 @@ void main()
 
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, alpha);
 
         // Create transformation matrix
         glm::mat4 model = glm::mat4(1.0f);
@@ -435,6 +477,9 @@ void main()
 
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, 1.0f, 1.0f, 1.0f);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, 1.0f);
 
         // Scale quad to fill entire NDC space
         glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(2.0f, 2.0f, 1.0f));
@@ -502,6 +547,7 @@ void main()
         glUniform1i(glGetUniformLocation(mShaderProgram, "image"), 0);
         glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
         glUniform3f(glGetUniformLocation(mShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
+        glUniform1f(glGetUniformLocation(mShaderProgram, "alpha"), 1.0f);
 
         return true;
     }
@@ -834,6 +880,16 @@ void main()
         glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(5, 1);
 
+        // Create instance VBO for Tint
+        glGenBuffers(1, &mInstanceTintVBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
+
+        // Set up Tint attribute
+        glEnableVertexAttribArray(6);
+        glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
+        glVertexAttribDivisor(6, 1);
+
         // Unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -841,7 +897,6 @@ void main()
         // Set default uniforms
         glUseProgram(mInstanceShaderProgram);
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
-        glUniform3f(glGetUniformLocation(mInstanceShaderProgram, "tintColor"), 1.0f, 1.0f, 1.0f);
 
         return true;
     }
@@ -902,10 +957,44 @@ void main()
         return true;
     }
 
+    bool Graphics::InitializeShapeRenderer()
+    {
+        // Create shader
+        mShapeShaderProgram = CreateShader(
+            shapeVertexShaderSource,
+            shapeFragmentShaderSource
+        );
+
+        if (mShapeShaderProgram == 0)
+        {
+            std::cerr << "Failed to create shape shader!" << std::endl;
+            return false;
+        }
+
+        // Create VAO and VBO
+        glGenVertexArrays(1, &mShapeVAO);
+        glGenBuffers(1, &mShapeVBO);
+
+        glBindVertexArray(mShapeVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+
+        // Reserve space for shapes
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 2 * 1000, nullptr, GL_DYNAMIC_DRAW);
+
+        // Position attribute
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+
+        std::cout << "Shape renderer initialized" << std::endl;
+        return true;
+    }
+
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites,
-        const Vec3& tint)
+        std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -919,8 +1008,10 @@ void main()
         // Build model matrices and UV data
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
+        std::vector<glm::vec4> tintData;
         models.reserve(instanceCount);
         uvData.reserve(instanceCount);
+        tintData.reserve(instanceCount);
 
         for (size_t i = 0; i < instanceCount; ++i)
         {
@@ -936,6 +1027,10 @@ void main()
             // Build UV data
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
+
+            // Build tint data
+            tintData.push_back(glm::vec4(sprite.tintColor.x, sprite.tintColor.y,
+                sprite.tintColor.z, sprite.alpha));
         }
 
         if (models.empty()) return;
@@ -948,11 +1043,11 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        // Upload tint data
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        // Set tint uniform
-        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
-        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+        glUseProgram(mInstanceShaderProgram);
 
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
@@ -997,6 +1092,10 @@ void main()
         if (mInstanceUVVBO != 0) {
             glDeleteBuffers(1, &mInstanceUVVBO);
             mInstanceUVVBO = 0;
+        }
+        if (mInstanceTintVBO != 0) {
+            glDeleteBuffers(1, &mInstanceTintVBO);
+            mInstanceTintVBO = 0;
         }
         if (mInstanceShaderProgram != 0) {
             glDeleteProgram(mInstanceShaderProgram);
@@ -1319,7 +1418,7 @@ void main()
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
-        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint)
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha)
     {
         if (!mInitialized || textureID == 0) return;
 
@@ -1328,6 +1427,9 @@ void main()
         // Set tint uniform
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
         glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+
+        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
+        glUniform1f(alphaLoc, alpha);
 
         // Calculate current aspect ratio
         float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
@@ -1361,7 +1463,7 @@ void main()
         UpdateProjectionMatrix();
     }
 
-    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites, const Vec3& tint)
+    void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -1377,8 +1479,10 @@ void main()
 
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
+        std::vector<glm::vec4> tintData;
         models.reserve(instanceCount);
         uvData.reserve(instanceCount);
+        tintData.reserve(instanceCount);
 
         for (size_t i = 0; i < instanceCount; ++i)
         {
@@ -1394,6 +1498,8 @@ void main()
 
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
+            tintData.push_back(glm::vec4(sprite.tintColor.x, sprite.tintColor.y,
+                sprite.tintColor.z, sprite.alpha));
         }
 
         if (models.empty()) return;
@@ -1404,10 +1510,10 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * uvData.size(), uvData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        GLint tintLoc = glGetUniformLocation(mInstanceShaderProgram, "tintColor");
-        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
+        glUseProgram(mInstanceShaderProgram);
 
         glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
@@ -1473,6 +1579,8 @@ void main()
         // Upload colors to GPU
         glBindBuffer(GL_ARRAY_BUFFER, mDebugLineColorVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colors.size(), colors.data());
+
+        glLineWidth(2.0f);
 
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
@@ -1550,5 +1658,181 @@ void main()
         std::vector<DebugLineInfo>& outLines)
     {
         AddDebugRect(position, Vec2(6.0f, 6.0f), r, g, b, outLines);
+    }
+
+    void Graphics::DrawFilledRect(const Vec2& center, const Vec2& size,
+        float r, float g, float b, float alpha)
+    {
+        if (!mInitialized) return;
+
+        // Define rectangle vertices
+        float halfW = size.x * 0.5f;
+        float halfH = size.y * 0.5f;
+
+        float vertices[] = {
+            // Triangle 1
+            -halfW, -halfH,  // Bottom-left
+             halfW, -halfH,  // Bottom-right
+            -halfW,  halfH,  // Top-left
+
+            // Triangle 2
+            -halfW,  halfH,  // Top-left
+             halfW, -halfH,  // Bottom-right
+             halfW,  halfH   // Top-right
+        };
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        // Set model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::DrawFilledCircle(const Vec2& center, float radius,
+        float r, float g, float b, float alpha,
+        int segments)
+    {
+        if (!mInitialized) return;
+
+        // Generate circle vertices using triangle fan
+        std::vector<float> vertices;
+        vertices.reserve((segments + 2) * 2);
+
+        // Center point
+        vertices.push_back(0.0f);
+        vertices.push_back(0.0f);
+
+        // Generate points around circle
+        for (int i = 0; i <= segments; i++)
+        {
+            float angle = (float)i / (float)segments * 2.0f * 3.14159265f;
+            vertices.push_back(cosf(angle) * radius);
+            vertices.push_back(sinf(angle) * radius);
+        }
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(float), vertices.data());
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        // Set model matrix
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLE_FAN, 0, segments + 2);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3,
+        float r, float g, float b, float alpha)
+    {
+        if (!mInitialized) return;
+
+        // Triangle vertices
+        float vertices[] = {
+            p1.x, p1.y,
+            p2.x, p2.y,
+            p3.x, p3.y
+        };
+
+        // Upload vertex data
+        glBindBuffer(GL_ARRAY_BUFFER, mShapeVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
+        // Use shape shader
+        glUseProgram(mShapeShaderProgram);
+
+        // Set color uniform
+        GLint colorLoc = glGetUniformLocation(mShapeShaderProgram, "color");
+        glUniform4f(colorLoc, r, g, b, alpha);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+
+        // Set projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float left = cam.pos.x - halfWidth;
+        float right = cam.pos.x + halfWidth;
+        float bottom = cam.pos.y - halfHeight;
+        float top = cam.pos.y + halfHeight;
+        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
+        GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+
+        glBindVertexArray(mShapeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::ShutdownShapeRenderer()
+    {
+        if (mShapeVAO != 0) 
+        {
+            glDeleteVertexArrays(1, &mShapeVAO);
+            mShapeVAO = 0;
+        }
+        if (mShapeVBO != 0) 
+        {
+            glDeleteBuffers(1, &mShapeVBO);
+            mShapeVBO = 0;
+        }
+        if (mShapeShaderProgram != 0) 
+        {
+            glDeleteProgram(mShapeShaderProgram);
+            mShapeShaderProgram = 0;
+        }
     }
 }

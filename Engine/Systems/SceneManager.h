@@ -63,7 +63,8 @@ namespace Uma_Engine
         std::shared_ptr<Scene> GetActiveScene() { return m_ActiveScene; }
 
         // Editor camera access
-        Uma_Engine::EditorCamera& GetEditorCamera() { return m_EditorCamera; }
+        EditorCamera& GetEditorCamera() { return m_EditorCamera; }
+        const EditorCamera& GetEditorCamera() const { return m_EditorCamera; }
         bool IsUsingEditorCamera() const { return m_UseEditorCamera; }
 
         // SCRIPT STUFF
@@ -123,5 +124,6 @@ namespace Uma_Engine
         // Editor camera
         Uma_Engine::EditorCamera m_EditorCamera;
         bool m_UseEditorCamera = false;
+        bool m_isMouseOverUI = false;
     };
 }

@@ -29,6 +29,7 @@ All rights reserved.
 #include "../Engine/UI/Systems/UISystem.h"
 #include "ECS/Systems/TransformSystem.hpp"
 #include "ECS/Systems/AudioSystem.hpp"
+#include "ECS/Systems/AnimatorSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -57,6 +58,7 @@ All rights reserved.
 #include "Systems/SoundManager.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/CameraSystem.hpp"
+#include <Editor/Core/EditorSystem.h>
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"
@@ -139,6 +141,7 @@ namespace Uma_Engine
             Uma_Engine::SoundManager* m_Sound;
             Uma_Engine::ResourcesManager* m_ResourcesManager;
             Uma_Engine::EventSystem* m_EventSystem;
+            Uma_Engine::EditorSystem* m_EditorSystem;
             Uma_Engine::EngineConfig g_EngineConfig;
 
             // ECS related
@@ -150,6 +153,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
             std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
+            std::shared_ptr<Uma_ECS::AnimatorSystem> m_AnimatorSystem;
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
             std::shared_ptr<Uma_ECS::AudioSystem> m_AudioSystem;
 

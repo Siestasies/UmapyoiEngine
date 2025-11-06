@@ -23,8 +23,11 @@ All rights reserved.
 
 #pragma once
 
+#include "RapidJSON/document.h"
+#include "../../ECS/Core/Types.hpp"
 #include "../../Math/Math.h"
 #include <optional>
+#include <vector>
 //#include "Core/SerializationBase.h"
 
 namespace Uma_ECS

@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
+\author Leong Wai Men (Everything else)
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
+
+\co-author Javier Chua Dong Qing (EditorCamera, Animator, FlipScale)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Implements sprite batching and rendering system that groups sprites by texture ID for instanced drawing.
@@ -17,6 +21,7 @@ Queries camera transform and zoom from Camera component to configure graphics vi
 Validates texture handles before rendering and logs warnings for invalid textures. Builds sorted map of sprites
 grouped by texture ID, then submits batched draw calls through Graphics API for optimal performance.
 Supports single camera setup with entity at index 0.
+Integrates with the Animator component, using its uvOffset and uvSize for rendering
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -58,6 +63,8 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
+        
+        auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         // one camera for now
         if (camArray.Size() > 0)
@@ -69,7 +76,7 @@ namespace Uma_ECS
             // Only update graphics camera if not using editor camera
             if (mUpdateCamera)
             {
-                pGraphics->SetCamInfo(cam_tf.position, 10.f);
+                pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom * 10.f);
             }
         }
 
@@ -118,6 +125,22 @@ namespace Uma_ECS
                 spriteScale = tf.worldScale;
             }
 
+            if (rbArray.Has(entity))
+            {
+                auto& rb = rbArray.GetData(entity);
+                if (rb.velocity.x < 0) sr.flipX = true;
+                if (rb.velocity.x > 0) sr.flipX = false;
+            }
+
+            if (sr.flipX)
+            {
+                spriteScale.x = -spriteScale.x;
+            }
+            if (sr.flipY)
+            {
+                spriteScale.y = -spriteScale.y;
+            }
+
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
             Vec2 uvSize(1.0f, 1.0f);
@@ -128,6 +151,10 @@ namespace Uma_ECS
                 uvOffset = animator.uvOffset;
                 uvSize = animator.uvSize;
             }
+            else
+            {
+                sr.GetUVs(uvOffset, uvSize);
+            }
 
             allSprites.push_back(LayeredSprite{
                 .info = Uma_Engine::Sprite_Info{
@@ -137,7 +164,9 @@ namespace Uma_ECS
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
                     .uvOffset = uvOffset,
-                    .uvSize = uvSize
+                    .uvSize = uvSize,
+                    .tintColor = sr.tintColor,
+                    .alpha = sr.alpha
                 },
                 .layer = sr.renderLayer,
                 .texId = sr.texture->tex_id
