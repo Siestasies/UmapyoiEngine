@@ -68,7 +68,6 @@ namespace Uma_Engine
         
         m_UISystem->Shutdown();
 
-
         // Unload resources
         if (m_ResourcesManager)
         {

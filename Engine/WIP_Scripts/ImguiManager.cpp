@@ -419,9 +419,9 @@ namespace Uma_Engine
         CreateEditorCameraWindow();
 
 		    CreateSystemsWindow();
-		    CreateEntityDebugWindow();
+		    //CreateEntityDebugWindow();
 		    CreateConsoleWindow();
-		    CreateEntityPropertyWindow();
+		    //CreateEntityPropertyWindow();
     }
 
     void ImguiManager::CreateSystemsWindow()
