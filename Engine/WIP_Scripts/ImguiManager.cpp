@@ -1434,7 +1434,7 @@ namespace Uma_Engine
 
                         if (ImGui::Button("Remove Script", ImVec2(-1, 0)))
                         {
-                            luaScript.RemoveScript(i);
+                            luaScript.scripts.erase(luaScript.scripts.begin() + i);
                             ImGui::TreePop();
                             ImGui::PopID();
                             break;
@@ -1512,7 +1512,9 @@ namespace Uma_Engine
                     ImGui::Spacing();
 
                     // Add button (only enabled if valid)
-                    if (!fileExists || scriptExists || strlen(scriptNameBuffer) == 0)
+                    bool isValid = fileExists && !scriptExists && strlen(scriptNameBuffer) > 0;
+
+                    if (!isValid)
                     {
                         ImGui::BeginDisabled();
                     }
@@ -1528,7 +1530,7 @@ namespace Uma_Engine
                         ImGui::CloseCurrentPopup();
                     }
 
-                    if (!fileExists || scriptExists || strlen(scriptNameBuffer) == 0)
+                    if (!isValid)
                     {
                         ImGui::EndDisabled();
                     }
@@ -1548,7 +1550,7 @@ namespace Uma_Engine
 
                 ImGui::Unindent();
             }
-        }
+            }
         else
         {
             return false;

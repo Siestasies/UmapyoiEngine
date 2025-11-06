@@ -10,6 +10,7 @@ This replaces the old EditorScene class inheritance approach.
 #include "SceneType.h"
 #include "Core/GameSerializer.h"
 #include "Core/FilePaths.h"
+#include "Core/Types.hpp"
 #include <random>
 
 // events
@@ -253,6 +254,7 @@ namespace Uma_Engine
 
         void DuplicateGameObject(Entity entity)
         {
+            if (entity > Uma_ECS::MAX_ENTITIES) return;
             Entity newEntity = GetCoordinator().DuplicateEntity(entity);
             GetEventSystem()->Emit<ReturnDuplicatedRequestEvent>(newEntity);
         }

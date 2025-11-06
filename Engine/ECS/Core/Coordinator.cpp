@@ -120,12 +120,87 @@ namespace Uma_ECS
 
     Entity Coordinator::DuplicateEntity(Entity src)
     {
+        // Use helper function that handles hierarchy
+        std::unordered_map<Entity, Entity> oldToNewMap;
+        Entity rootDuplicate = DuplicateEntityHierarchy(src, oldToNewMap);
+        return rootDuplicate;
+    }
+
+    // New helper function for recursive duplication
+    Entity Coordinator::DuplicateEntityHierarchy(Entity src, std::unordered_map<Entity, Entity>& oldToNewMap)
+    {
+        // Create new entity
         Entity newEntity = CreateEntity();
+        oldToNewMap[src] = newEntity;
+
+        // Handle LuaScript specially - remove before cloning
+        auto& luaScriptArray = aComponentManager->GetComponentArray<LuaScript>();
+        bool hadLuaScript = luaScriptArray.Has(src);
+
+        LuaScript srcLuaScriptBackup;
+        if (hadLuaScript)
+        {
+            srcLuaScriptBackup = luaScriptArray.GetData(src);
+            luaScriptArray.RemoveData(src);
+        }
+
+        // Clone all components except LuaScript
         aComponentManager->CloneEntityComponents(src, newEntity);
+
+        // Restore LuaScript to source
+        if (hadLuaScript)
+        {
+            luaScriptArray.AddData(src, srcLuaScriptBackup);
+        }
+
+        // Get transform to handle children
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+
+        // Clear parent on the duplicate (will be set later if needed)
+        if (tfArray.Has(newEntity))
+        {
+            auto& newTf = tfArray.GetData(newEntity);
+            newTf.parent = std::nullopt;
+            newTf.children.clear();
+        }
+
+        // Recursively duplicate children
+        if (tfArray.Has(src))
+        {
+            auto& srcTf = tfArray.GetData(src);
+            std::vector<Entity> originalChildren = srcTf.children; // Copy to avoid iterator invalidation
+
+            for (Entity child : originalChildren)
+            {
+                Entity duplicatedChild = DuplicateEntityHierarchy(child, oldToNewMap);
+
+                // Set parent-child relationship
+                SetParent(duplicatedChild, newEntity);
+            }
+        }
+
+        // Build fresh LuaScript if needed
+        if (hadLuaScript)
+        {
+            LuaScript newLuaScript;
+
+            for (const auto& script : srcLuaScriptBackup.scripts)
+            {
+                newLuaScript.AddScript(script.scriptPath);
+
+                size_t idx = newLuaScript.scripts.size() - 1;
+                newLuaScript.scripts[idx].exposedVariables = script.exposedVariables;
+                newLuaScript.scripts[idx].isEnabled = script.isEnabled;
+                newLuaScript.scripts[idx].isVariableDirty = true;
+            }
+
+            AddComponent(newEntity, newLuaScript);
+            pEventSystem->Emit<Uma_Engine::CallLuaToInitScript>(newEntity);
+        }
 
         aEntityManager->SetSignature(newEntity, GetEntitySignature(src));
 
-        aSystemManager->EntitySignatureChanged(newEntity, GetEntitySignature(src));
+        aSystemManager->EntitySignatureChanged(newEntity, GetEntitySignature(newEntity));
 
         return newEntity;
     }

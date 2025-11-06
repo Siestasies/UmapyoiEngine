@@ -45,6 +45,9 @@ namespace Uma_ECS
         virtual void CloneComponent(Entity src, Entity dest) = 0;
         virtual std::vector<Entity> GetAllEntities() const = 0;
 
+        // NEW: Allow components to opt-out of cloning
+        virtual bool ShouldClone() const { return true; }
+
         // serialization and deserialization
         virtual void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) = 0;
         virtual std::string Deserialize(Entity entity, const rapidjson::Value& comps) = 0;
@@ -210,7 +213,6 @@ namespace Uma_ECS
 
         size_t mSize = 0; // how many components are currently in use
     };
-
 }
 
 

@@ -213,6 +213,8 @@ namespace Uma_ECS
 
         Entity DuplicateEntity(Entity src);
 
+        Entity DuplicateEntityHierarchy(Entity src, std::unordered_map<Entity, Entity>& oldToNewMap);
+
         //Serialization
 
         //void SerializeAllEntities(const std::string& filename);
