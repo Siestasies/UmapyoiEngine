@@ -152,6 +152,12 @@ namespace Uma_Engine
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
             { 
                 m_selectedEntity = e.entity;
+                m_ScrollToBottom = true;
+            });
+        pEventSystem->Subscribe<ReturnSpawnedRequestEvent>([this](const ReturnSpawnedRequestEvent& e)
+            {
+                m_selectedEntity = e.entity;
+                m_ScrollToBottom = true;
             });
 
         // resources manager
@@ -732,6 +738,12 @@ namespace Uma_Engine
             RenderEntityNode(rootEntity, coordinator, transformArray);
         }
 
+        if (m_ScrollToBottom)
+        {
+            ImGui::SetScrollHereY(1.0f);
+            m_ScrollToBottom = false;
+        }
+
         ImGui::EndChild();
         ImGui::End();
     }
@@ -777,6 +789,8 @@ namespace Uma_Engine
             if (ImGui::MenuItem("Create New"))
             {
                 pEventSystem->Emit<SpawnEntityRequestEvent>();
+
+                m_ScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Create Child"))
@@ -789,18 +803,14 @@ namespace Uma_Engine
                     .scale = Vec2(1, 1)
                     });
                 coordinator.SetParent(child, entity);
+
+                m_ScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Duplicate"))
             {
                 pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
-                //Uma_ECS::Entity duplicate = coordinator.DuplicateEntity(entity);
-
-                //// If the entity had a parent, set the duplicate to have the same parent
-                //if (transform.parent.has_value())
-                //{
-                //    coordinator.SetParent(duplicate, transform.parent.value());
-                //}
+                m_ScrollToBottom = true;
             }
 
             ImGui::Separator();
@@ -812,6 +822,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
+                m_ScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Delete with Children"))
@@ -821,6 +832,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
+                m_ScrollToBottom = true;
             }
 
             ImGui::EndPopup();

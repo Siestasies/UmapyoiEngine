@@ -132,6 +132,8 @@ namespace Uma_Engine
         FileBrowser fileBrowser;
         ResourcesWindow resourcesWindow;
 
+        // hierachy 
+        bool m_ScrollToBottom = false;
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;

@@ -37,6 +37,13 @@ namespace Uma_Engine
         SpawnEntityRequestEvent() { priority = Priority::Normal; }
     };
 
+    class ReturnSpawnedRequestEvent : public Event
+    {
+    public:
+        Uma_ECS::Entity entity;
+        ReturnSpawnedRequestEvent(Uma_ECS::Entity en) : entity(en) { priority = Priority::Normal; }
+    };
+
     class DuplicateEntityRequestEvent : public Event
     {
     public:

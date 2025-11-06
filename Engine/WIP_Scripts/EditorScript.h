@@ -217,14 +217,8 @@ namespace Uma_Engine
                 eventSystem->Subscribe<SpawnEntityRequestEvent>(
                     [this](const SpawnEntityRequestEvent& e) {
                         
-                        Entity en = GetCoordinator().CreateEntity();
-                        GetCoordinator().AddComponent(en, Uma_ECS::Transform
-                            {
-                                .name = std::string("new entity"),
-                                .position = Vec2(0.f, 0.f),
-                                .rotation = Vec2(0.f, 0.f),
-                                .scale = Vec2(1, 1),
-                            });
+                        (void)e;
+                        SpawnEmptyGameObject();
                         
                     }
                 ));
@@ -257,6 +251,19 @@ namespace Uma_Engine
             if (entity > Uma_ECS::MAX_ENTITIES) return;
             Entity newEntity = GetCoordinator().DuplicateEntity(entity);
             GetEventSystem()->Emit<ReturnDuplicatedRequestEvent>(newEntity);
+        }
+
+        void SpawnEmptyGameObject()
+        {
+            Entity en = GetCoordinator().CreateEntity();
+            GetCoordinator().AddComponent(en, Uma_ECS::Transform
+                {
+                    .name = std::string("new entity"),
+                    .position = Vec2(0.f, 0.f),
+                    .rotation = Vec2(0.f, 0.f),
+                    .scale = Vec2(1, 1),
+                });
+            GetEventSystem()->Emit<ReturnSpawnedRequestEvent>(en);
         }
 
         void HandleEditorInput()
