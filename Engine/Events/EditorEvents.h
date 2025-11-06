@@ -59,4 +59,14 @@ namespace Uma_Engine
         int transformType; // 0=translate, 1=rotate, 2=scale
 
     };
+
+
+    class UpdateMouseOverUIEvent : public Event
+    {
+    public:
+        UpdateMouseOverUIEvent(bool focus) : isFocus(focus) {}
+
+    public:
+        bool isFocus;
+    };
 }

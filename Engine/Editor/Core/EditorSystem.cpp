@@ -2,6 +2,8 @@
 #include "../../UI/Helpers/InputFilter.h"
 #include <GLFW/glfw3.h>
 
+#include <Debugging/Debugger.hpp>
+
 namespace Uma_Engine
 {
     EditorSystem::EditorSystem()
@@ -27,6 +29,8 @@ namespace Uma_Engine
         if (mIsPlayMode) return;
 
         if (!mState.enabled) return;
+
+        //if (isMouseOverUI) return;
         
         // Render selection highlight and gizmo
         if (mState.pickedEntity.has_value())
@@ -74,6 +78,10 @@ namespace Uma_Engine
         SubscribeToEvent<KeyPressEvent>([this](const KeyPressEvent& e) {
             OnKeyPress(e);
         });
+
+        SubscribeToEvent<UpdateMouseOverUIEvent>([this](const UpdateMouseOverUIEvent& e) {
+            isMouseOverUI = e.isFocus;
+            });
     }
 
     void EditorSystem::PickEntity(Uma_ECS::Entity entity)
@@ -159,7 +167,7 @@ namespace Uma_Engine
 
     void EditorSystem::OnMouseButton(const MouseButtonEvent& event)
     {
-        if (!mState.enabled || !pCoordinator || !pGraphics)
+        if (!mState.enabled || !pCoordinator || !pGraphics || isMouseOverUI)
             return;
 
         // Left mouse button

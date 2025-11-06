@@ -9,6 +9,8 @@
 #include "imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 
+#include "Events/EditorEvents.h"
+
 namespace Uma_Engine
 {
     ImguiManager::ImguiManager()
@@ -141,6 +143,12 @@ namespace Uma_Engine
         pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
+
+        pEventSystem->Subscribe<EntityPickedEvent>([this](const EntityPickedEvent& e)
+            { 
+                m_selectedEntity = e.entity;
+            });
+
         m_initialized = true;
     }
 
@@ -149,6 +157,17 @@ namespace Uma_Engine
         if (!m_initialized)
         {
             return;
+        }
+
+        bool mouseOverUI =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered();
+
+        if (prevMouseOverUI != mouseOverUI)
+        {
+            // send event
+            prevMouseOverUI = mouseOverUI;
+            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
         static float fpsAccumulator = 0.0f;

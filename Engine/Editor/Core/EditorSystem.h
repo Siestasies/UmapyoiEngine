@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../../Core/SystemType.h"
-#include "../../ECS/Core/Coordinator.hpp"
-#include "../../Core/EventSystem.h"
-#include "../../Systems/Graphics.hpp"
-#include "../../Events/InputEvents.h"
-#include "../Core/EditorTypes.h"
+#include "../Core/SystemType.h"
+#include "../ECS/Core/Coordinator.hpp"
+#include "../Core/EventSystem.h"
+#include "../Systems/Graphics.hpp"
+#include "../Events/InputEvents.h"
 #include "../Events/EditorEvents.h"
+#include "../Core/EditorTypes.h"
 #include "../Systems/PickingSystem.h"
 #include "../Systems/GizmoRenderer.h"
 #include "../Systems/TransformManipulator.h"
@@ -131,6 +131,9 @@ namespace Uma_Engine
         EditorState mState;
         EditorConfig mConfig;
         bool mIsPlayMode = false;  // Track play mode to disable editor during gameplay
+
+        // === Mouse Over UI event ===
+        bool isMouseOverUI = false;
 
         // === Systems ===
         PickingSystem mPickingSystem;
