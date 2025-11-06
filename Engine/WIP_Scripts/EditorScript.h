@@ -16,6 +16,9 @@ This replaces the old EditorScene class inheritance approach.
 // events
 #include <Events/AudioEvents.h>
 
+// Temp
+#include <GLFW/glfw3.h>
+
 namespace Uma_Engine
 {
     class EditorScript : public SceneScript
@@ -36,11 +39,6 @@ namespace Uma_Engine
 
             //// Subscribe to editor events
             SubscribeToEvents();
-
-            //CreateCanvas();
-
-            //CreateButtonWithText("Hello", Vec2(0.f, 0.f), Vec2(200.f, 50.f), m_Canvas,
-            //    [](Uma_ECS::Entity btn){std::cout << "[UI] Button clicked! entity=" << btn << std::endl;});
         }
 
         void OnUnload() override
@@ -60,7 +58,7 @@ namespace Uma_Engine
     private:
         std::string m_CurrentSceneName;
 
-        Entity m_Canvas{};
+        Entity m_Canvas = static_cast<Entity>(-1);
 
         std::vector<std::shared_ptr<IEventListener>> m_EventListeners;
 
@@ -214,6 +212,15 @@ namespace Uma_Engine
                         DuplicateGameObject(e.entity);
                     }
                 ));
+
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<CreateUIRequestEvent>(
+                    [this, &eventSystem](const CreateUIRequestEvent& e)
+                    {
+                        CreateUI();
+                    }
+                ));
+
         }
 
         void UnsubscribeEvents()
@@ -1195,7 +1202,6 @@ namespace Uma_Engine
                 .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
                 });
 
-
             GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
                 {
                 .sortingOrder = 0,
@@ -1205,7 +1211,7 @@ namespace Uma_Engine
                 });
         }
 
-        Uma_ECS::Entity CreateButtonWithText(
+        Entity CreateButtonWithText(
             const std::string& label,
             Vec2               anchoredPos,
             Vec2               size,
@@ -1270,6 +1276,89 @@ namespace Uma_Engine
                 });
 
             return btn;
+        }
+
+        Entity CreateButtonWithText2(
+            const std::string& label,
+            Vec2               anchoredPos,
+            Vec2               size,
+            Uma_ECS::Entity    canvas,
+            std::function<void(Uma_ECS::Entity)> onClick)
+        {
+            using namespace Uma_ECS;
+            Coordinator& coord = GetCoordinator();
+
+            /* ---------- button entity ---------- */
+            Entity btn = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_UI::RectTransform>(btn,
+                {
+                .anchorMin = Vec2(0.5f, 0.5f),
+                .anchorMax = Vec2(0.5f, 0.5f),
+                .pivot = Vec2(0.5f, 0.5f),
+                .anchoredPosition = anchoredPos,
+                .sizeDelta = size,
+                .parent = canvas
+                });
+
+            coord.AddComponent<Uma_UI::Image>(btn,
+                {
+                .textureName = "whitePixel",
+                .colour = Uma_UI::Colour(0.f, 0.f, 0.f, 1.f),
+                .visible = true
+                });
+
+            coord.AddComponent<Uma_UI::Button>(btn,
+                {
+                .interactable = true,
+                .normalColour = Uma_UI::Colour(0.f, 0.f, 0.f, 1.f),
+                .hoverColour = Uma_UI::Colour(0.2f, 0.2f, 0.2f, 1.f),
+                .pressedColour = Uma_UI::Colour(1.f, 1.f, 1.f, 1.f),
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
+                });
+
+            auto& button = coord.GetComponent<Uma_UI::Button>(btn);
+            button.onClick = std::move(onClick);
+
+            /* ---------- text child ---------- */
+            Entity txt = m_Scene->CreateEntity();
+            coord.AddComponent<Uma_UI::RectTransform>(txt,
+                {
+                .anchorMin = Vec2(0.5f, 0.5f),
+                .anchorMax = Vec2(0.5f, 0.5f),
+                .pivot = Vec2(0.5f, 0.5f),
+                .anchoredPosition = Vec2(0,0),
+                .sizeDelta = size,
+                .parent = btn
+                });
+
+            coord.AddComponent<Uma_UI::Text>(txt,
+                {
+                .text = label,
+                .fontName = "default2",
+                .fontSize = 1.f,
+                .colour = Uma_UI::Colour::Red(),
+                .alignment = Uma_UI::TextAlignment::Center,
+                .visible = true
+                });
+            return btn;
+        }
+
+        void CreateUI()
+        {
+            if (m_Canvas == static_cast<Entity>(-1)) CreateCanvas();
+
+            CreateButtonWithText("Destroy rand entity", Vec2(150.f, -50.f), Vec2(300.f, 50.f), m_Canvas,
+                [this](Entity btn)
+                {
+                    this->GetEventSystem()->Emit<DestroyEntityRequestEvent>(static_cast<Entity>(-1));
+                });
+
+            CreateButtonWithText2("Quit", Vec2(325.f, -50.f), Vec2(150.f, 50.f), m_Canvas, 
+                [this](Entity btn)
+                {
+                    glfwSetWindowShouldClose(this->GetGraphics()->GetWindow(), GLFW_TRUE);
+                });
         }
     };
 }
