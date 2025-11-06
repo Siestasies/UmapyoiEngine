@@ -164,6 +164,10 @@ namespace Uma_Engine
             { 
                 m_selectedEntity = e.entity;
             });
+        pEventSystem->Subscribe<EntityDroppedEvent>([this](const EntityDroppedEvent& e)
+            {
+                m_selectedEntity = static_cast<Entity>(-1);
+            });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -795,6 +799,7 @@ namespace Uma_Engine
         if (ImGui::IsItemClicked())
         {
             m_selectedEntity = entity;
+            pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
         }
 
         // Right-click context menu

@@ -81,7 +81,11 @@ namespace Uma_Engine
 
         SubscribeToEvent<UpdateMouseOverUIEvent>([this](const UpdateMouseOverUIEvent& e) {
             isMouseOverUI = e.isFocus;
-            });
+        });
+
+        SubscribeToEvent<EntityPickedEvent>([this](const EntityPickedEvent& e) {
+            mState.pickedEntity = e.entity;
+        });
     }
 
     void EditorSystem::PickEntity(Uma_ECS::Entity entity)
