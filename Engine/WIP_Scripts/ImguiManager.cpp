@@ -152,12 +152,12 @@ namespace Uma_Engine
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
             { 
                 m_selectedEntity = e.entity;
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             });
         pEventSystem->Subscribe<ReturnSpawnedRequestEvent>([this](const ReturnSpawnedRequestEvent& e)
             {
                 m_selectedEntity = e.entity;
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             });
 
         // resources manager
@@ -738,10 +738,10 @@ namespace Uma_Engine
             RenderEntityNode(rootEntity, coordinator, transformArray);
         }
 
-        if (m_ScrollToBottom)
+        if (m_HierarchyScrollToBottom)
         {
             ImGui::SetScrollHereY(1.0f);
-            m_ScrollToBottom = false;
+            m_HierarchyScrollToBottom = false;
         }
 
         ImGui::EndChild();
@@ -790,7 +790,7 @@ namespace Uma_Engine
             {
                 pEventSystem->Emit<SpawnEntityRequestEvent>();
 
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Create Child"))
@@ -804,13 +804,13 @@ namespace Uma_Engine
                     });
                 coordinator.SetParent(child, entity);
 
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Duplicate"))
             {
                 pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             }
 
             ImGui::Separator();
@@ -822,7 +822,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Delete with Children"))
@@ -832,7 +832,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
-                m_ScrollToBottom = true;
+                m_HierarchyScrollToBottom = true;
             }
 
             ImGui::EndPopup();

@@ -133,7 +133,7 @@ namespace Uma_Engine
         ResourcesWindow resourcesWindow;
 
         // hierachy 
-        bool m_ScrollToBottom = false;
+        bool m_HierarchyScrollToBottom = false;
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;
