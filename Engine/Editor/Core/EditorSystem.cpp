@@ -171,7 +171,7 @@ namespace Uma_Engine
 
     void EditorSystem::OnMouseButton(const MouseButtonEvent& event)
     {
-        if (!mState.enabled || !pCoordinator || !pGraphics || isMouseOverUI)
+        if (!mState.enabled || !pCoordinator || !pGraphics || isMouseOverUI || mIsPlayMode)
             return;
 
         // Left mouse button
@@ -228,7 +228,7 @@ namespace Uma_Engine
 
     void EditorSystem::OnMouseMove(const MouseMoveEvent& event)
     {
-        if (!mState.enabled || !pCoordinator)
+        if (!mState.enabled || !pCoordinator || isMouseOverUI || mIsPlayMode)
             return;
 
         if (mState.isDragging && mState.pickedEntity.has_value())
