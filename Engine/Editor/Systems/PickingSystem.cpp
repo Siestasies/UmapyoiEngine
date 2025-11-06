@@ -91,8 +91,8 @@ namespace Uma_Engine
                 // Use actual texture dimensions
                 if (sprite.texture->tex_id != 0)
                 {
-                    size.x = static_cast<float>(sprite.texture->tex_size.x);
-                    size.y = static_cast<float>(sprite.texture->tex_size.y);
+                    size.x = static_cast<float>(sprite.texture->tex_size.x) / static_cast<float>(sprite.texture->pixelsPerUnit);
+                    size.y = static_cast<float>(sprite.texture->tex_size.y) / static_cast<float>(sprite.texture->pixelsPerUnit);
                 }
             }
 
