@@ -80,7 +80,6 @@ namespace Uma_Engine
 
         m_State = SceneState::SCENE_UNLOADED;
         m_LoadProgress = 0.0f;
-        m_FirstFrame = true;
     }
 
     void Scene::Update(float dt)
@@ -88,31 +87,9 @@ namespace Uma_Engine
         if (m_State != SceneState::SCENE_RUNNING)
             return;
 
-        // Smooth delta time
-        /*if (m_FirstFrame)
-        {
-            m_SmoothedDt = dt;
-            m_FirstFrame = false;
-        }
-        else
-        {
-            m_SmoothedDt = 0.9f * m_SmoothedDt + 0.1f * dt;
-        }*/
-
         // Cap dt to prevent spiral of death
         if (dt > g_EngineConfig.maxFrameTime)
             dt = g_EngineConfig.maxFrameTime;
-
-        // Smooth delta time for rendering
-        if (m_FirstFrame)
-        {
-            m_SmoothedDt = dt;
-            m_FirstFrame = false;
-        }
-        else
-        {
-            m_SmoothedDt = 0.9f * m_SmoothedDt + 0.1f * dt;
-        }
 
         // save prev pos
         m_PhysicsSystem->SavePrevPos();
@@ -130,17 +107,6 @@ namespace Uma_Engine
             physicsSteps++;
         }
 
-        // Calculate interpolation alpha
-        //float alpha = m_Accumulator / m_FixedTimeStep;
-
-        // Update render positions for smooth interpolation
-       /* auto& tfArray = m_Coordinator.GetComponentArray<Uma_ECS::Transform>();
-        for (size_t i = 0; i < tfArray.Size(); ++i)
-        {
-            auto& tf = tfArray.GetComponentAt(i);
-            tf.UpdateRenderPosition(alpha);
-        }*/
-
         // Update ECS systems
         UpdateECSSystems(dt);
 
@@ -153,9 +119,6 @@ namespace Uma_Engine
 
     void Scene::UpdateSelective(float dt)
     {
-       /* if (m_Graphics)
-            m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
-
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();
 

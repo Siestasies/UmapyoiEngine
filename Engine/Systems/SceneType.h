@@ -183,8 +183,6 @@ namespace Uma_Engine
             float m_LoadProgress = 0.0f;
 
             // Delta time smoothing
-            float m_SmoothedDt = 0.0f;
-            bool m_FirstFrame = true;
 
             // fixed timestamp accumulator
             float m_Accumulator = 0.0f;
