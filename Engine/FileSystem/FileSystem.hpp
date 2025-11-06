@@ -295,6 +295,36 @@ namespace Uma_Engine
                         RefreshDirectory();
                         mSelectedPath.clear();
                     }
+                    static char renameText[256];
+                    renameText[255] = '\0';
+                    if (ImGui::InputText("##name", renameText, 256)) {}
+                    ImGui::SameLine();
+                    float inputHeight = ImGui::GetFrameHeight();
+                    float textHeight = ImGui::GetTextLineHeight();
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (inputHeight - textHeight) * 0.5f);
+                    if (ImGui::MenuItem("Rename"))
+                    {
+                        std::string newName(renameText);
+                        if (!newName.empty())
+                        {
+                            newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
+                                if (fs::exists(newName))
+                                    feedback = "rename: file already exists";
+                                else
+                                {
+                                    try
+                                    {
+                                        fs::rename(entry.path, newName);
+                                        RefreshDirectory();
+                                        mSelectedPath.clear();
+                                    }
+                                    catch (const std::exception& e)
+                                    {
+                                        feedback = e.what();
+                                    }
+                                }
+                        }
+                    }
                     ImGui::EndPopup();
                 }
 

@@ -417,10 +417,10 @@ namespace Uma_Engine
         CreateInspectorWindow();
         CreateEditorCameraWindow();
 
-		CreateSystemsWindow();
-		CreateEntityDebugWindow();
-		CreateConsoleWindow();
-		CreateEntityPropertyWindow();
+		    CreateSystemsWindow();
+		    CreateEntityDebugWindow();
+		    CreateConsoleWindow();
+		    CreateEntityPropertyWindow();
     }
 
     void ImguiManager::CreateSystemsWindow()
@@ -1060,9 +1060,8 @@ namespace Uma_Engine
                 auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
                 ImGui::Indent();
 
-                ImGui::Text("Texture: %s", sprite.textureName.c_str());
-
                 // Texture name input
+                ImGui::Text("Texture: %s", sprite.textureName.c_str());
                 static char textureBuffer[256];
                 strncpy(textureBuffer, sprite.textureName.c_str(), 255);
                 textureBuffer[255] = '\0';
@@ -1072,6 +1071,7 @@ namespace Uma_Engine
                     sprite.texture = nullptr; // Will reload
                 }
 
+                // Flip flags
                 ImGui::Checkbox("Flip X", &sprite.flipX);
                 ImGui::Checkbox("Flip Y", &sprite.flipY);
                 ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
@@ -1087,21 +1087,62 @@ namespace Uma_Engine
                     "RL_WALL_BTM",
                     "RL_UI"
                 };
-
                 int currentRenderLayer = 0;
                 unsigned int rl = static_cast<unsigned int>(sprite.renderLayer);
                 while (rl >>= 1) ++currentRenderLayer;
-
                 if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                 {
                     sprite.renderLayer = (1u << currentRenderLayer);
                 }
 
                 ImGui::Separator();
+                ImGui::Text("Color & Alpha");
+
+                // Tint color (RGB)
+                float tintColorArray[3] = { sprite.tintColor.x, sprite.tintColor.y, sprite.tintColor.z };
+                if (ImGui::ColorEdit3("Tint Color", tintColorArray))
+                {
+                    sprite.tintColor.x = tintColorArray[0];
+                    sprite.tintColor.y = tintColorArray[1];
+                    sprite.tintColor.z = tintColorArray[2];
+                }
+
+                // Alpha (opacity)
+                ImGui::SliderFloat("Alpha", &sprite.alpha, 0.0f, 1.0f, "%.2f");
+
+                ImGui::Separator();
+                ImGui::Text("Sprite Sheet");
+
+                // Sprite sheet grid (columns and rows)
+                float gridArray[2] = { sprite.spriteSheetGrid.x, sprite.spriteSheetGrid.y };
+                if (ImGui::DragFloat2("Grid (Cols x Rows)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
+                {
+                    sprite.spriteSheetGrid.x = gridArray[0];
+                    sprite.spriteSheetGrid.y = gridArray[1];
+                }
+
+                // Sprite cell (which cell to render)
+                float cellArray[2] = { sprite.spriteCell.x, sprite.spriteCell.y };
+                if (ImGui::DragFloat2("Cell (Col, Row)", cellArray, 1.0f, 0.0f,
+                    max(sprite.spriteSheetGrid.x - 1.0f, 0.0f), "%.0f"))
+                {
+                    sprite.spriteCell.x = cellArray[0];
+                    sprite.spriteCell.y = cellArray[1];
+                }
+
+                ImGui::Separator();
+
+                // Texture info (read-only)
                 if (sprite.texture)
                 {
                     ImGui::Text("Texture ID: %u", sprite.texture->tex_id);
                     ImGui::Text("Native Size: %.0f x %.0f", sprite.texture->GetNativeSize().x, sprite.texture->GetNativeSize().y);
+
+                    // Show UV info
+                    Vec2 uvOffset, uvSize;
+                    sprite.GetUVs(uvOffset, uvSize);
+                    ImGui::Text("UV Offset: (%.3f, %.3f)", uvOffset.x, uvOffset.y);
+                    ImGui::Text("UV Size: (%.3f, %.3f)", uvSize.x, uvSize.y);
                 }
                 else
                 {
