@@ -74,6 +74,7 @@ namespace Uma_Engine
         {
             m_ResourcesManager->UnloadAllTextures();
             m_ResourcesManager->UnloadAllSound();
+            m_ResourcesManager->UnloadAllFonts();
         }
 
         // Unlaod scripts
@@ -437,7 +438,10 @@ namespace Uma_Engine
             m_CollisionSystem->DebugRender();
 
         if (m_UISystem)
+        {
             m_UISystem->Update(dt);
+            m_UISystem->InputPass();
+        }
 
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);

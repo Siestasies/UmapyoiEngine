@@ -37,7 +37,7 @@ namespace Uma_Engine
         {
             std::cout << "EditorScript: OnLoad" << std::endl;
 
-            //// Subscribe to editor events
+            // Subscribe to editor events
             SubscribeToEvents();
         }
 
@@ -57,8 +57,6 @@ namespace Uma_Engine
 
     private:
         std::string m_CurrentSceneName;
-
-        Entity m_Canvas = static_cast<Entity>(-1);
 
         std::vector<std::shared_ptr<IEventListener>> m_EventListeners;
 
@@ -1189,9 +1187,18 @@ namespace Uma_Engine
             }
         }
 
-        void CreateCanvas()
+        Entity CreateCanvas()
         {
-            m_Canvas = m_Scene->CreateEntity();
+            Entity m_Canvas = m_Scene->CreateEntity();
+
+            GetCoordinator().AddComponent<Uma_ECS::Transform>(m_Canvas,
+                {
+                .name = std::string("Canvas"),
+                .position = Vec2(0, 0),
+                .rotation = Vec2(0, 0),
+                .scale = Vec2(1, 1)
+                });
+
             GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
                 {
                 .anchorMin = Vec2(0.0f, 0.0f),      // Bottom-left
@@ -1209,20 +1216,29 @@ namespace Uma_Engine
                 .scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize,
                 .matchWidthOrHeight = 0.5f
                 });
+
+            return m_Canvas;
         }
 
         Entity CreateButtonWithText(
             const std::string& label,
             Vec2               anchoredPos,
             Vec2               size,
-            Uma_ECS::Entity    canvas,
-            std::function<void(Uma_ECS::Entity)> onClick)
+            Uma_ECS::Entity    canvas)
         {
             using namespace Uma_ECS;
             Coordinator& coord = GetCoordinator();
 
             /* ---------- button entity ---------- */
             Entity btn = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_ECS::Transform>(btn,
+                {
+                .name = std::string("Button1"),
+                .position = Vec2(0, 0),
+                .rotation = Vec2(0, 0),
+                .scale = Vec2(1, 1)
+                });
 
             coord.AddComponent<Uma_UI::RectTransform>(btn, 
                 {
@@ -1241,20 +1257,27 @@ namespace Uma_Engine
                 .visible = true
                 });
 
-            coord.AddComponent<Uma_UI::Button>(btn, 
+            coord.AddComponent<Uma_UI::Button>(btn,
                 {
                 .interactable = true,
                 .normalColour = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
                 .hoverColour = Uma_UI::Colour(0.3f, 0.7f, 1.f, 1.f),
                 .pressedColour = Uma_UI::Colour(0.1f, 0.4f, 0.9f, 1.f),
-                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f),
+                .functionName = "UI_CALLBACK_PLAY_SOUND"
                 });
-
-            auto& button = coord.GetComponent<Uma_UI::Button>(btn);
-            button.onClick = std::move(onClick);
 
             /* ---------- text child ---------- */
             Entity txt = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_ECS::Transform>(txt,
+                {
+                .name = std::string("Button1_txt"),
+                .position = Vec2(0, 0),
+                .rotation = Vec2(0, 0),
+                .scale = Vec2(1, 1)
+                });
+
             coord.AddComponent<Uma_UI::RectTransform>(txt, 
                 {
                 .anchorMin = Vec2(0.5f, 0.5f),
@@ -1282,14 +1305,21 @@ namespace Uma_Engine
             const std::string& label,
             Vec2               anchoredPos,
             Vec2               size,
-            Uma_ECS::Entity    canvas,
-            std::function<void(Uma_ECS::Entity)> onClick)
+            Uma_ECS::Entity    canvas)
         {
             using namespace Uma_ECS;
             Coordinator& coord = GetCoordinator();
 
             /* ---------- button entity ---------- */
             Entity btn = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_ECS::Transform>(btn,
+                {
+                .name = std::string("Button2"),
+                .position = Vec2(0, 0),
+                .rotation = Vec2(0, 0),
+                .scale = Vec2(1, 1)
+                });
 
             coord.AddComponent<Uma_UI::RectTransform>(btn,
                 {
@@ -1314,14 +1344,21 @@ namespace Uma_Engine
                 .normalColour = Uma_UI::Colour(0.f, 0.f, 0.f, 1.f),
                 .hoverColour = Uma_UI::Colour(0.2f, 0.2f, 0.2f, 1.f),
                 .pressedColour = Uma_UI::Colour(1.f, 1.f, 1.f, 1.f),
-                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f),
+                .functionName = "UI_CALLBACK_LOAD_SCENE"
                 });
-
-            auto& button = coord.GetComponent<Uma_UI::Button>(btn);
-            button.onClick = std::move(onClick);
 
             /* ---------- text child ---------- */
             Entity txt = m_Scene->CreateEntity();
+
+            coord.AddComponent<Uma_ECS::Transform>(txt,
+                {
+                .name = std::string("Button2_txt"),
+                .position = Vec2(0, 0),
+                .rotation = Vec2(0, 0),
+                .scale = Vec2(1, 1)
+                });
+
             coord.AddComponent<Uma_UI::RectTransform>(txt,
                 {
                 .anchorMin = Vec2(0.5f, 0.5f),
@@ -1341,24 +1378,19 @@ namespace Uma_Engine
                 .alignment = Uma_UI::TextAlignment::Center,
                 .visible = true
                 });
+
             return btn;
         }
 
         void CreateUI()
         {
-            if (m_Canvas == static_cast<Entity>(-1)) CreateCanvas();
+            Entity canvas;
+            if (canvas = CreateCanvas() != static_cast<Entity>(-1))
+            {
+                CreateButtonWithText("Play explosion sound", Vec2(0, 100), Vec2(300.f, 50.f), canvas);
 
-            CreateButtonWithText("Destroy rand entity", Vec2(150.f, -50.f), Vec2(300.f, 50.f), m_Canvas,
-                [this](Entity btn)
-                {
-                    this->GetEventSystem()->Emit<DestroyEntityRequestEvent>(static_cast<Entity>(-1));
-                });
-
-            CreateButtonWithText2("Quit", Vec2(325.f, -50.f), Vec2(150.f, 50.f), m_Canvas, 
-                [this](Entity btn)
-                {
-                    glfwSetWindowShouldClose(this->GetGraphics()->GetWindow(), GLFW_TRUE);
-                });
+                CreateButtonWithText2("Load test_default.scn", Vec2(0, 50), Vec2(300.f, 50.f), canvas);
+            }
         }
     };
 }

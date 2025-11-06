@@ -723,7 +723,8 @@ namespace Uma_Engine
         ImGui::Begin("Hierarchy", &b);
 
         // Header with entity count
-        ImGui::Text("%s | Scene Entities: %d", sceneNames[activeSceneIndex].c_str(), mEntityCount);
+        if (sceneNames.size() > 0)
+            ImGui::Text("%s | Scene Entities: %d", sceneNames[activeSceneIndex].c_str(), mEntityCount);
         ImGui::Separator();
 
         // Scrollable region for entity list
@@ -1882,12 +1883,16 @@ namespace Uma_Engine
         if (ImGui::Button("Remove Current Scene"))
         {
             pEventSystem->Emit<StopSceneRequest>();
-            pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+            if (sceneNames.size() > 0)
+            {
+                pEventSystem->Emit<DeleteCurrSceneRequest>(sceneNames[activeSceneIndex]);
+            }
         }
 
         if (ImGui::Button("Save Current Scene"))
         {
-            pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
+            if (sceneNames.size() > 0)
+                pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
         //list of loaded scenes

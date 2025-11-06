@@ -71,6 +71,9 @@ namespace Uma_UI
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
 
+        // temp solution to cache callback
+        std::unordered_map<std::string, Uma_UI::UICallback> callbacks;
+
         // Screen state
         Vec2 mScreenSize{1280.f, 720.f};
 

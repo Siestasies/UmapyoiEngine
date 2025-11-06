@@ -2,56 +2,8 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
-            },
-            {
-                "name": "player",
-                "path": "Assets/hello.jpg"
-            },
-            {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
-                "name": "wall_left",
-                "path": "Assets/wall_left.png"
-            },
-            {
-                "name": "enemy",
-                "path": "Assets/marisa.png"
-            },
-            {
-                "name": "background",
-                "path": "Assets/bg.png"
-            },
-            {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
-            },
-            {
-                "name": "wall_top_left",
-                "path": "Assets/wall_top_left.png"
-            },
-            {
-                "name": "wall_right",
-                "path": "Assets/wall_right.png"
-            },
-            {
-                "name": "wall_btm",
-                "path": "Assets/wall_btm.png"
-            },
-            {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
             }
         ],
         "fonts": [
@@ -68,11 +20,6 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
@@ -84,49 +31,20 @@
             "id": 0,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "kappa statue",
+                    "name": "new entity",
                     "position": {
-                        "x": 29.899,
-                        "y": 35.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 5.0,
-                        "y": 5.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "kappa_statue",
-                    "layer": 8,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
                 }
             }
         },
@@ -134,49 +52,52 @@
             "id": 1,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "floor",
+                    "name": "Canvas",
                     "position": {
-                        "x": 20.0,
-                        "y": 7.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "anchorMax": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 4294967295
                 },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1280.0,
+                        "y": 720.0
                     },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
                 }
             }
         },
@@ -184,49 +105,81 @@
             "id": 2,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "floor",
+                    "name": "Button1",
                     "position": {
-                        "x": 20.0,
-                        "y": 7.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 100.0
+                    },
+                    "sizeDelta": {
+                        "x": 300.0,
+                        "y": 50.0
+                    },
+                    "parent": 1
                 },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
+                "class Uma_UI::Image": {
+                    "textureName": "whitePixel",
+                    "color": {
+                        "r": 0.2,
+                        "g": 0.6,
+                        "b": 1.0,
+                        "a": 1.0
                     },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
+                    "visible": true
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "normalColour": {
+                        "r": 0.2,
+                        "g": 0.6,
+                        "b": 1.0,
+                        "a": 1.0
                     },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
+                    "hoverColour": {
+                        "r": 0.3,
+                        "g": 0.699,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.1,
+                        "g": 0.4,
+                        "b": 0.898,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    },
+                    "functionName": "UI_CALLBACK_PLAY_SOUND"
                 }
             }
         },
@@ -234,49 +187,56 @@
             "id": 3,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "floor",
+                    "name": "Button1_txt",
                     "position": {
-                        "x": 20.0,
-                        "y": 17.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 300.0,
+                        "y": 50.0
+                    },
+                    "parent": 2
                 },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
+                "class Uma_UI::Text": {
+                    "text": "Play explosion sound",
+                    "fontName": "default",
+                    "fontSize": 1.0,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
                     },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
+                    "alignment": 1,
+                    "visible": true
                 }
             }
         },
@@ -284,49 +244,81 @@
             "id": 4,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "floor",
+                    "name": "Button2",
                     "position": {
-                        "x": 20.0,
-                        "y": 27.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 50.0
+                    },
+                    "sizeDelta": {
+                        "x": 300.0,
+                        "y": 50.0
+                    },
+                    "parent": 1
                 },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
+                "class Uma_UI::Image": {
+                    "textureName": "whitePixel",
+                    "color": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
                     },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
+                    "visible": true
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "normalColour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
                     },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
+                    "hoverColour": {
+                        "r": 0.2,
+                        "g": 0.2,
+                        "b": 0.2,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    },
+                    "functionName": "UI_CALLBACK_LOAD_SCENE"
                 }
             }
         },
@@ -334,788 +326,10 @@
             "id": 5,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 25.0,
-                        "y": 7.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 6,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 25.0,
-                        "y": 17.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 7,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 25.0,
-                        "y": 27.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 8,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 30.0,
-                        "y": 7.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 9,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 30.0,
-                        "y": 17.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 10,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 30.0,
-                        "y": 27.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 11,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 35.0,
-                        "y": 7.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 12,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 35.0,
-                        "y": 17.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 13,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 35.0,
-                        "y": 27.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 14,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 40.0,
-                        "y": 7.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 15,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 40.0,
-                        "y": 17.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 16,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "floor",
-                    "position": {
-                        "x": 40.0,
-                        "y": 27.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
-                    "layer": 4,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 200.0,
-                    "fric_coeff": 100.0
-                }
-            }
-        },
-        {
-            "id": 17,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "bird enemy",
-                    "position": {
-                        "x": -10.0,
-                        "y": 8.8
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 2.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "pink_enemy",
-                    "layer": 16,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 500.0,
-                    "fric_coeff": 5.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 1.0
-                            },
-                            "size": {
-                                "x": 3.0,
-                                "y": 3.0
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 18,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": -2.0
-                            },
-                            "size": {
-                                "x": 2.0,
-                                "y": 0.699
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 8,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/BirdEnemy.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 500.0,
-                                    "isSlider": true
-                                },
-                                {
-                                    "name": "name",
-                                    "type": 3,
-                                    "value": "bird",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "rotationSpeed",
-                                    "type": 0,
-                                    "value": 45.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "testCounter",
-                                    "type": 0,
-                                    "value": 0.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "moveDistance",
-                                    "type": 0,
-                                    "value": 50.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/testEnemy.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 500.0,
-                                    "isSlider": true
-                                },
-                                {
-                                    "name": "name",
-                                    "type": 3,
-                                    "value": "bird child",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Enemy": {
-                    "mSpeed": 1.0
-                }
-            }
-        },
-        {
-            "id": 18,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "player",
+                    "name": "Button2_txt",
                     "position": {
                         "x": 0.0,
-                        "y": 8.899
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -1127,100 +341,41 @@
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Player": {
-                    "mSpeed": 1.0
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "player",
-                    "layer": 32,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
+                    "sizeDelta": {
+                        "x": 300.0,
+                        "y": 50.0
                     },
-                    "accel_strength": 300.0,
-                    "fric_coeff": 5.0
+                    "parent": 4
                 },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "purpose": 0,
-                            "layer": 2,
-                            "colliderMask": 20,
-                            "isActive": true,
-                            "autoFitToSprite": true
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": -2.75
-                            },
-                            "size": {
-                                "x": 7.0,
-                                "y": 2.0
-                            },
-                            "purpose": 0,
-                            "layer": 2,
-                            "colliderMask": 8,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::AudioListener": null
-            }
-        },
-        {
-            "id": 19,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "cam",
-                    "position": {
-                        "x": 0.0,
-                        "y": 8.899
+                "class Uma_UI::Text": {
+                    "text": "Load test_default.scn",
+                    "fontName": "default2",
+                    "fontSize": 1.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
                     },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Camera": {
-                    "zoom": 1.0,
-                    "followPlayer": true
+                    "alignment": 1,
+                    "visible": true
                 }
             }
         }

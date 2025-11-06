@@ -1,7 +1,9 @@
 #include "UISystem.h"
 #include "../Helpers/Layout.h"
 #include "../Helpers/Input.h"
-#include "../../Events/WindowEvents.h"
+#include "../Events/WindowEvents.h"
+#include "../Events/AudioEvents.h"
+#include "../Events/IMGUIEvents.h"
 #include "Systems/ResourcesTypes.hpp"
 
 #include <GLFW/glfw3.h>
@@ -65,6 +67,17 @@ namespace Uma_UI
 
         pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) { mScreenSize.x = e.width, mScreenSize.y = e.height; });
 
+        // cache callback
+        // TEMP SOLUTION FOR UI
+        callbacks["UI_CALLBACK_PLAY_SOUND"] = ([this](Uma_ECS::Entity btn)
+            {
+                pEventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
+            });
+        callbacks["UI_CALLBACK_LOAD_SCENE"] = ([this](Uma_ECS::Entity btn)
+            {
+                pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>("test_default.scn");
+            });
+
         mHitTestCache.clear();
     }
 
@@ -79,7 +92,7 @@ namespace Uma_UI
 
         // Three explicit passes
         LayoutPass();
-        InputPass();
+        //InputPass();
         BuildDrawListPass();
     }
 
@@ -263,8 +276,16 @@ namespace Uma_UI
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
 
                         // Invoke callback if valid
-                        if (button.onClick != nullptr)
+                        // 
+                        /*if (button.onClick != nullptr)
                         {
+                            button.onClick(entity);
+                        }*/
+
+                        // temp solution
+                        if (!button.functionName.empty())
+                        {
+                            button.onClick = callbacks[button.functionName];
                             button.onClick(entity);
                         }
                     }

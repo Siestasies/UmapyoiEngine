@@ -89,6 +89,7 @@ namespace Uma_Engine
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
+                playMode = PLAYMODE::PM_STOP;
             }
         );
 
@@ -259,7 +260,7 @@ namespace Uma_Engine
 
             // create a scene based on the scene name and try to load it
             CreateScene(name, name);
-            //AttachScriptToScene(name, "EditorBehaviour");
+            AttachScriptToScene(name, "EditorBehaviour");
             //LoadScene(name);
         }
 
@@ -411,7 +412,8 @@ namespace Uma_Engine
         // Remove from map
         m_Scenes.erase(name);
         std::cout << "Scene '" << name << "' removed" << std::endl;
-        //LoadScene(m_Scenes.begin()->second->GetName());
+        if (m_Scenes.size() > 0)
+            LoadScene(m_Scenes.begin()->second->GetName());
         UpdateIMGUIWindow();
     }
 

@@ -54,6 +54,10 @@
                 "path": "Assets/floor_tatami.png"
             },
             {
+                "name": "fire bird",
+                "path": "Assets/fire bird.png"
+            },
+            {
                 "name": "player_new",
                 "path": "Assets/Player Spritesheet.png"
             }
@@ -80,7 +84,7 @@
     },
     "entities": [
         {
-            "id": 39,
+            "id": 78,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "kappa statue",
@@ -130,7 +134,7 @@
             }
         },
         {
-            "id": 40,
+            "id": 79,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -202,7 +206,7 @@
             }
         },
         {
-            "id": 41,
+            "id": 80,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -274,7 +278,7 @@
             }
         },
         {
-            "id": 42,
+            "id": 81,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -346,7 +350,7 @@
             }
         },
         {
-            "id": 43,
+            "id": 82,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -418,7 +422,7 @@
             }
         },
         {
-            "id": 44,
+            "id": 83,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -490,7 +494,7 @@
             }
         },
         {
-            "id": 45,
+            "id": 84,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -562,7 +566,7 @@
             }
         },
         {
-            "id": 46,
+            "id": 85,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -634,7 +638,7 @@
             }
         },
         {
-            "id": 47,
+            "id": 86,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -706,7 +710,7 @@
             }
         },
         {
-            "id": 48,
+            "id": 87,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -778,7 +782,7 @@
             }
         },
         {
-            "id": 49,
+            "id": 88,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -850,7 +854,7 @@
             }
         },
         {
-            "id": 50,
+            "id": 89,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -922,7 +926,7 @@
             }
         },
         {
-            "id": 51,
+            "id": 90,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -994,7 +998,7 @@
             }
         },
         {
-            "id": 52,
+            "id": 91,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -1066,7 +1070,7 @@
             }
         },
         {
-            "id": 53,
+            "id": 92,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1138,7 +1142,7 @@
             }
         },
         {
-            "id": 54,
+            "id": 93,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1210,7 +1214,7 @@
             }
         },
         {
-            "id": 55,
+            "id": 94,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1282,7 +1286,7 @@
             }
         },
         {
-            "id": 56,
+            "id": 95,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1354,7 +1358,7 @@
             }
         },
         {
-            "id": 57,
+            "id": 96,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1426,7 +1430,7 @@
             }
         },
         {
-            "id": 58,
+            "id": 97,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1476,7 +1480,7 @@
             }
         },
         {
-            "id": 59,
+            "id": 98,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1526,7 +1530,7 @@
             }
         },
         {
-            "id": 60,
+            "id": 99,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1576,7 +1580,7 @@
             }
         },
         {
-            "id": 61,
+            "id": 100,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1626,7 +1630,7 @@
             }
         },
         {
-            "id": 62,
+            "id": 101,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1676,7 +1680,7 @@
             }
         },
         {
-            "id": 63,
+            "id": 102,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1726,7 +1730,7 @@
             }
         },
         {
-            "id": 64,
+            "id": 103,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1776,7 +1780,7 @@
             }
         },
         {
-            "id": 65,
+            "id": 104,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1826,7 +1830,7 @@
             }
         },
         {
-            "id": 66,
+            "id": 105,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1876,7 +1880,7 @@
             }
         },
         {
-            "id": 67,
+            "id": 106,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1926,7 +1930,7 @@
             }
         },
         {
-            "id": 68,
+            "id": 107,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1976,7 +1980,7 @@
             }
         },
         {
-            "id": 69,
+            "id": 108,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2026,7 +2030,7 @@
             }
         },
         {
-            "id": 70,
+            "id": 109,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2076,7 +2080,7 @@
             }
         },
         {
-            "id": 71,
+            "id": 110,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2126,7 +2130,7 @@
             }
         },
         {
-            "id": 72,
+            "id": 111,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2176,7 +2180,7 @@
             }
         },
         {
-            "id": 73,
+            "id": 112,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2226,32 +2230,32 @@
             }
         },
         {
-            "id": 74,
+            "id": 113,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": -0.699,
-                        "y": 9.8
+                        "x": -2.5,
+                        "y": 7.776
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 2.0,
-                        "y": 2.0
+                        "x": 0.192,
+                        "y": 0.523
                     },
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "pink_enemy",
+                    "textureName": "fire bird",
                     "layer": 16,
                     "flipX": false,
                     "flipY": false,
                     "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
+                    "gridX": 12.0,
+                    "gridY": 4.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
                     "tintColor": [
@@ -2281,11 +2285,11 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 1.0
+                                "y": 3.598
                             },
                             "size": {
-                                "x": 3.0,
-                                "y": 3.0
+                                "x": 23.7,
+                                "y": 5.4
                             },
                             "purpose": 0,
                             "layer": 4,
@@ -2296,11 +2300,11 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": -2.0
+                                "y": -5.098
                             },
                             "size": {
-                                "x": 2.0,
-                                "y": 0.699
+                                "x": 25.5,
+                                "y": 4.296
                             },
                             "purpose": 0,
                             "layer": 4,
@@ -2400,27 +2404,42 @@
                 },
                 "struct Uma_ECS::Enemy": {
                     "mSpeed": 1.0
+                },
+                "struct Uma_ECS::Animator": {
+                    "autoPlay": true,
+                    "initialClip": "idle",
+                    "clips": [
+                        {
+                            "name": "idle",
+                            "framesX": 12,
+                            "framesY": 4,
+                            "startFrame": 0,
+                            "frameCount": 10,
+                            "speed": 10.0,
+                            "loop": true
+                        }
+                    ]
                 }
             }
         },
         {
-            "id": 75,
+            "id": 114,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy child",
                     "position": {
-                        "x": -2.0,
-                        "y": 0.0
+                        "x": 15.6,
+                        "y": 1.799
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.5,
-                        "y": 0.5
+                        "x": 2.0,
+                        "y": 1.0
                     },
-                    "parent": 74
+                    "parent": 113
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
@@ -2476,13 +2495,13 @@
             }
         },
         {
-            "id": 76,
+            "id": 115,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player",
                     "position": {
-                        "x": 10.999,
-                        "y": 11.599
+                        "x": 10.998,
+                        "y": 11.597
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2552,7 +2571,7 @@
                                 "y": -19.85
                             },
                             "size": {
-                                "x": 9.0,
+                                "x": 19.6,
                                 "y": 3.2
                             },
                             "purpose": 0,
@@ -2582,13 +2601,13 @@
             }
         },
         {
-            "id": 77,
+            "id": 116,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 10.999,
-                        "y": 11.599
+                        "x": 10.998,
+                        "y": 11.597
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2601,7 +2620,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Camera": {
-                    "zoom": 1.0,
+                    "zoom": 1.5,
                     "followPlayer": true
                 }
             }
