@@ -50,11 +50,11 @@ namespace Uma_Engine
         // Textures
         bool LoadTexture(const std::string& textureName, const std::string& filePath);
         void UnloadTexture(const std::string& textureName);
-        Texture* GetTexture(const std::string& textureName);
+        std::shared_ptr<Texture> GetTexture(const std::string& textureName);
         bool HasTexture(const std::string& textureName) const;
         void PrintLoadedTextureNames() const; // For debug
         void UnloadAllTextures();
-        const std::unordered_map<std::string, Texture>& GetLoadedTextures() const;
+        const std::unordered_map<std::string, std::shared_ptr<Texture>>& GetLoadedTextures() const;
         
         // Audio
         bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
@@ -86,7 +86,7 @@ namespace Uma_Engine
         
         
     private:
-        std::unordered_map<std::string, Texture> mTextures{};
+        std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};
         Graphics* mGraphics = nullptr;
 
         std::unordered_map<std::string, SoundInfo> mSoundList{};

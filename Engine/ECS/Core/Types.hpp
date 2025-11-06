@@ -39,6 +39,41 @@ namespace Uma_ECS
 				EC_ComponentLimitExceeded,
 				EC_Unknown
 		};
+
+		// for component that requires layer
+		// eg collider and renderer
+		using LayerMask = unsigned int;
+
+		enum RenderLayer : LayerMask
+		{
+				RL_NONE = 1 << 0,
+				RL_WALL_TOP = 1 << 1,
+				RL_FLOOR = 1 << 2,
+				RL_ENV = 1 << 3,
+				RL_ENEMY = 1 << 4,
+				RL_PLAYER = 1 << 5,
+				RL_WALL_BTM = 1 << 6,
+				RL_UI = 1 << 7
+		};
+
+		enum CollisionLayer : LayerMask
+		{
+				CL_NONE = 0,
+				CL_DEFAULT = 1 << 0,
+				CL_PLAYER = 1 << 1,
+				CL_ENEMY = 1 << 2,
+				CL_WALL = 1 << 3,
+				CL_PROJECTILE = 1 << 4,
+				CL_PICKUP = 1 << 5,
+				CL_ALL = 1 << 6
+		};
+
+		enum class ColliderPurpose
+		{
+				Physics = 0,      // Entity-to-entity (damage, interaction)
+				Environment = 1,  // Entity-to-wall (movement blocking)
+				Trigger = 2       // Non-blocking detection zones
+		};
     
     // Uma_ECS
     using Entity = unsigned int;
@@ -46,9 +81,7 @@ namespace Uma_ECS
     using ComponentType = unsigned int;
     const ComponentType MAX_COMPONENTS = 32;
 
-		// for component that requires layer
-		// eg collider and renderer
-		using LayerMask = unsigned int;
+
 		
 		// this is to track which components an entity has 
 		using Signature = std::bitset<MAX_COMPONENTS>;

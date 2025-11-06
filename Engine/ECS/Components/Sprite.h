@@ -29,19 +29,6 @@ All rights reserved.
 
 namespace Uma_ECS
 {
-    enum RenderLayer : LayerMask
-    {
-        RL_NONE = 1 << 0,
-        RL_WALL_TOP = 1 << 1,
-        RL_FLOOR = 1 << 2,
-        RL_ENV = 1 << 3,
-        RL_ENEMY = 1 << 4,
-        RL_PLAYER = 1 << 5,
-        RL_WALL_BTM = 1 << 6,
-        RL_UI = 1 << 7
-    };
-
-
     // currently in 2d
     struct Sprite
     {
@@ -51,7 +38,7 @@ namespace Uma_ECS
         bool flipX{};
         bool flipY{};
         bool UseNativeSize{};
-        Uma_Engine::Texture* texture = nullptr;
+        std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {

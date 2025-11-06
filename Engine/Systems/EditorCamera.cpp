@@ -9,6 +9,7 @@ namespace Uma_Engine
 {
     void EditorCamera::Update(HybridInputSystem* input, float dt)
     {
+        //std::cout << "editor cam : " << (m_IsActive ? "turned on" : "turned off") << " " << m_Position << std::endl;
         if (!input || !m_IsActive) return;
 
         // WASD for panning

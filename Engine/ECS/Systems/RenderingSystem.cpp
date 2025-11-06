@@ -90,8 +90,9 @@ namespace Uma_ECS
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            // Load texture if not already loaded
-            if (!sr.texture)
+            // Load texture if not loaded
+            // or texture became invalid (tex_id == 0)
+            if (!sr.texture || sr.texture->tex_id == 0)
             {
                 sr.texture = pResourcesManager->GetTexture(sr.textureName);
             }

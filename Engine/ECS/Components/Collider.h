@@ -32,29 +32,11 @@ namespace Uma_ECS
     // using bitmask (raw integers), faster n cheaper approach 
     // compared to using bitset<N> like what I did in ECS component
     // ...
-    enum CollisionLayer : LayerMask
-    {
-        CL_NONE = 0,
-        CL_DEFAULT = 1 << 0,
-        CL_PLAYER = 1 << 1,
-        CL_ENEMY = 1 << 2,
-        CL_WALL = 1 << 3,
-        CL_PROJECTILE = 1 << 4,
-        CL_PICKUP = 1 << 5,
-        CL_ALL = 0xFFFFFFFF
-    };
-
+    
     struct BoundingBox
     {
         Vec2 min{};
         Vec2 max{};
-    };
-
-    enum class ColliderPurpose
-    {
-        Physics = 0,      // Entity-to-entity (damage, interaction)
-        Environment = 1,  // Entity-to-wall (movement blocking)
-        Trigger = 2       // Non-blocking detection zones
     };
 
     struct ColliderShape

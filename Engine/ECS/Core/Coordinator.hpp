@@ -38,6 +38,17 @@ All rights reserved.
 #include "Core/EventSystem.h"
 #include "Events/ECSEvents.h"
 
+#include "../Components/Transform.h"
+#include "../Components/RigidBody.h"
+#include "../Components/Sprite.h"
+#include "../Components/Collider.h"
+#include "../Components/Camera.h"
+#include "../Components/Player.h"
+#include "../Components/Enemy.h"
+#include "../Components/Animator.h"
+#include "../Components/LuaScript.h"
+
+
 namespace Uma_ECS
 {
     // this whole Corrdinator context is about combining:
@@ -162,6 +173,30 @@ namespace Uma_ECS
             return aComponentManager->GetComponentType<T>();
         }
 
+        template<typename Func>
+        void ForEachComponent(Entity& entity, Func&& func)
+        {
+            Signature sig = GetEntitySignature(entity);
+            // Check each registered component type
+#define CHECK_COMPONENT(ComponentType) \
+            if (sig.test(GetComponentType<ComponentType>())) \
+            { \
+            func(GetComponentType<ComponentType>()); \
+            }
+
+            CHECK_COMPONENT(Transform)
+            CHECK_COMPONENT(RigidBody)
+            CHECK_COMPONENT(Sprite)
+            CHECK_COMPONENT(Collider)
+            CHECK_COMPONENT(Camera)
+            CHECK_COMPONENT(Player)
+            CHECK_COMPONENT(Enemy)
+            CHECK_COMPONENT(Animator)
+            CHECK_COMPONENT(LuaScript)
+
+#undef CHECK_COMPONENT
+        }
+
         // System functions
 
         template<typename T>
@@ -177,6 +212,8 @@ namespace Uma_ECS
         }
 
         Entity DuplicateEntity(Entity src);
+
+        Entity DuplicateEntityHierarchy(Entity src, std::unordered_map<Entity, Entity>& oldToNewMap);
 
         //Serialization
 

@@ -94,10 +94,10 @@ namespace Uma_Engine
                             ImGui::Text("%s", name.c_str());
 
                             ImGui::TableSetColumnIndex(1);
-                            ImGui::TextWrapped("%s", texture.filePath.c_str());
+                            ImGui::TextWrapped("%s", texture->filePath.c_str());
 
                             ImGui::TableSetColumnIndex(2);
-                            ImGui::Text("%u", texture.tex_id);
+                            ImGui::Text("%u", texture->tex_id);
 
                             ImGui::TableSetColumnIndex(3);
                             ImGui::PushID(name.c_str());

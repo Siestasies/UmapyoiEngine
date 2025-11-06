@@ -12,6 +12,7 @@
 #include "Core/FilePaths.h"
 
 #include <unordered_map>
+#include <algorithm>
 
 namespace Uma_Engine
 {
@@ -19,6 +20,7 @@ namespace Uma_Engine
         : m_initialized(false)
         , ds_initialized(false)
         , m_window(nullptr)
+        , mScriptName("Assets/Scripts/.lua")
         , m_showEngineDebug(true)
         , m_showEventDebug(true)
         , m_showPerformanceWindow(true)
@@ -147,11 +149,23 @@ namespace Uma_Engine
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         pEventSystem->Subscribe<IMGUIStopRequest>([this](const IMGUIStopRequest& e)
              { m_playState = PlayState::Stopped; });
+        pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
+            { 
+                m_selectedEntity = e.entity;
+                m_HierarchyScrollToBottom = true;
+            });
+        pEventSystem->Subscribe<ReturnSpawnedRequestEvent>([this](const ReturnSpawnedRequestEvent& e)
+            {
+                m_selectedEntity = e.entity;
+                m_HierarchyScrollToBottom = true;
+            });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
+
+        fileBrowser.setEventSystem(pEventSystem);
 
         m_initialized = true;
     }
@@ -678,24 +692,7 @@ namespace Uma_Engine
         ImGui::Begin("Hierarchy", &b);
 
         // Header with entity count
-        ImGui::Text("Scene Entities: %d", mEntityCount);
-        ImGui::Separator();
-
-        // Create new entity button
-        if (ImGui::Button("Create Entity"))
-        {
-            pEventSystem->Emit<SpawnEntityRequestEvent>();
-        }
-
-        ImGui::SameLine();
-
-        // Delete selected entity button
-        if (ImGui::Button("Delete Selected") && m_selectedEntity != static_cast<Uma_ECS::Entity>(-1))
-        {
-            pEventSystem->Emit<DestroyEntityRequestEvent>(m_selectedEntity);
-            m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
-        }
-
+        ImGui::Text("%s | Scene Entities: %d", sceneNames[activeSceneIndex].c_str(), mEntityCount);
         ImGui::Separator();
 
         // Scrollable region for entity list
@@ -741,6 +738,12 @@ namespace Uma_Engine
             RenderEntityNode(rootEntity, coordinator, transformArray);
         }
 
+        if (m_HierarchyScrollToBottom)
+        {
+            ImGui::SetScrollHereY(1.0f);
+            m_HierarchyScrollToBottom = false;
+        }
+
         ImGui::EndChild();
         ImGui::End();
     }
@@ -781,26 +784,33 @@ namespace Uma_Engine
         // Right-click context menu
         if (ImGui::BeginPopupContextItem())
         {
+            m_selectedEntity = entity;
+
+            if (ImGui::MenuItem("Create New"))
+            {
+                pEventSystem->Emit<SpawnEntityRequestEvent>();
+
+                m_HierarchyScrollToBottom = true;
+            }
+
             if (ImGui::MenuItem("Create Child"))
             {
                 Uma_ECS::Entity child = coordinator.CreateEntity();
                 coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .name = std::string("new enity"),
                     .position = Vec2(0, 0),
                     .rotation = Vec2(0, 0),
                     .scale = Vec2(1, 1)
                     });
                 coordinator.SetParent(child, entity);
+
+                m_HierarchyScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Duplicate"))
             {
-                Uma_ECS::Entity duplicate = coordinator.DuplicateEntity(entity);
-
-                // If the entity had a parent, set the duplicate to have the same parent
-                if (transform.parent.has_value())
-                {
-                    coordinator.SetParent(duplicate, transform.parent.value());
-                }
+                pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
+                m_HierarchyScrollToBottom = true;
             }
 
             ImGui::Separator();
@@ -812,6 +822,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
+                m_HierarchyScrollToBottom = true;
             }
 
             if (ImGui::MenuItem("Delete with Children"))
@@ -821,6 +832,7 @@ namespace Uma_Engine
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 }
+                m_HierarchyScrollToBottom = true;
             }
 
             ImGui::EndPopup();
@@ -864,10 +876,9 @@ namespace Uma_Engine
 
     std::string ImguiManager::GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator)
     {
-        std::string name = "Entity " + std::to_string(entity);
 
         // Add component indicators
-        if (coordinator.GetComponentArray<Uma_ECS::Player>().Has(entity))
+        /*if (coordinator.GetComponentArray<Uma_ECS::Player>().Has(entity))
             name = "[Player] " + name;
         else if (coordinator.GetComponentArray<Uma_ECS::Enemy>().Has(entity))
             name = "[Enemy] " + name;
@@ -878,6 +889,15 @@ namespace Uma_Engine
             auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
             if (!sprite.textureName.empty())
                 name = "[" + sprite.textureName + "] " + name;
+        }*/
+
+        auto& tfArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+
+        std::string name = "Entity " + std::to_string(entity);
+        if (tfArray.Has(entity))
+        {
+            const auto& tf = tfArray.GetData(entity);
+            name = tf.name;
         }
 
         return name;
@@ -900,6 +920,657 @@ namespace Uma_Engine
             return true;
 
         return IsChildOf(parent, potentialParent, transformArray);
+    }
+
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
+    // Modified DisplayComponent function for ImguiManager.cpp
+// Replace the existing function with this version
+
+    bool ImguiManager::DisplayComponent(Uma_ECS::Coordinator& coordinator, Uma_ECS::ComponentType type, Uma_ECS::Entity& entity)
+    {
+        if (type == coordinator.GetComponentType<Uma_ECS::Transform>())
+        {
+            if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(entity);
+                ImGui::Indent();
+
+                float position[2] = { transform.position.x, transform.position.y };
+                if (ImGui::DragFloat2("Position", position, 0.1f))
+                {
+                    transform.position = Vec2(position[0], position[1]);
+                    transform.isDirty = true;
+                }
+
+                float rotation = transform.rotation.x;
+                if (ImGui::DragFloat("Rotation", &rotation, 1.0f))
+                {
+                    transform.rotation.x = rotation;
+                    transform.isDirty = true;
+                }
+
+                float scale[2] = { transform.scale.x, transform.scale.y };
+                if (ImGui::DragFloat2("Scale", scale, 0.01f))
+                {
+                    transform.scale = Vec2(scale[0], scale[1]);
+                    transform.isDirty = true;
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Hierarchy");
+
+                if (transform.parent.has_value())
+                {
+                    ImGui::Text("Parent: Entity %d", transform.parent.value());
+                    if (ImGui::Button("Remove Parent"))
+                    {
+                        coordinator.RemoveParent(entity);
+                    }
+                }
+                else
+                {
+                    ImGui::TextDisabled("Parent: None");
+                }
+
+                if (!transform.children.empty())
+                {
+                    ImGui::Text("Children: %zu", transform.children.size());
+                    for (auto child : transform.children)
+                    {
+                        ImGui::BulletText("Entity %d", child);
+                    }
+                }
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::RigidBody>())
+        {
+            if (ImGui::CollapsingHeader("RigidBody", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                auto& rb = coordinator.GetComponent<Uma_ECS::RigidBody>(entity);
+                ImGui::Indent();
+
+                float velocity[2] = { rb.velocity.x, rb.velocity.y };
+                if (ImGui::DragFloat2("Velocity", velocity, 0.1f))
+                {
+                    rb.velocity = Vec2(velocity[0], velocity[1]);
+                }
+
+                float acceleration[2] = { rb.acceleration.x, rb.acceleration.y };
+                if (ImGui::DragFloat2("Acceleration", acceleration, 0.1f))
+                {
+                    rb.acceleration = Vec2(acceleration[0], acceleration[1]);
+                }
+
+                ImGui::DragFloat("Accel Strength", &rb.accel_strength, 0.1f, 0.0f, 1000.0f);
+                ImGui::DragFloat("Friction Coefficient", &rb.fric_coeff, 0.01f, 0.0f, 10.0f);
+
+                ImGui::Separator();
+                ImGui::Text("Info");
+                ImGui::Text("Speed: %.2f", std::sqrt(rb.velocity.x * rb.velocity.x + rb.velocity.y * rb.velocity.y));
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Sprite>())
+        {
+            if (ImGui::CollapsingHeader("Sprite"))
+            {
+                auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
+                ImGui::Indent();
+
+                ImGui::Text("Texture: %s", sprite.textureName.c_str());
+
+                // Texture name input
+                static char textureBuffer[256];
+                strncpy(textureBuffer, sprite.textureName.c_str(), 255);
+                textureBuffer[255] = '\0';
+                if (ImGui::InputText("Texture Name", textureBuffer, 256))
+                {
+                    sprite.textureName = textureBuffer;
+                    sprite.texture = nullptr; // Will reload
+                }
+
+                ImGui::Checkbox("Flip X", &sprite.flipX);
+                ImGui::Checkbox("Flip Y", &sprite.flipY);
+                ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
+
+                // Render layer dropdown
+                const char* renderLayerNames[] = {
+                    "RL_NONE",
+                    "RL_WALL_TOP",
+                    "RL_FLOOR",
+                    "RL_ENV",
+                    "RL_ENEMY",
+                    "RL_PLAYER",
+                    "RL_WALL_BTM",
+                    "RL_UI"
+                };
+
+                int currentRenderLayer = 0;
+                unsigned int rl = static_cast<unsigned int>(sprite.renderLayer);
+                while (rl >>= 1) ++currentRenderLayer;
+
+                if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                {
+                    sprite.renderLayer = (1u << currentRenderLayer);
+                }
+
+                ImGui::Separator();
+                if (sprite.texture)
+                {
+                    ImGui::Text("Texture ID: %u", sprite.texture->tex_id);
+                    ImGui::Text("Native Size: %.0f x %.0f", sprite.texture->GetNativeSize().x, sprite.texture->GetNativeSize().y);
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Texture not loaded");
+                }
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Collider>())
+        {
+            if (ImGui::CollapsingHeader("Collider"))
+            {
+                auto& collider = coordinator.GetComponent<Uma_ECS::Collider>(entity);
+                ImGui::Indent();
+
+                ImGui::Checkbox("Show Bounding Box", &collider.showBBox);
+
+                ImGui::Separator();
+                ImGui::Text("Default Settings");
+
+                // Collision layer names for dropdowns
+                const char* collisionLayerNames[] = {
+                    "CL_DEFAULT",
+                    "CL_PLAYER",
+                    "CL_ENEMY",
+                    "CL_WALL",
+                    "CL_PROJECTILE",
+                    "CL_PICKUP",
+                    "CL_ALL"
+                };
+
+                // Default Layer dropdown
+                int defaultLayerIndex = 0;
+                unsigned int dl = static_cast<unsigned int>(collider.defaultLayer);
+                if (dl > 0)
+                {
+                    while (dl >>= 1) ++defaultLayerIndex;
+                }
+
+                if (ImGui::Combo("Default Layer", &defaultLayerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
+                {
+                    collider.defaultLayer = (1u << defaultLayerIndex);
+                }
+
+                // Default Mask - using multi-select checkboxes for mask
+                ImGui::Text("Default Mask:");
+                ImGui::Indent();
+                unsigned int tempMask = collider.defaultMask;
+                for (int i = 0; i < IM_ARRAYSIZE(collisionLayerNames); ++i)
+                {
+                    bool isSet = (tempMask & (1u << i)) != 0;
+                    if (ImGui::Checkbox(collisionLayerNames[i], &isSet))
+                    {
+                        if (isSet)
+                            collider.defaultMask |= (1u << i);
+                        else
+                            collider.defaultMask &= ~(1u << i);
+                    }
+                }
+                ImGui::Unindent();
+
+                ImGui::Separator();
+                ImGui::Text("Shapes: %zu", collider.shapes.size());
+
+                for (size_t i = 0; i < collider.shapes.size(); ++i)
+                {
+                    ImGui::PushID(static_cast<int>(i));
+
+                    auto& shape = collider.shapes[i];
+
+                    if (ImGui::TreeNode("Shape", "Shape %zu %s", i, shape.isActive ? "" : "(Inactive)"))
+                    {
+                        ImGui::Checkbox("Active", &shape.isActive);
+                        ImGui::Checkbox("Auto Fit to Sprite", &shape.autoFitToSprite);
+
+                        float size[2] = { shape.size.x, shape.size.y };
+                        if (ImGui::DragFloat2("Size", size, 0.1f, 0.0f, 100.0f))
+                        {
+                            shape.size = Vec2(size[0], size[1]);
+                        }
+
+                        float offset[2] = { shape.offset.x, shape.offset.y };
+                        if (ImGui::DragFloat2("Offset", offset, 0.1f))
+                        {
+                            shape.offset = Vec2(offset[0], offset[1]);
+                        }
+
+                        // Purpose dropdown
+                        const char* purposes[] = { "Physics", "Environment", "Trigger" };
+                        int currentPurpose = static_cast<int>(shape.purpose);
+                        if (ImGui::Combo("Purpose", &currentPurpose, purposes, 3))
+                        {
+                            shape.purpose = static_cast<Uma_ECS::ColliderPurpose>(currentPurpose);
+                        }
+
+                        // Layer dropdown
+                        int layerIndex = 0;
+                        unsigned int l = static_cast<unsigned int>(shape.layer);
+                        if (l > 0)
+                        {
+                            while (l >>= 1) ++layerIndex;
+                        }
+
+                        if (ImGui::Combo("Collision Layer", &layerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
+                        {
+                            shape.layer = (1u << layerIndex);
+                        }
+
+                        // Collider Mask - using multi-select checkboxes
+                        ImGui::Text("Collider Mask:");
+                        ImGui::Indent();
+                        unsigned int tempShapeMask = shape.colliderMask;
+                        for (int j = 0; j < IM_ARRAYSIZE(collisionLayerNames); ++j)
+                        {
+                            ImGui::PushID(j);
+                            bool isSet = (tempShapeMask & (1u << j)) != 0;
+                            if (ImGui::Checkbox(collisionLayerNames[j], &isSet))
+                            {
+                                if (isSet)
+                                    shape.colliderMask |= (1u << j);
+                                else
+                                    shape.colliderMask &= ~(1u << j);
+                            }
+                            ImGui::PopID();
+                        }
+                        ImGui::Unindent();
+
+                        if (ImGui::Button("Remove Shape"))
+                        {
+                            collider.shapes.erase(collider.shapes.begin() + i);
+                            collider.bounds.resize(collider.shapes.size());
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                if (ImGui::Button("Add Shape"))
+                {
+                    Uma_ECS::ColliderShape newShape;
+                    newShape.size = Vec2(1.0f, 1.0f);
+                    newShape.offset = Vec2(0.0f, 0.0f);
+                    newShape.purpose = Uma_ECS::ColliderPurpose::Physics;
+                    newShape.isActive = true;
+                    collider.shapes.push_back(newShape);
+                    collider.bounds.resize(collider.shapes.size());
+                }
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Camera>())
+        {
+            if (ImGui::CollapsingHeader("Camera"))
+            {
+                auto& camera = coordinator.GetComponent<Uma_ECS::Camera>(entity);
+                ImGui::Indent();
+
+                ImGui::DragFloat("Zoom", &camera.mZoom, 0.1f, 0.1f, 10.0f);
+                ImGui::Checkbox("Follow Player", &camera.followPlayer);
+
+                ImGui::Separator();
+                ImGui::Text("Camera Controls");
+                if (ImGui::Button("Reset Zoom"))
+                {
+                    camera.mZoom = 1.0f;
+                }
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Player>())
+        {
+            if (ImGui::CollapsingHeader("Player"))
+            {
+                auto& player = coordinator.GetComponent<Uma_ECS::Player>(entity);
+                ImGui::Indent();
+
+                ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 100.0f);
+
+                ImGui::Separator();
+                ImGui::Text("Player Tag Component");
+                ImGui::TextDisabled("This entity is marked as the player");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Enemy>())
+        {
+            if (ImGui::CollapsingHeader("Enemy"))
+            {
+                auto& enemy = coordinator.GetComponent<Uma_ECS::Enemy>(entity);
+                ImGui::Indent();
+
+                ImGui::DragFloat("Speed", &enemy.mSpeed, 0.1f, 0.0f, 100.0f);
+
+                ImGui::Separator();
+                ImGui::Text("Enemy Tag Component");
+                ImGui::TextDisabled("This entity is marked as an enemy");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Animator>())
+        {
+            if (ImGui::CollapsingHeader("Animator"))
+            {
+                auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
+                ImGui::Indent();
+
+                ImGui::Checkbox("Auto Play", &animator.autoPlay);
+
+                static char initialClipBuffer[128];
+                strncpy(initialClipBuffer, animator.initialClip.c_str(), 127);
+                initialClipBuffer[127] = '\0';
+                if (ImGui::InputText("Initial Clip", initialClipBuffer, 128))
+                {
+                    animator.initialClip = initialClipBuffer;
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Current State");
+                ImGui::Text("UV Offset: (%.3f, %.3f)", animator.uvOffset.x, animator.uvOffset.y);
+                ImGui::Text("UV Size: (%.3f, %.3f)", animator.uvSize.x, animator.uvSize.y);
+
+                ImGui::Separator();
+                const auto& clips = animator.animator.GetClips();
+                ImGui::Text("Animation Clips: %zu", clips.size());
+
+                if (!clips.empty())
+                {
+                    for (const auto& [clipName, clip] : clips)
+                    {
+                        ImGui::PushID(clipName.c_str());
+
+                        if (ImGui::Button(clipName.c_str(), ImVec2(150, 0)))
+                        {
+                            animator.animator.Play(clipName);
+                        }
+
+                        ImGui::SameLine();
+                        ImGui::Text("Frames: %d, Speed: %.2f, Loop: %s",
+                            clip.frameCount,
+                            clip.speed,
+                            clip.loop ? "Yes" : "No");
+
+                        ImGui::PopID();
+                    }
+                }
+                else
+                {
+                    ImGui::TextDisabled("No animation clips available");
+                }
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::LuaScript>())
+        {
+            if (ImGui::CollapsingHeader("LuaScript"))
+            {
+                auto& luaScript = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);
+                ImGui::Indent();
+
+                ImGui::Text("Scripts: %zu", luaScript.scripts.size());
+
+                for (size_t i = 0; i < luaScript.scripts.size(); ++i)
+                {
+                    auto& script = luaScript.scripts[i];
+
+                    ImGui::PushID(static_cast<int>(i));
+
+                    std::string label = "Script " + std::to_string(i);
+                    if (ImGui::TreeNode(label.c_str(), "%s %s",
+                        script.scriptPath.c_str(),
+                        script.isEnabled ? "" : "(Disabled)"))
+                    {
+                        ImGui::Checkbox("Enabled", &script.isEnabled);
+
+                        ImGui::Separator();
+
+                        if (script.hasError)
+                        {
+                            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
+                            ImGui::TextWrapped("Error: %s", script.errorMessage.c_str());
+                            ImGui::PopStyleColor();
+                        }
+                        else if (script.isInitialized)
+                        {
+                            ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Status: Running");
+                        }
+                        else
+                        {
+                            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Status: Not Initialized");
+                        }
+
+                        ImGui::Separator();
+
+                        if (!script.exposedVariables.empty())
+                        {
+                            ImGui::Text("Exposed Variables:");
+
+                            for (auto& var : script.exposedVariables)
+                            {
+                                ImGui::PushID(var.name.c_str());
+
+                                switch (var.type)
+                                {
+                                case Uma_ECS::LuaVarType::T_FLOAT:
+                                {
+                                    float val = std::get<float>(var.value);
+                                    if (var.isSlider)
+                                    {
+                                        if (ImGui::SliderFloat(var.name.c_str(), &val, var.min, var.max))
+                                        {
+                                            var.value = val;
+                                            script.isVariableDirty = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (ImGui::DragFloat(var.name.c_str(), &val, 0.1f))
+                                        {
+                                            var.value = val;
+                                            script.isVariableDirty = true;
+                                        }
+                                    }
+                                    break;
+                                }
+                                case Uma_ECS::LuaVarType::T_INT:
+                                {
+                                    int val = std::get<int>(var.value);
+                                    if (ImGui::DragInt(var.name.c_str(), &val))
+                                    {
+                                        var.value = val;
+                                        script.isVariableDirty = true;
+                                    }
+                                    break;
+                                }
+                                case Uma_ECS::LuaVarType::T_BOOL:
+                                {
+                                    bool val = std::get<bool>(var.value);
+                                    if (ImGui::Checkbox(var.name.c_str(), &val))
+                                    {
+                                        var.value = val;
+                                        script.isVariableDirty = true;
+                                    }
+                                    break;
+                                }
+                                case Uma_ECS::LuaVarType::T_STRING:
+                                {
+                                    std::string val = std::get<std::string>(var.value);
+                                    char buffer[256];
+                                    strncpy(buffer, val.c_str(), 255);
+                                    buffer[255] = '\0';
+                                    if (ImGui::InputText(var.name.c_str(), buffer, 256))
+                                    {
+                                        var.value = std::string(buffer);
+                                        script.isVariableDirty = true;
+                                    }
+                                    break;
+                                }
+                                }
+
+                                ImGui::PopID();
+                            }
+                        }
+                        else
+                        {
+                            ImGui::TextDisabled("No exposed variables");
+                        }
+
+                        ImGui::Separator();
+
+                        if (ImGui::Button("Remove Script", ImVec2(-1, 0)))
+                        {
+                            luaScript.scripts.erase(luaScript.scripts.begin() + i);
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                ImGui::Separator();
+
+                if (ImGui::Button("Add Script", ImVec2(-1, 0)))
+                {
+                    ImGui::OpenPopup("Add Lua Script");
+                }
+
+                // Define popup EVERY frame
+                if (ImGui::BeginPopupModal("Add Lua Script", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text("Script Name:");
+                    ImGui::SameLine();
+                    ImGui::SetNextItemWidth(250);
+
+                    static char scriptNameBuffer[256] = "";
+                    if (ImGui::InputText("##scriptname", scriptNameBuffer, IM_ARRAYSIZE(scriptNameBuffer)))
+                    {
+                        // Auto-construct full path
+                        mScriptName = "Assets/Scripts/";
+                        mScriptName += scriptNameBuffer;
+                        mScriptName += ".lua";
+                    }
+
+                    ImGui::Spacing();
+                    ImGui::TextDisabled("Full Path: %s", mScriptName.c_str());
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+
+                    // Check if script file exists
+                    bool fileExists = FileBrowser::fileExists(mScriptName);
+
+                    // Check if script already added to component
+                    bool scriptExists = false;
+                    for (const auto& script : luaScript.scripts)
+                    {
+                        if (script.scriptPath == mScriptName)
+                        {
+                            scriptExists = true;
+                            break;
+                        }
+                    }
+
+                    // Show status message
+                    if (strlen(scriptNameBuffer) == 0)
+                    {
+                        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Enter a script name...");
+                    }
+                    else if (scriptExists)
+                    {
+                        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Script already added to this component!");
+                    }
+                    else if (!fileExists)
+                    {
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Script file not found!");
+                    }
+                    else
+                    {
+                        ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "Script found and ready to add!");
+                    }
+
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                    ImGui::Spacing();
+
+                    // Add button (only enabled if valid)
+                    bool isValid = fileExists && !scriptExists && strlen(scriptNameBuffer) > 0;
+
+                    if (!isValid)
+                    {
+                        ImGui::BeginDisabled();
+                    }
+
+                    if (ImGui::Button("Add Script", ImVec2(120, 0)))
+                    {
+                        luaScript.AddScript(mScriptName);
+                        pEventSystem->Emit<CallLuaToInitScript>(entity);
+
+                        // Clear buffer and close
+                        scriptNameBuffer[0] = '\0';
+                        mScriptName = "Assets/Scripts/.lua";
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    if (!isValid)
+                    {
+                        ImGui::EndDisabled();
+                    }
+
+                    ImGui::SameLine();
+
+                    if (ImGui::Button("Cancel", ImVec2(120, 0)))
+                    {
+                        // Clear buffer and close
+                        scriptNameBuffer[0] = '\0';
+                        mScriptName = "Assets/Scripts/.lua";
+                        ImGui::CloseCurrentPopup();
+                    }
+
+                    ImGui::EndPopup();
+                }
+
+                ImGui::Unindent();
+            }
+            }
+        else
+        {
+            return false;
+        }
+        return true;
     }
 
     void ImguiManager::CreateInspectorWindow()
@@ -938,14 +1609,24 @@ namespace Uma_Engine
         ImGui::Separator();
 
         // Entity Name Field
-        std::string entityName = GetEntityDisplayName(m_selectedEntity, coordinator);
-        ImGui::Text("Name: %s", entityName.c_str());
+        //std::string entityName = GetEntityDisplayName(m_selectedEntity, coordinator);
+        //ImGui::Text("Name: %s", entityName.c_str());
+
+        auto& tf = coordinator.GetComponent<Uma_ECS::Transform>(m_selectedEntity);
+
+        static char textureBuffer[256];
+        strncpy(textureBuffer, tf.name.c_str(), 255);
+        textureBuffer[255] = '\0';
+        if (ImGui::InputText("##name", textureBuffer, 256))
+        {
+            tf.name = textureBuffer;
+        }
 
         ImGui::Separator();
         ImGui::Spacing();
 
         // ========== Transform Component ==========
-        auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+        /*auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
         if (transformArray.Has(m_selectedEntity))
         {
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
@@ -974,11 +1655,19 @@ namespace Uma_Engine
 
                 ImGui::Unindent();
             }
-        }
+        }*/
+
+        coordinator.ForEachComponent(m_selectedEntity, [this, &coordinator](Uma_ECS::ComponentType type)
+            {
+                if (DisplayComponent(coordinator, type, m_selectedEntity))
+                {
+                    ImGui::Spacing();
+                    ImGui::Separator();
+                }
+            });
+
 
         // ========== Add Component Button ==========
-        ImGui::Spacing();
-        ImGui::Separator();
 
         if (ImGui::Button("Add Component", ImVec2(-1, 0)))
         {
@@ -991,24 +1680,33 @@ namespace Uma_Engine
             ImGui::Text("Select Component Type:");
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Sprite"))
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Sprite>()) && ImGui::MenuItem("Sprite"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Sprite{});
             }
 
-            if (ImGui::MenuItem("RigidBody"))
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::RigidBody>()) && ImGui::MenuItem("RigidBody"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::RigidBody{});
             }
 
-            if (ImGui::MenuItem("Collider"))
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Collider>()) && ImGui::MenuItem("Collider"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Collider{});
             }
 
-            if (ImGui::MenuItem("Camera"))
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Camera>()) && ImGui::MenuItem("Camera"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Camera{});
+            }
+
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::LuaScript>()) && ImGui::MenuItem("LuaScript"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::LuaScript{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Enemy>()) && ImGui::MenuItem("Enemy"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Enemy{});
             }
 
             ImGui::EndPopup();

@@ -267,6 +267,8 @@ void main()
                 SetViewport(width, height);
             }
         }
+
+        ClearBackground(0.2f, 0.3f, 0.3f);
         UpdateProjectionMatrix();
     }
 

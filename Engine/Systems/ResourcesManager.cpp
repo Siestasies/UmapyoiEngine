@@ -73,17 +73,17 @@ namespace Uma_Engine
         }
 
         // Use Graphics class to load file texture
-        Texture texture = mGraphics->LoadTextureFromFile(filePath);
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>(mGraphics->LoadTextureFromFile(filePath));
 
         // Store in map
         mTextures[textureName] = texture;
         return true;
     }
 
-    Texture* ResourcesManager::GetTexture(const std::string& textureName)
+    std::shared_ptr<Texture> ResourcesManager::GetTexture(const std::string& textureName)
     {
         auto it = mTextures.find(textureName);
-        return (it != mTextures.end()) ? &it->second : nullptr;
+        return (it != mTextures.end()) ? it->second : nullptr;
     }
 
     bool ResourcesManager::HasTexture(const std::string& textureName) const
@@ -96,7 +96,7 @@ namespace Uma_Engine
         std::cout << "Loaded textures (" << mTextures.size() << "):" << std::endl;
         for (const auto& pair : mTextures)
         {
-            std::cout << "  - " << pair.first << " (ID: " << pair.second.tex_id << ")" << std::endl;
+            std::cout << "  - " << pair.first << " (ID: " << pair.second->tex_id << ")" << std::endl;
         }
     }
 
@@ -106,10 +106,14 @@ namespace Uma_Engine
         if (it != mTextures.end())
         {
             // Unload texture
-            mGraphics->UnloadTexture(it->second.tex_id);
+            mGraphics->UnloadTexture((*it->second).tex_id);
+
+            // tex_id become invalid so set to 0
+            (*it->second).tex_id = 0;
 
             // Remove from our map
             mTextures.erase(it);
+
             std::cout << "Texture '" << textureName << "' unloaded" << std::endl;
         }
         else
@@ -122,13 +126,13 @@ namespace Uma_Engine
     {
         for (auto& pair : mTextures)
         {
-            mGraphics->UnloadTexture(pair.second.tex_id);
+            mGraphics->UnloadTexture(pair.second->tex_id);
         }
         mTextures.clear();
         std::cout << "All textures unloaded" << std::endl;
     }
 
-    const std::unordered_map<std::string, Texture>& ResourcesManager::GetLoadedTextures() const
+    const std::unordered_map<std::string, std::shared_ptr<Texture>>& ResourcesManager::GetLoadedTextures() const
     {
         // TODO: insert return statement here
         return mTextures;
@@ -150,8 +154,8 @@ namespace Uma_Engine
 
             // Path
             rapidjson::Value pathVal;
-            pathVal.SetString(tex.second.filePath.c_str(),
-                static_cast<rapidjson::SizeType>(tex.second.filePath.size()),
+            pathVal.SetString(tex.second->filePath.c_str(),
+                static_cast<rapidjson::SizeType>(tex.second->filePath.size()),
                 allocator);
             textureObj.AddMember("path", pathVal, allocator);
 

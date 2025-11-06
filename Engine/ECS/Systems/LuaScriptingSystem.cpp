@@ -758,6 +758,19 @@ namespace Uma_ECS
             {
                 OnTriggerExitEvent(e.trigger, e.entity);
             }));
+
+        aEventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::CallLuaToInitScript>(
+            [this](const Uma_Engine::CallLuaToInitScript& e)
+            {
+                auto& lArray = pCoordinator->GetComponentArray<LuaScript>();
+                if (lArray.Has(e.en))
+                {
+                    auto& lua = lArray.GetData(e.en);
+                    InitializeScripts(e.en, lua);
+                    CallStart();
+                }
+            }));
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)

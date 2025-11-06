@@ -32,13 +32,14 @@ namespace Uma_ECS
     // currently in 2d
     struct Transform //: public SerializationBase
     {
+        // name of the gameobject 
+        std::string name{};
+
+        // transform
         Vec2 position{};
         Vec2 rotation{};
         Vec2 scale{};
         Vec2 prevPos{}; // shdnt edit this value manually
-
-        // run time data
-        //Vec2 renderPos{};
 
         // gameobject grouping
         std::optional<Entity> parent;
@@ -52,14 +53,14 @@ namespace Uma_ECS
 
         bool isDirty = true;
 
-        /*void UpdateRenderPosition(float alpha)
-        {
-            renderPos = prevPos + (position - prevPos) * alpha;
-        }*/
-
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
+
+            // name 
+            value.AddMember("name",
+                rapidjson::Value(name.c_str(), allocator),
+                allocator);
             
             // Position
             rapidjson::Value pos(rapidjson::kObjectType);
@@ -93,6 +94,18 @@ namespace Uma_ECS
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
+            if (value.HasMember("name"))
+            {
+                name = value["name"].GetString();
+
+                // to make compatibility to old scene
+                if (name.empty()) name = "Entity";
+            }
+            else
+            {
+                name = "Entity";
+            }
+
             const auto& pos = value["position"];
             position.x = pos["x"].GetFloat();
             position.y = pos["y"].GetFloat();

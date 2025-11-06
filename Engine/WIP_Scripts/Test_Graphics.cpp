@@ -272,7 +272,7 @@ namespace Uma_Engine
         graphics->ClearBackground(0.2f, 0.3f, 0.3f);
 
         // Draw background
-        const Texture* backgroundTexture = resourcesManager->GetTexture("background");
+        const std::shared_ptr<Texture> backgroundTexture = resourcesManager->GetTexture("background");
         if (backgroundTexture != nullptr)
         {
             graphics->DrawBackground(backgroundTexture->tex_id);
@@ -284,7 +284,7 @@ namespace Uma_Engine
         // Draw original enemy objects
         if (!showDemo)
         {
-            const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+            const std::shared_ptr<Texture> enemyTexture = resourcesManager->GetTexture("enemy");
             if (enemyTexture != nullptr)
             {
                 Vec2 enemyScale{ .2f, .2f };
@@ -307,7 +307,7 @@ namespace Uma_Engine
 
         if (showDemo && !demoObjects.empty())
         {
-            const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+            const std::shared_ptr<Texture> enemyTexture = resourcesManager->GetTexture("enemy");
             if (enemyTexture != nullptr)
             {
                 // Prepare vectors for instanced rendering
@@ -339,7 +339,7 @@ namespace Uma_Engine
         }
         else
         {
-            const Texture* enemyTexture = resourcesManager->GetTexture("enemy");
+            const std::shared_ptr<Texture> enemyTexture = resourcesManager->GetTexture("enemy");
             if (enemyTexture != nullptr)
             {
                 Vec2 enemyScale{ .2f, .2f };
@@ -356,7 +356,7 @@ namespace Uma_Engine
         }
 
         // Draw player sprite
-        const Texture* playerTexture = resourcesManager->GetTexture("player_sprite");
+        const std::shared_ptr<Texture> playerTexture = resourcesManager->GetTexture("player_sprite");
         if (playerTexture != nullptr)
         {
             Vec2 playerPos = { playerPosition.x, playerPosition.y };

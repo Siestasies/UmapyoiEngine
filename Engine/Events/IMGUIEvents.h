@@ -37,6 +37,27 @@ namespace Uma_Engine
         SpawnEntityRequestEvent() { priority = Priority::Normal; }
     };
 
+    class ReturnSpawnedRequestEvent : public Event
+    {
+    public:
+        Uma_ECS::Entity entity;
+        ReturnSpawnedRequestEvent(Uma_ECS::Entity en) : entity(en) { priority = Priority::Normal; }
+    };
+
+    class DuplicateEntityRequestEvent : public Event
+    {
+    public:
+        Uma_ECS::Entity entity;
+        DuplicateEntityRequestEvent(Uma_ECS::Entity en) : entity(en) { priority = Priority::Normal; }
+    };
+
+    class ReturnDuplicatedRequestEvent : public Event
+    {
+    public:
+        Uma_ECS::Entity entity;
+        ReturnDuplicatedRequestEvent(Uma_ECS::Entity en) : entity(en) { priority = Priority::Normal; }
+    };
+
     class DestroyEntityRequestEvent : public Event
     {
     public:
@@ -148,10 +169,8 @@ namespace Uma_Engine
     class LoadSceneRequestEvent : public Event
     {
     public:
-        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
-
-    public:
         std::string name;
+        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
     };
 
     class IMGUIStopRequest : public Event
@@ -202,6 +221,13 @@ namespace Uma_Engine
     public:
         std::string name;
         SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+    class CallLuaToInitScript : public Event
+    {
+    public:
+        Uma_ECS::Entity en;
+        CallLuaToInitScript(Uma_ECS::Entity const& e) : en(e) { priority = Priority::High; }
     };
 
     class SceneInfoRequest : public Event
