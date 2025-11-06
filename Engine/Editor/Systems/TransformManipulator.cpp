@@ -1,21 +1,48 @@
+/*!
+\file   TransformManipulator.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implementation of the TransformManipulator class.
+
+This file provides the concrete logic for applying transformations (translate, rotate, scale)
+to entities during gizmo drag operations, supporting both game and UI entities.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "TransformManipulator.h"
 #include "../../ECS/Components/Transform.h"
 #include "../../UI/Components/RectTransform.h"
 #include "../../UI/Helpers/Input.h"
 #include "../../UI/Helpers/Layout.h"
 #include "../Core/EditorMath.h"
-
 #include <cmath>
 #include <algorithm>
 
 namespace Uma_Engine
 {
-    void TransformManipulator::StartDrag(Uma_ECS::Entity entity, const Vec2& mousePos, GizmoAxis axis, EditorState& state)
+    /*!
+     * \brief Initializes a drag operation on an entity.
+     * \param entity Entity being manipulated.
+     * \param startMouse Initial mouse position in screen pixels.
+     * \param axis Which axis/handle is being dragged.
+     * \param state Editor state to update with drag information.
+     */
+    void TransformManipulator::StartDrag(Uma_ECS::Entity entity, const Vec2& startMouse, GizmoAxis axis, EditorState& state)
     {
         state.isDragging = true;
         state.activeAxis = axis;
-        state.dragStartMouse = mousePos;
-        state.dragPrevMouse = mousePos;
+        state.dragStartMouse = startMouse;
+        state.dragPrevMouse = startMouse;
 
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
@@ -31,11 +58,17 @@ namespace Uma_Engine
         {
             const auto& rectTransform = rectTransformArray.GetData(entity);
             state.dragStartPosition = rectTransform.anchoredPosition;
-            state.dragStartRotation = 0.f;  // UI typically doesn't rotate
+            state.dragStartRotation = 0.f;
             state.dragStartScale = rectTransform.sizeDelta;
         }
     }
 
+    /*!
+     * \brief Updates the drag operation with the current mouse position.
+     * \param currentMouse Current mouse position in screen pixels.
+     * \param state Editor state with drag information.
+     * \param config Editor configuration.
+     */
     void TransformManipulator::UpdateDrag(const Vec2& currentMouse, EditorState& state, const EditorConfig& config)
     {
         if (!state.isDragging)
@@ -118,12 +151,23 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Ends the current drag operation.
+     * \param state Editor state to clear.
+     */
     void TransformManipulator::EndDrag(EditorState& state)
     {
         state.isDragging = false;
         state.activeAxis = GizmoAxis::None;
     }
 
+    /*!
+     * \brief Applies translation to an entity.
+     * \param entity Entity to translate.
+     * \param start Starting position.
+     * \param delta Translation delta.
+     * \param config Editor configuration.
+     */
     void TransformManipulator::ApplyTranslation(Uma_ECS::Entity entity, const Vec2& start, const Vec2& delta, const EditorConfig& config)
     {
         if (!pCoordinator || !pGraphics)
@@ -132,13 +176,11 @@ namespace Uma_Engine
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
-        // Game entities: world space translation
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
             auto& transform = transformArray.GetData(entity);
             Vec2 newPos = start + delta;
 
-            // Apply grid snapping in world space
             if (config.snapGrid > 0.0f)
             {
                 newPos = SnapToGrid(newPos, config.snapGrid);
@@ -147,12 +189,10 @@ namespace Uma_Engine
             transform.position = newPos;
             transform.isDirty = true;
         }
-        // UI entities: convert world delta to NDC delta
         else if (rectTransformArray.Has(entity))
         {
             auto& rectTransform = rectTransformArray.GetData(entity);
 
-            // Get current position in screen space
             int screenWidth = pGraphics->GetViewportWidth();
             int screenHeight = pGraphics->GetViewportHeight();
 
@@ -163,14 +203,12 @@ namespace Uma_Engine
                 static_cast<float>(screenHeight)
             );
 
-            // Convert world delta to screen delta
             Vec2 currentWorld = pGraphics->ScreenToWorld(currentScreenPos);
             Vec2 newWorld = currentWorld + delta;
             Vec2 newScreenPos = pGraphics->WorldToScreen(newWorld);
 
             Vec2 screenDelta = newScreenPos - currentScreenPos;
 
-            // Convert screen delta to NDC delta
             Vec2 ndcDelta(
                 screenDelta.x / (screenWidth * 0.5f),
                 -screenDelta.y / (screenHeight * 0.5f)
@@ -178,21 +216,15 @@ namespace Uma_Engine
 
             rectTransform.anchoredPosition = rectTransform.anchoredPosition + ndcDelta;
 
-            // FIX: Immediately update computedRect for visual feedback
-            // This ensures Text and Image components see the new position right away
-
-            // Get parent rect for computation
-            Uma_UI::Rect parentRect = Uma_UI::GetScreenRect(); // Default to screen
+            Uma_UI::Rect parentRect = Uma_UI::GetScreenRect();
             if (rectTransform.parent != static_cast<Uma_ECS::Entity>(-1))
             {
                 auto& parentRectTransform = rectTransformArray.GetData(rectTransform.parent);
                 parentRect = parentRectTransform.computedRect;
             }
 
-            // Check for canvas scale
             float canvasScale = 1.0f;
             auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
-            // Find canvas in hierarchy (traverse up parents)
             Uma_ECS::Entity current = entity;
             while (current != static_cast<Uma_ECS::Entity>(-1))
             {
@@ -223,6 +255,11 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Applies rotation to an entity.
+     * \param entity Entity to rotate.
+     * \param deltaAngle Rotation delta in radians.
+     */
     void TransformManipulator::ApplyRotation(Uma_ECS::Entity entity, float deltaAngle)
     {
         if (!pCoordinator)
@@ -239,6 +276,11 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Applies scaling to an entity.
+     * \param entity Entity to scale.
+     * \param scaleFactor Scale factor to apply.
+     */
     void TransformManipulator::ApplyScale(Uma_ECS::Entity entity, const Vec2& scaleFactor)
     {
         if (!pCoordinator)
@@ -255,7 +297,6 @@ namespace Uma_Engine
                 transform.scale.y * scaleFactor.y
             );
 
-            // Clamp to prevent zero/negative scale
             newScale.x = std::max(0.01f, newScale.x);
             newScale.y = std::max(0.01f, newScale.y);
 
@@ -271,6 +312,11 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Gets the screen position of an entity.
+     * \param entity Entity to get screen position for.
+     * \return Screen position as Vec2.
+     */
     Vec2 TransformManipulator::GetEntityScreenPosition(Uma_ECS::Entity entity)
     {
         if (!pCoordinator || !pGraphics)
@@ -304,6 +350,11 @@ namespace Uma_Engine
         return Vec2(0.0f, 0.0f);
     }
 
+    /*!
+     * \brief Checks if an entity is a game entity.
+     * \param entity Entity to check.
+     * \return True if it's a game entity.
+     */
     bool TransformManipulator::IsGameEntity(Uma_ECS::Entity entity) const
     {
         if (!pCoordinator)
@@ -315,6 +366,11 @@ namespace Uma_Engine
         return transformArray.Has(entity) && !rectTransformArray.Has(entity);
     }
 
+    /*!
+     * \brief Checks if an entity is a UI entity.
+     * \param entity Entity to check.
+     * \return True if it's a UI entity.
+     */
     bool TransformManipulator::IsUIEntity(Uma_ECS::Entity entity) const
     {
         if (!pCoordinator)

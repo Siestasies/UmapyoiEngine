@@ -1,17 +1,43 @@
+/*!
+\file   EditorSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implementation of the EditorSystem class.
+
+This file provides the concrete logic for the editor's main coordination system,
+handling entity picking, mode switching, and integration with gizmo and manipulation subsystems.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "EditorSystem.h"
 #include "../../UI/Helpers/InputFilter.h"
 #include <GLFW/glfw3.h>
-
 #include <Debugging/Debugger.hpp>
 
 namespace Uma_Engine
 {
+    /*!
+     * \brief Constructs the editor system with default enabled state and translate mode.
+     */
     EditorSystem::EditorSystem()
     {
         mState.enabled = true;
         mState.currentMode = EditorMode::Translate;
     }
 
+    /*!
+     * \brief Initializes the editor system and sets initial mode if auto-switching is enabled.
+     */
     void EditorSystem::Init()
     {
         EventListenerSystem::Init();
@@ -22,6 +48,10 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Updates the editor system, rendering selection highlights and gizmos when active.
+     * \param dt Delta time in seconds.
+     */
     void EditorSystem::Update(float dt)
     {
         (void)dt;
@@ -30,9 +60,6 @@ namespace Uma_Engine
 
         if (!mState.enabled) return;
 
-        //if (isMouseOverUI) return;
-        
-        // Render selection highlight and gizmo
         if (mState.pickedEntity.has_value())
         {
             mGizmoRenderer.RenderSelectionHighlight(mState.pickedEntity.value(), mConfig);
@@ -40,31 +67,43 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Shuts down the editor system and drops any selected entity.
+     */
     void EditorSystem::Shutdown()
     {
         DropEntity();
     }
 
+    /*!
+     * \brief Sets the ECS coordinator dependency and propagates it to subsystems.
+     * \param coord Pointer to the coordinator.
+     */
     void EditorSystem::SetCoordinator(Uma_ECS::Coordinator* coord)
     {
         pCoordinator = coord;
         
-        // Propagate to subsystems
         mPickingSystem.SetCoordinator(coord);
         mGizmoRenderer.SetCoordinator(coord);
         mTransformManipulator.SetCoordinator(coord);
     }
 
+    /*!
+     * \brief Sets the graphics system dependency and propagates it to subsystems.
+     * \param gfx Pointer to the graphics system.
+     */
     void EditorSystem::SetGraphics(Graphics* gfx)
     {
         pGraphics = gfx;
         
-        // Propagate to subsystems
         mPickingSystem.SetGraphics(gfx);
         mGizmoRenderer.SetGraphics(gfx);
         mTransformManipulator.SetGraphics(gfx);
     }
 
+    /*!
+     * \brief Registers event listeners for mouse button, mouse move, key press, and UI events.
+     */
     void EditorSystem::RegisterEventListeners()
     {
         SubscribeToEvent<MouseButtonEvent>([this](const MouseButtonEvent& e) {
@@ -88,16 +127,18 @@ namespace Uma_Engine
         });
     }
 
+    /*!
+     * \brief Selects an entity for manipulation.
+     * \param entity Entity to pick.
+     */
     void EditorSystem::PickEntity(Uma_ECS::Entity entity)
     {
         if (!pCoordinator || entity == static_cast<Uma_ECS::Entity>(-1))
             return;
 
-        // Verify entity exists
         if (!pCoordinator->HasActiveEntity(entity))
             return;
 
-        // Auto-switch to translate mode
         if (mConfig.autoSwitchMode && mState.pickedEntity != entity)
         {
             mState.currentMode = EditorMode::Translate;
@@ -105,13 +146,15 @@ namespace Uma_Engine
 
         mState.pickedEntity = entity;
         
-        // Emit event
         if (eventSystem)
         {
             eventSystem->Emit<EntityPickedEvent>(entity);
         }
     }
 
+    /*!
+     * \brief Deselects the currently picked entity.
+     */
     void EditorSystem::DropEntity()
     {
         if (mState.pickedEntity.has_value())
@@ -122,7 +165,6 @@ namespace Uma_Engine
             mState.isDragging = false;
             mState.activeAxis = GizmoAxis::None;
 
-            // Emit event
             if (eventSystem)
             {
                 eventSystem->Emit<EntityDroppedEvent>(droppedEntity);
@@ -130,6 +172,10 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Sets the editor manipulation mode.
+     * \param mode The new editor mode (Translate/Rotate/Scale).
+     */
     void EditorSystem::SetEditorMode(EditorMode mode)
     {
         if (mState.isDragging)
@@ -140,7 +186,6 @@ namespace Uma_Engine
         EditorMode previousMode = mState.currentMode;
         mState.currentMode = mode;
 
-        // Emit event
         if (eventSystem && previousMode != mode)
         {
             eventSystem->Emit<EditorModeChangedEvent>(
@@ -150,6 +195,9 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Cycles through editor modes in order: Translate -> Rotate -> Scale -> Translate.
+     */
     void EditorSystem::CycleMode()
     {
         switch (mState.currentMode)
@@ -169,40 +217,38 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Handles mouse button events for picking and gizmo interaction.
+     * \param event Mouse button event.
+     */
     void EditorSystem::OnMouseButton(const MouseButtonEvent& event)
     {
         if (!mState.enabled || !pCoordinator || !pGraphics || isMouseOverUI || mIsPlayMode)
             return;
 
-        // Left mouse button
         if (event.button == GLFW_MOUSE_BUTTON_LEFT)
         {
             if (event.action == GLFW_PRESS)
             {
-                // Check if UI consumed this click
                 if (Uma_UI::InputFilter::ShouldBlockMouseInput())
                     return;
 
                 Vec2 mousePos(event.x, event.y);
 
-                // If we have a picked entity, check for gizmo interaction first
                 if (mState.pickedEntity.has_value())
                 {
-                    // If gizmo was clicked, don't proceed to picking
                     if (mState.isDragging)
                         return;
 
                     HandleGizmoClick(mousePos);                    
                 }
 
-                // Try to pick an entity
                 HandlePickingClick(mousePos);
             }
             else if (event.action == GLFW_RELEASE)
             {
                 if (mState.isDragging)
                 {
-                    // Emit transformation event before ending drag
                     if (eventSystem && mState.pickedEntity.has_value())
                     {
                         int transformType = 0;
@@ -226,6 +272,10 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Handles mouse move events for gizmo dragging.
+     * \param event Mouse move event.
+     */
     void EditorSystem::OnMouseMove(const MouseMoveEvent& event)
     {
         if (!mState.enabled || !pCoordinator || isMouseOverUI || mIsPlayMode)
@@ -238,12 +288,15 @@ namespace Uma_Engine
         }
     }
 
+    /*!
+     * \brief Handles key press events for editor shortcuts.
+     * \param event Key press event.
+     */
     void EditorSystem::OnKeyPress(const KeyPressEvent& event)
     {
         if (!mState.enabled || isMouseOverUI)
             return;
 
-        // Space - Drop entity
         if (event.key == GLFW_KEY_SPACE)
         {
             if (mState.pickedEntity.has_value())
@@ -251,28 +304,28 @@ namespace Uma_Engine
                 DropEntity();
             }
         }
-        // K - Translate mode
         else if (event.key == GLFW_KEY_K)
         {
             SetEditorMode(EditorMode::Translate);
         }
-        // L - Rotate mode
         else if (event.key == GLFW_KEY_L)
         {
             SetEditorMode(EditorMode::Rotate);
         }
-        // ; - Scale mode
         else if (event.key == GLFW_KEY_SEMICOLON)
         {
             SetEditorMode(EditorMode::Scale);
         }
-        // P - Cycle modes
         else if (event.key == GLFW_KEY_P)
         {
             CycleMode();
         }
     }
 
+    /*!
+     * \brief Handles entity picking via raycasting at the mouse position.
+     * \param screenPos Mouse position in screen pixels.
+     */
     void EditorSystem::HandlePickingClick(const Vec2& screenPos)
     {
         Uma_ECS::Entity hit = mPickingSystem.RaycastEntity(screenPos, mConfig);
@@ -283,11 +336,14 @@ namespace Uma_Engine
         }
         else
         {
-            // Clicked empty space - drop current selection
             DropEntity();
         }
     }
 
+    /*!
+     * \brief Handles gizmo click detection and initiates dragging if a handle is hit.
+     * \param screenPos Mouse position in screen pixels.
+     */
     void EditorSystem::HandleGizmoClick(const Vec2& screenPos)
     {
         GizmoAxis hitAxis = mGizmoRenderer.HitTestGizmo(screenPos, 
@@ -296,7 +352,6 @@ namespace Uma_Engine
         
         if (hitAxis != GizmoAxis::None)
         {
-            // Start gizmo drag
             mTransformManipulator.StartDrag(mState.pickedEntity.value(), screenPos,
                                            hitAxis, mState);
         }
