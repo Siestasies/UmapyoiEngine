@@ -1166,6 +1166,8 @@ namespace Uma_Engine
         void LoadPrefab(std::string prefab_name)
         {
            m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name);
+
+           m_Scene->m_LuaScriptingSystem->CallStart();
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)
