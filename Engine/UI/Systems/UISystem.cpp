@@ -1,9 +1,30 @@
+/*!
+\file   UISystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author CSD2401 Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Implementation of the main UI system with three-pass architecture.
+
+This file provides the concrete implementation for UI layout computation,
+input handling, and draw list generation. It coordinates all UI components
+through an explicit three-pass system: Layout, Input, and BuildDrawList.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "UISystem.h"
 #include "../Helpers/Layout.h"
 #include "../Helpers/Input.h"
 #include "../../Events/WindowEvents.h"
 #include "Systems/ResourcesTypes.hpp"
-
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <map>
@@ -34,26 +55,16 @@ namespace
 
 namespace Uma_UI
 {
+    /*!
+     * \brief Initializes the UI system and subscribes to window events.
+     */
     void UISystem::Init()
     {
-        if (!pCoordinator)
-        {
-            std::cerr << "UISystem::Init - Warning: Coordinator not set!" << std::endl;
-        }
-        if (!pEventSystem)
-        {
-            std::cerr << "UISystem::Init - Warning: EventSystem not set!" << std::endl;
-        }
-        if (!pGraphics)
-        {
-            std::cerr << "UISystem::Init - Warning: Graphics not set!" << std::endl;
-        }
-        if (!pResourcesManager)
-        {
-            std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl;
-        }
+        if (!pCoordinator) { std::cerr << "UISystem::Init - Warning: Coordinator not set!" << std::endl; }
+        if (!pEventSystem) { std::cerr << "UISystem::Init - Warning: EventSystem not set!" << std::endl; }
+        if (!pGraphics) { std::cerr << "UISystem::Init - Warning: Graphics not set!" << std::endl; }
+        if (!pResourcesManager) { std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl; }
 
-        // Cache initial screen size
         if (pGraphics)
         {
             mScreenSize = {static_cast<float>(pGraphics->GetViewportWidth()), static_cast<float>(pGraphics->GetViewportHeight())};
@@ -64,10 +75,13 @@ namespace Uma_UI
         }
 
         pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) { mScreenSize.x = e.width, mScreenSize.y = e.height; });
-
         mHitTestCache.clear();
     }
 
+    /*!
+     * \brief Updates the UI system through three explicit passes: Layout, Input, and BuildDrawList.
+     * \param dt Delta time in seconds.
+     */
     void UISystem::Update(float dt)
     {
         (void)dt;
@@ -77,32 +91,34 @@ namespace Uma_UI
             return;
         }
 
-        // Three explicit passes
         LayoutPass();
         InputPass();
         BuildDrawListPass();
     }
 
+    /*!
+     * \brief Shuts down the UI system and clears all cached data.
+     */
     void UISystem::Shutdown()
     {
         mHitTestCache.clear();
-
         mMouseButtonDown = false;
         mMouseButtonDownLastFrame = false;
         mMouseConsumedThisFrame = false;
-
         pCoordinator = nullptr;
         pEventSystem = nullptr;
         pGraphics = nullptr;
         pResourcesManager = nullptr;
     }
 
+    /*!
+     * \brief First pass: Computes NDC rectangles for all UI elements based on layout settings.
+     */
     void UISystem::LayoutPass()
     {
-        // Get all Canvas entities sorted by sortingOrder
         auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
-
         std::vector<std::pair<Uma_ECS::Entity, int>> canvasEntities;
+
         for (size_t i = 0; i < canvasArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = canvasArray.GetEntity(i);
@@ -110,63 +126,39 @@ namespace Uma_UI
             canvasEntities.push_back({ entity, canvas.sortingOrder });
         }
 
-        // Sort by sorting order
-        std::sort(canvasEntities.begin(), canvasEntities.end(),
-            [](const auto& a, const auto& b) { return a.second < b.second; });
+        std::sort(canvasEntities.begin(), canvasEntities.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
 
-        // Process each canvas
         for (const auto& [canvasEntity, sortOrder] : canvasEntities)
         {
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
-
-            // Compute canvas scale factor
             canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y);
-
-            // Get all RectTransforms
             auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
 
-            // Process all UI elements
             for (size_t i = 0; i < rectArray.Size(); ++i)
             {
                 Uma_ECS::Entity entity = rectArray.GetEntity(i);
                 auto& rectTransform = rectArray.GetComponentAt(i);
 
-                // Skip if not dirty and has valid rect
                 if (!rectTransform.isDirty && rectTransform.computedRect.width > 0.0f)
                 {
                     continue;
                 }
 
-                // Compute rect
                 Rect parentRect = GetParentRect(entity);
-                rectTransform.computedRect = ComputeRectInNDC(
-                    rectTransform,
-                    parentRect,
-                    canvas.scaleFactor,
-                    mScreenSize.x,
-                    mScreenSize.y
-                );
-
+                rectTransform.computedRect = ComputeRectInNDC(rectTransform, parentRect, canvas.scaleFactor, mScreenSize.x, mScreenSize.y);
                 rectTransform.isDirty = false;
             }
         }
     }
 
+    /*!
+     * \brief Second pass: Handles mouse input, updates button states, and emits UI events.
+     */
     void UISystem::InputPass()
     {
-        // Reset input consumption flag each frame
         mMouseConsumedThisFrame = false;
-
-        // Get mouse position
         mMousePositionScreen = GetMousePosition();
-        mMousePositionNDC = Uma_UI::ScreenToNDC(
-            mMousePositionScreen.x,
-            mMousePositionScreen.y,
-            mScreenSize.x,
-            mScreenSize.y
-        );
-
-        // Get mouse button state
+        mMousePositionNDC = Uma_UI::ScreenToNDC(mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
         mMouseButtonDownLastFrame = mMouseButtonDown;
 
         if (pGraphics)
@@ -178,13 +170,10 @@ namespace Uma_UI
             mMouseButtonDown = false;
         }
 
-        // Build hit test cache (all UI elements with RectTransform)
         mHitTestCache.clear();
-
-        // Get aspect ratio (same as Graphics uses)
         float aspect = mScreenSize.x / mScreenSize.y;
-
         auto sortedEntities = GetSortedUIEntities();
+
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
@@ -195,23 +184,18 @@ namespace Uma_UI
                 continue;
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-
             Uma_UI::Rect hitRect = rectTransform.computedRect;
             hitRect.width /= aspect;
-
             mHitTestCache.push_back({entity, hitRect});
         }
 
-        // Raycast to find topmost hit
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
 
-        // If mouse hit any UI element, mark input as consumed
         if (hitEntity != static_cast<Uma_ECS::Entity>(-1))
         {
             mMouseConsumedThisFrame = true;
         }
 
-        // Process buttons
         auto& buttonArray = pCoordinator->GetComponentArray<Button>();
         for (size_t i = 0; i < buttonArray.Size(); ++i)
         {
@@ -226,14 +210,11 @@ namespace Uma_UI
 
             bool isHovered = (entity == hitEntity);
 
-            // State transitions
             if (mMouseButtonDown)
             {
                 if (isHovered)
                 {
                     button.currentState = Uma_UI::ButtonState::Pressed;
-
-                    // Emit PointerDown event
                     if (!mMouseButtonDownLastFrame)
                     {
                         pEventSystem->Emit<Uma_Engine::PointerDownEvent>(entity, mMousePositionScreen);
@@ -249,20 +230,14 @@ namespace Uma_UI
                 if (isHovered)
                 {
                     button.currentState = Uma_UI::ButtonState::Hovered;
-
-                    // Emit PointerEnter event (first frame of hover)
                     if (!button.wasHoveredLastFrame)
                     {
                         pEventSystem->Emit<Uma_Engine::PointerEnterEvent>(entity, mMousePositionScreen);
                     }
-
-                    // Check for click (button up while hovering)
                     if (mMouseButtonDownLastFrame && !mMouseButtonDown)
                     {
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
-
-                        // Invoke callback if valid
                         if (button.onClick != nullptr)
                         {
                             button.onClick(entity);
@@ -272,8 +247,6 @@ namespace Uma_UI
                 else
                 {
                     button.currentState = Uma_UI::ButtonState::Normal;
-
-                    // Emit PointerExit event (first frame of un-hover)
                     if (button.wasHoveredLastFrame)
                     {
                         pEventSystem->Emit<Uma_Engine::PointerExitEvent>(entity, mMousePositionScreen);
@@ -281,15 +254,14 @@ namespace Uma_UI
                 }
             }
 
-            // Update hover tracking
             button.wasHoveredLastFrame = isHovered;
-
-            // Update button visual (changes Image colour)
             UpdateButtonVisual(entity);
         }
     }
 
-
+    /*!
+     * \brief Third pass: Generates draw lists for rendering images and text.
+     */
     void UISystem::BuildDrawListPass()
     {
         std::vector<SpriteWithColor> spritesWithColours;
@@ -299,13 +271,10 @@ namespace Uma_UI
             return;
         }
 
-        // Get sorted entities by render order
         auto sortedEntities = GetSortedUIEntities();
 
-        // Build sprite list for images
         for (Uma_ECS::Entity entity : sortedEntities)
         {
-            // Check if entity has Image component
             auto& imageArray = pCoordinator->GetComponentArray<Image>();
             if (!imageArray.Has(entity))
             {
@@ -318,22 +287,18 @@ namespace Uma_UI
                 continue;
             }
 
-            // Get RectTransform
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
             {
                 continue;
             }
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-
-            // Get texture ID through ResourcesManager
             unsigned int texId = GetOrLoadTexture(image.textureName);
             if (texId == 0)
             {
-                continue; // Skip if texture not available
+                continue;
             }
 
-            // Build sprite info
             Uma_Engine::Sprite_Info sprite;
             sprite.pos = rectTransform.computedRect.Center();
             sprite.scale = rectTransform.computedRect.Size();
@@ -344,7 +309,6 @@ namespace Uma_UI
             sprite.tintColor = image.colour.ToVec3();
             sprite.alpha = image.colour.a;
             sprite.tex_id = texId;
-
             spritesWithColours.push_back({sprite, image.colour});
         }
 
@@ -357,13 +321,9 @@ namespace Uma_UI
 
         for (const auto& [key, sprites] : batches)
         {
-            pGraphics->DrawSpritesScreenInstanced(
-                key.texId,
-                sprites
-            );
+            pGraphics->DrawSpritesScreenInstanced(key.texId, sprites);
         }
 
-        // Render text elements
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             auto& textArray = pCoordinator->GetComponentArray<Text>();
@@ -378,26 +338,21 @@ namespace Uma_UI
                 continue;
             }
 
-            // Ensure font is loaded through ResourcesManager
             if (!text.fontName.empty())
             {
                 EnsureFontLoaded(text.fontName);
             }
 
-            // Get RectTransform
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
             {
                 continue;
             }
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-
             Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
-
-            // Compute alignment offset
             float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
-
             float alignX = 0.0f;
+
             switch (text.alignment)
             {
             case TextAlignment::Left:
@@ -414,22 +369,17 @@ namespace Uma_UI
             float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
             float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
 
-            pGraphics->DrawTextScreen(
-                *uiFont,
-                text.text,
-                alignX,     // NDC
-                alignY,     // NDC
-                text.fontSize,
-                text.colour.r,
-                text.colour.g,
-                text.colour.b
-            );
+            pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY, text.fontSize, text.colour.r, text.colour.g, text.colour.b);
         }
 
         batches.clear();
         spritesWithColours.clear();
     }
 
+    /*!
+     * \brief Gets the current mouse position in screen pixel coordinates.
+     * \return Mouse position as Vec2.
+     */
     Vec2 UISystem::GetMousePosition() const
     {
         if (!pGraphics)
@@ -438,15 +388,13 @@ namespace Uma_UI
         }
 
         double xpos, ypos;
-        glfwGetCursorPos(
-            static_cast<GLFWwindow*>(pGraphics->GetWindow()),
-            &xpos,
-            &ypos
-        );
-
+        glfwGetCursorPos(static_cast<GLFWwindow*>(pGraphics->GetWindow()), &xpos, &ypos);
         return Vec2(static_cast<float>(xpos), static_cast<float>(ypos));
     }
 
+    /*!
+     * \brief Marks all RectTransform components as dirty to force layout recomputation.
+     */
     void UISystem::MarkAllDirty()
     {
         auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
@@ -456,6 +404,12 @@ namespace Uma_UI
         }
     }
 
+    /*!
+     * \brief Computes the NDC rectangle for a specific entity.
+     * \param entity The entity to compute rect for.
+     * \param canvasScale The canvas scale factor.
+     * \return Computed NDC rectangle.
+     */
     Rect UISystem::ComputeRectForEntity(Uma_ECS::Entity entity, float canvasScale)
     {
         if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
@@ -465,40 +419,37 @@ namespace Uma_UI
 
         auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
         Rect parentRect = GetParentRect(entity);
-
-        return ComputeRectInNDC(
-            rectTransform,
-            parentRect,
-            canvasScale,
-            mScreenSize.x,
-            mScreenSize.y
-        );
+        return ComputeRectInNDC(rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
     }
 
+    /*!
+     * \brief Gets the parent's computed NDC rectangle for a given entity.
+     * \param entity The entity to find parent rect for.
+     * \return Parent's NDC rectangle or screen rect if root.
+     */
     Rect UISystem::GetParentRect(Uma_ECS::Entity entity)
     {
         auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-
         if (rectTransform.parent == static_cast<Uma_ECS::Entity>(-1))
         {
-            // Root element - use screen rect
             return GetScreenRect();
         }
 
-        // Get parent's computed rect
         if (pCoordinator->GetComponentArray<RectTransform>().Has(rectTransform.parent))
         {
             auto& parentRect = pCoordinator->GetComponent<RectTransform>(rectTransform.parent);
             return parentRect.computedRect;
         }
 
-        // Fallback to screen rect
         return GetScreenRect();
     }
 
+    /*!
+     * \brief Updates the visual state of a button based on its current interaction state.
+     * \param entity The button entity to update.
+     */
     void UISystem::UpdateButtonVisual(Uma_ECS::Entity entity)
     {
-        // Check if button has an Image component
         if (!pCoordinator->GetComponentArray<Image>().Has(entity))
         {
             return;
@@ -507,58 +458,48 @@ namespace Uma_UI
         auto& button = pCoordinator->GetComponent<Button>(entity);
         auto& image = pCoordinator->GetComponent<Image>(entity);
 
-        // Update image colour based on button state
         switch (button.currentState)
         {
-        case ButtonState::Normal:
-            image.colour = button.normalColour;
-            break;
-        case ButtonState::Hovered:
-            image.colour = button.hoverColour;
-            break;
-        case ButtonState::Pressed:
-            image.colour = button.pressedColour;
-            break;
-        case ButtonState::Disabled:
-            image.colour = button.disabledColour;
-            break;
+        case ButtonState::Normal: image.colour = button.normalColour; break;
+        case ButtonState::Hovered: image.colour = button.hoverColour; break;
+        case ButtonState::Pressed: image.colour = button.pressedColour; break;
+        case ButtonState::Disabled: image.colour = button.disabledColour; break;
         }
     }
 
+    /*!
+     * \brief Returns all UI entities sorted by canvas sorting order.
+     * \return Vector of entity IDs in render order.
+     */
     std::vector<Uma_ECS::Entity> UISystem::GetSortedUIEntities()
     {
         std::vector<std::pair<Uma_ECS::Entity, int>> entities;
-
         auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
 
         for (size_t i = 0; i < rectArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = rectArray.GetEntity(i);
             int sortingOrder = 0;
-
             auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
+
             if (canvasArray.Has(entity))
             {
-                // Use Coordinator to get component
                 sortingOrder = pCoordinator->GetComponent<Canvas>(entity).sortingOrder;
             }
             else
             {
                 auto& rect = rectArray.GetComponentAt(i);
                 Uma_ECS::Entity current = rect.parent;
-
                 while (current != static_cast<Uma_ECS::Entity>(-1))
                 {
                     if (canvasArray.Has(current))
                     {
-                        // Use Coordinator to get component
                         sortingOrder = pCoordinator->GetComponent<Canvas>(current).sortingOrder;
                         break;
                     }
 
                     if (rectArray.Has(current))
                     {
-                        // Use Coordinator to get component
                         current = pCoordinator->GetComponent<RectTransform>(current).parent;
                     }
                     else
@@ -571,12 +512,10 @@ namespace Uma_UI
             entities.push_back({ entity, sortingOrder });
         }
 
-        std::sort(entities.begin(), entities.end(),
-            [](const auto& lhs, const auto& rhs) {
-                if (lhs.second != rhs.second)
-                    return lhs.second < rhs.second;
-                return lhs.first < rhs.first;
-            });
+        std::sort(entities.begin(), entities.end(), [](const auto& lhs, const auto& rhs) {
+            if (lhs.second != rhs.second) return lhs.second < rhs.second;
+            return lhs.first < rhs.first;
+        });
 
         std::vector<Uma_ECS::Entity> result;
         result.reserve(entities.size());
@@ -588,6 +527,12 @@ namespace Uma_UI
         return result;
     }
 
+    /*!
+     * \brief Loads a texture if not already loaded and returns its ID.
+     * \param textureName Name of the texture to load.
+     * \param fallbackPath Optional fallback path if texture is not found.
+     * \return Texture ID or 0 if not available.
+     */
     unsigned int UISystem::GetOrLoadTexture(const std::string& textureName, const std::string& fallbackPath)
     {
         if (!pResourcesManager)
@@ -595,14 +540,12 @@ namespace Uma_UI
             return 0;
         }
 
-        // Check if texture already loaded
         std::shared_ptr<Uma_Engine::Texture> texture = pResourcesManager->GetTexture(textureName);
         if (texture)
         {
             return texture->tex_id;
         }
 
-        // If not loaded and we have a fallback path, try to load it
         if (!fallbackPath.empty())
         {
             if (pResourcesManager->LoadTexture(textureName, fallbackPath))
@@ -615,10 +558,14 @@ namespace Uma_UI
             }
         }
 
-        // Texture not found and no fallback
         return 0;
     }
 
+    /*!
+     * \brief Ensures a font is loaded and ready for rendering.
+     * \param fontName Name of the font to verify.
+     * \return True if font is loaded and valid.
+     */
     bool UISystem::EnsureFontLoaded(const std::string& fontName)
     {
         if (!pGraphics || fontName.empty())
@@ -627,16 +574,7 @@ namespace Uma_UI
         }
 
         Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(fontName);
-
-        // If MeasureText returns 0, font might not be loaded
         float testWidth = pGraphics->MeasureText(*uiFont, "test", 24.0f);
-
-        // If font appears unloaded and we have a fallback path, try to load it
-        /* if (testWidth <= 0.0f && !fallbackPath.empty())
-        {
-            return pGraphics->LoadFont(fontName, fallbackPath, 48);
-        }*/
-
         return testWidth > 0.0f;
     }
 }

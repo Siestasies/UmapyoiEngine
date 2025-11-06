@@ -1,3 +1,24 @@
+/*!
+\file   Canvas.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author CSD2401 Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the Canvas UI component for root-level UI configuration.
+
+This header provides the Canvas class, which controls UI scaling behavior,
+sorting order, and reference resolution for responsive layouts.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"
@@ -5,31 +26,27 @@
 
 namespace Uma_UI
 {
-    /**
+    /*!
      * \class Canvas
-     * \brief Root component for UI rendering. Defines how UI scales and sorts.
+     * \brief Root component for UI rendering that defines scaling and sorting behavior.
      */
     class Canvas
     {
     public:
-        // Sorting
-        int sortingOrder = 0;  // Higher values render on top
-
-        // Resolution & Scaling
+        int sortingOrder = 0;
         Vec2 referenceResolution = Vec2(1920.0f, 1080.0f);
         Uma_UI::CanvasScaleMode scaleMode = Uma_UI::CanvasScaleMode::ScaleWithScreenSize;
-
-        // Match width or height when scaling
-        float matchWidthOrHeight = 0.5f;  // 0 = match width, 1 = match height, 0.5 = average
-
-        // Runtime computed scale factor
+        float matchWidthOrHeight = 0.5f;
         float scaleFactor = 1.0f;
 
-        // Serialization
+        /*!
+         * \brief Serializes canvas properties to a JSON value.
+         * \param value JSON value to populate.
+         * \param allocator JSON document allocator.
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
-
             value.AddMember("sortingOrder", sortingOrder, allocator);
 
             rapidjson::Value refRes(rapidjson::kObjectType);
@@ -41,6 +58,10 @@ namespace Uma_UI
             value.AddMember("matchWidthOrHeight", matchWidthOrHeight, allocator);
         }
 
+        /*!
+         * \brief Deserializes canvas properties from a JSON value.
+         * \param value JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& value)
         {
             sortingOrder = value["sortingOrder"].GetInt();
@@ -52,7 +73,7 @@ namespace Uma_UI
             scaleMode = static_cast<Uma_UI::CanvasScaleMode>(value["scaleMode"].GetInt());
             matchWidthOrHeight = value["matchWidthOrHeight"].GetFloat();
 
-            scaleFactor = 1.0f;  // Will be recomputed in LayoutPass
+            scaleFactor = 1.0f;
         }
     };
 }

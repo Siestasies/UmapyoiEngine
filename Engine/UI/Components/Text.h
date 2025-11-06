@@ -1,43 +1,56 @@
+/*!
+\file   Text.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author CSD2401 Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the Text UI component for rendering text.
+
+This header provides the Text class, which handles text content, font selection,
+sizing, alignment, and color properties for UI text rendering.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"
 #include "rapidjson/document.h"
-
 #include <string>
 
 namespace Uma_UI
 {
-    /**
+    /*!
      * \class Text
-     * \brief Renders text within a RectTransform bounds
+     * \brief Renders text within RectTransform bounds with styling options.
      */
     class Text
     {
     public:
-        // Content
         std::string text = "";
-        std::string fontName = "";  // Font resource name
-
-        // Styling
+        std::string fontName = "";
         float fontSize = 24.0f;
         Uma_UI::Colour colour = Uma_UI::Colour::Black();
         Uma_UI::TextAlignment alignment = Uma_UI::TextAlignment::Center;
-
         bool visible = true;
 
-        // Serialization
+        /*!
+         * \brief Serializes text properties to a JSON value.
+         * \param value JSON value to populate.
+         * \param allocator JSON document allocator.
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
-
-            value.AddMember("text",
-                rapidjson::Value(text.c_str(), allocator),
-                allocator);
-
-            value.AddMember("fontName",
-                rapidjson::Value(fontName.c_str(), allocator),
-                allocator);
-
+            value.AddMember("text", rapidjson::Value(text.c_str(), allocator), allocator);
+            value.AddMember("fontName", rapidjson::Value(fontName.c_str(), allocator), allocator);
             value.AddMember("fontSize", fontSize, allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
@@ -51,6 +64,10 @@ namespace Uma_UI
             value.AddMember("visible", visible, allocator);
         }
 
+        /*!
+         * \brief Deserializes text properties from a JSON value.
+         * \param value JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& value)
         {
             text = value["text"].GetString();

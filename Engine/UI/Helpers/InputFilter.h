@@ -1,56 +1,62 @@
+/*!
+\file   InputFilter.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author CSD2401 Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Declares the InputFilter helper class for UI input consumption queries.
+
+This header provides a static interface to check whether UI elements are
+currently consuming input, preventing game actions from triggering when
+interacting with UI.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 namespace Uma_UI
 {
-    // Forward declaration
     class UISystem;
 
-    /**
-     * \class UIInputFilter
-     * \brief Static helper to check if input should be consumed by UI layer
-     *
-     * Prevents UI clicks from triggering game actions by querying UISystem
-     * for input consumption state each frame.
+    /*!
+     * \class InputFilter
+     * \brief Static helper to check if input should be consumed by the UI layer.
      */
     class InputFilter
     {
     public:
-        /**
-         * \brief Sets the UI system to query for input consumption
-         * \param ui Pointer to active UISystem
-         *
-         * Must be called after UISystem is created and before game loop
+        /*!
+         * \brief Sets the UI system to query for input consumption.
+         * \param ui Pointer to active UISystem.
          */
         static void SetUISystem(UISystem* ui)
         {
             pUI = ui;
         }
 
-        /**
-         * \brief Checks if mouse input should be blocked from game
-         * \return true if UI is consuming mouse input this frame
-         *
-         * Returns true when:
-         * - Mouse is over a UI element
-         * - Mouse button was pressed on a UI element
-         * - UI is actively being interacted with
+        /*!
+         * \brief Checks if mouse input should be blocked from the game.
+         * \return True if UI is consuming mouse input this frame.
          */
         static bool ShouldBlockMouseInput();
 
-        /**
-         * \brief Checks if a UI element is currently hovered
-         * \return true if mouse cursor is over any UI element
-         *
-         * Useful for disabling camera rotation when mouse is over UI
+        /*!
+         * \brief Checks if a UI element is currently hovered.
+         * \return True if mouse cursor is over any UI element.
          */
         static bool IsMouseOverUI();
 
-        /**
-         * \brief Checks if keyboard input should be blocked from game
-         * \return true if UI text input is active
-         *
-         * Currently returns false. Will return true when InputField
-         * component is added and has focus.
+        /*!
+         * \brief Checks if keyboard input should be blocked from the game.
+         * \return True if UI text input is active.
          */
         static bool ShouldBlockKeyboardInput();
 
