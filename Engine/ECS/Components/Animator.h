@@ -1,3 +1,25 @@
+/*!
+\file    Animator.hpp
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+Defines Animator component for the ECS
+
+This component uses the SpriteAnimator engine class to store animation state
+and provides serialization/deserialization for loading animation clips
+from JSON scene files
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include "../../Math/Math.h"
 #include "../Systems/SpriteAnimator.h"
@@ -5,6 +27,15 @@
 
 namespace Uma_ECS
 {
+    /**
+     * \struct Animator
+     * \brief An ECS component that manages 2D sprite animation
+     *
+     * Uses SpriteAnimator class to store playback state and a
+     * collection of AnimationClips. This component is updated by the
+     * `AnimationSystem` to calculate UV coordinates, which are then used
+     * by RenderSystem
+     */
     struct Animator
     {
         Uma_Engine::SpriteAnimator animator;
@@ -15,6 +46,13 @@ namespace Uma_ECS
         Vec2 uvOffset = Vec2(0.0f, 0.0f);
         Vec2 uvSize = Vec2(1.0f, 1.0f);
 
+        /**
+         * \brief Serializes the Animator component data to a rapidjson::Value
+         * \param value The rapidjson::Value object to write data into
+         * \param allocator The rapidjson allocator used to create new JSON members
+         * \details Serializes `autoPlay`, `initialClip`, and the complete list
+         * of `AnimationClip`s stored in the `animator`
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -52,6 +90,13 @@ namespace Uma_ECS
             std::cout << "Serialized " << clips.size() << " animation clips" << std::endl;
         }
 
+        /**
+         * \brief Deserializes the Animator component data from a rapidjson::Value
+         * \param  value rapidjson::Value object to read data from
+         * \details Populates the component's data from JSON. This includes
+         * reloading all `AnimationClip`s into the `animator` and
+         * automatically playing the `initialClip` if `autoPlay` is true
+         */
         void Deserialize(const rapidjson::Value& value)
         {
             autoPlay = value["autoPlay"].GetBool();

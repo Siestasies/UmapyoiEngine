@@ -1,3 +1,28 @@
+/*!
+\file    SceneManager.cpp
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Shahir Rasid (Everything else)
+\par     E-mail: b.muhammadshahir@digipen.edu
+\par     DigiPen login: b.muhammadshahir
+
+\co-author Javier Chua Dong Qing (EditorCamera implementation)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+Implements the SceneManager class. This file contains the logic for
+initializing the manager, updating scenes based on play mode, managing
+the editor camera, handling scene (load/unload/save) operations,
+and managing the scripts.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "SceneManager.h"
 
 #include "Core/EventSystem.h"

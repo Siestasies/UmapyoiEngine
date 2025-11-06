@@ -10,25 +10,38 @@
 \par    DigiPen login: javierdongqing.chua
 
 \brief
-Implements textured sprite rendering for single and instanced drawing modes, debug
-drawing utilities, and 2D camera with zoom support. Uses GLFW for window management,
-GLAD for OpenGL loading, GLM for math operations, and STB for image loading.
+
+2D graphics rendering system
+
+GLFW for window management
+GLAD for OpenGL loading
+GLM for math operations
+
+- Single and instanced textured sprite rendering (DrawSprite, DrawSpritesInstanced).
+- Screen-space and world-space text rendering using FreeType (DrawTextScreen, DrawTextWorld)
+- Solid shape rendering (DrawFilledRect, DrawFilledCircle, DrawFilledTriangle)
+- Debug drawing (lines, rects, circles) with instanced support
+- 2D camera with position and zoom (SetCamInfo, UpdateProjectionMatrix)
+- Coordinate space conversion (ScreenToWorld, WorldToScreen)
+- Resource loading for textures (stb_image) and fonts (FreeType)
 
 Per-Frame Rendering:
 -------------------
-|   Update(dt)    | - Handle viewport resize, update projection matrix
+|    Update(dt)     | - Handle viewport resize, update projection matrix
 -------------------
 -------------------
 | ClearBackground | - Set clear color, clear screen
 -------------------
--------------------------------------------------
-|            Render Scene                       |
-|-----------------------------------------------|
-| • DrawBackground()       - Fullscreen texture |
-| • DrawSprite()           - Single sprite      |
-| • DrawSpritesInstanced() - Batch N            |
-| • DrawDebug*()           - Debug overlays     |
--------------------------------------------------
+---------------------------------------------------
+|                 Render Scene                    |
+|-------------------------------------------------|
+| • DrawBackground()         - Fullscreen texture |
+| • DrawSprite()             - Single sprite      |
+| • DrawSpritesInstanced()    - Batch sprites     |
+| • DrawTextScreen() / World() - Render text      |
+| • DrawFilledRect() / Circle() - Solid shapes    |
+| • DrawDebug() / Instanced() - Debug lines       |
+---------------------------------------------------
 Coordinate Transformation Pipeline:
 Model Space -> World Space -> View Space -> NDC -> Viewport (Screen Space)
 
@@ -1081,23 +1094,28 @@ void main()
 
     void Graphics::ShutdownInstancedRenderer()
     {
-        if (mInstanceVAO != 0) {
+        if (mInstanceVAO != 0) 
+        {
             glDeleteVertexArrays(1, &mInstanceVAO);
             mInstanceVAO = 0;
         }
-        if (mInstanceVBO != 0) {
+        if (mInstanceVBO != 0) 
+        {
             glDeleteBuffers(1, &mInstanceVBO);
             mInstanceVBO = 0;
         }
-        if (mInstanceUVVBO != 0) {
+        if (mInstanceUVVBO != 0) 
+        {
             glDeleteBuffers(1, &mInstanceUVVBO);
             mInstanceUVVBO = 0;
         }
-        if (mInstanceTintVBO != 0) {
+        if (mInstanceTintVBO != 0) 
+        {
             glDeleteBuffers(1, &mInstanceTintVBO);
             mInstanceTintVBO = 0;
         }
-        if (mInstanceShaderProgram != 0) {
+        if (mInstanceShaderProgram != 0) 
+        {
             glDeleteProgram(mInstanceShaderProgram);
             mInstanceShaderProgram = 0;
         }
@@ -1105,23 +1123,28 @@ void main()
 
     void Graphics::ShutdownDebugRenderer()
     {
-        if (mDebugLineVAO != 0) {
+        if (mDebugLineVAO != 0) 
+        {
             glDeleteVertexArrays(1, &mDebugLineVAO);
             mDebugLineVAO = 0;
         }
-        if (mDebugLineVBO != 0) {
+        if (mDebugLineVBO != 0) 
+        {
             glDeleteBuffers(1, &mDebugLineVBO);
             mDebugLineVBO = 0;
         }
-        if (mDebugLineInstanceVBO != 0) {
+        if (mDebugLineInstanceVBO != 0) 
+        {
             glDeleteBuffers(1, &mDebugLineInstanceVBO);
             mDebugLineInstanceVBO = 0;
         }
-        if (mDebugLineColorVBO != 0) {
+        if (mDebugLineColorVBO != 0) 
+        {
             glDeleteBuffers(1, &mDebugLineColorVBO);
             mDebugLineColorVBO = 0;
         }
-        if (mDebugLineShaderProgram != 0) {
+        if (mDebugLineShaderProgram != 0) 
+        {
             glDeleteProgram(mDebugLineShaderProgram);
             mDebugLineShaderProgram = 0;
         }
@@ -1131,7 +1154,8 @@ void main()
     {
         // Create text shader
         mTextShaderProgram = CreateTextShader();
-        if (!mTextShaderProgram) {
+        if (!mTextShaderProgram) 
+        {
             std::cerr << "Failed to create text shader" << std::endl;
             return false;
         }
@@ -1173,17 +1197,19 @@ void main()
 
         // Initialize FreeType
         FT_Library ft;
-        if (FT_Init_FreeType(&ft)) {
+        if (FT_Init_FreeType(&ft)) 
+        {
             std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-            return newFont; // Return empty struct
+            return newFont;
         }
 
         // Load font face
         FT_Face face;
-        if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) {
+        if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) 
+        {
             std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
             FT_Done_FreeType(ft);
-            return newFont; // Return empty struct
+            return newFont;
         }
 
         // Set font size
@@ -1203,7 +1229,6 @@ void main()
         // Load ASCII characters (32-126)
         for (unsigned char c = 32; c < 127; c++)
         {
-            // ... (FT_Load_Char) ...
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
                 std::cerr << "WARNING: Failed to load Glyph '" << c << "'" << std::endl;
@@ -1273,7 +1298,7 @@ void main()
 
             Character ch = char_it->second;
 
-            // Divide X by aspect to maintain proper character proportions
+            // Divide X by aspect
             float xpos = x + (ch.bearing.x * normalizedScale) / aspect;
             float ypos = y - ((ch.size.y - ch.bearing.y) * normalizedScale);
             float w = (ch.size.x * normalizedScale) / aspect;
@@ -1580,6 +1605,7 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mDebugLineColorVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * colors.size(), colors.data());
 
+        // Set line thickness
         glLineWidth(2.0f);
 
         // Use debug shader
