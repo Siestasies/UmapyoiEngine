@@ -10,6 +10,7 @@
 #include "imgui_internal.h"
 
 #include "Core/FilePaths.h"
+#include "Events/EditorEvents.h"
 
 #include <unordered_map>
 #include <algorithm>
@@ -159,6 +160,10 @@ namespace Uma_Engine
                 m_selectedEntity = e.entity;
                 m_HierarchyScrollToBottom = true;
             });
+        pEventSystem->Subscribe<EntityPickedEvent>([this](const EntityPickedEvent& e)
+            { 
+                m_selectedEntity = e.entity;
+            });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -175,6 +180,17 @@ namespace Uma_Engine
         if (!m_initialized)
         {
             return;
+        }
+
+        bool mouseOverUI =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered();
+
+        if (prevMouseOverUI != mouseOverUI)
+        {
+            // send event
+            prevMouseOverUI = mouseOverUI;
+            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
         static float fpsAccumulator = 0.0f;

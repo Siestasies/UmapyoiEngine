@@ -128,6 +128,10 @@ namespace Uma_ECS
                 uvOffset = animator.uvOffset;
                 uvSize = animator.uvSize;
             }
+            else
+            {
+                sr.GetUVs(uvOffset, uvSize);
+            }
 
             allSprites.push_back(LayeredSprite{
                 .info = Uma_Engine::Sprite_Info{
@@ -137,7 +141,9 @@ namespace Uma_ECS
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
                     .uvOffset = uvOffset,
-                    .uvSize = uvSize
+                    .uvSize = uvSize,
+                    .tintColor = sr.tintColor,
+                    .alpha = sr.alpha
                 },
                 .layer = sr.renderLayer,
                 .texId = sr.texture->tex_id

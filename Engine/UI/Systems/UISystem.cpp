@@ -357,8 +357,7 @@ namespace Uma_UI
         {
             pGraphics->DrawSpritesScreenInstanced(
                 key.texId,
-                sprites,
-                Vec3(key.colour.r, key.colour.g, key.colour.b)
+                sprites
             );
         }
 

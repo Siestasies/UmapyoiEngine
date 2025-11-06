@@ -27,6 +27,12 @@ namespace Uma_Engine
         m_EditorCamera.SetActive(false);
         m_UseEditorCamera = false;
 
+        auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
+        if (editorSystem)
+        {
+            editorSystem->SetGraphics(pSystemManager->GetSystem<Graphics>());
+        }
+
         // sub to events
         EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
 
@@ -156,6 +162,14 @@ namespace Uma_Engine
                 // shouldn't affect game stop?
                 m_ActiveScene->UpdateSelective(0.f);
             }
+        }
+
+        auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
+        if (editorSystem)
+        {
+            editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
+            editorSystem->SetPlayMode(playMode == PM_PLAY);
+            editorSystem->Update(dt);
         }
 
         // Update all loaded scenes if using additive loading

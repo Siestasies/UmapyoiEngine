@@ -40,6 +40,22 @@ namespace Uma_ECS
         bool UseNativeSize{};
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
+        Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);    // RGB multiplier
+        float alpha = 1.0f;                         // Opacity
+        Vec2 spriteSheetGrid{ 1.0f, 1.0f };         // Total columns and rows (default = full texture)
+        Vec2 spriteCell{ 0.0f, 0.0f };              // Which cell to render (col, row)
+
+        void GetUVs(Vec2& uvOffset, Vec2& uvSize) const
+        {
+            // Calculate size of one cell in UV space
+            uvSize.x = 1.0f / spriteSheetGrid.x;
+            uvSize.y = 1.0f / spriteSheetGrid.y;
+
+            // Calculate offset for the specific cell
+            uvOffset.x = spriteCell.x * uvSize.x;
+            uvOffset.y = spriteCell.y * uvSize.y;
+        }
+
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -54,6 +70,18 @@ namespace Uma_ECS
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
             value.AddMember("Native", UseNativeSize, allocator);
+
+            value.AddMember("gridX", spriteSheetGrid.x, allocator);
+            value.AddMember("gridY", spriteSheetGrid.y, allocator);
+            value.AddMember("cellX", spriteCell.x, allocator);
+            value.AddMember("cellY", spriteCell.y, allocator);
+
+            rapidjson::Value tintArray(rapidjson::kArrayType);
+            tintArray.PushBack(tintColor.x, allocator);
+            tintArray.PushBack(tintColor.y, allocator);
+            tintArray.PushBack(tintColor.z, allocator);
+            value.AddMember("tintColor", tintArray, allocator);
+            value.AddMember("alpha", alpha, allocator);
         }
 
         // Deserialize from JSON
@@ -69,6 +97,27 @@ namespace Uma_ECS
             flipX = value["flipX"].GetBool();
             flipY = value["flipY"].GetBool();
             UseNativeSize = value["Native"].GetBool();
+
+            spriteSheetGrid.x = value.HasMember("gridX") ? value["gridX"].GetFloat() : 1.0f;
+            spriteSheetGrid.y = value.HasMember("gridY") ? value["gridY"].GetFloat() : 1.0f;
+            spriteCell.x = value.HasMember("cellX") ? value["cellX"].GetFloat() : 0.0f;
+            spriteCell.y = value.HasMember("cellY") ? value["cellY"].GetFloat() : 0.0f;
+
+            if (value.HasMember("tintColor") && value["tintColor"].IsArray())
+            {
+                const auto& tintArray = value["tintColor"].GetArray();
+                if (tintArray.Size() >= 3)
+                {
+                    tintColor.x = tintArray[0].GetFloat();
+                    tintColor.y = tintArray[1].GetFloat();
+                    tintColor.z = tintArray[2].GetFloat();
+                }
+            }
+
+            if (value.HasMember("alpha"))
+            {
+                alpha = value["alpha"].GetFloat();
+            }
         }
     };
 }
