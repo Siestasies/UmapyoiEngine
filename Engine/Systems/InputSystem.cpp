@@ -40,6 +40,8 @@ namespace Uma_Engine
 
     double InputSystem::sMouseX = 0.0;
     double InputSystem::sMouseY = 0.0;
+    double InputSystem::sScrollX = 0.0;
+    double InputSystem::sScrollY = 0.0;
 
     InputSystem::InputSystem() : mWindow(nullptr) {}
 
@@ -68,6 +70,7 @@ namespace Uma_Engine
         glfwSetKeyCallback(mWindow, KeyCallback);
         glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
         glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
+        glfwSetScrollCallback(mWindow, MouseScrollCallback);
     }
 
     void InputSystem::Update(float dt)
@@ -184,6 +187,13 @@ namespace Uma_Engine
         }
     }
 
+    void InputSystem::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+    {
+        (void)window;
+        sScrollX = xoffset;
+        sScrollY = yoffset;
+    }
+
     void InputSystem::CursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
     {
         (void)window;
@@ -212,10 +222,22 @@ namespace Uma_Engine
     double InputSystem::GetMouseX() { return sMouseX; }
     double InputSystem::GetMouseY() { return sMouseY; }
 
+    double InputSystem::GetScrollOffsetX()
+    {
+        return sScrollX;
+    }
+
+    double InputSystem::GetScrollOffsetY()
+    {
+        return sScrollY;
+    }
+
     void InputSystem::UpdatePreviousFrameState()
     {
         sKeysPrevFrame = sKeys;
         sMouseButtonsPrevFrame = sMouseButtons;
+        sScrollX = 0.0;
+        sScrollY = 0.0;
     }
 
     const char* InputSystem::GetKeyName(int key)

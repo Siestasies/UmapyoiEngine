@@ -1,5 +1,6 @@
 #include "EditorCamera.h"
 #include "Systems/HybridInputSystem.h"
+#include "UI/Helpers/InputFilter.h"
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <cmath>
@@ -75,6 +76,16 @@ namespace Uma_Engine
         if (input->KeyDown(GLFW_KEY_E))
         {
             SetZoom(m_Zoom + m_ZoomSpeed * 5.0f * dt);
+        }
+
+
+        float scrollDelta = static_cast<float>(input->GetScrollOffsetY());
+        if (std::abs(scrollDelta) > 0.01f)
+        {
+            if (!Uma_UI::InputFilter::IsMouseOverUI())
+            {
+                SetZoom(m_Zoom + scrollDelta * m_ZoomSpeed);
+            }
         }
     }
 
