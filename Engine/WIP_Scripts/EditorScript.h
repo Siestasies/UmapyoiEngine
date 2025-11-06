@@ -405,19 +405,20 @@ namespace Uma_Engine
 
                 GetCoordinator().AddComponent(
                     kappa,
+                    Transform{
+                      .name = std::string("kappa statue"),
+                      .position = Vec2(30, 35),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(3.f, 3.f)
+                    });
+
+                GetCoordinator().AddComponent(
+                    kappa,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
                       .accel_strength = 200,
                       .fric_coeff = 100
-                    });
-
-                GetCoordinator().AddComponent(
-                    kappa,
-                    Transform{
-                      .position = Vec2(30, 35),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(3.f, 3.f)
                     });
 
                 std::string texName = "kappa_statue";
@@ -432,33 +433,33 @@ namespace Uma_Engine
                       .texture = GetResources()->GetTexture(texName),
                     });
 
-                LuaScript kappaScriptComponent;
-                {
-                    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+                //LuaScript kappaScriptComponent;
+                //{
+                //    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
 
-                    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                        .name = "speed",
-                        .value = 100.0f,
-                        .type = Uma_ECS::LuaVarType::T_FLOAT,
-                        .min = 0.0f,
-                        .max = 500.0f,
-                        .isSlider = true
-                        });
+                //    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                //        .name = "speed",
+                //        .value = 100.0f,
+                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
+                //        .min = 0.0f,
+                //        .max = 500.0f,
+                //        .isSlider = true
+                //        });
 
-                    // this works just that i didnt want to add this now
-                    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+                //    // this works just that i didnt want to add this now
+                //    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
 
-                    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                       .name = "speed",
-                       .value = 100.0f,
-                       .type = Uma_ECS::LuaVarType::T_FLOAT,
-                       .min = 0.0f,
-                       .max = 500.0f,
-                       .isSlider = true
-                        });*/
+                //    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+                //       .name = "speed",
+                //       .value = 100.0f,
+                //       .type = Uma_ECS::LuaVarType::T_FLOAT,
+                //       .min = 0.0f,
+                //       .max = 500.0f,
+                //       .isSlider = true
+                //        });*/
 
-                    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
-                }
+                //    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
+                //}
             }
 
             Entity wall;
@@ -467,19 +468,20 @@ namespace Uma_Engine
 
                 GetCoordinator().AddComponent(
                     wall,
+                    Transform{
+                      .name = std::string("wall"),
+                      .position = Vec2(-20, 0),
+                      .rotation = Vec2(0, 0),
+                      .scale = Vec2(1.f, 1.f)
+                    });
+
+                GetCoordinator().AddComponent(
+                    wall,
                     RigidBody{
                       .velocity = Vec2(0.0f, 0.0f),
                       .acceleration = Vec2(0.0f, 0.0f),
                       .accel_strength = 200,
                       .fric_coeff = 100
-                    });
-
-                GetCoordinator().AddComponent(
-                    wall,
-                    Transform{
-                      .position = Vec2(-20, 0),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(1.f, 1.f)
                     });
 
                 std::string texName = "wall_top";
@@ -514,6 +516,7 @@ namespace Uma_Engine
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
                 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+                    tf.name = "wall btm";
                     tf.position = Vec2(static_cast<float>(20 + (i * 5)), 0.f);
                 
                     Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
@@ -536,7 +539,7 @@ namespace Uma_Engine
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-
+                    tf.name = "wall right";
                     tf.position = Vec2(static_cast<float>(15 + (6 * 5)), static_cast<float>(0 + (i * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
@@ -551,7 +554,7 @@ namespace Uma_Engine
                     Entity tmp = GetCoordinator().DuplicateEntity(wall);
 
                     Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-
+                    tf.name = "wall top";
                     tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(15 + (4 * 5)) );
 
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
@@ -580,6 +583,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     floor,
                     Transform{
+                      .name = std::string("floor"),
                       .position = Vec2(20, 7.5),
                       .rotation = Vec2(0, 0),
                       .scale = Vec2(2.f, 2.f)
@@ -633,6 +637,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     enemy,
                     Transform{
+                      .name = std::string("bird enemy"),
                       .position = Vec2(-10, 0),
                       .rotation = Vec2(0, 0),
                       .scale = Vec2(2.f, 2.f)
@@ -710,7 +715,7 @@ namespace Uma_Engine
 
                     enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
                        .name = "name",
-                       .value = "bird",
+                       .value = "bird child",
                        .type = Uma_ECS::LuaVarType::T_STRING,
                        .isSlider = false
                         });
@@ -733,6 +738,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     en,
                     Transform{
+                      .name = std::string("bird enemy child"),
                       .position = Vec2(-2, 0),
                       .rotation = Vec2(0, 0),
                       .scale = Vec2(0.5f, 0.5f)
@@ -776,6 +782,7 @@ namespace Uma_Engine
                     m_Scene->m_player,
                     Transform
                     {
+                        .name = std::string("player"),
                         .position = Vec2(0.f, 0.f),
                         .rotation = Vec2(0.f, 0.f),
                         .scale = Vec2(1,1),
@@ -843,6 +850,7 @@ namespace Uma_Engine
                     m_Scene->m_cam,
                     Transform
                     {
+                        .name = std::string("cam"),
                         .position = Vec2(400.0f, 300.0f),
                         .rotation = Vec2(0,0),
                         .scale = Vec2(1,1),

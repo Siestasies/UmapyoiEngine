@@ -856,10 +856,9 @@ namespace Uma_Engine
 
     std::string ImguiManager::GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator)
     {
-        std::string name = "Entity " + std::to_string(entity);
 
         // Add component indicators
-        if (coordinator.GetComponentArray<Uma_ECS::Player>().Has(entity))
+        /*if (coordinator.GetComponentArray<Uma_ECS::Player>().Has(entity))
             name = "[Player] " + name;
         else if (coordinator.GetComponentArray<Uma_ECS::Enemy>().Has(entity))
             name = "[Enemy] " + name;
@@ -870,6 +869,15 @@ namespace Uma_Engine
             auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
             if (!sprite.textureName.empty())
                 name = "[" + sprite.textureName + "] " + name;
+        }*/
+
+        auto& tfArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+
+        std::string name = "Entity " + std::to_string(entity);
+        if (tfArray.Has(entity))
+        {
+            const auto& tf = tfArray.GetData(entity);
+            name = tf.name;
         }
 
         return name;
@@ -1579,8 +1587,18 @@ namespace Uma_Engine
         ImGui::Separator();
 
         // Entity Name Field
-        std::string entityName = GetEntityDisplayName(m_selectedEntity, coordinator);
-        ImGui::Text("Name: %s", entityName.c_str());
+        //std::string entityName = GetEntityDisplayName(m_selectedEntity, coordinator);
+        //ImGui::Text("Name: %s", entityName.c_str());
+
+        auto& tf = coordinator.GetComponent<Uma_ECS::Transform>(m_selectedEntity);
+
+        static char textureBuffer[256];
+        strncpy(textureBuffer, tf.name.c_str(), 255);
+        textureBuffer[255] = '\0';
+        if (ImGui::InputText("##name", textureBuffer, 256))
+        {
+            tf.name = textureBuffer;
+        }
 
         ImGui::Separator();
         ImGui::Spacing();
