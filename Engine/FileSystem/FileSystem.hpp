@@ -125,6 +125,11 @@ namespace Uma_Engine
         void setEventSystem(EventSystem* es)
         {
             pEventSystem = es;
+
+            pEventSystem->Subscribe<RefreshDirectoryRequest>(
+              [this](const RefreshDirectoryRequest& e) {
+                    RefreshDirectory();
+              });
         }
 
     private:

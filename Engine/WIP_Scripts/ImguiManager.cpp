@@ -819,6 +819,7 @@ namespace Uma_Engine
             if (ImGui::MenuItem("Save as Prefab"))
             {
                 pEventSystem->Emit<SavePrefabRequestEvent>(entityName, entity);
+                pEventSystem->Emit<RefreshDirectoryRequest>();
             }
 
             ImGui::EndPopup();

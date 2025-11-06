@@ -227,4 +227,10 @@ namespace Uma_Engine
         std::vector<std::string> scenePaths;
         int activeSceneIndex;
     };
+
+    class RefreshDirectoryRequest : public Event
+    {
+    public:
+        RefreshDirectoryRequest() { priority = Priority::High; }
+    };
 }
