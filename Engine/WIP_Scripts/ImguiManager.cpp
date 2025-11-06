@@ -366,9 +366,12 @@ namespace Uma_Engine
             // Stop Button
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<StopSceneRequest>();
-                m_playState = PlayState::Stopped;
-                pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                if (m_playState != PlayState::Stopped)
+                {
+                    pEventSystem->Emit<StopSceneRequest>();
+                    m_playState = PlayState::Stopped;
+                    pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                }
             }
 
             // Show current state text on the right

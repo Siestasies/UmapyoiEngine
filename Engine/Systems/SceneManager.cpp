@@ -39,7 +39,7 @@ namespace Uma_Engine
         eventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
-                CreateTempScene(m_ActiveScene->GetName());
+                SaveScene(m_ActiveScene->GetName());
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
@@ -217,13 +217,6 @@ namespace Uma_Engine
         CreateScene(filename, filename);
         AttachScriptToScene(filename, "EditorBehaviour");
         LoadScene(filename);
-    }
-
-    void SceneManager::CreateTempScene(std::string const& filename)
-    {
-        CreateScene("TEMP-" + filename, "TEMP-" + filename);
-        AttachScriptToScene("TEMP-" + filename, "EditorBehaviour");
-        LoadScene("TEMP-" + filename);
     }
 
     std::shared_ptr<Scene> SceneManager::CreateScene(const std::string& name, const std::string& filepath)

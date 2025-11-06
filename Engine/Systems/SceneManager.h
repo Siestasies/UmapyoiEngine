@@ -49,7 +49,6 @@ namespace Uma_Engine
         // Create a new empty scene
         std::shared_ptr<Scene> CreateScene(const std::string& name, const std::string& filepath = "");
         void CreateNewScene();
-        void CreateTempScene(std::string const& filename);
         // Load scene synchronously (blocks until loaded)
         std::shared_ptr<Scene> LoadScene(const std::string& name, bool additive = false);
         // Load scene asynchronously (non-blocking)
