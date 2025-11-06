@@ -149,6 +149,10 @@ namespace Uma_Engine
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         pEventSystem->Subscribe<IMGUIStopRequest>([this](const IMGUIStopRequest& e)
              { m_playState = PlayState::Stopped; });
+        pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
+            { 
+                m_selectedEntity = e.entity;
+            });
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
@@ -786,13 +790,14 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Duplicate"))
             {
-                Uma_ECS::Entity duplicate = coordinator.DuplicateEntity(entity);
+                pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
+                //Uma_ECS::Entity duplicate = coordinator.DuplicateEntity(entity);
 
-                // If the entity had a parent, set the duplicate to have the same parent
-                if (transform.parent.has_value())
-                {
-                    coordinator.SetParent(duplicate, transform.parent.value());
-                }
+                //// If the entity had a parent, set the duplicate to have the same parent
+                //if (transform.parent.has_value())
+                //{
+                //    coordinator.SetParent(duplicate, transform.parent.value());
+                //}
             }
 
             ImGui::Separator();
@@ -1429,7 +1434,7 @@ namespace Uma_Engine
 
                         if (ImGui::Button("Remove Script", ImVec2(-1, 0)))
                         {
-                            luaScript.scripts.erase(luaScript.scripts.begin() + i);
+                            luaScript.RemoveScript(i);
                             ImGui::TreePop();
                             ImGui::PopID();
                             break;

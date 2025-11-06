@@ -219,11 +219,20 @@ namespace Uma_Engine
                         Entity en = GetCoordinator().CreateEntity();
                         GetCoordinator().AddComponent(en, Uma_ECS::Transform
                             {
+                                .name = std::string("new entity"),
                                 .position = Vec2(0.f, 0.f),
                                 .rotation = Vec2(0.f, 0.f),
                                 .scale = Vec2(1, 1),
                             });
                         
+                    }
+                ));
+
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<DuplicateEntityRequestEvent>(
+                    [this, &eventSystem](const DuplicateEntityRequestEvent& e) 
+                    {
+                        DuplicateGameObject(e.entity);
                     }
                 ));
         }
@@ -240,6 +249,12 @@ namespace Uma_Engine
             m_EventListeners.clear();
 
             std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
+        }
+
+        void DuplicateGameObject(Entity entity)
+        {
+            Entity newEntity = GetCoordinator().DuplicateEntity(entity);
+            GetEventSystem()->Emit<ReturnDuplicatedRequestEvent>(newEntity);
         }
 
         void HandleEditorInput()
