@@ -39,6 +39,7 @@ namespace Uma_Engine
         eventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
+                CreateTempScene(m_ActiveScene->GetName());
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
@@ -53,6 +54,13 @@ namespace Uma_Engine
         eventSystem->Subscribe<StopSceneRequest>(
             [&](const StopSceneRequest& e) {
                 (void)e;
+                if (m_ActiveScene->GetName().find("TEMP") != std::string::npos)
+                {
+                    std::string oldFilename = m_ActiveScene->GetName();
+                    oldFilename.erase(0, 5);
+                    RemoveScene(m_ActiveScene->GetName()); // will load another scene
+                    LoadScene(oldFilename);
+                }
                 playMode = PLAYMODE::PM_STOP;
             }
         );
@@ -158,6 +166,8 @@ namespace Uma_Engine
             }
             else
             {
+                std::filesystem::remove("Assets/Scenes/" + m_ActiveScene->GetName());
+
                 // things that need to be constantly updated no matter what
                 // shouldn't affect game stop?
                 m_ActiveScene->UpdateSelective(0.f);
@@ -199,7 +209,6 @@ namespace Uma_Engine
     {
         std::string filename;
 
-        // Start with Scene<sceneNo>
         do {
             filename = "Scene" + std::to_string(sceneNo) + ".scn";
             ++sceneNo;
@@ -208,6 +217,13 @@ namespace Uma_Engine
         CreateScene(filename, filename);
         AttachScriptToScene(filename, "EditorBehaviour");
         LoadScene(filename);
+    }
+
+    void SceneManager::CreateTempScene(std::string const& filename)
+    {
+        CreateScene("TEMP-" + filename, "TEMP-" + filename);
+        AttachScriptToScene("TEMP-" + filename, "EditorBehaviour");
+        LoadScene("TEMP-" + filename);
     }
 
     std::shared_ptr<Scene> SceneManager::CreateScene(const std::string& name, const std::string& filepath)
@@ -255,8 +271,6 @@ namespace Uma_Engine
         }
 
         // call for stop mode
-        EventSystem* esHandler = pSystemManager->GetSystem<EventSystem>();
-        esHandler->Emit<IMGUIStopRequest>();
 
         auto scene = m_Scenes[name];
 
@@ -276,6 +290,12 @@ namespace Uma_Engine
         if (!additive || !m_ActiveScene)
         {
             m_ActiveScene = scene;
+        }
+
+        if (m_ActiveScene->GetName().find("TEMP") == std::string::npos)
+        {
+            EventSystem* esHandler = pSystemManager->GetSystem<EventSystem>();
+            esHandler->Emit<IMGUIStopRequest>();
         }
 
         // passing message using event system
