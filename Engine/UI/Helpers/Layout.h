@@ -5,7 +5,7 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author CSD2401 Jedrek Lee Jing Wei (100%)
+\author Jedrek Lee Jing Wei (100%)
 \par    E-mail: jedrekjingwei.lee@digipen.edu
 \par    DigiPen login: jedrekjingwei.lee
 
