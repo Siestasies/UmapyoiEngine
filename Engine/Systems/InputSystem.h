@@ -103,6 +103,14 @@ namespace Uma_Engine
         static void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
 
         /**
+         * \brief GLFW callback for mouse scroll wheel events
+         * \param window GLFW window
+         * \param xoffset Scroll offset on the x-axis
+         * \param yoffset Scroll offset on the y-axis
+         */
+        static void MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+
+        /**
          * \brief Updates the previous frame state for input detection
          */
         static void UpdatePreviousFrameState();
@@ -177,6 +185,18 @@ namespace Uma_Engine
         static double GetMouseY();
 
         /**
+         * \brief Gets the mouse scroll offset on the x-axis for the current frame
+         * \return x-axis scroll offset
+         */
+        static double GetScrollOffsetX();
+
+        /**
+         * \brief Gets the mouse scroll offset on the y-axis for the current frame
+         * \return y-axis scroll offset
+         */
+        static double GetScrollOffsetY();
+
+        /**
          * \brief Gets the key name
          * \return y-coordinate of the mouse cursor
          */
@@ -189,6 +209,7 @@ namespace Uma_Engine
         static std::vector<bool> sMouseButtons;
         static std::vector<bool> sMouseButtonsPrevFrame;
         static double sMouseX, sMouseY;
+        static double sScrollX, sScrollY;
 
         // Instance data
         GLFWwindow* mWindow;

@@ -255,6 +255,30 @@ namespace Uma_Engine
 #endif
                 eventSystem->Emit<MouseMoveEvent>(currMouseX, currMouseY, deltaX, deltaY);
             }
+            // ================================================================
+            // NORMAL PRIORITY: Mouse scroll (blocked if over UI)
+            // ================================================================
+            // Poll the values from the base InputSystem
+            double scrollX = GetScrollOffsetX();
+            double scrollY = GetScrollOffsetY();
+
+            if (std::abs(scrollX) > 0.0001 || std::abs(scrollY) > 0.0001)
+            {
+                // Block scroll events when over UI (prevents camera zoom, etc.)
+                if (Uma_UI::InputFilter::IsMouseOverUI())
+                {
+#ifdef   _DEBUG_LOG
+                    std::cout << "HybridInputSystem: Mouse scroll BLOCKED - mouse is over UI" << std::endl;
+#endif
+                }
+                else 
+                { 
+#ifdef   _DEBUG_LOG  
+                    std::cout << "HybridInputSystem: Mouse scrolled (" << scrollX << ", " << scrollY << ") - EMITTING to queue (Normal priority)" << std::endl; 
+#endif
+                    eventSystem->Emit<MouseScrollEvent>(scrollX, scrollY);
+                } 
+            }
         }
     private:
         EventSystem* eventSystem = nullptr;
@@ -313,6 +337,13 @@ namespace Uma_Engine
 #ifdef _DEBUG_LOG
                 std::cout << "TestEventListener received MouseMove: (" << event.x << ", " << event.y
                     << ") delta=(" << event.deltaX << ", " << event.deltaY << ")\n";
+#else
+                (void)event;
+#endif
+                });
+            SubscribeToEvent<MouseScrollEvent>([this](const MouseScrollEvent& event) {
+#ifdef _DEBUG_LOG
+                std::cout << "TestEventListener received MouseScroll: (" << event.xOffset << ", " << event.yOffset << ")\n";
 #else
                 (void)event;
 #endif
