@@ -532,6 +532,10 @@ namespace Uma_Engine
         {
             pEventSystem->Emit<ShowEntityInVPRequestEvent>();
         }
+        if (ImGui::Button("Create temp UI", { 160, 50 }))
+        {
+            pEventSystem->Emit<CreateUIRequestEvent>();
+        }
 
         ImGui::End();
     }

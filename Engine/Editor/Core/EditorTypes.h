@@ -39,7 +39,7 @@ namespace Uma_Engine
     {
         // === Picking Settings ===
         float gamePickRadius = 10.0f;  // Pixels around cursor to consider for game entities
-        bool pickUIEntities = true;
+        bool pickUIEntities = false;
         bool pickGameEntities = true;
 
         // === Gizmo Appearance ===

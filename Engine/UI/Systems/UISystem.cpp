@@ -341,6 +341,8 @@ namespace Uma_UI
             sprite.rot_speed = 0.0f;
             sprite.uvOffset = Vec2(0.0f, 0.0f);
             sprite.uvSize = Vec2(1.0f, 1.0f);
+            sprite.tintColor = image.colour.ToVec3();
+            sprite.alpha = image.colour.a;
             sprite.tex_id = texId;
 
             spritesWithColours.push_back({sprite, image.colour});

@@ -31,6 +31,12 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    class CreateUIRequestEvent : public Event
+    {
+    public:
+        CreateUIRequestEvent() { priority = Priority::Normal; }
+    };
+
     class SpawnEntityRequestEvent : public Event
     {
     public:
