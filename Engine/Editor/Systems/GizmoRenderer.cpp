@@ -75,31 +75,31 @@ namespace Uma_Engine
             Vec2 ndcCenter(rectTransform.computedRect.x, rectTransform.computedRect.y);
             Vec2 ndcSize(rectTransform.computedRect.width, rectTransform.computedRect.height);
 
-            // Convert NDC center to screen
+            float screenHalfWidth = ndcSize.x * screenWidth * 0.5f;
+            float screenHalfHeight = ndcSize.y * screenHeight * 0.5f;
+
+            // Convert NDC center to screen coordinates
             Vec2 screenCenter = Uma_UI::NDCToScreen(
                 ndcCenter.x, ndcCenter.y,
                 static_cast<float>(screenWidth),
                 static_cast<float>(screenHeight)
             );
 
-            // Convert screen to world for debug drawing
-            Vec2 worldCenter = pGraphics->ScreenToWorld(screenCenter);
+            // Get world space corners for proper sizing
+            Vec2 screenTopLeft = screenCenter - Vec2(screenHalfWidth, screenHalfHeight);
+            Vec2 screenBottomRight = screenCenter + Vec2(screenHalfWidth, screenHalfHeight);
 
-            // Convert NDC size to world size
-            Vec2 screenSize(
-                ndcSize.x * 0.5f * screenWidth,
-                ndcSize.y * 0.5f * screenHeight
-            );
+            Vec2 worldTopLeft = pGraphics->ScreenToWorld(screenTopLeft);
+            Vec2 worldBottomRight = pGraphics->ScreenToWorld(screenBottomRight);
 
-            // Approximate world size by converting corners
-            Vec2 worldCorner1 = pGraphics->ScreenToWorld(screenCenter + screenSize * 0.5f);
-            Vec2 worldCorner2 = pGraphics->ScreenToWorld(screenCenter - screenSize * 0.5f);
-            Vec2 worldSize = worldCorner1 - worldCorner2;
+            Vec2 worldCenter = (worldTopLeft + worldBottomRight) * 0.5f;
+            Vec2 worldSize = worldBottomRight - worldTopLeft;
             worldSize.x = std::abs(worldSize.x);
             worldSize.y = std::abs(worldSize.y);
 
             Graphics::AddDebugRect(worldCenter, worldSize,
                 config.colorSelected.x, config.colorSelected.y, config.colorSelected.z, lines);
+
         }
 
         // Draw all lines at once

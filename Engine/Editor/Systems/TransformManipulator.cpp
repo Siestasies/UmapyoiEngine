@@ -173,10 +173,52 @@ namespace Uma_Engine
             // Convert screen delta to NDC delta
             Vec2 ndcDelta(
                 screenDelta.x / (screenWidth * 0.5f),
-                screenDelta.y / (screenHeight * 0.5f)
+                -screenDelta.y / (screenHeight * 0.5f)
             );
 
             rectTransform.anchoredPosition = rectTransform.anchoredPosition + ndcDelta;
+
+            // FIX: Immediately update computedRect for visual feedback
+            // This ensures Text and Image components see the new position right away
+
+            // Get parent rect for computation
+            Uma_UI::Rect parentRect = Uma_UI::GetScreenRect(); // Default to screen
+            if (rectTransform.parent != static_cast<Uma_ECS::Entity>(-1))
+            {
+                auto& parentRectTransform = rectTransformArray.GetData(rectTransform.parent);
+                parentRect = parentRectTransform.computedRect;
+            }
+
+            // Check for canvas scale
+            float canvasScale = 1.0f;
+            auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
+            // Find canvas in hierarchy (traverse up parents)
+            Uma_ECS::Entity current = entity;
+            while (current != static_cast<Uma_ECS::Entity>(-1))
+            {
+                if (canvasArray.Has(current))
+                {
+                    canvasScale = canvasArray.GetData(current).scaleFactor;
+                    break;
+                }
+                if (rectTransformArray.Has(current))
+                {
+                    current = rectTransformArray.GetData(current).parent;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            rectTransform.computedRect = Uma_UI::ComputeRectInNDC(
+                rectTransform,
+                parentRect,
+                canvasScale,
+                static_cast<float>(screenWidth),
+                static_cast<float>(screenHeight)
+            );
+
             rectTransform.isDirty = true;
         }
     }

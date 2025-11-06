@@ -2,6 +2,7 @@
 #include "../../ECS/Components/Transform.h"
 #include "../../ECS/Components/Sprite.h"
 #include "../../UI/Components/RectTransform.h"
+#include "../../UI/Components/Canvas.h"
 #include "../../UI/Helpers/Input.h"
 
 #include <cmath>
@@ -127,12 +128,17 @@ namespace Uma_Engine
             return static_cast<Uma_ECS::Entity>(-1);
 
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+        auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
 
         // Check all UI entities
         // TODO: Sort by render order/depth for proper front-to-back checking
         for (size_t i = 0; i < rectTransformArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = rectTransformArray.GetEntity(i);
+
+            if (canvasArray.Has(entity))
+                continue;
+
             const auto& rectTransform = rectTransformArray.GetComponentAt(i);
 
             // computedRect is Vec4(centerX, centerY, width, height) in NDC
