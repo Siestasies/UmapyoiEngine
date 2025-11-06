@@ -89,7 +89,7 @@ namespace Uma_Engine
                 const auto& sprite = spriteArray.GetData(entity);
 
                 // Use actual texture dimensions
-                if (sprite.texture->tex_id != 0)
+                if (sprite.texture)
                 {
                     size.x = static_cast<float>(sprite.texture->tex_size.x) / static_cast<float>(sprite.texture->pixelsPerUnit);
                     size.y = static_cast<float>(sprite.texture->tex_size.y) / static_cast<float>(sprite.texture->pixelsPerUnit);

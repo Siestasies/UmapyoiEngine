@@ -2,6 +2,7 @@
 
 #include "Core/EventSystem.h"
 #include "../Events/IMGUIEvents.h"
+#include "../Events/EditorEvents.h"
 
 #include <algorithm>
 
@@ -90,6 +91,12 @@ namespace Uma_Engine
                 m_UseEditorCamera = false;
             }
         );
+
+        eventSystem->Subscribe<UpdateMouseOverUIEvent>(
+            [this](const UpdateMouseOverUIEvent& e) {
+                m_isMouseOverUI = e.isFocus;
+            }
+        );
     }
 
     void SceneManager::Update(float dt)
@@ -138,7 +145,7 @@ namespace Uma_Engine
             }
 
             // Update editor camera if active
-            if (m_UseEditorCamera)
+            if (m_UseEditorCamera && !m_isMouseOverUI)
             {
                 // Get input and graphics from scene
                 auto* input = m_ActiveScene->GetInputSystem();
@@ -166,7 +173,7 @@ namespace Uma_Engine
             }
             else
             {
-                std::filesystem::remove("Assets/Scenes/" + m_ActiveScene->GetName());
+                //std::filesystem::remove("Assets/Scenes/" + m_ActiveScene->GetName());
 
                 // things that need to be constantly updated no matter what
                 // shouldn't affect game stop?

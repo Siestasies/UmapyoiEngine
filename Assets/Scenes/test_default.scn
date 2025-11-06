@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -52,6 +52,10 @@
             {
                 "name": "floor_tatami",
                 "path": "Assets/floor_tatami.png"
+            },
+            {
+                "name": "player_new",
+                "path": "Assets/Player Spritesheet.png"
             }
         ],
         "fonts": [
@@ -63,20 +67,20 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
     "entities": [
         {
-            "id": 118,
+            "id": 0,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "kappa statue",
@@ -99,7 +103,17 @@
                     "layer": 8,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -116,7 +130,7 @@
             }
         },
         {
-            "id": 120,
+            "id": 1,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -139,7 +153,17 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -156,7 +180,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -178,7 +202,7 @@
             }
         },
         {
-            "id": 121,
+            "id": 2,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -201,7 +225,17 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -218,7 +252,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -240,7 +274,7 @@
             }
         },
         {
-            "id": 122,
+            "id": 3,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -263,7 +297,17 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -280,7 +324,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -302,7 +346,7 @@
             }
         },
         {
-            "id": 123,
+            "id": 4,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -325,7 +369,17 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -342,7 +396,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -364,7 +418,7 @@
             }
         },
         {
-            "id": 124,
+            "id": 5,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -387,7 +441,17 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -404,7 +468,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -426,7 +490,7 @@
             }
         },
         {
-            "id": 125,
+            "id": 6,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -449,7 +513,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -466,7 +540,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -488,7 +562,7 @@
             }
         },
         {
-            "id": 126,
+            "id": 7,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -511,7 +585,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -528,7 +612,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -550,7 +634,7 @@
             }
         },
         {
-            "id": 127,
+            "id": 8,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -573,7 +657,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -590,7 +684,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -612,7 +706,7 @@
             }
         },
         {
-            "id": 128,
+            "id": 9,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -635,7 +729,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -652,7 +756,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -674,7 +778,7 @@
             }
         },
         {
-            "id": 129,
+            "id": 10,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -697,7 +801,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -736,7 +850,7 @@
             }
         },
         {
-            "id": 130,
+            "id": 11,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -759,7 +873,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -798,7 +922,7 @@
             }
         },
         {
-            "id": 131,
+            "id": 12,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -821,7 +945,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -860,7 +994,7 @@
             }
         },
         {
-            "id": 132,
+            "id": 13,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -883,7 +1017,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -922,7 +1066,7 @@
             }
         },
         {
-            "id": 133,
+            "id": 14,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -945,7 +1089,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -984,7 +1138,7 @@
             }
         },
         {
-            "id": 134,
+            "id": 15,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1007,7 +1161,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1046,7 +1210,7 @@
             }
         },
         {
-            "id": 135,
+            "id": 16,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1069,7 +1233,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1108,7 +1282,7 @@
             }
         },
         {
-            "id": 136,
+            "id": 17,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1131,7 +1305,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1170,7 +1354,7 @@
             }
         },
         {
-            "id": 137,
+            "id": 18,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1193,7 +1377,17 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1232,7 +1426,7 @@
             }
         },
         {
-            "id": 138,
+            "id": 19,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1255,7 +1449,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1272,7 +1476,7 @@
             }
         },
         {
-            "id": 139,
+            "id": 20,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1295,7 +1499,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1312,7 +1526,7 @@
             }
         },
         {
-            "id": 140,
+            "id": 21,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1335,7 +1549,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1352,7 +1576,7 @@
             }
         },
         {
-            "id": 141,
+            "id": 22,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1375,7 +1599,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1392,7 +1626,7 @@
             }
         },
         {
-            "id": 142,
+            "id": 23,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1415,7 +1649,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1432,7 +1676,7 @@
             }
         },
         {
-            "id": 143,
+            "id": 24,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1455,7 +1699,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1472,7 +1726,7 @@
             }
         },
         {
-            "id": 144,
+            "id": 25,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1495,7 +1749,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1512,7 +1776,7 @@
             }
         },
         {
-            "id": 145,
+            "id": 26,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1535,7 +1799,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1552,7 +1826,7 @@
             }
         },
         {
-            "id": 146,
+            "id": 27,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1575,7 +1849,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1592,7 +1876,7 @@
             }
         },
         {
-            "id": 147,
+            "id": 28,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1615,7 +1899,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1632,7 +1926,7 @@
             }
         },
         {
-            "id": 148,
+            "id": 29,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1655,7 +1949,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1672,7 +1976,7 @@
             }
         },
         {
-            "id": 149,
+            "id": 30,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1695,7 +1999,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1712,7 +2026,7 @@
             }
         },
         {
-            "id": 150,
+            "id": 31,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1735,7 +2049,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1752,7 +2076,7 @@
             }
         },
         {
-            "id": 151,
+            "id": 32,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1775,7 +2099,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1792,7 +2126,7 @@
             }
         },
         {
-            "id": 152,
+            "id": 33,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1815,7 +2149,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1832,7 +2176,7 @@
             }
         },
         {
-            "id": 153,
+            "id": 34,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1855,7 +2199,17 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -1872,7 +2226,7 @@
             }
         },
         {
-            "id": 154,
+            "id": 35,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
@@ -1895,7 +2249,17 @@
                     "layer": 16,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -2040,7 +2404,7 @@
             }
         },
         {
-            "id": 155,
+            "id": 36,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy child",
@@ -2056,14 +2420,24 @@
                         "x": 0.5,
                         "y": 0.5
                     },
-                    "parent": 154
+                    "parent": 35
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
                     "layer": 16,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -2102,21 +2476,21 @@
             }
         },
         {
-            "id": 156,
+            "id": 37,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -4.149,
+                        "y": 3.15
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 1.0,
-                        "y": 1.0
+                        "x": 0.355,
+                        "y": 0.355
                     },
                     "parent": -1
                 },
@@ -2124,11 +2498,21 @@
                     "mSpeed": 1.0
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "player",
+                    "textureName": "player_new",
                     "layer": 32,
                     "flipX": false,
                     "flipY": false,
-                    "Native": true
+                    "Native": true,
+                    "gridX": 10.0,
+                    "gridY": 9.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -2145,31 +2529,31 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
-                                "x": 0.0,
-                                "y": 0.0
+                                "x": 0.6,
+                                "y": -8.8
                             },
                             "size": {
-                                "x": 0.0,
-                                "y": 0.0
+                                "x": 8.8,
+                                "y": 25.0
                             },
                             "purpose": 0,
                             "layer": 2,
                             "colliderMask": 20,
                             "isActive": true,
-                            "autoFitToSprite": true
+                            "autoFitToSprite": false
                         },
                         {
                             "offset": {
-                                "x": 0.0,
-                                "y": -2.75
+                                "x": 0.5,
+                                "y": -19.85
                             },
                             "size": {
-                                "x": 7.0,
-                                "y": 2.0
+                                "x": 9.0,
+                                "y": 3.2
                             },
                             "purpose": 0,
                             "layer": 2,
@@ -2179,17 +2563,32 @@
                         }
                     ]
                 },
+                "struct Uma_ECS::Animator": {
+                    "autoPlay": true,
+                    "initialClip": "idle",
+                    "clips": [
+                        {
+                            "name": "idle",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 0,
+                            "frameCount": 10,
+                            "speed": 12.0,
+                            "loop": true
+                        }
+                    ]
+                },
                 "struct Uma_ECS::AudioListener": null
             }
         },
         {
-            "id": 157,
+            "id": 38,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -4.149,
+                        "y": 3.15
                     },
                     "rotation": {
                         "x": 0.0,

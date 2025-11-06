@@ -124,5 +124,6 @@ namespace Uma_Engine
         // Editor camera
         Uma_Engine::EditorCamera m_EditorCamera;
         bool m_UseEditorCamera = false;
+        bool m_isMouseOverUI = false;
     };
 }

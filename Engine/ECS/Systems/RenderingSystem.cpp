@@ -63,6 +63,8 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
+        
+        auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         // one camera for now
         if (camArray.Size() > 0)
@@ -74,7 +76,7 @@ namespace Uma_ECS
             // Only update graphics camera if not using editor camera
             if (mUpdateCamera)
             {
-                pGraphics->SetCamInfo(cam_tf.position, 10.f);
+                pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom * 10.f);
             }
         }
 
@@ -121,6 +123,13 @@ namespace Uma_ECS
             else
             {
                 spriteScale = tf.worldScale;
+            }
+
+            if (rbArray.Has(entity))
+            {
+                auto& rb = rbArray.GetData(entity);
+                if (rb.velocity.x < 0) sr.flipX = true;
+                if (rb.velocity.x > 0) sr.flipX = false;
             }
 
             if (sr.flipX)

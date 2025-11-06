@@ -254,30 +254,6 @@ namespace Uma_Engine
         {
             auto input = GetInput();
 
-            // Save to file
-            if (input->KeyPressed(GLFW_KEY_1))
-            {
-                SaveScene();
-            }
-
-            // Load from file
-            if (input->KeyPressed(GLFW_KEY_2))
-            {
-                ReLoadScene();
-            }
-
-            // Reset scene
-            if (input->KeyPressed(GLFW_KEY_3))
-            {
-                ResetScene();
-            }
-
-            // Spawn default entities
-            if (input->KeyPressed(GLFW_KEY_4))
-            {
-                GetCoordinator().DestroyAllEntities();
-                SpawnDefaultEntities();
-            }
 
             // Play sound effects
             if (input->KeyPressed(GLFW_KEY_P))
@@ -287,12 +263,6 @@ namespace Uma_Engine
 
                 //used for entities with position
                 m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
-            }
-
-            if (input->KeyPressed(GLFW_KEY_O))
-            {
-                //GetSound()->playSound(GetResources()->GetSound("cave"));
-                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("cave", 1, 0);
             }
         }
 

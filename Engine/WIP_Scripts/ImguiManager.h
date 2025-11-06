@@ -157,5 +157,6 @@ namespace Uma_Engine
         float m_dtHistory[120];
         int m_historyOffset;
         bool prevMouseOverUI = false;
+        bool mouseOverUI = false;
     };
 }

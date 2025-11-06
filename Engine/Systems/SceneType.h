@@ -28,6 +28,7 @@ All rights reserved.
 #include "ECS/Systems/LuaScriptingSystem.hpp"
 #include "../Engine/UI/Systems/UISystem.h"
 #include "ECS/Systems/TransformSystem.hpp"
+#include "ECS/Systems/AnimatorSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -153,6 +154,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::PlayerControllerSystem> m_PlayerController;
             std::shared_ptr<Uma_ECS::RenderingSystem> m_RenderingSystem;
             std::shared_ptr<Uma_ECS::CameraSystem> m_CameraSystem;
+            std::shared_ptr<Uma_ECS::AnimatorSystem> m_AnimatorSystem;
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
 
             //testing

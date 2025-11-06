@@ -240,7 +240,7 @@ namespace Uma_Engine
 
     void EditorSystem::OnKeyPress(const KeyPressEvent& event)
     {
-        if (!mState.enabled)
+        if (!mState.enabled || isMouseOverUI)
             return;
 
         // Space - Drop entity

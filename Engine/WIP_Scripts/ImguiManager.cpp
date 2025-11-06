@@ -187,9 +187,10 @@ namespace Uma_Engine
             return;
         }
 
-        bool mouseOverUI =
+        mouseOverUI =
             ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-            ImGui::IsAnyItemHovered();
+            ImGui::IsAnyItemHovered() ||
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
 
         if (prevMouseOverUI != mouseOverUI)
         {
@@ -1359,53 +1360,122 @@ namespace Uma_Engine
                 auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
                 ImGui::Indent();
 
+                // Auto-play checkbox
                 ImGui::Checkbox("Auto Play", &animator.autoPlay);
 
-                static char initialClipBuffer[128];
-                strncpy(initialClipBuffer, animator.initialClip.c_str(), 127);
-                initialClipBuffer[127] = '\0';
-                if (ImGui::InputText("Initial Clip", initialClipBuffer, 128))
+                // Initial clip input
+                static char initialClipBuffer[256];
+                strncpy(initialClipBuffer, animator.initialClip.c_str(), 255);
+                initialClipBuffer[255] = '\0';
+                if (ImGui::InputText("Initial Clip", initialClipBuffer, 256))
                 {
                     animator.initialClip = initialClipBuffer;
                 }
 
                 ImGui::Separator();
                 ImGui::Text("Current State");
+
+                // Display current clip and playing status
+                ImGui::Text("Current Clip: %s", animator.animator.GetCurrentClip().c_str());
+                ImGui::Text("Is Playing: %s", animator.animator.IsPlaying() ? "Yes" : "No");
+
+                // Current frame UVs (read-only)
                 ImGui::Text("UV Offset: (%.3f, %.3f)", animator.uvOffset.x, animator.uvOffset.y);
                 ImGui::Text("UV Size: (%.3f, %.3f)", animator.uvSize.x, animator.uvSize.y);
 
                 ImGui::Separator();
+                ImGui::Text("Animation Clips");
+
+                // List all clips with play button
                 const auto& clips = animator.animator.GetClips();
-                ImGui::Text("Animation Clips: %zu", clips.size());
-
-                if (!clips.empty())
+                for (const auto& [name, clip] : clips)
                 {
-                    for (const auto& [clipName, clip] : clips)
-                    {
-                        ImGui::PushID(clipName.c_str());
+                    ImGui::PushID(name.c_str());
 
-                        if (ImGui::Button(clipName.c_str(), ImVec2(150, 0)))
+                    if (ImGui::TreeNode(name.c_str()))
+                    {
+                        ImGui::Text("Frames X: %d", clip.framesX);
+                        ImGui::Text("Frames Y: %d", clip.framesY);
+                        ImGui::Text("Start Frame: %d", clip.startFrame);
+                        ImGui::Text("Frame Count: %d", clip.frameCount);
+                        ImGui::Text("Speed: %.2f fps", clip.speed);
+                        ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
+
+                        if (ImGui::Button("Play"))
                         {
-                            animator.animator.Play(clipName);
+                            animator.animator.Play(name);
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Play (Restart)"))
+                        {
+                            animator.animator.Play(name, true);
                         }
 
-                        ImGui::SameLine();
-                        ImGui::Text("Frames: %d, Speed: %.2f, Loop: %s",
-                            clip.frameCount,
-                            clip.speed,
-                            clip.loop ? "Yes" : "No");
+                        // TODO: Add edit/delete functionality if needed
 
-                        ImGui::PopID();
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Add New Clip");
+
+                // Static variables to hold new clip data
+                static char newClipName[256] = "";
+                static int newFramesX = 1;
+                static int newFramesY = 1;
+                static int newStartFrame = 0;
+                static int newFrameCount = 1;
+                static float newSpeed = 10.0f;
+                static bool newLoop = true;
+
+                ImGui::InputText("Clip Name", newClipName, 256);
+                ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100);
+                ImGui::DragInt("Frames Y", &newFramesY, 1.0f, 1, 100);
+                ImGui::DragInt("Start Frame", &newStartFrame, 1.0f, 0, 1000);
+                ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000);
+                ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f);
+                ImGui::Checkbox("Loop", &newLoop);
+
+                if (ImGui::Button("Add Clip"))
+                {
+                    if (strlen(newClipName) > 0)
+                    {
+                        animator.animator.AddClip(
+                            newClipName,
+                            newFramesX,
+                            newFramesY,
+                            newStartFrame,
+                            newFrameCount,
+                            newSpeed,
+                            newLoop
+                        );
+
+                        // Reset input fields
+                        newClipName[0] = '\0';
+                        newFramesX = 1;
+                        newFramesY = 1;
+                        newStartFrame = 0;
+                        newFrameCount = 1;
+                        newSpeed = 10.0f;
+                        newLoop = true;
                     }
                 }
-                else
+
+                // Playback controls
+                ImGui::Separator();
+                ImGui::Text("Playback Controls");
+
+                if (ImGui::Button("Reset"))
                 {
-                    ImGui::TextDisabled("No animation clips available");
+                    animator.animator.Reset();
                 }
 
                 ImGui::Unindent();
             }
-        }
+            }
         else if (type == coordinator.GetComponentType<Uma_ECS::LuaScript>())
         {
             if (ImGui::CollapsingHeader("LuaScript"))
@@ -1784,6 +1854,10 @@ namespace Uma_Engine
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Enemy{});
             }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Animator>()) && ImGui::MenuItem("Animator"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Animator{});
+            }
 
             ImGui::EndPopup();
         }
@@ -1854,7 +1928,7 @@ namespace Uma_Engine
         auto& editorCamera = sceneManager->GetEditorCamera();
 
         // Active status
-        bool isActive = editorCamera.IsActive();
+        bool isActive = editorCamera.IsActive() && !mouseOverUI;
         if (isActive)
         {
             ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Status: ACTIVE");

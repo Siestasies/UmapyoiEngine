@@ -162,6 +162,9 @@ namespace Uma_Engine
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
 
+        if (m_AnimatorSystem)
+            m_AnimatorSystem->Update(dt);
+
         if (m_UISystem)
             m_UISystem->Update(dt);
 
@@ -394,6 +397,15 @@ namespace Uma_Engine
         }
         m_CameraSystem->Init(&m_Coordinator);
 
+        // Animator System
+        m_AnimatorSystem = m_Coordinator.RegisterSystem<Uma_ECS::AnimatorSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Animator>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::AnimatorSystem>(sign);
+        }
+        m_AnimatorSystem->Init(&m_Coordinator);
+
         m_LuaScriptingSystem = m_Coordinator.RegisterSystem<Uma_ECS::LuaScriptingSystem>();
         {
             Uma_ECS::Signature sign;
@@ -454,6 +466,9 @@ namespace Uma_Engine
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
+
+        if (m_AnimatorSystem)
+            m_AnimatorSystem->Update(dt);
 
         if (m_CollisionSystem)
             m_CollisionSystem->DebugRender();

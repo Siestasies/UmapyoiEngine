@@ -61,29 +61,36 @@ namespace Uma_Engine
 
         void Update(float dt)
         {
-            if (!playing || currentClip.empty()) return;
+            if (currentClip.empty()) return;
 
-            auto it = clips.find(currentClip);
-            if (it == clips.end()) return;
-
-            const AnimationClip& clip = it->second;
-
-            timer += dt;
-            float frameTime = 1.0f / clip.speed;
-
-            while (timer >= frameTime)
+            if (!playing)
             {
-                timer -= frameTime;
-                currentFrame++;
+                currentFrame = 0;
+            }
+            else
+            {
+                auto it = clips.find(currentClip);
+                if (it == clips.end()) return;
 
-                if (currentFrame >= clip.frameCount)
+                const AnimationClip& clip = it->second;
+
+                timer += dt;
+                float frameTime = 1.0f / clip.speed;
+
+                while (timer >= frameTime)
                 {
-                    if (clip.loop)
-                        currentFrame = 0;
-                    else
+                    timer -= frameTime;
+                    currentFrame++;
+
+                    if (currentFrame >= clip.frameCount)
                     {
-                        currentFrame = clip.frameCount - 1;
-                        playing = false;
+                        if (clip.loop)
+                            currentFrame = 0;
+                        else
+                        {
+                            currentFrame = clip.frameCount - 1;
+                            playing = false;
+                        }
                     }
                 }
             }

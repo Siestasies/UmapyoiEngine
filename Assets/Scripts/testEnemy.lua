@@ -74,13 +74,15 @@ function Update(dt)
         --    end
         --end
 
+        if KeyReleased(KEY_V) then 
+            Play3DSound("explosion", transform.position.x, transform.position.y, 1, 0)
+        end
+
     else
         Log("components are missing");
     end
 
-    if KeyReleased(KEY_V) then 
-        PlaySound("explosion", 1, 0)
-    end
+    
 
     --if KeyPressed(KEY_W) then 
     --    Log("W IS PRESSED")
