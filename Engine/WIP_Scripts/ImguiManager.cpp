@@ -772,6 +772,8 @@ namespace Uma_Engine
         // Right-click context menu
         if (ImGui::BeginPopupContextItem())
         {
+            m_selectedEntity = entity;
+
             if (ImGui::MenuItem("Create New"))
             {
                 pEventSystem->Emit<SpawnEntityRequestEvent>();
@@ -781,6 +783,7 @@ namespace Uma_Engine
             {
                 Uma_ECS::Entity child = coordinator.CreateEntity();
                 coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .name = std::string("new enity"),
                     .position = Vec2(0, 0),
                     .rotation = Vec2(0, 0),
                     .scale = Vec2(1, 1)
