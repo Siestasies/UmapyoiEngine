@@ -302,6 +302,10 @@ namespace Uma_Engine
          */
         void SetWindow(GLFWwindow* window) override;
 
+        /**
+         * \brief Gets the GLFW window pointer
+         * \return Const pointer to the GLFWwindow
+         */
         GLFWwindow* GetWindow() const { return mWindow; }
 
         // Background operations
@@ -495,26 +499,132 @@ namespace Uma_Engine
          * \param outLines Vector to add DebugLineInfo
          */
         static void AddDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+
+        /**
+         * \brief Helper to add circle line segments to DebugLineInfo vector
+         * \param center Circle center
+         * \param radius Circle radius
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugCircle(const Vec2& center, float radius, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
+
+        /**
+         * \brief Helper to add a debug point to DebugLineInfo vector
+         * \param position Point position
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param outLines Vector to add DebugLineInfo
+         */
         static void AddDebugPoint(const Vec2& position, float r, float g, float b, std::vector<DebugLineInfo>& outLines);
 
+        /**
+         * \brief Loads a font from a file using FreeType
+         * \param fontPath File path to the font
+         * \param fontSize Font size in pixels
+         * \return FontData struct with character map and properties
+         */
         FontData LoadFontFromFile(const std::string& fontPath, unsigned int fontSize = 48);
+
+        /**
+         * \brief Unloads and releases resources of FontData
+         * \param fontData FontData object to unload
+         */
         void UnloadFontData(FontData& fontData);
 
+        /**
+         * \brief Draws text in screen space
+         * \param font The loaded FontData
+         * \param text The string to render
+         * \param x X position in screen pixels
+         * \param y Y position in screen pixels
+         * \param scale Text scale multiplier
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         */
         void DrawTextScreen(const FontData& font, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+
+        /**
+         * \brief Calculates the width of a text string in pixels
+         * \param font The loaded FontData
+         * \param text The string to measure
+         * \param scale Text scale multiplier
+         * \return The total width of the text in pixels
+         */
         float MeasureText(const FontData& font, const std::string& text, float scale = 1.0f);
+
+        /**
+         * \brief Draws text in world space
+         * \param font The loaded FontData
+         * \param text The string to render
+         * \param x X position in world space
+         * \param y Y position in world space
+         * \param scale Text scale multiplier
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         */
         void DrawTextWorld(const FontData& font, const std::string& text, float x, float y, float scale = 1.0f, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
+        /**
+         * \brief Draws a single sprite in screen space
+         * \param textureID OpenGL texture ID
+         * \param position Screen space position
+         * \param size Screen space size in pixels
+         * \param rotation Rotation in degrees
+         * \param uvOffset UV coordinate offset
+         * \param uvSize UV coordinate size
+         * \param tint RGB tint color
+         * \param alpha Opacity
+         */
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
             const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f);
+
+        /**
+         * \brief Draws a batch of sprites in screen space using instanced rendering
+         * \param textureID OpenGL texture ID of batch
+         * \param sprites Vector of Sprite_Info
+         */
         void DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites);
 
-        void DrawFilledRect(const Vec2& center, const Vec2& size,
-            float r, float g, float b, float alpha = 1.0f);
-        void DrawFilledCircle(const Vec2& center, float radius,
-            float r, float g, float b, float alpha = 1.0f,
+        /**
+         * \brief Draws a solid filled rectangle in world space
+         * \param center Rectangle center in world space
+         * \param size Rectangle dimensions
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param alpha Opacity
+         */
+        void DrawFilledRect(const Vec2& center, const Vec2& size, float r, float g, float b, float alpha = 1.0f);
+
+        /**
+         * \brief Draws a solid filled circle in world space
+         * \param center Circle center in world space
+         * \param radius Circle radius
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param alpha Opacity
+         * \param segments Number of triangles to approximate circle
+         */
+        void DrawFilledCircle(const Vec2& center, float radius, float r, float g, float b, float alpha = 1.0f,
             int segments = 24);
-        void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3,
-            float r, float g, float b, float alpha = 1.0f);
+
+        /**
+         * \brief Draws a solid filled triangle in world space
+         * \param p1 Vertex 1 position
+         * \param p2 Vertex 2 position
+         * \param p3 Vertex 3 position
+         * \param r Red component
+         * \param g Green component
+         * \param b Blue component
+         * \param alpha Opacity
+         */
+        void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, float r, float g, float b, float alpha = 1.0f);
     };
 }

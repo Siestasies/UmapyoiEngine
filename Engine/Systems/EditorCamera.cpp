@@ -1,3 +1,23 @@
+/*!
+\file    EditorCamera.cpp
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+Implements the EditorCamera class logic. Handles input polling for
+panning (WASD, MMB drag) and zooming (Scroll, Q/E) and update the
+camera position and zoom
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "EditorCamera.h"
 #include "Systems/HybridInputSystem.h"
 #include "UI/Helpers/InputFilter.h"

@@ -1,3 +1,22 @@
+/*!
+\file    AnimatorSystem.cpp
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+Implements the AnimatorSystem which iterates over all Animator
+components to advance their animation frames based on delta time
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "AnimatorSystem.hpp"
 #include "Components/Animator.h"
 

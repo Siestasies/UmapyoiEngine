@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
+\author Leong Wai Men (Everything else)
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
+
+\co-author Javier Chua Dong Qing (Font)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Defines resource management system that provides name-based caching and lookup for textures and sounds.
@@ -81,10 +85,6 @@ namespace Uma_Engine
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         Entity DeserializePrefab(const rapidjson::Value& in) override;
 
-        
-        
-        
-        
     private:
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};
         Graphics* mGraphics = nullptr;

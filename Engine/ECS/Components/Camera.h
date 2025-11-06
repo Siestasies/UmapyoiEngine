@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
+\author Leong Wai Men (Everything else)
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
+
+\co-author Javier Chua Dong Qing (Screenshake implementation)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Defines Camera component containing viewport zoom level and player following behavior flag.

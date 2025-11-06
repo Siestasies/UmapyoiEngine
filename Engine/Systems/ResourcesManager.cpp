@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
+\author Leong Wai Men (Everything else)
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
+
+\co-author Javier Chua Dong Qing (Font)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Implements centralized asset loading, caching, and lifecycle management for textures and audio resources.
