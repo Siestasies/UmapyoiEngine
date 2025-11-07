@@ -263,7 +263,7 @@ namespace Uma_Engine
 
         void HandleEditorInput()
         {
-            auto input = GetInput();
+            //auto input = GetInput();
         }
 
         void SaveScene()
