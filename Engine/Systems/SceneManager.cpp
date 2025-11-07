@@ -122,6 +122,11 @@ namespace Uma_Engine
         // Update loading scenes first
         UpdateLoadingScenes();
 
+        if (playMode == PLAYMODE::PM_STOP)
+        {
+            EventSystem* esHandler = pSystemManager->GetSystem<EventSystem>();
+            esHandler->Emit<IMGUIStopRequest>();
+        }
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
         {
@@ -201,12 +206,15 @@ namespace Uma_Engine
             }
         }
 
-        auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
-        if (editorSystem)
+        if (m_Scenes.size() > 0)
         {
-            editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
-            editorSystem->SetPlayMode(playMode == PM_PLAY);
-            editorSystem->Update(dt);
+            auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
+            if (editorSystem)
+            {
+                editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
+                editorSystem->SetPlayMode(playMode == PM_PLAY);
+                editorSystem->Update(dt);
+            }
         }
 
         // Update all loaded scenes if using additive loading
