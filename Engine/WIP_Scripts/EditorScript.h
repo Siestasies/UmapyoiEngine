@@ -258,17 +258,6 @@ namespace Uma_Engine
         void HandleEditorInput()
         {
             auto input = GetInput();
-
-
-            // Play sound effects
-            if (input->KeyPressed(GLFW_KEY_P))
-            {
-                //GetSound()->playSound(GetResources()->GetSound("explosion"));
-                //m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1, 0);
-
-                //used for entities with position
-                m_Scene->m_EventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
-            }
         }
 
         void SaveScene()

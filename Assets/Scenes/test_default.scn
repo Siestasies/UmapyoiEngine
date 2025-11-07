@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,12 +50,12 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
-            },
-            {
                 "name": "fire bird",
                 "path": "Assets/fire bird.png"
+            },
+            {
+                "name": "floor_tatami",
+                "path": "Assets/floor_tatami.png"
             },
             {
                 "name": "player_new",
@@ -71,14 +71,24 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 0
+            },
+            {
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
+                "type": 0
             },
             {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
@@ -2235,8 +2245,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": -2.5,
-                        "y": 7.776
+                        "x": 18.934,
+                        "y": -3.953
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2251,7 +2261,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "fire bird",
                     "layer": 16,
-                    "flipX": false,
+                    "flipX": true,
                     "flipY": false,
                     "Native": true,
                     "gridX": 12.0,
@@ -2271,7 +2281,7 @@
                         "y": 0.0
                     },
                     "acceleration": {
-                        "x": 0.0,
+                        "x": -0.0,
                         "y": 0.0
                     },
                     "accel_strength": 500.0,
@@ -2355,7 +2365,7 @@
                                 {
                                     "name": "testCounter",
                                     "type": 0,
-                                    "value": 0.0,
+                                    "value": 3945.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -2500,7 +2510,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player",
                     "position": {
-                        "x": 10.998,
+                        "x": 14.977,
                         "y": 11.597
                     },
                     "rotation": {
@@ -2606,7 +2616,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 10.998,
+                        "x": 14.977,
                         "y": 11.597
                     },
                     "rotation": {

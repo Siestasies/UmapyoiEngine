@@ -102,6 +102,10 @@ function Update(dt)
         Log("components are missing");
     end
 
+
+    if KeyReleased(KEY_O) then 
+        PlaySound("cave", 1, -1)
+    end
     
 
     --if KeyPressed(KEY_W) then 
