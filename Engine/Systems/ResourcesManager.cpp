@@ -408,7 +408,6 @@ namespace Uma_Engine
     }
     const std::unordered_map<std::string, FontData>& ResourcesManager::GetLoadedFonts() const
     {
-        // TODO: insert return statement here
         return mFonts;
     }
 }
