@@ -104,7 +104,7 @@ function Update(dt)
 
 
     if KeyReleased(KEY_O) then 
-        PlaySound("cave", 1, -1)
+        PlaySound("cave", 0.1, -1)
     end
     
 

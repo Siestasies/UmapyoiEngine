@@ -94,10 +94,10 @@ function ChaseState:update(dt)
         end
     end
     
-    if KeyPressed(KEY_M) then
+    if KeyPressed(KEY_1) then
         self.fsm:changeState("WalkState")
     end
-    if KeyPressed(KEY_N) then
+    if KeyPressed(KEY_2) then
         self.fsm:changeState("IdleState")
     end
 end

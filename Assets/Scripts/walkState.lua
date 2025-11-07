@@ -99,11 +99,11 @@ function WalkState:update(dt)
         end
     end
     
-    if KeyPressed(KEY_N) then
+    if KeyPressed(KEY_2) then
         Log("pressed")
         self.fsm:changeState("IdleState")
     end
-    if KeyPressed(KEY_B) then
+    if KeyPressed(KEY_3) then
         Log("pressed")
         self.fsm:changeState("ChaseState")
     end

@@ -45,10 +45,10 @@ end
 --! @details Listens for input to transition to walk or chase states
 --! @param dt number Delta time since last frame
 function IdleState:update(dt)
-    if KeyPressed(KEY_M) then
+    if KeyPressed(KEY_1) then
         self.fsm:changeState("WalkState")
     end
-    if KeyPressed(KEY_B) then
+    if KeyPressed(KEY_3) then
         self.fsm:changeState("ChaseState")
     end
 end
