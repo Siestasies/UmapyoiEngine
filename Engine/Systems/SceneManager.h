@@ -211,8 +211,6 @@ namespace Uma_Engine
         std::vector<std::shared_ptr<Scene>> m_LoadingScenes;
         std::shared_ptr<Scene> m_ActiveScene;
 
-        static int sceneNo;
-
         PLAYMODE playMode = PLAYMODE::PM_STOP;
 
         bool isUnloading = false;

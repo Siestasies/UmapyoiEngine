@@ -31,8 +31,6 @@ All rights reserved.
 
 #include <algorithm>
 
-int Uma_Engine::SceneManager::sceneNo = 0;
-
 namespace Uma_Engine
 {
     // ISYSTEM OVERRIDES
@@ -80,13 +78,6 @@ namespace Uma_Engine
         eventSystem->Subscribe<StopSceneRequest>(
             [&](const StopSceneRequest& e) {
                 (void)e;
-                if (m_ActiveScene->GetName().find("TEMP") != std::string::npos)
-                {
-                    std::string oldFilename = m_ActiveScene->GetName();
-                    oldFilename.erase(0, 5);
-                    RemoveScene(m_ActiveScene->GetName()); // will load another scene
-                    LoadScene(oldFilename);
-                }
                 playMode = PLAYMODE::PM_STOP;
             }
         );
@@ -171,20 +162,23 @@ namespace Uma_Engine
             }
 
             // Update editor camera if active
-            if (m_UseEditorCamera && !m_isMouseOverUI)
+            if (m_Scenes.size() > 0)
             {
-                // Get input and graphics from scene
-                auto* input = m_ActiveScene->GetInputSystem();
-                auto* graphics = m_ActiveScene->GetGraphics();
-
-                if (input)
+                if (m_UseEditorCamera && !m_isMouseOverUI)
                 {
-                    m_EditorCamera.Update(input, dt);
+                    // Get input and graphics from scene
+                    auto* input = m_ActiveScene->GetInputSystem();
+                    auto* graphics = m_ActiveScene->GetGraphics();
 
-                    // Update graphics system with editor camera
-                    if (graphics)
+                    if (input)
                     {
-                        graphics->SetCamInfo(m_EditorCamera.GetPosition(), m_EditorCamera.GetZoom());
+                        m_EditorCamera.Update(input, dt);
+
+                        // Update graphics system with editor camera
+                        if (graphics)
+                        {
+                            graphics->SetCamInfo(m_EditorCamera.GetPosition(), m_EditorCamera.GetZoom());
+                        }
                     }
                 }
             }
@@ -241,7 +235,7 @@ namespace Uma_Engine
     void SceneManager::CreateNewScene()
     {
         std::string filename;
-
+        int sceneNo = 0;
         do {
             filename = "Scene" + std::to_string(sceneNo) + ".scn";
             ++sceneNo;

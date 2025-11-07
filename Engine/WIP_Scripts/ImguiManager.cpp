@@ -1,5 +1,30 @@
+/*!
+\file   ImguiManager.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid (Everything else)
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
+
+\co-author Lai Jun Siang (Hierarchy/Inspector/Dockspace)
+\par       E-mail: lai.j@digipen.edu
+\par       DigiPen login: lai.j
+
+\co-author Javier Chua Dong Qing (EditorCamera)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
+
+\brief
+Definition of functions for all IMGUI windows and their logics.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #include "ImguiManager.h"
-#include "SceneManager.h"  // Include here in .cpp instead of .h
+#include "SceneManager.h"
 
 //#include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -34,6 +59,7 @@ namespace Uma_Engine
         , windowWidth(1920)
         , windowHeight(1080)
         , m_selectedEntity(static_cast<Uma_ECS::Entity>(-1))
+        , m_hideAll(false)
     {
         // init array
         for (int i = 0; i < 120; ++i)
@@ -123,11 +149,10 @@ namespace Uma_Engine
         style.GrabRounding = 4.0f; // Rounded corners for scrollbar handles and sliders
         style.ScrollbarRounding = 4.0f; // Rounded corners for scrollbar
 
-        // Padding adjustments (similar to Unity�s compact UI)
+        // Padding adjustments
         style.FramePadding = ImVec2(8.0f, 6.0f); // Padding inside input fields and buttons
         style.ItemSpacing = ImVec2(6.0f, 4.0f); // Space between items
         style.WindowPadding = ImVec2(8.0f, 8.0f); // Padding inside window borders
-
 
         // set font and font size
         float fontSize = 16.f;
@@ -227,18 +252,20 @@ namespace Uma_Engine
 
         CreateDockspace();
 
-        // play stop bar
-        CreateEditorControlBar();
+		// play stop bar
+		CreateEditorControlBar();
+        if (!m_hideAll)
+        {
+            SceneManagerWindow();
 
-        SceneManagerWindow();
+            // call for windows to be shown
+            float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
+            CreateDebugWindows(currentFps, deltaTime);
 
-        // call for windows to be shown
-        float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
-        CreateDebugWindows(currentFps, deltaTime);
+            fileBrowser.Render();
 
-        fileBrowser.Render();
-
-        resourcesWindow.Render();
+            resourcesWindow.Render();
+        }
 
         Render();
     }
@@ -284,7 +311,6 @@ namespace Uma_Engine
     }
 
     // ACTUAL EDITOR METHODS
-
     void ImguiManager::CreateEditorControlBar()
     {
         if (!m_showEditorControlBar)
@@ -309,11 +335,7 @@ namespace Uma_Engine
             float spacing = 8.0f;
             float totalWidth = (buttonWidth * 3) + (spacing * 2);
             float offset = (ImGui::GetWindowWidth() - totalWidth) * 0.5f;
-
             ImGui::SetCursorPosX(offset);
-
-            // scene view / game view indicator
-
 
             // Play Button
             bool isPlaying = (m_playState == PlayState::Playing);
@@ -326,10 +348,13 @@ namespace Uma_Engine
 
             if (ImGui::Button("Play", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<PlaySceneRequest>();
-                    m_playState = PlayState::Playing;
+                    if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
+                    {
+                        pEventSystem->Emit<PlaySceneRequest>();
+                        m_playState = PlayState::Playing;
+                    }
                 }
             }
 
@@ -351,15 +376,18 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState == PlayState::Playing)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<PauseSceneRequest>();
-                    m_playState = PlayState::Paused;
-                }
-                else if (m_playState == PlayState::Paused)
-                {
-                    pEventSystem->Emit<PlaySceneRequest>();
-                    m_playState = PlayState::Playing;
+                    if (m_playState == PlayState::Playing)
+                    {
+                        pEventSystem->Emit<PauseSceneRequest>();
+                        m_playState = PlayState::Paused;
+                    }
+                    else if (m_playState == PlayState::Paused)
+                    {
+                        pEventSystem->Emit<PlaySceneRequest>();
+                        m_playState = PlayState::Playing;
+                    }
                 }
             }
 
@@ -373,15 +401,24 @@ namespace Uma_Engine
             // Stop Button
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState != PlayState::Stopped)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<StopSceneRequest>();
-                    m_playState = PlayState::Stopped;
-                    pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                    if (m_playState != PlayState::Stopped)
+                    {
+                        pEventSystem->Emit<StopSceneRequest>();
+                        m_playState = PlayState::Stopped;
+                        pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                    }
                 }
             }
 
-            // Show current state text on the right
+            ImGui::SameLine();
+            if (ImGui::Button("Hide Windows", ImVec2(buttonWidth + 20, 0)))
+            {
+                m_hideAll = !m_hideAll;
+            }
+
+            // Show current state text
             ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
 
@@ -422,11 +459,10 @@ namespace Uma_Engine
         CreateHierarchyWindow();
         CreateInspectorWindow();
         CreateEditorCameraWindow();
-
-		    CreateSystemsWindow();
-		    //CreateEntityDebugWindow();
-		    CreateConsoleWindow();
-		    //CreateEntityPropertyWindow();
+		CreateSystemsWindow();
+		//CreateEntityDebugWindow();
+		CreateConsoleWindow();
+		//CreateEntityPropertyWindow();
     }
 
     void ImguiManager::CreateSystemsWindow()
@@ -720,7 +756,7 @@ namespace Uma_Engine
         return std::ifstream(filename).good();
     }
 
-    // ========== HIERARCHY WINDOW IMPLEMENTATION ==========
+    //HIERARCHY/INSPECTOR WINDOW IMPLEMENTATION
 
     void ImguiManager::CreateHierarchyWindow()
     {
@@ -967,15 +1003,6 @@ namespace Uma_Engine
 
         return IsChildOf(parent, potentialParent, transformArray);
     }
-
-    // Modified DisplayComponent function for ImguiManager.cpp
-// Replace the existing function with this version
-
-    // Modified DisplayComponent function for ImguiManager.cpp
-// Replace the existing function with this version
-
-    // Modified DisplayComponent function for ImguiManager.cpp
-// Replace the existing function with this version
 
     bool ImguiManager::DisplayComponent(Uma_ECS::Coordinator& coordinator, Uma_ECS::ComponentType type, Uma_ECS::Entity& entity)
     {
@@ -1879,12 +1906,13 @@ namespace Uma_Engine
         ImGui::Begin("Scene Manager");
 
         // Button to create a new scene
-        if (ImGui::Button("Create New Scene")) {
+        if (ImGui::Button("Create New Scene"))
+        {
             pEventSystem->Emit<StopSceneRequest>();
             pEventSystem->Emit<CreateNewSceneRequest>();
         }
 
-        // Button to delete the selected scene
+        // Button to remove current scene
         if (ImGui::Button("Remove Current Scene"))
         {
             pEventSystem->Emit<StopSceneRequest>();

@@ -11,7 +11,7 @@
 
 \brief
 This file implements the definition for an IMGUI Manager as a system and
-implements functions to create and show IMGUI windows including Unity-like
+implements functions to create and show IMGUI windows including
 Hierarchy panel for ECS entity management.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
@@ -121,6 +121,7 @@ namespace Uma_Engine
         GLFWwindow* m_window;
         std::vector<std::string> logsVec;
 
+        // handlers
         EventSystem* pEventSystem = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
         
@@ -140,6 +141,7 @@ namespace Uma_Engine
         Uma_ECS::Entity m_selectedEntity;
 
         // show or not
+        bool m_hideAll;
         bool m_showEngineDebug;
         bool m_showEventDebug;
         bool m_showPerformanceWindow;
@@ -156,6 +158,8 @@ namespace Uma_Engine
         float m_fpsHistory[120];
         float m_dtHistory[120];
         int m_historyOffset;
+
+        // mouse over checks
         bool prevMouseOverUI = false;
         bool mouseOverUI = false;
     };
