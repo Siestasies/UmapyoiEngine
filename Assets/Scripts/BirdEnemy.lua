@@ -1,6 +1,46 @@
 -- ====================================================================
--- COMPREHENSIVE LUA SCRIPTING SYSTEM TEST
--- Based on actual LuaScriptingSystem implementation
+-- FILE: ComprehensiveLuaTest.lua
+-- PROJECT: GAM200 - Uma Engine
+-- COURSE: CSD2401
+-- SECTION: A
+-- SOFTWARE ENGINEERING PROJECT 3
+--
+-- AUTHOR: Leong Wai Men (100%)
+-- EMAIL: waimen.leong@digipen.edu
+-- DIGIPEN LOGIN: waimen.leong
+--
+-- BRIEF:
+-- Comprehensive test suite for Uma Engine's Lua scripting system integration.
+-- Tests all major API categories including component access, entity queries,
+-- cross-entity manipulation, input handling, collision callbacks, and vector
+-- operations. Validates Sol2 bindings for Transform, RigidBody, Sprite, 
+-- Collider, Player, Enemy, and Camera components. Demonstrates exposed variable
+-- system with runtime modification via ImGui. Includes collision layer constants,
+-- input key constants, and ColliderShape vector access patterns. Serves as
+-- reference implementation for gameplay scripting and API usage validation.
+--
+-- TEST CATEGORIES:
+-- 1. Entity Information & Exposed Variables
+-- 2. Component Access (Has/Get pattern for self)
+-- 3. Entity Queries (Find by component type)
+-- 4. Cross-Entity Access (Direct GetXXXFrom functions)
+-- 5. Entity Wrapper Pattern (GetEntity with methods)
+-- 6. Collision Layer & Purpose Constants
+-- 7. Input Key Constants & Bindings
+-- 8. Vec2 Math Operations (commented)
+-- 9. Runtime Input Testing (Movement, Collider modification)
+-- 10. Collision/Trigger Callbacks (commented examples)
+--
+-- IMPORTANT : SOME OF THE CODE GOT COMMENTED OUT NOT BECAUSE ITS NOT WORKING 
+-- BUT TO NOT POLLUTE THE GAME INPUT, SO IF U WANT TO TEST CAN UNCOMMENT THE CODE
+--
+-- USAGE:
+-- Attach to any entity with LuaScript component. Press 'I' for runtime info,
+-- IJKL for movement, E for collider debug, M for shape modification. Check
+-- console output for comprehensive API validation results.
+--
+-- ALL CONTENT (C) 2025 DigiPen INSTITUTE OF TECHNOLOGY SINGAPORE.
+-- ALL RIGHTS RESERVED.
 -- ====================================================================
 
 ExposedVars = {
@@ -405,47 +445,47 @@ function Update(dt)
     end
     
     -- Jump/move up test
-    if KeyPressed(KEY_SPACE) then
-        if HasTransform() then
-            local tf = GetTransform()
-            tf.position.y = tf.position.y + moveDistance
-            Log("[INPUT] Moved up by " .. moveDistance)
-        end
-    end
+    -- if KeyPressed(KEY_SPACE) then
+    --     if HasTransform() then
+    --         local tf = GetTransform()
+    --         tf.position.y = tf.position.y + moveDistance
+    --         Log("[INPUT] Moved up by " .. moveDistance)
+    --     end
+    -- end
     
     -- Collider modification tests
     if HasCollider() then
         local collider = GetCollider()
         
         -- Change collider purpose
-        if KeyPressed(KEY_1) then
-            local shape = collider.shapes[1]
-            if shape then
-                shape.purpose = ColliderPurpose.Physics
-                Log("[INPUT] Set collider to Physics")
-            end
-        elseif KeyPressed(KEY_2) then
-            local shape = collider.shapes[1]
-            if shape then
-                shape.purpose = ColliderPurpose.Environment
-                Log("[INPUT] Set collider to Environment")
-            end
-        elseif KeyPressed(KEY_3) then
-            local shape = collider.shapes[1]
-            if shape then
-                shape.purpose = ColliderPurpose.Trigger
-                Log("[INPUT] Set collider to Trigger")
-            end
-        end
+        --if KeyPressed(KEY_1) then
+        --    local shape = collider.shapes[1]
+        --    if shape then
+        --        shape.purpose = ColliderPurpose.Physics
+        --        Log("[INPUT] Set collider to Physics")
+        --    end
+        --elseif KeyPressed(KEY_2) then
+        --    local shape = collider.shapes[1]
+        --    if shape then
+        --        shape.purpose = ColliderPurpose.Environment
+        --        Log("[INPUT] Set collider to Environment")
+        --    end
+        --elseif KeyPressed(KEY_3) then
+        --    local shape = collider.shapes[1]
+        --    if shape then
+        --        shape.purpose = ColliderPurpose.Trigger
+        --        Log("[INPUT] Set collider to Trigger")
+        --    end
+        --end
         
         -- Toggle active state
-        if KeyPressed(KEY_T) then
-            local shape = collider.shapes[1]
-            if shape then
-                shape.isActive = not shape.isActive
-                Log("[INPUT] Collider active: " .. tostring(shape.isActive))
-            end
-        end
+        --if KeyPressed(KEY_T) then
+        --    local shape = collider.shapes[1]
+        --    if shape then
+        --        shape.isActive = not shape.isActive
+        --        Log("[INPUT] Collider active: " .. tostring(shape.isActive))
+        --    end
+        --end
         
         -- Add new shape
         -- if KeyPressed(KEY_A) then
@@ -463,10 +503,10 @@ function Update(dt)
         -- end
         
         -- Clear shapes
-        if KeyPressed(KEY_C) then
-            collider.shapes:clear()
-            Log("[INPUT] Cleared all shapes")
-        end
+        -- if KeyPressed(KEY_C) then
+        --     collider.shapes:clear()
+        --     Log("[INPUT] Cleared all shapes")
+        -- end
         
         -- Modify shape properties
         if KeyPressed(KEY_M) then
@@ -518,96 +558,96 @@ function Update(dt)
     end
     
     -- Mouse test
-    if MouseButtonPressed(MOUSE_LEFT) then
-        local mousePos = GetMousePosition()
-        Log("[INPUT] Left click at: (" .. mousePos.x .. ", " .. mousePos.y .. ")")
-    end
-    
-    if MouseButtonDown(MOUSE_RIGHT) then
-        if testCounter % 60 == 0 then  -- Log once per second
-            local mousePos = GetMousePosition()
-            Log("[INPUT] Right button held at: (" .. mousePos.x .. ", " .. mousePos.y .. ")")
-        end
-    end
-    
-    if MouseButtonReleased(MOUSE_MIDDLE) then
-        Log("[INPUT] Middle mouse button released")
-    end
+    --if MouseButtonPressed(MOUSE_LEFT) then
+    --    local mousePos = GetMousePosition()
+    --    Log("[INPUT] Left click at: (" .. mousePos.x .. ", " .. mousePos.y .. ")")
+    --end
+    --
+    --if MouseButtonDown(MOUSE_RIGHT) then
+    --    if testCounter % 60 == 0 then  -- Log once per second
+    --        local mousePos = GetMousePosition()
+    --        Log("[INPUT] Right button held at: (" .. mousePos.x .. ", " .. mousePos.y .. ")")
+    --    end
+    --end
+    --
+    --if MouseButtonReleased(MOUSE_MIDDLE) then
+    --    Log("[INPUT] Middle mouse button released")
+    --end
 end
 
-function OnCollisionEnter(otherEntity)
-    Log("\n[COLLISION ENTER] " .. name .. " (ID:" .. EntityID .. ") collided with entity " .. otherEntity)
-    
-    -- Use GetEntity wrapper
-    local otherWrapper = GetEntity(otherEntity)
-    if otherWrapper.isValid then
-        Log("  Other entity ID: " .. otherWrapper.id)
-        
-        -- Check what components it has
-        if otherWrapper:HasPlayer() then
-            Log("  → Hit PLAYER")
-        elseif otherWrapper:HasEnemy() then
-            Log("  → Hit ENEMY")
-        end
-        
-        -- Get transform
-        if otherWrapper:HasTransform() then
-            local otherTf = otherWrapper:GetTransform()
-            Log("  Other position: (" .. otherTf.position.x .. ", " .. otherTf.position.y .. ")")
-        end
-        
-        -- Get collider info
-        if otherWrapper:HasCollider() then
-            local otherCollider = otherWrapper:GetCollider()
-            Log("  Other collider layer: " .. otherCollider.defaultLayer)
-            if otherCollider.shapes:size() > 0 then
-                local shape = otherCollider.shapes[1]
-                Log("  Other shape purpose: " .. shape.purpose)
-            end
-        end
-    end
-end
+--function OnCollisionEnter(otherEntity)
+--    Log("\n[COLLISION ENTER] " .. name .. " (ID:" .. EntityID .. ") collided with entity " .. otherEntity)
+--    
+--    -- Use GetEntity wrapper
+--    local otherWrapper = GetEntity(otherEntity)
+--    if otherWrapper.isValid then
+--        Log("  Other entity ID: " .. otherWrapper.id)
+--        
+--        -- Check what components it has
+--        if otherWrapper:HasPlayer() then
+--            Log("  → Hit PLAYER")
+--        elseif otherWrapper:HasEnemy() then
+--            Log("  → Hit ENEMY")
+--        end
+--        
+--        -- Get transform
+--        if otherWrapper:HasTransform() then
+--            local otherTf = otherWrapper:GetTransform()
+--            Log("  Other position: (" .. otherTf.position.x .. ", " .. otherTf.position.y .. ")")
+--        end
+--        
+--        -- Get collider info
+--        if otherWrapper:HasCollider() then
+--            local otherCollider = otherWrapper:GetCollider()
+--            Log("  Other collider layer: " .. otherCollider.defaultLayer)
+--            if otherCollider.shapes:size() > 0 then
+--                local shape = otherCollider.shapes[1]
+--                Log("  Other shape purpose: " .. shape.purpose)
+--            end
+--        end
+--    end
+--end
 
-function OnCollision(otherEntity)
-    -- Only log occasionally to avoid spam
-    if testCounter % 60 == 0 then  -- Once per second at 60fps
-        Log("[COLLISION STAY] Still colliding with " .. otherEntity)
-    end
-end
-
-function OnCollisionExit(otherEntity)
-    Log("[COLLISION EXIT] " .. name .. " stopped colliding with " .. otherEntity)
-end
-
-function OnTriggerEnter(otherEntity)
-    Log("[TRIGGER ENTER] " .. name .. " triggered by entity " .. otherEntity)
-    
-    if HasCollider() then
-        local collider = GetCollider()
-        local layer = collider:GetEffectiveLayer(0)
-        local mask = collider:GetEffectiveMask(0)
-        Log("  My layer: " .. layer .. ", My mask: " .. mask)
-    end
-    
-    -- Check what triggered us
-    local other = GetEntity(otherEntity)
-    if other.isValid and other:HasPlayer() then
-        Log("  → Triggered by PLAYER")
-    end
-end
-
-function OnTriggerExit(otherEntity)
-    Log("[TRIGGER EXIT] " .. name .. " trigger ended with " .. otherEntity)
-end
-
-function OnEnable()
-    Log("[LIFECYCLE] Script ENABLED on entity " .. EntityID .. " (" .. name .. ")")
-end
-
-function OnDisable()
-    Log("[LIFECYCLE] Script DISABLED on entity " .. EntityID .. " (" .. name .. ")")
-end
-
-function OnDestroy()
-    Log("[LIFECYCLE] Script DESTROYED on entity " .. EntityID .. " (" .. name .. ")")
-end
+-- function OnCollision(otherEntity)
+--     -- Only log occasionally to avoid spam
+--     if testCounter % 60 == 0 then  -- Once per second at 60fps
+--         Log("[COLLISION STAY] Still colliding with " .. otherEntity)
+--     end
+-- end
+-- 
+-- function OnCollisionExit(otherEntity)
+--     Log("[COLLISION EXIT] " .. name .. " stopped colliding with " .. otherEntity)
+-- end
+-- 
+-- function OnTriggerEnter(otherEntity)
+--     Log("[TRIGGER ENTER] " .. name .. " triggered by entity " .. otherEntity)
+--     
+--     if HasCollider() then
+--         local collider = GetCollider()
+--         local layer = collider:GetEffectiveLayer(0)
+--         local mask = collider:GetEffectiveMask(0)
+--         Log("  My layer: " .. layer .. ", My mask: " .. mask)
+--     end
+--     
+--     -- Check what triggered us
+--     local other = GetEntity(otherEntity)
+--     if other.isValid and other:HasPlayer() then
+--         Log("  → Triggered by PLAYER")
+--     end
+-- end
+-- 
+-- function OnTriggerExit(otherEntity)
+--     Log("[TRIGGER EXIT] " .. name .. " trigger ended with " .. otherEntity)
+-- end
+-- 
+-- function OnEnable()
+--     Log("[LIFECYCLE] Script ENABLED on entity " .. EntityID .. " (" .. name .. ")")
+-- end
+-- 
+-- function OnDisable()
+--     Log("[LIFECYCLE] Script DISABLED on entity " .. EntityID .. " (" .. name .. ")")
+-- end
+-- 
+-- function OnDestroy()
+--     Log("[LIFECYCLE] Script DESTROYED on entity " .. EntityID .. " (" .. name .. ")")
+-- end
