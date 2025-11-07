@@ -31,8 +31,6 @@ All rights reserved.
 
 #include <algorithm>
 
-int Uma_Engine::SceneManager::sceneNo = 0;
-
 namespace Uma_Engine
 {
     // ISYSTEM OVERRIDES
@@ -241,7 +239,7 @@ namespace Uma_Engine
     void SceneManager::CreateNewScene()
     {
         std::string filename;
-
+        int sceneNo = 0;
         do {
             filename = "Scene" + std::to_string(sceneNo) + ".scn";
             ++sceneNo;

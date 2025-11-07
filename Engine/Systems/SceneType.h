@@ -10,8 +10,8 @@
 \par    DigiPen login: b.muhammadshahir
 
 \brief
-This file implements the definition for a base class of scene in that
-anything that wants to be a system should inherit from this class.
+This file implements the declarations for a base class of scene in that
+anything that wants to be a scene should inherit from this class.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -127,7 +127,6 @@ namespace Uma_Engine
 
             // System accessors (for scripts to use)
             Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; }
-            //SystemManager* GetSystemManager() { return m_SystemManager; }
             Uma_Engine::HybridInputSystem* GetInputSystem() { return m_HybridInputSystem; }
             Uma_Engine::Graphics* GetGraphics() { return m_Graphics; }
             Uma_Engine::SoundManager* GetSound() { return m_Sound; }
@@ -189,9 +188,10 @@ namespace Uma_Engine
 
             // fixed timestamp accumulator
             float m_Accumulator = 0.0f;
-            float m_FixedTimeStep = 1.0f / 60.0f;  // Will be set from config
+            // Will be set from config
+            float m_FixedTimeStep = 1.0f / 60.0f;
 
-            // Async loading
+            // for async loading
             std::future<void> m_LoadFuture;
 
     };

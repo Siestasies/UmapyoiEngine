@@ -1,9 +1,16 @@
 /*!
 \file   EditorScript.h
 \par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Shahir Rasid
+\par    E-mail: b.muhammadshahir@digipen.edu
+\par    DigiPen login: b.muhammadshahir
 
 \brief
-Editor behavior script that handles all editor-specific functionality.
+Editor behavior script that handles non scene-specific functionality.
 This replaces the old EditorScene class inheritance approach.
 */
 #pragma once
@@ -81,13 +88,6 @@ namespace Uma_Engine
                     SaveScene();
                 }
             ));
-
-            // Load scene from path (for new scenes)
-            //eventSystem->Subscribe<LoadSceneRequestEvent>(
-            //    [this](const LoadSceneRequestEvent& e) {
-            //        LoadScene(e.filepath);
-            //    }
-            //);
 
             // reload the current scene
             m_EventListeners.push_back(
