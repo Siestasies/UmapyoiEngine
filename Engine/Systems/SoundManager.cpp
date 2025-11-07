@@ -1,5 +1,5 @@
 /*!
-\file   Sound.cpp
+\file   SoundManager.cpp
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A

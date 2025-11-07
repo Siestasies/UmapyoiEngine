@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,12 +50,12 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
-            },
-            {
                 "name": "fire bird",
                 "path": "Assets/fire bird.png"
+            },
+            {
+                "name": "floor_tatami",
+                "path": "Assets/floor_tatami.png"
             },
             {
                 "name": "player_new",
@@ -71,20 +71,30 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 0
+            },
+            {
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
+                "type": 0
             },
             {
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
     "entities": [
         {
-            "id": 78,
+            "id": 41,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "kappa statue",
@@ -134,7 +144,7 @@
             }
         },
         {
-            "id": 79,
+            "id": 42,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -206,7 +216,7 @@
             }
         },
         {
-            "id": 80,
+            "id": 43,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -278,7 +288,7 @@
             }
         },
         {
-            "id": 81,
+            "id": 44,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -350,7 +360,7 @@
             }
         },
         {
-            "id": 82,
+            "id": 45,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -422,7 +432,7 @@
             }
         },
         {
-            "id": 83,
+            "id": 46,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -494,7 +504,7 @@
             }
         },
         {
-            "id": 84,
+            "id": 47,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -566,7 +576,7 @@
             }
         },
         {
-            "id": 85,
+            "id": 48,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -638,7 +648,7 @@
             }
         },
         {
-            "id": 86,
+            "id": 49,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -710,7 +720,7 @@
             }
         },
         {
-            "id": 87,
+            "id": 50,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -782,7 +792,7 @@
             }
         },
         {
-            "id": 88,
+            "id": 51,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -854,7 +864,7 @@
             }
         },
         {
-            "id": 89,
+            "id": 52,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -926,7 +936,7 @@
             }
         },
         {
-            "id": 90,
+            "id": 53,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -998,7 +1008,7 @@
             }
         },
         {
-            "id": 91,
+            "id": 54,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -1070,7 +1080,7 @@
             }
         },
         {
-            "id": 92,
+            "id": 55,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1142,7 +1152,7 @@
             }
         },
         {
-            "id": 93,
+            "id": 56,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1214,7 +1224,7 @@
             }
         },
         {
-            "id": 94,
+            "id": 57,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1286,7 +1296,7 @@
             }
         },
         {
-            "id": 95,
+            "id": 58,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1358,7 +1368,7 @@
             }
         },
         {
-            "id": 96,
+            "id": 59,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1430,7 +1440,7 @@
             }
         },
         {
-            "id": 97,
+            "id": 60,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1480,7 +1490,7 @@
             }
         },
         {
-            "id": 98,
+            "id": 61,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1530,7 +1540,7 @@
             }
         },
         {
-            "id": 99,
+            "id": 62,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1580,7 +1590,7 @@
             }
         },
         {
-            "id": 100,
+            "id": 63,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1630,7 +1640,7 @@
             }
         },
         {
-            "id": 101,
+            "id": 64,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1680,7 +1690,7 @@
             }
         },
         {
-            "id": 102,
+            "id": 65,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1730,7 +1740,7 @@
             }
         },
         {
-            "id": 103,
+            "id": 66,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1780,7 +1790,7 @@
             }
         },
         {
-            "id": 104,
+            "id": 67,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1830,7 +1840,7 @@
             }
         },
         {
-            "id": 105,
+            "id": 68,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1880,7 +1890,7 @@
             }
         },
         {
-            "id": 106,
+            "id": 69,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1930,7 +1940,7 @@
             }
         },
         {
-            "id": 107,
+            "id": 70,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1980,7 +1990,7 @@
             }
         },
         {
-            "id": 108,
+            "id": 71,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2030,7 +2040,7 @@
             }
         },
         {
-            "id": 109,
+            "id": 72,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2080,7 +2090,7 @@
             }
         },
         {
-            "id": 110,
+            "id": 73,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2130,7 +2140,7 @@
             }
         },
         {
-            "id": 111,
+            "id": 74,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2180,7 +2190,7 @@
             }
         },
         {
-            "id": 112,
+            "id": 75,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2230,13 +2240,13 @@
             }
         },
         {
-            "id": 113,
+            "id": 76,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": -2.5,
-                        "y": 7.776
+                        "x": -22.715,
+                        "y": 6.823
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2251,7 +2261,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "fire bird",
                     "layer": 16,
-                    "flipX": false,
+                    "flipX": true,
                     "flipY": false,
                     "Native": true,
                     "gridX": 12.0,
@@ -2271,7 +2281,7 @@
                         "y": 0.0
                     },
                     "acceleration": {
-                        "x": 0.0,
+                        "x": -0.0,
                         "y": 0.0
                     },
                     "accel_strength": 500.0,
@@ -2355,7 +2365,7 @@
                                 {
                                     "name": "testCounter",
                                     "type": 0,
-                                    "value": 0.0,
+                                    "value": 5506.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -2423,7 +2433,7 @@
             }
         },
         {
-            "id": 114,
+            "id": 77,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy child",
@@ -2439,7 +2449,7 @@
                         "x": 2.0,
                         "y": 1.0
                     },
-                    "parent": 113
+                    "parent": 76
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
@@ -2495,12 +2505,12 @@
             }
         },
         {
-            "id": 115,
+            "id": 78,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player",
                     "position": {
-                        "x": 10.998,
+                        "x": -2.278,
                         "y": 11.597
                     },
                     "rotation": {
@@ -2601,12 +2611,12 @@
             }
         },
         {
-            "id": 116,
+            "id": 79,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 10.998,
+                        "x": -2.278,
                         "y": 11.597
                     },
                     "rotation": {
@@ -2622,6 +2632,271 @@
                 "struct Uma_ECS::Camera": {
                     "zoom": 1.5,
                     "followPlayer": true
+                }
+            }
+        },
+        {
+            "id": 80,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": -42.416,
+                        "y": 6.823
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.192,
+                        "y": 0.523
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "fire bird",
+                    "layer": 16,
+                    "flipX": true,
+                    "flipY": false,
+                    "Native": true,
+                    "gridX": 12.0,
+                    "gridY": 4.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": -0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 500.0,
+                    "fric_coeff": 5.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 3.598
+                            },
+                            "size": {
+                                "x": 23.7,
+                                "y": 5.4
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 18,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": -5.098
+                            },
+                            "size": {
+                                "x": 25.5,
+                                "y": 4.296
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 8,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BirdEnemy.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 100.0,
+                                    "min": 0.0,
+                                    "max": 500.0,
+                                    "isSlider": true
+                                },
+                                {
+                                    "name": "name",
+                                    "type": 3,
+                                    "value": "bird",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "rotationSpeed",
+                                    "type": 0,
+                                    "value": 45.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "isActive",
+                                    "type": 2,
+                                    "value": true,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "testCounter",
+                                    "type": 0,
+                                    "value": 5506.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "moveDistance",
+                                    "type": 0,
+                                    "value": 50.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/testEnemy2.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "name",
+                                    "type": 3,
+                                    "value": "circle",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "isActive",
+                                    "type": 2,
+                                    "value": true,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 100.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Enemy": {
+                    "mSpeed": 1.0
+                },
+                "struct Uma_ECS::Animator": {
+                    "autoPlay": true,
+                    "initialClip": "idle",
+                    "clips": [
+                        {
+                            "name": "idle",
+                            "framesX": 12,
+                            "framesY": 4,
+                            "startFrame": 0,
+                            "frameCount": 10,
+                            "speed": 10.0,
+                            "loop": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 81,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy child",
+                    "position": {
+                        "x": 15.6,
+                        "y": 1.799
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 1.0
+                    },
+                    "parent": 80
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "kappa_statue",
+                    "layer": 16,
+                    "flipX": false,
+                    "flipY": false,
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 500.0,
+                    "fric_coeff": 5.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 2.0,
+                                "y": 2.0
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 8,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
                 }
             }
         }

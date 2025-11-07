@@ -1,8 +1,6 @@
 --basically include
 local StateMachine = require("StateMachine")
-local WalkState = require("WalkState")
-local ChaseState = require("ChaseState")
-local IdleState = require("IdleState")
+local WalkState2 = require("WalkState2")
 
 ExposedVars = {
     speed = 100.0,
@@ -29,12 +27,10 @@ function Start()
 
     fsm = StateMachine:new(thisEntity)
     --add states here
-    fsm:addState("WalkState", WalkState)
-    fsm:addState("ChaseState", ChaseState)
-    fsm:addState("IdleState", IdleState)
+    fsm:addState("WalkState2", WalkState2)
     --add whatever state else
     -- Set initial state
-    fsm:changeState("IdleState")
+    fsm:changeState("WalkState2")
     
     local myTransform = GetTransform(EntityID)
     if myTransform then
@@ -58,24 +54,6 @@ function Update(dt)
         fsm:update(dt)
     end
 
-    local rb = GetRigidBody()
-    if rb then
-        local isMoving = (rb.velocity.x ~= 0 or rb.velocity.y ~= 0)
-        
-        if isMoving then
-            if not isWalk then
-                PlaySound("footsteps", 1, -1)
-                isWalk = true
-            end
-        else
-            if isWalk then
-                StopSound("footsteps")
-                isWalk = false
-            end
-        end
-    end
-
-
     --local rb = GetRigidBody()
     if transform then 
         --rb.velocity.x = -200 * speed * dt
@@ -94,43 +72,13 @@ function Update(dt)
         --    end
         --end
 
-        if KeyReleased(KEY_V) then 
-            Play3DSound("explosion", 1, transform.position.x, transform.position.y, 0)
-        end
-
     else
-        Log("components are missing");
+        Log("components are missing")
     end
-
-
-    if KeyReleased(KEY_O) then 
-        PlaySound("cave", 0.1, -1)
-    end
-    
-
-    --if KeyPressed(KEY_W) then 
-    --    Log("W IS PRESSED")
-    --elseif KeyDown(KEY_W) then 
-    --    Log("W IS DOWN")
-    --elseif KeyReleased(KEY_W) then 
-    --    Log("W IS RELEASE")
-    --end
-    
-    --transform.scale = 1.1 * transform.scale
-    
-    --Log("Enemy position: " .. transform.position.x)
 end
 
 function OnCollisionEnter(otherEntity)
     Log(name .. " -- Collision entered -- " .. otherEntity)
-    local transform = GetTransform(EntityID)
-    if transform then
-        Play3DSound("hurt",transform.position.x, transform.position.y, 1, 0)
-    end
-    transform = GetTransform(otherEntity)
-    if transform then
-        --playSound("")
-    end
 end
 
 function OnCollision(otherEntity)

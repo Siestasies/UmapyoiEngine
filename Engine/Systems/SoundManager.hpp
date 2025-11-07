@@ -83,6 +83,16 @@ namespace Uma_Engine
 				*/
 				void playSound(SoundInfo* info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
+				// Sound playback overload for 3d audio
+				/*!
+				*\brief plays the sound file
+				*\param info - sound info
+				*\param pos - set 3d listener pos
+				*\param vel - set 3d listener vel
+				*\param loopCount - number of loops to play the sound
+				*\param volume - volume of the sound
+				*\param pitch - pitch of the sound
+				*/
 				void playSound(SoundInfo* info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
 				/*!
@@ -134,6 +144,13 @@ namespace Uma_Engine
 				void setChannelGroupVolume(float volume, SoundType type);
 
 				//set the listener position for the update loop to update
+				/*!
+				*\brief sets the 3d positon,vel forward and up of the 3d listener
+				*\param pos - position of the listener
+				*\param vel - velocity of the listener
+				*\param forward - direction of the listener
+				*\param up - up vector of the listener
+				*/
 				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
 
 		private:
