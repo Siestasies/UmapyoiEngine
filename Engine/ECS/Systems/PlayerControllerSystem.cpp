@@ -124,7 +124,6 @@ namespace Uma_ECS
         auto& rb = pCoordinator->GetComponent<RigidBody>(player);
 
         Vec2 targetAccel = { 0, 0 };
-        bool played = false;
 
         if (inputState.moveRight)   targetAccel.x += rb.accel_strength;
         if (inputState.moveLeft )   targetAccel.x -= rb.accel_strength;
