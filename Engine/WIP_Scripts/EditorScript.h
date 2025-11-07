@@ -9,6 +9,10 @@
 \par    E-mail: b.muhammadshahir@digipen.edu
 \par    DigiPen login: b.muhammadshahir
 
+\co-author Jedrek Lee Jing Wei (Canvas, Button, UI)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
 \brief
 Editor behavior script that handles non scene-specific functionality.
 This replaces the old EditorScene class inheritance approach.
@@ -280,15 +284,6 @@ namespace Uma_Engine
 
             std::cout << "Scene saved to: " << filepath << std::endl;
         }
-
-        //void LoadScene(const std::string& filepath)
-        //{
-        //    GetCoordinator().DestroyAllEntities();
-
-        //    m_Scene->gGameSerializer.load(filepath);
-
-        //    std::cout << "Scene loaded from: " << filepath << std::endl;
-        //}
 
         void ReLoadScene()
         {
