@@ -1,6 +1,6 @@
 --basically include
 local StateMachine = require("StateMachine")
-local WalkState = require("WalkState")
+local WalkState2 = require("WalkState2")
 
 ExposedVars = {
     speed = 100.0,
@@ -27,7 +27,7 @@ function Start()
 
     fsm = StateMachine:new(thisEntity)
     --add states here
-    fsm:addState("WalkState2", WalkState)
+    fsm:addState("WalkState2", WalkState2)
     --add whatever state else
     -- Set initial state
     fsm:changeState("WalkState2")
@@ -73,13 +73,12 @@ function Update(dt)
         --end
 
     else
-        Log("components are missing");
+        Log("components are missing")
     end
 end
 
 function OnCollisionEnter(otherEntity)
     Log(name .. " -- Collision entered -- " .. otherEntity)
-    end
 end
 
 function OnCollision(otherEntity)
