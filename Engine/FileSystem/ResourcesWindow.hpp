@@ -1,3 +1,28 @@
+/*!
+\file   ResourcesWindow.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines ImGui-based resource management window for engine asset loading and inspection.
+
+Provides visual interface for textures, fonts, and sounds with drag-and-drop support.
+Displays loaded resources in collapsible tables showing name, path, and metadata (texture ID,
+font size, sound type). Handles file drops from OS with automatic type detection and popup
+dialogs for resource naming and configuration. Supports texture formats (png, jpg, jpeg, bmp),
+font formats (ttf, otf), and audio formats (mp3, wav, ogg). Includes unload functionality for
+resource cleanup. Integrates with ResourcesManager for actual asset loading/unloading operations.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 // Engine/FileSystem/ResourcesWindow.hpp
 #pragma once
 #include "Systems/ResourcesManager.hpp"
@@ -12,6 +37,9 @@ namespace Uma_Engine
     class ResourcesWindow
     {
     public:
+        /**
+         * \brief Default constructor initializing resource window state
+         */
         ResourcesWindow()
             : m_ResourcesManager(nullptr)
             , m_TexturePopupJustOpened(false)
@@ -20,8 +48,15 @@ namespace Uma_Engine
         {
         }
 
+        /**
+         * \brief Sets the ResourcesManager instance for asset operations
+         * \param rm Pointer to ResourcesManager
+         */
         void SetResourcesManager(ResourcesManager* rm) { m_ResourcesManager = rm; }
 
+        /**
+         * \brief Renders the complete resources window including all tabs and popups
+         */
         void Render()
         {
             if (!m_ResourcesManager) return;
@@ -64,6 +99,9 @@ namespace Uma_Engine
         int m_SoundType = 0;
         bool m_SoundPopupJustOpened;
 
+        /**
+         * \brief Renders textures section with table displaying loaded texture assets
+         */
         void RenderTextures()
         {
             if (ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen))
@@ -121,6 +159,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders fonts section with table displaying loaded font assets
+         */
         void RenderFonts()
         {
             if (ImGui::CollapsingHeader("Fonts"))
@@ -178,6 +219,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders sounds section with table displaying loaded audio assets
+         */
         void RenderSounds()
         {
             if (ImGui::CollapsingHeader("Sounds"))
@@ -235,6 +279,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders drag-and-drop target area for file imports
+         */
         void RenderDropTarget()
         {
             ImGui::Spacing();
@@ -268,7 +315,7 @@ namespace Uma_Engine
 
                         std::string filepath = std::string(droppedPath);
                         filepath = filepath.substr(filepath.find("Assets"));
-                        for_each(std::begin(filepath), std::end(filepath), [](char& c) 
+                        for_each(std::begin(filepath), std::end(filepath), [](char& c)
                             {
                                 c = (c == '\\') ? '/' : c;
                             });
@@ -282,6 +329,10 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Handles dropped file by detecting type and triggering appropriate popup
+         * \param filePath Path to dropped file relative to Assets folder
+         */
         void HandleResourceDrop(const std::string& filePath)
         {
             namespace fs = std::filesystem;
@@ -338,6 +389,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders modal popup for texture import with name input
+         */
         void RenderTexturePopup()
         {
             // Open popup if flag is set
@@ -394,6 +448,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders modal popup for font import with name and size inputs
+         */
         void RenderFontPopup()
         {
             // Open popup if flag is set
@@ -462,6 +519,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders modal popup for sound import with name and type inputs
+         */
         void RenderSoundPopup()
         {
             // Open popup if flag is set

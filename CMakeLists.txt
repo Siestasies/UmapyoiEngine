@@ -17,6 +17,7 @@ if(MSVC)
     add_compile_options(/wd4201)  # Suppress warning for unnamed struct/union
     add_compile_options(/wd26495)  # Suppress warning for unnamed struct/union
     add_compile_options(/wd4005)
+    add_compile_options(/wd26439)
 
 endif()
 

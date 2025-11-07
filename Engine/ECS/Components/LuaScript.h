@@ -1,3 +1,29 @@
+/*!
+\file   LuaScript.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines Lua scripting component for entity behavior programming via embedded Lua scripts.
+
+Contains LuaScript component with multiple script instances per entity. Each LuaScriptInstance
+maintains isolated Sol2 environment, exposed variables for editor manipulation, and runtime state
+tracking. Supports variable types (float, int, bool, string) with optional slider ranges for
+ImGui visualization. Provides JSON serialization for script paths, enabled state, and exposed
+variables. Script environments use shared_ptr to prevent Sol2 crashes during component array
+reordering. Core component for gameplay scripting with full ECS integration via LuaScriptingSystem.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
+
 #pragma once
 
 #include <string>
