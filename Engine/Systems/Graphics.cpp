@@ -1414,7 +1414,7 @@ void main()
 
     GLuint Graphics::CreateTextShader()
     {
-        const char* vertexShaderSource = R"(
+        const char* textVertexShaderSource = R"(
         #version 450 core
         layout (location = 0) in vec4 vertex;
         out vec2 TexCoords;
@@ -1426,7 +1426,7 @@ void main()
         }
     )";
 
-        const char* fragmentShaderSource = R"(
+        const char* textFragmentShaderSource = R"(
         #version 450 core
         in vec2 TexCoords;
         out vec4 FragColor;
@@ -1439,12 +1439,14 @@ void main()
         }
     )";
 
-        return CreateShader(vertexShaderSource, fragmentShaderSource);
+        return CreateShader(textVertexShaderSource, textFragmentShaderSource);
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
         const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha)
     {
+        (void)uvSize;
+        (void)uvOffset;
         if (!mInitialized || textureID == 0) return;
 
         glUseProgram(mShaderProgram);

@@ -292,6 +292,8 @@ namespace Uma_ECS
                 {
                     std::string debug = "failed to create entity : ";
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+
+                    return static_cast<Entity>(-1);
                 }
                 
             });

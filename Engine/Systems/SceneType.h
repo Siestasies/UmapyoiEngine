@@ -17,6 +17,7 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 #pragma once
+
 // ECS Core
 #include "ECS/Core/Coordinator.hpp"
 
@@ -50,7 +51,7 @@ All rights reserved.
 #include "../UI/Components/Text.h"
 
 // Engine Systems
-#include "Systems/InputSystem.h"
+//#include "Systems/InputSystem.h"
 #include "Systems/HybridInputSystem.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/SoundManager.hpp"

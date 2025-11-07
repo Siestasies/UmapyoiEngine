@@ -7,11 +7,14 @@ namespace Uma_ECS
 
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
+            (void)value;
+            (void)allocator;
         }
 
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
+            (void)value;
         }
 	};
 }

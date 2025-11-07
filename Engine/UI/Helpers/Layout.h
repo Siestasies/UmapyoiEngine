@@ -100,9 +100,9 @@ namespace Uma_UI
     {
         // 1. Get parent bounds in NDC
         float parentLeft = parentRect.Left();
-        float parentRight = parentRect.Right();
+        //float parentRight = parentRect.Right();
         float parentBottom = parentRect.Bottom();
-        float parentTop = parentRect.Top();
+        //float parentTop = parentRect.Top();
         float parentWidth = parentRect.width;
         float parentHeight = parentRect.height;
 

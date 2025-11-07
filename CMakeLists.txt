@@ -16,6 +16,7 @@ if(MSVC)
     add_compile_options(/wd4996)  # Suppress 'deprecated' warnings (e.g., use of unsafe functions)
     add_compile_options(/wd4201)  # Suppress warning for unnamed struct/union
     add_compile_options(/wd26495)  # Suppress warning for unnamed struct/union
+    add_compile_options(/wd4005)
 
 endif()
 

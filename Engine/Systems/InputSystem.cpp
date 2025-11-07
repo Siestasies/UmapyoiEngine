@@ -218,7 +218,7 @@ namespace Uma_Engine
     bool InputSystem::MouseButtonReleased(int button) { return (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST) ? !sMouseButtons[button] && sMouseButtonsPrevFrame[button] : false; }
 
     void InputSystem::GetMousePosition(double& x, double& y) { x = sMouseX; y = sMouseY; }
-    Vec2 InputSystem::GetMousePosition() { return Vec2(sMouseX, sMouseY); }
+    Vec2 InputSystem::GetMousePosition() { return Vec2(static_cast<float>(sMouseX), static_cast<float>(sMouseY)); }
     double InputSystem::GetMouseX() { return sMouseX; }
     double InputSystem::GetMouseY() { return sMouseY; }
 

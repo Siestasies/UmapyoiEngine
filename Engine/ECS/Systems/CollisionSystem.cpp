@@ -215,7 +215,7 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     ComponentArray<RigidBody>& rbArray,
     float dt)
 {
-
+    (void)dt;
     auto& c1 = cArray.GetData(e1);
     auto& c2 = cArray.GetData(e2);
 
@@ -438,8 +438,7 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
 
     if (e1CanMove && e2CanMove)
     {
-        // Both dynamic - split correction by mass ratio
-        float totalMass = 2.0f; // Assuming equal mass; use actual masses if available
+        // dynamic
         tf1.position += normal * (correctionAmount * 0.5f);
         tf2.position -= normal * (correctionAmount * 0.5f);
     }
@@ -634,7 +633,7 @@ void Uma_ECS::CollisionSystem::DebugRender()
                 renderWorldPos.y + halfSize.y
             };
 
-            LayerMask effectiveLayer = c.GetEffectiveLayer(i);
+            //LayerMask effectiveLayer = c.GetEffectiveLayer(i);
             LayerMask effectiveMask = c.GetEffectiveMask(i);
 
             // Determine color based on purpose

@@ -55,7 +55,7 @@ namespace Uma_Engine
         }
 
     private:
-        void HandleInputEvents(double prevMouseX, double prevMouseY)
+        void HandleInputEvents(double prevMX, double prevMY)
         {
             // ================================================================
             // CRITICAL PRIORITY: Window close (never blocked)
@@ -232,8 +232,8 @@ namespace Uma_Engine
             double currMouseX = GetMouseX();
             double currMouseY = GetMouseY();
 
-            double deltaX = currMouseX - prevMouseX;
-            double deltaY = currMouseY - prevMouseY;
+            double deltaX = currMouseX - prevMX;
+            double deltaY = currMouseY - prevMY;
 
             if (std::abs(deltaX) > 0.0001 || std::abs(deltaY) > 0.0001)
             {

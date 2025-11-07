@@ -153,7 +153,10 @@ namespace Uma_Engine
         void Emit(Args&&... args)
         {
             static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+#pragma warning(push)
+#pragma warning(disable: 4244)
             T event(std::forward<Args>(args)...);
+#pragma warning(pop)
             Emit(event);
         }
 

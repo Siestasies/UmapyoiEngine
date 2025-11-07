@@ -128,6 +128,7 @@ namespace Uma_Engine
 
             pEventSystem->Subscribe<RefreshDirectoryRequest>(
               [this](const RefreshDirectoryRequest& e) {
+                    (void)e;
                     RefreshDirectory();
               });
         }
@@ -208,7 +209,6 @@ namespace Uma_Engine
             if (!dropSource.empty() && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path() && ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
                     FilePayload plData = *(FilePayload*)pl->Data;
-                    bool success = false;
                     try
                     {
                         fs::copy(plData.filepath, mCurrPath.parent_path(), std::filesystem::copy_options::recursive);
@@ -362,7 +362,6 @@ namespace Uma_Engine
                 if (entry.isFolder && ImGui::BeginDragDropTarget() && !dropSource.empty()) {
                     if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
                         FilePayload plData = *(FilePayload*)pl->Data;
-                        bool success = false;
                         try
                         {
                             fs::copy(plData.filepath, entry.path, std::filesystem::copy_options::recursive);

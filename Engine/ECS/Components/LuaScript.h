@@ -7,7 +7,10 @@
 #include "RapidJSON/document.h"
 
 // using sol to do scripting
+#pragma warning(push)
+#pragma warning(disable: 5321)
 #include <sol/sol.hpp>
+#pragma warning(pop)
 
 namespace Uma_ECS
 {

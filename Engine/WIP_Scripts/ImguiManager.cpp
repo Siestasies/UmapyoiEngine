@@ -150,7 +150,10 @@ namespace Uma_Engine
         pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         pEventSystem->Subscribe<IMGUIStopRequest>([this](const IMGUIStopRequest& e)
-             { m_playState = PlayState::Stopped; });
+             { 
+                (void)e;
+                m_playState = PlayState::Stopped; 
+            });
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
             { 
                 m_selectedEntity = e.entity;
@@ -163,10 +166,12 @@ namespace Uma_Engine
             });
         pEventSystem->Subscribe<EntityPickedEvent>([this](const EntityPickedEvent& e)
             { 
+                (void)e;
                 m_selectedEntity = e.entity;
             });
         pEventSystem->Subscribe<EntityDroppedEvent>([this](const EntityDroppedEvent& e)
             {
+                (void)e;
                 m_selectedEntity = static_cast<Entity>(-1);
             });
 

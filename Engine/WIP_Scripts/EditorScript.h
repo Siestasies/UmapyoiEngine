@@ -17,7 +17,8 @@ This replaces the old EditorScene class inheritance approach.
 #include <Events/AudioEvents.h>
 
 // Temp
-#include <GLFW/glfw3.h>
+//#define APIENTRY __stdcall
+//#include <GLFW/glfw3.h>
 
 namespace Uma_Engine
 {
@@ -215,6 +216,7 @@ namespace Uma_Engine
                 eventSystem->Subscribe<CreateUIRequestEvent>(
                     [this, &eventSystem](const CreateUIRequestEvent& e)
                     {
+                        (void)e;
                         CreateUI();
                     }
                 ));
@@ -1384,8 +1386,8 @@ namespace Uma_Engine
 
         void CreateUI()
         {
-            Entity canvas;
-            if (canvas = CreateCanvas() != static_cast<Entity>(-1))
+            Entity canvas = CreateCanvas();
+            if (canvas != static_cast<Entity>(-1))
             {
                 CreateButtonWithText("Play explosion sound", Vec2(0, 100), Vec2(300.f, 50.f), canvas);
 

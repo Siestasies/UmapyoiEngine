@@ -183,7 +183,7 @@ namespace Uma_Engine
                 if (Uma_UI::InputFilter::ShouldBlockMouseInput())
                     return;
 
-                Vec2 mousePos(event.x, event.y);
+                Vec2 mousePos(static_cast<float>(event.x), static_cast<float>(event.y));
 
                 // If we have a picked entity, check for gizmo interaction first
                 if (mState.pickedEntity.has_value())
@@ -233,7 +233,7 @@ namespace Uma_Engine
 
         if (mState.isDragging && mState.pickedEntity.has_value())
         {
-            Vec2 currentMouse(event.x, event.y);
+            Vec2 currentMouse(static_cast<float>(event.x), static_cast<float>(event.y));
             mTransformManipulator.UpdateDrag(currentMouse, mState, mConfig);
         }
     }

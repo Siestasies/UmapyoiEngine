@@ -65,16 +65,21 @@ namespace Uma_UI
             mScreenSize = {1280.f, 720.f};
         }
 
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) { mScreenSize.x = e.width, mScreenSize.y = e.height; });
+        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) 
+            { 
+                mScreenSize.x = static_cast<float>(e.width), mScreenSize.y = static_cast<float>(e.height);
+            });
 
         // cache callback
         // TEMP SOLUTION FOR UI
         callbacks["UI_CALLBACK_PLAY_SOUND"] = ([this](Uma_ECS::Entity btn)
             {
-                pEventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0, 0, 1, 0);
+                (void)btn;
+                pEventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0.0f, 0.0f, 1.0f, 0.0f);
             });
         callbacks["UI_CALLBACK_LOAD_SCENE"] = ([this](Uma_ECS::Entity btn)
             {
+                (void)btn;
                 pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>("test_default.scn");
             });
 

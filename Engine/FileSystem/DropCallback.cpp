@@ -6,6 +6,8 @@ namespace Uma_Engine
 
     void FileDropHandler::DropCallback(GLFWwindow* window, int count, const char** paths)
     {
+        (void)window;
+
         for (int i = 0; i < count; i++)
         {
             aDroppedFiles.push_back(paths[i]);

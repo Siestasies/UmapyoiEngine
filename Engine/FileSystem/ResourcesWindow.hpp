@@ -296,7 +296,12 @@ namespace Uma_Engine
 
             std::string ext = path.extension().string();
             std::string name = path.stem().string();
-            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            std::transform(
+                ext.begin(),
+                ext.end(),
+                ext.begin(),
+                [](unsigned char c) { return static_cast<char>(std::tolower(c)); }
+            );
 
             std::cout << "[ResourcesWindow] Processing: " << name << ext << std::endl;
 
