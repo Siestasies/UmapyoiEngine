@@ -193,7 +193,6 @@ namespace Uma_Engine
 
             // for async loading
             std::future<void> m_LoadFuture;
-
     };
 
     class SceneScript
