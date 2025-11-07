@@ -1,34 +1,52 @@
+/*!
+\file   Image.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the Image UI component for rendering textured sprites.
+
+This header provides the Image class, which stores texture references,
+color tinting, and visibility settings for UI sprites.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"
 #include "rapidjson/document.h"
-
 #include <string>
 
 namespace Uma_UI
 {
-    /**
+    /*!
      * \class Image
-     * \brief Renders a textured sprite within a RectTransform
+     * \brief Renders a textured sprite within a RectTransform bounds.
      */
     class Image
     {
     public:
-        // Texture
         std::string textureName = "";
-
-        // Visual
-        Uma_UI::Colour colour = Uma_UI::Colour::White();  // Color tint
+        Uma_UI::Colour colour = Uma_UI::Colour::White();
         bool visible = true;
 
-        // Serialization
+        /*!
+         * \brief Serializes image properties to a JSON value.
+         * \param value JSON value to populate.
+         * \param allocator JSON document allocator.
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
-
-            value.AddMember("textureName",
-                rapidjson::Value(textureName.c_str(), allocator),
-                allocator);
+            value.AddMember("textureName", rapidjson::Value(textureName.c_str(), allocator), allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
             col.AddMember("r", colour.r, allocator);
@@ -40,6 +58,10 @@ namespace Uma_UI
             value.AddMember("visible", visible, allocator);
         }
 
+        /*!
+         * \brief Deserializes image properties from a JSON value.
+         * \param value JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& value)
         {
             textureName = value["textureName"].GetString();

@@ -1,3 +1,24 @@
+/*!
+\file   RectTransform.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the RectTransform UI component for positioning and sizing.
+
+This header provides the RectTransform class, which implements Unity-style
+anchored rectangles with pivot points and hierarchical layout support.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"
@@ -5,34 +26,26 @@
 
 namespace Uma_UI
 {
-    /**
+    /*!
      * \class RectTransform
-     * \brief Unity-style anchored rectangle with pivot and size delta
+     * \brief Unity-style anchored rectangle with pivot and size delta for UI layout.
      */
     class RectTransform
     {
     public:
-        // Anchoring (normalized parent space [0,1])
-        Vec2 anchorMin = Vec2(0.5f, 0.5f);  // Bottom-left anchor
-        Vec2 anchorMax = Vec2(0.5f, 0.5f);  // Top-right anchor
-
-        // Pivot (normalized local space [0,1])
-        Vec2 pivot = Vec2(0.5f, 0.5f);  // 0,0 = bottom-left, 1,1 = top-right
-
-        // Position offset from anchors (pixels or percentage)
+        Vec2 anchorMin = Vec2(0.5f, 0.5f);
+        Vec2 anchorMax = Vec2(0.5f, 0.5f);
+        Vec2 pivot = Vec2(0.5f, 0.5f);
         Vec2 anchoredPosition = Vec2(0.0f, 0.0f);
-
-        // Size when not stretching (pixels)
         Vec2 sizeDelta = Vec2(100.0f, 100.0f);
+        Uma_ECS::Entity parent = static_cast<Uma_ECS::Entity>(-1);
+        Uma_UI::Rect computedRect;
+        bool isDirty = true;
 
-        // Hierarchy
-        Uma_ECS::Entity parent = static_cast<Uma_ECS::Entity>(-1);  // Invalid = root
-
-        // Computed values (filled by LayoutPass)
-        Uma_UI::Rect computedRect;  // Final NDC rectangle [-1,1]
-        bool isDirty = true;  // Needs recomputation
-
-        // Helper: Apply a preset
+        /*!
+         * \brief Applies a predefined anchor preset to this transform.
+         * \param preset The anchor preset configuration to apply.
+         */
         void ApplyPreset(const Uma_UI::AnchorPreset& preset)
         {
             anchorMin = preset.anchorMin;
@@ -41,24 +54,33 @@ namespace Uma_UI
             isDirty = true;
         }
 
-        // Helper: Check if stretching horizontally
+        /*!
+         * \brief Checks if the transform stretches horizontally.
+         * \return True if anchorMin.x != anchorMax.x.
+         */
         bool IsStretchingHorizontal() const
         {
             return anchorMin.x != anchorMax.x;
         }
 
-        // Helper: Check if stretching vertically
+        /*!
+         * \brief Checks if the transform stretches vertically.
+         * \return True if anchorMin.y != anchorMax.y.
+         */
         bool IsStretchingVertical() const
         {
             return anchorMin.y != anchorMax.y;
         }
 
-        // Serialization
+        /*!
+         * \brief Serializes rect transform properties to a JSON value.
+         * \param value JSON value to populate.
+         * \param allocator JSON document allocator.
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
 
-            // Anchors
             rapidjson::Value aMin(rapidjson::kObjectType);
             aMin.AddMember("x", anchorMin.x, allocator);
             aMin.AddMember("y", anchorMin.y, allocator);
@@ -69,19 +91,16 @@ namespace Uma_UI
             aMax.AddMember("y", anchorMax.y, allocator);
             value.AddMember("anchorMax", aMax, allocator);
 
-            // Pivot
             rapidjson::Value piv(rapidjson::kObjectType);
             piv.AddMember("x", pivot.x, allocator);
             piv.AddMember("y", pivot.y, allocator);
             value.AddMember("pivot", piv, allocator);
 
-            // Position
             rapidjson::Value pos(rapidjson::kObjectType);
             pos.AddMember("x", anchoredPosition.x, allocator);
             pos.AddMember("y", anchoredPosition.y, allocator);
             value.AddMember("anchoredPosition", pos, allocator);
 
-            // Size
             rapidjson::Value size(rapidjson::kObjectType);
             size.AddMember("x", sizeDelta.x, allocator);
             size.AddMember("y", sizeDelta.y, allocator);
@@ -90,9 +109,12 @@ namespace Uma_UI
             value.AddMember("parent", parent, allocator);
         }
 
+        /*!
+         * \brief Deserializes rect transform properties from a JSON value.
+         * \param value JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& value)
         {
-            // Anchors
             const auto& aMin = value["anchorMin"];
             anchorMin.x = aMin["x"].GetFloat();
             anchorMin.y = aMin["y"].GetFloat();
@@ -101,24 +123,20 @@ namespace Uma_UI
             anchorMax.x = aMax["x"].GetFloat();
             anchorMax.y = aMax["y"].GetFloat();
 
-            // Pivot
             const auto& piv = value["pivot"];
             pivot.x = piv["x"].GetFloat();
             pivot.y = piv["y"].GetFloat();
 
-            // Position
             const auto& pos = value["anchoredPosition"];
             anchoredPosition.x = pos["x"].GetFloat();
             anchoredPosition.y = pos["y"].GetFloat();
 
-            // Size
             const auto& size = value["sizeDelta"];
             sizeDelta.x = size["x"].GetFloat();
             sizeDelta.y = size["y"].GetFloat();
 
             parent = value["parent"].GetUint();
 
-            // Mark dirty for recomputation
             isDirty = true;
             computedRect = Uma_UI::Rect();
         }
