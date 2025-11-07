@@ -98,34 +98,101 @@ namespace Uma_Engine
             ~Scene();
 
             // Lifecycle Stuff (called by SceneManager)
+             /**
+             * \brief Loads the Scene.
+             */
             void Load();
+
+            /**
+            * \brief Loads the Scene asynchronously.
+            */
             void LoadAsync();
+
+            /**
+            * \brief Unloads the Scene.
+            */
             void Unload();
+
+            /**
+            * \brief Updates the Scene.
+            * \param dt delta time
+            */
             void Update(float dt);
+
+            /**
+            * \brief Updates the only selected parts of the Scene.
+            * \param dt delta time
+            */
             void UpdateSelective(float dt);
 
             // Script management
+            /**
+            * \brief Attaches a SceneScript object to a Scene.
+            */
             void AttachScript(std::shared_ptr<SceneScript> script);
+
+            /**
+            * \brief Detaches a SceneScript object from a Scene.
+            * \parama script name name of script
+            */
             void DetachScript(const std::string& scriptName);
+
+            /**
+            * \brief Detaches all SceneScript objects from a Scene.
+            */
             void DetachAllScripts();
+
+            /**
+            * \brief Checks if a Scene has a certain SceneScript.
+            * \param scriptName name of script
+            * \return bool true if found
+            */
             bool HasScript(const std::string& scriptName) const;
+
+            /**
+            * \brief Returns string of attached SceneScript names.
+            * \return vector<string> sting of names
+            */
             std::vector<std::string> GetAttachedScriptNames() const;
 
             // Entity stuff
+            /**
+            * \brief Creates an entity.
+            * \return Entity
+            */
             Uma_ECS::Entity CreateEntity();
+
+            /**
+            * \brief Destroys a specified entity.
+            * \param entity entity to be destroyed
+            */
             void DestroyEntity(Uma_ECS::Entity entity);
 
             // Serialization
+            /**
+            * \brief Saves the scene to a specified filepath.
+            * \param filepath file path to save to
+            */
             void Serialize(const std::string& filepath = "");
+
+            /**
+            * \brief Loads the scene to a specified filepath.
+            * \param filepath file path to load from
+            */
             void Deserialize(const std::string& filepath = "");
 
+            /**
+            * \brief Getters for the scene object
+            */
             SceneState GetState() const { return m_State; }
             float GetLoadProgress() const { return m_LoadProgress; }
             bool IsLoaded() const { return m_State == SceneState::SCENE_RUNNING; }
             const std::string& GetName() const { return m_Name; }
             const std::string& GetFilePath() const { return m_FilePath; }
 
-            // System accessors (for scripts to use)
+            /**
+            * \brief Getters for ECS systems
+            */
             Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; }
             Uma_Engine::HybridInputSystem* GetInputSystem() { return m_HybridInputSystem; }
             Uma_Engine::Graphics* GetGraphics() { return m_Graphics; }
@@ -172,10 +239,30 @@ namespace Uma_Engine
             std::vector<std::shared_ptr<SceneScript>> m_AttachedScripts;
 
         private:
+            /**
+            * \brief Initializes ECS systems
+            */
             void InitializeECS();
+
+            /**
+            * \brief Initializes UI systems
+            */
             void InitializeUISystem();
+
+            /**
+            * \brief Updates ECS systems
+            * \param dt delta time
+            */
             void UpdateECSSystems(float dt);
+
+            /**
+            * \brief Updates ECS systems using fixed dt
+            */
             void FixedUpdateECSSystems();
+
+            /**
+            * \brief Loads internal variables
+            */
             void LoadInternal();
 
             // Scene metadata
@@ -183,8 +270,6 @@ namespace Uma_Engine
             std::string m_FilePath;
             SceneState m_State = SceneState::SCENE_UNLOADED;
             float m_LoadProgress = 0.0f;
-
-            // Delta time smoothing
 
             // fixed timestamp accumulator
             float m_Accumulator = 0.0f;
@@ -202,19 +287,45 @@ namespace Uma_Engine
             virtual ~SceneScript() = default;
 
             // Lifecycle hooks - override these in derived scripts
+            /**
+            * \brief An initialize for SceneScript object
+            * \param scene reference to the scene to be attached to
+            */
             virtual void OnAttach(Scene* scene) { m_Scene = scene; }
+
+            /**
+            * \brief What the script will do when detached.
+            */
             virtual void OnDetach() {}
+
+            /**
+            * \brief What to do when the script is loaded.
+            */
             virtual void OnLoad() {}
+
+            /**
+            * \brief What to do when the script is unloaded.
+            */
             virtual void OnUnload() {}
+
+            /**
+            * \brief What to do when the script updating.
+            */
             virtual void OnUpdate(float dt) { UNREFERENCED_PARAMETER(dt); }
 
+            /**
+            * \brief Getter for name of the script
+            * \return string name of script
+            */
             const std::string& GetName() const { return m_Name; }
 
         protected:
             std::string m_Name;
             Scene* m_Scene = nullptr;
 
-            // Helper accessors for scripts
+            /**
+            * \brief Getters for scene ECS systems
+            */
             Uma_ECS::Coordinator& GetCoordinator() { return m_Scene->GetCoordinator(); }
             Uma_ECS::LuaScriptingSystem& GetLuascriptingSystem() { return *m_Scene->m_LuaScriptingSystem; }
             Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
