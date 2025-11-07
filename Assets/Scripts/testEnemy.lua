@@ -14,6 +14,8 @@ local fsm = nil
 
 local playerEntity = -1
 
+local isWalk = false;
+
 function Start()
     -- Global utilities (same for everyone)
     Log("Script started at " .. GetDeltaTime())
@@ -56,6 +58,24 @@ function Update(dt)
         fsm:update(dt)
     end
 
+    local rb = GetRigidBody()
+    if rb then
+        local isMoving = (rb.velocity.x ~= 0 or rb.velocity.y ~= 0)
+        
+        if isMoving then
+            if not isWalk then
+                PlaySound("footsteps", 1, -1)
+                isWalk = true
+            end
+        else
+            if isWalk then
+                StopSound("footsteps")
+                isWalk = false
+            end
+        end
+    end
+
+
     --local rb = GetRigidBody()
     if transform then 
         --rb.velocity.x = -200 * speed * dt
@@ -75,7 +95,7 @@ function Update(dt)
         --end
 
         if KeyReleased(KEY_V) then 
-            Play3DSound("explosion", transform.position.x, transform.position.y, 1, 0)
+            Play3DSound("explosion", 1, transform.position.x, transform.position.y, 0)
         end
 
     else
@@ -99,6 +119,14 @@ end
 
 function OnCollisionEnter(otherEntity)
     Log(name .. " -- Collision entered -- " .. otherEntity)
+    local transform = GetTransform(EntityID)
+    if transform then
+        Play3DSound("hurt",transform.position.x, transform.position.y, 1, 0)
+    end
+    transform = GetTransform(otherEntity)
+    if transform then
+        --playSound("")
+    end
 end
 
 function OnCollision(otherEntity)

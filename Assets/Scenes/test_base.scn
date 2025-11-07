@@ -71,6 +71,16 @@
                 "name": "cave",
                 "path": "Assets/sounds/cave.mp3",
                 "type": 1
+            },
+            {
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 1
+            },
+            {
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
+                "type": 1
             }
         ]
     },
