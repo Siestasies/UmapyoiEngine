@@ -1,18 +1,38 @@
---imports base class interfaces
+--! @file   ChaseState.lua
+--! @par    Project: GAM200
+--! @par    Course: CSD2401
+--! @par    Section A
+--! @par    Software Engineering Project 3
+
+--! @author Koh Kai Yang (100%)
+--! @par    E-mail: k.kaiyang@digipen.edu
+--! @par    DigiPen login: k.kaiyang
+
+--! @brief State for pursuing a player entity
+--! @details Smoothly accelerates toward the player's position using Vec2 math.
+--! Transitions to WalkState (M key) or IdleState (N key).
+
+--! All content (C) 2025 DigiPen Institute of Technology Singapore.
+--! All rights reserved.
+
 local BaseState = require("baseState")
 local Vec2 = require("Vec2")
 
+--! @class ChaseState
+--! @brief Player pursuit behavior with smooth acceleration
 local ChaseState = {}
-setmetatable(ChaseState, {__index = BaseState})  -- inherit from BaseState
-ChaseState.__index = ChaseState --for instances to fine walk state
+setmetatable(ChaseState, {__index = BaseState})
+ChaseState.__index = ChaseState
 
---declare new state which inherits from BaseState
+
+--! @brief Constructor for chase state
+--! @param fsm StateMachine Reference to the state machine
+--! @param parent table The parent entity with transform and rigidbody
+--! @return ChaseState A new chase state instance
 function ChaseState:new(fsm, parent)
-    -- Call parent constructor to set up basic state properties
     local instance = BaseState.new(self, fsm, parent)
-    -- Add your state-specific variables here
     
-    instance.playerPos = Vec2.new(0,0)
+    instance.playerPos = Vec2.new(0, 0)
     instance.speed = 10
     instance.currentAccel = Vec2.new(0, 0)
     instance.accelSmoothFactor = 15.0
@@ -20,10 +40,16 @@ function ChaseState:new(fsm, parent)
     return instance
 end
 
+
+--! @brief Called when entering chase state
+--! @details Logs entry message for debugging
 function ChaseState:enter()
     Log("entered the chase state")
 end
 
+
+--! @brief Called when exiting chase state
+--! @details Clears acceleration to stop movement
 function ChaseState:exit()
     Log("leaving the chase state")
     if self.parent:HasRigidBody() then
@@ -33,6 +59,10 @@ function ChaseState:exit()
     end
 end
 
+
+--! @brief Updates chase behavior each frame
+--! @details Finds player position, calculates movement vector, applies smoothed acceleration
+--! @param dt number Delta time since last frame
 function ChaseState:update(dt)
     if not self.parent or not self.parent.isValid then
         return
@@ -51,7 +81,7 @@ function ChaseState:update(dt)
     if self.parent:HasTransform() and self.parent:HasRigidBody() then
         local rb = self.parent:GetRigidBody()
         local pos = Vec2.new(self.parent:GetTransform().position.x , self.parent:GetTransform().position.y)
-        local moveVec = Vec2.new(self.playerPos.x - pos.x ,self.playerPos.y - pos.y)
+        local moveVec = Vec2.new(self.playerPos.x - pos.x , self.playerPos.y - pos.y)
         
         if moveVec.x ~= 0 or moveVec.y ~= 0 then
             local targetAccel = moveVec * self.speed

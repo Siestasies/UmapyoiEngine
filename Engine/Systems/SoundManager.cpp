@@ -1,5 +1,5 @@
 /*!
-\file   Sound.cpp
+\file   SoundManager.cpp
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -85,7 +85,7 @@ namespace Uma_Engine {
         FMOD_System_CreateSoundGroup(pFmodSystem, "SFX_SG", &SFX_SG);
 
         FMOD_SoundGroup_SetMaxAudible(SFX_SG, 5);
-        FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
+        FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_STEALLOWEST);
 
         // Set 3D settings (doppler scale, distance factor, rolloff scale)
         FMOD_System_Set3DSettings(pFmodSystem, 1.0f, 1.0f, 1.0f);
@@ -127,18 +127,21 @@ namespace Uma_Engine {
             pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest>(
                 [this](const Uma_Engine::PlaySceneRequest& e)
                 {
+                    (void)(e);
                     pauseAllSounds(false);
                 });
 
             pEventSystem->Subscribe<Uma_Engine::PauseSceneRequest>(
                 [this](const Uma_Engine::PauseSceneRequest& e)
                 {
+                    (void)(e);
                     pauseAllSounds(true);
                 });
 
             pEventSystem->Subscribe<Uma_Engine::StopSceneRequest>(
                 [this](const Uma_Engine::StopSceneRequest& e)
                 {
+                    (void)(e);
                     stopAllSounds();
                 });
         }

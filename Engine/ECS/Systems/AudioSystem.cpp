@@ -16,7 +16,8 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c)
 
 void Uma_ECS::AudioSystem::Update(float dt)
 {
-    auto& listenerArray = pCoordinator->GetComponentArray<AudioListener>();
+    (void)(dt);
+    //gets the component of transform and rigidbody to get velocity and position to set the listener position
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
