@@ -201,12 +201,15 @@ namespace Uma_Engine
             }
         }
 
-        auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
-        if (editorSystem)
+        if (m_Scenes.size() > 0)
         {
-            editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
-            editorSystem->SetPlayMode(playMode == PM_PLAY);
-            editorSystem->Update(dt);
+            auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
+            if (editorSystem)
+            {
+                editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
+                editorSystem->SetPlayMode(playMode == PM_PLAY);
+                editorSystem->Update(dt);
+            }
         }
 
         // Update all loaded scenes if using additive loading
