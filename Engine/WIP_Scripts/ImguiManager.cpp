@@ -343,10 +343,13 @@ namespace Uma_Engine
 
             if (ImGui::Button("Play", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<PlaySceneRequest>();
-                    m_playState = PlayState::Playing;
+                    if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
+                    {
+                        pEventSystem->Emit<PlaySceneRequest>();
+                        m_playState = PlayState::Playing;
+                    }
                 }
             }
 
@@ -368,15 +371,18 @@ namespace Uma_Engine
 
             if (ImGui::Button("Pause", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState == PlayState::Playing)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<PauseSceneRequest>();
-                    m_playState = PlayState::Paused;
-                }
-                else if (m_playState == PlayState::Paused)
-                {
-                    pEventSystem->Emit<PlaySceneRequest>();
-                    m_playState = PlayState::Playing;
+                    if (m_playState == PlayState::Playing)
+                    {
+                        pEventSystem->Emit<PauseSceneRequest>();
+                        m_playState = PlayState::Paused;
+                    }
+                    else if (m_playState == PlayState::Paused)
+                    {
+                        pEventSystem->Emit<PlaySceneRequest>();
+                        m_playState = PlayState::Playing;
+                    }
                 }
             }
 
@@ -390,11 +396,14 @@ namespace Uma_Engine
             // Stop Button
             if (ImGui::Button("Stop", ImVec2(buttonWidth, 0)))
             {
-                if (m_playState != PlayState::Stopped)
+                if (sceneNames.size() > 0)
                 {
-                    pEventSystem->Emit<StopSceneRequest>();
-                    m_playState = PlayState::Stopped;
-                    pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                    if (m_playState != PlayState::Stopped)
+                    {
+                        pEventSystem->Emit<StopSceneRequest>();
+                        m_playState = PlayState::Stopped;
+                        pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                    }
                 }
             }
 
