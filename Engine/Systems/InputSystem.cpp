@@ -28,7 +28,9 @@ All rights reserved.
 #include "imgui.h"
 
 // comment and uncomment this line below to enable/ disable console debug log
+#if defined(_DEBUG) || defined(DEBUG)
 #define _DEBUG_LOG
+#endif
 
 namespace Uma_Engine
 {
