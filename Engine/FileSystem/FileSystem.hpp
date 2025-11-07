@@ -205,6 +205,26 @@ namespace Uma_Engine
                 RefreshDirectory();
             }
 
+            if (!dropSource.empty() && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path() && ImGui::BeginDragDropTarget()) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
+                    FilePayload plData = *(FilePayload*)pl->Data;
+                    bool success = false;
+                    try
+                    {
+                        fs::copy(plData.filepath, mCurrPath.parent_path(), std::filesystem::copy_options::recursive);
+                        fs::remove(plData.filepath);
+                    }
+                    catch (const std::exception& e)
+                    {
+                        feedback = e.what();
+                    }
+                    bDropStart = false;
+                    dropSource.clear();
+                    RefreshDirectory();
+                }
+                ImGui::EndDragDropTarget();
+            }
+
             ImGui::SameLine();
             ImGui::Text("Path:");
 
