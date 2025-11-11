@@ -94,12 +94,21 @@ namespace Uma_Engine
                 }
             ));
 
-            // reload the current scene
+            // play scene called cache the coordinator states
             m_EventListeners.push_back(
-            eventSystem->Subscribe<ReLoadSceneRequestEvent>(
-                [this](const ReLoadSceneRequestEvent& e) {
+                eventSystem->Subscribe<PlaySceneRequest>(
+                    [this](const PlaySceneRequest& e) {
+                        (void)e;
+                        m_Scene->m_Coordinator.CacheState();
+                    }
+                ));
+
+            // stop scene called restore the coordinator states
+            m_EventListeners.push_back(
+            eventSystem->Subscribe<StopSceneRequest>(
+                [this](const StopSceneRequest& e) {
                     (void)e;
-                    ReLoadScene();
+                    m_Scene->m_Coordinator.RestoreState();
                 }
             ));
 

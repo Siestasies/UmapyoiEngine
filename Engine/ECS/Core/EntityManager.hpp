@@ -34,6 +34,7 @@ namespace Uma_ECS
     {
     public:
         EntityManager();
+        EntityManager(const EntityManager& other) noexcept;
 
         Entity CreateEntity();
         void DestroyEntity(Entity entity);

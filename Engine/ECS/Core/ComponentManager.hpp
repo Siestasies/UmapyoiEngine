@@ -41,6 +41,10 @@ namespace Uma_ECS
     {
     public:
 
+        // copy ctor
+        ComponentManager() = default;
+        ComponentManager(const ComponentManager& other) noexcept;
+
         // Always register the component before use
         template<typename T>
         void RegisterComponent()

@@ -51,6 +51,14 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    // this is to store the cache data for these 2 manager
+    // so when editor enters / exits game mode, it can cache the manager and load it
+    struct StateCache
+    {
+        std::unique_ptr<EntityManager> cachedEntityManager;
+        std::unique_ptr<ComponentManager> cachedComponentManager;
+    };
+
     // this whole Corrdinator context is about combining:
     // Entity Manager, System Manager and Entity Manager 
     // into a single coordinator that can handles everything 
@@ -60,7 +68,10 @@ namespace Uma_ECS
     public:
         void Init(Uma_Engine::EventSystem* eventSystem);
 
-        // Entity functions
+        
+        //------------------------------------------+
+        //          Entity functions                |
+        //------------------------------------------+
 
         Entity CreateEntity();
 
@@ -113,7 +124,12 @@ namespace Uma_ECS
         std::vector<Entity> GetChildren(Entity entity);
         void DestroyEntityAndChildren(Entity entity);
 
-        // Components functions
+        // collect the entities in hierachy order
+        void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
+
+        //------------------------------------------+
+        //          Components functions            |
+        //------------------------------------------+
 
         template<typename T>
         void RegisterComponent() 
@@ -197,7 +213,9 @@ namespace Uma_ECS
 #undef CHECK_COMPONENT
         }
 
-        // System functions
+        //------------------------------------------+
+        //          System functions                |
+        //------------------------------------------+
 
         template<typename T>
         std::shared_ptr<T> RegisterSystem()
@@ -215,19 +233,24 @@ namespace Uma_ECS
 
         Entity DuplicateEntityHierarchy(Entity src, std::unordered_map<Entity, Entity>& oldToNewMap);
 
-        //Serialization
-
-        //void SerializeAllEntities(const std::string& filename);
-        //void DeserializeAllEntities(const std::string& filename);
+        //------------------------------------------+
+        //          Serialization                   |
+        //------------------------------------------+
 
         const char* GetSectionName() const override { return "entities"; };  // e.g. "entities", "resources"
         std::string GetSerializerName() const override { return "coordinator"; };  // e.g. "coordinator", "resources_manager"
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         void Deserialize(const rapidjson::Value& in) override;
-
-        void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         Entity DeserializePrefab(const rapidjson::Value& in) override;
+
+
+        //------------------------------------------+
+        //          State cache                     |
+        //------------------------------------------+
+
+        void CacheState();
+        void RestoreState();
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;
@@ -237,6 +260,8 @@ namespace Uma_ECS
         // so that we can update all systems when 
         // thr are changes for any entities
         std::unique_ptr<SystemManager> aSystemManager;
+
+        StateCache mStateCache;
 
         Uma_Engine::EventSystem* pEventSystem = nullptr;
     };

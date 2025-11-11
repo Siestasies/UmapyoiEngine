@@ -407,7 +407,7 @@ namespace Uma_Engine
                     {
                         pEventSystem->Emit<StopSceneRequest>();
                         m_playState = PlayState::Stopped;
-                        pEventSystem->Emit<ReLoadSceneRequestEvent>();
+                        //pEventSystem->Emit<ReLoadSceneRequestEvent>();
                     }
                 }
             }

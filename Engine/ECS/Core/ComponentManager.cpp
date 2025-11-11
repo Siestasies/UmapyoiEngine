@@ -45,6 +45,19 @@ void Uma_ECS::ComponentManager::CloneEntityComponents(Entity src, Entity dest)
     }
 }
 
+Uma_ECS::ComponentManager::ComponentManager(const ComponentManager& other) noexcept
+    : aComponentTypes(other.aComponentTypes)
+    , aFriendlyNameToTypeName(other.aFriendlyNameToTypeName)
+    , mNextComponentType(other.mNextComponentType)
+{
+    // Deep copy each component array
+    for (const auto& [typeName, baseArray] : other.aComponentArrays)
+    {
+        // Need to implement Clone() in ComponentArray
+        aComponentArrays[typeName] = baseArray->CloneArray();
+    }
+}
+
 std::vector<Uma_ECS::Entity> Uma_ECS::ComponentManager::GetEntitiesByComponentName(const std::string& componentName)
 {
     std::vector<Entity> entities;

@@ -37,6 +37,15 @@ Uma_ECS::EntityManager::EntityManager()
     }
 }
 
+Uma_ECS::EntityManager::EntityManager(const EntityManager& other) noexcept
+    : aAvailableEntities(other.aAvailableEntities)
+    , aEntityActive(other.aEntityActive)
+    , aSignatures(other.aSignatures)
+    , mActiveEntityCnt(other.mActiveEntityCnt)
+{
+
+}
+
 Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
 {
     // out of range check

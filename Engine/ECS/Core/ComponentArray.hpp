@@ -45,6 +45,8 @@ namespace Uma_ECS
         virtual void CloneComponent(Entity src, Entity dest) = 0;
         virtual std::vector<Entity> GetAllEntities() const = 0;
 
+        virtual std::shared_ptr<BaseComponentArray> CloneArray() const = 0; // for clonming the whole array
+
         // NEW: Allow components to opt-out of cloning
         virtual bool ShouldClone() const { return true; }
 
@@ -176,6 +178,16 @@ namespace Uma_ECS
             }
 
             return result;
+        }
+
+        std::shared_ptr<BaseComponentArray> CloneArray() const override 
+        {
+            auto copy = std::make_shared<ComponentArray<T>>();
+            copy->aComponentArray = this->aComponentArray;
+            copy->aIndexToEntity = this->aIndexToEntity;
+            copy->aEntityToIndex = this->aEntityToIndex;
+            copy->mSize = this->mSize;
+            return copy;
         }
 
         // serialization and deserialization

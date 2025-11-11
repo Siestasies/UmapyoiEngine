@@ -40,6 +40,9 @@ namespace Uma_ECS
         aEntityManager = std::make_unique<EntityManager>();
         aSystemManager = std::make_unique<SystemManager>();
 
+        mStateCache.cachedEntityManager = nullptr;
+        mStateCache.cachedComponentManager = nullptr;
+
         pEventSystem = eventSystem;
     }
 
@@ -651,5 +654,19 @@ namespace Uma_ECS
 
         // Fallback: return first entity
         return prefabToWorldID.begin()->second;
+    }
+
+    void Coordinator::CacheState()
+    {
+        mStateCache.cachedEntityManager = std::make_unique<EntityManager>(*aEntityManager);
+        mStateCache.cachedComponentManager = std::make_unique<ComponentManager>(*aComponentManager);
+    }
+
+    void Coordinator::RestoreState()
+    {
+        if (!mStateCache.cachedEntityManager || !mStateCache.cachedComponentManager) return;
+
+        aEntityManager = std::make_unique<EntityManager>(*mStateCache.cachedEntityManager);
+        aComponentManager = std::make_unique<ComponentManager>(*mStateCache.cachedComponentManager);
     }
 }

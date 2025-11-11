@@ -63,7 +63,6 @@ namespace Uma_Engine
         eventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
-                SaveScene(m_ActiveScene->GetName());
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
@@ -206,7 +205,7 @@ namespace Uma_Engine
             auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
             if (editorSystem)
             {
-                editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
+                //editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
                 editorSystem->SetPlayMode(playMode == PM_PLAY);
                 editorSystem->Update(dt);
             }
@@ -324,6 +323,11 @@ namespace Uma_Engine
         // passing message using event system
         UpdateIMGUIWindow();
 
+        //pSystemManager->GetSystem<EditorSystem>()->SetPlayMode(false);
+
+        // set coordinator for gizmos 
+        pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(&m_ActiveScene->GetCoordinator());
+
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
         return scene;
@@ -370,6 +374,10 @@ namespace Uma_Engine
     void SceneManager::UnloadScene(const std::string& name)
     {
         isUnloading = true;
+
+        playMode = PLAYMODE::PM_STOP;
+        pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(nullptr);
+
         if (!HasScene(name))
         {
             std::cout << "Scene '" << name << "' does not exist!" << std::endl;
