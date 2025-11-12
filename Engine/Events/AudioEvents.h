@@ -109,14 +109,24 @@ namespace Uma_Engine
     };
 
     /*!
-    \brief Event to play a one-shot sound at an entity's current position.
-           The sound does not follow the entity after being played.
+    \brief Event to stop a specific sound by name from an entity.
     */
+    class StopEntitySoundByNameEvent : public Event
+    {
+    public:
+        StopEntitySoundByNameEvent(Uma_ECS::Entity entity, const std::string& soundName) 
+            : entity(entity), soundName(soundName) {priority = Priority::Low;}
+    public:
+        Uma_ECS::Entity entity;
+        std::string soundName;
+    };
+
     class PlayOneShotAtEntityEvent : public Event
     {
     public:
-        PlayOneShotAtEntityEvent(Uma_ECS::Entity entity, const std::string& soundName, float volume = 1.0f)
-            : entity(entity), soundName(soundName), volume(volume) {
+        PlayOneShotAtEntityEvent(Uma_ECS::Entity entity, const std::string& soundName,
+            float volume = 1.0f, bool is3D = true)
+            : entity(entity), soundName(soundName), volume(volume), is3D(is3D) {
             priority = Priority::Low;
         }
 
@@ -124,35 +134,15 @@ namespace Uma_Engine
         Uma_ECS::Entity entity;
         std::string soundName;
         float volume;
+        bool is3D;
     };
 
-    /*!
-    \brief Event to update an entity's AudioComponent properties.
-    */
-    class UpdateEntityAudioComponentEvent : public Event
-    {
-    public:
-        UpdateEntityAudioComponentEvent(Uma_ECS::Entity entity, const std::string& soundName, bool isPlaying, float volume = 1.0f)
-            : entity(entity), soundName(soundName), isPlaying(isPlaying), volume(volume) {
-            priority = Priority::Low;
-        }
-
-    public:
-        Uma_ECS::Entity entity;
-        std::string soundName;
-        bool isPlaying;
-        float volume;
-    };
-
-    /*!
-    \brief Event to play a one-shot sound at a specific world position.
-           Useful for explosions, impacts, etc. that aren't tied to an entity.
-    */
     class PlayOneShotAtPositionEvent : public Event
     {
     public:
-        PlayOneShotAtPositionEvent(float x, float y, const std::string& soundName, float volume = 1.0f)
-            : x(x), y(y), soundName(soundName), volume(volume) {
+        PlayOneShotAtPositionEvent(float x, float y, const std::string& soundName,
+            float volume = 1.0f, bool is3D = true)
+            : x(x), y(y), soundName(soundName), volume(volume), is3D(is3D) {
             priority = Priority::Low;
         }
 
@@ -160,6 +150,7 @@ namespace Uma_Engine
         float x, y;
         std::string soundName;
         float volume;
+        bool is3D;
     };
 
 }

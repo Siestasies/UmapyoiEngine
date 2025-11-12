@@ -180,7 +180,6 @@ namespace Uma_Engine {
         SoundInfo info;
         info.type = type;
         info.filePath = filePath;
-        info.is3D = is3D;
 
         if (!pFmodSystem) {
             std::cout << "system not init\n";
@@ -426,87 +425,7 @@ namespace Uma_Engine {
         listenerUp = up;
     }
 
-    FMOD_CHANNEL* SoundManager::PlayEntitySound(uint32_t entityID, const std::string& soundName, const FMOD_VECTOR& pos, bool loop, float volume)
-    {
-        if (!pFmodSystem || !pResourcesManager) {
-            return nullptr;
-        }
-        // Get sound from resource manager
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
-        if (!info || !info->sound) {
-            return nullptr;
-        }
-        // Stop any existing sound for this entity
-        StopEntitySound(entityID);
-
-        // Create NEW channel (don't use info->channel)
-        FMOD_CHANNEL* entityChannel = nullptr;
-        FMOD_CHANNELGROUP* group = SFX;
-
-        // Set loop mode on the sound
-        if(loop == true)
-            FMOD_Sound_SetLoopCount(info->sound, -1);
-        else
-            FMOD_Sound_SetLoopCount(info->sound, 0);
-
-        // Play sound
-        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &entityChannel);
-        if (result != FMOD_OK || !entityChannel) {
-            return nullptr;
-        }
-
-        // Set volume and pitch
-        FMOD_Channel_SetVolume(entityChannel, volume);
-        FMOD_Channel_SetPitch(entityChannel, 1.0f);
-
-        // Set 3D attributes if it's a 3D sound
-        if (info->is3D) {
-            FMOD_Channel_SetMode(entityChannel, FMOD_3D);
-            FMOD_VECTOR fmodPos = { pos.x, pos.y, 0.0f };
-            FMOD_VECTOR fmodVel = { 0.0f, 0.0f, 0.0f };
-            FMOD_Channel_Set3DAttributes(entityChannel, &fmodPos, &fmodVel);
-            FMOD_Channel_Set3DMinMaxDistance(entityChannel, 100.0f, 1000.0f);
-        }
-
-        // Store this entity's channel separately (not in SoundInfo)
-        mEntityLoopingChannels[entityID] = entityChannel;
-
-        return entityChannel;
-    }
-
-    void SoundManager::UpdateEntitySound(uint32_t entityID, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel)
-    {
-        auto it = mEntityLoopingChannels.find(entityID);
-        if (it == mEntityLoopingChannels.end()) {
-            return;  // No sound for this entity
-        }
-
-        // Check if channel is still valid and playing
-        FMOD_BOOL isPlaying = false;
-        FMOD_RESULT result = FMOD_Channel_IsPlaying(it->second, &isPlaying);
-
-        // If channel is invalid or stopped, remove it
-        if (result != FMOD_OK || !isPlaying) {
-            mEntityLoopingChannels.erase(it);
-            return;
-        }
-
-        // Update 3D position
-        FMOD_VECTOR fmodPos = { pos.x, pos.y, pos.z };
-        FMOD_VECTOR fmodVel = { vel.x, vel.y, vel.z };
-        FMOD_Channel_Set3DAttributes(it->second, &fmodPos, &fmodVel);
-    }
-
-    void SoundManager::StopEntitySound(uint32_t entityID)
-    {
-        auto it = mEntityLoopingChannels.find(entityID);
-        if (it != mEntityLoopingChannels.end()) {
-            FMOD_Channel_Stop(it->second);
-            mEntityLoopingChannels.erase(it);
-        }
-    }
-
-    void SoundManager::PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume)
+    void SoundManager::PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return;
@@ -534,11 +453,75 @@ namespace Uma_Engine {
         FMOD_Channel_SetVolume(tempChannel, volume);
 
         // Set 3D position if applicable
-        if (info->is3D) {
+        if (is3D) {
             FMOD_VECTOR fmodPos = { pos.x, pos.y, pos.z };
             FMOD_VECTOR fmodVel = { 0.0f, 0.0f, 0.0f };
             FMOD_Channel_Set3DAttributes(tempChannel, &fmodPos, &fmodVel);
             FMOD_Channel_Set3DMinMaxDistance(tempChannel, 100.0f, 1000.0f);
         }
+    }
+
+    FMOD_CHANNEL* SoundManager::PlaySoundInstance(const std::string& soundName, bool loop,float volume, const FMOD_VECTOR& pos, bool is3D)
+    {
+        if (!pFmodSystem || !pResourcesManager) {
+            return nullptr;
+        }
+
+        // Get sound from ResourcesManager
+        SoundInfo* info = pResourcesManager->GetSound(soundName);
+        if (!info || !info->sound) {
+            std::cerr << "[SoundManager] Sound not found: " << soundName << std::endl;
+            return nullptr;
+        }
+
+        FMOD_CHANNEL* channel = nullptr;
+        FMOD_CHANNELGROUP* group = (info->type == SoundType::SFX) ? SFX : BGM;
+
+        // Set loop mode
+        FMOD_Sound_SetLoopCount(info->sound, loop ? -1 : 0);
+
+        // Play sound
+        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &channel);
+        if (result != FMOD_OK || !channel) {
+            std::cerr << "[SoundManager] Failed to play: " << FMOD_ErrorString(result) << std::endl;
+            return nullptr;
+        }
+
+        // Set volume
+        FMOD_Channel_SetVolume(channel, volume);
+
+        // Set 3D attributes if requested
+        if (is3D) {
+            FMOD_Channel_SetMode(channel, FMOD_3D);
+            FMOD_Channel_Set3DAttributes(channel, &pos, nullptr);
+            FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
+        }
+
+        return channel;
+    }
+
+    void SoundManager::StopChannel(FMOD_CHANNEL* channel)
+    {
+        if (channel) {
+            FMOD_Channel_Stop(channel);
+        }
+    }
+
+    void SoundManager::UpdateChannel3DPosition(FMOD_CHANNEL* channel, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel)
+    {
+        if (!channel) return;
+
+        FMOD_BOOL isPlaying = false;
+        if (FMOD_Channel_IsPlaying(channel, &isPlaying) == FMOD_OK && isPlaying) {
+            FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
+        }
+    }
+
+    SoundInfo* SoundManager::GetSoundInfo(const std::string& soundName)
+    {
+        if (!pResourcesManager) {
+            return nullptr;
+        }
+        return pResourcesManager->GetSound(soundName);
     }
 }

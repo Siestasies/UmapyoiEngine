@@ -54,7 +54,7 @@ namespace Uma_Engine
 				*\param filePath, type
 				*\return struct SoundInfo that contains the sound, channel and type
 				*/ 
-				SoundInfo loadSound(const std::string& filePath, SoundType type, bool is3D = false);
+				SoundInfo loadSound(const std::string& filePath, SoundType type, bool is3D = true);
 
 				/*!
 				*\brief unload the sound 
@@ -153,10 +153,15 @@ namespace Uma_Engine
 				*/
 				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
 
-				FMOD_CHANNEL* PlayEntitySound(uint32_t entityID, const std::string& soundName, const FMOD_VECTOR& pos, bool loop, float volume = 1.0f);
-				void UpdateEntitySound(uint32_t entityID, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel);
-				void StopEntitySound(uint32_t entityID);
-				void PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume = 1.0f);
+				void PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume = 1.0f, bool is3D = true);
+
+				FMOD_CHANNEL* PlaySoundInstance(const std::string& soundName, bool loop, float volume, const FMOD_VECTOR& pos, bool is3D = true);
+
+				void StopChannel(FMOD_CHANNEL* channel);
+
+				void UpdateChannel3DPosition(FMOD_CHANNEL* channel, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel);
+
+				SoundInfo* GetSoundInfo(const std::string& soundName);
 
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
@@ -180,8 +185,6 @@ namespace Uma_Engine
 				FMOD_VECTOR listenerVel = { 0.0f, 0.0f, 0.0f };
 				FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 1.0f };
 				FMOD_VECTOR listenerUp = { 0.0f, 1.0f, 0.0f };
-
-				std::unordered_map<uint32_t, FMOD_CHANNEL*> mEntityLoopingChannels;
 		};
 }
 

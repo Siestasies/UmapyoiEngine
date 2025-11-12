@@ -19,18 +19,33 @@ All rights reserved.
 
 namespace Uma_ECS
 {
-    /*!
-    * \brief Adds the audio listener component to tag the player to set 3d audio listener
-    */
-	struct AudioComponent {
-        std::string loopingSoundName;
+    struct SoundInstance
+    {
+        FMOD_CHANNEL* channel = nullptr;
+        std::string soundName;
+        float volume = 1.0f;
+        bool isPlaying = false;
+        bool shouldLoop = false;
+        bool is3D = true;
 
+        // Optional: per-sound overrides
+        float pitch = 1.0f;
+        float minDistance = 100.0f;
+        float maxDistance = 1000.0f;
+    };
+
+	struct AudioComponent {
         FMOD_VECTOR position = { 0.0f, 0.0f, 0.0f };
         FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f };
 
-        float volume = 1.0f;
-        bool isPlaying = false;
-        bool shouldLoop = true;
+        float defaultVolume = 1.0f;
+        bool default3D = true;
+
+        //All active sounds playing on this entity
+        std::unordered_map<std::string, SoundInstance> activeSounds;
+
+        //runtime
+        std::string loopingSoundName;
 
         /*!
         * \brief this is to serialize the info from json
@@ -51,6 +66,28 @@ namespace Uma_ECS
         void Deserialize(const rapidjson::Value& value) //override
         {
             (void)value;
+        }
+
+        // Helper methods
+        bool HasSound(const std::string& soundName) const
+        {
+            return activeSounds.find(soundName) != activeSounds.end();
+        }
+
+        SoundInstance* GetSound(const std::string& soundName)
+        {
+            auto it = activeSounds.find(soundName);
+            return (it != activeSounds.end()) ? &it->second : nullptr;
+        }
+
+        void RemoveSound(const std::string& soundName)
+        {
+            activeSounds.erase(soundName);
+        }
+
+        size_t GetActiveSoundCount() const
+        {
+            return activeSounds.size();
         }
 	};
 }

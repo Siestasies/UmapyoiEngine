@@ -273,6 +273,9 @@ namespace Uma_Engine
         void HandleEditorInput()
         {
             //auto input = GetInput();
+            if (GetInput()->KeyPressed(GLFW_KEY_5)) {
+                SpawnDefaultEntities();
+            }
         }
 
         void SaveScene()
@@ -702,16 +705,7 @@ namespace Uma_Engine
                 }
 
                 //testing
-                GetCoordinator().AddComponent(
-                    enemy,
-                    AudioComponent{
-                        .loopingSoundName = "footsteps",
-                        .position = FMOD_VECTOR{0.0f,0.0f,0.0f},
-                        .velocity = FMOD_VECTOR{0.0f,0.0f,0.0f},
-                        .volume = 1.0f,
-                        .isPlaying = false,
-                        .shouldLoop = true
-                    });
+                GetCoordinator().AddComponent(enemy, Uma_ECS::AudioComponent{});
             }
             {
                 Entity en = GetCoordinator().CreateEntity();

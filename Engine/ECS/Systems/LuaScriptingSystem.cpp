@@ -637,13 +637,6 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::StopMusicEvent>(audioName);
             });
 
-        sharedLua->set_function("PlayEntitySound", [this](Uma_ECS::Entity entity, const std::string& audioName, bool loop, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayEntitySoundEvent>(entity, audioName, loop, vol);
-            });
-
-        sharedLua->set_function("StopEntitySound", [this](Uma_ECS::Entity entity) {
-            pEventSystem->Emit<Uma_Engine::StopEntitySoundEvent>(entity);
-            });
         //new audio event
         sharedLua->set_function("PlayEntitySound", [this](Uma_ECS::Entity entity, const std::string& audioName, bool loop, float vol) {
             pEventSystem->Emit<Uma_Engine::PlayEntitySoundEvent>(entity, audioName, loop, vol);
@@ -651,6 +644,10 @@ namespace Uma_ECS
 
         sharedLua->set_function("StopEntitySound", [this](Uma_ECS::Entity entity) {
             pEventSystem->Emit<Uma_Engine::StopEntitySoundEvent>(entity);
+            });
+
+        sharedLua->set_function("StopEntitySoundByName", [this](Uma_ECS::Entity entity, const std::string& soundName) {
+            pEventSystem->Emit<Uma_Engine::StopEntitySoundByNameEvent>(entity, soundName);
             });
 
         sharedLua->set_function("PlayOneShotAtEntity", [this](Uma_ECS::Entity entity, const std::string& audioName, float vol) {

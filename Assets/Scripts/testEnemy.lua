@@ -64,12 +64,13 @@ function Update(dt)
         
         if isMoving then
             if not isWalk then
-                PlaySound("footsteps", 1, -1)
+                PlayEntitySound(EntityID,"footsteps", true, 1.0)
                 isWalk = true
             end
         else
             if isWalk then
-                StopSound("footsteps")
+                --StopSound("footsteps")
+                StopEntitySoundByName(EntityID,"footsteps")
                 isWalk = false
             end
         end

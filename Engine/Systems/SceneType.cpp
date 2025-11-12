@@ -399,7 +399,8 @@ namespace Uma_Engine
             Uma_ECS::Signature sign;
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
-            sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioListener>());
+            //sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioListener>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioComponent>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
         }
         m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
