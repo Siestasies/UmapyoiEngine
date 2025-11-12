@@ -700,6 +700,18 @@ namespace Uma_Engine
 
                     GetCoordinator().AddComponent(enemy, enemyScriptComponent);
                 }
+
+                //testing
+                GetCoordinator().AddComponent(
+                    enemy,
+                    AudioComponent{
+                        .loopingSoundName = "footsteps",
+                        .position = FMOD_VECTOR{0.0f,0.0f,0.0f},
+                        .velocity = FMOD_VECTOR{0.0f,0.0f,0.0f},
+                        .volume = 1.0f,
+                        .isPlaying = false,
+                        .shouldLoop = true
+                    });
             }
             {
                 Entity en = GetCoordinator().CreateEntity();
@@ -817,8 +829,8 @@ namespace Uma_Engine
                 playerCollider.bounds.resize(playerCollider.shapes.size());
                 GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
 
-                AudioListener audioListner;
-                GetCoordinator().AddComponent(m_Scene->m_player, audioListner);
+                AudioListener audioListener;
+                GetCoordinator().AddComponent(m_Scene->m_player, audioListener);
             }
 
             // create camera

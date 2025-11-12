@@ -153,6 +153,11 @@ namespace Uma_Engine
 				*/
 				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
 
+				FMOD_CHANNEL* PlayEntitySound(uint32_t entityID, const std::string& soundName, const FMOD_VECTOR& pos, bool loop, float volume = 1.0f);
+				void UpdateEntitySound(uint32_t entityID, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel);
+				void StopEntitySound(uint32_t entityID);
+				void PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume = 1.0f);
+
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
@@ -175,6 +180,8 @@ namespace Uma_Engine
 				FMOD_VECTOR listenerVel = { 0.0f, 0.0f, 0.0f };
 				FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 1.0f };
 				FMOD_VECTOR listenerUp = { 0.0f, 1.0f, 0.0f };
+
+				std::unordered_map<uint32_t, FMOD_CHANNEL*> mEntityLoopingChannels;
 		};
 }
 

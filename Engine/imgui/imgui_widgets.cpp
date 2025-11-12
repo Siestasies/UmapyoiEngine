@@ -47,6 +47,10 @@ Index of this file:
 // System includes
 #include <stdint.h>     // intptr_t
 
+#ifndef STB_TEXT_HAS_SELECTION
+#define STB_TEXT_HAS_SELECTION(s)   ((s)->select_start != (s)->select_end)
+#endif
+
 //-------------------------------------------------------------------------
 // Warnings
 //-------------------------------------------------------------------------

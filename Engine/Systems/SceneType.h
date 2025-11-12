@@ -43,6 +43,7 @@ All rights reserved.
 #include "ECS/Components/LuaScript.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/AudioListener.h"
+#include "ECS/Components/AudioComponent.h"
 
 
 // UI Components

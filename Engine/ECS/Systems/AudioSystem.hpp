@@ -34,7 +34,7 @@ namespace Uma_ECS
         * \param sound manager and coordinator pointer
         * \return nothing
         */
-        void Init(Uma_Engine::SoundManager* sm, Coordinator* c);
+        void Init(Uma_Engine::SoundManager* sm, Coordinator* c, Uma_Engine::EventSystem* es);
 
         /*!
         * \brief updates the listner position in sound manager
@@ -43,6 +43,9 @@ namespace Uma_ECS
         void Update(float dt);
 
     private:
+
+        void UpdateListener(float dt);
+        void UpdateAudioEmitters(float dt);
 
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::SoundManager* pSoundManager = nullptr;

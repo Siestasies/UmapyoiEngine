@@ -23,6 +23,7 @@ All rights reserved.
 #pragma once
 
 #include "EventType.h"
+#include "ECS/Core/Types.hpp"
 
 namespace Uma_Engine
 {
@@ -75,4 +76,90 @@ namespace Uma_Engine
         float x, y, volume;
         int loop;
     };
+
+    /*!
+    \brief Event to play a sound attached to a specific entity.
+           The sound will follow the entity's position automatically.
+    */
+    class PlayEntitySoundEvent : public Event
+    {
+    public:
+        PlayEntitySoundEvent(Uma_ECS::Entity entity, const std::string& soundName, bool loop = false, float volume = 1.0f)
+            : entity(entity), soundName(soundName), loop(loop), volume(volume) {
+            priority = Priority::Low;
+        }
+
+    public:
+        Uma_ECS::Entity entity;
+        std::string soundName;
+        bool loop;
+        float volume;
+    };
+
+    /*!
+    \brief Event to stop all looping sounds attached to a specific entity.
+    */
+    class StopEntitySoundEvent : public Event
+    {
+    public:
+        StopEntitySoundEvent(Uma_ECS::Entity entity) : entity(entity) { priority = Priority::Low; }
+
+    public:
+        Uma_ECS::Entity entity;
+    };
+
+    /*!
+    \brief Event to play a one-shot sound at an entity's current position.
+           The sound does not follow the entity after being played.
+    */
+    class PlayOneShotAtEntityEvent : public Event
+    {
+    public:
+        PlayOneShotAtEntityEvent(Uma_ECS::Entity entity, const std::string& soundName, float volume = 1.0f)
+            : entity(entity), soundName(soundName), volume(volume) {
+            priority = Priority::Low;
+        }
+
+    public:
+        Uma_ECS::Entity entity;
+        std::string soundName;
+        float volume;
+    };
+
+    /*!
+    \brief Event to update an entity's AudioComponent properties.
+    */
+    class UpdateEntityAudioComponentEvent : public Event
+    {
+    public:
+        UpdateEntityAudioComponentEvent(Uma_ECS::Entity entity, const std::string& soundName, bool isPlaying, float volume = 1.0f)
+            : entity(entity), soundName(soundName), isPlaying(isPlaying), volume(volume) {
+            priority = Priority::Low;
+        }
+
+    public:
+        Uma_ECS::Entity entity;
+        std::string soundName;
+        bool isPlaying;
+        float volume;
+    };
+
+    /*!
+    \brief Event to play a one-shot sound at a specific world position.
+           Useful for explosions, impacts, etc. that aren't tied to an entity.
+    */
+    class PlayOneShotAtPositionEvent : public Event
+    {
+    public:
+        PlayOneShotAtPositionEvent(float x, float y, const std::string& soundName, float volume = 1.0f)
+            : x(x), y(y), soundName(soundName), volume(volume) {
+            priority = Priority::Low;
+        }
+
+    public:
+        float x, y;
+        std::string soundName;
+        float volume;
+    };
+
 }

@@ -66,6 +66,7 @@ namespace Uma_Engine
 		FMOD_CHANNEL* channel = nullptr;
 		SoundType type = SoundType::END;
 		std::string filePath;
+		bool is3D = false;
 
 		FMOD_VECTOR pos{};
 		FMOD_VECTOR vel{};

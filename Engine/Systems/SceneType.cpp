@@ -309,6 +309,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::LuaScript>();
         m_Coordinator.RegisterComponent<Uma_ECS::Animator>();
         m_Coordinator.RegisterComponent<Uma_ECS::AudioListener>();
+        m_Coordinator.RegisterComponent<Uma_ECS::AudioComponent>();
         m_Coordinator.RegisterComponent<Uma_UI::RectTransform>();
         m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
         m_Coordinator.RegisterComponent<Uma_UI::Image>();
@@ -401,7 +402,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioListener>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
         }
-        m_AudioSystem->Init(m_Sound, &m_Coordinator);
+        m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
 
         InitializeUISystem();
 

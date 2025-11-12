@@ -95,7 +95,8 @@ function Update(dt)
         --end
 
         if KeyReleased(KEY_V) then 
-            Play3DSound("explosion", 1, transform.position.x, transform.position.y, 0)
+            --Play3DSound("explosion", 1, transform.position.x, transform.position.y, 0)
+            PlayOneShotAtEntity(EntityID,"explosion",1.0)
         end
 
     else
@@ -125,7 +126,7 @@ function OnCollisionEnter(otherEntity)
     Log(name .. " -- Collision entered -- " .. otherEntity)
     local transform = GetTransform(EntityID)
     if transform then
-        Play3DSound("hurt",transform.position.x, transform.position.y, 1, 0)
+        PlayOneShotAtEntity(EntityID, "hurt", 1.0)
     end
     transform = GetTransform(otherEntity)
     if transform then
