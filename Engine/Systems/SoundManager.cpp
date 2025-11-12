@@ -117,11 +117,6 @@ namespace Uma_Engine {
                 {
                     stopSound(pResourcesManager->GetSound(e.musicName));
                 });
-            pEventSystem->Subscribe<Uma_Engine::PlaySound3DEvent>(
-                [this](const PlaySound3DEvent& e) {
-                    FMOD_VECTOR position = { e.x,e.y };
-                    playSound(pResourcesManager->GetSound(e.soundName), position, listenerVel, e.loop, e.volume, 1.f);
-                });
 
             // subscribe to play maode changes events (TEMP SOLUTION)
             pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest>(
@@ -263,54 +258,6 @@ namespace Uma_Engine {
         mSoundList.clear();
     }
 
-    void SoundManager::playSound(SoundInfo* info, FMOD_VECTOR pos, FMOD_VECTOR vel, int loopCount, float volume, float pitch)
-    {
-        if (!pFmodSystem || !info) { //check if fmod has been init
-
-            Debugger::Log(WarningLevel::eWarning, "play sound : sound doesnt exsists");
-            return;
-        }
-
-        //create channel holder
-        FMOD_RESULT result;
-
-        if (loopCount >= 0) {
-            FMOD_Sound_SetLoopCount(info->sound, loopCount);
-        }
-        //play in whichever channel group that it was set to
-        if (info->type == SoundType::SFX) {
-            result = FMOD_System_PlaySound(pFmodSystem, info->sound, SFX, false, &info->channel);
-        }
-        else if (info->type == SoundType::BGM) {
-            result = FMOD_System_PlaySound(pFmodSystem, info->sound, BGM, false, &info->channel);
-        }
-        else {
-            result = FMOD_System_PlaySound(pFmodSystem, info->sound, nullptr, false, &info->channel);
-        }
-        if (result != FMOD_OK) {
-            return;
-        }
-
-        // Set volume and pitch
-        FMOD_Channel_SetVolume(info->channel, volume);
-        FMOD_Channel_SetPitch(info->channel, pitch);
-
-        FMOD_Channel_SetMode(info->channel, FMOD_3D);
-        info->pos = pos;
-        info->vel = vel;
-        FMOD_Channel_Set3DAttributes(info->channel, &info->pos, &info->vel);
-        FMOD_Channel_Set3DMinMaxDistance(info->channel, 100.0f, 1000.0f);
-
-        //add the channel to its respective group channel
-        if (info->type == SoundType::SFX) {
-            FMOD_Channel_SetChannelGroup(info->channel, SFX);
-        }
-        else if (info->type == SoundType::BGM) {
-            FMOD_Channel_SetChannelGroup(info->channel, BGM);
-        }
-        return;
-    }
-
     void SoundManager::playSound(SoundInfo* info, int loopCount, float volume, float pitch)
     {
         if (!pFmodSystem || !info) { //check if fmod has been init
@@ -341,6 +288,10 @@ namespace Uma_Engine {
         // Set volume and pitch
         FMOD_Channel_SetVolume(info->channel, volume);
         FMOD_Channel_SetPitch(info->channel, pitch);
+
+        if (info->type == SoundType::BGM) {
+            FMOD_Channel_SetMode(info->channel, FMOD_2D);
+        }
 
         //add the channel to its respective group channel
         if (info->type == SoundType::SFX) {

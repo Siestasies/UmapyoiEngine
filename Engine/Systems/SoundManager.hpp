@@ -83,18 +83,6 @@ namespace Uma_Engine
 				*/
 				void playSound(SoundInfo* info, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
 
-				// Sound playback overload for 3d audio
-				/*!
-				*\brief plays the sound file
-				*\param info - sound info
-				*\param pos - set 3d listener pos
-				*\param vel - set 3d listener vel
-				*\param loopCount - number of loops to play the sound
-				*\param volume - volume of the sound
-				*\param pitch - pitch of the sound
-				*/
-				void playSound(SoundInfo* info, FMOD_VECTOR pos, FMOD_VECTOR vel = {}, int loopCount = 0, float volume = 1.0f, float pitch = 1.0f);
-
 				/*!
 				*\brief stops the sound from playing
 				*\param info - sound info

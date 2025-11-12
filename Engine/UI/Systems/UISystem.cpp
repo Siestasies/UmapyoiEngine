@@ -86,7 +86,7 @@ namespace Uma_UI
         callbacks["UI_CALLBACK_PLAY_SOUND"] = ([this](Uma_ECS::Entity btn)
             {
                 (void)btn;
-                pEventSystem->Emit<Uma_Engine::PlaySound3DEvent>("explosion", 0.0f, 0.0f, 1.0f, 0.0f);
+                pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1.0f, 0.0f);
             });
         callbacks["UI_CALLBACK_LOAD_SCENE"] = ([this](Uma_ECS::Entity btn)
             {

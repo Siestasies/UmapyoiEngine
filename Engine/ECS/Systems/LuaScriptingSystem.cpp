@@ -616,11 +616,6 @@ namespace Uma_ECS
             });
 
         // play audio
-
-        sharedLua->set_function("Play3DSound", [this](const std::string& audioName, float vol, float x, float y, int loop) {
-            pEventSystem->Emit<Uma_Engine::PlaySound3DEvent>(audioName, x, y, vol, loop);
-            });
-
         sharedLua->set_function("PlaySound", [this](const std::string& audioName, float vol, int loop) {
             pEventSystem->Emit<Uma_Engine::PlaySoundEvent>(audioName, vol, loop);
             });
