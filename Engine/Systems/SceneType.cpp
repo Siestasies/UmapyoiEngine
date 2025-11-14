@@ -86,6 +86,10 @@ namespace Uma_Engine
         
         m_UISystem->Shutdown();
 
+        m_AudioSystem->Shutdown();
+
+        m_PathFindingSystem->Shutdown();
+
         // Unload resources
         if (m_ResourcesManager)
         {
@@ -310,6 +314,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::Animator>();
         m_Coordinator.RegisterComponent<Uma_ECS::AudioListener>();
         m_Coordinator.RegisterComponent<Uma_ECS::AudioComponent>();
+        m_Coordinator.RegisterComponent<Uma_ECS::PathFinding>();
         m_Coordinator.RegisterComponent<Uma_UI::RectTransform>();
         m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
         m_Coordinator.RegisterComponent<Uma_UI::Image>();
@@ -394,6 +399,7 @@ namespace Uma_Engine
         }
         m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
 
+        //Audio system
         m_AudioSystem = m_Coordinator.RegisterSystem<Uma_ECS::AudioSystem>();
         {
             Uma_ECS::Signature sign;
@@ -404,6 +410,17 @@ namespace Uma_Engine
             m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
         }
         m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
+
+        //path finding system
+        m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::PathFinding>());
+
+            m_Coordinator.SetSystemSignature<Uma_ECS::PathFindingSystem>(sign);
+        }
+        m_PathFindingSystem->Init(&m_Coordinator, m_EventSystem);
 
         InitializeUISystem();
 
@@ -461,6 +478,9 @@ namespace Uma_Engine
 
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);
+
+        if (m_PathFindingSystem)
+            m_PathFindingSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()

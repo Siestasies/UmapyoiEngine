@@ -706,6 +706,7 @@ namespace Uma_Engine
 
                 //testing
                 GetCoordinator().AddComponent(enemy, Uma_ECS::AudioComponent{});
+                GetCoordinator().AddComponent(enemy, Uma_ECS::PathFinding{});
             }
             {
                 Entity en = GetCoordinator().CreateEntity();
@@ -825,6 +826,7 @@ namespace Uma_Engine
 
                 AudioListener audioListener;
                 GetCoordinator().AddComponent(m_Scene->m_player, audioListener);
+                GetCoordinator().AddComponent(m_Scene->m_player, Uma_ECS::PathFinding{});
             }
 
             // create camera
