@@ -104,6 +104,7 @@ namespace Uma_Engine
         void CreateEntityPropertyWindow();
         void CreateConsoleWindow();
         void CreateEditorCameraWindow();
+        void CreateSceneViewWindow();
         void AddConsoleLog(const std::string& message);
 
         // Hierarchy helper functions

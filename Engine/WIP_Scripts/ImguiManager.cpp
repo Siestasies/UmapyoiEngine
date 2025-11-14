@@ -23,10 +23,11 @@ Definition of functions for all IMGUI windows and their logics.
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
+#include <glad/glad.h>
 #include "ImguiManager.h"
 #include "SceneManager.h"
+#include "Graphics.hpp"
 
-//#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
@@ -248,6 +249,13 @@ namespace Uma_Engine
             frameCount = 0;
         }
 
+        auto graphics = pSystemManager->GetSystem<Graphics>();
+        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, graphics->GetViewportWidth(), graphics->GetViewportHeight());
+        }
+
         StartFrame();
 
         CreateDockspace();
@@ -418,6 +426,37 @@ namespace Uma_Engine
                 m_hideAll = !m_hideAll;
             }
 
+            ImGui::SameLine();
+
+            auto graphics = pSystemManager->GetSystem<Graphics>();
+            if (graphics)
+            {
+                bool isViewportMode = (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer);
+
+                // Highlight button when in viewport mode
+                if (isViewportMode)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.6f, 0.15f, 1.0f));
+                }
+
+                const char* buttonText = isViewportMode ? "Viewport Mode" : "Window Mode";
+                if (ImGui::Button(buttonText, ImVec2(buttonWidth + 20, 0)))
+                {
+                    // Toggle between modes
+                    if (isViewportMode)
+                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Window);
+                    else
+                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Framebuffer);
+                }
+
+                if (isViewportMode)
+                {
+                    ImGui::PopStyleColor(3);
+                }
+            }
+
             // Show current state text
             ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
@@ -463,6 +502,46 @@ namespace Uma_Engine
 		//CreateEntityDebugWindow();
 		CreateConsoleWindow();
 		//CreateEntityPropertyWindow();
+
+        auto graphics = pSystemManager->GetSystem<Graphics>();
+        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            CreateSceneViewWindow();
+        }
+    }
+
+    void ImguiManager::CreateSceneViewWindow()
+    {
+        ImGui::Begin("Scene View", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+        ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+        if (viewportSize.x < 50) viewportSize.x = 50;
+        if (viewportSize.y < 50) viewportSize.y = 50;
+
+        auto graphics = pSystemManager->GetSystem<Graphics>();
+        if (!graphics)
+        {
+            ImGui::Text("Graphics system not available");
+            ImGui::End();
+            return;
+        }
+
+        // Resize framebuffer to match window size
+        graphics->ResizeSceneFramebuffer(
+            static_cast<int>(viewportSize.x),
+            static_cast<int>(viewportSize.y)
+        );
+
+        // Display the scene texture
+        GLuint texID = graphics->GetSceneTexture();
+        ImGui::Image(
+            reinterpret_cast<void*>(static_cast<intptr_t>(texID)),
+            viewportSize,
+            ImVec2(0, 1),
+            ImVec2(1, 0)
+        );
+
+        ImGui::End();
     }
 
     void ImguiManager::CreateSystemsWindow()

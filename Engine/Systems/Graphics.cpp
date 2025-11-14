@@ -216,7 +216,8 @@ void main()
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
-        mViewportWidth(800), mViewportHeight(600) {}
+        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0)
+        , mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Window) {}
 
     Graphics::~Graphics()
     {
@@ -298,6 +299,8 @@ void main()
 
         UpdateProjectionMatrix();
 
+        InitSceneFramebuffer(1280, 720);
+
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
     }
@@ -319,6 +322,13 @@ void main()
             }
         }
 
+        // Bind framebuffer if in viewport mode
+        if (mRenderTarget == RenderTarget::Framebuffer)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
+            glViewport(0, 0, mSceneFBWidth, mSceneFBHeight);
+        }
+
         ClearBackground(0.2f, 0.3f, 0.3f);
         UpdateProjectionMatrix();
     }
@@ -328,6 +338,13 @@ void main()
         if (mInitialized)
         {
             std::cout << "Shutting down graphics system..." << std::endl;
+
+            if (mSceneFramebuffer != 0)
+            {
+                glDeleteFramebuffers(1, &mSceneFramebuffer);
+                glDeleteTextures(1, &mSceneTexture);
+                glDeleteRenderbuffers(1, &mSceneDepthBuffer);
+            }
 
             // Clean up renderers
             ShutdownTextRenderer();
@@ -1862,5 +1879,48 @@ void main()
             glDeleteProgram(mShapeShaderProgram);
             mShapeShaderProgram = 0;
         }
+    }
+
+    void Graphics::InitSceneFramebuffer(int width, int height)
+    {
+        mSceneFBWidth = width;
+        mSceneFBHeight = height;
+
+        glGenFramebuffers(1, &mSceneFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
+
+        glGenTextures(1, &mSceneTexture);
+        glBindTexture(GL_TEXTURE_2D, mSceneTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mSceneTexture, 0);
+
+        glGenRenderbuffers(1, &mSceneDepthBuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, mSceneDepthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mSceneDepthBuffer);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        {
+            std::cerr << "ERROR: Scene framebuffer is not complete" << std::endl;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void Graphics::ResizeSceneFramebuffer(int width, int height)
+    {
+        if (width == mSceneFBWidth && height == mSceneFBHeight)
+            return;
+
+        if (mSceneFramebuffer != 0)
+        {
+            glDeleteFramebuffers(1, &mSceneFramebuffer);
+            glDeleteTextures(1, &mSceneTexture);
+            glDeleteRenderbuffers(1, &mSceneDepthBuffer);
+        }
+
+        InitSceneFramebuffer(width, height);
     }
 }
