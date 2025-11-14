@@ -42,6 +42,12 @@ namespace Uma_ECS
         */
         void Update(float dt);
 
+        void Shutdown();
+
+        void StopAllEntityAudio();
+
+        void OnEntityDestroyed(Entity entity);
+
     private:
 
         void UpdateListener(float dt);

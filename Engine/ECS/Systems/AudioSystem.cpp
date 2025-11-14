@@ -110,12 +110,36 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
 
             pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
         });
+
+    pEventSystem->Subscribe<Uma_Engine::EntityDestroyedEvent>([this](const Uma_Engine::EntityDestroyedEvent& e) {
+            auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+
+            // Check if entity has audio component
+            if (!audioArray.Has(e.entityId)) return;
+
+            auto& audio = audioArray.GetData(e.entityId);
+
+            // Stop all FMOD channels
+            for (auto& [name, sound] : audio.activeSounds) {
+                if (sound.channel) {
+                    pSoundManager->StopChannel(sound.channel);
+                }
+            }
+
+            // Clear the map (cleanup before component is removed)
+            audio.activeSounds.clear();
+        });
 }
 
 void Uma_ECS::AudioSystem::Update(float dt)
 {
     UpdateListener(dt);
     UpdateAudioEmitters(dt);
+}
+
+void Uma_ECS::AudioSystem::Shutdown()
+{
+    StopAllEntityAudio();
 }
 
 void Uma_ECS::AudioSystem::UpdateListener(float dt)
@@ -145,29 +169,31 @@ void Uma_ECS::AudioSystem::UpdateListener(float dt)
 void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
 {
     (void)dt;
-    // Get entities with AudioComponent
+
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
     auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
 
-    for (auto const& entity : aEntities)
+    for (size_t i = 0; i < audioArray.Size(); ++i)
     {
+        Entity entity = audioArray.GetEntity(i);
+        auto& ac = audioArray.GetComponentAt(i);
 
-        // Check if entity also has Transform component
-        if (!tfArray.Has(entity))
-        {
-            continue;  // Skip if no transform
+        // Check if entity has required components
+        if (!tfArray.Has(entity)) {
+            continue;
+        }
+
+        if (!rbArray.Has(entity)) {
+            continue;
         }
 
         auto& tf = tfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
-        auto& ac = audioArray.GetData(entity);
 
         // Update audio component position from transform
         FMOD_VECTOR newPosition = { tf.position.x, tf.position.y, 0.0f };
-
-        // Calculate velocity (change in position / delta time)
-        FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f};
+        FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f };
 
         ac.position = newPosition;
         ac.velocity = velocity;
@@ -181,7 +207,6 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
             FMOD_RESULT result = FMOD_Channel_IsPlaying(sound.channel, &isPlaying);
 
             if (result != FMOD_OK || !isPlaying) {
-                // Sound finished, remove it
                 it = ac.activeSounds.erase(it);
                 continue;
             }
@@ -192,5 +217,38 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
             }
             ++it;
         }
+    }
+}
+
+
+void Uma_ECS::AudioSystem::StopAllEntityAudio()
+{
+    auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+
+    for (size_t i = 0; i < audioArray.Size(); ++i)
+    {
+        auto& audio = audioArray.GetComponentAt(i);
+
+        // Stop all channels
+        for (auto& [name, sound] : audio.activeSounds) {
+            pSoundManager->StopChannel(sound.channel);
+        }
+
+        audio.activeSounds.clear();
+    }
+}
+
+void Uma_ECS::AudioSystem::OnEntityDestroyed(Entity entity)
+{
+    auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+
+    if (audioArray.Has(entity)) {
+        auto& audio = audioArray.GetData(entity);
+
+        for (auto& [name, sound] : audio.activeSounds) {
+            pSoundManager->StopChannel(sound.channel);
+        }
+
+        audio.activeSounds.clear();
     }
 }

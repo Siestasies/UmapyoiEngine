@@ -463,9 +463,14 @@ namespace Uma_Engine {
         if (!channel) return;
 
         FMOD_BOOL isPlaying = false;
-        if (FMOD_Channel_IsPlaying(channel, &isPlaying) == FMOD_OK && isPlaying) {
-            FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
+        FMOD_RESULT result = FMOD_Channel_IsPlaying(channel, &isPlaying);
+
+        if (result != FMOD_OK || !isPlaying) {
+            return;  // Channel is invalid or stopped
         }
+
+        // Safe to update
+        FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
     }
 
     SoundInfo* SoundManager::GetSoundInfo(const std::string& soundName)
