@@ -271,6 +271,8 @@ namespace Uma_Engine
          */
         void UpdateProjectionMatrix();
 
+        void GetCurrentRenderDimensions(int& width, int& height) const;
+
     public:
         /**
          * \brief Default constructor for Graphics system
@@ -646,5 +648,7 @@ namespace Uma_Engine
         void ResizeSceneFramebuffer(int width, int height);
         GLuint GetSceneTexture() const { return mSceneTexture; }
         void UnbindFramebuffer();
+        int GetSceneFBWidth() const { return mSceneFBWidth; }
+        int GetSceneFBHeight() const { return mSceneFBHeight; }
     };
 }

@@ -690,9 +690,12 @@ void main()
     {
         if (!mInitialized) return;
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Calculate orthographic projection bounds based on camera zoom
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
 
         // Calculate projection bounds centered on camera position
         float left = cam.pos.x - halfWidth;
@@ -701,24 +704,26 @@ void main()
         float top = cam.pos.y + halfHeight;
 
         // Create orthographic projection matrix
-        glm::mat4 projMat =  glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        glm::mat4 projMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
         // Upload projection matrix to shader
         glUseProgram(mShaderProgram);
-        glm::mat4 projection = projMat;
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projMat[0][0]);
     }
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
     {
-        // Convert screen coordinates to NDC
-        float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
-        float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
 
-        // Calculate  projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        // Convert screen coordinates to NDC
+        float ndcX = (2.0f * screenPos.x) / width - 1.0f;
+        float ndcY = 1.0f - (2.0f * screenPos.y) / height;
+
+        // Calculate projection matrix
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -734,9 +739,12 @@ void main()
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Calculate projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -752,8 +760,8 @@ void main()
         float ndcY = clipPos.y / clipPos.w;
 
         // Convert NDC to screen coordinates
-        float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
-        float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
+        float screenX = (ndcX + 1.0f) * 0.5f * width;
+        float screenY = (1.0f - ndcY) * 0.5f * height;
 
         return Vec2(screenX, screenY);
     }
@@ -1082,9 +1090,12 @@ void main()
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Calculate projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1383,9 +1394,12 @@ void main()
         // Set text color
         glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Use camera-based projection
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1630,9 +1644,12 @@ void main()
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Calculate projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1744,9 +1761,12 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Set projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1801,9 +1821,12 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Set projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1845,9 +1868,12 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
+        int width, height;
+        GetCurrentRenderDimensions(width, height);
+
         // Set projection matrix
-        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
-        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
+        float halfWidth = (width * 0.5f) / cam.zoom;
+        float halfHeight = (height * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1937,6 +1963,20 @@ void main()
             // Clear viewport
             glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
+
+    void Graphics::GetCurrentRenderDimensions(int& width, int& height) const
+    {
+        if (mRenderTarget == RenderTarget::Framebuffer)
+        {
+            width = mSceneFBWidth;
+            height = mSceneFBHeight;
+        }
+        else
+        {
+            width = mViewportWidth;
+            height = mViewportHeight;
         }
     }
 }

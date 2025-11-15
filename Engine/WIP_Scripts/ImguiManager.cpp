@@ -218,17 +218,7 @@ namespace Uma_Engine
             return;
         }
 
-        mouseOverUI =
-            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-            ImGui::IsAnyItemHovered() ||
-            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
-
-        if (prevMouseOverUI != mouseOverUI)
-        {
-            // send event
-            prevMouseOverUI = mouseOverUI;
-            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
-        }
+        auto graphics = pSystemManager->GetSystem<Graphics>();
 
         static float fpsAccumulator = 0.0f;
         static int frameCount = 0;
@@ -249,7 +239,6 @@ namespace Uma_Engine
             frameCount = 0;
         }
 
-        auto graphics = pSystemManager->GetSystem<Graphics>();
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
         {
             graphics->UnbindFramebuffer();
@@ -259,8 +248,8 @@ namespace Uma_Engine
 
         CreateDockspace();
 
-		// play stop bar
-		CreateEditorControlBar();
+        // play stop bar
+        CreateEditorControlBar();
         if (!m_hideAll)
         {
             SceneManagerWindow();
@@ -272,6 +261,21 @@ namespace Uma_Engine
             fileBrowser.Render();
 
             resourcesWindow.Render();
+        }
+
+        // Check mouse over UI
+        mouseOverUI =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered() ||
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
+
+        // Allow editor interactions when hovering Scene View
+        bool effectiveMouseOverUI = m_sceneViewHovered ? false : mouseOverUI;
+
+        if (prevMouseOverUI != effectiveMouseOverUI)
+        {
+            prevMouseOverUI = effectiveMouseOverUI;
+            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
         Render();
@@ -521,6 +525,8 @@ namespace Uma_Engine
         if (!graphics)
         {
             ImGui::Text("Graphics system not available");
+            m_sceneViewHovered = false;
+            m_isMouseInSceneView = false;
             ImGui::End();
             return;
         }
@@ -531,6 +537,9 @@ namespace Uma_Engine
             static_cast<int>(viewportSize.y)
         );
 
+        // Get position
+        ImVec2 imagePos = ImGui::GetCursorScreenPos();
+
         // Display the scene texture
         GLuint texID = graphics->GetSceneTexture();
         ImGui::Image(
@@ -539,6 +548,32 @@ namespace Uma_Engine
             ImVec2(0, 1),
             ImVec2(1, 0)
         );
+
+        // Check if mouse is hovering the Scene View window
+        m_sceneViewHovered = ImGui::IsWindowHovered() && ImGui::IsItemHovered();
+
+        if (m_sceneViewHovered)
+        {
+            // Get mouse position relative to the image
+            ImVec2 mousePos = ImGui::GetMousePos();
+            float localX = mousePos.x - imagePos.x;
+            float localY = mousePos.y - imagePos.y;
+
+            // Check if mouse is within bounds
+            if (localX >= 0 && localY >= 0 && localX < viewportSize.x && localY < viewportSize.y)
+            {
+                m_sceneViewMousePos = Vec2(localX, localY);
+                m_isMouseInSceneView = true;
+            }
+            else
+            {
+                m_isMouseInSceneView = false;
+            }
+        }
+        else
+        {
+            m_isMouseInSceneView = false;
+        }
 
         ImGui::End();
     }
@@ -2046,9 +2081,22 @@ namespace Uma_Engine
         ImGui::Begin("Editor Camera", &m_showEditorCameraWindow);
 
         auto& editorCamera = sceneManager->GetEditorCamera();
+        auto graphics = pSystemManager->GetSystem<Graphics>();
 
-        // Active status
-        bool isActive = editorCamera.IsActive() && !mouseOverUI;
+        bool isActive = false;
+
+        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            // In Scene View mode (active when mouse is in Scene View)
+            isActive = editorCamera.IsActive() && m_isMouseInSceneView;
+        }
+        else
+        {
+            // In Window mode (active when mouse not over UI)
+            isActive = editorCamera.IsActive() && !mouseOverUI;
+        }
+
+        // Display status
         if (isActive)
         {
             ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Status: ACTIVE");
@@ -2128,6 +2176,23 @@ namespace Uma_Engine
             ImGui::BulletText("Middle Mouse - Drag to pan");
             ImGui::BulletText("Shift - Speed boost");
             ImGui::BulletText("R - Reset");
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+            {
+                ImGui::TextColored(ImVec4(0.2f, 0.7f, 1.0f, 1.0f), "Viewport Mode:");
+                ImGui::Text("Camera only responds when");
+                ImGui::Text("mouse is in Scene View window");
+            }
+            else
+            {
+                ImGui::TextColored(ImVec4(0.2f, 0.7f, 1.0f, 1.0f), "Window Mode:");
+                ImGui::Text("Camera responds when mouse");
+                ImGui::Text("is not over UI windows");
+            }
         }
 
         ImGui::End();
