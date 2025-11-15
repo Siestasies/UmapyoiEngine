@@ -252,8 +252,7 @@ namespace Uma_Engine
         auto graphics = pSystemManager->GetSystem<Graphics>();
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
         {
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glViewport(0, 0, graphics->GetViewportWidth(), graphics->GetViewportHeight());
+            graphics->UnbindFramebuffer();
         }
 
         StartFrame();

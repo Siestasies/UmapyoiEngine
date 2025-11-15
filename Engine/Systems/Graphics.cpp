@@ -1923,4 +1923,20 @@ void main()
 
         InitSceneFramebuffer(width, height);
     }
+
+    void Graphics::UnbindFramebuffer()
+    {
+        if (mRenderTarget == RenderTarget::Framebuffer)
+        {
+            // Unbind framebuffer
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            // Restore viewport
+            glViewport(0, 0, mViewportWidth, mViewportHeight);
+
+            // Clear viewport
+            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+    }
 }

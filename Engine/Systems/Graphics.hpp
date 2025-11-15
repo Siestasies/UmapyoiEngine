@@ -645,5 +645,6 @@ namespace Uma_Engine
         void InitSceneFramebuffer(int width, int height);
         void ResizeSceneFramebuffer(int width, int height);
         GLuint GetSceneTexture() const { return mSceneTexture; }
+        void UnbindFramebuffer();
     };
 }
