@@ -1,32 +1,42 @@
 #include "PathFindingSystem.hpp"
 
-#include "../Components/Transform.h"
-#include "../Components/RigidBody.h"
-#include "../Components/PathFinding.h"
+#include "Components/Transform.h"
+#include "Components/RigidBody.h"
+#include "Components/PathFinding.h"
+#include "Components/Camera.h"
 
-#include "../Core/Coordinator.hpp"
+#include "Core/Coordinator.hpp"
+#include "Systems/Graphics.hpp"
 
 #include "Events/PlayerEvents.h"
+#include "Events/InputEvents.h"
 
-void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* es)
+#include <GLFW/glfw3.h>
+
+void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* es, Uma_Engine::Graphics* graphics)
 {
     pCoordinator = c;
     pEventSystem = es;
+    pGraphics = graphics;
 
-    navmesh = new Uma_Navigation::DynamicNavMesh(150.f, 20.f);
+    navmesh = new Uma_Navigation::DynamicNavMesh(500.f, 20.f);
     navmeshCenter = Vec2(0, 0);
 
-    //playerID = pCoordinator->GetComponentArray<Player>().GetEntity(0);
 
-    //temp holder please update when you have correct event
-    //need to convert screen space to world space
-    pEventSystem->Subscribe<Uma_Engine::PlayerMoveEvent>(
-        [this](const Uma_Engine::PlayerMoveEvent& e) {
-            auto& pf = pCoordinator->GetComponentArray<PathFinding>().GetData(e.playerId);
-            //when i have the correct event for position
-            
-            //force the goal to update
-            pf.pathUpdateTimer = pf.pathUpdateInterval;
+    //move later
+    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
+        [this](const Uma_Engine::MouseButtonEvent& e) {
+            if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
+
+            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+
+            if (pfArray.Has(playerID)) {
+                auto& pf = pCoordinator->GetComponentArray<PathFinding>().GetData(playerID);
+                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
+
+                pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
+            }
         });
 }
 
@@ -37,8 +47,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
     auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
     auto& playerArray = pCoordinator->GetComponentArray<Player>();
     auto& enemyArray = pCoordinator->GetComponentArray<Enemy>();
-
-    Entity playerID = 0;
+ 
     Vec2 playerPosition;
     float playerSpeed = 100.0f;
     bool hasPlayer = false;
@@ -67,12 +76,13 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         auto& pf = pfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        if (entity == playerID && hasPlayer) {
-            continue;
+        if (entity == playerID) {
+            /*std::cout << "[Player Update] Goal: (" << pf.goal.x << ", " << pf.goal.y
+                << ") | Position: (" << tf.position.x << ", " << tf.position.y << ")" << std::endl;*/
         }
 
         if (entity != playerID && hasPlayer) {
-            pf.goal = playerPosition;
+            //pf.goal = playerPosition;
         }
 
         pf.pathUpdateTimer += dt;
@@ -80,6 +90,18 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             pf.path = navmesh->FindPath(tf.position, pf.goal);
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
+
+            if (entity == playerID) {
+                std::cout << "[Player Pathfinding] From: (" << tf.position.x << ", " << tf.position.y << ")" << std::endl;
+                std::cout << "[Player Pathfinding] To: (" << pf.goal.x << ", " << pf.goal.y << ")" << std::endl;
+                std::cout << "[Player Pathfinding] Path waypoints: " << pf.path.size() << std::endl;
+                std::cout << "[Player Pathfinding] Valid path: " << pf.hasValidPath << std::endl;
+
+                if (pf.path.empty()) {
+                    std::cout << "[Player Pathfinding] ERROR: No path found! Check navmesh coverage." << std::endl;
+                }
+            }
+
             pf.pathUpdateTimer = 0.0f;
             pf.reachedGoal = false;
         }
@@ -102,12 +124,12 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             else if(distance > 0.001f) {
                 float spd = 50.0f;  // Default
 
-                if (entity == playerID) {
+                /*if (entity == playerID) {
                     spd = playerSpeed;
                 }
                 else if (enemyArray.Has(entity)) {
                     spd = enemyArray.GetData(entity).mSpeed;
-                }
+                }*/
 
                 rb.velocity = direction * (1.0f / distance) * spd;
             }

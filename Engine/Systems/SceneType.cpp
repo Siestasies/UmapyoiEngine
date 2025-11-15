@@ -420,7 +420,7 @@ namespace Uma_Engine
 
             m_Coordinator.SetSystemSignature<Uma_ECS::PathFindingSystem>(sign);
         }
-        m_PathFindingSystem->Init(&m_Coordinator, m_EventSystem);
+        m_PathFindingSystem->Init(&m_Coordinator, m_EventSystem, m_Graphics);
 
         InitializeUISystem();
 

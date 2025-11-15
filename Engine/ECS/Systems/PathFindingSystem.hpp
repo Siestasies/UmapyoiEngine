@@ -35,7 +35,7 @@ namespace Uma_ECS
         * \param sound manager and coordinator pointer
         * \return nothing
         */
-        void Init(Coordinator* c, Uma_Engine::EventSystem* es);
+        void Init(Coordinator* c, Uma_Engine::EventSystem* es, Uma_Engine::Graphics* graphics);
 
         /*!
         * \brief updates the listner position in sound manager
@@ -51,9 +51,12 @@ namespace Uma_ECS
 
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
+        Uma_Engine::Graphics* pGraphics = nullptr;
 
         Uma_Navigation::DynamicNavMesh* navmesh;
         float navmeshUpdateTimer = 0.0f;
         Vec2 navmeshCenter;
+
+        Entity playerID = 0;
     };
 }

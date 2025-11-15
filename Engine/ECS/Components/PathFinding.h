@@ -11,6 +11,7 @@ namespace Uma_ECS{
 		float pathUpdateTimer = 0.0f;
 		float pathUpdateInterval = 0.5f;
 
+		float worldScale = 100.f;
 		//run time info
 		std::vector<Vec2> path;
 		unsigned int pathIndex = 0;
