@@ -72,5 +72,29 @@ namespace Uma_Navigation{
             return bounds.Contains(point);
         }
     };
+
+    struct GridCell {
+        int x, y;
+
+        bool operator==(const GridCell& other) const {
+            return x == other.x && y == other.y;
+        }
+    };
+
+    struct GridCellHash {
+        size_t operator()(const GridCell& cell) const {
+            return std::hash<int>()(cell.x) ^ (std::hash<int>()(cell.y) << 1);
+        }
+    };
+
+    struct PathNode {
+        GridCell cell;
+        float gCost;
+        float fCost;
+
+        bool operator>(const PathNode& other) const {
+            return fCost > other.fCost;
+        }
+    };
 }
 

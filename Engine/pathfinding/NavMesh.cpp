@@ -42,45 +42,58 @@ namespace Uma_Navigation {
 
         //creates connections between reegions
         BuildNeighborGraph();
+        std::cout << "[NavMesh] Created " << v_regions.size() << " walkable regions from "
+            << obstacles.size() << " obstacles" << std::endl;
     }
 
     std::vector<Vec2> NavMesh::FindPath(const Vec2& start, const Vec2& goal) {
         OptionalRegionRef startRegion = FindRegion(start);
         OptionalRegionRef goalRegion = FindRegion(goal);
 
-        //checks if either position exist in a walkable area
-        if (!startRegion.has_value() || !goalRegion.has_value()) {
+        // Debug: Check if positions are in regions
+        if (!startRegion.has_value()) {
+            std::cout << "[NavMesh] Start position (" << start.x << "," << start.y << ") not in any region!" << std::endl;
+            return {};
+        }
+        if (!goalRegion.has_value()) {
+            std::cout << "[NavMesh] Goal position (" << goal.x << "," << goal.y << ") not in any region!" << std::endl;
             return {};
         }
 
-        //returns if they are the same region
-        if (&startRegion.value().get() == &goalRegion.value().get()) {
-            return { start, goal };
-        }
+        std::cout << "[NavMesh] Start in region " << startRegion.value().get().id
+            << ", Goal in region " << goalRegion.value().get().id << std::endl;
 
-        //gets the a star path and stores it into a vector
+        // Check if same region (commented out for now)
+        /*if (&startRegion.value().get() == &goalRegion.value().get()) {
+            if (HasLineOfSight(start, goal)) {
+                return { start, goal };
+            }
+        }*/
+
+        // A* search between regions
         std::vector<WalkableRegion*> regionPath = AStarSearch(&startRegion.value().get(), &goalRegion.value().get());
 
-        //if path is empty return
         if (regionPath.empty()) {
+            std::cout << "[NavMesh] A* failed to find path between regions!" << std::endl;
             return {};
         }
+
+        std::cout << "[NavMesh] Found path through " << regionPath.size() << " regions" << std::endl;
 
         std::vector<Vec2> path;
         path.push_back(start);
 
-        //converts the regions positions to vector positions for the entities to use
         for (size_t i = 1; i < regionPath.size(); i++) {
             path.push_back(regionPath[i]->Center());
         }
 
         path.push_back(goal);
 
-        //cleans up the path
         SmoothPath(path);
 
         return path;
     }
+
 
     std::vector<Rect> NavMesh::SplitRectangle(const Rect& walkable, const Rect& obstacle) {
         std::vector<Rect> result;
@@ -124,17 +137,25 @@ namespace Uma_Navigation {
     }
 
     void NavMesh::BuildNeighborGraph() {
-        //loops thru all regions and checks if it boards another region if yes it is added to its neighbour vector
         for (size_t i = 0; i < v_regions.size(); i++) {
             for (size_t j = i + 1; j < v_regions.size(); j++) {
-                //sharesEdge checks if they either span the same x or y and are touching each other
                 if (v_regions[i].bounds.SharesEdge(v_regions[j].bounds)) {
                     v_regions[i].neighbors.push_back(&v_regions[j]);
                     v_regions[j].neighbors.push_back(&v_regions[i]);
                 }
             }
         }
+
+        // Debug: Print region details
+        std::cout << "[NavMesh] Region details:" << std::endl;
+        for (size_t i = 0; i < v_regions.size(); ++i) {
+            const auto& r = v_regions[i];
+            std::cout << "  Region " << r.id << ": (" << r.bounds.x << "," << r.bounds.y
+                << ") size(" << r.bounds.width << "x" << r.bounds.height
+                << ") neighbors:" << r.neighbors.size() << std::endl;
+        }
     }
+
 
     OptionalRegionRef NavMesh::FindRegion(const Vec2& point) {
         for (auto& region : v_regions) {

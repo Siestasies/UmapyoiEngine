@@ -330,6 +330,7 @@ namespace Uma_Engine
             */
             Uma_ECS::Coordinator& GetCoordinator() { return m_Scene->GetCoordinator(); }
             Uma_ECS::LuaScriptingSystem& GetLuascriptingSystem() { return *m_Scene->m_LuaScriptingSystem; }
+            Uma_ECS::PathFindingSystem& GetPathFindingSystem() { return *m_Scene->m_PathFindingSystem; }
             Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
             Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }

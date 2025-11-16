@@ -276,6 +276,9 @@ namespace Uma_Engine
             if (GetInput()->KeyPressed(GLFW_KEY_5)) {
                 SpawnDefaultEntities();
             }
+            if (GetInput()->KeyDown(GLFW_KEY_6)) {
+                GetPathFindingSystem().DebugDraw();
+            }
         }
 
         void SaveScene()

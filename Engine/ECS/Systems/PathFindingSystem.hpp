@@ -1,6 +1,6 @@
 #pragma once
 /*!
-\file   AudioSystem.hpp
+\file   PathFindingSystem.hpp
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -11,7 +11,7 @@
 \par    DigiPen login: k.kaiyang
 
 \brief
-Implementation of updating the audio listener position/audio component
+Implementation of updating the pathfinding component
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -23,7 +23,8 @@ All rights reserved.
 
 #include "../Systems/ResourcesManager.hpp"
 
-#include "../pathfinding/NavMesh.hpp"
+#include "pathfinding/NavMesh.hpp"
+#include "pathfinding/GridPathfinder.hpp"
 
 namespace Uma_ECS
 {
@@ -45,7 +46,8 @@ namespace Uma_ECS
 
         void Shutdown();
 
-        void LoadTiles(const std::vector<Uma_Navigation::Tile>& tiles);
+        void DebugDraw();
+
 
     private:
 
@@ -53,10 +55,11 @@ namespace Uma_ECS
         Uma_Engine::EventSystem* pEventSystem = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
 
-        Uma_Navigation::DynamicNavMesh* navmesh;
-        float navmeshUpdateTimer = 0.0f;
-        Vec2 navmeshCenter;
-
+        Uma_Navigation::GridPathfinder* gridPathfinder = nullptr;
         Entity playerID = 0;
+        float cellSize = 2.0f;
+        float rebuildRadius = 500.0f;
+
+        void RebuildPathfinder(const Vec2& center);
     };
 }
