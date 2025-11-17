@@ -47,8 +47,7 @@ namespace Uma_Navigation {
         };
     }
 
-    std::vector<Vec2> GridPathfinder::ReconstructPath(
-        const std::unordered_map<GridCell, GridCell, GridCellHash>& cameFrom,
+    std::vector<Vec2> GridPathfinder::ReconstructPath(const std::unordered_map<GridCell, GridCell, GridCellHash>& cameFrom,
         GridCell current, const Vec2& start, const Vec2& goal) const
     {
         std::vector<Vec2> path;

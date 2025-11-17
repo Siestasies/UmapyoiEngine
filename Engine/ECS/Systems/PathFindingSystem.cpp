@@ -109,7 +109,8 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 // Move toward waypoint with entity's speed
                 float spd = 50.0f;
                 if (playerArray.Has(entity)) {
-                    spd = playerArray.GetData(entity).mSpeed;
+                    //spd = playerArray.GetData(entity).mSpeed;
+                    spd = 50.0f;
                 }
                 else if (enemyArray.Has(entity)) {
                     spd = enemyArray.GetData(entity).mSpeed;
@@ -131,12 +132,10 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
     auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
-    auto& enemyArray = pCoordinator->GetComponentArray<Enemy>();
+    auto& spriteArray = pCoordinator->GetComponentArray<Sprite>();
 
     for (auto entity : colliderEntities) {
-        if (entity == playerID) continue;
         if (!tfArray.Has(entity)) continue;
-        if (enemyArray.Has(entity)) continue;
 
         const auto& transform = tfArray.GetData(entity);
         const auto& collider = colliderArray.GetData(entity);
@@ -148,23 +147,51 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
 
         if (distSq > rebuildRadius * rebuildRadius) continue;
 
+        // Get sprite size if available
+        Vec2 spriteSize{ 1.0f, 1.0f };
+        if (spriteArray.Has(entity))
+        {
+            auto& s = spriteArray.GetData(entity);
+            if (s.texture)
+            {
+                spriteSize = s.texture->GetNativeSize();
+            }
+        }
+
         // Process shapes
         for (const auto& shape : collider.shapes) {
             if (!shape.isActive) continue;
 
-            Vec2 actualSize = shape.size;
+            // FILTER: Only block on Environment colliders (walls), not Physics (dynamic entities)
+            if (shape.purpose != ColliderPurpose::Environment) continue;
+
+            // Apply autoFitToSprite logic
+            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
 
             // Use default size for zero-size colliders
-            if (actualSize.x == 0 || actualSize.y == 0) {
-                actualSize = Vec2(5.0f, 5.0f);
+            if (effectiveSize.x == 0 || effectiveSize.y == 0) {
+                effectiveSize = Vec2(5.0f, 5.0f);
             }
 
-            Vec2 halfSize(actualSize.x * 0.5f, actualSize.y * 0.5f);
+            // Apply transform scale
+            Vec2 scaledSize = Vec2{
+                effectiveSize.x * transform.scale.x,
+                effectiveSize.y * transform.scale.y
+            };
 
-            int minX = static_cast<int>(std::floor((transform.position.x - halfSize.x) / cellSize));
-            int maxX = static_cast<int>(std::ceil((transform.position.x + halfSize.x) / cellSize));
-            int minY = static_cast<int>(std::floor((transform.position.y - halfSize.y) / cellSize));
-            int maxY = static_cast<int>(std::ceil((transform.position.y + halfSize.y) / cellSize));
+            // Apply shape offset
+            Vec2 worldOffset = Vec2{
+                shape.offset.x * transform.scale.x,
+                shape.offset.y * transform.scale.y
+            };
+
+            Vec2 shapeCenter = transform.position + worldOffset;
+            Vec2 halfSize = scaledSize * 0.5f;
+
+            int minX = static_cast<int>(std::floor((shapeCenter.x - halfSize.x) / cellSize));
+            int maxX = static_cast<int>(std::ceil((shapeCenter.x + halfSize.x) / cellSize));
+            int minY = static_cast<int>(std::floor((shapeCenter.y - halfSize.y) / cellSize));
+            int maxY = static_cast<int>(std::ceil((shapeCenter.y + halfSize.y) / cellSize));
 
             for (int y = minY; y <= maxY; ++y) {
                 for (int x = minX; x <= maxX; ++x) {
@@ -176,6 +203,8 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
 
     gridPathfinder->SetBlockedCells(blocked);
 }
+
+
 
 void Uma_ECS::PathFindingSystem::Shutdown()
 {
