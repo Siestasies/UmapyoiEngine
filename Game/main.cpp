@@ -136,10 +136,29 @@ int main()
     float fps = 0.0f;
     int frameCount = 0;
 
+    // frame rate limit
+    const double targetFrameTime = 1.0f / static_cast<double>(gEngineConfig.fps);
+    double frameStartTime = glfwGetTime();
+
     std::stringstream newTitle;
 
     while (!window.ShouldClose())
     {
+        // Frame rate limiting - wait until it's time for next frame
+        double currentTime = glfwGetTime();
+        double elapsed = currentTime - frameStartTime;
+
+        if (elapsed < targetFrameTime)
+        {
+            // Busy-wait for remaining time (more accurate than sleep)
+            while (glfwGetTime() - frameStartTime < targetFrameTime)
+            {
+                // Spin-wait for precise timing
+            }
+        }
+
+        frameStartTime = glfwGetTime();  // Reset frame timer
+
         // calc dt
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
