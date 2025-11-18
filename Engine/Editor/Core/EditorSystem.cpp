@@ -41,6 +41,12 @@ namespace Uma_Engine
     void EditorSystem::Init()
     {
         EventListenerSystem::Init();
+
+        if (pSystemManager)
+        {
+            auto* imguiManager = pSystemManager->GetSystem<ImguiManager>();
+            SetImguiManager(imguiManager);
+        }
         
         if (mConfig.autoSwitchMode)
         {
@@ -223,7 +229,17 @@ namespace Uma_Engine
      */
     void EditorSystem::OnMouseButton(const MouseButtonEvent& event)
     {
-        if (!mState.enabled || !pCoordinator || !pGraphics || isMouseOverUI || mIsPlayMode)
+        if (!mState.enabled || !pCoordinator || !pGraphics || mIsPlayMode)
+            return;
+
+        // In Scene View mode, ignore isMouseOverUI since we handle it differently
+        bool shouldBlockInput = false;
+        if (pGraphics->GetRenderTarget() == Uma_Engine::RenderTarget::Window)
+        {
+            shouldBlockInput = isMouseOverUI;
+        }
+
+        if (shouldBlockInput)
             return;
 
         if (event.button == GLFW_MOUSE_BUTTON_LEFT)
@@ -233,14 +249,22 @@ namespace Uma_Engine
                 if (Uma_UI::InputFilter::ShouldBlockMouseInput())
                     return;
 
-                Vec2 mousePos(static_cast<float>(event.x), static_cast<float>(event.y));
+                // Get adjusted mouse position
+                Vec2 mousePos = GetAdjustedMousePosition(
+                    static_cast<float>(event.x),
+                    static_cast<float>(event.y)
+                );
+
+                // Check if mouse position is valid
+                if (mousePos.x < 0 || mousePos.y < 0)
+                    return;
 
                 if (mState.pickedEntity.has_value())
                 {
                     if (mState.isDragging)
                         return;
 
-                    HandleGizmoClick(mousePos);                    
+                    HandleGizmoClick(mousePos);
                 }
 
                 HandlePickingClick(mousePos);
@@ -254,14 +278,14 @@ namespace Uma_Engine
                         int transformType = 0;
                         switch (mState.currentMode)
                         {
-                            case EditorMode::Translate: transformType = 0; break;
-                            case EditorMode::Rotate: transformType = 1; break;
-                            case EditorMode::Scale: transformType = 2; break;
-                            default: break;
+                        case EditorMode::Translate: transformType = 0; break;
+                        case EditorMode::Rotate: transformType = 1; break;
+                        case EditorMode::Scale: transformType = 2; break;
+                        default: break;
                         }
-                        
+
                         eventSystem->Emit<EntityTransformedEvent>(
-                            mState.pickedEntity.value(), 
+                            mState.pickedEntity.value(),
                             transformType
                         );
                     }
@@ -278,12 +302,31 @@ namespace Uma_Engine
      */
     void EditorSystem::OnMouseMove(const MouseMoveEvent& event)
     {
-        if (!mState.enabled || !pCoordinator || isMouseOverUI || mIsPlayMode)
+        if (!mState.enabled || !pCoordinator || mIsPlayMode)
+            return;
+
+        // In Scene View mode
+        bool shouldBlockInput = false;
+        if (pGraphics && pGraphics->GetRenderTarget() == Uma_Engine::RenderTarget::Window)
+        {
+            shouldBlockInput = isMouseOverUI;
+        }
+
+        if (shouldBlockInput)
             return;
 
         if (mState.isDragging && mState.pickedEntity.has_value())
         {
-            Vec2 currentMouse(static_cast<float>(event.x), static_cast<float>(event.y));
+            // Get adjusted mouse position
+            Vec2 currentMouse = GetAdjustedMousePosition(
+                static_cast<float>(event.x),
+                static_cast<float>(event.y)
+            );
+
+            // Check if mouse position is valid
+            if (currentMouse.x < 0 || currentMouse.y < 0)
+                return;
+
             mTransformManipulator.UpdateDrag(currentMouse, mState, mConfig);
         }
     }
@@ -354,6 +397,33 @@ namespace Uma_Engine
         {
             mTransformManipulator.StartDrag(mState.pickedEntity.value(), screenPos,
                                            hitAxis, mState);
+        }
+    }
+
+    void EditorSystem::SetImguiManager(ImguiManager* imgui)
+    {
+        pImguiManager = imgui;
+    }
+
+    Vec2 EditorSystem::GetAdjustedMousePosition(float rawX, float rawY) const
+    {
+        if (!pGraphics || !pImguiManager)
+            return Vec2(rawX, rawY);
+
+        // Check if in framebuffer (Scene View) mode
+        if (pGraphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            // In Scene View mode
+            if (!pImguiManager->IsMouseInSceneView())
+            {
+                return Vec2(-1.0f, -1.0f); // Mouse not in Scene View
+            }
+            return pImguiManager->GetSceneViewMousePos();
+        }
+        else
+        {
+            // In Window mode
+            return Vec2(rawX, rawY);
         }
     }
 }
