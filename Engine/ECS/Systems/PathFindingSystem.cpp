@@ -51,7 +51,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         if (hasPlayer) {
             playerPosition = tfArray.GetData(playerID).position;
 
-            // Rebuild pathfinder periodically
             static Vec2 lastRebuildCenter(0, 0);
             static bool needsFirstRebuild = true;
 
@@ -72,12 +71,32 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 
+    const float goalDeadZone = cellSize * 2.0f; // Distance to consider "reached goal"
+
     // Process pathfinding for all entities
     for (auto const& entity : aEntities)
     {
         auto& tf = tfArray.GetData(entity);
         auto& pf = pfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
+
+        bool isPlayer = playerArray.Has(entity);
+        bool isEnemy = enemyArray.Has(entity);
+
+        // Calculate distance to final goal
+        Vec2 toGoal = pf.goal - tf.position;
+        float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
+
+        // PLAYER: Stop updating when near goal and path is complete
+        if (isPlayer && distToGoal < goalDeadZone && !pf.hasValidPath) {
+            pf.reachedGoal = true;
+            rb.velocity = Vec2(0, 0);
+            pf.pathUpdateTimer = 0.0f;
+            continue; // Skip further updates for player
+        }
+
+        // ENEMY: Always keep updating (even when near goal, in case target moves)
+        // No early exit for enemies
 
         // Update path periodically
         pf.pathUpdateTimer += dt;
@@ -86,7 +105,11 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
             pf.pathUpdateTimer = 0.0f;
-            pf.reachedGoal = false;
+
+            // Only mark goal reached for player when path completes
+            if (isPlayer) {
+                pf.reachedGoal = false;
+            }
         }
 
         // Follow the path
@@ -99,20 +122,19 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 // Reached waypoint, move to next
                 pf.pathIndex++;
                 if (pf.pathIndex >= pf.path.size()) {
-                    // Reached final goal
+                    // Reached final waypoint
                     pf.reachedGoal = true;
                     pf.hasValidPath = false;
                     rb.velocity = Vec2(0, 0);
                 }
             }
             else if (distance > 0.001f) {
-                // Move toward waypoint with entity's speed
+                // Move toward waypoint
                 float spd = 50.0f;
-                if (playerArray.Has(entity)) {
-                    //spd = playerArray.GetData(entity).mSpeed;
+                if (isPlayer) {
                     spd = 50.0f;
                 }
-                else if (enemyArray.Has(entity)) {
+                else if (isEnemy) {
                     spd = enemyArray.GetData(entity).mSpeed;
                 }
 
@@ -120,10 +142,17 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             }
         }
         else {
+            // No valid path - stop moving
             rb.velocity = Vec2(0, 0);
+
+            // ENEMY: If very close to goal, mark as reached but keep updating
+            if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
+                pf.reachedGoal = true;
+            }
         }
     }
 }
+
 
 void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
 {
