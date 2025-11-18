@@ -16,9 +16,10 @@ namespace Uma_Navigation {
     }
 
     Vec2 GridPathfinder::GridToWorld(const GridCell& cell) const {
+        // Corner-aligned: cell position is at top-left corner
         return Vec2(
-            (cell.x + 0.5f) * cellSize,
-            (cell.y + 0.5f) * cellSize
+            cell.x * cellSize,
+            cell.y * cellSize
         );
     }
 

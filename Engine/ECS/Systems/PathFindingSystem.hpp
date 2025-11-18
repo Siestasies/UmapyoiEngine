@@ -61,5 +61,6 @@ namespace Uma_ECS
         float rebuildRadius = 500.0f;
 
         void RebuildPathfinder(const Vec2& center);
+        std::vector<Vec2> SmoothPath(const std::vector<Vec2>& path);
     };
 }

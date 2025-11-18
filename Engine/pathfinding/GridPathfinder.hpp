@@ -13,8 +13,6 @@ namespace Uma_Navigation {
         std::unordered_set<GridCell, GridCellHash> blockedCells;
         float cellSize;
 
-        GridCell WorldToGrid(const Vec2& worldPos) const;
-        Vec2 GridToWorld(const GridCell& cell) const;
         bool IsCellBlocked(const GridCell& cell) const;
         float Heuristic(const GridCell& a, const GridCell& b) const;
         std::vector<GridCell> GetNeighbors(const GridCell& cell) const;
@@ -34,6 +32,9 @@ namespace Uma_Navigation {
         float GetCellSize() const { return cellSize; }
 
         const std::unordered_set<GridCell, GridCellHash>& GetBlockedCells() const { return blockedCells; }
+
+        GridCell WorldToGrid(const Vec2& worldPos) const;
+        Vec2 GridToWorld(const GridCell& cell) const;
     };
 
 }
