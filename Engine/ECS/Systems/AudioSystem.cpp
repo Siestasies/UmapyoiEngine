@@ -111,24 +111,6 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
             pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
         });
 
-    pEventSystem->Subscribe<Uma_Engine::EntityDestroyedEvent>([this](const Uma_Engine::EntityDestroyedEvent& e) {
-            auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
-
-            // Check if entity has audio component
-            if (!audioArray.Has(e.entityId)) return;
-
-            auto& audio = audioArray.GetData(e.entityId);
-
-            // Stop all FMOD channels
-            for (auto& [name, sound] : audio.activeSounds) {
-                if (sound.channel) {
-                    pSoundManager->StopChannel(sound.channel);
-                }
-            }
-
-            // Clear the map (cleanup before component is removed)
-            audio.activeSounds.clear();
-        });
 }
 
 void Uma_ECS::AudioSystem::Update(float dt)
