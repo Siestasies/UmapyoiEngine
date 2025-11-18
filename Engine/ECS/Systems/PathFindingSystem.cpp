@@ -35,21 +35,11 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
 
 void Uma_ECS::PathFindingSystem::Update(float dt)
 {
-    static bool printedOnce = false;
-    if (!printedOnce) {
-        Uma_Navigation::GridCell testCell{ 4, 0 };
-        Vec2 worldPos = gridPathfinder->GridToWorld(testCell);
-        std::cout << "Cell (4,0) converts to world pos: (" << worldPos.x << ", " << worldPos.y << ")" << std::endl;
-        std::cout << "Expected: (20, 0) for corner-aligned" << std::endl;
-        printedOnce = true;
-    }
-
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
     auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
     auto& playerArray = pCoordinator->GetComponentArray<Player>();
     auto& enemyArray = pCoordinator->GetComponentArray<Enemy>();
-    auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
 
     Vec2 playerPosition(0, 0);
     bool hasPlayer = false;
@@ -74,7 +64,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 Vec2 delta = playerPosition - lastRebuildCenter;
                 float distance = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
-                if (distance > 100.0f) {
+                if (distance > 50.0f) {
                     RebuildPathfinder(playerPosition);
                     lastRebuildCenter = playerPosition;
                 }
@@ -82,25 +72,17 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 
-    const float goalDeadZone = cellSize * 2.0f; // 4 pixels with cellSize=2
+    const float goalDeadZone = cellSize * 2.0f;
 
+    // Process pathfinding for all entities
     for (auto const& entity : aEntities)
     {
         auto& tf = tfArray.GetData(entity);
         auto& pf = pfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        // Get foot offset
-        float footOffsetY = 0.0f;
-        if (colliderArray.Has(entity)) {
-            const auto& collider = colliderArray.GetData(entity);
-            if (!collider.shapes.empty()) {
-                footOffsetY = collider.shapes[0].offset.y;
-            }
-        }
-
-        Vec2 footPosition = Vec2(tf.position.x, tf.position.y + footOffsetY);
-        Vec2 toGoal = pf.goal - footPosition;
+        // NO FOOT OFFSET - use sprite center position directly
+        Vec2 toGoal = pf.goal - tf.position;
         float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
 
         bool isPlayer = playerArray.Has(entity);
@@ -114,25 +96,25 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             continue;
         }
 
-        // For ENEMY: Keep updating even when near goal (target might move)
-        // Only stop movement if VERY close (half dead zone)
+        // For ENEMY: Keep updating even when near goal
         if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
             rb.velocity = Vec2(0, 0);
             pf.reachedGoal = true;
-            // DON'T continue - let path recalculate below
         }
 
-        // Normal path update logic
         if (!pf.hasValidPath || pf.pathIndex >= pf.path.size()) {
             pf.pathUpdateTimer += dt;
         }
 
         if (pf.pathUpdateTimer >= pf.pathUpdateInterval) {
-            pf.path = gridPathfinder->FindPath(footPosition, pf.goal);
+            // Find path from sprite center (no foot position)
+            pf.path = gridPathfinder->FindPath(tf.position, pf.goal);
 
             if (pf.path.size() > 4) {
                 pf.path = SmoothPath(pf.path);
             }
+
+            // NO waypoint adjustment - use path as-is
 
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
@@ -140,7 +122,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             pf.reachedGoal = false;
         }
 
-        // Follow path
+        // Follow the path
         if (pf.hasValidPath && pf.pathIndex < pf.path.size()) {
             Vec2 target = pf.path[pf.pathIndex];
             Vec2 direction = target - tf.position;
@@ -171,8 +153,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 }
-
-
 
 
 void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
