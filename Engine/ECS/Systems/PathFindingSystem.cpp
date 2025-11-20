@@ -37,11 +37,35 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
     auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+    auto& colArray = pCoordinator->GetComponentArray<Collider>();
     auto& playerArray = pCoordinator->GetComponentArray<Player>();
     auto& enemyArray = pCoordinator->GetComponentArray<Enemy>();
 
     Vec2 playerPosition(0, 0);
     bool hasPlayer = false;
+    float maxAgentRadius = cellSize; // Initialize with minimum
+
+    // Calculate maximum agent radius FIRST, before rebuilding
+    for (auto const& entity : aEntities)
+    {
+        if (colArray.Has(entity)) {
+            const auto& collider = colArray.GetData(entity);
+            const auto& tf = tfArray.GetData(entity);
+
+            for (const auto& shape : collider.shapes) {
+                if (!shape.isActive) continue;
+
+                float sx = shape.size.x * tf.scale.x;
+                float sy = shape.size.y * tf.scale.y;
+                float candidateRadius = (std::max)(sx, sy) * 0.5f;
+
+                maxAgentRadius = (std::max)(maxAgentRadius, candidateRadius);
+            }
+        }
+    }
+
+    std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
+        << " world units" << std::endl;
 
     // Find player and rebuild pathfinder around them
     if (playerArray.Size() > 0) {
@@ -55,7 +79,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             static bool needsFirstRebuild = true;
 
             if (needsFirstRebuild) {
-                RebuildPathfinder(playerPosition);
+                RebuildPathfinder(playerPosition, maxAgentRadius);
                 lastRebuildCenter = playerPosition;
                 needsFirstRebuild = false;
             }
@@ -63,15 +87,15 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 Vec2 delta = playerPosition - lastRebuildCenter;
                 float distance = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
-                if (distance > 50.0f) {
-                    RebuildPathfinder(playerPosition);
+                if (distance > rebuildRadius * 0.5f) {
+                    RebuildPathfinder(playerPosition, maxAgentRadius);
                     lastRebuildCenter = playerPosition;
                 }
             }
         }
     }
 
-    const float goalDeadZone = cellSize * 2.0f; // Distance to consider "reached goal"
+    const float goalDeadZone = cellSize * 2.0f;
 
     // Process pathfinding for all entities
     for (auto const& entity : aEntities)
@@ -83,30 +107,42 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
 
-        // Calculate distance to final goal
+        // Calculate THIS entity's radius for pathfinding
+        float agentRad = cellSize;
+        if (colArray.Has(entity)) {
+            const auto& collider = colArray.GetData(entity);
+
+            for (const auto& shape : collider.shapes) {
+                if (!shape.isActive) continue;
+
+                float sx = shape.size.x * tf.scale.x;
+                float sy = shape.size.y * tf.scale.y;
+                float candidateRadius = (std::max)(sx, sy) * 0.5f;
+
+                agentRad = (std::max)(agentRad, candidateRadius);
+            }
+        }
+
+        // ... rest of your pathfinding logic ...
+
         Vec2 toGoal = pf.goal - tf.position;
         float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
 
-        // PLAYER: Stop updating when near goal and path is complete
         if (isPlayer && distToGoal < goalDeadZone && !pf.hasValidPath) {
             pf.reachedGoal = true;
             rb.velocity = Vec2(0, 0);
             pf.pathUpdateTimer = 0.0f;
-            continue; // Skip further updates for player
+            continue;
         }
 
-        // ENEMY: Always keep updating (even when near goal, in case target moves)
-        // No early exit for enemies
-
-        // Update path periodically
         pf.pathUpdateTimer += dt;
         if (pf.pathUpdateTimer >= pf.pathUpdateInterval) {
-            pf.path = gridPathfinder->FindPath(tf.position, pf.goal);
+            pf.path = gridPathfinder->FindPath(tf.position, pf.goal, agentRad);
+            pf.path = gridPathfinder->SmoothPath(pf.path);
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
             pf.pathUpdateTimer = 0.0f;
 
-            // Only mark goal reached for player when path completes
             if (isPlayer) {
                 pf.reachedGoal = false;
             }
@@ -119,17 +155,14 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
             if (distance < 2.0f) {
-                // Reached waypoint, move to next
                 pf.pathIndex++;
                 if (pf.pathIndex >= pf.path.size()) {
-                    // Reached final waypoint
                     pf.reachedGoal = true;
                     pf.hasValidPath = false;
                     rb.velocity = Vec2(0, 0);
                 }
             }
             else if (distance > 0.001f) {
-                // Move toward waypoint
                 float spd = 50.0f;
                 if (isPlayer) {
                     spd = 50.0f;
@@ -142,10 +175,8 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             }
         }
         else {
-            // No valid path - stop moving
             rb.velocity = Vec2(0, 0);
 
-            // ENEMY: If very close to goal, mark as reached but keep updating
             if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
                 pf.reachedGoal = true;
             }
@@ -154,7 +185,8 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 }
 
 
-void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
+
+void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float maxAgentRadius)
 {
     std::unordered_set<Uma_Navigation::GridCell, Uma_Navigation::GridCellHash> blocked;
 
@@ -169,14 +201,12 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
         const auto& transform = tfArray.GetData(entity);
         const auto& collider = colliderArray.GetData(entity);
 
-        // Calculate distance
         float dx = transform.position.x - center.x;
         float dy = transform.position.y - center.y;
         float distSq = dx * dx + dy * dy;
 
         if (distSq > rebuildRadius * rebuildRadius) continue;
 
-        // Get sprite size if available
         Vec2 spriteSize{ 1.0f, 1.0f };
         if (spriteArray.Has(entity))
         {
@@ -187,28 +217,21 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
             }
         }
 
-        // Process shapes
         for (const auto& shape : collider.shapes) {
             if (!shape.isActive) continue;
-
-            // FILTER: Only block on Environment colliders (walls), not Physics (dynamic entities)
             if (shape.purpose != ColliderPurpose::Environment) continue;
 
-            // Apply autoFitToSprite logic
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
 
-            // Use default size for zero-size colliders
             if (effectiveSize.x == 0 || effectiveSize.y == 0) {
                 effectiveSize = Vec2(5.0f, 5.0f);
             }
 
-            // Apply transform scale
             Vec2 scaledSize = Vec2{
                 effectiveSize.x * transform.scale.x,
                 effectiveSize.y * transform.scale.y
             };
 
-            // Apply shape offset
             Vec2 worldOffset = Vec2{
                 shape.offset.x * transform.scale.x,
                 shape.offset.y * transform.scale.y
@@ -218,9 +241,9 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
             Vec2 halfSize = scaledSize * 0.5f;
 
             int minX = static_cast<int>(std::floor((shapeCenter.x - halfSize.x) / cellSize));
-            int maxX = static_cast<int>(std::ceil((shapeCenter.x + halfSize.x) / cellSize));
+            int maxX = static_cast<int>(std::floor((shapeCenter.x + halfSize.x) / cellSize));
             int minY = static_cast<int>(std::floor((shapeCenter.y - halfSize.y) / cellSize));
-            int maxY = static_cast<int>(std::ceil((shapeCenter.y + halfSize.y) / cellSize));
+            int maxY = static_cast<int>(std::floor((shapeCenter.y + halfSize.y) / cellSize));
 
             for (int y = minY; y <= maxY; ++y) {
                 for (int x = minX; x <= maxX; ++x) {
@@ -231,7 +254,19 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
     }
 
     gridPathfinder->SetBlockedCells(blocked);
+
+    // Calculate cells needed for largest agent
+    int cellsNeeded = static_cast<int>(std::ceil(maxAgentRadius / cellSize));
+    int maxClearanceRadius = cellsNeeded + 2; // Add buffer
+
+    std::cout << "[PathFinding] Computing clearances: max agent radius="
+        << maxAgentRadius << " world units, "
+        << cellsNeeded << " cells, limit="
+        << maxClearanceRadius << " cells" << std::endl;
+
+    gridPathfinder->ComputeClearances(maxClearanceRadius);
 }
+
 
 
 

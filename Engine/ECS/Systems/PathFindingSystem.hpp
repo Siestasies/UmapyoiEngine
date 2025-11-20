@@ -48,7 +48,6 @@ namespace Uma_ECS
 
         void DebugDraw();
 
-
     private:
 
         Coordinator* pCoordinator = nullptr;
@@ -57,9 +56,10 @@ namespace Uma_ECS
 
         Uma_Navigation::GridPathfinder* gridPathfinder = nullptr;
         Entity playerID = 0;
+        //float cellSize = 2.0f;
         float cellSize = 2.0f;
         float rebuildRadius = 500.0f;
 
-        void RebuildPathfinder(const Vec2& center);
+        void RebuildPathfinder(const Vec2& center, float maxAgentRadius);
     };
 }
