@@ -38,6 +38,12 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    enum class RenderTarget
+    {
+        Window,      // GLFW window
+        Framebuffer  // Framebuffer for ImGui display
+    };
+
     /**
      * \struct RectInfo
      * \brief Information to draw filled rectangle
@@ -151,6 +157,13 @@ namespace Uma_Engine
         // Text rendering
         GLuint mTextShaderProgram;
 
+        // Frame buffer
+        GLuint mSceneFramebuffer;
+        GLuint mSceneTexture;
+        GLuint mSceneDepthBuffer;
+        int mSceneFBWidth, mSceneFBHeight;
+        RenderTarget mRenderTarget;
+
         // Viewport size
         int mViewportWidth, mViewportHeight;
 
@@ -257,6 +270,8 @@ namespace Uma_Engine
          * Calculate orthographic projection using current camera position and zoom
          */
         void UpdateProjectionMatrix();
+
+        void GetCurrentRenderDimensions(int& width, int& height) const;
 
     public:
         /**
@@ -626,5 +641,14 @@ namespace Uma_Engine
          * \param alpha Opacity
          */
         void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, float r, float g, float b, float alpha = 1.0f);
+
+        void SetRenderTarget(RenderTarget target) { mRenderTarget = target; }
+        RenderTarget GetRenderTarget() const { return mRenderTarget; }
+        void InitSceneFramebuffer(int width, int height);
+        void ResizeSceneFramebuffer(int width, int height);
+        GLuint GetSceneTexture() const { return mSceneTexture; }
+        void UnbindFramebuffer();
+        int GetSceneFBWidth() const { return mSceneFBWidth; }
+        int GetSceneFBHeight() const { return mSceneFBHeight; }
     };
 }
