@@ -6,7 +6,6 @@
 
 #include "Core/Coordinator.hpp"
 #include "Systems/Graphics.hpp"
-#include "../pathfinding/NavMeshTypes.h"
 
 #include "Events/InputEvents.h"
 #include <GLFW/glfw3.h>
@@ -72,7 +71,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 
-    const float goalDeadZone = cellSize * 2.0f;
+    const float goalDeadZone = cellSize * 2.0f; // Distance to consider "reached goal"
 
     // Process pathfinding for all entities
     for (auto const& entity : aEntities)
@@ -81,45 +80,36 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         auto& pf = pfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        // NO FOOT OFFSET - use sprite center position directly
-        Vec2 toGoal = pf.goal - tf.position;
-        float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
-
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
 
-        // For PLAYER: Stop completely when near goal
+        // Calculate distance to final goal
+        Vec2 toGoal = pf.goal - tf.position;
+        float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
+
+        // PLAYER: Stop updating when near goal and path is complete
         if (isPlayer && distToGoal < goalDeadZone && !pf.hasValidPath) {
             pf.reachedGoal = true;
             rb.velocity = Vec2(0, 0);
             pf.pathUpdateTimer = 0.0f;
-            continue;
+            continue; // Skip further updates for player
         }
 
-        // For ENEMY: Keep updating even when near goal
-        if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
-            rb.velocity = Vec2(0, 0);
-            pf.reachedGoal = true;
-        }
+        // ENEMY: Always keep updating (even when near goal, in case target moves)
+        // No early exit for enemies
 
-        if (!pf.hasValidPath || pf.pathIndex >= pf.path.size()) {
-            pf.pathUpdateTimer += dt;
-        }
-
+        // Update path periodically
+        pf.pathUpdateTimer += dt;
         if (pf.pathUpdateTimer >= pf.pathUpdateInterval) {
-            // Find path from sprite center (no foot position)
             pf.path = gridPathfinder->FindPath(tf.position, pf.goal);
-
-            if (pf.path.size() > 4) {
-                pf.path = SmoothPath(pf.path);
-            }
-
-            // NO waypoint adjustment - use path as-is
-
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
             pf.pathUpdateTimer = 0.0f;
-            pf.reachedGoal = false;
+
+            // Only mark goal reached for player when path completes
+            if (isPlayer) {
+                pf.reachedGoal = false;
+            }
         }
 
         // Follow the path
@@ -128,15 +118,18 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             Vec2 direction = target - tf.position;
             float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-            if (distance < cellSize) {
+            if (distance < 2.0f) {
+                // Reached waypoint, move to next
                 pf.pathIndex++;
                 if (pf.pathIndex >= pf.path.size()) {
+                    // Reached final waypoint
                     pf.reachedGoal = true;
                     pf.hasValidPath = false;
                     rb.velocity = Vec2(0, 0);
                 }
             }
             else if (distance > 0.001f) {
+                // Move toward waypoint
                 float spd = 50.0f;
                 if (isPlayer) {
                     spd = 50.0f;
@@ -149,7 +142,13 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             }
         }
         else {
+            // No valid path - stop moving
             rb.velocity = Vec2(0, 0);
+
+            // ENEMY: If very close to goal, mark as reached but keep updating
+            if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
+                pf.reachedGoal = true;
+            }
         }
     }
 }
@@ -164,31 +163,52 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
     auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
     auto& spriteArray = pCoordinator->GetComponentArray<Sprite>();
 
-    // Collect all wall cells first to detect corners
-    std::unordered_set<Uma_Navigation::GridCell, Uma_Navigation::GridCellHash> wallCells;
-
     for (auto entity : colliderEntities) {
         if (!tfArray.Has(entity)) continue;
+
         const auto& transform = tfArray.GetData(entity);
         const auto& collider = colliderArray.GetData(entity);
 
+        // Calculate distance
+        float dx = transform.position.x - center.x;
+        float dy = transform.position.y - center.y;
+        float distSq = dx * dx + dy * dy;
+
+        if (distSq > rebuildRadius * rebuildRadius) continue;
+
+        // Get sprite size if available
         Vec2 spriteSize{ 1.0f, 1.0f };
-        if (spriteArray.Has(entity)) {
+        if (spriteArray.Has(entity))
+        {
             auto& s = spriteArray.GetData(entity);
-            if (s.texture) spriteSize = s.texture->GetNativeSize();
+            if (s.texture)
+            {
+                spriteSize = s.texture->GetNativeSize();
+            }
         }
 
+        // Process shapes
         for (const auto& shape : collider.shapes) {
-            if (!shape.isActive || shape.purpose != ColliderPurpose::Environment) continue;
+            if (!shape.isActive) continue;
 
+            // FILTER: Only block on Environment colliders (walls), not Physics (dynamic entities)
+            if (shape.purpose != ColliderPurpose::Environment) continue;
+
+            // Apply autoFitToSprite logic
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
-            if (effectiveSize.x == 0 || effectiveSize.y == 0) effectiveSize = Vec2(5.0f, 5.0f);
 
+            // Use default size for zero-size colliders
+            if (effectiveSize.x == 0 || effectiveSize.y == 0) {
+                effectiveSize = Vec2(5.0f, 5.0f);
+            }
+
+            // Apply transform scale
             Vec2 scaledSize = Vec2{
                 effectiveSize.x * transform.scale.x,
                 effectiveSize.y * transform.scale.y
             };
 
+            // Apply shape offset
             Vec2 worldOffset = Vec2{
                 shape.offset.x * transform.scale.x,
                 shape.offset.y * transform.scale.y
@@ -197,42 +217,14 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
             Vec2 shapeCenter = transform.position + worldOffset;
             Vec2 halfSize = scaledSize * 0.5f;
 
-            Uma_Navigation::GridCell minCell = gridPathfinder->WorldToGrid(
-                Vec2(shapeCenter.x - halfSize.x, shapeCenter.y - halfSize.y)
-            );
-            Uma_Navigation::GridCell maxCell = gridPathfinder->WorldToGrid(
-                Vec2(shapeCenter.x + halfSize.x, shapeCenter.y + halfSize.y)
-            );
+            int minX = static_cast<int>(std::floor((shapeCenter.x - halfSize.x) / cellSize));
+            int maxX = static_cast<int>(std::ceil((shapeCenter.x + halfSize.x) / cellSize));
+            int minY = static_cast<int>(std::floor((shapeCenter.y - halfSize.y) / cellSize));
+            int maxY = static_cast<int>(std::ceil((shapeCenter.y + halfSize.y) / cellSize));
 
-            for (int y = minCell.y; y <= maxCell.y; ++y) {
-                for (int x = minCell.x; x <= maxCell.x; ++x) {
-                    wallCells.insert({ x, y });
-                }
-            }
-        }
-    }
-
-    // Now inflate only corner/edge cells
-    for (const auto& cell : wallCells) {
-        blocked.insert(cell);
-
-        // Check if this cell is a corner (has walls in perpendicular directions)
-        bool hasLeft = wallCells.count({ cell.x - 1, cell.y }) > 0;
-        bool hasRight = wallCells.count({ cell.x + 1, cell.y }) > 0;
-        bool hasUp = wallCells.count({ cell.x, cell.y + 1 }) > 0;
-        bool hasDown = wallCells.count({ cell.x, cell.y - 1 }) > 0;
-
-        // Corner detection: has walls in perpendicular directions
-        bool isCorner = (hasLeft || hasRight) && (hasUp || hasDown);
-
-        // Edge detection: missing neighbor on at least one side
-        bool isEdge = !hasLeft || !hasRight || !hasUp || !hasDown;
-
-        if (isCorner || isEdge) {
-            // Inflate corners and edges to force wider paths
-            for (int dy = -1; dy <= 1; ++dy) {
-                for (int dx = -1; dx <= 1; ++dx) {
-                    blocked.insert({ cell.x + dx, cell.y + dy });
+            for (int y = minY; y <= maxY; ++y) {
+                for (int x = minX; x <= maxX; ++x) {
+                    blocked.insert({ x, y });
                 }
             }
         }
@@ -240,8 +232,6 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center)
 
     gridPathfinder->SetBlockedCells(blocked);
 }
-
-
 
 
 
@@ -258,9 +248,8 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
     auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
-    auto& spriteArray = pCoordinator->GetComponentArray<Sprite>();
 
-    // 1. Draw ACTUAL collision boxes (where collision happens)
+    // 1. Draw all collider bounding boxes
     auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
     for (auto entity : colliderEntities) {
         if (!tfArray.Has(entity)) continue;
@@ -268,58 +257,25 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
         const auto& transform = tfArray.GetData(entity);
         const auto& collider = colliderArray.GetData(entity);
 
-        // Get sprite size for autoFitToSprite
-        Vec2 spriteSize{ 1.0f, 1.0f };
-        if (spriteArray.Has(entity))
-        {
-            auto& s = spriteArray.GetData(entity);
-            if (s.texture)
-            {
-                spriteSize = s.texture->GetNativeSize();
-
-                if (spriteSize.x > cellSize) spriteSize.x = cellSize;
-                if (spriteSize.y > cellSize) spriteSize.y = cellSize;
-            }
-        }
-
         for (const auto& shape : collider.shapes) {
             if (!shape.isActive) continue;
 
-            Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
-            if (effectiveSize.x == 0 || effectiveSize.y == 0) {
-                effectiveSize = Vec2(5.0f, 5.0f);
-            }
-
-            Vec2 scaledSize = Vec2{
-                effectiveSize.x * transform.scale.x,
-                effectiveSize.y * transform.scale.y
-            };
-
-            Vec2 worldOffset = Vec2{
-                shape.offset.x * transform.scale.x,
-                shape.offset.y * transform.scale.y
-            };
-
-            Vec2 colliderCenter = transform.position + worldOffset;
-
-            // Draw ACTUAL collision box in yellow
+            // Draw collider bounds in red for walls, yellow for player
             float r = (entity == playerID) ? 1.0f : 1.0f;
-            float g = (entity == playerID) ? 1.0f : 1.0f;
+            float g = (entity == playerID) ? 1.0f : 0.0f;
             float b = 0.0f;
 
-            pGraphics->DrawDebugRect(colliderCenter, scaledSize, r, g, b);
+            pGraphics->DrawDebugRect(transform.position, shape.size, r, g, b);
         }
     }
 
-    // 2. Draw blocked grid cells aligned to COLLISION boxes
-    if (gridPathfinder && true) {
+    // 2. Draw blocked grid cells (optional - can be expensive)
+    if (gridPathfinder && true) { // Set to true to enable
         const auto& blockedCells = gridPathfinder->GetBlockedCells();
         for (const auto& cell : blockedCells) {
-            Vec2 cellCorner(cell.x * cellSize, cell.y * cellSize);
-            Vec2 cellCenter(cellCorner.x + cellSize * 0.5f, cellCorner.y + cellSize * 0.5f);
+            Vec2 cellCenter(cell.x * cellSize + cellSize * 0.5f,
+                cell.y * cellSize + cellSize * 0.5f);
             Vec2 cellSizeVec(cellSize, cellSize);
-
-            // Draw in semi-transparent red
             pGraphics->DrawDebugRect(cellCenter, cellSizeVec, 0.5f, 0.0f, 0.0f);
         }
     }
@@ -339,6 +295,7 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
             for (size_t i = pf.pathIndex; i < pf.path.size(); ++i) {
                 Vec2 waypointSize(4.0f, 4.0f);
 
+                // Current waypoint in cyan, others in blue
                 if (i == pf.pathIndex) {
                     pGraphics->DrawDebugRect(pf.path[i], waypointSize, 0.0f, 1.0f, 1.0f);
                 }
@@ -353,24 +310,3 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
         pGraphics->DrawDebugRect(tf.position, posMarkerSize, 1.0f, 1.0f, 1.0f);
     }
 }
-
-
-std::vector<Vec2> Uma_ECS::PathFindingSystem::SmoothPath(const std::vector<Vec2>& path)
-{
-    if (path.size() <= 3) return path; // Don't smooth very short paths
-
-    std::vector<Vec2> smoothed;
-    smoothed.push_back(path.front()); // Keep start
-
-    // Keep every 2nd waypoint
-    for (size_t i = 2; i < path.size() - 1; i += 2) {
-        smoothed.push_back(path[i]);
-    }
-
-    if (path.size() > 1) {
-        smoothed.push_back(path.back());
-    }
-
-    return smoothed;
-}
-

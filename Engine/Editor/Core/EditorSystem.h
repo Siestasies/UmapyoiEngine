@@ -31,6 +31,7 @@ All rights reserved.
 #include "../Systems/PickingSystem.h"
 #include "../Systems/GizmoRenderer.h"
 #include "../Systems/TransformManipulator.h"
+#include "../WIP_Scripts/ImguiManager.h"
 
 namespace Uma_Engine
 {
@@ -160,6 +161,8 @@ namespace Uma_Engine
          */
         bool IsPlayMode() const { return mIsPlayMode; }
 
+        void SetImguiManager(ImguiManager* imgui);
+
     protected:
         /*!
          * \brief Registers event listeners for editor input.
@@ -169,6 +172,7 @@ namespace Uma_Engine
     private:
         Uma_ECS::Coordinator* pCoordinator = nullptr;
         Graphics* pGraphics = nullptr;
+        ImguiManager* pImguiManager = nullptr;
 
         EditorState mState;
         EditorConfig mConfig;
@@ -208,5 +212,7 @@ namespace Uma_Engine
          * \param screenPos Mouse position in screen pixels.
          */
         void HandleGizmoClick(const Vec2& screenPos);
+
+        Vec2 GetAdjustedMousePosition(float rawX, float rawY) const;
     };
 }
