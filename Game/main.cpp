@@ -63,7 +63,8 @@ int main()
     gEngineConfigSerializer.load(Uma_FilePath::CONFIG_ROOT + "config.json");
 
     // Create window
-    Uma_Engine::Window window(gEngineConfig.screenWidth, gEngineConfig.screenHeight, gEngineConfig.windowTitle);
+    Uma_Engine::Window window(gEngineConfig.screenWidth, gEngineConfig.screenHeight,
+                              gEngineConfig.windowTitle, gEngineConfig.GetWindowMode());
 
     // Initialize the engine
     if (!window.Initialize())
@@ -194,6 +195,10 @@ int main()
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
         {
             //Uma_Engine::Debugger::TestCrash();
+        }
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_F11))
+        {
+            window.ToggleFullscreen();
         }
 
         systemManager.Update(deltaTime);

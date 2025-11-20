@@ -25,10 +25,18 @@ All rights reserved.
 
 #include <string>
 
-struct GLFWwindow;       // forward declaration
+// Forward declaration
+struct GLFWwindow;
+struct GLFWmonitor;
 
 namespace Uma_Engine
 {
+    enum class WindowMode
+    {
+        Windowed,
+        Fullscreen
+    };
+
     // Optional interface for systems that need window access
     class IWindowSystem
     {
@@ -47,7 +55,7 @@ namespace Uma_Engine
         * \param height The height of the window in pixels
         * \param title The title text to display in the window's title bar
         */
-        Window(int width, int height, const std::string& title);
+        Window(int width, int height, const std::string& title, WindowMode mode = WindowMode::Windowed);
 
         /**
         * \brief Destructor that ensures proper cleanup of window resources
@@ -105,17 +113,25 @@ namespace Uma_Engine
         */
         GLFWwindow* GetGLFWWindow() const { return mWindow; }
 
+        WindowMode GetWindowMode() const { return mMode; }
+
         /**
         * \brief Changes the window's title text
         * \param newTitle The new title string to display
         */
         void SetTitle(std::string newTitle);
+
+        void SetWindowMode(WindowMode mode);
+        void ToggleFullscreen();
         
     private:
         GLFWwindow* mWindow;
         int mWidth;
         int mHeight;
+        int mWindowedWidth;
+        int mWindowedHeight;
         std::string mTitle;
         bool mInitialized;
+        WindowMode mMode;
     };
 }
