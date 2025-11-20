@@ -33,7 +33,6 @@ namespace Uma_Engine
         int screenHeight = 720;
         bool fullscreen = false;
         bool vsync = true;
-        int fps = 60;
 
         // Window settings
         std::string windowTitle = "My Game Engine";
@@ -56,7 +55,6 @@ namespace Uma_Engine
 
             out.AddMember("screenWidth", screenWidth, allocator);
             out.AddMember("screenHeight", screenHeight, allocator);
-            out.AddMember("fps", fps, allocator);
             out.AddMember("fullscreen", fullscreen, allocator);
             out.AddMember("vsync", vsync, allocator);
 
@@ -71,9 +69,6 @@ namespace Uma_Engine
 
             if (in.HasMember("screenHeight") && in["screenHeight"].IsInt())
                 screenHeight = in["screenHeight"].GetInt();
-
-            if (in.HasMember("fps"))
-                fps = in["fps"].GetInt();
 
             if (in.HasMember("fullscreen") && in["fullscreen"].IsBool())
                 fullscreen = in["fullscreen"].GetBool();

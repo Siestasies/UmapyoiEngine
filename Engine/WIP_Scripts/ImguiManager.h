@@ -86,9 +86,6 @@ namespace Uma_Engine
         EventSystem* GetESHandler() { if (!pEventSystem) return pEventSystem; }
         SystemManager* GetSMHandler() { if (!pSystemManager) return pSystemManager; }
 
-        Vec2 GetSceneViewMousePos() const { return m_sceneViewMousePos; }
-        bool IsMouseInSceneView() const { return m_isMouseInSceneView; }
-
     private:
         // bigger space stuff
         bool WindowsInit(std::string filename = Uma_FilePath::CONFIG_ROOT + "imgui.ini");
@@ -107,7 +104,6 @@ namespace Uma_Engine
         void CreateEntityPropertyWindow();
         void CreateConsoleWindow();
         void CreateEditorCameraWindow();
-        void CreateSceneViewWindow();
         void AddConsoleLog(const std::string& message);
 
         // Hierarchy helper functions
@@ -166,9 +162,5 @@ namespace Uma_Engine
         // mouse over checks
         bool prevMouseOverUI = false;
         bool mouseOverUI = false;
-
-        bool m_sceneViewHovered = false;
-        Vec2 m_sceneViewMousePos = Vec2(-1, -1);
-        bool m_isMouseInSceneView = false;
     };
 }

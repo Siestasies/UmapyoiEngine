@@ -216,8 +216,7 @@ void main()
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
-        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0)
-        , mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Window) {}
+        mViewportWidth(800), mViewportHeight(600) {}
 
     Graphics::~Graphics()
     {
@@ -299,8 +298,6 @@ void main()
 
         UpdateProjectionMatrix();
 
-        InitSceneFramebuffer(1280, 720);
-
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
     }
@@ -322,13 +319,6 @@ void main()
             }
         }
 
-        // Bind framebuffer if in viewport mode
-        if (mRenderTarget == RenderTarget::Framebuffer)
-        {
-            glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
-            glViewport(0, 0, mSceneFBWidth, mSceneFBHeight);
-        }
-
         ClearBackground(0.2f, 0.3f, 0.3f);
         UpdateProjectionMatrix();
     }
@@ -338,13 +328,6 @@ void main()
         if (mInitialized)
         {
             std::cout << "Shutting down graphics system..." << std::endl;
-
-            if (mSceneFramebuffer != 0)
-            {
-                glDeleteFramebuffers(1, &mSceneFramebuffer);
-                glDeleteTextures(1, &mSceneTexture);
-                glDeleteRenderbuffers(1, &mSceneDepthBuffer);
-            }
 
             // Clean up renderers
             ShutdownTextRenderer();
@@ -690,12 +673,9 @@ void main()
     {
         if (!mInitialized) return;
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate orthographic projection bounds based on camera zoom
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
 
         // Calculate projection bounds centered on camera position
         float left = cam.pos.x - halfWidth;
@@ -704,26 +684,24 @@ void main()
         float top = cam.pos.y + halfHeight;
 
         // Create orthographic projection matrix
-        glm::mat4 projMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        glm::mat4 projMat =  glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
         // Upload projection matrix to shader
         glUseProgram(mShaderProgram);
+        glm::mat4 projection = projMat;
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projMat[0][0]);
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
     }
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
     {
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Convert screen coordinates to NDC
-        float ndcX = (2.0f * screenPos.x) / width - 1.0f;
-        float ndcY = 1.0f - (2.0f * screenPos.y) / height;
+        float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
+        float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
 
-        // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        // Calculate  projection matrix
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -739,12 +717,9 @@ void main()
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -760,8 +735,8 @@ void main()
         float ndcY = clipPos.y / clipPos.w;
 
         // Convert NDC to screen coordinates
-        float screenX = (ndcX + 1.0f) * 0.5f * width;
-        float screenY = (1.0f - ndcY) * 0.5f * height;
+        float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
+        float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
 
         return Vec2(screenX, screenY);
     }
@@ -1090,12 +1065,9 @@ void main()
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1394,12 +1366,9 @@ void main()
         // Set text color
         glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Use camera-based projection
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1644,12 +1613,9 @@ void main()
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1761,12 +1727,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1821,12 +1784,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1868,12 +1828,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1904,79 +1861,6 @@ void main()
         {
             glDeleteProgram(mShapeShaderProgram);
             mShapeShaderProgram = 0;
-        }
-    }
-
-    void Graphics::InitSceneFramebuffer(int width, int height)
-    {
-        mSceneFBWidth = width;
-        mSceneFBHeight = height;
-
-        glGenFramebuffers(1, &mSceneFramebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
-
-        glGenTextures(1, &mSceneTexture);
-        glBindTexture(GL_TEXTURE_2D, mSceneTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mSceneTexture, 0);
-
-        glGenRenderbuffers(1, &mSceneDepthBuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, mSceneDepthBuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mSceneDepthBuffer);
-
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        {
-            std::cerr << "ERROR: Scene framebuffer is not complete" << std::endl;
-        }
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    }
-
-    void Graphics::ResizeSceneFramebuffer(int width, int height)
-    {
-        if (width == mSceneFBWidth && height == mSceneFBHeight)
-            return;
-
-        if (mSceneFramebuffer != 0)
-        {
-            glDeleteFramebuffers(1, &mSceneFramebuffer);
-            glDeleteTextures(1, &mSceneTexture);
-            glDeleteRenderbuffers(1, &mSceneDepthBuffer);
-        }
-
-        InitSceneFramebuffer(width, height);
-    }
-
-    void Graphics::UnbindFramebuffer()
-    {
-        if (mRenderTarget == RenderTarget::Framebuffer)
-        {
-            // Unbind framebuffer
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-            // Restore viewport
-            glViewport(0, 0, mViewportWidth, mViewportHeight);
-
-            // Clear viewport
-            glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
-        }
-    }
-
-    void Graphics::GetCurrentRenderDimensions(int& width, int& height) const
-    {
-        if (mRenderTarget == RenderTarget::Framebuffer)
-        {
-            width = mSceneFBWidth;
-            height = mSceneFBHeight;
-        }
-        else
-        {
-            width = mViewportWidth;
-            height = mViewportHeight;
         }
     }
 }

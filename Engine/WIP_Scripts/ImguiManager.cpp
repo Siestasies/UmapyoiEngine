@@ -23,11 +23,10 @@ Definition of functions for all IMGUI windows and their logics.
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
-#include <glad/glad.h>
 #include "ImguiManager.h"
 #include "SceneManager.h"
-#include "Graphics.hpp"
 
+//#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
@@ -218,7 +217,17 @@ namespace Uma_Engine
             return;
         }
 
-        auto graphics = pSystemManager->GetSystem<Graphics>();
+        mouseOverUI =
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
+            ImGui::IsAnyItemHovered() ||
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
+
+        if (prevMouseOverUI != mouseOverUI)
+        {
+            // send event
+            prevMouseOverUI = mouseOverUI;
+            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
+        }
 
         static float fpsAccumulator = 0.0f;
         static int frameCount = 0;
@@ -239,17 +248,12 @@ namespace Uma_Engine
             frameCount = 0;
         }
 
-        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
-        {
-            graphics->UnbindFramebuffer();
-        }
-
         StartFrame();
 
         CreateDockspace();
 
-        // play stop bar
-        CreateEditorControlBar();
+		// play stop bar
+		CreateEditorControlBar();
         if (!m_hideAll)
         {
             SceneManagerWindow();
@@ -261,21 +265,6 @@ namespace Uma_Engine
             fileBrowser.Render();
 
             resourcesWindow.Render();
-        }
-
-        // Check mouse over UI
-        mouseOverUI =
-            ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-            ImGui::IsAnyItemHovered() ||
-            ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow);
-
-        // Allow editor interactions when hovering Scene View
-        bool effectiveMouseOverUI = m_sceneViewHovered ? false : mouseOverUI;
-
-        if (prevMouseOverUI != effectiveMouseOverUI)
-        {
-            prevMouseOverUI = effectiveMouseOverUI;
-            pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
         Render();
@@ -429,37 +418,6 @@ namespace Uma_Engine
                 m_hideAll = !m_hideAll;
             }
 
-            ImGui::SameLine();
-
-            auto graphics = pSystemManager->GetSystem<Graphics>();
-            if (graphics)
-            {
-                bool isViewportMode = (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer);
-
-                // Highlight button when in viewport mode
-                if (isViewportMode)
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.6f, 0.15f, 1.0f));
-                }
-
-                const char* buttonText = isViewportMode ? "Viewport Mode" : "Window Mode";
-                if (ImGui::Button(buttonText, ImVec2(buttonWidth + 20, 0)))
-                {
-                    // Toggle between modes
-                    if (isViewportMode)
-                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Window);
-                    else
-                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Framebuffer);
-                }
-
-                if (isViewportMode)
-                {
-                    ImGui::PopStyleColor(3);
-                }
-            }
-
             // Show current state text
             ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
@@ -505,77 +463,6 @@ namespace Uma_Engine
 		//CreateEntityDebugWindow();
 		CreateConsoleWindow();
 		//CreateEntityPropertyWindow();
-
-        auto graphics = pSystemManager->GetSystem<Graphics>();
-        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
-        {
-            CreateSceneViewWindow();
-        }
-    }
-
-    void ImguiManager::CreateSceneViewWindow()
-    {
-        ImGui::Begin("Scene View", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
-
-        ImVec2 viewportSize = ImGui::GetContentRegionAvail();
-        if (viewportSize.x < 50) viewportSize.x = 50;
-        if (viewportSize.y < 50) viewportSize.y = 50;
-
-        auto graphics = pSystemManager->GetSystem<Graphics>();
-        if (!graphics)
-        {
-            ImGui::Text("Graphics system not available");
-            m_sceneViewHovered = false;
-            m_isMouseInSceneView = false;
-            ImGui::End();
-            return;
-        }
-
-        // Resize framebuffer to match window size
-        graphics->ResizeSceneFramebuffer(
-            static_cast<int>(viewportSize.x),
-            static_cast<int>(viewportSize.y)
-        );
-
-        // Get position
-        ImVec2 imagePos = ImGui::GetCursorScreenPos();
-
-        // Display the scene texture
-        GLuint texID = graphics->GetSceneTexture();
-        ImGui::Image(
-            reinterpret_cast<void*>(static_cast<intptr_t>(texID)),
-            viewportSize,
-            ImVec2(0, 1),
-            ImVec2(1, 0)
-        );
-
-        // Check if mouse is hovering the Scene View window
-        m_sceneViewHovered = ImGui::IsWindowHovered() && ImGui::IsItemHovered();
-
-        if (m_sceneViewHovered)
-        {
-            // Get mouse position relative to the image
-            ImVec2 mousePos = ImGui::GetMousePos();
-            float localX = mousePos.x - imagePos.x;
-            float localY = mousePos.y - imagePos.y;
-
-            // Check if mouse is within bounds
-            if (localX >= 0 && localY >= 0 && localX < viewportSize.x && localY < viewportSize.y)
-            {
-                m_sceneViewMousePos = Vec2(localX, localY);
-                m_isMouseInSceneView = true;
-            }
-            else
-            {
-                m_isMouseInSceneView = false;
-            }
-        }
-        else
-        {
-            m_isMouseInSceneView = false;
-        }
-
-        ImGui::End();
     }
 
     void ImguiManager::CreateSystemsWindow()
@@ -2081,22 +1968,9 @@ namespace Uma_Engine
         ImGui::Begin("Editor Camera", &m_showEditorCameraWindow);
 
         auto& editorCamera = sceneManager->GetEditorCamera();
-        auto graphics = pSystemManager->GetSystem<Graphics>();
 
-        bool isActive = false;
-
-        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
-        {
-            // In Scene View mode (active when mouse is in Scene View)
-            isActive = editorCamera.IsActive() && m_isMouseInSceneView;
-        }
-        else
-        {
-            // In Window mode (active when mouse not over UI)
-            isActive = editorCamera.IsActive() && !mouseOverUI;
-        }
-
-        // Display status
+        // Active status
+        bool isActive = editorCamera.IsActive() && !mouseOverUI;
         if (isActive)
         {
             ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Status: ACTIVE");
@@ -2176,23 +2050,6 @@ namespace Uma_Engine
             ImGui::BulletText("Middle Mouse - Drag to pan");
             ImGui::BulletText("Shift - Speed boost");
             ImGui::BulletText("R - Reset");
-
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
-            {
-                ImGui::TextColored(ImVec4(0.2f, 0.7f, 1.0f, 1.0f), "Viewport Mode:");
-                ImGui::Text("Camera only responds when");
-                ImGui::Text("mouse is in Scene View window");
-            }
-            else
-            {
-                ImGui::TextColored(ImVec4(0.2f, 0.7f, 1.0f, 1.0f), "Window Mode:");
-                ImGui::Text("Camera responds when mouse");
-                ImGui::Text("is not over UI windows");
-            }
         }
 
         ImGui::End();
