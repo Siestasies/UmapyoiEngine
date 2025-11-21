@@ -114,8 +114,6 @@ namespace Uma_Engine
         void CreateSystemsWindow();
         void CreatePerformanceWindow();
         void CreateEngineDebugWindow(float fps, float deltaTime);
-        void CreateEntityDebugWindow();
-        void CreateEntityPropertyWindow();
         void CreateConsoleWindow();
         void CreateEditorCameraWindow();
         void CreateSceneViewWindow();
@@ -155,6 +153,7 @@ namespace Uma_Engine
 
         // hierachy 
         bool m_HierarchyScrollToBottom = false;
+        int m_HierarchyScrollToBottomFrames = 0;
 
 
         // show or not

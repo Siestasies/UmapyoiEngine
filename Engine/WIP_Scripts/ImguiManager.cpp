@@ -44,6 +44,7 @@ All rights reserved.
 // Commands
 #include "Editor/Cmds/EntitySnapshotCmd.h"
 #include "Editor/Cmds/EntityDeleteCmd.h"
+#include "Editor/Cmds/EntityCreateCmd.h"
 
 namespace Uma_Engine
 {
@@ -667,93 +668,6 @@ namespace Uma_Engine
         ImGui::End();
     }
 
-    void ImguiManager::CreateEntityDebugWindow()
-    {
-        bool b = true;
-        ImGui::Begin("Entity Debug", &b);
-
-        // get entity count here
-        ImGui::Text("Entity Count: %i", mEntityCount);
-
-        ImGui::Separator();
-
-        if (ImGui::Button("dup or create Entity", { 160, 50 }))
-        {
-            pEventSystem->Emit<CloneEntityRequestEvent>(1);
-        }
-        if (ImGui::Button("load Entity prefab", { 160, 50 }))
-        {
-            pEventSystem->Emit<LoadPrefabRequestEvent>();
-        }
-        if (ImGui::Button("Destroy Rand Entity", { 160, 50 }))
-        {
-            pEventSystem->Emit<DestroyEntityRequestEvent>(1);
-        }
-        if (ImGui::Button("Stress Test 10k GO", { 160, 50 }))
-        {
-            pEventSystem->Emit<StressTestRequestEvent>();
-        }
-        if (ImGui::Button("Spawn 2.5k in VP", { 160, 50 }))
-        {
-            pEventSystem->Emit<ShowEntityInVPRequestEvent>();
-        }
-        if (ImGui::Button("Create temp UI", { 160, 50 }))
-        {
-            pEventSystem->Emit<CreateUIRequestEvent>();
-        }
-
-        ImGui::End();
-    }
-
-    void ImguiManager::CreateEntityPropertyWindow()
-    {
-        bool b = true;
-        ImGui::Begin("Entity Run Time Property", &b);
-
-        ImGui::Separator();
-
-        static float rot = 0.f;
-        static float scale = 1.f;
-        static float moveX = 0.f;
-        static bool showBBox = false;
-
-        if (ImGui::SliderFloat("enemy scale", &scale, 0.1f, 2.0f))
-        {
-            pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
-        }
-
-        if (ImGui::SliderFloat("enemy rot", &rot, -45.0f, 45.0f))
-        {
-            pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
-        }
-
-        if (ImGui::SliderFloat("enemy move X", &moveX, -1.0f, 1.0f))
-        {
-            pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
-        }
-
-        if (ImGui::Button("Reset", { 160, 50 }))
-        {
-            rot = 0.f;
-            scale = 1.f;
-            moveX = 0.f;
-            showBBox = false;
-
-            pEventSystem->Emit<ChangeEnemyScaleRequestEvent>(scale);
-            pEventSystem->Emit<ChangeEnemyRotRequestEvent>(rot);
-            pEventSystem->Emit<ChangeEnemyXposRequestEvent>(moveX);
-            pEventSystem->Emit<ShowBBoxRequestEvent>(showBBox);
-        }
-
-        if (ImGui::Button("Show BBox", { 160, 50 }))
-        {
-            showBBox = !showBBox;
-            pEventSystem->Emit<ShowBBoxRequestEvent>(showBBox);
-        }
-
-        ImGui::End();
-    }
-
     void ImguiManager::CreateConsoleWindow()
     {
         bool b = true;
@@ -935,10 +849,10 @@ namespace Uma_Engine
             RenderEntityNode(rootEntity, coordinator, transformArray);
         }
 
-        if (m_HierarchyScrollToBottom)
+        if (m_HierarchyScrollToBottomFrames > 0)
         {
             ImGui::SetScrollHereY(1.0f);
-            m_HierarchyScrollToBottom = false;
+            m_HierarchyScrollToBottomFrames--;
         }
 
         ImGui::EndChild();
@@ -1010,29 +924,50 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Create New"))
             {
-                pEventSystem->Emit<SpawnEntityRequestEvent>();
+                //pEventSystem->Emit<SpawnEntityRequestEvent>();
 
-                m_HierarchyScrollToBottom = true;
+                auto cmd = std::make_unique<Uma_Editor::EntityCreateCmd>(
+                    &coordinator,
+                    std::nullopt,
+                    "Create New Entity"
+                );
+
+                // Get raw pointer before moving
+                Uma_Editor::EntityCreateCmd* rawCmd = cmd.get();
+
+                // Execute command through history
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                // Access through raw pointer (still valid, owned by command history now)
+                m_selectedEntity = rawCmd->GetCreatedEntity();
+               
+                m_HierarchyScrollToBottomFrames = 2;
             }
 
             if (ImGui::MenuItem("Create Child"))
             {
-                Uma_ECS::Entity child = coordinator.CreateEntity();
-                coordinator.AddComponent(child, Uma_ECS::Transform{
-                    .name = std::string("new enity"),
-                    .position = Vec2(0, 0),
-                    .rotation = Vec2(0, 0),
-                    .scale = Vec2(1, 1)
-                    });
-                coordinator.SetParent(child, entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityCreateCmd>(
+                    &coordinator,
+                    entity,
+                    "Create New Entity"
+                );
 
-                m_HierarchyScrollToBottom = true;
+                // Get raw pointer before moving
+                Uma_Editor::EntityCreateCmd* rawCmd = cmd.get();
+
+                // Execute command through history
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                // Access through raw pointer (still valid, owned by command history now)
+                m_selectedEntity = rawCmd->GetCreatedEntity();
+
+                m_HierarchyScrollToBottomFrames = 2;
             }
 
             if (ImGui::MenuItem("Duplicate"))
             {
                 pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
-                m_HierarchyScrollToBottom = true;
+                m_HierarchyScrollToBottomFrames = 2;
             }
 
             ImGui::Separator();
