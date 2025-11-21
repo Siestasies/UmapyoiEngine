@@ -243,6 +243,8 @@ namespace Uma_ECS
         void Deserialize(const rapidjson::Value& in) override;
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         Entity DeserializePrefab(const rapidjson::Value& in) override;
+        void SerializeEntity(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator);
+        void DeserializeEntity(Entity entity, const rapidjson::Value& comps);
 
 
         //------------------------------------------+
@@ -251,6 +253,12 @@ namespace Uma_ECS
 
         void CacheState();
         void RestoreState();
+
+        //------------------------------------------+
+        //          Helper Func                     |
+        //------------------------------------------+
+
+        Uma_Engine::EventSystem* GetEventSystem();
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

@@ -208,7 +208,17 @@ namespace Uma_ECS
             {
                 T component;
                 component.Deserialize(comps[typeid(T).name()]);
-                AddData(entity, component);
+
+                if (Has(entity))
+                {
+                    // Update existing component
+                    GetData(entity) = component;
+                }
+                else
+                {
+                    // Add new component
+                    AddData(entity, component);
+                }
 
                 compType = typeid(T).name();
             }

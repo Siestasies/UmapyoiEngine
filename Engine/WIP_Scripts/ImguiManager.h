@@ -39,6 +39,11 @@ All rights reserved.
 
 #include"Systems/ResourcesManager.hpp"
 
+// Commands related
+#include "Editor/Core/CommandHistory.h"
+#include "Editor/Core/EntitySnapshot.h"
+#include "Editor/Cmds/EntitySnapshotCmd.h"
+
 #include "Core/FilePaths.h"
 #include <iostream>
 #include <random>
@@ -120,6 +125,12 @@ namespace Uma_Engine
         // Inspector helper functions
         bool DisplayComponent(Uma_ECS::Coordinator&, Uma_ECS::ComponentType, Uma_ECS::Entity&);
 
+        // undo redo snapshot
+        void BeginComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
+        void EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName);
+        Uma_Editor::EntitySnapshot CaptureEntitySnapshot(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coord);
+        void HandleUndoRedoInput();
+
         bool m_initialized;
         bool ds_initialized;
         GLFWwindow* m_window;
@@ -141,8 +152,6 @@ namespace Uma_Engine
         // hierachy 
         bool m_HierarchyScrollToBottom = false;
 
-        // Selected entity tracking for Inspector
-        Uma_ECS::Entity m_selectedEntity;
 
         // show or not
         bool m_hideAll;
@@ -162,6 +171,16 @@ namespace Uma_Engine
         float m_fpsHistory[120];
         float m_dtHistory[120];
         int m_historyOffset;
+
+        Uma_ECS::Entity m_selectedEntity; // Selected entity tracking for Inspector
+
+        // undo redo feature
+        Uma_Editor::CommandHistory commandHistory;
+
+        // Edit session tracking
+        Uma_ECS::Entity m_editingEntity;
+        Uma_Editor::EntitySnapshot m_snapshotBeforeEdit;
+        bool m_hasUnsavedEdit = false;
 
         // mouse over checks
         bool prevMouseOverUI = false;

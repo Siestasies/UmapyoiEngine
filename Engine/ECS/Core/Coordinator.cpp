@@ -656,6 +656,18 @@ namespace Uma_ECS
         return prefabToWorldID.begin()->second;
     }
 
+    void Coordinator::SerializeEntity(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator)
+    {
+        aComponentManager->SerializeAll(entity, comps, allocator);
+    }
+
+    void Coordinator::DeserializeEntity(Entity entity, const rapidjson::Value& comps)
+    {
+        Signature sign = aComponentManager->DeserializeAll(entity, comps);
+        aEntityManager->SetSignature(entity, sign);
+        aSystemManager->EntitySignatureChanged(entity, sign);
+    }
+
     void Coordinator::CacheState()
     {
         mStateCache.cachedEntityManager = std::make_unique<EntityManager>(*aEntityManager);
@@ -668,5 +680,10 @@ namespace Uma_ECS
 
         aEntityManager = std::make_unique<EntityManager>(*mStateCache.cachedEntityManager);
         aComponentManager = std::make_unique<ComponentManager>(*mStateCache.cachedComponentManager);
+    }
+
+    Uma_Engine::EventSystem* Coordinator::GetEventSystem()
+    {
+        return pEventSystem;
     }
 }

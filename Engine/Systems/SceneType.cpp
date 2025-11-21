@@ -123,7 +123,7 @@ namespace Uma_Engine
         while (m_Accumulator >= m_FixedTimeStep && physicsSteps < g_EngineConfig.maxPhysicsSteps)
         {
             // Update physics and collision at fixed rate
-            FixedUpdateECSSystems();
+            FixedUpdateECSSystems();    
 
             m_Accumulator -= m_FixedTimeStep;
             physicsSteps++;

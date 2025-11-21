@@ -278,6 +278,11 @@ namespace Uma_Engine
             pEventSystem->Emit<UpdateMouseOverUIEvent>(prevMouseOverUI);
         }
 
+        if (!m_hideAll)
+        {
+            HandleUndoRedoInput();
+        }
+
         Render();
     }
 
@@ -363,6 +368,7 @@ namespace Uma_Engine
                 {
                     if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
                     {
+                        commandHistory.Clear();
                         pEventSystem->Emit<PlaySceneRequest>();
                         m_playState = PlayState::Playing;
                     }
@@ -416,6 +422,7 @@ namespace Uma_Engine
                 {
                     if (m_playState != PlayState::Stopped)
                     {
+                        commandHistory.Clear();
                         pEventSystem->Emit<StopSceneRequest>();
                         m_playState = PlayState::Stopped;
                         //pEventSystem->Emit<ReLoadSceneRequestEvent>();
@@ -964,7 +971,31 @@ namespace Uma_Engine
         // Handle selection
         if (ImGui::IsItemClicked())
         {
+            // If switching to a different entity, commit any unsaved edits
+            if (m_selectedEntity != entity && m_hasUnsavedEdit)
+            {
+                // Force commit current edit before switching
+                auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+                if (sceneManager && sceneManager->GetActiveScene())
+                {
+                    auto& coordinator = sceneManager->GetActiveScene()->GetCoordinator();
+                    Uma_Editor::EntitySnapshot snapshotAfter = CaptureEntitySnapshot(m_editingEntity, coordinator);
+
+                    auto cmd = std::make_unique<Uma_Editor::EntitySnapshotCmd>(
+                        &coordinator,
+                        std::move(m_snapshotBeforeEdit),
+                        std::move(snapshotAfter),       
+                        "Transform Edit"
+                    );
+
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                }
+
+                m_hasUnsavedEdit = false;
+            }
+
             m_selectedEntity = entity;
+            m_editingEntity = static_cast<Uma_ECS::Entity>(-1);  // Reset tracking
             pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
         }
 
@@ -1126,11 +1157,15 @@ namespace Uma_Engine
                 auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(entity);
                 ImGui::Indent();
 
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
                 float position[2] = { transform.position.x, transform.position.y };
                 if (ImGui::DragFloat2("Position", position, 0.1f))
                 {
                     transform.position = Vec2(position[0], position[1]);
                     transform.isDirty = true;
+                    m_hasUnsavedEdit = true;
                 }
 
                 float rotation = transform.rotation.x;
@@ -1138,6 +1173,7 @@ namespace Uma_Engine
                 {
                     transform.rotation.x = rotation;
                     transform.isDirty = true;
+                    m_hasUnsavedEdit = true;
                 }
 
                 float scale[2] = { transform.scale.x, transform.scale.y };
@@ -1145,7 +1181,11 @@ namespace Uma_Engine
                 {
                     transform.scale = Vec2(scale[0], scale[1]);
                     transform.isDirty = true;
+                    m_hasUnsavedEdit = true;
                 }
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Transform");
 
                 ImGui::Separator();
                 ImGui::Text("Hierarchy");
@@ -1182,20 +1222,28 @@ namespace Uma_Engine
                 auto& rb = coordinator.GetComponent<Uma_ECS::RigidBody>(entity);
                 ImGui::Indent();
 
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
                 float velocity[2] = { rb.velocity.x, rb.velocity.y };
                 if (ImGui::DragFloat2("Velocity", velocity, 0.1f))
                 {
                     rb.velocity = Vec2(velocity[0], velocity[1]);
+                    m_hasUnsavedEdit = true;
                 }
 
                 float acceleration[2] = { rb.acceleration.x, rb.acceleration.y };
                 if (ImGui::DragFloat2("Acceleration", acceleration, 0.1f))
                 {
                     rb.acceleration = Vec2(acceleration[0], acceleration[1]);
+                    m_hasUnsavedEdit = true;
                 }
 
-                ImGui::DragFloat("Accel Strength", &rb.accel_strength, 0.1f, 0.0f, 1000.0f);
-                ImGui::DragFloat("Friction Coefficient", &rb.fric_coeff, 0.01f, 0.0f, 10.0f);
+                if (ImGui::DragFloat("Accel Strength", &rb.accel_strength, 0.1f, 0.0f, 1000.0f))   m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Friction Coefficient", &rb.fric_coeff, 0.01f, 0.0f, 10.0f))  m_hasUnsavedEdit = true;
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "RigidBody");
 
                 ImGui::Separator();
                 ImGui::Text("Info");
@@ -1211,6 +1259,9 @@ namespace Uma_Engine
                 auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
                 ImGui::Indent();
 
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
                 // Texture name input
                 ImGui::Text("Texture: %s", sprite.textureName.c_str());
                 static char textureBuffer[256];
@@ -1220,12 +1271,13 @@ namespace Uma_Engine
                 {
                     sprite.textureName = textureBuffer;
                     sprite.texture = nullptr; // Will reload
+                    m_hasUnsavedEdit = true;
                 }
 
                 // Flip flags
-                ImGui::Checkbox("Flip X", &sprite.flipX);
-                ImGui::Checkbox("Flip Y", &sprite.flipY);
-                ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize);
+                if (ImGui::Checkbox("Flip X", &sprite.flipX))  m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("Flip Y", &sprite.flipY))  m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize)) m_hasUnsavedEdit = true;
 
                 // Render layer dropdown
                 const char* renderLayerNames[] = {
@@ -1244,6 +1296,7 @@ namespace Uma_Engine
                 if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                 {
                     sprite.renderLayer = (1u << currentRenderLayer);
+                    m_hasUnsavedEdit = true;
                 }
 
                 ImGui::Separator();
@@ -1256,10 +1309,11 @@ namespace Uma_Engine
                     sprite.tintColor.x = tintColorArray[0];
                     sprite.tintColor.y = tintColorArray[1];
                     sprite.tintColor.z = tintColorArray[2];
+                    m_hasUnsavedEdit = true;
                 }
 
                 // Alpha (opacity)
-                ImGui::SliderFloat("Alpha", &sprite.alpha, 0.0f, 1.0f, "%.2f");
+                if (ImGui::SliderFloat("Alpha", &sprite.alpha, 0.0f, 1.0f, "%.2f")) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Sprite Sheet");
@@ -1270,6 +1324,7 @@ namespace Uma_Engine
                 {
                     sprite.spriteSheetGrid.x = gridArray[0];
                     sprite.spriteSheetGrid.y = gridArray[1];
+                    m_hasUnsavedEdit = true;
                 }
 
                 // Sprite cell (which cell to render)
@@ -1279,7 +1334,11 @@ namespace Uma_Engine
                 {
                     sprite.spriteCell.x = cellArray[0];
                     sprite.spriteCell.y = cellArray[1];
+                    m_hasUnsavedEdit = true;
                 }
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Sprite");
 
                 ImGui::Separator();
 
@@ -1310,7 +1369,10 @@ namespace Uma_Engine
                 auto& collider = coordinator.GetComponent<Uma_ECS::Collider>(entity);
                 ImGui::Indent();
 
-                ImGui::Checkbox("Show Bounding Box", &collider.showBBox);
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::Checkbox("Show Bounding Box", &collider.showBBox)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Default Settings");
@@ -1337,6 +1399,7 @@ namespace Uma_Engine
                 if (ImGui::Combo("Default Layer", &defaultLayerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
                 {
                     collider.defaultLayer = (1u << defaultLayerIndex);
+                    m_hasUnsavedEdit = true;
                 }
 
                 // Default Mask - using multi-select checkboxes for mask
@@ -1352,6 +1415,8 @@ namespace Uma_Engine
                             collider.defaultMask |= (1u << i);
                         else
                             collider.defaultMask &= ~(1u << i);
+
+                        m_hasUnsavedEdit = true;
                     }
                 }
                 ImGui::Unindent();
@@ -1367,19 +1432,21 @@ namespace Uma_Engine
 
                     if (ImGui::TreeNode("Shape", "Shape %zu %s", i, shape.isActive ? "" : "(Inactive)"))
                     {
-                        ImGui::Checkbox("Active", &shape.isActive);
-                        ImGui::Checkbox("Auto Fit to Sprite", &shape.autoFitToSprite);
+                        if (ImGui::Checkbox("Active", &shape.isActive)) m_hasUnsavedEdit = true;
+                        if (ImGui::Checkbox("Auto Fit to Sprite", &shape.autoFitToSprite)) m_hasUnsavedEdit = true;
 
                         float size[2] = { shape.size.x, shape.size.y };
                         if (ImGui::DragFloat2("Size", size, 0.1f, 0.0f, 100.0f))
                         {
                             shape.size = Vec2(size[0], size[1]);
+                            m_hasUnsavedEdit = true;
                         }
 
                         float offset[2] = { shape.offset.x, shape.offset.y };
                         if (ImGui::DragFloat2("Offset", offset, 0.1f))
                         {
                             shape.offset = Vec2(offset[0], offset[1]);
+                            m_hasUnsavedEdit = true;
                         }
 
                         // Purpose dropdown
@@ -1388,6 +1455,7 @@ namespace Uma_Engine
                         if (ImGui::Combo("Purpose", &currentPurpose, purposes, 3))
                         {
                             shape.purpose = static_cast<Uma_ECS::ColliderPurpose>(currentPurpose);
+                            m_hasUnsavedEdit = true;
                         }
 
                         // Layer dropdown
@@ -1396,11 +1464,13 @@ namespace Uma_Engine
                         if (l > 0)
                         {
                             while (l >>= 1) ++layerIndex;
+                            m_hasUnsavedEdit = true;
                         }
 
                         if (ImGui::Combo("Collision Layer", &layerIndex, collisionLayerNames, IM_ARRAYSIZE(collisionLayerNames)))
                         {
                             shape.layer = (1u << layerIndex);
+                            m_hasUnsavedEdit = true;
                         }
 
                         // Collider Mask - using multi-select checkboxes
@@ -1417,6 +1487,8 @@ namespace Uma_Engine
                                     shape.colliderMask |= (1u << j);
                                 else
                                     shape.colliderMask &= ~(1u << j);
+
+                                m_hasUnsavedEdit = true;
                             }
                             ImGui::PopID();
                         }
@@ -1428,6 +1500,9 @@ namespace Uma_Engine
                             collider.bounds.resize(collider.shapes.size());
                             ImGui::TreePop();
                             ImGui::PopID();
+
+                            m_hasUnsavedEdit = true;
+
                             break;
                         }
 
@@ -1446,7 +1521,12 @@ namespace Uma_Engine
                     newShape.isActive = true;
                     collider.shapes.push_back(newShape);
                     collider.bounds.resize(collider.shapes.size());
+
+                    m_hasUnsavedEdit = true;
                 }
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Collider");
 
                 ImGui::Unindent();
             }
@@ -1458,15 +1538,21 @@ namespace Uma_Engine
                 auto& camera = coordinator.GetComponent<Uma_ECS::Camera>(entity);
                 ImGui::Indent();
 
-                ImGui::DragFloat("Zoom", &camera.mZoom, 0.1f, 0.1f, 10.0f);
-                ImGui::Checkbox("Follow Player", &camera.followPlayer);
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::DragFloat("Zoom", &camera.mZoom, 0.1f, 0.1f, 10.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("Follow Player", &camera.followPlayer)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Camera Controls");
                 if (ImGui::Button("Reset Zoom"))
                 {
                     camera.mZoom = 1.0f;
+                    m_hasUnsavedEdit = true;
                 }
+
+                EndComponentEdit(entity, coordinator, "Camera");
 
                 ImGui::Unindent();
             }
@@ -1478,11 +1564,17 @@ namespace Uma_Engine
                 auto& player = coordinator.GetComponent<Uma_ECS::Player>(entity);
                 ImGui::Indent();
 
-                ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 100.0f);
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Player Tag Component");
                 ImGui::TextDisabled("This entity is marked as the player");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Player");
 
                 ImGui::Unindent();
             }
@@ -1494,11 +1586,17 @@ namespace Uma_Engine
                 auto& enemy = coordinator.GetComponent<Uma_ECS::Enemy>(entity);
                 ImGui::Indent();
 
-                ImGui::DragFloat("Speed", &enemy.mSpeed, 0.1f, 0.0f, 100.0f);
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::DragFloat("Speed", &enemy.mSpeed, 0.1f, 0.0f, 100.0f))  m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Enemy Tag Component");
                 ImGui::TextDisabled("This entity is marked as an enemy");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Enemy");
 
                 ImGui::Unindent();
             }
@@ -1510,8 +1608,11 @@ namespace Uma_Engine
                 auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
                 ImGui::Indent();
 
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
                 // Auto-play checkbox
-                ImGui::Checkbox("Auto Play", &animator.autoPlay);
+                if (ImGui::Checkbox("Auto Play", &animator.autoPlay)) m_hasUnsavedEdit = true;
 
                 // Initial clip input
                 static char initialClipBuffer[256];
@@ -1520,6 +1621,7 @@ namespace Uma_Engine
                 if (ImGui::InputText("Initial Clip", initialClipBuffer, 256))
                 {
                     animator.initialClip = initialClipBuffer;
+                    m_hasUnsavedEdit = true;
                 }
 
                 ImGui::Separator();
@@ -1554,11 +1656,13 @@ namespace Uma_Engine
                         if (ImGui::Button("Play"))
                         {
                             animator.animator.Play(name);
+                            m_hasUnsavedEdit = true;
                         }
                         ImGui::SameLine();
                         if (ImGui::Button("Play (Restart)"))
                         {
                             animator.animator.Play(name, true);
+                            m_hasUnsavedEdit = true;
                         }
 
                         // TODO: Add edit/delete functionality if needed
@@ -1581,13 +1685,13 @@ namespace Uma_Engine
                 static float newSpeed = 10.0f;
                 static bool newLoop = true;
 
-                ImGui::InputText("Clip Name", newClipName, 256);
-                ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100);
-                ImGui::DragInt("Frames Y", &newFramesY, 1.0f, 1, 100);
-                ImGui::DragInt("Start Frame", &newStartFrame, 1.0f, 0, 1000);
-                ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000);
-                ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f);
-                ImGui::Checkbox("Loop", &newLoop);
+                if (ImGui::InputText("Clip Name", newClipName, 256)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Frames Y", &newFramesY, 1.0f, 1, 100)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Start Frame", &newStartFrame, 1.0f, 0, 1000)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("Loop", &newLoop)) m_hasUnsavedEdit = true;
 
                 if (ImGui::Button("Add Clip"))
                 {
@@ -1612,6 +1716,7 @@ namespace Uma_Engine
                         newSpeed = 10.0f;
                         newLoop = true;
                     }
+                    m_hasUnsavedEdit = true;
                 }
 
                 // Playback controls
@@ -1621,7 +1726,11 @@ namespace Uma_Engine
                 if (ImGui::Button("Reset"))
                 {
                     animator.animator.Reset();
+                    m_hasUnsavedEdit = true;
                 }
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "RigidBody");
 
                 ImGui::Unindent();
             }
@@ -1632,6 +1741,8 @@ namespace Uma_Engine
             {
                 auto& luaScript = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);
                 ImGui::Indent();
+
+                BeginComponentEdit(entity, coordinator);
 
                 ImGui::Text("Scripts: %zu", luaScript.scripts.size());
 
@@ -1646,7 +1757,10 @@ namespace Uma_Engine
                         script.scriptPath.c_str(),
                         script.isEnabled ? "" : "(Disabled)"))
                     {
-                        ImGui::Checkbox("Enabled", &script.isEnabled);
+                        if (ImGui::Checkbox("Enabled", &script.isEnabled))
+                        {
+                            m_hasUnsavedEdit = true;
+                        }
 
                         ImGui::Separator();
 
@@ -1686,6 +1800,7 @@ namespace Uma_Engine
                                         {
                                             var.value = val;
                                             script.isVariableDirty = true;
+                                            m_hasUnsavedEdit = true;
                                         }
                                     }
                                     else
@@ -1694,6 +1809,7 @@ namespace Uma_Engine
                                         {
                                             var.value = val;
                                             script.isVariableDirty = true;
+                                            m_hasUnsavedEdit = true;
                                         }
                                     }
                                     break;
@@ -1705,6 +1821,7 @@ namespace Uma_Engine
                                     {
                                         var.value = val;
                                         script.isVariableDirty = true;
+                                        m_hasUnsavedEdit = true;
                                     }
                                     break;
                                 }
@@ -1715,6 +1832,7 @@ namespace Uma_Engine
                                     {
                                         var.value = val;
                                         script.isVariableDirty = true;
+                                        m_hasUnsavedEdit = true;
                                     }
                                     break;
                                 }
@@ -1728,6 +1846,7 @@ namespace Uma_Engine
                                     {
                                         var.value = std::string(buffer);
                                         script.isVariableDirty = true;
+                                        m_hasUnsavedEdit = true;
                                     }
                                     break;
                                 }
@@ -1745,9 +1864,12 @@ namespace Uma_Engine
 
                         if (ImGui::Button("Remove Script", ImVec2(-1, 0)))
                         {
-                            luaScript.scripts.erase(luaScript.scripts.begin() + i);
+                            //luaScript.scripts.erase(luaScript.scripts.begin() + i);
                             ImGui::TreePop();
                             ImGui::PopID();
+
+                            m_hasUnsavedEdit = true;
+
                             break;
                         }
 
@@ -1839,6 +1961,8 @@ namespace Uma_Engine
                         scriptNameBuffer[0] = '\0';
                         mScriptName = "Assets/Scripts/.lua";
                         ImGui::CloseCurrentPopup();
+
+                        m_hasUnsavedEdit = true;
                     }
 
                     if (!isValid)
@@ -1859,6 +1983,9 @@ namespace Uma_Engine
                     ImGui::EndPopup();
                 }
 
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Lua Script");
+
                 ImGui::Unindent();
             }
             }
@@ -1867,6 +1994,109 @@ namespace Uma_Engine
             return false;
         }
         return true;
+    }
+
+    void ImguiManager::BeginComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator)
+    {
+        if (m_editingEntity != entity)
+        {
+            m_snapshotBeforeEdit = CaptureEntitySnapshot(entity, coordinator);
+            m_editingEntity = entity;
+            m_hasUnsavedEdit = false;
+        }
+
+        // Push an ID for this component section
+        ImGui::PushID("ComponentEdit");
+    }
+
+    void ImguiManager::EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName)
+    {
+        ImGui::PopID();
+
+        // Check if user released mouse after editing
+        if (m_hasUnsavedEdit && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+        {
+            Uma_Editor::EntitySnapshot snapshotAfter = CaptureEntitySnapshot(entity, coordinator);
+
+            auto cmd = std::make_unique<Uma_Editor::EntitySnapshotCmd>(
+                &coordinator,
+                std::move(m_snapshotBeforeEdit),
+                std::move(snapshotAfter),
+                componentName + " Edit"
+            );
+
+            commandHistory.ExecuteCommand(std::move(cmd));
+
+            // Re-capture for next edit
+            m_snapshotBeforeEdit = CaptureEntitySnapshot(entity, coordinator);
+            m_hasUnsavedEdit = false;
+        }
+    }
+
+    Uma_Editor::EntitySnapshot ImguiManager::CaptureEntitySnapshot(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coord)
+    {
+        Uma_ECS::Coordinator& coordinator = pSystemManager->GetSystem<SceneManager>()->GetActiveScene()->GetCoordinator();
+
+        Uma_Editor::EntitySnapshot snapshot;
+        snapshot.entityID = entity;
+
+        // Serialize all components to JSON using Coordinator's wrapper
+        snapshot.componentData.SetObject();
+        auto& allocator = snapshot.componentData.GetAllocator();
+
+        rapidjson::Value componentsObj(rapidjson::kObjectType);
+        coordinator.SerializeEntity(entity, componentsObj, allocator);
+
+        snapshot.componentData.AddMember("components", componentsObj, allocator);
+
+        // Capture hierarchy info (optional, for quick access)
+        auto& tfArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+        if (tfArray.Has(entity))
+        {
+            auto& tf = tfArray.GetData(entity);
+            snapshot.parentID = tf.parent;
+            snapshot.childrenIDs = tf.children;
+        }
+
+        return snapshot;
+    }
+
+    void ImguiManager::HandleUndoRedoInput()
+    {
+        bool didUndoOrRedo = false;
+
+        // Ctrl+Z = Undo
+        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Z)) 
+        {
+            commandHistory.Undo();
+            didUndoOrRedo = true;
+        }
+
+        // Ctrl+Y = Redo
+        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Y)) 
+        {
+            commandHistory.Redo();
+            didUndoOrRedo = true;
+        }
+
+        // Re-capture snapshot after undo/redo if we're editing an entity
+        if (didUndoOrRedo && m_selectedEntity != static_cast<Uma_ECS::Entity>(-1))
+        {
+            auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+            if (sceneManager && sceneManager->GetActiveScene())
+            {
+                auto& coordinator = sceneManager->GetActiveScene()->GetCoordinator();
+
+                if (coordinator.HasActiveEntity(m_selectedEntity))
+                {
+                    // Re-capture current state (after undo/redo)
+                    m_snapshotBeforeEdit = CaptureEntitySnapshot(m_selectedEntity, coordinator);
+                    m_editingEntity = m_selectedEntity;
+                }
+            }
+
+            m_hasUnsavedEdit = false;
+        }
     }
 
     void ImguiManager::CreateInspectorWindow()
@@ -2060,6 +2290,7 @@ namespace Uma_Engine
             // detect double click
             if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
             {
+                commandHistory.Clear();
                 pEventSystem->Emit<StopSceneRequest>();
                 pEventSystem->Emit<LoadSceneRequestEvent>(sceneNames[i]);
             }
