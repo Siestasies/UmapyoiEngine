@@ -41,6 +41,10 @@ All rights reserved.
 #include <unordered_map>
 #include <algorithm>
 
+// Commands
+#include "Editor/Cmds/EntitySnapshotCmd.h"
+#include "Editor/Cmds/EntityDeleteCmd.h"
+
 namespace Uma_Engine
 {
     ImguiManager::ImguiManager()
@@ -1035,7 +1039,16 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Delete"))
             {
-                pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityDeleteCmd>(
+                    &coordinator,
+                    entity,
+                    false,
+                    "Delete " + GetEntityDisplayName(entity, coordinator)
+                );
+
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                //pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
                 if (m_selectedEntity == entity)
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
@@ -1045,7 +1058,16 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Delete with Children"))
             {
-                coordinator.DestroyEntityAndChildren(entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityDeleteCmd>(
+                    &coordinator,
+                    entity,
+                    true,
+                    "Delete " + GetEntityDisplayName(entity, coordinator)
+                );
+
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                //coordinator.DestroyEntityAndChildren(entity);
                 if (m_selectedEntity == entity)
                 {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
@@ -2006,15 +2028,16 @@ namespace Uma_Engine
         }
 
         // Push an ID for this component section
-        ImGui::PushID("ComponentEdit");
+        //ImGui::PushID("ComponentEdit");
     }
 
-    void ImguiManager::EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName)
+    void ImguiManager::EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName, bool forceEdit)
     {
-        ImGui::PopID();
+        //ImGui::PopID();
 
         // Check if user released mouse after editing
-        if (m_hasUnsavedEdit && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+        if (m_hasUnsavedEdit && ImGui::IsMouseReleased(ImGuiMouseButton_Left) ||
+            m_hasUnsavedEdit && forceEdit)
         {
             Uma_Editor::EntitySnapshot snapshotAfter = CaptureEntitySnapshot(entity, coordinator);
 
@@ -2031,6 +2054,11 @@ namespace Uma_Engine
             m_snapshotBeforeEdit = CaptureEntitySnapshot(entity, coordinator);
             m_hasUnsavedEdit = false;
         }
+    }
+
+    bool& ImguiManager::HasUnsavedChanges()
+    {
+        return m_hasUnsavedEdit;
     }
 
     Uma_Editor::EntitySnapshot ImguiManager::CaptureEntitySnapshot(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coord)

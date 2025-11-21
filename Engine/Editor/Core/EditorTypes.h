@@ -23,6 +23,9 @@ All rights reserved.
 
 #include "../../Math/Math.h"
 #include "../../ECS/Core/Types.hpp"
+
+#include "Editor/Core/CommandHistory.h"
+
 #include <optional>
 
 namespace Uma_Engine

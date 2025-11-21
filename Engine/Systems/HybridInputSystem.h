@@ -189,7 +189,7 @@ namespace Uma_Engine
                 GLFW_KEY_SPACE, GLFW_KEY_ENTER,
                 GLFW_KEY_LEFT_SHIFT, GLFW_KEY_LEFT_CONTROL,
                 GLFW_KEY_K, GLFW_KEY_L,
-                GLFW_KEY_SEMICOLON, GLFW_KEY_P
+                GLFW_KEY_SEMICOLON, GLFW_KEY_P, GLFW_KEY_DELETE
             };
 
             for (int key : actionKeys)

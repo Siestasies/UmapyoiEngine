@@ -21,6 +21,11 @@ All rights reserved.
 
 #include "EditorSystem.h"
 #include "../../UI/Helpers/InputFilter.h"
+
+#include "InputSystem.h"
+#include "Editor/Cmds/EntityDeleteCmd.h"
+#include <memory>
+
 #include <GLFW/glfw3.h>
 #include <Debugging/Debugger.hpp>
 
@@ -186,6 +191,7 @@ namespace Uma_Engine
     {
         if (mState.isDragging)
         {
+
             mTransformManipulator.EndDrag(mState);
         }
         
@@ -289,6 +295,8 @@ namespace Uma_Engine
                             transformType
                         );
                     }
+                    pImguiManager->HasUnsavedChanges() = true;
+                    pImguiManager->EndComponentEdit(mState.pickedEntity.value(), *pCoordinator, "Transform", true);
 
                     mTransformManipulator.EndDrag(mState);
                 }
@@ -363,6 +371,27 @@ namespace Uma_Engine
         {
             CycleMode();
         }
+        else if (event.key == GLFW_KEY_DELETE)
+        {
+            if (mState.pickedEntity.has_value() && mState.pickedEntity.value() != static_cast<Entity>(-1))
+            {
+                //pCoordinator->DestroyEntityAndChildren(mState.pickedEntity.value());
+
+                auto cmd = std::make_unique<Uma_Editor::EntityDeleteCmd>(
+                    pCoordinator,
+                    mState.pickedEntity.value(),
+                    true,
+                    "Delete entity"
+                );
+
+                pImguiManager->GetCommandHistory()->ExecuteCommand(std::move(cmd));
+
+                if (mState.pickedEntity.value() != static_cast<Entity>(-1))
+                {
+                    mState.pickedEntity.value() = static_cast<Entity>(-1);
+                }
+            }
+        }
     }
 
     /*!
@@ -395,6 +424,10 @@ namespace Uma_Engine
         
         if (hitAxis != GizmoAxis::None)
         {
+            pImguiManager->BeginComponentEdit(mState.pickedEntity.value(), *pCoordinator);
+
+            Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Started drging");
+
             mTransformManipulator.StartDrag(mState.pickedEntity.value(), screenPos,
                                            hitAxis, mState);
         }

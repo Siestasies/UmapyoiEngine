@@ -203,7 +203,7 @@ namespace Uma_Engine
             eventSystem->Subscribe<DestroyEntityRequestEvent>(
                 [this](const DestroyEntityRequestEvent& e) {
                     (void)e;
-                    DestroyRandomEntity();
+                    m_Scene->GetCoordinator().DestroyEntity(e.entityId);
                 }
             ));
 
@@ -255,6 +255,9 @@ namespace Uma_Engine
             if (entity > Uma_ECS::MAX_ENTITIES) return;
             Entity newEntity = GetCoordinator().DuplicateEntity(entity);
             GetEventSystem()->Emit<ReturnDuplicatedRequestEvent>(newEntity);
+
+            auto& tf = GetCoordinator().GetComponent<Uma_ECS::Transform>(newEntity);
+            tf.name += "_dup";
         }
 
         void SpawnEmptyGameObject()

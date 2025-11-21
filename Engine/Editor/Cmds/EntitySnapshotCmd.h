@@ -10,15 +10,6 @@ namespace Uma_Editor
 {
     class EntitySnapshotCmd : public ICommand
     {
-    private:
-
-        Uma_ECS::Coordinator* coordinator;
-        EntitySnapshot beforeState;
-        EntitySnapshot afterState;
-        std::string description;
-
-        void RestoreSnapshot(EntitySnapshot&& snapshot);
-
     public:
 
         EntitySnapshotCmd(
@@ -33,5 +24,14 @@ namespace Uma_Editor
         void Undo() override;
 
         std::string GetDescription() override;
+
+    private:
+
+        void RestoreSnapshot(EntitySnapshot&& snapshot);
+
+        Uma_ECS::Coordinator* coordinator;
+        EntitySnapshot beforeState;
+        EntitySnapshot afterState;
+        std::string description;
     };
 }

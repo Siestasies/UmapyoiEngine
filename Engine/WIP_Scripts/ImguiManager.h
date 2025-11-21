@@ -42,7 +42,6 @@ All rights reserved.
 // Commands related
 #include "Editor/Core/CommandHistory.h"
 #include "Editor/Core/EntitySnapshot.h"
-#include "Editor/Cmds/EntitySnapshotCmd.h"
 
 #include "Core/FilePaths.h"
 #include <iostream>
@@ -91,8 +90,15 @@ namespace Uma_Engine
         EventSystem* GetESHandler() { if (!pEventSystem) return pEventSystem; }
         SystemManager* GetSMHandler() { if (!pSystemManager) return pSystemManager; }
 
+
         Vec2 GetSceneViewMousePos() const { return m_sceneViewMousePos; }
         bool IsMouseInSceneView() const { return m_isMouseInSceneView; }
+
+        // undo redo snapshot
+        void BeginComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
+        void EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName, bool forceEdit = false);
+        bool& HasUnsavedChanges();
+        Uma_Editor::CommandHistory* GetCommandHistory() { return &commandHistory; }
 
     private:
         // bigger space stuff
@@ -126,8 +132,6 @@ namespace Uma_Engine
         bool DisplayComponent(Uma_ECS::Coordinator&, Uma_ECS::ComponentType, Uma_ECS::Entity&);
 
         // undo redo snapshot
-        void BeginComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
-        void EndComponentEdit(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator, const std::string& componentName);
         Uma_Editor::EntitySnapshot CaptureEntitySnapshot(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coord);
         void HandleUndoRedoInput();
 

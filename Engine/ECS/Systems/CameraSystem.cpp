@@ -50,7 +50,7 @@ namespace Uma_ECS
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 
-        if (cam_c.followPlayer)
+        if (cam_c.followPlayer && pArray.Size() > 0)
         {
             Entity player = pArray.GetEntity(0);
             auto& player_tf = tfArray.GetData(player);

@@ -71,8 +71,19 @@ void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
     // reset the signature of the entity 
     aSignatures[entity].reset();
 
-    // add the id back to the container for reuse
-    aAvailableEntities.emplace(entity);
+    // Create a new queue with this entity at the front ***
+    std::queue<Entity> newQueue;
+    newQueue.push(entity);  // Push destroyed entity to front
+
+    // Then add all existing entities back
+    while (!aAvailableEntities.empty())
+    {
+        newQueue.push(aAvailableEntities.front());
+        aAvailableEntities.pop();
+    }
+
+    aAvailableEntities = newQueue;
+
     aEntityActive[entity] = false;
     --mActiveEntityCnt;
 }
