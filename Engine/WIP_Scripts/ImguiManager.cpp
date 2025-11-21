@@ -250,6 +250,12 @@ namespace Uma_Engine
 
         // play stop bar
         CreateEditorControlBar();
+
+        if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            CreateSceneViewWindow();
+        }
+
         if (!m_hideAll)
         {
             SceneManagerWindow();
@@ -429,37 +435,6 @@ namespace Uma_Engine
                 m_hideAll = !m_hideAll;
             }
 
-            ImGui::SameLine();
-
-            auto graphics = pSystemManager->GetSystem<Graphics>();
-            if (graphics)
-            {
-                bool isViewportMode = (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer);
-
-                // Highlight button when in viewport mode
-                if (isViewportMode)
-                {
-                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.7f, 0.2f, 1.0f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.3f, 0.8f, 0.3f, 1.0f));
-                    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.6f, 0.15f, 1.0f));
-                }
-
-                const char* buttonText = isViewportMode ? "Viewport Mode" : "Window Mode";
-                if (ImGui::Button(buttonText, ImVec2(buttonWidth + 20, 0)))
-                {
-                    // Toggle between modes
-                    if (isViewportMode)
-                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Window);
-                    else
-                        graphics->SetRenderTarget(Uma_Engine::RenderTarget::Framebuffer);
-                }
-
-                if (isViewportMode)
-                {
-                    ImGui::PopStyleColor(3);
-                }
-            }
-
             // Show current state text
             ImGui::SameLine();
             ImGui::SetCursorPosX(ImGui::GetWindowWidth() * 0.5f - 250);
@@ -506,11 +481,11 @@ namespace Uma_Engine
 		CreateConsoleWindow();
 		//CreateEntityPropertyWindow();
 
-        auto graphics = pSystemManager->GetSystem<Graphics>();
+        /*auto graphics = pSystemManager->GetSystem<Graphics>();
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
         {
             CreateSceneViewWindow();
-        }
+        }*/
     }
 
     void ImguiManager::CreateSceneViewWindow()
@@ -848,6 +823,7 @@ namespace Uma_Engine
         if (!WindowsInit())
         {
             // Dock windows to their initial positions
+            ImGui::DockBuilderDockWindow("Scene View", dock_main_id);
             ImGui::DockBuilderDockWindow("Hierarchy", dock_id_left);
             ImGui::DockBuilderDockWindow("Inspector", dock_id_right);
             ImGui::DockBuilderDockWindow("Editor Camera", dock_id_right);

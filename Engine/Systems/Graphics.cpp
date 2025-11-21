@@ -216,8 +216,8 @@ void main()
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
-        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0)
-        , mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Window) {}
+        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
+        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {}
 
     Graphics::~Graphics()
     {
