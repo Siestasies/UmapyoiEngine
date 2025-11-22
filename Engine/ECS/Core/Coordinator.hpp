@@ -48,6 +48,8 @@ All rights reserved.
 #include "../Components/Animator.h"
 #include "../Components/LuaScript.h"
 
+#include <unordered_set>
+
 
 namespace Uma_ECS
 {
@@ -123,6 +125,8 @@ namespace Uma_ECS
         std::optional<Entity> GetParent(Entity entity);
         std::vector<Entity> GetChildren(Entity entity);
         void DestroyEntityAndChildren(Entity entity);
+
+        void ProcessDeletionQueue();  // Call this once per frame
 
         // collect the entities in hierachy order
         void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
@@ -272,6 +276,10 @@ namespace Uma_ECS
         StateCache mStateCache;
 
         Uma_Engine::EventSystem* pEventSystem = nullptr;
+
+        // gameobject deletion queue
+        std::unordered_set<Entity> mEntitiesToDestroy;
+        bool mIsProcessingDeletions = false;
     };
 }
 

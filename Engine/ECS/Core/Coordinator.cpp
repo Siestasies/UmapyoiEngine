@@ -65,45 +65,11 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntity(Entity entity)
     {
-        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
-        if (tfArray.Has(entity))
-        {
-            auto& tf = tfArray.GetData(entity);
-
-            // Remove from parent's children list
-            if (tf.parent.has_value())
-            {
-                auto& parentTf = tfArray.GetData(tf.parent.value());
-                auto it = std::find(parentTf.children.begin(),
-                    parentTf.children.end(), entity);
-                if (it != parentTf.children.end())
-                {
-                    parentTf.children.erase(it);
-                }
-            }
-
-            // Orphan children (convert to world position so they stay in place)
-            for (Entity child : tf.children)
-            {
-                if (tfArray.Has(child))
-                {
-                    auto& childTf = tfArray.GetData(child);
-                    childTf.parent = std::nullopt;  // Clear the optional
-                    childTf.position = childTf.worldPosition;
-                }
-            }
+        if (!aEntityManager->IsEntityActive(entity)) {
+            return; // Already queued or deleted
         }
 
-        // Original destroy logic
-        aSystemManager->EntityDestroyed(entity);
-        aEntityManager->DestroyEntity(entity);
-        aComponentManager->EntityDestroyed(entity);
-        pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(entity, GetEntityCount());
-
-        std::string log;
-        std::stringstream ss(log);
-        ss << "Destroyed Entity : " << entity;
-        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+        mEntitiesToDestroy.insert(entity);
     }
 
     bool Coordinator::HasActiveEntity(Entity entity) const
@@ -345,17 +311,73 @@ namespace Uma_ECS
 
     void Coordinator::DestroyEntityAndChildren(Entity entity)
     {
-        // Get children before destroying parent
-        std::vector<Entity> children = GetChildren(entity);
-
-        // Recursively destroy children first
-        for (Entity child : children)
-        {
-            DestroyEntityAndChildren(child);
+        if (!aEntityManager->IsEntityActive(entity)) {
+            return;
         }
 
-        // Destroy this entity
-        DestroyEntity(entity);
+        // Collect entire hierarchy
+        std::vector<Entity> hierarchy;
+        CollectHierarchy(entity, hierarchy);
+
+        // Queue all at once
+        for (Entity e : hierarchy) {
+            mEntitiesToDestroy.insert(e);
+        }
+    }
+
+    void Coordinator::ProcessDeletionQueue()
+    {
+        if (mEntitiesToDestroy.empty() || mIsProcessingDeletions) {
+            return;
+        }
+
+        mIsProcessingDeletions = true;
+
+        // Copy and clear to avoid issues with recursive deletions
+        std::unordered_set<Entity> toDelete = std::move(mEntitiesToDestroy);
+        mEntitiesToDestroy.clear();
+
+        for (Entity entity : toDelete) {
+            if (!aEntityManager->IsEntityActive(entity)) {
+                continue; // Skip if already deleted
+            }
+
+            auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+            if (tfArray.Has(entity)) {
+                auto& tf = tfArray.GetData(entity);
+
+                // Remove from parent's children list
+                if (tf.parent.has_value() &&
+                    aEntityManager->IsEntityActive(tf.parent.value())) {
+                    auto& parentTf = tfArray.GetData(tf.parent.value());
+                    auto it = std::find(parentTf.children.begin(),
+                        parentTf.children.end(), entity);
+                    if (it != parentTf.children.end()) {
+                        parentTf.children.erase(it);
+                    }
+                }
+
+                // Orphan children
+                for (Entity child : tf.children) {
+                    if (tfArray.Has(child) && aEntityManager->IsEntityActive(child)) {
+                        auto& childTf = tfArray.GetData(child);
+                        childTf.parent = std::nullopt;
+                        childTf.position = childTf.worldPosition;
+                    }
+                }
+            }
+
+            // Actual deletion
+            aSystemManager->EntityDestroyed(entity);
+            aEntityManager->DestroyEntity(entity);
+            aComponentManager->EntityDestroyed(entity);
+
+            // Single event per entity (could batch these too)
+            pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(
+                entity, GetEntityCount());
+        }
+
+        mIsProcessingDeletions = false;
     }
 
     void Coordinator::Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)

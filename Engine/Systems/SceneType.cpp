@@ -137,6 +137,8 @@ namespace Uma_Engine
         {
             script->OnUpdate(dt);
         }
+
+        m_Coordinator.ProcessDeletionQueue();
     }
 
     void Scene::UpdateSelective(float dt)
@@ -158,6 +160,8 @@ namespace Uma_Engine
 
         if (m_CameraSystem)
             m_CameraSystem->Update(dt);
+
+        m_Coordinator.ProcessDeletionQueue();
     }
 
     // SCRIPT STUFF
