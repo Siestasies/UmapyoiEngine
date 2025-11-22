@@ -45,6 +45,7 @@ All rights reserved.
 #include "Editor/Cmds/EntitySnapshotCmd.h"
 #include "Editor/Cmds/EntityDeleteCmd.h"
 #include "Editor/Cmds/EntityCreateCmd.h"
+#include "Editor/Cmds/EntityDuplicateCmd.h"
 
 namespace Uma_Engine
 {
@@ -966,7 +967,23 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Duplicate"))
             {
-                pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
+                //pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
+                
+                auto cmd = std::make_unique<Uma_Editor::EntityDuplicateCmd>(
+                    &coordinator,
+                    m_selectedEntity,
+                    "Duplicate Entity"
+                );
+
+                // Get raw pointer before moving
+                Uma_Editor::EntityDuplicateCmd* rawCmd = cmd.get();
+
+                // Execute command through history
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                // Access through raw pointer (still valid, owned by command history now)
+                m_selectedEntity = rawCmd->GetCreatedEntity();
+
                 m_HierarchyScrollToBottomFrames = 2;
             }
 

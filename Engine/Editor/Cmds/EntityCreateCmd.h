@@ -5,9 +5,6 @@
 #include "ECS/Core/Types.hpp"
 #include "ECS/Core/Coordinator.hpp"
 #include "Editor/Core/EntitySnapshot.h"
-#include <vector>
-#include <unordered_map>
-#include <memory>
 
 namespace Uma_Editor
 {
