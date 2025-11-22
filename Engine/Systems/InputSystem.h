@@ -67,6 +67,11 @@ namespace Uma_Engine
          */
         void SetWindow(GLFWwindow* window) override;
 
+        /**
+        * \brief Manually clears all input states
+        */
+        static void ResetInputState();
+
         // Static callbacks for GLFW
 
         /**

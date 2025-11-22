@@ -315,6 +315,8 @@ void main()
             int width, height;
             glfwGetFramebufferSize(mWindow, &width, &height);
 
+            if (width == 0 || height == 0) return;
+
             // Only update if size changed
             if (width != mViewportWidth || height != mViewportHeight)
             {
@@ -672,6 +674,7 @@ void main()
     void Graphics::OnWindowResize(int width, int height)
     {
         if (!mInitialized) return;
+        if (width == 0 || height == 0) return;
         pSystemManager->GetSystem<EventSystem>()->Emit<WindowResizeEvent>(width, height);
         SetViewport(width, height);
     }
@@ -1909,6 +1912,8 @@ void main()
 
     void Graphics::InitSceneFramebuffer(int width, int height)
     {
+        if (width <= 0 || height <= 0) return;
+
         mSceneFBWidth = width;
         mSceneFBHeight = height;
 

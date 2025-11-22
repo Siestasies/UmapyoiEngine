@@ -104,6 +104,9 @@ int main()
     systemManager.Init();
     systemManager.SetWindow(window.GetGLFWWindow());
 
+    // For alt-tab handling
+    auto soundManager = systemManager.GetSystem<Uma_Engine::SoundManager>();
+
     // SCENE MANAGER SETTINGS
     scn_mgr->SetSystemManager(&systemManager);
     // FAKE - this is basically to call events for imgui/editor buttons
@@ -142,6 +145,9 @@ int main()
     double frameStartTime = glfwGetTime();
 
     std::stringstream newTitle;
+
+    // Focus state
+    bool wasFocused = true;
 
     while (!window.ShouldClose())
     {
@@ -184,9 +190,56 @@ int main()
 
         Uma_Engine::HybridInputSystem::UpdatePreviousFrameState();
 
-        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
+        // Update window (processes GLFW events -> triggers InputSystem callbacks)
         // always update before systemmanager updates
         window.Update();
+
+        // Check if window has focus
+        bool isFocused = glfwGetWindowAttrib(window.GetGLFWWindow(), GLFW_FOCUSED);
+        // Check if window is minimized
+        bool isIconified = glfwGetWindowAttrib(window.GetGLFWWindow(), GLFW_ICONIFIED);
+
+        if (!isFocused || isIconified)
+        {
+            // Lost focus or minimized (pause everything)
+            if (wasFocused)
+            {
+                if (soundManager)
+                {
+                    soundManager->pauseAllSounds(true);
+                    soundManager->Update(deltaTime);
+                }
+
+                if (inputSystem)
+                {
+                    inputSystem->ResetAllInput();
+                }
+
+                wasFocused = false;
+            }
+
+            if (soundManager)
+            {
+                soundManager->Update(deltaTime);
+            }
+
+            // Wait for events
+            glfwWaitEventsTimeout(0.1);
+
+            // Skip system updates
+            continue;
+        }
+
+        // Regained focus
+        if (!wasFocused)
+        {
+            if (soundManager)
+            {
+                soundManager->pauseAllSounds(false);
+            }
+
+            wasFocused = true;
+        }
 
         if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
@@ -202,6 +255,8 @@ int main()
         }
 
         systemManager.Update(deltaTime);
+        // Swap front and back buffers
+        glfwSwapBuffers(window.GetGLFWWindow());
     }
 
     systemManager.Shutdown();

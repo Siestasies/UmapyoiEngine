@@ -121,7 +121,7 @@ namespace Uma_Engine
         if (!mInitialized) return;
 
         // Swap front and back buffers
-        glfwSwapBuffers(mWindow);
+        //glfwSwapBuffers(mWindow);
 
         // Poll for and process events
         glfwPollEvents();

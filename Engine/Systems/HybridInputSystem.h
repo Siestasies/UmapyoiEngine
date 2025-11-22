@@ -30,6 +30,38 @@ namespace Uma_Engine
 #endif
         }
 
+        void ResetAllInput()
+        {
+            // Reset mouse deltas
+            prevMouseX = GetMouseX();
+            prevMouseY = GetMouseY();
+
+            if (eventSystem)
+            {
+                // Check keyboard
+                for (int key = 0; key <= GLFW_KEY_LAST; ++key)
+                {
+                    if (Uma_Engine::InputSystem::KeyDown(key) || Uma_Engine::InputSystem::KeyReleased(key))
+                    {
+                        eventSystem->Dispatch(KeyReleaseEvent(key, 0));
+                    }
+                }
+
+                // Check mouse buttons
+                for (int btn = 0; btn <= GLFW_MOUSE_BUTTON_LAST; ++btn)
+                {
+                    if (Uma_Engine::InputSystem::MouseButtonDown(btn) || Uma_Engine::InputSystem::MouseButtonReleased(btn))
+                    {
+                        double x, y;
+                        GetMousePosition(x, y);
+                        eventSystem->Dispatch(MouseButtonEvent(btn, GLFW_RELEASE, 0, x, y));
+                    }
+                }
+            }
+
+            Uma_Engine::InputSystem::ResetInputState();
+        }
+
         void Update(float dt) override
         {
             double currMouseX = GetMouseX();
