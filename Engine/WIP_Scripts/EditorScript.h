@@ -121,6 +121,15 @@ namespace Uma_Engine
                 }
             ));
 
+            // Empty scene
+            m_EventListeners.push_back(
+                eventSystem->Subscribe<EmptySceneRequestEvent>(
+                    [this](const EmptySceneRequestEvent& e) {
+                        (void)e;
+                        EmptyScene();
+                    }
+            ));
+
             // Stress test
             m_EventListeners.push_back(
             eventSystem->Subscribe<StressTestRequestEvent>(
@@ -185,7 +194,7 @@ namespace Uma_Engine
             eventSystem->Subscribe<LoadPrefabRequestEvent>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
-                    LoadPrefab(e.prefab_name);
+                    LoadPrefab(e.prefab_name, e.script);
                 }
             ));
 
@@ -374,6 +383,15 @@ namespace Uma_Engine
                     });
             }
 
+            GetLuascriptingSystem().Restart();
+        }
+
+        void EmptyScene()
+        {
+            using namespace Uma_ECS;
+
+            GetLuascriptingSystem().Shutdown();
+            GetCoordinator().DestroyAllEntities();
             GetLuascriptingSystem().Restart();
         }
 
@@ -1119,11 +1137,12 @@ namespace Uma_Engine
             }
         }
 
-        void LoadPrefab(std::string prefab_name)
+        void LoadPrefab(std::string prefab_name, bool script = true)
         {
            m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name);
 
-           m_Scene->m_LuaScriptingSystem->CallStart();
+           if (script)
+            m_Scene->m_LuaScriptingSystem->CallStart();
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)

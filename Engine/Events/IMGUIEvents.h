@@ -102,7 +102,8 @@ namespace Uma_Engine
     {
     public:
         std::string prefab_name;
-        LoadPrefabRequestEvent(std::string name = "bird") : prefab_name(name) { priority = Priority::High; }
+        bool script;
+        LoadPrefabRequestEvent(std::string name = "bird", bool s = true) : prefab_name(name), script(s) { priority = Priority::High; }
     };
 
     class SavePrefabRequestEvent : public Event
@@ -111,7 +112,14 @@ namespace Uma_Engine
         std::string prefab_name;
         Uma_ECS::Entity entityId;
         SavePrefabRequestEvent(std::string name, Uma_ECS::Entity ent) : prefab_name(name), entityId(ent) { priority = Priority::High; }
-    };  
+    }; 
+
+    class PrefabSceneRequestEvent : public Event
+    {
+    public:
+        std::string scene_name;
+        PrefabSceneRequestEvent(std::string name) : scene_name(name) { priority = Priority::High; }
+    };
 
     class ChangeEnemyScaleRequestEvent : public Event
     {
@@ -172,6 +180,12 @@ namespace Uma_Engine
     {
     public:
         ClearSceneRequestEvent() { priority = Priority::High; }
+    };
+
+    class EmptySceneRequestEvent : public Event
+    {
+    public:
+        EmptySceneRequestEvent() { priority = Priority::High; }
     };
 
     class SaveSceneRequestEvent : public Event

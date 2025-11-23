@@ -108,6 +108,15 @@ namespace Uma_Engine
             }
         );
 
+        eventSystem->Subscribe<PrefabSceneRequestEvent>(
+            [this](const PrefabSceneRequestEvent& e) {
+                LoadScene(e.scene_name, false);
+                //SetActiveScene(e.scene_name);
+                m_UseEditorCamera = false;
+                playMode = PLAYMODE::PM_STOP;
+            }
+        );
+
         eventSystem->Subscribe<UpdateMouseOverUIEvent>(
             [this](const UpdateMouseOverUIEvent& e) {
                 m_isMouseOverUI = e.isFocus;

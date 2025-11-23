@@ -98,8 +98,10 @@ namespace Uma_Engine
         // Window creation functions
         void SceneManagerWindow();
         void CreateHierarchyWindow();
+        void CreatePrefabHierarchyWindow();
         void CreateInspectorWindow();
         void CreateEditorControlBar();
+        void CreatePrefabControlBar();
         void CreateSystemsWindow();
         void CreatePerformanceWindow();
         void CreateEngineDebugWindow(float fps, float deltaTime);
@@ -143,6 +145,7 @@ namespace Uma_Engine
 
         // Selected entity tracking for Inspector
         Uma_ECS::Entity m_selectedEntity;
+        Uma_ECS::Entity m_prefabEntity;
 
         // show or not
         bool m_hideAll;
