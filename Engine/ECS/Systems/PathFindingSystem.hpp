@@ -60,5 +60,7 @@ namespace Uma_ECS
         float rebuildRadius = 500.0f;
 
         void RebuildPathfinder(const Vec2& center, float maxAgentRadius);
+        //to be removed later
+        std::vector<std::shared_ptr<Uma_Engine::IEventListener>> eventListeners;
     };
 }

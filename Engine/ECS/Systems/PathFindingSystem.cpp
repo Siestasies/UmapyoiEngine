@@ -18,35 +18,40 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
 
     gridPathfinder = new Uma_Navigation::GridPathfinder(cellSize);
 
+    //to be removed later
     // Subscribe to mouse clicks for pathfinding
-    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
-        [this](const Uma_Engine::MouseButtonEvent& e) {
-            if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
+            [this](const Uma_Engine::MouseButtonEvent& e) {
+                if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
 
-            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-            if (pfArray.Has(playerID)) {
-                auto& pf = pfArray.GetData(playerID);
-                pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
-                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-            }
-        });
+                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+                if (pfArray.Has(playerID)) {
+                    auto& pf = pfArray.GetData(playerID);
+                    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+                }
+            })
+    );
 
-    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
-        [this](const Uma_Engine::MouseButtonEvent& e) {
-            if (e.button != GLFW_MOUSE_BUTTON_LEFT || e.action != GLFW_PRESS) return;
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
+            [this](const Uma_Engine::MouseButtonEvent& e) {
+                if (e.button != GLFW_MOUSE_BUTTON_LEFT || e.action != GLFW_PRESS) return;
 
-            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-            //if (pfArray.Has(playerID)) {
-            //    auto& pf = pfArray.GetData(playerID);
-            //    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
-            //    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-            //}
-            for (auto const& entity : aEntities) {
-                auto& pf = pfArray.GetData(entity);
-                pf.goal = pfArray.GetData(playerID).goal;
-                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
-            }
-        });
+                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+                //if (pfArray.Has(playerID)) {
+                //    auto& pf = pfArray.GetData(playerID);
+                //    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+                //    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+                //}
+                for (auto const& entity : aEntities) {
+                    auto& pf = pfArray.GetData(entity);
+                    pf.goal = pfArray.GetData(playerID).goal;
+                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
+                }
+            })
+    );
 }
 
 void Uma_ECS::PathFindingSystem::Update(float dt)
@@ -337,6 +342,14 @@ void Uma_ECS::PathFindingSystem::Shutdown()
 {
     delete gridPathfinder;
     gridPathfinder = nullptr;
+
+    //to be removed later
+    if (pEventSystem) {
+        for (auto& listener : eventListeners) {
+            pEventSystem->UnsubscribeListener(listener);
+        }
+    }
+    eventListeners.clear();
 }
 
 void Uma_ECS::PathFindingSystem::DebugDraw()
