@@ -19,7 +19,7 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
     gridPathfinder = new Uma_Navigation::GridPathfinder(cellSize);
 
     // Subscribe to mouse clicks for pathfinding
-    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
+    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PathFindingSystem>(
         [this](const Uma_Engine::MouseButtonEvent& e) {
             if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
 

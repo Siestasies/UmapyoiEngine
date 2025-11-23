@@ -43,6 +43,7 @@ namespace Uma_Engine
     {
     public:
         virtual ~IEventListener() = default;
+        virtual std::type_index GetOwningSystemType() const = 0;
     };
 
     // Templated event listener for type safety
@@ -51,16 +52,29 @@ namespace Uma_Engine
     {
     public:
         using EventCallback = std::function<void(const T&)>;
+        using EventPredicate = std::function<bool(const T&)>;
 
-        EventListener(EventCallback callback) : callback(callback) {}
+        EventListener(EventCallback callback, EventPredicate predicate, std::type_index systemType) : callback(callback), predicate(predicate), systemType(systemType) {}
 
         void OnEvent(const T& event)
         {
-            callback(event);
+            if (!predicate || predicate(event))
+            {
+                callback(event);
+            }
         }
+
+        bool ShouldReceiveEvent(const T& event) const
+        {
+            return !predicate || predicate(event);
+        }
+
+        std::type_index GetOwningSystemType() const override { return systemType; }
 
     private:
         EventCallback callback;
+        EventPredicate predicate;
+        std::type_index systemType;
     };
 
     // Hybrid Event System - supports both immediate and queued processing
@@ -75,40 +89,167 @@ namespace Uma_Engine
         void Update(float dt) override;
         void Shutdown() override;
 
-        // Subscribe to an event type with callback
-        template<typename T>
-        std::shared_ptr<EventListener<T>> Subscribe(std::function<void(const T&)> callback)
+        // Subscribe to an event type
+        // The type of the system subscribing (use typeid(...))
+        template<typename T, typename U>
+        void Subscribe(std::function<void(const T&)> callback)
+        {
+            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+
+            std::type_index eventType = std::type_index(typeid(T));
+            std::type_index systemType = std::type_index(typeid(U));
+
+            auto listener = std::make_shared<EventListener<T>>(callback, nullptr, systemType);
+            listeners[eventType].push_back(listener);
+        }
+
+        // Subscribe with predicate-based filtering
+        template<typename T, typename U>
+        void Subscribe(std::function<void(const T&)> callback,
+            std::function<bool(const T&)> predicate)
+        {
+            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+
+            std::type_index eventType = std::type_index(typeid(T));
+            std::type_index systemType = std::type_index(typeid(U));
+
+            auto listener = std::make_shared<EventListener<T>>(callback, predicate, systemType);
+            listeners[eventType].push_back(listener);
+        }
+
+        //// Unsubscribe a specific listener
+        //template<typename T>
+        //void Unsubscribe(std::shared_ptr<EventListener<T>> listener)
+        //{
+        //    std::type_index typeIndex = std::type_index(typeid(T));
+        //    auto& listenerList = listeners[typeIndex];
+        //    listenerList.erase(std::remove(listenerList.begin(), listenerList.end(), listener), listenerList.end());
+        //}
+
+        //// Unsubscribe 
+        //void UnsubscribeListener(std::shared_ptr<IEventListener> listener)
+        //{
+        //    for (auto& [typeIndex, listenerList] : listeners)
+        //    {
+        //        auto it = std::find(listenerList.begin(), listenerList.end(), listener);
+        //        if (it != listenerList.end())
+        //        {
+        //            listenerList.erase(it);
+        //            return;
+        //        }
+        //    }
+        //}
+
+        template <typename T>
+        void UnsubscribeSystem()
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+
+            for (auto& [eventType, listenerList] : listeners)
+            {
+                listenerList.erase(
+                    std::remove_if(listenerList.begin(), listenerList.end(),
+                    [typeIndex](const std::shared_ptr<IEventListener>& listener)
+                    {
+                        return listener->GetOwningSystemType() == typeIndex;
+                    }),
+                    listenerList.end()
+                );
+            }
+        }
+
+        template <typename T, typename U>
+        void UnsubscribeEvent()
+        {
+            std::type_index eventType = std::type_index(typeid(T));
+            std::type_index systemType = std::type_index(typeid(U));
+
+            auto it = listeners.find(eventType);
+            if (it != listeners.end());
+            {
+                auto& listenerList = it->second;
+                listenerList.erase(
+                    std::remove_if(listenerList.begin(), listenerList.end(),
+                        [systemType](const std::shared_ptr<IEventListener>& listener)
+                        {
+                            return listener->GetOwningSystemType() == systemType;
+                        }),
+                    listenerList.end()
+                );
+            }
+        }
+
+        template <typename T>
+        void HasSubscriptions() const
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+
+            for (const auto& [eventType, listenerList] : listeners)
+            {
+                for (const auto& listener : listenerList)
+                {
+                    if (listener->GetOwningSystemType == typeIndex) return true;
+                }
+            }
+
+            return false;
+        }
+
+        template <typename T>
+        size_t GetSubscriptionCount() const
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+
+            size_t count = 0;
+            for (const auto& [eventType, listenerList] : listeners)
+            {
+                for (const auto& listener : listenerList)
+                {
+                    if (listener->GetOwningSystemType == typeIndex) ++count;
+                }
+            }
+
+            return count;
+        }
+
+        template <typename T>
+        bool WouldReceive(const T& event) const
         {
             static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
 
             std::type_index typeIndex = std::type_index(typeid(T));
-            auto listener = std::make_shared<EventListener<T>>(callback);
-            listeners[typeIndex].push_back(listener);
-
-            return listener;
-        }
-
-        // Unsubscribe a specific listener
-        template<typename T>
-        void Unsubscribe(std::shared_ptr<EventListener<T>> listener)
-        {
-            std::type_index typeIndex = std::type_index(typeid(T));
-            auto& listenerList = listeners[typeIndex];
-            listenerList.erase(std::remove(listenerList.begin(), listenerList.end(), listener), listenerList.end());
-        }
-
-        // Unsubscribe 
-        void UnsubscribeListener(std::shared_ptr<IEventListener> listener)
-        {
-            for (auto& [typeIndex, listenerList] : listeners)
+            auto it = listeners.find(typeIndex);
+            if (it != listeners.end())
             {
-                auto it = std::find(listenerList.begin(), listenerList.end(), listener);
-                if (it != listenerList.end())
+                for (const auto& listener : it->second)
                 {
-                    listenerList.erase(it);
-                    return;
+                    if (auto typedListener = std::dynamic_pointer_cast<EventListener<T>>(listener))
+                    {
+                        if (typedListener->ShouldReceiveEvent(event)) return true;
+                    }
                 }
             }
+            return false;
+        }
+
+        template <typename T>
+        size_t GetReceiverCount(const T& event) const
+        {
+            static_assert(std::is_base_of_v<Event, T>, "T must inherit from Event");
+
+            std::type_index typeIndex = std::type_index(typeid(T));
+            auto it = listeners.find(typeIndex);
+            if (it == listeners.end()) return 0;
+
+            size_t count = 0;
+            for (const auto& listener : it->second)
+            {
+                if (auto typedListener = std::dynamic_pointer_cast<EventListener<T>>(listener))
+                {
+                    if (typedListener->ShouldReceiveEvent(event)) ++count;
+                }
+            }
+            return count;
         }
 
         // Immediately dispatch an event for critical/real-time events
@@ -245,6 +386,9 @@ namespace Uma_Engine
     private:
         std::unordered_map<std::type_index, std::vector<std::shared_ptr<IEventListener>>> listeners;
         std::vector<std::shared_ptr<IEventWrapper>> eventQueue;
+
+        // Allow EventListenerSystem to access listeners map
+        friend class EventListenerSystem;
     };
 
     // Helper base class for systems that listen to events
@@ -265,8 +409,30 @@ namespace Uma_Engine
         {
             if (eventSystem)
             {
-                eventSystem->Subscribe<T>(callback);
+                std::type_index typeIndex = std::type_index(typeid(*this));
+                SubscribeInternal<T>(callback, nullptr, typeIndex);
             }
+        }
+
+        template<typename T>
+        void SubscribeToEvent(std::function<void(const T&)> callback, std::function<bool(const T&)> predicate)
+        {
+            if (eventSystem)
+            {
+                std::type_index typeIndex = std::type_index(typeid(*this));
+                SubscribeInternal<T>(callback, predicate, typeIndex);
+            }
+        }
+
+    private:
+        template<typename T>
+        void SubscribeInternal(std::function<void(const T&)> callback,
+            std::function<bool(const T&)> predicate,
+            std::type_index systemType)
+        {
+            std::type_index typeIndex = std::type_index(typeid(T));
+            auto listener = std::make_shared<EventListener<T>>(callback, predicate, systemType);
+            eventSystem->listeners[typeIndex].push_back(listener);
         }
     };
 }

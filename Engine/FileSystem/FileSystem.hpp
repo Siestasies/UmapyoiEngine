@@ -126,7 +126,7 @@ namespace Uma_Engine
         {
             pEventSystem = es;
 
-            pEventSystem->Subscribe<RefreshDirectoryRequest>(
+            pEventSystem->Subscribe<RefreshDirectoryRequest, FileBrowser>(
               [this](const RefreshDirectoryRequest& e) {
                     (void)e;
                     RefreshDirectory();

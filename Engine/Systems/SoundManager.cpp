@@ -94,46 +94,46 @@ namespace Uma_Engine {
 
         if (pEventSystem && pResourcesManager)
         {
-            pEventSystem->Subscribe<Uma_Engine::PlaySoundEvent>(
+            pEventSystem->Subscribe<Uma_Engine::PlaySoundEvent, SoundManager>(
                 [this](const PlaySoundEvent& e)
                 {
                     playSound(pResourcesManager->GetSound(e.soundName), e.loop, e.volume, 1.f);
                 });
 
-            pEventSystem->Subscribe<Uma_Engine::StopSoundEvent>(
+            pEventSystem->Subscribe<Uma_Engine::StopSoundEvent, SoundManager>(
                 [this](const StopSoundEvent& e)
                 {
                     stopSound(pResourcesManager->GetSound(e.soundName));
                 });
 
-            pEventSystem->Subscribe<Uma_Engine::PlayMusicEvent>(
+            pEventSystem->Subscribe<Uma_Engine::PlayMusicEvent, SoundManager>(
                 [this](const PlayMusicEvent& e)
                 {
                     playSound(pResourcesManager->GetSound(e.musicName), e.loop, e.volume, 1.f);
                 });
 
-            pEventSystem->Subscribe<Uma_Engine::StopMusicEvent>(
+            pEventSystem->Subscribe<Uma_Engine::StopMusicEvent, SoundManager>(
                 [this](const StopMusicEvent& e)
                 {
                     stopSound(pResourcesManager->GetSound(e.musicName));
                 });
 
             // subscribe to play maode changes events (TEMP SOLUTION)
-            pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest>(
+            pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest, SoundManager>(
                 [this](const Uma_Engine::PlaySceneRequest& e)
                 {
                     (void)e;
                     pauseAllSounds(false);
                 });
 
-            pEventSystem->Subscribe<Uma_Engine::PauseSceneRequest>(
+            pEventSystem->Subscribe<Uma_Engine::PauseSceneRequest, SoundManager>(
                 [this](const Uma_Engine::PauseSceneRequest& e)
                 {
                     (void)e;
                     pauseAllSounds(true);
                 });
 
-            pEventSystem->Subscribe<Uma_Engine::StopSceneRequest>(
+            pEventSystem->Subscribe<Uma_Engine::StopSceneRequest, SoundManager>(
                 [this](const Uma_Engine::StopSceneRequest& e)
                 {
                     (void)e;
@@ -153,6 +153,7 @@ namespace Uma_Engine {
 #ifdef DEBUG
         std::cout << "sound shutdown\n";
 #endif // DEBUG
+        pEventSystem->UnsubscribeSystem<SoundManager>();
     }
 
     void SoundManager::Update(float dt)
