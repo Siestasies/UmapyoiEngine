@@ -15,101 +15,107 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
     pSoundManager = sm;
     pEventSystem = es;
 
-    pEventSystem->Subscribe<Uma_Engine::PlayEntitySoundEvent>(
-        [this](const Uma_Engine::PlayEntitySoundEvent& e)
-        {
-            auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::PlayEntitySoundEvent>(
+            [this](const Uma_Engine::PlayEntitySoundEvent& e)
+            {
+                auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
 
-            // Auto-add AudioComponent if doesn't exist
-            if (!audioArray.Has(e.entity)) {
-                pCoordinator->AddComponent(e.entity, AudioComponent{});
-            }
+                // Auto-add AudioComponent if doesn't exist
+                if (!audioArray.Has(e.entity)) {
+                    pCoordinator->AddComponent(e.entity, AudioComponent{});
+                }
 
-            auto& audio = audioArray.GetData(e.entity);
+                auto& audio = audioArray.GetData(e.entity);
 
-            // Stop existing sound with same name
-            if (audio.HasSound(e.soundName)) {
-                pSoundManager->StopChannel(audio.GetSound(e.soundName)->channel);
-                audio.RemoveSound(e.soundName);
-            }
+                // Stop existing sound with same name
+                if (audio.HasSound(e.soundName)) {
+                    pSoundManager->StopChannel(audio.GetSound(e.soundName)->channel);
+                    audio.RemoveSound(e.soundName);
+                }
 
-            // Get entity position
-            auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-            if (!tfArray.Has(e.entity)) return;
+                // Get entity position
+                auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArray.Has(e.entity)) return;
 
-            auto& tf = tfArray.GetData(e.entity);
-            FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
+                auto& tf = tfArray.GetData(e.entity);
+                FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
 
-            bool is3D = audio.default3D;
+                bool is3D = audio.default3D;
 
-            // Play sound
-            FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstance(e.soundName, e.loop, e.volume, pos, is3D);
+                // Play sound
+                FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstance(e.soundName, e.loop, e.volume, pos, is3D);
 
-            if (channel) {
-                SoundInstance instance;
-                instance.channel = channel;
-                instance.soundName = e.soundName;
-                instance.volume = e.volume;
-                instance.isPlaying = true;
-                instance.shouldLoop = e.loop;
-                instance.is3D = is3D;
+                if (channel) {
+                    SoundInstance instance;
+                    instance.channel = channel;
+                    instance.soundName = e.soundName;
+                    instance.volume = e.volume;
+                    instance.isPlaying = true;
+                    instance.shouldLoop = e.loop;
+                    instance.is3D = is3D;
 
-                audio.activeSounds[e.soundName] = instance;
-            }
-        });
-
+                    audio.activeSounds[e.soundName] = instance;
+                }
+            })
+    );
     // Stop all entity sounds
-    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundEvent>(
-        [this](const Uma_Engine::StopEntitySoundEvent& e)
-        {
-            auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
-            if (!audioArray.Has(e.entity)) return;
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::StopEntitySoundEvent>(
+            [this](const Uma_Engine::StopEntitySoundEvent& e)
+            {
+                auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+                if (!audioArray.Has(e.entity)) return;
 
-            auto& audio = audioArray.GetData(e.entity);
+                auto& audio = audioArray.GetData(e.entity);
 
-            for (auto& [name, sound] : audio.activeSounds) {
-                pSoundManager->StopChannel(sound.channel);
-            }
+                for (auto& [name, sound] : audio.activeSounds) {
+                    pSoundManager->StopChannel(sound.channel);
+                }
 
-            audio.activeSounds.clear();
-        });
-
+                audio.activeSounds.clear();
+            })
+    );
     // Stop specific sound by name
-    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundByNameEvent>(
-        [this](const Uma_Engine::StopEntitySoundByNameEvent& e)
-        {
-            auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
-            if (!audioArray.Has(e.entity)) return;
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::StopEntitySoundByNameEvent>(
+            [this](const Uma_Engine::StopEntitySoundByNameEvent& e)
+            {
+                auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+                if (!audioArray.Has(e.entity)) return;
 
-            auto& audio = audioArray.GetData(e.entity);
+                auto& audio = audioArray.GetData(e.entity);
 
-            if (audio.HasSound(e.soundName)) {
-                pSoundManager->StopChannel(audio.GetSound(e.soundName)->channel);
-                audio.RemoveSound(e.soundName);
-            }
-        });
-
+                if (audio.HasSound(e.soundName)) {
+                    pSoundManager->StopChannel(audio.GetSound(e.soundName)->channel);
+                    audio.RemoveSound(e.soundName);
+                }
+            })
+    );
     // Play one-shot at entity
-    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtEntityEvent>(
-        [this](const Uma_Engine::PlayOneShotAtEntityEvent& e)
-        {
-            auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-            if (!tfArray.Has(e.entity)) return;
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtEntityEvent>(
+            [this](const Uma_Engine::PlayOneShotAtEntityEvent& e)
+            {
+                auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArray.Has(e.entity)) return;
 
-            auto& tf = tfArray.GetData(e.entity);
-            FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
+                auto& tf = tfArray.GetData(e.entity);
+                FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
 
-            pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
-        });
-
+                pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
+            })
+    );
     // Play one-shot at position
-    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtPositionEvent>(
-        [this](const Uma_Engine::PlayOneShotAtPositionEvent& e)
-        {
-            FMOD_VECTOR pos = { e.x, e.y, 0.0f };
+    eventListeners.push_back(
+        pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtPositionEvent>(
+            [this](const Uma_Engine::PlayOneShotAtPositionEvent& e)
+            {
+                FMOD_VECTOR pos = { e.x, e.y, 0.0f };
 
-            pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
-        });
+                pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
+            })
+    );
 }
 
 void Uma_ECS::AudioSystem::Update(float dt)
@@ -121,6 +127,12 @@ void Uma_ECS::AudioSystem::Update(float dt)
 void Uma_ECS::AudioSystem::Shutdown()
 {
     StopAllEntityAudio();
+    if (pEventSystem) {
+        for (auto& listener : eventListeners) {
+            pEventSystem->UnsubscribeListener(listener);
+        }
+    }
+    eventListeners.clear();
 }
 
 void Uma_ECS::AudioSystem::UpdateListener(float dt)
