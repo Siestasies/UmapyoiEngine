@@ -65,7 +65,7 @@ namespace Uma_Engine
 
         SetGraphics(pSystemManager->GetSystem<Graphics>());
 
-        eventSystem->Subscribe<SceneLoadedEvent>(
+        eventSystem->Subscribe<SceneLoadedEvent, EditorSystem>(
             [this](const SceneLoadedEvent& e)
             {
                 // set coordinator
@@ -74,7 +74,7 @@ namespace Uma_Engine
             }
         );
 
-        eventSystem->Subscribe<SceneUnloadedEvent>(
+        eventSystem->Subscribe<SceneUnloadedEvent, EditorSystem>(
             [this](const SceneUnloadedEvent& e)
             {
                 (void)e;
@@ -82,21 +82,21 @@ namespace Uma_Engine
             }
         );
 
-        eventSystem->Subscribe<PlaySceneRequest>(
+        eventSystem->Subscribe<PlaySceneRequest, EditorSystem>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
                 SetPlayMode(true);
             }
         );
 
-        eventSystem->Subscribe<PauseSceneRequest>(
+        eventSystem->Subscribe<PauseSceneRequest, EditorSystem>(
             [&](const PauseSceneRequest& e) {
                 (void)e;
                 SetPlayMode(false);
             }
         );
 
-        eventSystem->Subscribe<StopSceneRequest>(
+        eventSystem->Subscribe<StopSceneRequest, EditorSystem>(
             [&](const StopSceneRequest& e) {
                 (void)e;
                 SetPlayMode(false);
