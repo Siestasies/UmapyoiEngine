@@ -1045,10 +1045,10 @@ namespace Uma_Engine
             }
         }
 
-        // Render each root entity and its children recursively
+        // Render root entity and its children recursively
         if (rootEntity != static_cast<Uma_ECS::Entity>(-1))
         {
-            RenderEntityNode(rootEntity, coordinator, transformArray);
+            RenderPrefabNode(rootEntity, coordinator, transformArray);
             m_prefabEntity = rootEntity;
         }
 
@@ -1190,6 +1190,127 @@ namespace Uma_Engine
             for (Uma_ECS::Entity child : transform.children)
             {
                 RenderEntityNode(child, coordinator, transformArray);
+            }
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
+
+    void ImguiManager::RenderPrefabNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
+        Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray)
+    {
+        if (!coordinator.HasActiveEntity(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+        bool hasChildren = !transform.children.empty();
+
+        // Generate entity name based on components
+        std::string entityName = GetEntityDisplayName(entity, coordinator);
+
+        // Setup tree node flags
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        if (!hasChildren)
+            flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+        if (m_selectedEntity == entity)
+            flags |= ImGuiTreeNodeFlags_Selected;
+
+        // Push unique ID for this entity
+        ImGui::PushID(static_cast<int>(entity));
+
+        // Render tree node
+        bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
+
+        // Handle selection
+        if (ImGui::IsItemClicked())
+        {
+            m_selectedEntity = entity;
+            pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
+        }
+
+        // Right-click context menu
+        if (ImGui::BeginPopupContextItem())
+        {
+            m_selectedEntity = entity;
+
+            if (ImGui::MenuItem("Create Child"))
+            {
+                Uma_ECS::Entity child = coordinator.CreateEntity();
+                coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .name = std::string("new enity"),
+                    .position = Vec2(0, 0),
+                    .rotation = Vec2(0, 0),
+                    .scale = Vec2(1, 1)
+                    });
+                coordinator.SetParent(child, entity);
+
+                m_HierarchyScrollToBottom = true;
+            }
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && ImGui::MenuItem("Duplicate"))
+            {
+                Entity newEntity = coordinator.DuplicateEntity(entity);
+                coordinator.SetParent(newEntity, coordinator.GetParent(entity).value());
+                m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::Separator();
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete"))
+            {
+                pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+                m_HierarchyScrollToBottom = true;
+            }
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete with Children"))
+            {
+                coordinator.DestroyEntityAndChildren(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+                m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::EndPopup();
+        }
+
+        // Drag and drop for reparenting
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
+            ImGui::Text("Reparent: %s", entityName.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            {
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+
+                // Don't allow setting parent to itself or to its own children
+                if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
+                {
+                    coordinator.SetParent(droppedEntity, entity);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        // Render children recursively
+        if (nodeOpen && hasChildren)
+        {
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                RenderPrefabNode(child, coordinator, transformArray);
             }
             ImGui::TreePop();
         }

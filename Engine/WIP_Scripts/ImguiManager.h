@@ -115,6 +115,8 @@ namespace Uma_Engine
         // Hierarchy helper functions
         void RenderEntityNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
+        void RenderPrefabNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
+            Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
         std::string GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
         bool IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
