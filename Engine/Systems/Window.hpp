@@ -55,7 +55,7 @@ namespace Uma_Engine
         * \param height The height of the window in pixels
         * \param title The title text to display in the window's title bar
         */
-        Window(int width, int height, const std::string& title, WindowMode mode = WindowMode::Windowed);
+        Window(int width, int height, const std::string& title, WindowMode mode = WindowMode::Windowed, bool mIsEditorMode = true);
 
         /**
         * \brief Destructor that ensures proper cleanup of window resources
@@ -133,5 +133,6 @@ namespace Uma_Engine
         std::string mTitle;
         bool mInitialized;
         WindowMode mMode;
+        bool mIsEditorMode;
     };
 }
