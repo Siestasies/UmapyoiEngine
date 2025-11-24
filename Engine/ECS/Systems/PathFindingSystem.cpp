@@ -34,24 +34,25 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
             })
     );
 
-    eventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
-            [this](const Uma_Engine::MouseButtonEvent& e) {
-                if (e.button != GLFW_MOUSE_BUTTON_LEFT || e.action != GLFW_PRESS) return;
+    //eventListeners.push_back(
+    //    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
+    //        [this](const Uma_Engine::MouseButtonEvent& e) {
+    //            if (e.button != GLFW_MOUSE_BUTTON_LEFT || e.action != GLFW_PRESS) return;
 
-                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-                //if (pfArray.Has(playerID)) {
-                //    auto& pf = pfArray.GetData(playerID);
-                //    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
-                //    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-                //}
-                for (auto const& entity : aEntities) {
-                    auto& pf = pfArray.GetData(entity);
-                    pf.goal = pfArray.GetData(playerID).goal;
-                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
-                }
-            })
-    );
+    //            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+    //            //if (pfArray.Has(playerID)) {
+    //            //    auto& pf = pfArray.GetData(playerID);
+    //            //    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+    //            //    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+    //            //}
+    //            if (!pfArray.Has(playerID)) return;
+    //            for (auto const& entity : aEntities) {
+    //                auto& pf = pfArray.GetData(entity);
+    //                pf.goal = pfArray.GetData(playerID).goal;
+    //                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
+    //            }
+    //        })
+    //);
 }
 
 void Uma_ECS::PathFindingSystem::Update(float dt)
@@ -114,10 +115,12 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             static Vec2 lastRebuildCenter(0, 0);
             static bool needsFirstRebuild = true;
 
-            if (needsFirstRebuild) {
+            if (needsFirstRebuild || isDirty) {
                 RebuildPathfinder(playerPosition, maxAgentRadius);
                 lastRebuildCenter = playerPosition;
                 needsFirstRebuild = false;
+                if (isDirty)
+                    isDirty = false;
             }
             else {
                 Vec2 delta = playerPosition - lastRebuildCenter;
