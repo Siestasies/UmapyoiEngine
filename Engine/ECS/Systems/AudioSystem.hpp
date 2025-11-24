@@ -58,6 +58,5 @@ namespace Uma_ECS
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
 
-        std::vector<std::shared_ptr<Uma_Engine::IEventListener>> eventListeners;
     };
 }

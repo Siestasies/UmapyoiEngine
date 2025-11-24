@@ -62,6 +62,5 @@ namespace Uma_ECS
         void RebuildPathfinder(const Vec2& center, float maxAgentRadius);
         bool isDirty = false; //to check for any new entites
         //to be removed later
-        std::vector<std::shared_ptr<Uma_Engine::IEventListener>> eventListeners;
     };
 }
