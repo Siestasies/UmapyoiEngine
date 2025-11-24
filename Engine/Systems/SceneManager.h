@@ -213,8 +213,6 @@ namespace Uma_Engine
 
         PLAYMODE playMode = PLAYMODE::PM_STOP;
 
-        //std::shared_ptr<Scene> m_prefabScene;
-
         bool isUnloading = false;
 
         // Editor camera
