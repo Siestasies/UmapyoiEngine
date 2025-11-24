@@ -29,9 +29,9 @@ All rights reserved.
 
 namespace Uma_Engine
 {
-    Window::Window(int width, int height, const std::string& title, WindowMode mode) : mWindow(nullptr),
+    Window::Window(int width, int height, const std::string& title, WindowMode mode, bool isEditorMode) : mWindow(nullptr),
         mWidth(width), mHeight(height), mWindowedWidth(width), mWindowedHeight(height), mTitle(title),
-        mInitialized(false), mMode(mode) {}
+        mInitialized(false), mMode(mode), mIsEditorMode(isEditorMode) {}
 
     Window::~Window()
     {
@@ -52,7 +52,15 @@ namespace Uma_Engine
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        // Set resizable based on editor mode
+        if (mIsEditorMode)
+        {
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        }
 
         GLFWmonitor* monitor = nullptr;
         if (mMode == WindowMode::Fullscreen)
