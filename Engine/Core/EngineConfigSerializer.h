@@ -25,6 +25,8 @@ All rights reserved.
 
 #pragma once
 
+#include "Debugging/Debugger.hpp"
+
 #include <vector>
 #include <string>
 #include <fstream>

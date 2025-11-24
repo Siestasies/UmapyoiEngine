@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <algorithm>
 #include <GLFW/glfw3native.h>
-#include "imgui.h"
+#include "../EditorApp/imgui/imgui.h"
 #include "DropCallback.hpp"
 #include "Events/IMGUIEvents.h"
 #include "Events/ECSEvents.h"

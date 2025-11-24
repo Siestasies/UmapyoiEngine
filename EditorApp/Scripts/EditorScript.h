@@ -18,14 +18,14 @@ Editor behavior script that handles non scene-specific functionality.
 This replaces the old EditorScene class inheritance approach.
 */
 #pragma once
-#include "SceneType.h"
+#include "Systems/SceneType.h"
 #include "Core/GameSerializer.h"
 #include "Core/FilePaths.h"
 #include "Core/Types.hpp"
 #include <random>
 
 // events
-#include <Events/AudioEvents.h>
+#include "Events/AudioEvents.h"
 
 // Temp
 //#define APIENTRY __stdcall

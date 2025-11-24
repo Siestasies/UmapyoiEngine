@@ -24,15 +24,15 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 #include <glad/glad.h>
-#include "ImguiManager.h"
-#include "SceneManager.h"
-#include "Graphics.hpp"
+#include "Scripts/ImguiManager.h"
+#include "Systems/SceneManager.h"
+#include "Systems/Graphics.hpp"
 
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 #include "imgui_internal.h"
 
 #include "Core/FilePaths.h"

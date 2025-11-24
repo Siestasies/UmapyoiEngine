@@ -26,7 +26,7 @@ All rights reserved.
 // Engine/FileSystem/ResourcesWindow.hpp
 #pragma once
 #include "Systems/ResourcesManager.hpp"
-#include "imgui.h"
+#include "../EditorApp/imgui/imgui.h"
 #include <filesystem>
 #include <algorithm>
 #include <string>

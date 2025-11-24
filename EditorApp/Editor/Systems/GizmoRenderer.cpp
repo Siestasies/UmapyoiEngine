@@ -19,13 +19,13 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "../../ECS/Components/Transform.h"
-#include "../../ECS/Components/Sprite.h"
-#include "../../UI/Components/RectTransform.h"
-#include "../../UI/Helpers/Input.h"
-#include "../../UI/Helpers/Layout.h"
-#include "../Core/EditorMath.h"
-#include "GizmoRenderer.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/Components/Sprite.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Helpers/Input.h"
+#include "UI/Helpers/Layout.h"
+#include "Editor/Core/EditorMath.h"
+#include "Editor/Systems/GizmoRenderer.h"
 #include <cmath>
 
 namespace Uma_Engine

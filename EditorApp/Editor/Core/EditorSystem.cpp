@@ -19,8 +19,8 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "EditorSystem.h"
-#include "../../UI/Helpers/InputFilter.h"
+#include "Editor/Core/EditorSystem.h"
+#include "UI/Helpers/InputFilter.h"
 
 #include "InputSystem.h"
 #include "Editor/Cmds/EntityDeleteCmd.h"
@@ -28,6 +28,11 @@ All rights reserved.
 
 #include <GLFW/glfw3.h>
 #include <Debugging/Debugger.hpp>
+
+#include "Systems/SceneManager.h"
+
+//events
+#include "Events/SceneEvents.h"
 
 namespace Uma_Engine
 {
@@ -57,6 +62,46 @@ namespace Uma_Engine
         {
             mState.currentMode = EditorMode::Translate;
         }
+
+        SetGraphics(pSystemManager->GetSystem<Graphics>());
+
+        eventSystem->Subscribe<SceneLoadedEvent>(
+            [this](const SceneLoadedEvent& e)
+            {
+                // set coordinator
+                (void)e;
+                SetCoordinator(pSystemManager->GetSystem<SceneManager>()->GetActiveSceneCoordinator());
+            }
+        );
+
+        eventSystem->Subscribe<SceneUnloadedEvent>(
+            [this](const SceneUnloadedEvent& e)
+            {
+                (void)e;
+                SetCoordinator(nullptr);
+            }
+        );
+
+        eventSystem->Subscribe<PlaySceneRequest>(
+            [&](const PlaySceneRequest& e) {
+                (void)e;
+                SetPlayMode(true);
+            }
+        );
+
+        eventSystem->Subscribe<PauseSceneRequest>(
+            [&](const PauseSceneRequest& e) {
+                (void)e;
+                SetPlayMode(false);
+            }
+        );
+
+        eventSystem->Subscribe<StopSceneRequest>(
+            [&](const StopSceneRequest& e) {
+                (void)e;
+                SetPlayMode(false);
+            }
+        );
     }
 
     /*!

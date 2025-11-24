@@ -25,7 +25,7 @@ All rights reserved.
 #include <GLFW/glfw3.h>
 
 // Include ImGui for input checking
-#include "imgui.h"
+#include "../EditorApp/imgui/imgui.h"
 
 // comment and uncomment this line below to enable/ disable console debug log
 #if defined(_DEBUG) || defined(DEBUG)

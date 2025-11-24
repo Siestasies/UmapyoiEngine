@@ -21,9 +21,9 @@ All rights reserved.
 
 #pragma once
 
-#include "../../Systems/Graphics.hpp"
-#include "../../ECS/Core/Coordinator.hpp"
-#include "../Core/EditorTypes.h"
+#include "Systems/Graphics.hpp"
+#include "ECS/Core/Coordinator.hpp"
+#include "../EditorApp/Editor/Core/EditorTypes.h" 
 #include <vector>
 
 namespace Uma_Engine

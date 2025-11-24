@@ -21,17 +21,17 @@ All rights reserved.
 
 #pragma once
 
-#include "../Core/SystemType.h"
-#include "../ECS/Core/Coordinator.hpp"
-#include "../Core/EventSystem.h"
-#include "../Systems/Graphics.hpp"
-#include "../Events/InputEvents.h"
-#include "../Events/EditorEvents.h"
-#include "../Core/EditorTypes.h"
-#include "../Systems/PickingSystem.h"
-#include "../Systems/GizmoRenderer.h"
-#include "../Systems/TransformManipulator.h"
-#include "../WIP_Scripts/ImguiManager.h"
+#include "Core/SystemType.h"
+#include "ECS/Core/Coordinator.hpp"
+#include "Core/EventSystem.h"
+#include "Systems/Graphics.hpp"
+#include "Events/InputEvents.h"
+#include "Events/EditorEvents.h"
+#include "../EditorApp/Editor/Core/EditorTypes.h"
+#include "../EditorApp/Editor/Systems/PickingSystem.h"
+#include "../EditorApp/Editor/Systems/GizmoRenderer.h"
+#include "../EditorApp/Editor/Systems/TransformManipulator.h"
+#include "../EditorApp/Scripts/ImguiManager.h"
 
 namespace Uma_Engine
 {

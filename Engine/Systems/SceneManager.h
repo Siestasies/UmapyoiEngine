@@ -23,7 +23,7 @@ All rights reserved.
 #pragma once
 #include "SceneType.h"
 #include "Core/SystemType.h"
-#include "ImguiManager.h"
+#include "../EditorApp/Scripts/ImguiManager.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -31,6 +31,12 @@ All rights reserved.
 #include <functional>
 #include <iostream>
 #include "Systems/EditorCamera.h"
+#include "Core/EventSystem.h"
+
+namespace Uma_ECS
+{
+    class Coordinator;
+}
 
 namespace Uma_Engine
 {
@@ -197,6 +203,8 @@ namespace Uma_Engine
         std::vector<std::string> GetLoadedSceneNames() const;
         std::string GetActiveSceneName() const;
 
+        Uma_ECS::Coordinator* GetActiveSceneCoordinator() const;
+
     private:
         void UpdateLoadingScenes();
         void RemoveUnloadedScenes();
@@ -215,8 +223,11 @@ namespace Uma_Engine
 
         bool isUnloading = false;
 
+        // Event system
+        EventSystem* pEventSystem;
+
         // Editor camera
-        Uma_Engine::EditorCamera m_EditorCamera;
+        EditorCamera m_EditorCamera;
         bool m_UseEditorCamera = false;
         bool m_isMouseOverUI = false;
     };

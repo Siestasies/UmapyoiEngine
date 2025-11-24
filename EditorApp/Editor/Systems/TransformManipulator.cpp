@@ -19,12 +19,12 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "TransformManipulator.h"
-#include "../../ECS/Components/Transform.h"
-#include "../../UI/Components/RectTransform.h"
-#include "../../UI/Helpers/Input.h"
-#include "../../UI/Helpers/Layout.h"
-#include "../Core/EditorMath.h"
+#include "Editor/Systems/TransformManipulator.h"
+#include "ECS/Components/Transform.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Helpers/Input.h"
+#include "UI/Helpers/Layout.h"
+#include "Editor/Core/EditorMath.h"
 #include <cmath>
 #include <algorithm>
 

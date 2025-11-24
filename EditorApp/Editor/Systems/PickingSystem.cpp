@@ -19,12 +19,12 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "PickingSystem.h"
-#include "../../ECS/Components/Transform.h"
-#include "../../ECS/Components/Sprite.h"
-#include "../../UI/Components/RectTransform.h"
-#include "../../UI/Components/Canvas.h"
-#include "../../UI/Helpers/Input.h"
+#include "Editor/Systems/PickingSystem.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/Components/Sprite.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Components/Canvas.h"
+#include "UI/Helpers/Input.h"
 #include <cmath>
 
 namespace Uma_Engine

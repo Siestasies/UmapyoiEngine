@@ -28,6 +28,7 @@ All rights reserved.
 #include "Core/EventSystem.h"
 #include "../Events/IMGUIEvents.h"
 #include "../Events/EditorEvents.h"
+#include "../Events/SceneEvents.h"
 
 #include <algorithm>
 
@@ -51,56 +52,56 @@ namespace Uma_Engine
         m_EditorCamera.SetActive(false);
         m_UseEditorCamera = false;
 
-        auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
+        /*EditorSystem* editorSystem = pSystemManager->GetSystem<EditorSystem>();
         if (editorSystem)
         {
             editorSystem->SetGraphics(pSystemManager->GetSystem<Graphics>());
-        }
+        }*/
 
         // sub to events
-        EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
+        pEventSystem = pSystemManager->GetSystem<EventSystem>();
 
-        eventSystem->Subscribe<PlaySceneRequest>(
+        pEventSystem->Subscribe<PlaySceneRequest>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
 
-        eventSystem->Subscribe<PauseSceneRequest>(
+        pEventSystem->Subscribe<PauseSceneRequest>(
             [&](const PauseSceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_PAUSE;
             }
         );
 
-        eventSystem->Subscribe<StopSceneRequest>(
+        pEventSystem->Subscribe<StopSceneRequest>(
             [&](const StopSceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_STOP;
             }
         );
 
-        eventSystem->Subscribe<CreateNewSceneRequest>(
+        pEventSystem->Subscribe<CreateNewSceneRequest>(
             [this](const CreateNewSceneRequest& e) {
                 (void)e;
                 CreateNewScene(); 
             }
         );
 
-        eventSystem->Subscribe<DeleteCurrSceneRequest>(
+        pEventSystem->Subscribe<DeleteCurrSceneRequest>(
             [this](const DeleteCurrSceneRequest& e) {
                 RemoveScene(e.name);
             }
         );
 
-        eventSystem->Subscribe<SaveCurrSceneRequest>(
+        pEventSystem->Subscribe<SaveCurrSceneRequest>(
             [this](const SaveCurrSceneRequest& e) {
                 SaveScene(e.name);
             }
         );
 
-        eventSystem->Subscribe<LoadSceneRequestEvent>(
+        pEventSystem->Subscribe<LoadSceneRequestEvent>(
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
@@ -108,7 +109,7 @@ namespace Uma_Engine
             }
         );
 
-        eventSystem->Subscribe<UpdateMouseOverUIEvent>(
+        pEventSystem->Subscribe<UpdateMouseOverUIEvent>(
             [this](const UpdateMouseOverUIEvent& e) {
                 m_isMouseOverUI = e.isFocus;
             }
@@ -199,18 +200,7 @@ namespace Uma_Engine
                 m_ActiveScene->UpdateSelective(0.f);
             }
         }
-
-        if (m_Scenes.size() > 0)
-        {
-            auto editorSystem = pSystemManager->GetSystem<EditorSystem>();
-            if (editorSystem)
-            {
-                //editorSystem->SetCoordinator(&m_ActiveScene->GetCoordinator());
-                editorSystem->SetPlayMode(playMode == PM_PLAY);
-                editorSystem->Update(dt);
-            }
-        }
-
+   
         // Update all loaded scenes if using additive loading
         for (auto& scene : m_LoadedScenes)
         {
@@ -302,6 +292,7 @@ namespace Uma_Engine
             UnloadScene(m_ActiveScene->GetName());
         }
 
+
         // Load the scene synchronously
         scene->Load();
 
@@ -323,10 +314,9 @@ namespace Uma_Engine
         // passing message using event system
         UpdateIMGUIWindow();
 
-        //pSystemManager->GetSystem<EditorSystem>()->SetPlayMode(false);
-
         // set coordinator for gizmos 
-        pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(&m_ActiveScene->GetCoordinator());
+        pEventSystem->Emit<SceneLoadedEvent>(name);
+        //pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(&m_ActiveScene->GetCoordinator());
 
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
@@ -375,8 +365,10 @@ namespace Uma_Engine
     {
         isUnloading = true;
 
+        pEventSystem->Emit<SceneUnloadedEvent>(name);
+
         playMode = PLAYMODE::PM_STOP;
-        pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(nullptr);
+        //pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(nullptr);
 
         if (!HasScene(name))
         {
@@ -451,6 +443,8 @@ namespace Uma_Engine
 
     void SceneManager::UnloadAllScenes()
     {
+        // texh debt i dk why i dont have to send event here
+        
         // Unload all loaded scenes
         for (auto& scene : m_LoadedScenes)
         {
@@ -610,6 +604,11 @@ namespace Uma_Engine
     std::string SceneManager::GetActiveSceneName() const
     {
         return m_ActiveScene ? m_ActiveScene->GetName() : "";
+    }
+
+    Uma_ECS::Coordinator* SceneManager::GetActiveSceneCoordinator() const
+    {
+        return &m_ActiveScene->GetCoordinator();
     }
 
     void SceneManager::UpdateLoadingScenes()

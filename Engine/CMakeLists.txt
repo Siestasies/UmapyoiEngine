@@ -4,51 +4,19 @@ add_library(glad STATIC
     ${GLAD_DIR}/src/glad.c)
 target_include_directories(glad PUBLIC ${GLAD_DIR}/include)
 
-# Add ImGui (INSERT HERE - before ENGINE_SOURCES)
-set(IMGUI_DIR "${CMAKE_CURRENT_SOURCE_DIR}/imgui")
-set(IMGUI_SOURCES
-    ${IMGUI_DIR}/imgui.cpp
-    ${IMGUI_DIR}/imgui_demo.cpp
-    ${IMGUI_DIR}/imgui_draw.cpp
-    ${IMGUI_DIR}/imgui_tables.cpp
-    ${IMGUI_DIR}/imgui_widgets.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-)
-set(IMGUI_HEADERS
-    ${IMGUI_DIR}/imgui.h
-    ${IMGUI_DIR}/imconfig.h
-    ${IMGUI_DIR}/imgui_internal.h
-    ${IMGUI_DIR}/imstb_rectpack.h
-    ${IMGUI_DIR}/imstb_textedit.h
-    ${IMGUI_DIR}/imstb_truetype.h
-    ${IMGUI_DIR}/backends/imgui_impl_glfw.h
-    ${IMGUI_DIR}/backends/imgui_impl_opengl3.h
-)
-add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
-target_include_directories(imgui PUBLIC ${IMGUI_DIR} ${IMGUI_DIR}/backends)
-target_link_libraries(imgui PUBLIC glfw OpenGL::GL)
-
-# Collect source files more systematically
+# Collect source files more systematically (NO EDITOR CODE)
 file(GLOB_RECURSE ENGINE_SOURCES
     "*.cpp"
-    "Systems/*.cpp" 
+    "Systems/*.cpp"
     "Core/*.cpp"
     "Events/*.cpp"
     "ECS/*.cpp"
     "ECS/Components/*.cpp"
     "ECS/Systems/*.cpp"
-    "Editor/*.cpp"
-    "Editor/Cmds/*.cpp"
-    "Editor/Core/*.cpp"
-    "Editor/Systems/*.cpp"
     "WIP_Scripts/*.cpp"
     "Debugging/*.cpp"
     "MemoryManager/.cpp"
 )
-
-# Remove any ImGui files that might have been picked up by GLOB_RECURSE
-list(FILTER ENGINE_SOURCES EXCLUDE REGEX "imgui/.*")
 
 file(GLOB_RECURSE ENGINE_HEADERS
     "*.h"
@@ -59,15 +27,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
     "Events/*.h"
     "ECS/*.h"
     "ECS/Components/*.h"
-    "ECS/Systems/*.h" 
-    "Editor/*.h"
-    "Editor/*.hpp"
-    "Editor/Cmds/*.h"
-    "Editor/Cmds/*.hpp"
-    "Editor/Core/*.h"
-    "Editor/Core/*.hpp"
-    "Editor/Systems/*.h"
-    "Editor/Systems/*.hpp"
+    "ECS/Systems/*.h"
     "WIP_Scripts/*.h"
     "WIP_Scripts/*.hpp"
     "Debugging/*.h"
@@ -77,7 +37,7 @@ file(GLOB_RECURSE ENGINE_HEADERS
 )
 
 # Force CMake to reconfigure when source files change
-set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS 
+set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "*.cpp" "*.hpp" "*.h"
     "Systems/*.cpp" "Systems/*.hpp" "Systems/*.h"
     "Core/*.cpp" "Core/*.hpp" "Core/*.h"
@@ -85,9 +45,6 @@ set_property(DIRECTORY PROPERTY CMAKE_CONFIGURE_DEPENDS
     "ECS/*.cpp" "ECS/*.hpp" "ECS/*.h"
     "ECS/Components/*.cpp" "ECS/Components/*.hpp" "ECS/Components/*.h"
     "ECS/Systems/*.cpp" "ECS/Systems/*.hpp" "ECS/Systems/*.h"
-    "Editor/Cmds/*.cpp"  "Editor/Cmds/*.h" "Editor/Cmds/*.hpp"
-    "Editor/Core/*.cpp"  "Editor/Core/*.h" "Editor/Core/*.hpp"
-    "Editor/Systems/*.cpp"  "Editor/Systems/*.h" "Editor/Systems/*.hpp"
     "WIP_Scripts/*.cpp" "WIP_Scripts/*.hpp" "WIP_Scripts/*.h"
     "Debugging/*.cpp" "Debugging/*.hpp" "Debugging/*.h"
     "MemoryManager/*.cpp" "MemoryManager/*.h" "MemoryManager/*.hpp"
@@ -116,20 +73,19 @@ set_target_properties(freetype PROPERTIES
 )
 
 # Link libraries - liblua MUST come first
-target_link_libraries(Uma_Engine 
-    PUBLIC 
+target_link_libraries(Uma_Engine
+    PUBLIC
         liblua          # Lua library (FIRST!)
         glfw
-        OpenGL::GL  # Cross-platform OpenGL linking
+        OpenGL::GL      # Cross-platform OpenGL linking
         fmod
         glad
-        imgui
         freetype
 )
 
 # Include directories
-target_include_directories(Uma_Engine 
-    PUBLIC 
+target_include_directories(Uma_Engine
+    PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${glm_SOURCE_DIR}  # Add GLM include directory
         ${CMAKE_CURRENT_LIST_DIR}/../libs/fmod/inc # FMOD headers
@@ -142,11 +98,9 @@ target_include_directories(Uma_Engine
         ${CMAKE_CURRENT_SOURCE_DIR}/RapidJSON
         ${stb_SOURCE_DIR}
         ${glfw_SOURCE_DIR}/include
-        ${IMGUI_DIR}
-        ${IMGUI_DIR}/backends
         ${lua_SOURCE_DIR}/src          # Lua headers
         ${sol2_SOURCE_DIR}/include     # Sol2 headers
-        ${FREETYPE_DIR}/include   # FreeType headers
+        ${FREETYPE_DIR}/include        # FreeType headers
 )
 
 # Set C++ standard

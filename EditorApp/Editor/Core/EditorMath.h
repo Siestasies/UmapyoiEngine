@@ -24,7 +24,7 @@ All rights reserved.
 #undef min
 #undef max
 
-#include "../../Math/Math.h"
+#include "Math/Math.h"
 #include <cmath>
 #include <algorithm>
 

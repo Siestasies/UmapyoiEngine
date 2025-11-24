@@ -62,7 +62,7 @@ All rights reserved.
 #include "Systems/SoundManager.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/CameraSystem.hpp"
-#include <Editor/Core/EditorSystem.h>
+#include "../EditorApp/Editor/Core/EditorSystem.h"
 #include "../Core/SystemManager.h"
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"

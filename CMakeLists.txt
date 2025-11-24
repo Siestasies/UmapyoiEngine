@@ -101,6 +101,7 @@ FetchContent_MakeAvailable(sol2)
 
 message(STATUS "Sol2 headers available at: ${sol2_SOURCE_DIR}/include")
 
-# Build Engine first, then Game
+# Build Engine first, then Game and EditorApp
 add_subdirectory(Engine)
 add_subdirectory(Game)
+add_subdirectory(EditorApp)

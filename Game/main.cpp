@@ -1,210 +1,33 @@
-#ifdef _DEBUG
-    #define _CRTDBG_MAP_ALLOC
-    #include <crtdbg.h>
-#endif
-#pragma warning(disable : 4005)
+/*!
+\file   main.cpp
+\brief  Entry point for the UmapyoiGame application (game-only build, no editor)
 
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 
-#include <algorithm>
+#include "GameApplication.h"
+//#include "../Engine/Core/SystemManager.h"
+//#include "../Engine/Systems/SceneManager.h"
+#include "FilePaths.h"
 #include <iostream>
-#include <sstream>
-#include <iomanip>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#define NOMINMAX
-#include "Systems/Window.hpp"
-#include "Systems/Graphics.hpp"
-#include "Core/SystemManager.h"
-#include "Core/EventSystem.h"
-#include "Systems/ResourcesManager.hpp"
-#include "Systems/SoundManager.hpp"
-#include "Systems/HybridInputSystem.h"
-#include "Editor/Core/EditorSystem.h"
-
-#include "WIP_Scripts/Test_Graphics.h"
-
-#include "Debugging/Debugger.hpp"
-#include "Debugging/CrashLogger.hpp"
-
-#include "Systems/SceneType.h"
-#include "Systems/SceneManager.h"
-
-#include "WIP_Scripts/GameSceneScript.h"
-#include "WIP_Scripts/EditorScript.h"
-
-#include "WIP_Scripts/ImguiManager.h"
-#include "Core/EngineConfig.h"
-#include "Core/EngineConfigSerializer.h"
-#include "Core/FilePaths.h"
-
-#include "FileSystem/DropCallback.hpp"
-
-#define DEBUG
-
-#ifdef DEBUG
-#include "MemoryManager/MemoryManager.hpp"
-#endif // DEBUG
-
-Uma_Engine::EngineConfig gEngineConfig;
 
 int main()
 {
-    // Debug
-#ifdef DEBUG
-    Uma_Engine::MemoryManager::Enable();
-#endif // DEBUG
-    Uma_Engine::CrashLogger::StartUp();
+    Uma_Engine::GameApplication app;
 
-    Uma_Engine::EngineConfigSerializer gEngineConfigSerializer;
+    //app.GetSystemManager()->GetSystem<Uma_Engine::SceneManager>()->LoadScene(Uma_FilePath::SCENES_DIR + "test_default.scn");
 
-    gEngineConfigSerializer.Register(&gEngineConfig);
-    gEngineConfigSerializer.load(Uma_FilePath::CONFIG_ROOT + "config.json");
-
-    // Create window
-    Uma_Engine::Window window(gEngineConfig.screenWidth, gEngineConfig.screenHeight, gEngineConfig.windowTitle);
-
-    // Initialize the engine
-    if (!window.Initialize())
+    if (!app.Init())
     {
-        std::cerr << "Failed to initialize window!" << std::endl;
+        std::cerr << "Failed to initialize game application!" << std::endl;
         return -1;
     }
 
-    // Create a systems manager
-    Uma_Engine::SystemManager systemManager;
+    app.Run();
+    app.Shutdown();
 
-    // Register EVENT SYSTEM FIRST
-    Uma_Engine::EventSystem* eventSystem = systemManager.RegisterSystem<Uma_Engine::EventSystem>();
-
-    // Register EVENT-ENHANCED INPUT SYSTEM (replaces normal InputSystem)
-    Uma_Engine::HybridInputSystem* inputSystem = systemManager.RegisterSystem<Uma_Engine::HybridInputSystem>();
-
-    // Register SIMPLE EVENT LISTENER (just logs events)
-    systemManager.RegisterSystem<Uma_Engine::TestEventListener>();
-
-    // Register your other systems normally
-    systemManager.RegisterSystem<Uma_Engine::Debugger>();
-    systemManager.RegisterSystem<Uma_Engine::Graphics>();
-    systemManager.RegisterSystem<Uma_Engine::SoundManager>();
-    systemManager.RegisterSystem<Uma_Engine::ResourcesManager>();
-
-    // scene
-    auto scn_mgr = systemManager.RegisterSystem<Uma_Engine::SceneManager>();
-    
-    // Editor system
-    systemManager.RegisterSystem<Uma_Engine::EditorSystem>();
-
-    //systemManager.RegisterSystem<Uma_Engine::Test_Graphics>();
-    systemManager.RegisterSystem<Uma_Engine::ImguiManager>();
-
-    // Initialize all systems
-    systemManager.Init();
-    systemManager.SetWindow(window.GetGLFWWindow());
-
-    // SCENE MANAGER SETTINGS
-    scn_mgr->SetSystemManager(&systemManager);
-    // FAKE - this is basically to call events for imgui/editor buttons
-    scn_mgr->RegisterScript<Uma_Engine::GameSceneScript>("GameBehaviour");
-    scn_mgr->RegisterScript<Uma_Engine::EditorScript>("EditorBehaviour");
-
-    auto editorScene = scn_mgr->CreateScene("test_default.scn", "test_default.scn");
-    editorScene->g_EngineConfig = gEngineConfig;
-    scn_mgr->AttachScriptToScene("test_default.scn", "GameBehaviour");
-    scn_mgr->AttachScriptToScene("test_default.scn", "EditorBehaviour");
-    scn_mgr->LoadScene("test_default.scn");
-
-    // Connect InputSystem to EventSystem
-    inputSystem->SetEventSystem(eventSystem);
-
-    // Setup File Drop Callback
-    glfwSetDropCallback(window.GetGLFWWindow(), Uma_Engine::FileDropHandler::DropCallback);
-
-#ifdef DEBUG
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "\nEvent listener counts:");
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyPress listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyPressEvent>()));
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "KeyRelease listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::KeyReleaseEvent>()));
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseButton listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseButtonEvent>()));
-    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "MouseMove listeners: " + std::to_string(eventSystem->GetListenerCount<Uma_Engine::MouseMoveEvent>()));
-#endif
-
-    // Game loop
-    float lastFrame = 0.0f;
-    float deltaTime = 0.0f;
-    float lastTime = 0.0f;
-    float fps = 0.0f;
-    int frameCount = 0;
-
-    // frame rate limit
-    const double targetFrameTime = 1.0f / static_cast<double>(gEngineConfig.fps);
-    double frameStartTime = glfwGetTime();
-
-    std::stringstream newTitle;
-
-    while (!window.ShouldClose())
-    {
-        // Frame rate limiting - wait until it's time for next frame
-        double currentTime = glfwGetTime();
-        double elapsed = currentTime - frameStartTime;
-
-        if (elapsed < targetFrameTime)
-        {
-            // Busy-wait for remaining time (more accurate than sleep)
-            while (glfwGetTime() - frameStartTime < targetFrameTime)
-            {
-                // Spin-wait for precise timing
-            }
-        }
-
-        frameStartTime = glfwGetTime();  // Reset frame timer
-
-        // calc dt
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        deltaTime = std::min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
-
-        ++frameCount;
-
-        // update only after 1 second
-        if (currentFrame - lastTime >= 1.0f)
-        {
-            fps = frameCount / (currentFrame - lastTime);
-            frameCount = 0;
-            lastTime = currentFrame;
-
-            newTitle.str("");
-            newTitle.clear();
-            newTitle << gEngineConfig.windowTitle << " | FPS: " << std::fixed << std::setprecision(2) << fps;
-            window.SetTitle(newTitle.str());
-        }
-
-        Uma_Engine::HybridInputSystem::UpdatePreviousFrameState();
-
-        // Update window (processes GLFW events -> triggers your InputSystem callbacks)
-        // always update before systemmanager updates
-        window.Update();
-
-        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
-        {
-            glfwSetWindowShouldClose(window.GetGLFWWindow(), GLFW_TRUE);
-        }
-        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_0))
-        {
-            //Uma_Engine::Debugger::TestCrash();
-        }
-
-        systemManager.Update(deltaTime);
-    }
-
-    systemManager.Shutdown();
-#ifdef DEBUG
-    Uma_Engine::MemoryManager::Disable();
-    Uma_Engine::MemoryManager::ReportLeaks();
-#endif // DEBUG
-
+    std::cout << "Game closed" << std::endl;
     return 0;
 }
 

@@ -21,10 +21,10 @@ All rights reserved.
 
 #pragma once
 
-#include "../../Math/Math.h"
-#include "../../ECS/Core/Types.hpp"
+#include "Math/Math.h"
+#include "ECS/Core/Types.hpp"
 
-#include "Editor/Core/CommandHistory.h"
+#include "../EditorApp/Editor/Core/CommandHistory.h"
 
 #include <optional>
 

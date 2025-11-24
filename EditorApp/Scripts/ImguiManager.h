@@ -18,7 +18,7 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 #pragma once
-#include "SystemType.h"
+#include "Core/SystemType.h"
 #include "Events/IMGUIEvents.h"
 #include "Events/DebugEvents.h"
 #include "Events/ECSEvents.h"
@@ -37,11 +37,11 @@ All rights reserved.
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Sprite.h"
 
-#include"Systems/ResourcesManager.hpp"
+#include "Systems/ResourcesManager.hpp"
 
 // Commands related
-#include "Editor/Core/CommandHistory.h"
-#include "Editor/Core/EntitySnapshot.h"
+#include "../Editor/Core/CommandHistory.h"
+#include "../Editor/Core/EntitySnapshot.h"
 
 #include "Core/FilePaths.h"
 #include <iostream>
