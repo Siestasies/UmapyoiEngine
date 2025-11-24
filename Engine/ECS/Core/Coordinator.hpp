@@ -47,6 +47,7 @@ All rights reserved.
 #include "../Components/Enemy.h"
 #include "../Components/Animator.h"
 #include "../Components/LuaScript.h"
+#include "../Components/ParticleEmitter.h"
 
 
 namespace Uma_ECS
@@ -209,6 +210,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(Enemy)
             CHECK_COMPONENT(Animator)
             CHECK_COMPONENT(LuaScript)
+            CHECK_COMPONENT(ParticleEmitter)
 
 #undef CHECK_COMPONENT
         }

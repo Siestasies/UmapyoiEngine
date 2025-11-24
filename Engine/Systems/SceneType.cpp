@@ -147,6 +147,9 @@ namespace Uma_Engine
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
 
+        if (m_ParticleSystem)
+            m_ParticleSystem->Update(dt);
+
         if (m_AnimatorSystem)
             m_AnimatorSystem->Update(dt);
 
@@ -320,6 +323,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Image>();
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
+        m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
         
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -422,6 +426,16 @@ namespace Uma_Engine
         }
         m_PathFindingSystem->Init(&m_Coordinator, m_EventSystem, m_Graphics);
 
+        // Particle System
+        m_ParticleSystem = m_Coordinator.RegisterSystem<Uma_ECS::ParticleSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::ParticleEmitter>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::ParticleSystem>(sign);
+        }
+        m_ParticleSystem->Init(m_Graphics, m_ResourcesManager, &m_Coordinator);
+
         InitializeUISystem();
 
         gGameSerializer.Register(m_ResourcesManager);
@@ -466,6 +480,9 @@ namespace Uma_Engine
 
         if (m_AnimatorSystem)
             m_AnimatorSystem->Update(dt);
+
+        if (m_ParticleSystem)
+            m_ParticleSystem->Update(dt);
 
         if (m_CollisionSystem)
             m_CollisionSystem->DebugRender();

@@ -32,6 +32,7 @@ All rights reserved.
 #include "ECS/Systems/AudioSystem.hpp"
 #include "ECS/Systems/AnimatorSystem.hpp"
 #include "ECS/Systems/PathFindingSystem.hpp"
+#include "ECS/Systems/ParticleSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -46,6 +47,7 @@ All rights reserved.
 #include "ECS/Components/AudioListener.h"
 #include "ECS/Components/AudioComponent.h"
 #include "ECS/Components/PathFinding.h"
+#include "ECS/Components/ParticleEmitter.h"
 
 
 // UI Components
@@ -227,6 +229,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::LuaScriptingSystem> m_LuaScriptingSystem;
             std::shared_ptr<Uma_ECS::AudioSystem> m_AudioSystem;
             std::shared_ptr<Uma_ECS::PathFindingSystem> m_PathFindingSystem;
+            std::shared_ptr<Uma_ECS::ParticleSystem> m_ParticleSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;
