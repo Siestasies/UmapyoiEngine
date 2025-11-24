@@ -43,9 +43,9 @@ namespace Uma_ECS
             pHybridInputSystem = is;
             pCoordinator = c;
 
-            pEventSystem->Subscribe<Uma_Engine::KeyPressEvent>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
-            pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
-            pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
+            pEventSystem->Subscribe<Uma_Engine::KeyPressEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
+            pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
+            pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
         }
         
         void Update(float dt);

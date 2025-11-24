@@ -176,32 +176,32 @@ namespace Uma_Engine
 
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
-        pEventSystem->Subscribe<DebugLogEvent>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
-        pEventSystem->Subscribe<EntityCreatedEvent>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
-        pEventSystem->Subscribe<EntityDestroyedEvent>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
-        pEventSystem->Subscribe<SceneInfoRequest>([this](const SceneInfoRequest& e)
+        pEventSystem->Subscribe<DebugLogEvent, ImguiManager>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
+        pEventSystem->Subscribe<EntityCreatedEvent, ImguiManager>([this](const EntityCreatedEvent& e) { mEntityCount = e.entityCnt; });
+        pEventSystem->Subscribe<EntityDestroyedEvent, ImguiManager>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
+        pEventSystem->Subscribe<SceneInfoRequest, ImguiManager>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
-        pEventSystem->Subscribe<IMGUIStopRequest>([this](const IMGUIStopRequest& e)
+        pEventSystem->Subscribe<IMGUIStopRequest, ImguiManager>([this](const IMGUIStopRequest& e)
              { 
                 (void)e;
                 m_playState = PlayState::Stopped; 
             });
-        pEventSystem->Subscribe<ReturnDuplicatedRequestEvent>([this](const ReturnDuplicatedRequestEvent& e)
+        pEventSystem->Subscribe<ReturnDuplicatedRequestEvent, ImguiManager>([this](const ReturnDuplicatedRequestEvent& e)
             { 
                 m_selectedEntity = e.entity;
                 m_HierarchyScrollToBottom = true;
             });
-        pEventSystem->Subscribe<ReturnSpawnedRequestEvent>([this](const ReturnSpawnedRequestEvent& e)
+        pEventSystem->Subscribe<ReturnSpawnedRequestEvent, ImguiManager>([this](const ReturnSpawnedRequestEvent& e)
             {
                 m_selectedEntity = e.entity;
                 m_HierarchyScrollToBottom = true;
             });
-        pEventSystem->Subscribe<EntityPickedEvent>([this](const EntityPickedEvent& e)
+        pEventSystem->Subscribe<EntityPickedEvent, ImguiManager>([this](const EntityPickedEvent& e)
             { 
                 (void)e;
                 m_selectedEntity = e.entity;
             });
-        pEventSystem->Subscribe<EntityDroppedEvent>([this](const EntityDroppedEvent& e)
+        pEventSystem->Subscribe<EntityDroppedEvent, ImguiManager>([this](const EntityDroppedEvent& e)
             {
                 (void)e;
                 m_selectedEntity = static_cast<Entity>(-1);
@@ -303,6 +303,8 @@ namespace Uma_Engine
 
         m_initialized = false;
         std::cout << "imgui SHUTDOWN" << std::endl;
+
+        pEventSystem->UnsubscribeSystem<ImguiManager>();
     }
 
     void ImguiManager::SetWindow(GLFWwindow* window)

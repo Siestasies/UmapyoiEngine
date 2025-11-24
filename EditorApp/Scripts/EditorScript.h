@@ -70,184 +70,155 @@ namespace Uma_Engine
     private:
         std::string m_CurrentSceneName;
 
-        std::vector<std::shared_ptr<IEventListener>> m_EventListeners;
-
         void SubscribeToEvents()
         {
             auto eventSystem = GetEventSystem();
             auto& coordinator = GetCoordinator();
 
             // Query active entities
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<QueryActiveEntitiesEvent>(
-                    [&coordinator](const QueryActiveEntitiesEvent& e) {
-                        e.mActiveEntityCnt = coordinator.GetEntityCount();
-                    }
-                ));
+            eventSystem->Subscribe<QueryActiveEntitiesEvent, EditorScript>(
+                [&coordinator](const QueryActiveEntitiesEvent& e) {
+                    e.mActiveEntityCnt = coordinator.GetEntityCount();
+                }
+            );
 
             // Save scene
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<SaveSceneRequestEvent>(
+            eventSystem->Subscribe<SaveSceneRequestEvent, EditorScript>(
                 [this](const SaveSceneRequestEvent& e) {
                     (void)e;
                     SaveScene();
                 }
-            ));
+            );
 
             // play scene called cache the coordinator states
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<PlaySceneRequest>(
-                    [this](const PlaySceneRequest& e) {
-                        (void)e;
-                        m_Scene->m_Coordinator.CacheState();
-                    }
-                ));
+            eventSystem->Subscribe<PlaySceneRequest, EditorScript>(
+                [this](const PlaySceneRequest& e) {
+                    (void)e;
+                    m_Scene->m_Coordinator.CacheState();
+                }
+            );
 
             // stop scene called restore the coordinator states
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<StopSceneRequest>(
+            eventSystem->Subscribe<StopSceneRequest, EditorScript>(
                 [this](const StopSceneRequest& e) {
                     (void)e;
                     m_Scene->m_Coordinator.RestoreState();
                 }
-            ));
+            );
 
             // Clear scene
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ClearSceneRequestEvent>(
+            eventSystem->Subscribe<ClearSceneRequestEvent, EditorScript>(
                 [this](const ClearSceneRequestEvent& e) {
                     (void)e;
                     ResetScene();
                 }
-            ));
+            );
 
             // Stress test
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<StressTestRequestEvent>(
+            eventSystem->Subscribe<StressTestRequestEvent, EditorScript>(
                 [this](const StressTestRequestEvent& e) {
                     (void)e;
                     StressTest();
                 }
-            ));
+            );
 
             // Show default entities in viewport
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ShowEntityInVPRequestEvent>(
+            eventSystem->Subscribe<ShowEntityInVPRequestEvent, EditorScript>(
                 [this](const ShowEntityInVPRequestEvent& e) {
                     (void)e;
                     SpawnDefaultEntities();
                 }
-            ));
+            );
 
             // Change enemy rotation
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ChangeEnemyRotRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyRotRequestEvent, EditorScript>(
                 [this](const ChangeEnemyRotRequestEvent& e) {
                     ChangeAllEnemyRot(e.rot);
                 }
-            ));
+            );
 
             // Change enemy X position
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ChangeEnemyXposRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyXposRequestEvent, EditorScript>(
                 [this](const ChangeEnemyXposRequestEvent& e) {
                     ChangeAllEnemyXPos(e.xpos);
                 }
-            ));
+            );
 
             // Change enemy scale
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ChangeEnemyScaleRequestEvent>(
+            eventSystem->Subscribe<ChangeEnemyScaleRequestEvent, EditorScript>(
                 [this](const ChangeEnemyScaleRequestEvent& e) {
                     ChangeAllEnemyScale(e.scale);
                 }
-            ));
+            );
 
             // Show bounding boxes
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<ShowBBoxRequestEvent>(
+            eventSystem->Subscribe<ShowBBoxRequestEvent, EditorScript>(
                 [this](const ShowBBoxRequestEvent& e) {
                     ShowBBox(e.show);
                 }
-            ));
+            );
 
             // Clone entity
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<CloneEntityRequestEvent>(
+            eventSystem->Subscribe<CloneEntityRequestEvent, EditorScript>(
                 [this](const CloneEntityRequestEvent& e) {
                     (void)e;
                     DuplicateOrCreateEntity();
                 }
-            ));
+            );
 
             // Load prefab
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<LoadPrefabRequestEvent>(
+            eventSystem->Subscribe<LoadPrefabRequestEvent, EditorScript>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
                     LoadPrefab(e.prefab_name);
                 }
-            ));
+            );
 
             // Save prefab
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<SavePrefabRequestEvent>(
+                eventSystem->Subscribe<SavePrefabRequestEvent, EditorScript>(
                     [this](const SavePrefabRequestEvent& e) {
                         (void)e;
                         SavePrefab(e.prefab_name, e.entityId);
                     }
-            ));
+            );
 
             // Destroy entity
-            m_EventListeners.push_back(
-            eventSystem->Subscribe<DestroyEntityRequestEvent>(
+            eventSystem->Subscribe<DestroyEntityRequestEvent, EditorScript>(
                 [this](const DestroyEntityRequestEvent& e) {
                     (void)e;
                     m_Scene->GetCoordinator().DestroyEntity(e.entityId);
                 }
-            ));
+            );
 
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<SpawnEntityRequestEvent>(
+                eventSystem->Subscribe<SpawnEntityRequestEvent, EditorScript>(
                     [this](const SpawnEntityRequestEvent& e) {
                         
                         (void)e;
                         SpawnEmptyGameObject();
                         
                     }
-                ));
+                );
 
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<DuplicateEntityRequestEvent>(
+                eventSystem->Subscribe<DuplicateEntityRequestEvent, EditorScript>(
                     [this, &eventSystem](const DuplicateEntityRequestEvent& e) 
                     {
                         DuplicateGameObject(e.entity);
                     }
-                ));
+                );
 
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<CreateUIRequestEvent>(
+                eventSystem->Subscribe<CreateUIRequestEvent, EditorScript>(
                     [this, &eventSystem](const CreateUIRequestEvent& e)
                     {
                         (void)e;
                         CreateUI();
                     }
-                ));
-
+                );
         }
 
         void UnsubscribeEvents()
         {
             auto eventSystem = GetEventSystem();
-
-            for (auto listener : m_EventListeners)
-            {
-                eventSystem->UnsubscribeListener(listener);
-            }
-
-            m_EventListeners.clear();
-
-            std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
+            eventSystem->UnsubscribeSystem<EditorScript>();
         }
 
         void DuplicateGameObject(Entity entity)

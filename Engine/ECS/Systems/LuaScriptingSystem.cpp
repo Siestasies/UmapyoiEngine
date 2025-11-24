@@ -729,62 +729,53 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::UnsubscribeEvents()
     {
-        for (auto listener : aEventListeners)
-        {
-            pEventSystem->UnsubscribeListener(listener);
-        }
-
-        aEventListeners.clear();
-
-        std::cout << "EditorScript: Unsubscribed from all events" << std::endl;
+        pEventSystem->UnsubscribeSystem<LuaScriptingSystem>();
     }
 
     void LuaScriptingSystem::SubscribeToEvents()
     {
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnCollisionEnterEvent& e)
             {
                 OnCollisionEnterEvent(e.entityA, e.entityB);
-            }));
+            }
+        );
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnCollisionEvent& e)
             {
                 OnCollisionEvent(e.entityA, e.entityB);
-            }));
+            }
+        );
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnCollisionExitEvent& e)
             {
                 OnCollisionExitEvent(e.entityA, e.entityB);
-            }));
+            }
+        );
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
                 OnTriggerEnterEvent(e.trigger, e.entity);
-            }));
+            }
+        );
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnTriggerEvent& e)
             {
                 OnTriggerEvent(e.trigger, e.entity);
-            }));
+            }
+        );
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent>(
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnTriggerExitEvent& e)
             {
                 OnTriggerExitEvent(e.trigger, e.entity);
-            }));
+            });
 
-        aEventListeners.push_back(
-        pEventSystem->Subscribe<Uma_Engine::CallLuaToInitScript>(
+        pEventSystem->Subscribe<Uma_Engine::CallLuaToInitScript, LuaScriptingSystem>(
             [this](const Uma_Engine::CallLuaToInitScript& e)
             {
                 auto& lArray = pCoordinator->GetComponentArray<LuaScript>();
@@ -794,7 +785,8 @@ namespace Uma_ECS
                     InitializeScripts(e.en, lua);
                     CallStart();
                 }
-            }));
+            }
+        );
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)

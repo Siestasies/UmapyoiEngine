@@ -76,7 +76,7 @@ namespace Uma_UI
             mScreenSize = {1280.f, 720.f};
         }
 
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent>([this](const Uma_Engine::WindowResizeEvent& e) 
+        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e) 
             { 
                 mScreenSize.x = static_cast<float>(e.width), mScreenSize.y = static_cast<float>(e.height);
             });

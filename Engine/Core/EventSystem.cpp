@@ -84,11 +84,11 @@ namespace Uma_Engine
             {
                 (*it)->Dispatch(this);
                 it = eventQueue.erase(it);
-                processed++;
+                ++processed;
             }
             else
             {
-                it++;
+                ++it;
             }
         }
 
@@ -115,7 +115,7 @@ namespace Uma_Engine
         {
             (*it)->Dispatch(this);
             it = eventQueue.erase(it);
-            processed++;
+            ++processed;
         }
 
 #ifdef _DEBUG_LOG
@@ -160,21 +160,62 @@ namespace Uma_Engine
 
             if (eventSystem)
             {
-                RegisterEventListeners();
-#ifdef _DEBUG_LOG
-                std::cout << "EventListenerSystem: Connected to EventSystem and registered listeners" << std::endl;
+                std::type_index typeIndex = std::type_index(typeid(*this));
 
+#ifdef _DEBUG_LOG
+                size_t oldCount = 0;
+                for (const auto& [eventType, listenerList] : eventSystem->listeners)
+                {
+                    for (const auto& listener : listenerList)
+                    {
+                        if (listener->GetOwningSystemType() == typeIndex)
+                        {
+                            ++oldCount;
+                        }
+                    }
+                }
+                std::cout << "EventListenerSystem: Clearing " << oldCount << " old subscriptions for " << typeIndex.name() << std::endl;
+#endif
+
+                // Clear old subscriptions
+                for (auto& [eventType, listenerList] : eventSystem->listeners)
+                {
+                    listenerList.erase(
+                        std::remove_if(listenerList.begin(), listenerList.end(),
+                            [typeIndex](const std::shared_ptr<IEventListener>& listener)
+                            {
+                                return listener->GetOwningSystemType() == typeIndex;
+                            }),
+                        listenerList.end()
+                    );
+                }
+
+                RegisterEventListeners();
+
+#ifdef _DEBUG_LOG
+                size_t newCount = 0;
+                for (const auto& [eventType, listenerList] : eventSystem->listeners)
+                {
+                    for (const auto& listener : listenerList)
+                    {
+                        if (listener->GetOwningSystemType() == typeIndex)
+                        {
+                            ++newCount;
+                        }
+                    }
+                }
+                std::cout << "EventListenerSystem: Registered " << newCount << " new subscriptions for " << typeIndex.name() << std::endl;
             }
             else
             {
-                std::cout << "EventListenerSystem: Warning - EventSystem not found in SystemManager" << std::endl;
+                std::cout << "EventListenerSystem: EventSystem not found" << std::endl;
 #endif
             }
         }
 #ifdef _DEBUG_LOG
         else
         {
-            std::cout << "EventListenerSystem: Warning - SystemManager not available" << std::endl;
+            std::cout << "EventListenerSystem: SystemManager not available" << std::endl;
         }
 #endif
     }
@@ -182,19 +223,44 @@ namespace Uma_Engine
     void EventListenerSystem::Update(float dt)
     {
         (void)dt;
-
         // Base implementation does nothing
         // Derived classes can override if they need per-frame updates beyond events
     }
 
     void EventListenerSystem::Shutdown()
     {
-#ifdef _DEBUG_LOG
         if (eventSystem)
         {
-            std::cout << "EventListenerSystem: Disconnecting from EventSystem" << std::endl;
-        }
+            std::type_index typeIndex = std::type_index(typeid(*this));
+
+#ifdef _DEBUG_LOG
+            size_t count = 0;
+            for (const auto& [eventType, listenerList] : eventSystem->listeners)
+            {
+                for (const auto& listener : listenerList)
+                {
+                    if (listener->GetOwningSystemType() == typeIndex)
+                    {
+                        count++;
+                    }
+                }
+            }
+            std::cout << "EventListenerSystem: Unsubscribing " << count << " subscriptions for " << typeIndex.name() << std::endl;
 #endif
+
+            for (auto& [eventType, listenerList] : eventSystem->listeners)
+            {
+                listenerList.erase(
+                    std::remove_if(listenerList.begin(), listenerList.end(),
+                        [typeIndex](const std::shared_ptr<IEventListener>& listener)
+                        {
+                            return listener->GetOwningSystemType() == typeIndex;
+                        }),
+                    listenerList.end()
+                );
+            }
+        }
+
         eventSystem = nullptr;
     }
 }

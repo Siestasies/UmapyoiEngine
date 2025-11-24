@@ -53,56 +53,50 @@ namespace Uma_Engine
         m_EditorCamera.SetActive(false);
         m_UseEditorCamera = false;
 
-        /*EditorSystem* editorSystem = pSystemManager->GetSystem<EditorSystem>();
-        if (editorSystem)
-        {
-            editorSystem->SetGraphics(pSystemManager->GetSystem<Graphics>());
-        }*/
-
         // sub to events
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
 
-        pEventSystem->Subscribe<PlaySceneRequest>(
+        pEventSystem->Subscribe<PlaySceneRequest, SceneManager>(
             [&](const PlaySceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_PLAY;
             }
         );
 
-        pEventSystem->Subscribe<PauseSceneRequest>(
+        pEventSystem->Subscribe<PauseSceneRequest, SceneManager>(
             [&](const PauseSceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_PAUSE;
             }
         );
 
-        pEventSystem->Subscribe<StopSceneRequest>(
+        pEventSystem->Subscribe<StopSceneRequest, SceneManager>(
             [&](const StopSceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_STOP;
             }
         );
 
-        pEventSystem->Subscribe<CreateNewSceneRequest>(
+        pEventSystem->Subscribe<CreateNewSceneRequest, SceneManager>(
             [this](const CreateNewSceneRequest& e) {
                 (void)e;
                 CreateNewScene(); 
             }
         );
 
-        pEventSystem->Subscribe<DeleteCurrSceneRequest>(
+        pEventSystem->Subscribe<DeleteCurrSceneRequest, SceneManager>(
             [this](const DeleteCurrSceneRequest& e) {
                 RemoveScene(e.name);
             }
         );
 
-        pEventSystem->Subscribe<SaveCurrSceneRequest>(
+        pEventSystem->Subscribe<SaveCurrSceneRequest, SceneManager>(
             [this](const SaveCurrSceneRequest& e) {
                 SaveScene(e.name);
             }
         );
 
-        pEventSystem->Subscribe<LoadSceneRequestEvent>(
+        pEventSystem->Subscribe<LoadSceneRequestEvent, SceneManager>(
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
@@ -110,7 +104,7 @@ namespace Uma_Engine
             }
         );
 
-        pEventSystem->Subscribe<UpdateMouseOverUIEvent>(
+        pEventSystem->Subscribe<UpdateMouseOverUIEvent, SceneManager>(
             [this](const UpdateMouseOverUIEvent& e) {
                 m_isMouseOverUI = e.isFocus;
             }
@@ -222,6 +216,8 @@ namespace Uma_Engine
         UnloadAllScenes();
         m_Scenes.clear();
         m_ScriptFactories.clear();
+
+        pEventSystem->UnsubscribeSystem<SceneManager>();
     }
 
     // SCENE MANAGEMENT STUFF
@@ -306,11 +302,10 @@ namespace Uma_Engine
             m_ActiveScene = scene;
         }
 
-        if (m_ActiveScene->GetName().find("TEMP") == std::string::npos)
-        {
-            EventSystem* esHandler = pSystemManager->GetSystem<EventSystem>();
-            esHandler->Emit<IMGUIStopRequest>();
-        }
+        //if (m_ActiveScene->GetName().find("TEMP") == std::string::npos)
+        //{
+        //    pEventSystem->Emit<IMGUIStopRequest>();
+        //}
 
         // passing message using event system
         UpdateIMGUIWindow();

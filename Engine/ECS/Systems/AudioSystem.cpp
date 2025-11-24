@@ -15,7 +15,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
     pSoundManager = sm;
     pEventSystem = es;
 
-    pEventSystem->Subscribe<Uma_Engine::PlayEntitySoundEvent>(
+    pEventSystem->Subscribe<Uma_Engine::PlayEntitySoundEvent, AudioSystem>(
         [this](const Uma_Engine::PlayEntitySoundEvent& e)
         {
             auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
@@ -59,7 +59,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
         });
 
     // Stop all entity sounds
-    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundEvent>(
+    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundEvent, AudioSystem>(
         [this](const Uma_Engine::StopEntitySoundEvent& e)
         {
             auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
@@ -75,7 +75,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
         });
 
     // Stop specific sound by name
-    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundByNameEvent>(
+    pEventSystem->Subscribe<Uma_Engine::StopEntitySoundByNameEvent, AudioSystem>(
         [this](const Uma_Engine::StopEntitySoundByNameEvent& e)
         {
             auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
@@ -90,7 +90,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
         });
 
     // Play one-shot at entity
-    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtEntityEvent>(
+    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtEntityEvent, AudioSystem>(
         [this](const Uma_Engine::PlayOneShotAtEntityEvent& e)
         {
             auto& tfArray = pCoordinator->GetComponentArray<Transform>();
@@ -103,7 +103,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
         });
 
     // Play one-shot at position
-    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtPositionEvent>(
+    pEventSystem->Subscribe<Uma_Engine::PlayOneShotAtPositionEvent, AudioSystem>(
         [this](const Uma_Engine::PlayOneShotAtPositionEvent& e)
         {
             FMOD_VECTOR pos = { e.x, e.y, 0.0f };
@@ -111,7 +111,7 @@ void Uma_ECS::AudioSystem::Init(Uma_Engine::SoundManager* sm, Coordinator* c, Um
             pSoundManager->PlayOneShotAt(e.soundName, pos, e.volume, e.is3D);
         });
 
-    pEventSystem->Subscribe<Uma_Engine::EntityDestroyedEvent>([this](const Uma_Engine::EntityDestroyedEvent& e) {
+    pEventSystem->Subscribe<Uma_Engine::EntityDestroyedEvent, AudioSystem>([this](const Uma_Engine::EntityDestroyedEvent& e) {
             auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
 
             // Check if entity has audio component
@@ -139,6 +139,7 @@ void Uma_ECS::AudioSystem::Update(float dt)
 
 void Uma_ECS::AudioSystem::Shutdown()
 {
+    pEventSystem->UnsubscribeSystem<AudioSystem>();
     StopAllEntityAudio();
 }
 
