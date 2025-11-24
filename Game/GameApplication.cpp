@@ -31,6 +31,9 @@ namespace Uma_Engine
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 
+        // Configure for game mode
+        sceneManager->SetEditorMode(false);
+
         // Register game script only (no editor script)
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
 

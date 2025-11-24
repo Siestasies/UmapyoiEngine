@@ -41,7 +41,8 @@ namespace Uma_Engine
         // Scripts will be registered externally
         // Scenes will be created on-demand
 
-        playMode = PLAYMODE::PM_STOP;
+        // Initialize playMode based on editor mode flag
+        playMode = m_IsEditorMode ? PLAYMODE::PM_STOP : PLAYMODE::PM_PLAY;
 
         // Initialize editor camera
         m_EditorCamera.SetPosition(Vec2(0.0f, 0.0f));
@@ -674,5 +675,11 @@ namespace Uma_Engine
         }
         EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
         eventSystem->Emit<SceneInfoRequest>(vec, vec2, index);
+    }
+
+    void SceneManager::SetEditorMode(bool isEditor)
+    {
+        m_IsEditorMode = isEditor;
+        playMode = isEditor ? PLAYMODE::PM_STOP : PLAYMODE::PM_PLAY;
     }
 }

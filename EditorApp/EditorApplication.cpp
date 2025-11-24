@@ -37,6 +37,9 @@ namespace Uma_Engine
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 
+        // Configure for editor mode
+        sceneManager->SetEditorMode(true);
+
         // Register scripts
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");

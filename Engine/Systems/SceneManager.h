@@ -126,6 +126,9 @@ namespace Uma_Engine
         const EditorCamera& GetEditorCamera() const { return m_EditorCamera; }
         bool IsUsingEditorCamera() const { return m_UseEditorCamera; }
 
+        // Editor mode configuration
+        void SetEditorMode(bool isEditor);
+
         // SCRIPT STUFF
         // Register a script factory (for creating scripts by name)
         template<typename T>
@@ -219,6 +222,7 @@ namespace Uma_Engine
         std::vector<std::shared_ptr<Scene>> m_LoadingScenes;
         std::shared_ptr<Scene> m_ActiveScene;
 
+        bool m_IsEditorMode = false;
         PLAYMODE playMode = PLAYMODE::PM_STOP;
 
         bool isUnloading = false;
