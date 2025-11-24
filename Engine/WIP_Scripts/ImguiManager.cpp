@@ -1838,276 +1838,304 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
             }
+            // ParticleEmitter Component
             else if (type == coordinator.GetComponentType<Uma_ECS::ParticleEmitter>())
             {
-                if (ImGui::CollapsingHeader("Particle Emitter"))
+                if (ImGui::CollapsingHeader("ParticleEmitter", ImGuiTreeNodeFlags_DefaultOpen))
                 {
-                    auto& emitter = coordinator.GetComponent<Uma_ECS::ParticleEmitter>(entity);
+                    auto& emitterArray = coordinator.GetComponentArray<Uma_ECS::ParticleEmitter>();
+                    auto& component = emitterArray.GetData(entity);
+
                     ImGui::Indent();
 
-                    // === CORE SETTINGS ===
-                    ImGui::Checkbox("Active", &emitter.isActive);
-
-                    const char* emitterModes[] = { "Burst", "Continuous", "ScreenFill" };
-                    int currentMode = static_cast<int>(emitter.mode);
-                    if (ImGui::Combo("Emitter Mode", &currentMode, emitterModes, 3))
+                    // Add Emitter button
+                    if (ImGui::Button("Add Emitter"))
                     {
-                        emitter.mode = static_cast<Uma_ECS::EmitterMode>(currentMode);
-                        emitter.initialized = false;
+                        component.AddEmitter("New Emitter");
                     }
 
-                    ImGui::DragInt("Max Particles", &emitter.maxParticles, 1.0f, 1, 10000);
-
-                    static char particleTexBuffer[256];
-                    strncpy(particleTexBuffer, emitter.textureName.c_str(), 255);
-                    particleTexBuffer[255] = '\0';
-                    if (ImGui::InputText("Texture", particleTexBuffer, 256))
-                    {
-                        emitter.textureName = particleTexBuffer;
-                    }
-
-                    ImGui::Spacing();
                     ImGui::Separator();
 
-                    // === APPEARANCE ===
-                    if (ImGui::CollapsingHeader("Appearance", ImGuiTreeNodeFlags_DefaultOpen))
+                    // Loop through all emitters
+                    for (int i = 0; i < component.GetEmitterCount(); ++i)
                     {
-                        ImGui::Indent();
-                        auto& app = emitter.appearance;
-
-                        float scaleRange[2] = { app.scaleRange.x, app.scaleRange.y };
-                        if (ImGui::DragFloat2("Scale Range", scaleRange, 0.01f, 0.01f, 10.0f, "%.2f"))
+                        ImGui::PushID(i);
+                        auto* emitter = component.GetEmitter(i);
+                        if (!emitter)
                         {
-                            app.scaleRange = Vec2(scaleRange[0], scaleRange[1]);
+                            ImGui::PopID();
+                            continue;
                         }
 
-                        ImGui::Spacing();
-                        ImGui::Text("Color");
+                        // Emitter header with name
+                        std::string headerLabel = emitter->name + "###EmitterHeader";
+                        bool emitterOpen = ImGui::CollapsingHeader(headerLabel.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 
-                        float startColor[3] = { app.startColor.x, app.startColor.y, app.startColor.z };
-                        if (ImGui::ColorEdit3("Start Color", startColor))
+                        // Right-click context menu for removing emitter
+                        if (ImGui::BeginPopupContextItem())
                         {
-                            app.startColor = Vec3(startColor[0], startColor[1], startColor[2]);
-                        }
-
-                        if (emitter.mode != Uma_ECS::EmitterMode::ScreenFill)
-                        {
-                            ImGui::Checkbox("Color Lerp", &app.colorLerp);
-                            if (app.colorLerp)
+                            if (ImGui::MenuItem("Remove Emitter"))
                             {
-                                float endColor[3] = { app.endColor.x, app.endColor.y, app.endColor.z };
-                                if (ImGui::ColorEdit3("End Color", endColor))
+                                component.RemoveEmitter(i);
+                                ImGui::EndPopup();
+                                ImGui::PopID();
+                                break; // Exit loop after removal
+                            }
+                            ImGui::EndPopup();
+                        }
+
+                        if (emitterOpen)
+                        {
+                            ImGui::Indent();
+
+                            // Emitter Name
+                            char nameBuffer[128];
+                            strncpy(nameBuffer, emitter->name.c_str(), sizeof(nameBuffer) - 1);
+                            nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+                            if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
+                            {
+                                emitter->name = nameBuffer;
+                            }
+
+                            // Control Buttons
+                            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 4));
+
+                            if (ImGui::Button("Play", ImVec2(80, 0)))
+                            {
+                                emitter->Play();
+                            }
+                            ImGui::SameLine();
+                            if (ImGui::Button("Stop", ImVec2(80, 0)))
+                            {
+                                emitter->Stop();
+                            }
+                            ImGui::SameLine();
+                            if (ImGui::Button("Clear", ImVec2(80, 0)))
+                            {
+                                emitter->StopAndClear();
+                            }
+
+                            ImGui::PopStyleVar();
+
+                            // Active Checkbox
+                            ImGui::Checkbox("Active", &emitter->isActive);
+
+                            // Emission Mode
+                            const char* modes[] = { "Burst", "Continuous", "ScreenFill" };
+                            int currentMode = static_cast<int>(emitter->mode);
+                            if (ImGui::Combo("Emission Mode", &currentMode, modes, IM_ARRAYSIZE(modes)))
+                            {
+                                emitter->mode = static_cast<Uma_ECS::EmitterMode>(currentMode);
+                            }
+
+                            // Max Particles
+                            ImGui::DragInt("Max Particles", &emitter->maxParticles, 1.0f, 1, 10000);
+
+                            // Texture Name
+                            char texBuffer[128];
+                            strncpy(texBuffer, emitter->textureName.c_str(), sizeof(texBuffer) - 1);
+                            texBuffer[sizeof(texBuffer) - 1] = '\0';
+                            if (ImGui::InputText("Texture Name", texBuffer, sizeof(texBuffer)))
+                            {
+                                emitter->textureName = texBuffer;
+                            }
+
+                            ImGui::Separator();
+
+                            // Appearance settings
+                            if (ImGui::CollapsingHeader("Appearance", ImGuiTreeNodeFlags_DefaultOpen))
+                            {
+                                ImGui::Indent();
+
+                                // Scale Range
+                                ImGui::DragFloat2("Scale Range", &emitter->appearance.scaleRange.x, 0.01f, 0.01f, 10.0f, "%.2f");
+
+                                // Start Color
+                                ImGui::ColorEdit3("Start Color", &emitter->appearance.startColor.x);
+
+                                // End Color
+                                ImGui::ColorEdit3("End Color", &emitter->appearance.endColor.x);
+
+                                // Color Lerp
+                                ImGui::Checkbox("Color Lerp", &emitter->appearance.colorLerp);
+
+                                // Random Opacity
+                                ImGui::Checkbox("Random Opacity", &emitter->appearance.randomOpacity);
+                                if (emitter->appearance.randomOpacity)
                                 {
-                                    app.endColor = Vec3(endColor[0], endColor[1], endColor[2]);
+                                    ImGui::Indent();
+                                    ImGui::DragFloat2("Opacity Range", &emitter->appearance.opacityRange.x, 0.01f, 0.0f, 1.0f, "%.2f");
+                                    ImGui::Unindent();
+                                }
+
+                                // Rotate Particles
+                                ImGui::Checkbox("Rotate Particles", &emitter->appearance.rotateParticles);
+                                if (emitter->appearance.rotateParticles)
+                                {
+                                    ImGui::Indent();
+                                    ImGui::DragFloat2("Rotation Speed Range", &emitter->appearance.rotationSpeedRange.x, 1.0f, -360.0f, 360.0f, "%.1f deg/s");
+                                    ImGui::Unindent();
+                                }
+
+                                ImGui::Unindent();
+                            }
+
+                            // Fade settings
+                            if (ImGui::CollapsingHeader("Fade", ImGuiTreeNodeFlags_DefaultOpen))
+                            {
+                                ImGui::Indent();
+
+                                // Fade In
+                                ImGui::Checkbox("Fade In", &emitter->fade.fadeIn);
+                                if (emitter->fade.fadeIn)
+                                {
+                                    ImGui::Indent();
+                                    ImGui::DragFloat("Fade In Duration", &emitter->fade.fadeInDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
+                                    ImGui::Unindent();
+                                }
+
+                                // Fade Out (only for Burst/Continuous)
+                                if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
+                                {
+                                    ImGui::Checkbox("Fade Out", &emitter->fade.fadeOut);
+                                    if (emitter->fade.fadeOut)
+                                    {
+                                        ImGui::Indent();
+                                        ImGui::DragFloat("Fade Out Duration", &emitter->fade.fadeOutDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
+                                        ImGui::Unindent();
+                                    }
+                                }
+
+                                // Fade At Edges (only for ScreenFill)
+                                if (emitter->mode == Uma_ECS::EmitterMode::ScreenFill)
+                                {
+                                    ImGui::Checkbox("Fade At Edges", &emitter->fade.fadeAtEdges);
+                                    if (emitter->fade.fadeAtEdges)
+                                    {
+                                        ImGui::Indent();
+                                        ImGui::DragFloat("Edge Fade Distance", &emitter->fade.edgeFadeDistance, 1.0f, 0.0f, 500.0f, "%.1f");
+                                        ImGui::Unindent();
+                                    }
+                                }
+
+                                ImGui::Unindent();
+                            }
+
+                            // Physics settings
+                            if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
+                            {
+                                ImGui::Indent();
+
+                                // Speed Range
+                                ImGui::DragFloat2("Speed Range", &emitter->physics.speedRange.x, 0.1f, 0.0f, 1000.0f, "%.1f");
+
+                                // Lifetime Range (not shown for ScreenFill)
+                                if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
+                                {
+                                    ImGui::DragFloat2("Lifetime Range", &emitter->physics.lifetimeRange.x, 0.01f, 0.01f, 100.0f, "%.2f sec");
+                                }
+
+                                // Gravity
+                                ImGui::DragFloat2("Gravity", &emitter->physics.gravity.x, 0.1f, -500.0f, 500.0f, "%.1f");
+
+                                // Drag
+                                ImGui::DragFloat("Drag", &emitter->physics.drag, 0.01f, 0.0f, 10.0f, "%.2f");
+
+                                ImGui::Unindent();
+                            }
+
+                            // Spawn settings
+                            if (ImGui::CollapsingHeader("Spawn", ImGuiTreeNodeFlags_DefaultOpen))
+                            {
+                                ImGui::Indent();
+
+                                // Spawn Offset (not shown for ScreenFill)
+                                if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
+                                {
+                                    ImGui::DragFloat2("Spawn Offset", &emitter->spawn.spawnOffset.x, 1.0f, -1000.0f, 1000.0f, "%.1f");
+
+                                    // Spawn Radius
+                                    ImGui::DragFloat("Spawn Radius", &emitter->spawn.spawnRadius, 1.0f, 0.0f, 500.0f, "%.1f");
+
+                                    // Emission Cone
+                                    ImGui::Checkbox("Use Emission Cone", &emitter->spawn.useEmissionCone);
+                                    if (emitter->spawn.useEmissionCone)
+                                    {
+                                        ImGui::Indent();
+                                        ImGui::DragFloat("Emission Angle", &emitter->spawn.emissionAngle, 1.0f, 0.0f, 360.0f, "%.1f deg");
+                                        ImGui::DragFloat("Emission Spread", &emitter->spawn.emissionSpread, 1.0f, 0.0f, 360.0f, "%.1f deg");
+                                        ImGui::Unindent();
+                                    }
+                                }
+
+                                ImGui::Unindent();
+                            }
+
+                            // Emission settings
+                            if (ImGui::CollapsingHeader("Emission", ImGuiTreeNodeFlags_DefaultOpen))
+                            {
+                                ImGui::Indent();
+
+                                // Continuous Mode Emission Rate
+                                if (emitter->mode == Uma_ECS::EmitterMode::Continuous)
+                                {
+                                    ImGui::DragFloat("Emission Rate", &emitter->emission.emissionRate, 1.0f, 1.0f, 1000.0f, "%.1f particles/sec");
+                                }
+
+                                // Burst Mode Loop Settings
+                                if (emitter->mode == Uma_ECS::EmitterMode::Burst)
+                                {
+                                    ImGui::Checkbox("Loop", &emitter->emission.loop);
+                                    if (emitter->emission.loop)
+                                    {
+                                        ImGui::Indent();
+                                        ImGui::DragFloat("Loop Delay", &emitter->emission.loopDelay, 0.1f, 0.0f, 60.0f, "%.1f sec");
+                                        ImGui::Unindent();
+                                    }
+                                }
+
+                                ImGui::Unindent();
+                            }
+
+                            // Screen fill settings
+                            if (emitter->mode == Uma_ECS::EmitterMode::ScreenFill)
+                            {
+                                if (ImGui::CollapsingHeader("ScreenFill", ImGuiTreeNodeFlags_DefaultOpen))
+                                {
+                                    ImGui::Indent();
+
+                                    // Velocity Ranges
+                                    ImGui::DragFloat2("Velocity X Range", &emitter->screenFill.velocityXRange.x, 1.0f, -500.0f, 500.0f, "%.1f");
+                                    ImGui::DragFloat2("Velocity Y Range", &emitter->screenFill.velocityYRange.x, 1.0f, -500.0f, 500.0f, "%.1f");
+
+                                    // Spawn At Top
+                                    ImGui::Checkbox("Spawn At Top", &emitter->screenFill.spawnAtTop);
+
+                                    // Spawn Margin
+                                    ImGui::DragFloat("Spawn Margin", &emitter->screenFill.spawnMargin, 1.0f, 0.0f, 1000.0f, "%.1f");
+
+                                    ImGui::Unindent();
                                 }
                             }
-                        }
 
-                        ImGui::Spacing();
-                        ImGui::Separator();
-                        ImGui::Text("Opacity");
-
-                        ImGui::Checkbox("Random Opacity", &app.randomOpacity);
-                        if (app.randomOpacity)
-                        {
-                            float opacityRange[2] = { app.opacityRange.x, app.opacityRange.y };
-                            if (ImGui::DragFloat2("Opacity Range", opacityRange, 0.01f, 0.0f, 1.0f, "%.2f"))
-                            {
-                                app.opacityRange = Vec2(opacityRange[0], opacityRange[1]);
-                            }
-                        }
-
-                        ImGui::Spacing();
-                        ImGui::Separator();
-                        ImGui::Text("Rotation");
-
-                        ImGui::Checkbox("Rotate Particles", &app.rotateParticles);
-                        if (app.rotateParticles)
-                        {
-                            float rotSpeed[2] = { app.rotationSpeedRange.x, app.rotationSpeedRange.y };
-                            if (ImGui::DragFloat2("Rotation Speed", rotSpeed, 1.0f, -360.0f, 360.0f, "%.1f deg/s"))
-                            {
-                                app.rotationSpeedRange = Vec2(rotSpeed[0], rotSpeed[1]);
-                            }
-                        }
-
-                        ImGui::Unindent();
-                    }
-
-                    // === FADE SETTINGS ===
-                    if (ImGui::CollapsingHeader("Fade", ImGuiTreeNodeFlags_DefaultOpen))
-                    {
-                        ImGui::Indent();
-                        auto& fade = emitter.fade;
-
-                        ImGui::Checkbox("Fade In", &fade.fadeIn);
-                        if (fade.fadeIn)
-                        {
-                            ImGui::DragFloat("Fade In Duration", &fade.fadeInDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
-                        }
-
-                        if (emitter.mode != Uma_ECS::EmitterMode::ScreenFill)
-                        {
-                            ImGui::Checkbox("Fade Out", &fade.fadeOut);
-                            if (fade.fadeOut)
-                            {
-                                ImGui::DragFloat("Fade Out Duration", &fade.fadeOutDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
-                            }
-                        }
-
-                        if (emitter.mode == Uma_ECS::EmitterMode::ScreenFill)
-                        {
-                            ImGui::Spacing();
-                            ImGui::Separator();
-                            ImGui::Checkbox("Fade At Edges", &fade.fadeAtEdges);
-                            if (fade.fadeAtEdges)
-                            {
-                                ImGui::DragFloat("Edge Fade Distance", &fade.edgeFadeDistance, 1.0f, 10.0f, 500.0f, "%.0f px");
-                            }
-                        }
-
-                        ImGui::Unindent();
-                    }
-
-                    // === PHYSICS ===
-                    if (ImGui::CollapsingHeader("Physics", ImGuiTreeNodeFlags_DefaultOpen))
-                    {
-                        ImGui::Indent();
-                        auto& phys = emitter.physics;
-
-                        float speedRange[2] = { phys.speedRange.x, phys.speedRange.y };
-                        if (ImGui::DragFloat2("Speed Range", speedRange, 0.1f, 0.0f, 1000.0f, "%.1f"))
-                        {
-                            phys.speedRange = Vec2(speedRange[0], speedRange[1]);
-                        }
-
-                        if (emitter.mode != Uma_ECS::EmitterMode::ScreenFill)
-                        {
-                            float lifetimeRange[2] = { phys.lifetimeRange.x, phys.lifetimeRange.y };
-                            if (ImGui::DragFloat2("Lifetime Range", lifetimeRange, 0.01f, 0.01f, 100.0f, "%.2f sec"))
-                            {
-                                phys.lifetimeRange = Vec2(lifetimeRange[0], lifetimeRange[1]);
-                            }
-                        }
-
-                        float gravity[2] = { phys.gravity.x, phys.gravity.y };
-                        if (ImGui::DragFloat2("Gravity", gravity, 0.1f, -500.0f, 500.0f, "%.1f"))
-                        {
-                            phys.gravity = Vec2(gravity[0], gravity[1]);
-                        }
-
-                        ImGui::DragFloat("Drag", &phys.drag, 0.01f, 0.0f, 10.0f, "%.2f");
-
-                        ImGui::Unindent();
-                    }
-
-                    // === SPAWN SETTINGS (Burst/Continuous only) ===
-                    if (emitter.mode != Uma_ECS::EmitterMode::ScreenFill)
-                    {
-                        if (ImGui::CollapsingHeader("Spawn", ImGuiTreeNodeFlags_DefaultOpen))
-                        {
-                            ImGui::Indent();
-                            auto& spawn = emitter.spawn;
-
-                            float offset[2] = { spawn.spawnOffset.x, spawn.spawnOffset.y };
-                            if (ImGui::DragFloat2("Spawn Offset", offset, 0.1f, -1000.0f, 1000.0f, "%.1f"))
-                            {
-                                spawn.spawnOffset = Vec2(offset[0], offset[1]);
-                            }
-
-                            ImGui::DragFloat("Spawn Radius", &spawn.spawnRadius, 0.1f, 0.0f, 500.0f, "%.1f");
-
-                            ImGui::Spacing();
                             ImGui::Separator();
 
-                            ImGui::Checkbox("Use Emission Cone", &spawn.useEmissionCone);
-                            if (spawn.useEmissionCone)
+                            // Debug Info
+                            if (ImGui::TreeNode("Debug Info"))
                             {
-                                ImGui::DragFloat("Emission Angle", &spawn.emissionAngle, 1.0f, 0.0f, 360.0f, "%.1f°");
-                                ImGui::DragFloat("Emission Spread", &spawn.emissionSpread, 1.0f, 0.0f, 360.0f, "%.1f°");
+                                ImGui::Text("Active Particles: %d / %d", emitter->GetActiveParticleCount(), emitter->maxParticles);
+                                ImGui::Text("Is Playing: %s", emitter->IsPlaying() ? "Yes" : "No");
+                                ImGui::Text("Has Active Particles: %s", emitter->HasActiveParticles() ? "Yes" : "No");
+                                ImGui::TreePop();
                             }
 
                             ImGui::Unindent();
                         }
+
+                        ImGui::PopID();
                     }
-
-                    // === EMISSION (Continuous only) ===
-                    if (emitter.mode == Uma_ECS::EmitterMode::Continuous)
-                    {
-                        if (ImGui::CollapsingHeader("Emission", ImGuiTreeNodeFlags_DefaultOpen))
-                        {
-                            ImGui::Indent();
-                            ImGui::DragFloat("Emission Rate", &emitter.emission.emissionRate, 0.1f, 0.1f, 1000.0f, "%.1f/sec");
-                            ImGui::Unindent();
-                        }
-                    }
-
-                    // === EMISSION (Burst only) ===
-                    if (emitter.mode == Uma_ECS::EmitterMode::Burst)
-                    {
-                        if (ImGui::CollapsingHeader("Emission", ImGuiTreeNodeFlags_DefaultOpen))
-                        {
-                            ImGui::Indent();
-                            ImGui::Checkbox("Loop", &emitter.emission.loop);
-                            if (emitter.emission.loop)
-                            {
-                                ImGui::DragFloat("Loop Delay", &emitter.emission.loopDelay, 0.01f, 0.0f, 10.0f, "%.2f sec");
-                            }
-                            ImGui::Unindent();
-                        }
-                    }
-
-                    // === SCREENFILL SETTINGS ===
-                    if (emitter.mode == Uma_ECS::EmitterMode::ScreenFill)
-                    {
-                        if (ImGui::CollapsingHeader("ScreenFill Settings", ImGuiTreeNodeFlags_DefaultOpen))
-                        {
-                            ImGui::Indent();
-                            auto& sf = emitter.screenFill;
-
-                            float velX[2] = { sf.velocityXRange.x, sf.velocityXRange.y };
-                            if (ImGui::DragFloat2("Velocity X Range", velX, 0.1f, -500.0f, 500.0f, "%.1f"))
-                            {
-                                sf.velocityXRange = Vec2(velX[0], velX[1]);
-                            }
-
-                            float velY[2] = { sf.velocityYRange.x, sf.velocityYRange.y };
-                            if (ImGui::DragFloat2("Velocity Y Range", velY, 0.1f, -500.0f, 500.0f, "%.1f"))
-                            {
-                                sf.velocityYRange = Vec2(velY[0], velY[1]);
-                            }
-
-                            ImGui::Spacing();
-                            ImGui::Separator();
-
-                            ImGui::Checkbox("Spawn At Top", &sf.spawnAtTop);
-                            ImGui::DragFloat("Spawn Margin", &sf.spawnMargin, 1.0f, 0.0f, 500.0f, "%.0f px");
-
-                            ImGui::Unindent();
-                        }
-                    }
-
-                    // === RUNTIME INFO ===
-                    ImGui::Spacing();
-                    ImGui::Separator();
-                    ImGui::Text("Runtime Info");
-                    ImGui::Text("Active: %zu / %d",
-                        std::count_if(emitter.particles.begin(), emitter.particles.end(),
-                            [](const Uma_ECS::Particle& p) { return p.active; }),
-                        emitter.maxParticles);
-                    ImGui::Text("Total Allocated: %zu", emitter.particles.size());
-
-                    if (ImGui::Button("Reset Emitter", ImVec2(-1, 0)))
-                    {
-                        emitter.particles.clear();
-                        emitter.initialized = false;
-                        emitter.emissionTimer = 0.0f;
-                        emitter.burstTimer = 0.0f;
-                    }
-
-                    ImGui::Unindent();
                 }
-                }
+            }
         else
         {
             return false;

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Core/System.hpp"
 #include "Core/Coordinator.hpp"
 #include "Systems/Graphics.hpp"
@@ -8,6 +7,9 @@
 
 namespace Uma_ECS
 {
+    struct EmitterInstance;  // Forward declaration
+    struct Particle;
+
     class ParticleSystem : public ECSSystem
     {
     public:
@@ -15,16 +17,18 @@ namespace Uma_ECS
         void Update(float dt);
 
     private:
-        void SpawnParticle(ParticleEmitter& emitter, const Vec2& position);
-        void SpawnScreenFillParticle(ParticleEmitter& emitter);
-        void UpdateParticle(Particle& p, ParticleEmitter& emitter, float dt);
-
-        float Random(float min, float max);
-
-        Coordinator* pCoordinator = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
+        Coordinator* pCoordinator = nullptr;
+
+        // Random number generation
         std::default_random_engine generator;
         std::uniform_real_distribution<float> distribution{ 0.0f, 1.0f };
+
+        // Particle functions
+        void SpawnParticle(EmitterInstance& emitter, const Vec2& emitterPos);
+        void SpawnScreenFillParticle(EmitterInstance& emitter);
+        void UpdateParticle(Particle& p, EmitterInstance& emitter, float dt);
+        float Random(float min, float max);
     };
 }

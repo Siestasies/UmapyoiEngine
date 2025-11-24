@@ -295,8 +295,10 @@ namespace Uma_ECS
         }
     };
 
-    struct ParticleEmitter
+    struct EmitterInstance
     {
+        std::string name = "Emitter";
+
         // Core settings
         EmitterMode mode = EmitterMode::Continuous;
         int maxParticles = 100;
@@ -326,7 +328,7 @@ namespace Uma_ECS
             burstTimer = 0.0f;
         }
 
-        // Stop spawning new particles (existing particles continue)
+        // Stop spawning new particles
         void Stop()
         {
             isActive = false;
@@ -340,7 +342,7 @@ namespace Uma_ECS
             initialized = false;
         }
 
-        // Pause (stops update but keeps particles)
+        // Pause
         void Pause()
         {
             isActive = false;
@@ -431,6 +433,84 @@ namespace Uma_ECS
             if (in.HasMember("screenFill")) screenFill.Deserialize(in["screenFill"]);
 
             particles.reserve(maxParticles);
+        }
+    };
+
+    struct ParticleEmitter
+    {
+        std::vector<EmitterInstance> emitters;
+
+        // Add a new emitter
+        int AddEmitter(const std::string& name = "New Emitter")
+        {
+            EmitterInstance emitter;
+            emitter.name = name;
+            emitter.particles.reserve(emitter.maxParticles);
+            emitters.push_back(emitter);
+            return static_cast<int>(emitters.size() - 1);
+        }
+
+        // Remove emitter by index
+        void RemoveEmitter(int index)
+        {
+            if (index >= 0 && index < static_cast<int>(emitters.size()))
+                emitters.erase(emitters.begin() + index);
+        }
+
+        // Get emitter by index
+        EmitterInstance* GetEmitter(int index)
+        {
+            if (index >= 0 && index < static_cast<int>(emitters.size()))
+                return &emitters[index];
+            return nullptr;
+        }
+
+        // Get emitter by name
+        EmitterInstance* GetEmitter(const std::string& name)
+        {
+            for (auto& e : emitters)
+                if (e.name == name) return &e;
+            return nullptr;
+        }
+
+        int GetEmitterCount() const { return static_cast<int>(emitters.size()); }
+
+        void PlayAll()
+        {
+            for (auto& e : emitters) e.Play();
+        }
+
+        void StopAll()
+        {
+            for (auto& e : emitters) e.Stop();
+        }
+
+        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
+        {
+            out.SetObject();
+            rapidjson::Value emittersArr(rapidjson::kArrayType);
+
+            for (const auto& emitter : emitters)
+            {
+                rapidjson::Value emitterVal;
+                emitter.Serialize(emitterVal, allocator);
+                emittersArr.PushBack(emitterVal, allocator);
+            }
+
+            out.AddMember("emitters", emittersArr, allocator);
+        }
+
+        void Deserialize(const rapidjson::Value& in)
+        {
+            if (in.HasMember("emitters") && in["emitters"].IsArray())
+            {
+                for (const auto& emitterVal : in["emitters"].GetArray())
+                {
+                    EmitterInstance emitter;
+                    emitter.Deserialize(emitterVal);
+                    emitters.push_back(emitter);
+                }
+            }
         }
     };
 }

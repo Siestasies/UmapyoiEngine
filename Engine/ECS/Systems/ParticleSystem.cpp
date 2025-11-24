@@ -48,140 +48,143 @@ namespace Uma_ECS
 
         for (const auto& entity : aEntities)
         {
-            auto& emitter = emitterArray.GetData(entity);
+            auto& component = emitterArray.GetData(entity);
             auto& transform = tfArray.GetData(entity);
 
-            // Skip if emitter is not active
-            if (!emitter.isActive)
-                continue;
-
-            // Update screen bounds for ScreenFill mode
-            if (emitter.mode == EmitterMode::ScreenFill)
+            // Loop through all emitters in this entity
+            for (auto& emitter : component.emitters)
             {
-                emitter.screenMin = screenMin;
-                emitter.screenMax = screenMax;
-            }
-
-            // Emission logic
-            if (emitter.mode == EmitterMode::Burst)
-            {
-                if (!emitter.initialized)
+                // Update screen bounds for ScreenFill mode
+                if (emitter.mode == EmitterMode::ScreenFill)
                 {
-                    // Initial burst
-                    for (int i = 0; i < emitter.maxParticles; ++i)
-                    {
-                        SpawnParticle(emitter, transform.worldPosition);
-                    }
-                    emitter.initialized = true;
-                    emitter.burstTimer = 0.0f;
+                    emitter.screenMin = screenMin;
+                    emitter.screenMax = screenMax;
                 }
-                else if (emitter.emission.loop)
-                {
-                    // Handle looping burst
-                    emitter.burstTimer += dt;
 
-                    // Check if all particles are dead
-                    bool allDead = true;
-                    for (const auto& p : emitter.particles)
+                // Emission logic
+                if (emitter.isActive)
+                {
+                    if (emitter.mode == EmitterMode::Burst)
                     {
-                        if (p.active)
+                        if (!emitter.initialized)
                         {
-                            allDead = false;
-                            break;
+                            // Initial burst
+                            for (int i = 0; i < emitter.maxParticles; ++i)
+                            {
+                                SpawnParticle(emitter, transform.worldPosition);
+                            }
+                            emitter.initialized = true;
+                            emitter.burstTimer = 0.0f;
+                        }
+                        else if (emitter.emission.loop)
+                        {
+                            // Handle looping burst
+                            emitter.burstTimer += dt;
+
+                            // Check if all particles are dead
+                            bool allDead = true;
+                            for (const auto& p : emitter.particles)
+                            {
+                                if (p.active)
+                                {
+                                    allDead = false;
+                                    break;
+                                }
+                            }
+
+                            if (allDead && emitter.burstTimer >= emitter.emission.loopDelay)
+                            {
+                                // Trigger new burst
+                                for (int i = 0; i < emitter.maxParticles; ++i)
+                                {
+                                    SpawnParticle(emitter, transform.worldPosition);
+                                }
+                                emitter.burstTimer = 0.0f;
+                            }
                         }
                     }
-
-                    if (allDead && emitter.burstTimer >= emitter.emission.loopDelay)
+                    else if (emitter.mode == EmitterMode::Continuous)
                     {
-                        // Trigger new burst
-                        for (int i = 0; i < emitter.maxParticles; ++i)
+                        emitter.emissionTimer += dt;
+                        float interval = 1.0f / emitter.emission.emissionRate;
+
+                        while (emitter.emissionTimer >= interval)
                         {
                             SpawnParticle(emitter, transform.worldPosition);
+                            emitter.emissionTimer -= interval;
                         }
-                        emitter.burstTimer = 0.0f;
                     }
-                }
-            }
-            else if (emitter.mode == EmitterMode::Continuous)
-            {
-                emitter.emissionTimer += dt;
-                float interval = 1.0f / emitter.emission.emissionRate;
-
-                while (emitter.emissionTimer >= interval)
-                {
-                    SpawnParticle(emitter, transform.worldPosition);
-                    emitter.emissionTimer -= interval;
-                }
-            }
-            else if (emitter.mode == EmitterMode::ScreenFill)
-            {
-                // Initial spawn
-                if (!emitter.initialized)
-                {
-                    for (int i = 0; i < emitter.maxParticles; ++i)
+                    else if (emitter.mode == EmitterMode::ScreenFill)
                     {
-                        SpawnScreenFillParticle(emitter);
+                        // Initial spawn
+                        if (!emitter.initialized)
+                        {
+                            for (int i = 0; i < emitter.maxParticles; ++i)
+                            {
+                                SpawnScreenFillParticle(emitter);
+                            }
+                            emitter.initialized = true;
+                        }
+
+                        // Continuous respawning
+                        int inactiveCount = 0;
+                        for (const auto& p : emitter.particles)
+                        {
+                            if (!p.active) inactiveCount++;
+                        }
+
+                        for (int i = 0; i < inactiveCount; ++i)
+                        {
+                            SpawnScreenFillParticle(emitter);
+                        }
                     }
-                    emitter.initialized = true;
                 }
 
-                // Count inactive and spawn to fill
-                int inactiveCount = 0;
-                for (const auto& p : emitter.particles)
+                // Update particles
+                for (auto& p : emitter.particles)
                 {
-                    if (!p.active) inactiveCount++;
+                    if (!p.active) continue;
+                    UpdateParticle(p, emitter, dt);
                 }
 
-                for (int i = 0; i < inactiveCount; ++i)
+                // Render particles
+                auto texture = pResourcesManager->GetTexture(emitter.textureName);
+                if (!texture || texture->tex_id == 0)
                 {
-                    SpawnScreenFillParticle(emitter);
+                    std::stringstream log;
+                    log << "ParticleEmitter '" << emitter.name << "': Invalid texture '" << emitter.textureName << "'";
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                    continue;
                 }
-            }
 
-            // Update particles
-            for (auto& p : emitter.particles)
-            {
-                if (!p.active) continue;
-                UpdateParticle(p, emitter, dt);
-            }
+                std::vector<Uma_Engine::Sprite_Info> instanceData;
+                instanceData.reserve(emitter.maxParticles);
 
-            // Render particles
-            auto texture = pResourcesManager->GetTexture(emitter.textureName);
-            if (!texture || texture->tex_id == 0)
-            {
-                std::stringstream log;
-                log << "ParticleEmitter: Invalid texture '" << emitter.textureName << "'";
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-                continue;
-            }
+                for (const auto& particle : emitter.particles)
+                {
+                    if (!particle.active) continue;
 
-            std::vector<Uma_Engine::Sprite_Info> instanceData;
-            instanceData.reserve(emitter.maxParticles);
+                    Uma_Engine::Sprite_Info instance;
+                    instance.pos = particle.position;
+                    instance.scale = Vec2(particle.scale, particle.scale);
+                    instance.rot = particle.rotation;
+                    instance.uvOffset = Vec2(0.0f, 0.0f);
+                    instance.uvSize = Vec2(1.0f, 1.0f);
+                    instance.tintColor = particle.color;
+                    instance.alpha = particle.opacity;
 
-            for (const auto& particle : emitter.particles)
-            {
-                if (!particle.active) continue;
+                    instanceData.push_back(instance);
+                }
 
-                Uma_Engine::Sprite_Info instance;
-                instance.pos = particle.position;
-                instance.scale = Vec2(particle.scale, particle.scale);
-                instance.rot = particle.rotation;
-                instance.uvOffset = Vec2(0.0f, 0.0f);
-                instance.uvSize = Vec2(1.0f, 1.0f);
-                instance.tintColor = particle.color;
-                instance.alpha = particle.opacity;
-
-                instanceData.push_back(instance);
-            }
-
-            if (!instanceData.empty())
-            {
-                pGraphics->DrawSpritesInstanced(texture->tex_id, instanceData);
+                if (!instanceData.empty())
+                {
+                    pGraphics->DrawSpritesInstanced(texture->tex_id, instanceData);
+                }
             }
         }
     }
 
-    void ParticleSystem::SpawnParticle(ParticleEmitter& emitter, const Vec2& emitterPos)
+    void ParticleSystem::SpawnParticle(EmitterInstance& emitter, const Vec2& emitterPos)
     {
         for (auto& p : emitter.particles)
         {
@@ -267,7 +270,7 @@ namespace Uma_ECS
         }
     }
 
-    void ParticleSystem::SpawnScreenFillParticle(ParticleEmitter& emitter)
+    void ParticleSystem::SpawnScreenFillParticle(EmitterInstance& emitter)
     {
         for (auto& p : emitter.particles)
         {
@@ -346,7 +349,7 @@ namespace Uma_ECS
         }
     }
 
-    void ParticleSystem::UpdateParticle(Particle& p, ParticleEmitter& emitter, float dt)
+    void ParticleSystem::UpdateParticle(Particle& p, EmitterInstance& emitter, float dt)
     {
         // Update age
         p.age += dt;
@@ -358,7 +361,7 @@ namespace Uma_ECS
         if (emitter.physics.drag > 0.0f)
         {
             float dragFactor = 1.0f - (emitter.physics.drag * dt);
-            if (dragFactor < 0.0f) dragFactor = 0.0f;  // Clamp to 0
+            if (dragFactor < 0.0f) dragFactor = 0.0f;
             p.velocity.x *= dragFactor;
             p.velocity.y *= dragFactor;
         }
@@ -371,10 +374,10 @@ namespace Uma_ECS
         // Update lifetime
         p.lifetime -= dt;
 
-        // ========== MODE-SPECIFIC UPDATES ==========
+        // Mode updates
         if (emitter.mode == EmitterMode::ScreenFill)
         {
-            // Check if off-screen (always delete, no wrap)
+            // Check if off-screen, delete
             float margin = emitter.screenFill.spawnMargin;
             bool offScreen =
                 p.position.y < emitter.screenMin.y - margin ||
@@ -409,7 +412,7 @@ namespace Uma_ECS
                 float distFromTop = emitter.screenMax.y - p.position.y;
                 float distFromBottom = p.position.y - emitter.screenMin.y;
 
-                // Find closest edge (manual min comparison)
+                // Find closest edge
                 float minDist = distFromLeft;
                 if (distFromRight < minDist) minDist = distFromRight;
                 if (distFromTop < minDist) minDist = distFromTop;
@@ -418,7 +421,6 @@ namespace Uma_ECS
                 if (minDist < fadeDistance)
                 {
                     float edgeFade = minDist / fadeDistance;
-                    // Clamp between 0 and 1
                     if (edgeFade < 0.0f) edgeFade = 0.0f;
                     if (edgeFade > 1.0f) edgeFade = 1.0f;
                     finalOpacity *= edgeFade;
@@ -427,7 +429,7 @@ namespace Uma_ECS
 
             p.opacity = finalOpacity;
         }
-        else // Burst or Continuous
+        else // Burst/Continuous
         {
             // Check lifetime
             if (p.lifetime <= 0)
