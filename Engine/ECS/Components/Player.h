@@ -26,7 +26,24 @@ namespace Uma_ECS
 {
     struct Player
     {
+        int mHealth = 100;
+        int mMaxHealth = 100;
+        float mHealthRegenRate = 1.f;
+
         float mSpeed = 1.f;
+        float mDashSpeed = 10.f;
+        float mDashCD = 2.f;
+
+        int mAttackDamage = 10;
+        float mAttackSpeed = 1.f;
+        float mAttackRange = 20.f;
+        int mDefense = 5;
+
+        int mMana = 100;
+        int mMaxMana = 100;
+        float mManaRegenRate = 5.f;
+
+
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the player
 
@@ -34,13 +51,68 @@ namespace Uma_ECS
         {
             value.SetObject();
 
+            value.AddMember("mHealth", mHealth, allocator);
+            value.AddMember("mMaxHealth", mMaxHealth, allocator);
+            value.AddMember("mHealthRegenRate", mHealthRegenRate, allocator);
+
             value.AddMember("mSpeed", mSpeed, allocator);
+            value.AddMember("mDashSpeed", mDashSpeed, allocator);
+            value.AddMember("mDashCD", mDashCD, allocator);
+
+            value.AddMember("mAttackDamage", mAttackDamage, allocator);
+            value.AddMember("mAttackSpeed", mAttackSpeed, allocator);
+            value.AddMember("mAttackRange", mAttackRange, allocator);
+            value.AddMember("mDefense", mDefense, allocator);
+
+            value.AddMember("mMana", mMana, allocator);
+            value.AddMember("mMaxMana", mMaxMana, allocator);
+            value.AddMember("mManaRegenRate", mManaRegenRate, allocator);
         }
 
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
-            mSpeed = value["mSpeed"].GetFloat();
+            if (value.HasMember("mHealth"))
+                mHealth = value["mHealth"].GetInt();
+
+            if (value.HasMember("mMaxHealth"))
+                mMaxHealth = value["mMaxHealth"].GetInt();
+
+            if (value.HasMember("mHealthRegenRate"))
+                mHealthRegenRate = value["mHealthRegenRate"].GetFloat();
+
+
+            if (value.HasMember("mSpeed"))
+                mSpeed = value["mSpeed"].GetFloat();
+
+            if (value.HasMember("mDashSpeed"))
+                mDashSpeed = value["mDashSpeed"].GetFloat();
+
+            if (value.HasMember("mDashCD"))
+                mDashCD = value["mDashCD"].GetFloat();
+
+
+            if (value.HasMember("mAttackDamage"))
+                mAttackDamage = value["mAttackDamage"].GetInt();
+
+            if (value.HasMember("mAttackSpeed"))
+                mAttackSpeed = value["mAttackSpeed"].GetFloat();
+
+            if (value.HasMember("mAttackRange"))
+                mAttackRange = value["mAttackRange"].GetFloat();
+
+            if (value.HasMember("mDefense"))
+                mDefense = value["mDefense"].GetInt();
+
+
+            if (value.HasMember("mMana"))
+                mMana = value["mMana"].GetInt();
+
+            if (value.HasMember("mMaxMana"))
+                mMaxMana = value["mMaxMana"].GetInt();
+
+            if (value.HasMember("mManaRegenRate"))
+                mManaRegenRate = value["mManaRegenRate"].GetFloat();
         }
     };
 }
