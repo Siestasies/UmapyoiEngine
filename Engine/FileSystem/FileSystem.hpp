@@ -145,6 +145,11 @@ namespace Uma_Engine
             return mPrefabEdit;
         }
 
+        void setIsPrefabEdit(bool edit)
+        {
+            mPrefabEdit = edit;
+        }
+
         std::string getPrefabName()
         {
             return mPrefabName;

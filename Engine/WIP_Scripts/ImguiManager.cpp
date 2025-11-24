@@ -537,6 +537,7 @@ namespace Uma_Engine
                 pEventSystem->Emit<StopSceneRequest>();
                 pEventSystem->Emit<LoadSceneRequestEvent>(fileBrowser.getPrevSceneName());
                 pEventSystem->Emit<DeleteCurrSceneRequest>(fileBrowser.getPrefabSceneName());
+                fileBrowser.setIsPrefabEdit(false);
             }
         }
 
