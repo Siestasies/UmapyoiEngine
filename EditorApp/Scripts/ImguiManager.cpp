@@ -1940,7 +1940,135 @@ namespace Uma_Engine
 
                 ImGui::Unindent();
             }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::AudioComponent>())
+        {
+            if (ImGui::CollapsingHeader("AudioComponent"))
+            {
+                auto& audio = coordinator.GetComponent<Uma_ECS::AudioComponent>(entity);
+                ImGui::Indent();
+            
+                ImGui::Text("Position: (%.2f, %.2f, %.2f)",
+                    audio.position.x, audio.position.y, audio.position.z);
+            
+                ImGui::Text("Velocity: (%.2f, %.2f, %.2f)",
+                    audio.velocity.x, audio.velocity.y, audio.velocity.z);
+            
+                ImGui::Separator();
+                ImGui::Text("Default Settings");
+            
+                ImGui::DragFloat("Default Volume", &audio.defaultVolume, 0.01f, 0.0f, 1.0f);
+                ImGui::Checkbox("Default 3D", &audio.default3D);
+            
+                ImGui::Separator();
+                ImGui::Text("Active Sounds: %zu", audio.activeSounds.size());
+            
+                if (!audio.activeSounds.empty())
+                {
+                    for (auto& [soundName, soundInstance] : audio.activeSounds)
+                    {
+                        ImGui::PushID(soundName.c_str());
+            
+                        if (ImGui::TreeNode(soundName.c_str()))
+                        {
+                            ImGui::Text("Sound: %s", soundName.c_str());
+                            ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
+                            ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
+                            ImGui::Checkbox("Is 3D", &soundInstance.is3D);
+            
+                            ImGui::Separator();
+                            ImGui::Text("Sound Properties");
+            
+                            ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
+                            ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
+            
+                            if (soundInstance.is3D)
+                            {
+                                ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
+                                ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
+                            }
+            
+                            ImGui::TreePop();
+                        }
+            
+                        ImGui::PopID();
+                    }
+                }
+                else
+                {
+                    ImGui::TextDisabled("No active sounds");
+                }
+        
+                ImGui::Separator();
+                if (!audio.loopingSoundName.empty())
+                {
+                    ImGui::Text("Looping Sound: %s", audio.loopingSoundName.c_str());
+                }
+                else
+                {
+                    ImGui::TextDisabled("No looping sound");
+                }
+        
+                ImGui::Unindent();
             }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::AudioListener>())
+        {
+            if (ImGui::CollapsingHeader("AudioListener"))
+            {
+                ImGui::Indent();
+                ImGui::Text("Audio Listener Component");
+                ImGui::Separator();
+                ImGui::TextDisabled("This entity is marked as the audio listener");
+                ImGui::TextDisabled("(Used for 3D audio positioning)");
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::PathFinding>())
+        {
+            if (ImGui::CollapsingHeader("PathFinding"))
+            {
+                auto& pathfinding = coordinator.GetComponent<Uma_ECS::PathFinding>(entity);
+                ImGui::Indent();
+            
+                ImGui::Text("Path Update Settings");
+                ImGui::DragFloat("Update Interval", &pathfinding.pathUpdateInterval, 0.01f, 0.01f, 5.0f);
+            
+                ImGui::Separator();
+                ImGui::Text("Goal Position");
+            
+                float goalPos[2] = { pathfinding.goal.x, pathfinding.goal.y };
+                if (ImGui::DragFloat2("Goal", goalPos, 0.1f))
+                {
+                    pathfinding.goal = Vec2(goalPos[0], goalPos[1]);
+                }
+            
+                ImGui::Separator();
+                ImGui::Text("Path Info");
+            
+                ImGui::Text("Path Length: %zu", pathfinding.path.size());
+                ImGui::Text("Current Index: %u", pathfinding.pathIndex);
+            
+                if (!pathfinding.path.empty())
+                {
+                    if (ImGui::TreeNode("Path Points"))
+                    {
+                        for (size_t i = 0; i < pathfinding.path.size(); ++i)
+                        {
+                            const auto& point = pathfinding.path[i];
+                            ImGui::Text("%zu: (%.2f, %.2f)", i, point.x, point.y);
+                        }
+                        ImGui::TreePop();
+                    }
+                }
+                else
+                {
+                    ImGui::TextDisabled("No path points");
+                }
+            
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -2168,22 +2296,18 @@ namespace Uma_Engine
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Sprite{});
             }
-
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::RigidBody>()) && ImGui::MenuItem("RigidBody"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::RigidBody{});
             }
-
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Collider>()) && ImGui::MenuItem("Collider"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Collider{});
             }
-
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Camera>()) && ImGui::MenuItem("Camera"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Camera{});
             }
-
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::LuaScript>()) && ImGui::MenuItem("LuaScript"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::LuaScript{});
@@ -2195,6 +2319,18 @@ namespace Uma_Engine
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Animator>()) && ImGui::MenuItem("Animator"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::Animator{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::AudioComponent>()) && ImGui::MenuItem("AudioComponent"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::AudioComponent{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::AudioListener>()) && ImGui::MenuItem("AudioListener"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::AudioListener{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::PathFinding>()) && ImGui::MenuItem("PathFinding"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::PathFinding{});
             }
 
             ImGui::EndPopup();

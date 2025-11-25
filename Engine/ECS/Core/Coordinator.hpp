@@ -47,6 +47,9 @@ All rights reserved.
 #include "../Components/Enemy.h"
 #include "../Components/Animator.h"
 #include "../Components/LuaScript.h"
+#include "../Components/AudioComponent.h"
+#include "../Components/AudioListener.h"
+#include "../Components/PathFinding.h"
 
 #include <unordered_set>
 
@@ -213,6 +216,9 @@ namespace Uma_ECS
             CHECK_COMPONENT(Enemy)
             CHECK_COMPONENT(Animator)
             CHECK_COMPONENT(LuaScript)
+            CHECK_COMPONENT(AudioComponent)
+            CHECK_COMPONENT(AudioListener)
+            CHECK_COMPONENT(PathFinding)
 
 #undef CHECK_COMPONENT
         }

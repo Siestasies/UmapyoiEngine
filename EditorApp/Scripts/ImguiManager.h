@@ -36,6 +36,9 @@ All rights reserved.
 #include "ECS/Components/Enemy.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Sprite.h"
+#include "ECS/Components/AudioComponent.h"
+#include "ECS/Components/AudioListener.h"
+#include "ECS/Components/PathFinding.h"
 
 #include "Systems/ResourcesManager.hpp"
 

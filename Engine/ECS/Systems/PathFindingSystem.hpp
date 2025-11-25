@@ -48,7 +48,6 @@ namespace Uma_ECS
 
         void DebugDraw();
 
-
     private:
 
         Coordinator* pCoordinator = nullptr;
@@ -60,6 +59,8 @@ namespace Uma_ECS
         float cellSize = 2.0f;
         float rebuildRadius = 500.0f;
 
-        void RebuildPathfinder(const Vec2& center);
+        void RebuildPathfinder(const Vec2& center, float maxAgentRadius);
+        bool isDirty = false; //to check for any new entites
+        //to be removed later
     };
 }

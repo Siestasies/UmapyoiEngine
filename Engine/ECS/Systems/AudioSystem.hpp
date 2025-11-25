@@ -57,5 +57,6 @@ namespace Uma_ECS
         Uma_Engine::SoundManager* pSoundManager = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
+
     };
 }
