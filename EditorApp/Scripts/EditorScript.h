@@ -1178,7 +1178,8 @@ namespace Uma_Engine
                 .name = std::string("Canvas"),
                 .position = Vec2(0, 0),
                 .rotation = Vec2(0, 0),
-                .scale = Vec2(1, 1)
+                .scale = Vec2(1, 1),
+                .parent = std::nullopt
                 });
 
             GetCoordinator().AddComponent<Uma_UI::RectTransform>(m_Canvas, 
@@ -1187,8 +1188,7 @@ namespace Uma_Engine
                 .anchorMax = Vec2(1.0f, 1.0f),      // Top-right (stretch)
                 .pivot = Vec2(0.5f, 0.5f),          // Center pivot
                 .anchoredPosition = Vec2(0, 0),     // No offset
-                .sizeDelta = Vec2(0, 0),            // Stretch to fill
-                .parent = static_cast<Uma_ECS::Entity>(-1)  // Root
+                .sizeDelta = Vec2(0, 0)            // Stretch to fill
                 });
 
             GetCoordinator().AddComponent<Uma_UI::Canvas>(m_Canvas,
@@ -1219,7 +1219,8 @@ namespace Uma_Engine
                 .name = std::string("Button1"),
                 .position = Vec2(0, 0),
                 .rotation = Vec2(0, 0),
-                .scale = Vec2(1, 1)
+                .scale = Vec2(1, 1),
+                .parent = canvas
                 });
 
             coord.AddComponent<Uma_UI::RectTransform>(btn, 
@@ -1228,8 +1229,7 @@ namespace Uma_Engine
                 .anchorMax = Vec2(0.5f, 0.5f),
                 .pivot = Vec2(0.5f, 0.5f),
                 .anchoredPosition = anchoredPos,
-                .sizeDelta = size,
-                .parent = canvas
+                .sizeDelta = size
                 });
 
             coord.AddComponent<Uma_UI::Image>(btn, 
@@ -1245,8 +1245,7 @@ namespace Uma_Engine
                 .normalColour = Uma_UI::Colour(0.2f, 0.6f, 1.f, 1.f),
                 .hoverColour = Uma_UI::Colour(0.3f, 0.7f, 1.f, 1.f),
                 .pressedColour = Uma_UI::Colour(0.1f, 0.4f, 0.9f, 1.f),
-                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f),
-                .functionName = "UI_CALLBACK_PLAY_SOUND"
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
                 });
 
             /* ---------- text child ---------- */
@@ -1257,7 +1256,8 @@ namespace Uma_Engine
                 .name = std::string("Button1_txt"),
                 .position = Vec2(0, 0),
                 .rotation = Vec2(0, 0),
-                .scale = Vec2(1, 1)
+                .scale = Vec2(1, 1),
+                .parent = btn
                 });
 
             coord.AddComponent<Uma_UI::RectTransform>(txt, 
@@ -1266,8 +1266,7 @@ namespace Uma_Engine
                 .anchorMax = Vec2(0.5f, 0.5f),
                 .pivot = Vec2(0.5f, 0.5f),
                 .anchoredPosition = Vec2(0,0),
-                .sizeDelta = size,
-                .parent = btn
+                .sizeDelta = size
                 });
 
             coord.AddComponent<Uma_UI::Text>(txt, 
@@ -1300,7 +1299,8 @@ namespace Uma_Engine
                 .name = std::string("Button2"),
                 .position = Vec2(0, 0),
                 .rotation = Vec2(0, 0),
-                .scale = Vec2(1, 1)
+                .scale = Vec2(1, 1),
+                .parent = canvas
                 });
 
             coord.AddComponent<Uma_UI::RectTransform>(btn,
@@ -1309,8 +1309,7 @@ namespace Uma_Engine
                 .anchorMax = Vec2(0.5f, 0.5f),
                 .pivot = Vec2(0.5f, 0.5f),
                 .anchoredPosition = anchoredPos,
-                .sizeDelta = size,
-                .parent = canvas
+                .sizeDelta = size
                 });
 
             coord.AddComponent<Uma_UI::Image>(btn,
@@ -1326,8 +1325,7 @@ namespace Uma_Engine
                 .normalColour = Uma_UI::Colour(0.f, 0.f, 0.f, 1.f),
                 .hoverColour = Uma_UI::Colour(0.2f, 0.2f, 0.2f, 1.f),
                 .pressedColour = Uma_UI::Colour(1.f, 1.f, 1.f, 1.f),
-                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f),
-                .functionName = "UI_CALLBACK_LOAD_SCENE"
+                .disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f)
                 });
 
             /* ---------- text child ---------- */
@@ -1338,7 +1336,8 @@ namespace Uma_Engine
                 .name = std::string("Button2_txt"),
                 .position = Vec2(0, 0),
                 .rotation = Vec2(0, 0),
-                .scale = Vec2(1, 1)
+                .scale = Vec2(1, 1),
+                .parent = btn
                 });
 
             coord.AddComponent<Uma_UI::RectTransform>(txt,
@@ -1347,8 +1346,7 @@ namespace Uma_Engine
                 .anchorMax = Vec2(0.5f, 0.5f),
                 .pivot = Vec2(0.5f, 0.5f),
                 .anchoredPosition = Vec2(0,0),
-                .sizeDelta = size,
-                .parent = btn
+                .sizeDelta = size
                 });
 
             coord.AddComponent<Uma_UI::Text>(txt,

@@ -42,9 +42,7 @@ namespace Uma_UI
         Uma_UI::Colour pressedColour = Uma_UI::Colour(0.7f, 0.7f, 0.7f, 1.0f);
         Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
 
-        Uma_UI::UICallback onClick = nullptr;
-
-        std::string functionName = {};
+        //std::string functionName = {};
 
         // Runtime state tracking
         bool wasHoveredLastFrame = false;
@@ -86,8 +84,6 @@ namespace Uma_UI
             dCol.AddMember("b", disabledColour.b, allocator);
             dCol.AddMember("a", disabledColour.a, allocator);
             value.AddMember("disabledColour", dCol, allocator);
-
-            value.AddMember("functionName", rapidjson::Value(functionName.c_str(), allocator), allocator);
         }
 
         /*!
@@ -122,13 +118,9 @@ namespace Uma_UI
             disabledColour.b = dCol["b"].GetFloat();
             disabledColour.a = dCol["a"].GetFloat();
 
-            if (value.HasMember("functionName"))
-                functionName = value["functionName"].GetString();
-
             // Reset runtime state
             currentState = interactable ? Uma_UI::ButtonState::Normal : Uma_UI::ButtonState::Disabled;
             wasHoveredLastFrame = false;
-            onClick = nullptr;
         }
     };
 }

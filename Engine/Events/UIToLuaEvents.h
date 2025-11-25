@@ -27,15 +27,17 @@ All rights reserved.
 
 namespace Uma_Engine
 {
-    class ButtonOnClcikedEvent : public Event
+    class ButtonOnClickedEvent : public Event
     {
     public:
-        ButtonOnClcikedEvent(const Uma_ECS::Entity& entity, size_t script_index) : en(entity), scriptIndex(script_index) { priority = Priority::Normal; }
+        ButtonOnClickedEvent(Uma_ECS::Entity entity, size_t scriptIndex)
+            : entity(entity), scriptIndex(scriptIndex)
+        {
+            priority = Priority::Normal;
+        }
 
     public:
-        Uma_ECS::Entity en;
+        Uma_ECS::Entity entity;
         size_t scriptIndex;
     };
-
-    
 }

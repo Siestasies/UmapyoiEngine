@@ -70,6 +70,7 @@ namespace Uma_Engine
             {
                 // set coordinator
                 (void)e;
+                DropEntity();
                 SetCoordinator(pSystemManager->GetSystem<SceneManager>()->GetActiveSceneCoordinator());
             }
         );
@@ -78,6 +79,7 @@ namespace Uma_Engine
             [this](const SceneUnloadedEvent& e)
             {
                 (void)e;
+                DropEntity();
                 SetCoordinator(nullptr);
             }
         );
@@ -138,7 +140,6 @@ namespace Uma_Engine
     void EditorSystem::SetCoordinator(Uma_ECS::Coordinator* coord)
     {
         pCoordinator = coord;
-        
         mPickingSystem.SetCoordinator(coord);
         mGizmoRenderer.SetCoordinator(coord);
         mTransformManipulator.SetCoordinator(coord);
