@@ -23,17 +23,13 @@ All rights reserved.
 #include "UISystem.h"
 #include "../Helpers/Layout.h"
 #include "../Helpers/Input.h"
-#include "Systems/ResourcesTypes.hpp"
-
-#include "HybridInputSystem.h"
-
-#include "Systems/LuaScriptingSystem.hpp"
-
-// events
 #include "../Events/WindowEvents.h"
 #include "../Events/AudioEvents.h"
 #include "../Events/IMGUIEvents.h"
-
+#include "../Events/UIToLuaEvents.h"
+#include "Systems/ResourcesTypes.hpp"
+#include "HybridInputSystem.h"
+#include "Components/Transform.h"
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <map>
@@ -76,29 +72,19 @@ namespace Uma_UI
 
         if (pGraphics)
         {
-            mScreenSize = {static_cast<float>(pGraphics->GetViewportWidth()), static_cast<float>(pGraphics->GetViewportHeight())};
+            mScreenSize = { static_cast<float>(pGraphics->GetViewportWidth()), static_cast<float>(pGraphics->GetViewportHeight()) };
         }
         else
         {
-            mScreenSize = {1280.f, 720.f};
+            mScreenSize = { 1280.f, 720.f };
         }
 
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e) 
-            { 
-                mScreenSize.x = static_cast<float>(e.width), mScreenSize.y = static_cast<float>(e.height);
-            });
-
-        // cache callback
-        // TEMP SOLUTION FOR UI
-        callbacks["UI_CALLBACK_PLAY_SOUND"] = ([this](Uma_ECS::Entity btn)
+        // Subscribe to window resize events and mark all UI dirty
+        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
             {
-                (void)btn;
-                pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("explosion", 1.0f, 0.0f);
-            });
-        callbacks["UI_CALLBACK_LOAD_SCENE"] = ([this](Uma_ECS::Entity btn)
-            {
-                (void)btn;
-                pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>("test_default.scn");
+                mScreenSize.x = static_cast<float>(e.width);
+                mScreenSize.y = static_cast<float>(e.height);
+                MarkAllDirty(); // CRITICAL: Recalculate layout on resize
             });
 
         mHitTestCache.clear();
@@ -139,12 +125,15 @@ namespace Uma_UI
 
     /*!
      * \brief First pass: Computes NDC rectangles for all UI elements based on layout settings.
+     *
+     * Uses Transform hierarchy to traverse UI tree, but computes UI-specific layout.
      */
     void UISystem::LayoutPass()
     {
         auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
         std::vector<std::pair<Uma_ECS::Entity, int>> canvasEntities;
 
+        // Gather all canvases
         for (size_t i = 0; i < canvasArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = canvasArray.GetEntity(i);
@@ -152,27 +141,57 @@ namespace Uma_UI
             canvasEntities.push_back({ entity, canvas.sortingOrder });
         }
 
-        std::sort(canvasEntities.begin(), canvasEntities.end(), [](const auto& a, const auto& b) { return a.second < b.second; });
+        // Sort canvases by sorting order
+        std::sort(canvasEntities.begin(), canvasEntities.end(),
+            [](const auto& a, const auto& b) { return a.second < b.second; });
 
+        // Process each canvas and its hierarchy
         for (const auto& [canvasEntity, sortOrder] : canvasEntities)
         {
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
             canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y);
-            auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
 
-            for (size_t i = 0; i < rectArray.Size(); ++i)
+            // Recursively compute layout for this canvas's children
+            ComputeLayoutRecursive(canvasEntity, GetScreenRect(), canvas.scaleFactor);
+        }
+    }
+
+    /*!
+     * \brief Recursively computes layout for an entity and its children.
+     * \param entity Current entity to process.
+     * \param parentRect Parent's computed NDC rect.
+     * \param canvasScale Canvas scale factor.
+     */
+    void UISystem::ComputeLayoutRecursive(Uma_ECS::Entity entity, const Rect& parentRect, float canvasScale)
+    {
+        // Compute this entity's rect if it has a RectTransform
+        if (pCoordinator->GetComponentArray<RectTransform>().Has(entity))
+        {
+            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
+
+            // Only recalculate if dirty
+            if (rectTransform.isDirty || rectTransform.computedRect.width <= 0.0f)
             {
-                Uma_ECS::Entity entity = rectArray.GetEntity(i);
-                auto& rectTransform = rectArray.GetComponentAt(i);
-
-                if (!rectTransform.isDirty && rectTransform.computedRect.width > 0.0f)
-                {
-                    continue;
-                }
-
-                Rect parentRect = GetParentRect(entity);
-                rectTransform.computedRect = ComputeRectInNDC(rectTransform, parentRect, canvas.scaleFactor, mScreenSize.x, mScreenSize.y);
+                rectTransform.computedRect = ComputeRectInNDC(
+                    rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
                 rectTransform.isDirty = false;
+            }
+        }
+
+        // Get this entity's computed rect to pass to children
+        Rect currentRect = parentRect;
+        if (pCoordinator->GetComponentArray<RectTransform>().Has(entity))
+        {
+            currentRect = pCoordinator->GetComponent<RectTransform>(entity).computedRect;
+        }
+
+        // Process children using Transform hierarchy
+        if (pCoordinator->GetComponentArray<Uma_ECS::Transform>().Has(entity))
+        {
+            auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(entity);
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                ComputeLayoutRecursive(child, currentRect, canvasScale);
             }
         }
     }
@@ -184,10 +203,11 @@ namespace Uma_UI
     {
         mMouseConsumedThisFrame = false;
         mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
-        
+
         mScreenSize = pGraphics->GetSceneViewport();
 
-        mMousePositionNDC = Uma_UI::ScreenToNDC(mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
+        mMousePositionNDC = Uma_UI::ScreenToNDC(
+            mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
         mMouseButtonDownLastFrame = mMouseButtonDown;
 
         if (pGraphics)
@@ -200,9 +220,9 @@ namespace Uma_UI
         }
 
         mHitTestCache.clear();
-        float aspect = mScreenSize.x / mScreenSize.y;
         auto sortedEntities = GetSortedUIEntities();
 
+        // Build hit test cache with proper NDC rectangles
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
@@ -213,11 +233,11 @@ namespace Uma_UI
                 continue;
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            Uma_UI::Rect hitRect = rectTransform.computedRect;
-            hitRect.width /= aspect;
-            mHitTestCache.push_back({entity, hitRect});
+            // Use computed rect directly - it's already in correct NDC space
+            mHitTestCache.push_back({ entity, rectTransform.computedRect });
         }
 
+        // Raycast using NDC coordinates
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
 
         if (hitEntity != static_cast<Uma_ECS::Entity>(-1))
@@ -268,20 +288,7 @@ namespace Uma_UI
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
 
-                        // Invoke callback if valid
-                        // 
-                        /*if (button.onClick != nullptr)
-                        {
-                            button.onClick(entity);
-                        }*/
-
-                        // temp solution
-                        if (!button.functionName.empty())
-                        {
-                            //button.onClick = callbacks[button.functionName];
-                            //button.onClick(entity);
-                            ButtonOnClicked(entity);
-                        }
+                        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
                     }
                 }
                 else
@@ -313,6 +320,7 @@ namespace Uma_UI
 
         auto sortedEntities = GetSortedUIEntities();
 
+        // Render images
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             auto& imageArray = pCoordinator->GetComponentArray<Image>();
@@ -349,9 +357,10 @@ namespace Uma_UI
             sprite.tintColor = image.colour.ToVec3();
             sprite.alpha = image.colour.a;
             sprite.tex_id = texId;
-            spritesWithColours.push_back({sprite, image.colour});
+            spritesWithColours.push_back({ sprite, image.colour });
         }
 
+        // Batch and draw images
         std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
         for (const auto& swc : spritesWithColours)
         {
@@ -364,6 +373,7 @@ namespace Uma_UI
             pGraphics->DrawSpritesScreenInstanced(key.texId, sprites);
         }
 
+        // Render text - alignment computed every frame based on current rect
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             auto& textArray = pCoordinator->GetComponentArray<Text>();
@@ -390,9 +400,12 @@ namespace Uma_UI
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
             Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
+
+            // Measure text width in NDC space
             float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
             float alignX = 0.0f;
 
+            // Calculate horizontal alignment based on rect bounds
             switch (text.alignment)
             {
             case TextAlignment::Left:
@@ -406,10 +419,12 @@ namespace Uma_UI
                 break;
             }
 
+            // Calculate vertical center
             float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
             float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
 
-            pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY, text.fontSize, text.colour.r, text.colour.g, text.colour.b);
+            pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY,
+                text.fontSize, text.colour.r, text.colour.g, text.colour.b);
         }
 
         batches.clear();
@@ -466,22 +481,36 @@ namespace Uma_UI
      * \brief Gets the parent's computed NDC rectangle for a given entity.
      * \param entity The entity to find parent rect for.
      * \return Parent's NDC rectangle or screen rect if root.
+     *
+     * Uses Transform hierarchy to find parent, then gets parent's UI rect.
      */
     Rect UISystem::GetParentRect(Uma_ECS::Entity entity)
     {
-        auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-        if (rectTransform.parent == static_cast<Uma_ECS::Entity>(-1))
+        // Get parent from Transform component (organizational hierarchy)
+        if (!pCoordinator->GetComponentArray<Uma_ECS::Transform>().Has(entity))
         {
             return GetScreenRect();
         }
 
-        if (pCoordinator->GetComponentArray<RectTransform>().Has(rectTransform.parent))
+        auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(entity);
+
+        // If no parent, return screen rect
+        if (!transform.parent.has_value())
         {
-            auto& parentRect = pCoordinator->GetComponent<RectTransform>(rectTransform.parent);
+            return GetScreenRect();
+        }
+
+        Uma_ECS::Entity parentEntity = transform.parent.value();
+
+        // Parent must have RectTransform to provide a layout rect
+        if (pCoordinator->GetComponentArray<RectTransform>().Has(parentEntity))
+        {
+            auto& parentRect = pCoordinator->GetComponent<RectTransform>(parentEntity);
             return parentRect.computedRect;
         }
 
-        return GetScreenRect();
+        // Parent doesn't have RectTransform, keep looking up the hierarchy
+        return GetParentRect(parentEntity);
     }
 
     /*!
@@ -522,40 +551,25 @@ namespace Uma_UI
             int sortingOrder = 0;
             auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
 
+            // Check if this entity itself is a canvas
             if (canvasArray.Has(entity))
             {
                 sortingOrder = pCoordinator->GetComponent<Canvas>(entity).sortingOrder;
             }
             else
             {
-                auto& rect = rectArray.GetComponentAt(i);
-                Uma_ECS::Entity current = rect.parent;
-                while (current != static_cast<Uma_ECS::Entity>(-1))
-                {
-                    if (canvasArray.Has(current))
-                    {
-                        sortingOrder = pCoordinator->GetComponent<Canvas>(current).sortingOrder;
-                        break;
-                    }
-
-                    if (rectArray.Has(current))
-                    {
-                        current = pCoordinator->GetComponent<RectTransform>(current).parent;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                // Walk up Transform hierarchy to find parent Canvas
+                sortingOrder = FindCanvasSortingOrder(entity);
             }
 
             entities.push_back({ entity, sortingOrder });
         }
 
+        // Sort by canvas order, then by entity ID for stability
         std::sort(entities.begin(), entities.end(), [](const auto& lhs, const auto& rhs) {
             if (lhs.second != rhs.second) return lhs.second < rhs.second;
             return lhs.first < rhs.first;
-        });
+            });
 
         std::vector<Uma_ECS::Entity> result;
         result.reserve(entities.size());
@@ -565,6 +579,38 @@ namespace Uma_UI
         }
 
         return result;
+    }
+
+    /*!
+     * \brief Finds the canvas sorting order by walking up the Transform hierarchy.
+     * \param entity Entity to start search from.
+     * \return Canvas sorting order, or 0 if no canvas found.
+     */
+    int UISystem::FindCanvasSortingOrder(Uma_ECS::Entity entity)
+    {
+        auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+
+        Uma_ECS::Entity current = entity;
+
+        while (transformArray.Has(current))
+        {
+            // Check if current entity is a canvas
+            if (canvasArray.Has(current))
+            {
+                return pCoordinator->GetComponent<Canvas>(current).sortingOrder;
+            }
+
+            // Move to parent
+            auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(current);
+            if (!transform.parent.has_value())
+            {
+                break;
+            }
+            current = transform.parent.value();
+        }
+
+        return 0; // Default sorting order if no canvas found
     }
 
     /*!

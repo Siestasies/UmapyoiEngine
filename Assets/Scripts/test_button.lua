@@ -1,5 +1,3 @@
 function OnClicked()
-
-    Log("Jed loves IEM")
-
+    PlaySound("explosion", 1.0, 0);
 end

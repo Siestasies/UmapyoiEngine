@@ -15,16 +15,19 @@ Implementation of the TransformManipulator class.
 This file provides the concrete logic for applying transformations (translate, rotate, scale)
 to entities during gizmo drag operations, supporting both game and UI entities.
 
+CORRECTED: Uses Transform hierarchy for parent lookups, marks UI dirty properly.
+
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "Editor/Systems/TransformManipulator.h"
-#include "ECS/Components/Transform.h"
-#include "UI/Components/RectTransform.h"
-#include "UI/Helpers/Input.h"
-#include "UI/Helpers/Layout.h"
-#include "Editor/Core/EditorMath.h"
+#include "TransformManipulator.h"
+#include "../../ECS/Components/Transform.h"
+#include "../../UI/Components/RectTransform.h"
+#include "../../UI/Components/Canvas.h"
+#include "../../UI/Helpers/Input.h"
+#include "../../UI/Helpers/Layout.h"
+#include "../Core/EditorMath.h"
 #include <cmath>
 #include <algorithm>
 
@@ -49,6 +52,7 @@ namespace Uma_Engine
 
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
+            // Game entity
             const auto& transform = transformArray.GetData(entity);
             state.dragStartPosition = transform.position;
             state.dragStartRotation = transform.rotation.x;
@@ -56,6 +60,7 @@ namespace Uma_Engine
         }
         else if (rectTransformArray.Has(entity))
         {
+            // UI entity
             const auto& rectTransform = rectTransformArray.GetData(entity);
             state.dragStartPosition = rectTransform.anchoredPosition;
             state.dragStartRotation = 0.f;
@@ -178,6 +183,7 @@ namespace Uma_Engine
 
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
+            // Game entity - straightforward translation
             auto& transform = transformArray.GetData(entity);
             Vec2 newPos = start + delta;
 
@@ -191,11 +197,13 @@ namespace Uma_Engine
         }
         else if (rectTransformArray.Has(entity))
         {
+            // UI entity - need to translate anchoredPosition in pixel space
             auto& rectTransform = rectTransformArray.GetData(entity);
 
             int screenWidth = pGraphics->GetViewportWidth();
             int screenHeight = pGraphics->GetViewportHeight();
 
+            // Get current screen position
             Vec2 currentScreenPos = Uma_UI::NDCToScreen(
                 rectTransform.computedRect.x,
                 rectTransform.computedRect.y,
@@ -203,55 +211,29 @@ namespace Uma_Engine
                 static_cast<float>(screenHeight)
             );
 
+            // Convert to world space, apply delta, convert back
             Vec2 currentWorld = pGraphics->ScreenToWorld(currentScreenPos);
             Vec2 newWorld = currentWorld + delta;
             Vec2 newScreenPos = pGraphics->WorldToScreen(newWorld);
 
+            // Calculate screen space delta
             Vec2 screenDelta = newScreenPos - currentScreenPos;
 
-            Vec2 ndcDelta(
-                screenDelta.x / (screenWidth * 0.5f),
-                -screenDelta.y / (screenHeight * 0.5f)
-            );
+            // Get canvas scale for proper pixel conversion
+            float canvasScale = GetCanvasScale(entity);
 
-            rectTransform.anchoredPosition = rectTransform.anchoredPosition + ndcDelta;
+            // Convert screen delta to scaled pixel delta for anchoredPosition
+            // anchoredPosition is in canvas-scaled pixels
+            Vec2 pixelDelta = screenDelta / canvasScale;
 
-            Uma_UI::Rect parentRect = Uma_UI::GetScreenRect();
-            if (rectTransform.parent != static_cast<Uma_ECS::Entity>(-1))
-            {
-                auto& parentRectTransform = rectTransformArray.GetData(rectTransform.parent);
-                parentRect = parentRectTransform.computedRect;
-            }
+            // Update anchoredPosition
+            rectTransform.anchoredPosition = rectTransform.anchoredPosition + pixelDelta;
 
-            float canvasScale = 1.0f;
-            auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
-            Uma_ECS::Entity current = entity;
-            while (current != static_cast<Uma_ECS::Entity>(-1))
-            {
-                if (canvasArray.Has(current))
-                {
-                    canvasScale = canvasArray.GetData(current).scaleFactor;
-                    break;
-                }
-                if (rectTransformArray.Has(current))
-                {
-                    current = rectTransformArray.GetData(current).parent;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            rectTransform.computedRect = Uma_UI::ComputeRectInNDC(
-                rectTransform,
-                parentRect,
-                canvasScale,
-                static_cast<float>(screenWidth),
-                static_cast<float>(screenHeight)
-            );
-
+            // CRITICAL: Mark as dirty so UISystem recalculates
             rectTransform.isDirty = true;
+
+            // Also mark children dirty since parent moved
+            MarkChildrenDirty(entity);
         }
     }
 
@@ -270,10 +252,13 @@ namespace Uma_Engine
 
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
+            // Game entity
             auto& transform = transformArray.GetData(entity);
             transform.rotation.x = deltaAngle;
             transform.worldRotation = transform.rotation.x;
+            transform.isDirty = true;
         }
+        // Note: UI entities typically don't support rotation in this system
     }
 
     /*!
@@ -291,6 +276,7 @@ namespace Uma_Engine
 
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
+            // Game entity
             auto& transform = transformArray.GetData(entity);
             Vec2 newScale(
                 transform.scale.x * scaleFactor.x,
@@ -305,10 +291,20 @@ namespace Uma_Engine
         }
         else if (rectTransformArray.Has(entity))
         {
+            // UI entity - scale sizeDelta
             auto& rectTransform = rectTransformArray.GetData(entity);
             rectTransform.sizeDelta.x *= scaleFactor.x;
             rectTransform.sizeDelta.y *= scaleFactor.y;
+
+            // Clamp minimum size
+            rectTransform.sizeDelta.x = std::max(1.0f, rectTransform.sizeDelta.x);
+            rectTransform.sizeDelta.y = std::max(1.0f, rectTransform.sizeDelta.y);
+
+            // CRITICAL: Mark as dirty
             rectTransform.isDirty = true;
+
+            // Mark children dirty since parent size changed
+            MarkChildrenDirty(entity);
         }
     }
 
@@ -327,11 +323,13 @@ namespace Uma_Engine
 
         if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
+            // Game entity
             const auto& transform = transformArray.GetData(entity);
             return pGraphics->WorldToScreen(transform.worldPosition);
         }
         else if (rectTransformArray.Has(entity))
         {
+            // UI entity
             const auto& rectTransform = rectTransformArray.GetData(entity);
 
             int screenWidth = pGraphics->GetViewportWidth();
@@ -348,6 +346,74 @@ namespace Uma_Engine
         }
 
         return Vec2(0.0f, 0.0f);
+    }
+
+    /*!
+     * \brief Gets the canvas scale for a UI entity by walking up Transform hierarchy.
+     * \param entity Entity to find canvas scale for.
+     * \return Canvas scale factor, or 1.0f if no canvas found.
+     */
+    float TransformManipulator::GetCanvasScale(Uma_ECS::Entity entity)
+    {
+        if (!pCoordinator)
+            return 1.0f;
+
+        auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+
+        // Walk up Transform hierarchy to find Canvas
+        Uma_ECS::Entity current = entity;
+
+        while (transformArray.Has(current))
+        {
+            // Check if this entity is a Canvas
+            if (canvasArray.Has(current))
+            {
+                return canvasArray.GetData(current).scaleFactor;
+            }
+
+            // Move to parent via Transform hierarchy
+            auto& transform = transformArray.GetData(current);
+            if (!transform.parent.has_value())
+            {
+                break;
+            }
+            current = transform.parent.value();
+        }
+
+        return 1.0f; // Default scale if no canvas found
+    }
+
+    /*!
+     * \brief Marks all children of an entity as dirty recursively.
+     * \param entity Parent entity whose children to mark dirty.
+     */
+    void TransformManipulator::MarkChildrenDirty(Uma_ECS::Entity entity)
+    {
+        if (!pCoordinator)
+            return;
+
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+
+        // Get children from Transform hierarchy
+        if (!transformArray.Has(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+
+        for (Uma_ECS::Entity child : transform.children)
+        {
+            // Mark child's RectTransform dirty if it has one
+            if (rectTransformArray.Has(child))
+            {
+                auto& childRect = rectTransformArray.GetData(child);
+                childRect.isDirty = true;
+            }
+
+            // Recursively mark grandchildren
+            MarkChildrenDirty(child);
+        }
     }
 
     /*!

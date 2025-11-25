@@ -16,6 +16,9 @@ This header declares the UISystem class, which manages UI components through
 an explicit three-pass architecture: Layout, Input, and BuildDrawList. It
 integrates with ECS, event system, graphics, and resource management subsystems.
 
+CORRECTED: Transform is only for ECS organization. UISystem manages its own
+UI-specific layout computations using Transform hierarchy for traversal.
+
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
@@ -43,6 +46,12 @@ namespace Uma_UI
     /*!
      * \class UISystem
      * \brief Main UI system with explicit three-pass architecture for layout, input, and rendering.
+     *
+     * ARCHITECTURE NOTE:
+     * - Transform component: Used for ECS organization and hierarchy traversal ONLY
+     * - UISystem: Handles all UI-specific layout computations (rect positions, text alignment, etc.)
+     * - Transform is NOT managed by TransformSystem for UI entities
+     * - Transform.parent/children used to navigate UI tree, but UISystem does the rect math
      */
     class UISystem : public Uma_ECS::ECSSystem
     {
@@ -134,21 +143,14 @@ namespace Uma_UI
          */
         bool IsUIHovered() const { return !mHitTestCache.empty(); }
 
-
-        // button related
-        void ButtonOnClicked(Uma_ECS::Entity entity);
-
     private:
         Uma_ECS::Coordinator* pCoordinator = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
 
-        // temp solution to cache callback
-        std::unordered_map<std::string, Uma_UI::UICallback> callbacks;
-
         // Screen state
-        Vec2 mScreenSize{1280.f, 720.f};
+        Vec2 mScreenSize{ 1280.f, 720.f };
         Vec2 mMousePositionScreen;
         Vec2 mMousePositionNDC;
         bool mMouseButtonDown = false;
@@ -158,7 +160,17 @@ namespace Uma_UI
         std::vector<std::pair<Uma_ECS::Entity, Rect>> mHitTestCache;
 
         /*!
-         * \brief Helper: Computes NDC rectangle for a specific entity.
+         * \brief Recursively computes layout for entity and its children.
+         * \param entity Current entity to process.
+         * \param parentRect Parent's computed NDC rect.
+         * \param canvasScale Canvas scale factor.
+         *
+         * Uses Transform.children to traverse hierarchy, but computes UI-specific rects.
+         */
+        void ComputeLayoutRecursive(Uma_ECS::Entity entity, const Rect& parentRect, float canvasScale);
+
+        /*!
+         * \brief Computes NDC rectangle for a specific entity.
          * \param entity The entity to compute rect for.
          * \param canvasScale The canvas scale factor.
          * \return Computed NDC rectangle.
@@ -166,26 +178,35 @@ namespace Uma_UI
         Rect ComputeRectForEntity(Uma_ECS::Entity entity, float canvasScale);
 
         /*!
-         * \brief Helper: Gets the parent's computed NDC rectangle.
+         * \brief Gets the parent's computed NDC rectangle.
          * \param entity The entity to find parent rect for.
          * \return Parent's NDC rectangle or screen rect if root.
+         *
+         * Uses Transform.parent to walk up hierarchy, returns first RectTransform found.
          */
         Rect GetParentRect(Uma_ECS::Entity entity);
 
         /*!
-         * \brief Helper: Updates button visual state based on interaction state.
+         * \brief Updates button visual state based on interaction state.
          * \param entity The button entity to update.
          */
         void UpdateButtonVisual(Uma_ECS::Entity entity);
 
         /*!
-         * \brief Helper: Returns all UI entities sorted by canvas sorting order.
+         * \brief Returns all UI entities sorted by canvas sorting order.
          * \return Vector of entity IDs in render order.
          */
         std::vector<Uma_ECS::Entity> GetSortedUIEntities();
 
         /*!
-         * \brief Helper: Loads a texture if not already loaded and returns its ID.
+         * \brief Finds canvas sorting order by walking up Transform hierarchy.
+         * \param entity Entity to start search from.
+         * \return Canvas sorting order, or 0 if no canvas found.
+         */
+        int FindCanvasSortingOrder(Uma_ECS::Entity entity);
+
+        /*!
+         * \brief Loads a texture if not already loaded and returns its ID.
          * \param textureName Name of the texture to load.
          * \param fallbackPath Optional fallback path if texture is not found.
          * \return Texture ID or 0 if not available.
@@ -193,10 +214,12 @@ namespace Uma_UI
         unsigned int GetOrLoadTexture(const std::string& textureName, const std::string& fallbackPath = "");
 
         /*!
-         * \brief Helper: Ensures a font is loaded and ready for rendering.
+         * \brief Ensures a font is loaded and ready for rendering.
          * \param fontName Name of the font to verify.
          * \return True if font is loaded and valid.
          */
         bool EnsureFontLoaded(const std::string& fontName);
+
+        void ButtonOnClicked(Uma_ECS::Entity entity);
     };
 }

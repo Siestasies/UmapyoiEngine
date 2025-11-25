@@ -30,12 +30,14 @@ namespace Uma_Engine
     class ButtonOnClickedEvent : public Event
     {
     public:
-        ButtonOnClickedEvent(const Uma_ECS::Entity& entity, size_t script_index) : en(entity), scriptIndex(script_index) { priority = Priority::Normal; }
+        ButtonOnClickedEvent(Uma_ECS::Entity entity, size_t scriptIndex)
+            : entity(entity), scriptIndex(scriptIndex)
+        {
+            priority = Priority::Normal;
+        }
 
     public:
-        Uma_ECS::Entity en;
+        Uma_ECS::Entity entity;
         size_t scriptIndex;
     };
-
-    
 }

@@ -820,12 +820,10 @@ namespace Uma_ECS
         pEventSystem->Subscribe<Uma_Engine::ButtonOnClickedEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::ButtonOnClickedEvent& e)
             {
-                if (pCoordinator->HasComponent<LuaScript>(e.en))
+                if (pCoordinator->HasComponent<LuaScript>(e.entity))
                 {
-                    auto& luaComp = pCoordinator->GetComponent<LuaScript>(e.en);
-
+                    auto& luaComp = pCoordinator->GetComponent<LuaScript>(e.entity);
                     auto& script = *luaComp.GetScript(e.scriptIndex);
-
                     CallLuaFunction(script, "OnClicked");
                 }
             }

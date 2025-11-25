@@ -38,7 +38,6 @@ namespace Uma_UI
         Vec2 pivot = Vec2(0.5f, 0.5f);
         Vec2 anchoredPosition = Vec2(0.0f, 0.0f);
         Vec2 sizeDelta = Vec2(100.0f, 100.0f);
-        Uma_ECS::Entity parent = static_cast<Uma_ECS::Entity>(-1);
         Uma_UI::Rect computedRect;
         bool isDirty = true;
 
@@ -105,8 +104,6 @@ namespace Uma_UI
             size.AddMember("x", sizeDelta.x, allocator);
             size.AddMember("y", sizeDelta.y, allocator);
             value.AddMember("sizeDelta", size, allocator);
-
-            value.AddMember("parent", parent, allocator);
         }
 
         /*!
@@ -134,8 +131,6 @@ namespace Uma_UI
             const auto& size = value["sizeDelta"];
             sizeDelta.x = size["x"].GetFloat();
             sizeDelta.y = size["y"].GetFloat();
-
-            parent = value["parent"].GetUint();
 
             isDirty = true;
             computedRect = Uma_UI::Rect();

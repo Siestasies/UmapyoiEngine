@@ -15,15 +15,17 @@ Defines the TransformManipulator class for applying entity transformations.
 This header declares the TransformManipulator class which handles applying
 translation, rotation, and scale transformations to entities during gizmo interactions.
 
+CORRECTED: Added helper methods for canvas scale and marking children dirty.
+
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
 #pragma once
 
-#include "ECS/Core/Coordinator.hpp"
-#include "Systems/Graphics.hpp"
-#include "../EditorApp/Editor/Core/EditorTypes.h"
+#include "../../ECS/Core/Coordinator.hpp"
+#include "../../Systems/Graphics.hpp"
+#include "../Core/EditorTypes.h"
 
 namespace Uma_Engine
 {
@@ -38,7 +40,7 @@ namespace Uma_Engine
          * \brief Constructs the transform manipulator.
          */
         TransformManipulator() = default;
-        
+
         /*!
          * \brief Destroys the transform manipulator.
          */
@@ -126,5 +128,18 @@ namespace Uma_Engine
          * \return Screen position as Vec2.
          */
         Vec2 GetEntityScreenPosition(Uma_ECS::Entity entity);
+
+        /*!
+         * \brief Gets the canvas scale factor by walking up Transform hierarchy.
+         * \param entity Entity to find canvas scale for.
+         * \return Canvas scale factor, or 1.0f if no canvas found.
+         */
+        float GetCanvasScale(Uma_ECS::Entity entity);
+
+        /*!
+         * \brief Marks all children as dirty recursively using Transform hierarchy.
+         * \param entity Parent entity whose children to mark dirty.
+         */
+        void MarkChildrenDirty(Uma_ECS::Entity entity);
     };
 }
