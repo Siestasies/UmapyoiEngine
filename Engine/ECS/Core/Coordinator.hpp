@@ -50,6 +50,7 @@ All rights reserved.
 #include "../Components/AudioComponent.h"
 #include "../Components/AudioListener.h"
 #include "../Components/PathFinding.h"
+#include "../Components/ParticleEmitter.h"
 
 #include <unordered_set>
 
@@ -225,6 +226,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(AudioComponent)
             CHECK_COMPONENT(AudioListener)
             CHECK_COMPONENT(PathFinding)
+            CHECK_COMPONENT(ParticleEmitter)
 
 #undef CHECK_COMPONENT
         }
