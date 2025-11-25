@@ -76,8 +76,15 @@ namespace Uma_UI
             mScreenSize = {1280.f, 720.f};
         }
 
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e) 
-            { 
+        // Subscribe to viewport mouse events
+        pEventSystem->Subscribe<Uma_Engine::SceneViewMouseEvent, UISystem>(
+            [this](const Uma_Engine::SceneViewMouseEvent& e) {
+                mViewportMousePos = Vec2(e.x, e.y);
+                mMouseInViewport = e.inside;
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
+            {
                 mScreenSize.x = static_cast<float>(e.width), mScreenSize.y = static_cast<float>(e.height);
             });
 
@@ -182,7 +189,15 @@ namespace Uma_UI
 
         if (pGraphics)
         {
-            mMouseButtonDown = glfwGetMouseButton(pGraphics->GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+            // In framebuffer mode, only process input if mouse is inside viewport
+            if (pGraphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer && !mMouseInViewport)
+            {
+                mMouseButtonDown = false;
+            }
+            else
+            {
+                mMouseButtonDown = glfwGetMouseButton(pGraphics->GetWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+            }
         }
         else
         {
@@ -414,6 +429,12 @@ namespace Uma_UI
         if (!pGraphics)
         {
             return Vec2(0.0f, 0.0f);
+        }
+
+        // If rendering to framebuffer
+        if (pGraphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+        {
+            return mViewportMousePos;
         }
 
         double xpos, ypos;

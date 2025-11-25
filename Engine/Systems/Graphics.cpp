@@ -217,7 +217,7 @@ void main()
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
         mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
-        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {}
+        mSceneDepthBuffer(0), mRenderTarget(RenderTarget::Framebuffer) {}
 
     Graphics::~Graphics()
     {
@@ -310,7 +310,7 @@ void main()
         UNREFERENCED_PARAMETER(dt);
 
         // Handle window resize if needed
-        if (mWindow)
+        if (mWindow && mRenderTarget == RenderTarget::Window)
         {
             int width, height;
             glfwGetFramebufferSize(mWindow, &width, &height);
@@ -328,7 +328,7 @@ void main()
         if (mRenderTarget == RenderTarget::Framebuffer)
         {
             glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
-            glViewport(0, 0, mSceneFBWidth, mSceneFBHeight);
+            glViewport(0, 0, mViewportWidth, mViewportHeight);
         }
 
         ClearBackground(0.2f, 0.3f, 0.3f);
@@ -693,12 +693,9 @@ void main()
     {
         if (!mInitialized) return;
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate orthographic projection bounds based on camera zoom
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
 
         // Calculate projection bounds centered on camera position
         float left = cam.pos.x - halfWidth;
@@ -717,16 +714,13 @@ void main()
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
     {
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Convert screen coordinates to NDC
-        float ndcX = (2.0f * screenPos.x) / width - 1.0f;
-        float ndcY = 1.0f - (2.0f * screenPos.y) / height;
+        float ndcX = (2.0f * screenPos.x) / mViewportWidth - 1.0f;
+        float ndcY = 1.0f - (2.0f * screenPos.y) / mViewportHeight;
 
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -742,12 +736,9 @@ void main()
 
     Vec2 Graphics::WorldToScreen(const Vec2& worldPos) const
     {
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -763,8 +754,8 @@ void main()
         float ndcY = clipPos.y / clipPos.w;
 
         // Convert NDC to screen coordinates
-        float screenX = (ndcX + 1.0f) * 0.5f * width;
-        float screenY = (1.0f - ndcY) * 0.5f * height;
+        float screenX = (ndcX + 1.0f) * 0.5f * mViewportWidth;
+        float screenY = (1.0f - ndcY) * 0.5f * mViewportHeight;
 
         return Vec2(screenX, screenY);
     }
@@ -1093,12 +1084,9 @@ void main()
         // Set projection matrix uniform
         GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1397,12 +1385,9 @@ void main()
         // Set text color
         glUniform3f(glGetUniformLocation(mTextShaderProgram, "textColor"), r, g, b);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Use camera-based projection
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1647,12 +1632,9 @@ void main()
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1764,12 +1746,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1824,12 +1803,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1871,12 +1847,9 @@ void main()
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
         // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
+        float halfWidth = (mViewportWidth * 0.5f) / cam.zoom;
+        float halfHeight = (mViewportHeight * 0.5f) / cam.zoom;
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
@@ -1914,8 +1887,8 @@ void main()
     {
         if (width <= 0 || height <= 0) return;
 
-        mSceneFBWidth = width;
-        mSceneFBHeight = height;
+        mViewportWidth = width;
+        mViewportHeight = height;
 
         glGenFramebuffers(1, &mSceneFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
@@ -1942,7 +1915,7 @@ void main()
 
     void Graphics::ResizeSceneFramebuffer(int width, int height)
     {
-        if (width == mSceneFBWidth && height == mSceneFBHeight)
+        if (width == mViewportWidth && height == mViewportHeight)
             return;
 
         if (mSceneFramebuffer != 0)
@@ -1971,7 +1944,7 @@ void main()
         }
     }
 
-    void Graphics::GetCurrentRenderDimensions(int& width, int& height) const
+    /*void Graphics::GetCurrentRenderDimensions(int& width, int& height) const
     {
         if (mRenderTarget == RenderTarget::Framebuffer)
         {
@@ -1983,5 +1956,5 @@ void main()
             width = mViewportWidth;
             height = mViewportHeight;
         }
-    }
+    }*/
 }

@@ -150,6 +150,8 @@ namespace Uma_UI
         bool mMouseButtonDown = false;
         bool mMouseButtonDownLastFrame = false;
         bool mMouseConsumedThisFrame = false;
+        Vec2 mViewportMousePos{ 0.0f, 0.0f };  // Mouse position from SceneViewMouseEvent
+        bool mMouseInViewport{ false };        // Is mouse inside viewport
 
         std::vector<std::pair<Uma_ECS::Entity, Rect>> mHitTestCache;
 

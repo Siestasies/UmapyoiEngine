@@ -161,7 +161,7 @@ namespace Uma_Engine
         GLuint mSceneFramebuffer;
         GLuint mSceneTexture;
         GLuint mSceneDepthBuffer;
-        int mSceneFBWidth, mSceneFBHeight;
+        //int mSceneFBWidth, mSceneFBHeight;
         RenderTarget mRenderTarget;
 
         // Viewport size
@@ -271,7 +271,7 @@ namespace Uma_Engine
          */
         void UpdateProjectionMatrix();
 
-        void GetCurrentRenderDimensions(int& width, int& height) const;
+        //void GetCurrentRenderDimensions(int& width, int& height) const;
 
     public:
         /**
@@ -648,7 +648,7 @@ namespace Uma_Engine
         void ResizeSceneFramebuffer(int width, int height);
         GLuint GetSceneTexture() const { return mSceneTexture; }
         void UnbindFramebuffer();
-        int GetSceneFBWidth() const { return mSceneFBWidth; }
-        int GetSceneFBHeight() const { return mSceneFBHeight; }
+        //int GetSceneFBWidth() const { return mSceneFBWidth; }
+        //int GetSceneFBHeight() const { return mSceneFBHeight; }
     };
 }
