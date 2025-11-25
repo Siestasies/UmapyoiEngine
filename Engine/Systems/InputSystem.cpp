@@ -60,6 +60,21 @@ namespace Uma_Engine
 #endif // !_DEBUG_LOG
     }
 
+    void InputSystem::ResetInputState()
+    {
+        // Reset Key States
+        std::fill(sKeys.begin(), sKeys.end(), false);
+        std::fill(sKeysPrevFrame.begin(), sKeysPrevFrame.end(), false);
+
+        // Reset Mouse Button States
+        std::fill(sMouseButtons.begin(), sMouseButtons.end(), false);
+        std::fill(sMouseButtonsPrevFrame.begin(), sMouseButtonsPrevFrame.end(), false);
+
+        // Reset Scroll
+        sScrollX = 0.0;
+        sScrollY = 0.0;
+    }
+
     void InputSystem::SetWindow(GLFWwindow* window)
     {
         if (!window) {

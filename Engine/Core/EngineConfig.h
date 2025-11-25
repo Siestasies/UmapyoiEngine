@@ -22,6 +22,7 @@ All rights reserved.
 
 #include "BaseSerializer.h"
 #include "FilePaths.h"
+#include "Systems/Window.hpp"
 
 namespace Uma_Engine
 {
@@ -29,14 +30,19 @@ namespace Uma_Engine
     {
     public:
         // Screen settings
-        int screenWidth = 1280;
-        int screenHeight = 720;
-        bool fullscreen = false;
+        int screenWidth = 1600;
+        int screenHeight = 900;
+        bool fullscreen = true;
         bool vsync = true;
         int fps = 60;
 
         // Window settings
         std::string windowTitle = "My Game Engine";
+
+        WindowMode GetWindowMode() const
+        {
+            return fullscreen ? WindowMode::Fullscreen : WindowMode::Windowed;
+        }
 
         // Performance / timing
         // Physics timing

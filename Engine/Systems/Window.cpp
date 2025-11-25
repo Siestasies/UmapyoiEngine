@@ -29,8 +29,9 @@ All rights reserved.
 
 namespace Uma_Engine
 {
-    Window::Window(int width, int height, const std::string& title)
-        : mWindow(nullptr), mWidth(width), mHeight(height), mTitle(title), mInitialized(false) {}
+    Window::Window(int width, int height, const std::string& title, WindowMode mode, bool isEditorMode) : mWindow(nullptr),
+        mWidth(width), mHeight(height), mWindowedWidth(width), mWindowedHeight(height), mTitle(title),
+        mInitialized(false), mMode(mode), mIsEditorMode(isEditorMode) {}
 
     Window::~Window()
     {
@@ -40,21 +41,41 @@ namespace Uma_Engine
     bool Window::Initialize()
     {
         std::cout << "Initializing Uma_Engine..." << std::endl;
-        
-        // Initialize GLFW
+
         if (!glfwInit())
         {
             std::cerr << "Failed to initialize GLFW!" << std::endl;
             return false;
         }
 
-        // Configure GLFW for OpenGL 4.5 Core
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        // Create window
-        mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), nullptr, nullptr);
+        // Set resizable based on editor mode
+        if (mIsEditorMode)
+        {
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        }
+        else
+        {
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        }
+
+        GLFWmonitor* monitor = nullptr;
+        if (mMode == WindowMode::Fullscreen)
+        {
+            monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            mWidth = mode->width;
+            mHeight = mode->height;
+            glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+            glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+            glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+            glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        }
+
+        mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), monitor, nullptr);
         if (!mWindow)
         {
             std::cerr << "Failed to create GLFW window!" << std::endl;
@@ -62,10 +83,18 @@ namespace Uma_Engine
             return false;
         }
 
-        // Make the window's context current BEFORE initializing GLAD
+        // Center window if windowed mode
+        if (mMode == WindowMode::Windowed)
+        {
+            GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
+            int xpos = (videoMode->width - mWidth) / 2;
+            int ypos = (videoMode->height - mHeight) / 2;
+            glfwSetWindowPos(mWindow, xpos, ypos);
+        }
+
         glfwMakeContextCurrent(mWindow);
 
-        // Initialize OpenGL with GLAD
         if (!InitializeOpenGL())
         {
             std::cerr << "Failed to initialize OpenGL!" << std::endl;
@@ -73,10 +102,6 @@ namespace Uma_Engine
             glfwTerminate();
             return false;
         }
-
-        std::cout << "Window created successfully: " << mTitle << " (" << mWidth << "x" << mHeight << ")" << std::endl;
-        std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
-        std::cout << "GLSL Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
         mInitialized = true;
         return true;
@@ -104,7 +129,7 @@ namespace Uma_Engine
         if (!mInitialized) return;
 
         // Swap front and back buffers
-        glfwSwapBuffers(mWindow);
+        //glfwSwapBuffers(mWindow);
 
         // Poll for and process events
         glfwPollEvents();
@@ -158,5 +183,54 @@ namespace Uma_Engine
 
         // Store the new title
         mTitle = newTitle;
+    }
+
+    void Window::SetWindowMode(WindowMode mode)
+    {
+        if (!mWindow || mMode == mode) return;
+
+        mMode = mode;
+
+        if (mMode == WindowMode::Fullscreen)
+        {
+            // Save current windowed dimensions
+            glfwGetWindowSize(mWindow, &mWindowedWidth, &mWindowedHeight);
+
+            // Get monitor
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+
+            // Switch to fullscreen
+            glfwSetWindowMonitor(mWindow, monitor, 0, 0,
+                videoMode->width, videoMode->height,
+                videoMode->refreshRate);
+
+            mWidth = videoMode->width;
+            mHeight = videoMode->height;
+        }
+        else
+        {
+            // Calculate centered position
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+            int xpos = (videoMode->width - mWindowedWidth) / 2;
+            int ypos = (videoMode->height - mWindowedHeight) / 2;
+
+            // Switch to windowed mode
+            glfwSetWindowMonitor(mWindow, nullptr, xpos, ypos,
+                mWindowedWidth, mWindowedHeight,
+                GLFW_DONT_CARE);
+
+            mWidth = mWindowedWidth;
+            mHeight = mWindowedHeight;
+        }
+
+        // Update OpenGL viewport
+        glViewport(0, 0, mWidth, mHeight);
+    }
+
+    void Window::ToggleFullscreen()
+    {
+        SetWindowMode(mMode == WindowMode::Fullscreen ? WindowMode::Windowed : WindowMode::Fullscreen);
     }
 }

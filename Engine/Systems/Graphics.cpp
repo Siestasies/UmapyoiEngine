@@ -216,8 +216,8 @@ void main()
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
-        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0)
-        , mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Window) {}
+        mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
+        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {}
 
     Graphics::~Graphics()
     {
@@ -314,6 +314,8 @@ void main()
         {
             int width, height;
             glfwGetFramebufferSize(mWindow, &width, &height);
+
+            if (width == 0 || height == 0) return;
 
             // Only update if size changed
             if (width != mViewportWidth || height != mViewportHeight)
@@ -672,6 +674,7 @@ void main()
     void Graphics::OnWindowResize(int width, int height)
     {
         if (!mInitialized) return;
+        if (width == 0 || height == 0) return;
         pSystemManager->GetSystem<EventSystem>()->Emit<WindowResizeEvent>(width, height);
         SetViewport(width, height);
     }
@@ -1909,6 +1912,8 @@ void main()
 
     void Graphics::InitSceneFramebuffer(int width, int height)
     {
+        if (width <= 0 || height <= 0) return;
+
         mSceneFBWidth = width;
         mSceneFBHeight = height;
 
