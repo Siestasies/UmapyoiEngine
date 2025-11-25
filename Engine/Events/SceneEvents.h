@@ -46,7 +46,7 @@ namespace Uma_Engine
     class SceneUnloadedEvent : public Event
     {
     public:
-        SceneUnloadedEvent(const std::string& sceneName) : sceneName(sceneName) { priority = Priority::Normal; }
+        SceneUnloadedEvent(const std::string& sceneName) : sceneName(sceneName) { priority = Priority::High; }
 
     public:
         std::string sceneName;

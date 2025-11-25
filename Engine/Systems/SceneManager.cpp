@@ -302,18 +302,11 @@ namespace Uma_Engine
             m_ActiveScene = scene;
         }
 
-        //if (m_ActiveScene->GetName().find("TEMP") == std::string::npos)
-        //{
-        //    pEventSystem->Emit<IMGUIStopRequest>();
-        //}
-
         // passing message using event system
         UpdateIMGUIWindow();
 
         // set coordinator for gizmos 
         pEventSystem->Emit<SceneLoadedEvent>(name);
-        //pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(&m_ActiveScene->GetCoordinator());
-
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
         return scene;
