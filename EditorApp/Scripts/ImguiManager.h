@@ -112,8 +112,10 @@ namespace Uma_Engine
         // Window creation functions
         void SceneManagerWindow();
         void CreateHierarchyWindow();
+        void CreatePrefabHierarchyWindow();
         void CreateInspectorWindow();
         void CreateEditorControlBar();
+        void CreatePrefabControlBar();
         void CreateSystemsWindow();
         void CreatePerformanceWindow();
         void CreateEngineDebugWindow(float fps, float deltaTime);
@@ -124,6 +126,8 @@ namespace Uma_Engine
 
         // Hierarchy helper functions
         void RenderEntityNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
+            Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
+        void RenderPrefabNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
         std::string GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
         bool IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
@@ -158,6 +162,9 @@ namespace Uma_Engine
         bool m_HierarchyScrollToBottom = false;
         int m_HierarchyScrollToBottomFrames = 0;
 
+        // Selected entity tracking for Inspector
+        Uma_ECS::Entity m_selectedEntity;
+        Uma_ECS::Entity m_prefabEntity;
 
         // show or not
         bool m_hideAll;

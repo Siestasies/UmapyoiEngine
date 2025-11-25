@@ -254,9 +254,6 @@ namespace Uma_Engine
 
         CreateDockspace();
 
-        // play stop bar
-        CreateEditorControlBar();
-
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
         {
             CreateSceneViewWindow();
@@ -278,18 +275,30 @@ namespace Uma_Engine
                 );
             }
         }
-
-        if (!m_hideAll)
+        
+        if (fileBrowser.isPrefabEdit())
         {
-            SceneManagerWindow();
-
-            // call for windows to be shown
-            float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
-            CreateDebugWindows(currentFps, deltaTime);
-
+            CreatePrefabControlBar();
+            CreatePrefabHierarchyWindow();
+            CreateInspectorWindow();
             fileBrowser.Render();
+        }
+        else
+        {
+            // play stop bar
+            CreateEditorControlBar();
+            if (!m_hideAll)
+            {
+                SceneManagerWindow();
 
-            resourcesWindow.Render();
+                // call for windows to be shown
+                float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
+                CreateDebugWindows(currentFps, deltaTime);
+
+                fileBrowser.Render();
+
+                resourcesWindow.Render();
+            }
         }
 
         // Check mouse over UI
@@ -491,6 +500,51 @@ namespace Uma_Engine
             }
 
             ImGui::TextColored(stateColor, "%s", stateText);
+        }
+
+        ImGui::End();
+        ImGui::PopStyleVar(2);
+    }
+
+    void ImguiManager::CreatePrefabControlBar()
+    {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 40));
+        ImGui::SetNextWindowViewport(viewport->ID);
+
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar |
+            ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(8, 4));
+
+        if (ImGui::Begin("##PrefabControlBar", nullptr, flags))
+        {
+            // Center the buttons
+            float buttonWidth = 80.0f;
+            float spacing = 8.0f;
+            float totalWidth = (buttonWidth * 3) + (spacing * 2);
+            float offset = (ImGui::GetWindowWidth() - totalWidth) * 0.5f;
+            ImGui::SetCursorPosX(offset);
+
+            // Save Button
+            if (ImGui::Button("Save", ImVec2(buttonWidth, 0)))
+            {
+                pEventSystem->Emit<SavePrefabRequestEvent>(fileBrowser.getPrefabName(), m_prefabEntity);
+            }
+
+            ImGui::SameLine();
+
+            // Quit Button
+            if (ImGui::Button("Quit", ImVec2(buttonWidth, 0)))
+            {
+                pEventSystem->Emit<StopSceneRequest>();
+                pEventSystem->Emit<LoadSceneRequestEvent>(fileBrowser.getPrevSceneName());
+                pEventSystem->Emit<DeleteCurrSceneRequest>(fileBrowser.getPrefabSceneName());
+                fileBrowser.setIsPrefabEdit(false);
+            }
         }
 
         ImGui::End();
@@ -836,6 +890,8 @@ namespace Uma_Engine
             ImGui::End();
             return;
         }
+        if (fileBrowser.getPrevSceneName() != sceneManager->GetActiveSceneName())
+            fileBrowser.setPrevSceneName(sceneManager->GetActiveSceneName());
 
         auto& coordinator = activeScene->GetCoordinator();
         auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
@@ -863,6 +919,77 @@ namespace Uma_Engine
         {
             ImGui::SetScrollHereY(1.0f);
             m_HierarchyScrollToBottomFrames--;
+        }
+
+        ImGui::EndChild();
+        ImGui::End();
+    }
+
+    void ImguiManager::CreatePrefabHierarchyWindow()
+    {
+        bool b = true;
+        ImGui::Begin(fileBrowser.getPrefabName().c_str(), &b);
+
+        // Header with entity count
+        if (sceneNames.size() > 0)
+            ImGui::Text("%s | Scene Entities: %d", sceneNames[activeSceneIndex].c_str(), mEntityCount);
+        ImGui::Separator();
+
+        // Scrollable region for entity list
+        ImGui::BeginChild("EntityList", ImVec2(0, 0), true);
+
+        // Get coordinator from scene manager
+        auto sceneManager = pSystemManager->GetSystem<SceneManager>();
+        if (!sceneManager)
+        {
+            ImGui::EndChild();
+            ImGui::End();
+            return;
+        }
+
+        auto activeScene = sceneManager->GetActiveScene();
+        if (!activeScene)
+        {
+            ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No active scene");
+            ImGui::EndChild();
+            ImGui::End();
+            return;
+        }
+
+        auto& coordinator = activeScene->GetCoordinator();
+        auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+
+        // Build a list of root entities (entities with no parent)
+        Uma_ECS::Entity rootEntity = static_cast<Uma_ECS::Entity>(-1);
+        bool firstRoot = true;
+        for (size_t i = 0; i < transformArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = transformArray.GetEntity(i);
+            auto& transform = transformArray.GetData(entity);
+
+            if (!transform.parent.has_value())
+            {
+                if (firstRoot)
+                {
+                    rootEntity = entity;
+                    firstRoot = false;
+                }
+                else
+                    coordinator.DestroyEntity(entity);
+            }
+        }
+
+        // Render root entity and its children recursively
+        if (rootEntity != static_cast<Uma_ECS::Entity>(-1))
+        {
+            RenderPrefabNode(rootEntity, coordinator, transformArray);
+            m_prefabEntity = rootEntity;
+        }
+
+        if (m_HierarchyScrollToBottom)
+        {
+            ImGui::SetScrollHereY(1.0f);
+            m_HierarchyScrollToBottom = false;
         }
 
         ImGui::EndChild();
@@ -1076,6 +1203,127 @@ namespace Uma_Engine
             for (Uma_ECS::Entity child : transform.children)
             {
                 RenderEntityNode(child, coordinator, transformArray);
+            }
+            ImGui::TreePop();
+        }
+
+        ImGui::PopID();
+    }
+
+    void ImguiManager::RenderPrefabNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
+        Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray)
+    {
+        if (!coordinator.HasActiveEntity(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+        bool hasChildren = !transform.children.empty();
+
+        // Generate entity name based on components
+        std::string entityName = GetEntityDisplayName(entity, coordinator);
+
+        // Setup tree node flags
+        ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        if (!hasChildren)
+            flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+        if (m_selectedEntity == entity)
+            flags |= ImGuiTreeNodeFlags_Selected;
+
+        // Push unique ID for this entity
+        ImGui::PushID(static_cast<int>(entity));
+
+        // Render tree node
+        bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
+
+        // Handle selection
+        if (ImGui::IsItemClicked())
+        {
+            m_selectedEntity = entity;
+            pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
+        }
+
+        // Right-click context menu
+        if (ImGui::BeginPopupContextItem())
+        {
+            m_selectedEntity = entity;
+
+            if (ImGui::MenuItem("Create Child"))
+            {
+                Uma_ECS::Entity child = coordinator.CreateEntity();
+                coordinator.AddComponent(child, Uma_ECS::Transform{
+                    .name = std::string("new enity"),
+                    .position = Vec2(0, 0),
+                    .rotation = Vec2(0, 0),
+                    .scale = Vec2(1, 1)
+                    });
+                coordinator.SetParent(child, entity);
+
+                m_HierarchyScrollToBottom = true;
+            }
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && ImGui::MenuItem("Duplicate"))
+            {
+                Entity newEntity = coordinator.DuplicateEntity(entity);
+                coordinator.SetParent(newEntity, coordinator.GetParent(entity).value());
+                m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::Separator();
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete"))
+            {
+                pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+                m_HierarchyScrollToBottom = true;
+            }
+
+            if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete with Children"))
+            {
+                coordinator.DestroyEntityAndChildren(entity);
+                if (m_selectedEntity == entity)
+                {
+                    m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
+                }
+                m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::EndPopup();
+        }
+
+        // Drag and drop for reparenting
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+        {
+            ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
+            ImGui::Text("Reparent: %s", entityName.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        if (ImGui::BeginDragDropTarget())
+        {
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            {
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+
+                // Don't allow setting parent to itself or to its own children
+                if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
+                {
+                    coordinator.SetParent(droppedEntity, entity);
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+
+        // Render children recursively
+        if (nodeOpen && hasChildren)
+        {
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                RenderPrefabNode(child, coordinator, transformArray);
             }
             ImGui::TreePop();
         }

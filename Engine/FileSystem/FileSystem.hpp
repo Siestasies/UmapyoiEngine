@@ -8,6 +8,7 @@
 #include "DropCallback.hpp"
 #include "Events/IMGUIEvents.h"
 #include "Events/ECSEvents.h"
+#include "Events/EditorEvents.h"
 
 #include "Core/FilePaths.h"
 
@@ -18,6 +19,7 @@ namespace Uma_Engine
     struct File {
         std::string name;
         std::string path;
+        std::string stem;
         std::string ext;
         bool isFolder;
         uintmax_t size;
@@ -26,6 +28,7 @@ namespace Uma_Engine
         File(const fs::directory_entry& entry)
             : name(entry.path().filename().string())
             , path(entry.path().string())
+            , stem(entry.path().stem().string())
             , ext(entry.path().extension().string())
             , isFolder(entry.is_directory())
             , size(entry.is_directory() ? 0 : entry.file_size())
@@ -53,6 +56,10 @@ namespace Uma_Engine
             : mCurrPath(fs::absolute(root_path))
             , eSortMode(SortMode::Name)
             , bSortAscending(true)
+            , mPrefabEdit(false)
+            , mPrefabSceneName("prefabEditor")
+            , mPrevSceneName("")
+            , mPrefabName("")
         {
             mFilter[0] = '\0';
             RefreshDirectory();
@@ -133,6 +140,36 @@ namespace Uma_Engine
               });
         }
 
+        bool isPrefabEdit()
+        {
+            return mPrefabEdit;
+        }
+
+        void setIsPrefabEdit(bool edit)
+        {
+            mPrefabEdit = edit;
+        }
+
+        std::string getPrefabName()
+        {
+            return mPrefabName;
+        }
+
+        std::string getPrefabSceneName()
+        {
+            return mPrefabSceneName;
+        }
+
+        void setPrevSceneName(std::string name)
+        {
+            mPrevSceneName = name;
+        }
+
+        std::string getPrevSceneName()
+        {
+            return mPrevSceneName;
+        }
+
     private:
         // Files
         fs::path mCurrPath;
@@ -155,6 +192,11 @@ namespace Uma_Engine
         std::mutex mFileSysMutex;
         // Events
         EventSystem* pEventSystem = nullptr;
+        // Prefab Edit
+        bool mPrefabEdit;
+        std::string mPrefabSceneName;
+        std::string mPrevSceneName;
+        std::string mPrefabName;
 
         void RefreshDirectory() {
             aFiles.clear();
@@ -285,6 +327,15 @@ namespace Uma_Engine
                     if (ImGui::IsMouseDoubleClicked(0)) {
                         if (FileDoubleClickHandler(entry))
                             break;
+                    }
+                    if (entry.ext == ".prefab")
+                    {
+                        pEventSystem->Emit<StopSceneRequest>();
+                        pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
+                        pEventSystem->Emit<EmptySceneRequestEvent>();
+                        pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
+                        mPrefabName = entry.stem;
+                        mPrefabEdit = true;
                     }
                 }
 
