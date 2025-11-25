@@ -417,6 +417,18 @@ namespace Uma_Engine
          */
         int GetViewportHeight() const { return mViewportHeight; }
 
+        Vec2 GetSceneViewport() const 
+        {
+            Vec2 size = Vec2(mViewportWidth, mViewportHeight);
+            
+            if (mRenderTarget == RenderTarget::Framebuffer)
+            {
+                size = Vec2(mSceneFBWidth, mSceneFBHeight);
+            }
+
+            return size;
+        }
+
 
         // Camera access
         /*Camera2D& GetCamera() { return mCamera; }

@@ -25,6 +25,8 @@ All rights reserved.
 #include "../Helpers/Input.h"
 #include "Systems/ResourcesTypes.hpp"
 
+#include "HybridInputSystem.h"
+
 #include "Systems/LuaScriptingSystem.hpp"
 
 // events
@@ -181,7 +183,10 @@ namespace Uma_UI
     void UISystem::InputPass()
     {
         mMouseConsumedThisFrame = false;
-        mMousePositionScreen = GetMousePosition();
+        mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
+        
+        mScreenSize = pGraphics->GetSceneViewport();
+
         mMousePositionNDC = Uma_UI::ScreenToNDC(mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
         mMouseButtonDownLastFrame = mMouseButtonDown;
 

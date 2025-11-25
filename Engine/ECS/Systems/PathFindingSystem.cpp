@@ -6,6 +6,7 @@
 
 #include "Core/Coordinator.hpp"
 #include "Systems/Graphics.hpp"
+#include "Systems/HybridInputSystem.h"
 
 #include "Events/InputEvents.h"
 #include "Events/IMGUIEvents.h"
@@ -28,7 +29,7 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
                 auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
                 if (pfArray.Has(playerID)) {
                     auto& pf = pfArray.GetData(playerID);
-                    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+                    pf.goal = pGraphics->ScreenToWorld(Uma_Engine::HybridInputSystem::GetSceneMousePosition());
                     pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
                 }
             });

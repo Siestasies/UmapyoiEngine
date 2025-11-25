@@ -21,6 +21,13 @@ namespace Uma_Engine
             prevMouseX = GetMouseX();
             prevMouseY = GetMouseY();
 
+            // Initialize viewport to full window (will be updated by ImGuiManager in editor mode)
+            sceneViewportX = 0.0f;
+            sceneViewportY = 0.0f;
+            sceneViewportWidth = 0.0f;
+            sceneViewportHeight = 0.0f;
+            isFramebufferMode = false;
+
 #ifdef _DEBUG_LOG
             std::cout << "HybridInputSystem: Initialized with UI input filtering" << std::endl;
             std::cout << "  - UI layer: HIGHEST priority (blocks game input)" << std::endl;
@@ -84,6 +91,103 @@ namespace Uma_Engine
 #ifdef _DEBUG_LOG
             std::cout << "HybridInputSystem: Connected to EventSystem for hybrid processing" << std::endl;
 #endif
+        }
+
+        // ========================================================================
+        // SCENE VIEWPORT MOUSE POSITION API
+        // ========================================================================
+
+        /**
+         * \brief Sets the scene viewport bounds for mouse coordinate transformation
+         * \param x X position of the scene viewport in window space (ImGui imagePos.x)
+         * \param y Y position of the scene viewport in window space (ImGui imagePos.y)
+         * \param width Width of the scene viewport (ImGui viewportSize.x)
+         * \param height Height of the scene viewport (ImGui viewportSize.y)
+         * \param framebufferMode True if rendering to framebuffer (editor), false for full viewport (game)
+         *
+         * Call this from ImGuiManager every frame in editor mode to keep viewport bounds updated.
+         */
+        static void SetSceneViewport(float x, float y, float width, float height, bool framebufferMode)
+        {
+            sceneViewportX = x;
+            sceneViewportY = y;
+            sceneViewportWidth = width;
+            sceneViewportHeight = height;
+            isFramebufferMode = framebufferMode;
+        }
+
+        /**
+         * \brief Gets the mouse position in scene space (accounts for framebuffer/viewport)
+         * \param x Reference to store the scene-space x-coordinate
+         * \param y Reference to store the scene-space y-coordinate
+         *
+         * In editor mode (framebuffer): Transforms from window space to framebuffer space
+         * In game mode (viewport): Returns raw window coordinates
+         * Use this for PathFinding, UI clicks, and any game logic that needs mouse position.
+         */
+        static void GetSceneMousePosition(double& x, double& y)
+        {
+            double rawX = GetMouseX();
+            double rawY = GetMouseY();
+
+            if (isFramebufferMode)
+            {
+                // Transform from window space to scene viewport space
+                x = rawX - sceneViewportX;
+                y = rawY - sceneViewportY;
+
+                // Clamp to viewport bounds
+                if (x < 0) x = 0;
+                if (y < 0) y = 0;
+                if (x > sceneViewportWidth) x = sceneViewportWidth;
+                if (y > sceneViewportHeight) y = sceneViewportHeight;
+            }
+            else
+            {
+                // Game mode - use raw window coordinates
+                x = rawX;
+                y = rawY;
+            }
+        }
+
+        /**
+         * \brief Gets the mouse position in scene space as Vec2
+         * \return Scene-space mouse position
+         */
+        static Vec2 GetSceneMousePosition()
+        {
+            double x, y;
+            GetSceneMousePosition(x, y);
+            return Vec2(static_cast<float>(x), static_cast<float>(y));
+        }
+
+        /**
+         * \brief Checks if the mouse is within the scene viewport bounds
+         * \return True if mouse is in scene viewport, false otherwise
+         */
+        static bool IsMouseInSceneViewport()
+        {
+            if (!isFramebufferMode)
+            {
+                // In game mode, mouse is always in viewport
+                return true;
+            }
+
+            double rawX = GetMouseX();
+            double rawY = GetMouseY();
+
+            // Check if within framebuffer bounds
+            return (rawX >= sceneViewportX && rawX <= (sceneViewportX + sceneViewportWidth) &&
+                    rawY >= sceneViewportY && rawY <= (sceneViewportY + sceneViewportHeight));
+        }
+
+        /**
+         * \brief Gets the scene viewport size
+         * \return Vec2 containing (width, height) of the scene viewport
+         */
+        static Vec2 GetSceneViewportSize()
+        {
+            return Vec2(static_cast<float>(sceneViewportWidth), static_cast<float>(sceneViewportHeight));
         }
 
     private:
@@ -316,6 +420,13 @@ namespace Uma_Engine
         EventSystem* eventSystem = nullptr;
 
         inline static double prevMouseX = 0.0, prevMouseY = 0.0;
+
+        // Scene viewport tracking for mouse coordinate transformation
+        inline static float sceneViewportX = 0.0f;
+        inline static float sceneViewportY = 0.0f;
+        inline static float sceneViewportWidth = 0.0f;
+        inline static float sceneViewportHeight = 0.0f;
+        inline static bool isFramebufferMode = false;
     };
 
     // Simple test listener that logs received events

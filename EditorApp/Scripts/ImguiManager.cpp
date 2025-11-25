@@ -261,6 +261,23 @@ namespace Uma_Engine
         {
             CreateSceneViewWindow();
         }
+        else
+        {
+            // Game mode (rendering to window) - set viewport to full window size
+            auto inputSystem = pSystemManager->GetSystem<HybridInputSystem>();
+            if (inputSystem && graphics->GetWindow())
+            {
+                int width, height;
+                glfwGetWindowSize(graphics->GetWindow(), &width, &height);
+                HybridInputSystem::SetSceneViewport(
+                    0.0f,
+                    0.0f,
+                    static_cast<float>(width),
+                    static_cast<float>(height),
+                    false  // Not framebuffer mode
+                );
+            }
+        }
 
         if (!m_hideAll)
         {
@@ -529,6 +546,20 @@ namespace Uma_Engine
 
         // Get position
         ImVec2 imagePos = ImGui::GetCursorScreenPos();
+
+        // Update HybridInputSystem with viewport bounds for mouse coordinate transformation
+        auto inputSystem = pSystemManager->GetSystem<HybridInputSystem>();
+        if (inputSystem)
+        {
+            bool isFramebuffer = (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer);
+            HybridInputSystem::SetSceneViewport(
+                imagePos.x,
+                imagePos.y,
+                viewportSize.x,
+                viewportSize.y,
+                isFramebuffer
+            );
+        }
 
         // Display the scene texture
         GLuint texID = graphics->GetSceneTexture();
