@@ -2331,6 +2331,7 @@ namespace Uma_Engine
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::PathFinding>()) && ImGui::MenuItem("PathFinding"))
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::PathFinding{});
+                pEventSystem->Emit<CallPathFindToBake>();
             }
 
             ImGui::EndPopup();

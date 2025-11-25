@@ -185,6 +185,12 @@ namespace Uma_ECS
         }
 
         template<typename T>
+        bool HasComponent(Entity entity)
+        {
+            return aComponentManager->HasComponent<T>(entity);
+        }
+
+        template<typename T>
         ComponentArray<T>& GetComponentArray()
         {
             return aComponentManager->GetComponentArray<T>();
@@ -269,6 +275,12 @@ namespace Uma_ECS
         //------------------------------------------+
 
         Uma_Engine::EventSystem* GetEventSystem();
+        void ShutDown()
+        {
+            DestroyAllEntities();
+            mStateCache.cachedComponentManager.release();
+            mStateCache.cachedEntityManager.release();
+        }
 
     private:
         std::unique_ptr<ComponentManager> aComponentManager;

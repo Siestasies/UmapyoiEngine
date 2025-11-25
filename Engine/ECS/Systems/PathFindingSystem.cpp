@@ -8,6 +8,7 @@
 #include "Systems/Graphics.hpp"
 
 #include "Events/InputEvents.h"
+#include "Events/IMGUIEvents.h"
 #include <GLFW/glfw3.h>
 
 void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* es, Uma_Engine::Graphics* graphics)
@@ -31,6 +32,13 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
                     pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
                 }
             });
+
+    pEventSystem->Subscribe<Uma_Engine::CallPathFindToBake, PathFindingSystem>(
+        [this](const Uma_Engine::CallPathFindToBake& e)
+        {
+            isDirty = true;
+        }
+    );
 
     //eventListeners.push_back(
     //    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
@@ -84,9 +92,11 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 // FIX #2: Use max() to compare, not overwrite
                 maxAgentRadius = (std::max)(maxAgentRadius, playerRadius);
             }
-            else {
+            else 
+            {
                 // For other entities, use largest shape
-                for (const auto& shape : collider.shapes) {
+                for (const auto& shape : collider.shapes) 
+                {
                     if (!shape.isActive) continue;
 
                     float sx = shape.size.x * tf.scale.x;
@@ -103,28 +113,33 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         << " world units" << std::endl;
 
     // Find player and rebuild pathfinder around them
-    if (playerArray.Size() > 0) {
+    if (playerArray.Size() > 0) 
+    {
         playerID = playerArray.GetEntity(0);
         hasPlayer = tfArray.Has(playerID) && playerArray.Has(playerID);
 
-        if (hasPlayer) {
-            playerPosition = tfArray.GetData(playerID).position;
+        if (hasPlayer) 
+        {
+            playerPosition = tfArray.GetData(playerID).worldPosition;
 
             static Vec2 lastRebuildCenter(0, 0);
             static bool needsFirstRebuild = true;
 
-            if (needsFirstRebuild || isDirty) {
+            if (needsFirstRebuild || isDirty) 
+            {
                 RebuildPathfinder(playerPosition, maxAgentRadius);
                 lastRebuildCenter = playerPosition;
                 needsFirstRebuild = false;
                 if (isDirty)
                     isDirty = false;
             }
-            else {
+            else 
+            {
                 Vec2 delta = playerPosition - lastRebuildCenter;
                 float distance = std::sqrt(delta.x * delta.x + delta.y * delta.y);
 
-                if (distance > rebuildRadius * 0.5f) {
+                if (distance > rebuildRadius * 0.5f) 
+                {
                     RebuildPathfinder(playerPosition, maxAgentRadius);
                     lastRebuildCenter = playerPosition;
                 }
@@ -345,12 +360,7 @@ void Uma_ECS::PathFindingSystem::Shutdown()
     gridPathfinder = nullptr;
 
     //to be removed later
-    if (pEventSystem) {
-        for (auto& listener : eventListeners) {
-            pEventSystem->UnsubscribeListener(listener);
-        }
-    }
-    eventListeners.clear();
+    pEventSystem->UnsubscribeSystem<PathFindingSystem>();
 }
 
 void Uma_ECS::PathFindingSystem::DebugDraw()

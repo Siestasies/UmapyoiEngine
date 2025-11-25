@@ -79,8 +79,8 @@ namespace Uma_Engine
 
         gGameSerializer.ShutDown();
 
-        // Destroy entities
-        m_Coordinator.DestroyAllEntities();
+        // shut down Coodinator
+        m_Coordinator.ShutDown();
 
         m_LuaScriptingSystem->Shutdown();
         

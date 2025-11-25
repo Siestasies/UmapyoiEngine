@@ -244,6 +244,12 @@ namespace Uma_Engine
         CallLuaToInitScript(Uma_ECS::Entity const& e) : en(e) { priority = Priority::High; }
     };
 
+    class CallPathFindToBake : public Event
+    {
+    public:
+        CallPathFindToBake() { priority = Priority::High; }
+    };
+
     class SceneInfoRequest : public Event
     {
     public:

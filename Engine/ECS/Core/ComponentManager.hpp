@@ -115,6 +115,13 @@ namespace Uma_ECS
             return component_array.GetData(entity);
         }
 
+        template<typename T>
+        bool HasComponent(Entity entity)
+        {
+            ComponentArray<T>& component_array = GetComponentArray<T>();
+            return component_array.Has(entity);
+        }
+
         std::vector<Entity> GetEntitiesByComponentName(const std::string& componentName);
 
         template<typename T>
