@@ -1,333 +1,347 @@
-# Lua Scripting System API Documentation
+# Lua Scripting API Documentation
+
+Complete reference for the Lua scripting system in Uma Engine.
+
+---
 
 ## Table of Contents
-1. [Lifecycle Functions](#lifecycle-functions)
+
+1. [Core Concepts](#core-concepts)
 2. [Component Access](#component-access)
 3. [Entity Management](#entity-management)
-4. [Input System](#input-system)
-5. [Utility Functions](#utility-functions)
-6. [Event Callbacks](#event-callbacks)
-7. [Data Types](#data-types)
+4. [Entity Queries](#entity-queries)
+5. [Input System](#input-system)
+6. [Collision System](#collision-system)
+7. [Audio System](#audio-system)
+8. [Utility Functions](#utility-functions)
+9. [Script Lifecycle](#script-lifecycle)
+10. [Examples](#examples)
 
 ---
 
-## Lifecycle Functions
+## Core-Concepts
 
-These functions are automatically called by the engine at specific points in the entity's lifecycle. Define them in your Lua script to hook into these events.
+### Script Structure
 
-### `Start()`
-Called once when the script is first initialized and enabled.
+Every Lua script should follow this basic structure:
 
 ```lua
+-- Optional: Expose variables to the editor
+ExposedVars = {
+    speed = 10.0,
+    health = 100,
+    enabled = true,
+    name = "Player"
+}
+
+-- Called once when script is initialized
 function Start()
-    -- Initialize your script here
+    -- Initialization code
 end
-```
 
-### `Update(dt)`
-Called every frame while the script is enabled.
-
-**Parameters:**
-- `dt` (float): Delta time since last frame
-
-```lua
+-- Called every frame
 function Update(dt)
-    -- Per-frame logic here
+    -- Per-frame logic
 end
-```
 
-### `OnEnable()`
-Called when the script is enabled (including initial enable).
-
-```lua
-function OnEnable()
-    -- Called when script becomes active
-end
-```
-
-### `OnDisable()`
-Called when the script is disabled.
-
-```lua
-function OnDisable()
-    -- Called when script becomes inactive
-end
-```
-
-### `OnDestroy()`
-Called when the entity or script is destroyed.
-
-```lua
+-- Called when entity is destroyed
 function OnDestroy()
-    -- Cleanup logic here
+    -- Cleanup code
 end
 ```
+
+### Special Variables
+
+- **`EntityID`**: The ID of the entity this script is attached to (automatically set)
+- **`ExposedVars`**: Table of variables exposed to the editor for easy tweaking
 
 ---
 
-## Component Access
+## Component-Access
 
-### Current Entity Components
+### Getting Components (Current Entity)
 
-Access components attached to the current entity:
+Access components attached to the same entity as your script:
 
 #### `GetTransform()`
-Returns the Transform component of the current entity.
-
-**Returns:** `Transform` reference or `nil`
-
 ```lua
 local transform = GetTransform()
 if transform then
-    transform.position.x = 10
-    transform.position.y = 20
+    transform.position.x = 100
     transform.rotation = 45
-    transform.scale.x = 2
-    transform.scale.y = 2
-end
-```
-
-#### `HasTransform()`
-Checks if the current entity has a Transform component.
-
-**Returns:** `boolean`
-
-```lua
-if HasTransform() then
-    -- Safe to use GetTransform()
+    transform.scale = Vec2(2, 2)
 end
 ```
 
 #### `GetRigidBody()`
-Returns the RigidBody component of the current entity.
-
-**Returns:** `RigidBody` reference or `nil`
-
 ```lua
 local rb = GetRigidBody()
 if rb then
-    rb.velocity.x = 5
-    rb.velocity.y = 0
-    rb.acceleration.x = 0.5
-    rb.accel_strength = 100
-    rb.fric_coeff = 0.9
+    rb.velocity = Vec2(10, 0)
+    rb.acceleration = Vec2(0, -9.8)
+    rb.accel_strength = 5.0
+    rb.fric_coeff = 0.5
 end
 ```
 
-#### `HasRigidBody()`
-Checks if the current entity has a RigidBody component.
-
-**Returns:** `boolean`
-
 #### `GetSprite()`
-Returns the Sprite component of the current entity.
-
-**Returns:** `Sprite` reference or `nil`
-
 ```lua
 local sprite = GetSprite()
 if sprite then
-    sprite.textureName = "player_idle.png"
+    sprite.textureName = "player.png"
     sprite.renderLayer = 1
-    sprite.flipX = false
+    sprite.flipX = true
     sprite.flipY = false
 end
 ```
 
-#### `HasSprite()`
-Checks if the current entity has a Sprite component.
-
-**Returns:** `boolean`
-
----
-
-### Cross-Entity Component Access
-
-Two methods to access components on other entities:
-
-#### Method 1: Entity Wrapper (Object-Oriented Style)
-
-##### `GetEntity(entityId)`
-Returns an entity wrapper object with component access methods.
-
-**Parameters:**
-- `entityId` (Entity): The ID of the target entity
-
-**Returns:** `table` with the following structure:
-- `id`: The entity ID
-- `isValid`: Whether the entity exists and is active
-- `GetTransform()`: Get Transform component
-- `HasTransform()`: Check for Transform component
-- `GetRigidBody()`: Get RigidBody component
-- `HasRigidBody()`: Check for RigidBody component
-- `GetSprite()`: Get Sprite component
-- `HasSprite()`: Check for Sprite component
-- `GetCollider()`: Get Collider component
-- `HasCollider()`: Check for Collider component
-- `GetPlayer()`: Get Player component
-- `HasPlayer()`: Check for Player component
-- `GetEnemy()`: Get Enemy component
-- `HasEnemy()`: Check for Enemy component
-- `GetCamera()`: Get Camera component
-- `HasCamera()`: Check for Camera component
-
+#### `GetCollider()`
 ```lua
-local otherEntity = GetEntity(targetEntityId)
-if otherEntity.isValid then
-    if otherEntity.HasTransform() then
-        local transform = otherEntity.GetTransform()
-        transform.position.x = 100
-    end
+local collider = GetCollider()
+if collider then
+    collider.showBBox = true
+    local shape = collider:GetPrimaryShape()
+    shape.isActive = true
 end
 ```
 
-#### Method 2: Direct Functions (Functional Style)
-
-##### `GetTransformFrom(entityId)`
-Gets the Transform component from a specific entity.
-
-**Parameters:**
-- `entityId` (Entity): The target entity ID
-
-**Returns:** `Transform` reference or `nil`
-
+#### `GetPlayer()`
 ```lua
-local transform = GetTransformFrom(otherEntityId)
-if transform then
-    Log("Other entity position: " .. transform.position.x .. ", " .. transform.position.y)
+local player = GetPlayer()
+if player then
+    player.mSpeed = 200
 end
 ```
 
-##### `HasTransformOn(entityId)`
-Checks if a specific entity has a Transform component.
+#### `GetEnemy()`
+```lua
+local enemy = GetEnemy()
+if enemy then
+    enemy.mSpeed = 150
+end
+```
 
-**Parameters:**
-- `entityId` (Entity): The target entity ID
+#### `GetCamera()`
+```lua
+local camera = GetCamera()
+if camera then
+    camera.zoom = 1.5
+    camera.followPlayer = true
+end
+```
 
-**Returns:** `boolean`
+### Checking for Components (Current Entity)
 
-Similar functions exist for all component types:
-- `GetRigidBodyFrom(entityId)` / `HasRigidBodyOn(entityId)`
-- `GetSpriteFrom(entityId)` / `HasSpriteOn(entityId)`
-- `GetColliderFrom(entityId)` / `HasColliderOn(entityId)`
-- `GetPlayerFrom(entityId)` / `HasPlayerOn(entityId)`
-- `GetEnemyFrom(entityId)` / `HasEnemyOn(entityId)`
-- `GetCameraFrom(entityId)` / `HasCameraOn(entityId)`
+#### `HasTransform()`, `HasRigidBody()`, etc.
+```lua
+if HasRigidBody() then
+    local rb = GetRigidBody()
+    -- Safe to use rb
+end
+```
 
 ---
 
-## Entity Management
+## Entity-Management
 
-### Entity Queries
+### Creating and Destroying Entities
+
+#### `CreateEntity()`
+Creates a new entity and returns its ID.
+
+```lua
+local newEntity = CreateEntity()
+Log("Created entity: " .. tostring(newEntity))
+```
+
+#### `DestroyEntity(entity)`
+Destroys the specified entity.
+
+```lua
+DestroyEntity(targetEntity)
+```
+
+#### `DestroyWithChildren(entity)`
+Destroys an entity and all its children.
+
+```lua
+DestroyWithChildren(parentEntity)
+```
+
+### Parent-Child Relationships
+
+#### `SetParent(child, parent)`
+Sets a parent-child relationship between entities.
+
+```lua
+SetParent(childEntity, parentEntity)
+```
+
+#### `RemoveParent(child)`
+Removes the parent from an entity.
+
+```lua
+RemoveParent(childEntity)
+```
+
+#### `GetParent(entity)`
+Returns the parent entity ID, or -1 if no parent exists.
+
+```lua
+local parentId = GetParent(EntityID)
+if parentId ~= -1 then
+    Log("Has parent: " .. tostring(parentId))
+end
+```
+
+#### `HasParent(entity)`
+Checks if an entity has a parent.
+
+```lua
+if HasParent(EntityID) then
+    Log("This entity has a parent")
+end
+```
+
+#### `GetChildren(entity)`
+Returns an array of all child entity IDs.
+
+```lua
+local children = GetChildren(EntityID)
+for i, childId in ipairs(children) do
+    Log("Child " .. i .. ": " .. tostring(childId))
+end
+```
+
+---
+
+## Entity-Queries
+
+### Finding Entities
 
 #### `FindEntitiesWithComponent(componentName)`
-Finds all entities that have a specific component.
-
-**Parameters:**
-- `componentName` (string): Name of the component (e.g., "Transform", "Player")
-
-**Returns:** `table` (array of entity IDs)
+Returns an array of all entity IDs that have the specified component.
 
 ```lua
-local players = FindEntitiesWithComponent("Player")
-for i, entityId in ipairs(players) do
-    local transform = GetTransformFrom(entityId)
-    if transform then
-        Log("Player at: " .. transform.position.x .. ", " .. transform.position.y)
-    end
+local enemies = FindEntitiesWithComponent("Enemy")
+for i, enemyId in ipairs(enemies) do
+    Log("Found enemy: " .. tostring(enemyId))
 end
 ```
 
+**Available component names:**
+- `"Transform"`
+- `"RigidBody"`
+- `"Sprite"`
+- `"Collider"`
+- `"Player"`
+- `"Enemy"`
+- `"Camera"`
+
 #### `FindEntityWithComponent(componentName)`
-Finds the first entity that has a specific component.
-
-**Parameters:**
-- `componentName` (string): Name of the component
-
-**Returns:** `Entity` ID or `-1` if not found
+Returns the first entity ID with the specified component, or -1 if not found.
 
 ```lua
-local playerEntity = FindEntityWithComponent("Player")
-if playerEntity ~= -1 then
-    local transform = GetTransformFrom(playerEntity)
-    -- Do something with player
+local playerId = FindEntityWithComponent("Player")
+if playerId ~= -1 then
+    Log("Found player: " .. tostring(playerId))
 end
 ```
 
 #### `GetEntityCount()`
-Gets the total number of active entities.
-
-**Returns:** `integer`
+Returns the total number of active entities.
 
 ```lua
 local count = GetEntityCount()
-Log("Total entities: " .. count)
+Log("Active entities: " .. tostring(count))
 ```
 
-#### `IsEntityValid(entityId)`
+#### `IsEntityValid(entity)`
 Checks if an entity ID is valid and active.
-
-**Parameters:**
-- `entityId` (Entity): The entity ID to check
-
-**Returns:** `boolean`
 
 ```lua
 if IsEntityValid(targetEntity) then
-    -- Safe to access this entity
+    -- Safe to access
 end
 ```
 
-### Current Entity
+### Accessing Other Entities
 
-#### `EntityID`
-A global variable available in each script containing the current entity's ID.
+#### Method 1: Entity Wrapper (Object-Oriented)
 
 ```lua
-Log("My entity ID is: " .. EntityID)
+local player = GetEntity(playerId)
+if player.isValid then
+    local playerTransform = player:GetTransform()
+    if playerTransform then
+        playerTransform.position.x = 100
+    end
+    
+    if player:HasRigidBody() then
+        local rb = player:GetRigidBody()
+        rb.velocity = Vec2(10, 0)
+    end
+end
 ```
+
+**Available wrapper methods:**
+- `entity:GetTransform()` / `entity:HasTransform()`
+- `entity:GetRigidBody()` / `entity:HasRigidBody()`
+- `entity:GetSprite()` / `entity:HasSprite()`
+- `entity:GetCollider()` / `entity:HasCollider()`
+- `entity:GetPlayer()` / `entity:HasPlayer()`
+- `entity:GetEnemy()` / `entity:HasEnemy()`
+- `entity:GetCamera()` / `entity:HasCamera()`
+
+#### Method 2: Direct Functions (Functional)
+
+```lua
+local transform = GetTransformFrom(targetEntity)
+if transform then
+    transform.position.y = 200
+end
+
+if HasRigidBodyOn(targetEntity) then
+    local rb = GetRigidBodyFrom(targetEntity)
+    rb.velocity = Vec2(0, 0)
+end
+```
+
+**Available cross-entity functions:**
+- `GetTransformFrom(entity)` / `HasTransformOn(entity)`
+- `GetRigidBodyFrom(entity)` / `HasRigidBodyOn(entity)`
+- `GetSpriteFrom(entity)` / `HasSpriteOn(entity)`
+- `GetColliderFrom(entity)` / `HasColliderOn(entity)`
+- `GetPlayerFrom(entity)` / `HasPlayerOn(entity)`
+- `GetEnemyFrom(entity)` / `HasEnemyOn(entity)`
+- `GetCameraFrom(entity)` / `HasCameraOn(entity)`
 
 ---
 
-## Input System
+## Input-System
 
 ### Keyboard Input
 
-#### `KeyDown(keyCode)`
-Checks if a key is currently held down.
-
-**Parameters:**
-- `keyCode` (integer): Key constant (see Key Constants)
-
-**Returns:** `boolean`
+#### `KeyDown(key)`
+Returns true while the key is held down.
 
 ```lua
 if KeyDown(KEY_W) then
-    -- Move forward
+    -- Move up while W is held
 end
 ```
 
-#### `KeyPressed(keyCode)`
-Checks if a key was just pressed this frame.
-
-**Parameters:**
-- `keyCode` (integer): Key constant
-
-**Returns:** `boolean`
+#### `KeyPressed(key)`
+Returns true only on the frame the key is first pressed.
 
 ```lua
 if KeyPressed(KEY_SPACE) then
-    -- Jump
+    -- Jump once per press
 end
 ```
 
-#### `KeyReleased(keyCode)`
-Checks if a key was just released this frame.
-
-**Parameters:**
-- `keyCode` (integer): Key constant
-
-**Returns:** `boolean`
+#### `KeyReleased(key)`
+Returns true only on the frame the key is released.
 
 ```lua
 if KeyReleased(KEY_SHIFT) then
@@ -337,350 +351,455 @@ end
 
 ### Mouse Input
 
-#### `MouseButtonDown(buttonCode)`
-Checks if a mouse button is currently held down.
-
-**Parameters:**
-- `buttonCode` (integer): Mouse button constant
-
-**Returns:** `boolean`
+#### `MouseButtonDown(button)`
+Returns true while the mouse button is held down.
 
 ```lua
 if MouseButtonDown(MOUSE_LEFT) then
-    -- Firing weapon
+    -- Firing continuously
 end
 ```
 
-#### `MouseButtonPressed(buttonCode)`
-Checks if a mouse button was just pressed this frame.
-
-**Parameters:**
-- `buttonCode` (integer): Mouse button constant
-
-**Returns:** `boolean`
+#### `MouseButtonPressed(button)`
+Returns true only on the frame the mouse button is first pressed.
 
 ```lua
-if MouseButtonPressed(MOUSE_RIGHT) then
-    -- Aim
+if MouseButtonPressed(MOUSE_LEFT) then
+    -- Fire once per click
 end
 ```
 
-#### `MouseButtonReleased(buttonCode)`
-Checks if a mouse button was just released this frame.
+#### `MouseButtonReleased(button)`
+Returns true only on the frame the mouse button is released.
 
-**Parameters:**
-- `buttonCode` (integer): Mouse button constant
-
-**Returns:** `boolean`
+```lua
+if MouseButtonReleased(MOUSE_LEFT) then
+    -- Release action
+end
+```
 
 #### `GetMousePosition()`
-Gets the current mouse position in world coordinates.
-
-**Returns:** `Vec2` (x, y coordinates)
+Returns the current mouse position as a Vec2.
 
 ```lua
 local mousePos = GetMousePosition()
-Log("Mouse at: " .. mousePos.x .. ", " .. mousePos.y)
+Log("Mouse: " .. tostring(mousePos.x) .. ", " .. tostring(mousePos.y))
 ```
 
-### Key Constants
+### Input Constants
 
-Pre-defined constants for keyboard and mouse input:
+**Keyboard Keys:**
+- `KEY_A` through `KEY_Z` - All alphabet keys
+- `KEY_0` through `KEY_9` - Number keys
+- `KEY_F1` through `KEY_F12` - Function keys
+- `KEY_W`, `KEY_A`, `KEY_S`, `KEY_D` - WASD keys
+- `KEY_SPACE` - Spacebar
+- `KEY_SHIFT` - Left Shift
+- `KEY_CTRL` - Left Control
+- `KEY_E` - E key
+- `KEY_ESCAPE` - Escape key
+- `KEY_ENTER` - Enter/Return key
+- `KEY_TAB` - Tab key
+- `KEY_BACKSPACE` - Backspace key
+- `KEY_DELETE` - Delete key
 
-**Keyboard:**
-- `KEY_W`, `KEY_A`, `KEY_S`, `KEY_D`
-- `KEY_SPACE`
-- `KEY_SHIFT`
-- `KEY_CTRL`
-- `KEY_E`
-
-**Mouse:**
-- `MOUSE_LEFT`
-- `MOUSE_RIGHT`
-- `MOUSE_MIDDLE`
-
-```lua
-function Update(dt)
-    if KeyDown(KEY_W) then
-        local rb = GetRigidBody()
-        rb.velocity.y = -5
-    end
-end
-```
+**Mouse Buttons:**
+- `MOUSE_LEFT` - Left mouse button
+- `MOUSE_RIGHT` - Right mouse button
+- `MOUSE_MIDDLE` - Middle mouse button (scroll wheel click)
 
 ---
 
-## Utility Functions
+## Collision-System
 
-### Logging
+### Collision Types
 
-#### `Log(message)`
-Logs an informational message.
-
-**Parameters:**
-- `message` (string): The message to log
-
+#### CollisionLayer
 ```lua
-Log("Player health: " .. health)
+CollisionLayer.NONE        -- No collision layer
+CollisionLayer.DEFAULT     -- Default collision layer
+CollisionLayer.PLAYER      -- Player layer
+CollisionLayer.ENEMY       -- Enemy layer
+CollisionLayer.WALL        -- Wall/obstacle layer
+CollisionLayer.PROJECTILE  -- Projectile layer
+CollisionLayer.PICKUP      -- Pickup/collectible layer
+CollisionLayer.ALL         -- All layers
 ```
 
-#### `LogWarning(message)`
-Logs a warning message.
-
-**Parameters:**
-- `message` (string): The warning message
-
+#### ColliderPurpose
 ```lua
-LogWarning("Player health is low!")
+ColliderPurpose.Physics      -- Blocks movement (solid collision)
+ColliderPurpose.Environment  -- Static obstacles
+ColliderPurpose.Trigger      -- Passes through but triggers events
 ```
-
-#### `LogError(message)`
-Logs an error message.
-
-**Parameters:**
-- `message` (string): The error message
-
-```lua
-LogError("Failed to load resource!")
-```
-
-### Time
-
-#### `GetDeltaTime()`
-Gets the time elapsed since the last frame.
-
-**Returns:** `float` (seconds)
-
-```lua
-function Update(dt)
-    -- dt and GetDeltaTime() return the same value
-    local deltaTime = GetDeltaTime()
-    Log("Frame time: " .. deltaTime)
-end
-```
-
----
-
-## Event Callbacks
-
-These are optional callback functions you can define to respond to physics events.
 
 ### Collision Events
 
-#### `OnCollisionEnter(otherEntityId)`
-Called when this entity starts colliding with another entity.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the entity we collided with
+#### `OnCollisionEnter(otherEntity)`
+Called once when collision starts (Physics/Environment colliders).
 
 ```lua
 function OnCollisionEnter(other)
-    Log("Started colliding with entity: " .. other)
+    Log("Collision started with: " .. tostring(other))
     
-    if HasPlayerOn(other) then
-        Log("Hit the player!")
+    if HasEnemyOn(other) then
+        Log("Hit an enemy!")
     end
 end
 ```
 
-#### `OnCollision(otherEntityId)`
-Called every frame while this entity is colliding with another entity.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the entity we're colliding with
+#### `OnCollision(otherEntity)`
+Called every frame during collision (Physics/Environment colliders).
 
 ```lua
 function OnCollision(other)
-    -- Continuous collision logic
+    -- Handle continuous collision
+    -- e.g., push back, take damage over time
 end
 ```
 
-#### `OnCollisionExit(otherEntityId)`
-Called when this entity stops colliding with another entity.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the entity we stopped colliding with
+#### `OnCollisionExit(otherEntity)`
+Called once when collision ends (Physics/Environment colliders).
 
 ```lua
 function OnCollisionExit(other)
-    Log("Stopped colliding with entity: " .. other)
+    Log("Collision ended with: " .. tostring(other))
 end
 ```
 
 ### Trigger Events
 
-#### `OnTriggerEnter(otherEntityId)`
-Called when this entity enters a trigger volume.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the trigger or entity
+#### `OnTriggerEnter(otherEntity)`
+Called once when entering a trigger collider.
 
 ```lua
 function OnTriggerEnter(other)
-    Log("Entered trigger!")
-end
-```
-
-#### `OnTrigger(otherEntityId)`
-Called every frame while this entity is inside a trigger volume.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the trigger or entity
-
-```lua
-function OnTrigger(other)
-    -- Inside trigger logic
-end
-```
-
-#### `OnTriggerExit(otherEntityId)`
-Called when this entity exits a trigger volume.
-
-**Parameters:**
-- `otherEntityId` (Entity): The ID of the trigger or entity
-
-```lua
-function OnTriggerExit(other)
-    Log("Exited trigger!")
-end
-```
-
----
-
-## Data Types
-
-### Vec2
-
-2D vector type for positions, velocities, etc.
-
-**Constructor:**
-```lua
-local vec = Vec2()         -- (0, 0)
-local vec = Vec2(10, 20)   -- (10, 20)
-```
-
-**Properties:**
-- `x` (float): X component
-- `y` (float): Y component
-
-**Operators:**
-```lua
-local a = Vec2(1, 2)
-local b = Vec2(3, 4)
-
-local sum = a + b          -- Addition
-local diff = a - b         -- Subtraction
-local scaled = a * 2       -- Scalar multiplication
-local scaled2 = 2 * a      -- Scalar multiplication (reversed)
-```
-
-**Usage:**
-```lua
-local transform = GetTransform()
-transform.position = Vec2(100, 50)
-transform.position.x = 200
-
-local velocity = Vec2(5, -3)
-local rb = GetRigidBody()
-rb.velocity = velocity
-```
-
-### Transform
-
-Component for entity position, rotation, and scale.
-
-**Properties:**
-- `position` (Vec2): World position
-- `rotation` (float): Rotation in degrees
-- `scale` (Vec2): Scale factors
-
-```lua
-local transform = GetTransform()
-transform.position = Vec2(100, 100)
-transform.rotation = 45
-transform.scale = Vec2(2, 2)
-```
-
-### RigidBody
-
-Component for physics simulation.
-
-**Properties:**
-- `velocity` (Vec2): Current velocity
-- `acceleration` (Vec2): Current acceleration
-- `accel_strength` (float): Acceleration strength
-- `fric_coeff` (float): Friction coefficient
-
-```lua
-local rb = GetRigidBody()
-rb.velocity = Vec2(10, 0)
-rb.acceleration = Vec2(0, 0)
-rb.accel_strength = 50
-rb.fric_coeff = 0.8
-```
-
-### Sprite
-
-Component for rendering sprites.
-
-**Properties:**
-- `textureName` (string): Name of the texture file
-- `renderLayer` (integer): Render layer (higher = drawn on top)
-- `flipX` (boolean): Flip horizontally
-- `flipY` (boolean): Flip vertically
-
-```lua
-local sprite = GetSprite()
-sprite.textureName = "character.png"
-sprite.renderLayer = 2
-sprite.flipX = false
-sprite.flipY = false
-```
-
----
-
-## Exposed Variables
-
-You can expose variables to the editor by declaring them in an `ExposedVars` table:
-
-```lua
-ExposedVars = {
-    speed = 10.0,
-    maxHealth = 100,
-    isInvincible = false,
-    playerName = "Hero"
-}
-
-function Start()
-    Log("Speed: " .. speed)
-    Log("Max Health: " .. maxHealth)
-end
-
-function Update(dt)
-    -- Use the exposed variables
-    local transform = GetTransform()
-    if KeyDown(KEY_W) then
-        transform.position.y = transform.position.y - speed * dt
+    if HasPlayerOn(other) then
+        Log("Player entered pickup zone")
+        -- Collect item logic
     end
 end
 ```
 
-Supported types:
-- `float` (number with decimal)
-- `int` (whole number)
-- `bool` (true/false)
-- `string` (text)
+#### `OnTrigger(otherEntity)`
+Called every frame while inside a trigger collider.
+
+```lua
+function OnTrigger(other)
+    -- Handle continuous trigger overlap
+    -- e.g., healing zone, speed boost zone
+end
+```
+
+#### `OnTriggerExit(otherEntity)`
+Called once when leaving a trigger collider.
+
+```lua
+function OnTriggerExit(other)
+    Log("Left trigger zone")
+    -- Remove effect
+end
+```
+
+### Collider Manipulation
+
+```lua
+local collider = GetCollider()
+if collider then
+    -- Access primary shape
+    local shape = collider:GetPrimaryShape()
+    shape.size = Vec2(32, 32)
+    shape.offset = Vec2(0, 0)
+    shape.purpose = ColliderPurpose.Trigger
+    shape.layer = CollisionLayer.PICKUP
+    shape.colliderMask = CollisionLayer.PLAYER
+    shape.isActive = true
+    
+    -- Get bounding box
+    local bounds = collider:GetPrimaryBounds()
+    Log("Bounds min: " .. tostring(bounds.min))
+    Log("Bounds max: " .. tostring(bounds.max))
+    
+    -- Access all shapes (if multiple colliders)
+    for i = 1, #collider.shapes do
+        local s = collider.shapes[i]
+        s.isActive = true
+    end
+    
+    -- Show debug bounding box
+    collider.showBBox = true
+end
+```
+
+**Collider Properties:**
+- `size` - Vec2 dimensions of the collider
+- `offset` - Vec2 offset from entity position
+- `purpose` - ColliderPurpose enum
+- `layer` - CollisionLayer enum for this collider
+- `colliderMask` - CollisionLayer enum for what it collides with
+- `isActive` - Boolean to enable/disable collider
+- `autoFitToSprite` - Boolean to auto-size to sprite
 
 ---
 
-## Complete Example Scripts
+## Audio-System
 
-### Player Movement Controller
+### Sound Effects
+
+#### `PlaySound(audioName, volume, loops)`
+Plays a sound effect.
+
+**Parameters:**
+- `audioName` (string): The name you assigned in ResourceManager (e.g., "explosion", "jump")
+- `volume` (float): Volume level from 0.0 to 1.0
+- `loops` (int): Number of times to loop (0 = play once, -1 = loop forever)
+
+```lua
+-- Play jump sound once at 80% volume
+PlaySound("jump", 0.8, 0)
+
+-- Play laser sound at full volume
+PlaySound("laser", 1.0, 0)
+
+-- Loop footstep sound at 60% volume
+PlaySound("footsteps", 0.6, -1)
+```
+
+#### `StopSound(audioName)`
+Stops a playing sound effect.
+
+```lua
+-- Stop looping footsteps
+StopSound("footsteps")
+
+-- Stop explosion sound
+StopSound("explosion")
+```
+
+### Music
+
+#### `PlayMusic(audioName, volume, loops)`
+Plays background music.
+
+**Parameters:**
+- `audioName` (string): The name you assigned in ResourceManager (e.g., "cave", "battle_theme")
+- `volume` (float): Volume level from 0.0 to 1.0
+- `loops` (int): Number of times to loop (0 = play once, -1 = loop forever)
+
+```lua
+-- Play cave music looping forever at 50% volume
+PlayMusic("cave", 0.5, -1)
+
+-- Play boss music at 70% volume
+PlayMusic("boss_theme", 0.7, -1)
+
+-- Play victory jingle once
+PlayMusic("victory", 0.9, 0)
+```
+
+#### `StopMusic(audioName)`
+Stops playing music.
+
+```lua
+-- Stop cave music
+StopMusic("cave")
+
+-- Stop all music by name
+StopMusic("boss_theme")
+```
+
+> **Note:** Audio names are the identifiers you set when loading resources in the ResourceManager, NOT file paths or extensions. For example, if you loaded "Assets/Audio/explosion.wav" with the name "explosion", you would use `PlaySound("explosion", 1.0, 0)`.
+
+---
+
+## Utility-Functions
+
+### Logging
+
+#### `Log(message)`
+Logs an info message to the console.
+
+```lua
+Log("Player health: " .. tostring(health))
+Log("Game started")
+```
+
+#### `LogWarning(message)`
+Logs a warning message to the console.
+
+```lua
+LogWarning("Low health!")
+LogWarning("Missing component")
+```
+
+#### `LogError(message)`
+Logs an error message to the console.
+
+```lua
+LogError("Critical failure!")
+LogError("Cannot find player entity")
+```
+
+### Time
+
+#### `GetDeltaTime()`
+Returns the time elapsed since the last frame (in seconds).
+
+```lua
+function Update(dt)
+    -- Both methods work - dt parameter or GetDeltaTime()
+    local deltaTime = GetDeltaTime()
+    
+    -- Use for frame-rate independent movement
+    local movement = speed * deltaTime
+    
+    -- Update timer
+    timer = timer + deltaTime
+end
+```
+
+---
+
+## Script-Lifecycle
+
+### Lifecycle Functions
+
+Scripts can implement these optional functions. They will be called automatically by the engine at the appropriate times:
+
+#### `Start()`
+Called once when the script is first initialized, after all components are loaded.
+
+**Use for:**
+- Finding other entities
+- Caching references
+- Initial setup
+- Subscribing to events
+
+```lua
+function Start()
+    Log("Script started!")
+    
+    -- Cache player reference
+    playerId = FindEntityWithComponent("Player")
+    
+    -- Store initial position
+    initialPosition = GetTransform().position
+    
+    -- Play start sound
+    PlaySound("spawn", 0.7, 0)
+end
+```
+
+#### `Update(dt)`
+Called every frame. `dt` is the delta time in seconds since the last frame.
+
+**Use for:**
+- Movement logic
+- Input handling
+- Game logic
+- Animations
+- Timers
+
+```lua
+function Update(dt)
+    -- Frame-rate independent movement
+    local transform = GetTransform()
+    transform.position.x = transform.position.x + (speed * dt)
+    
+    -- Update timer
+    timer = timer + dt
+    
+    -- Handle input
+    if KeyDown(KEY_W) then
+        -- Move up
+    end
+end
+```
+
+#### `OnEnable()`
+Called when the script is enabled (either initially or after being disabled).
+
+**Use for:**
+- Re-initializing state
+- Resuming behavior
+- Re-subscribing to events
+
+```lua
+function OnEnable()
+    Log("Script enabled")
+    isActive = true
+    PlayMusic("theme", 0.5, -1)
+end
+```
+
+#### `OnDisable()`
+Called when the script is disabled.
+
+**Use for:**
+- Pausing behavior
+- Stopping sounds
+- Cleaning up temporary state
+
+```lua
+function OnDisable()
+    Log("Script disabled")
+    isActive = false
+    StopMusic("theme")
+end
+```
+
+#### `OnDestroy()`
+Called when the entity is destroyed. Use for cleanup.
+
+**Use for:**
+- Stopping looping sounds
+- Cleaning up spawned entities
+- Saving state
+- Unsubscribing from events
+
+```lua
+function OnDestroy()
+    Log("Cleaning up resources")
+    
+    -- Stop any looping sounds
+    StopSound("engine_loop")
+    
+    -- Clean up spawned objects
+    for i, spawnId in ipairs(spawnedObjects) do
+        DestroyEntity(spawnId)
+    end
+end
+```
+
+### Execution Order
+
+1. **Initialization Phase:**
+   - Script file is loaded and executed
+   - `ExposedVars` are discovered
+   - Variables are synced to Lua
+   - `Start()` is called
+
+2. **Active Phase:**
+   - `OnEnable()` is called (if becoming enabled)
+   - `Update(dt)` is called every frame
+   - Collision/Trigger callbacks are called when events occur
+   - `OnDisable()` is called (if becoming disabled)
+
+3. **Destruction Phase:**
+   - `OnDestroy()` is called
+   - Script is cleaned up
+
+---
+
+## Examples
+
+### Example 1: Player Movement
 
 ```lua
 ExposedVars = {
-    moveSpeed = 200.0,
-    jumpForce = 500.0
+    speed = 200.0,
+    jumpForce = 500.0,
+    isGrounded = false
 }
 
 function Start()
@@ -693,92 +812,507 @@ function Update(dt)
     
     -- Horizontal movement
     local moveX = 0
-    if KeyDown(KEY_A) then
-        moveX = -1
-    elseif KeyDown(KEY_D) then
-        moveX = 1
+    if KeyDown(KEY_A) then moveX = moveX - 1 end
+    if KeyDown(KEY_D) then moveX = moveX + 1 end
+    
+    rb.velocity.x = moveX * speed
+    
+    -- Flip sprite based on direction
+    local sprite = GetSprite()
+    if sprite and moveX ~= 0 then
+        sprite.flipX = (moveX < 0)
     end
     
-    rb.velocity.x = moveX * moveSpeed
-    
     -- Jump
-    if KeyPressed(KEY_SPACE) then
-        rb.velocity.y = -jumpForce
+    if KeyPressed(KEY_SPACE) and isGrounded then
+        rb.velocity.y = jumpForce
+        PlaySound("jump", 0.7, 0)
+        isGrounded = false
     end
 end
 
 function OnCollisionEnter(other)
-    if HasEnemyOn(other) then
-        LogWarning("Hit an enemy!")
+    -- Check if landed on ground
+    local otherCollider = GetColliderFrom(other)
+    if otherCollider then
+        local purpose = otherCollider:GetPrimaryShape().purpose
+        if purpose == ColliderPurpose.Environment then
+            isGrounded = true
+        end
     end
 end
 ```
 
-### Enemy AI
+### Example 2: Enemy AI with State Machine
 
 ```lua
 ExposedVars = {
-    patrolSpeed = 50.0,
-    detectionRange = 300.0
+    detectionRange = 200.0,
+    attackRange = 50.0,
+    moveSpeed = 100.0,
+    attackCooldown = 1.0,
+    health = 100
 }
 
-local direction = 1
+local playerId = -1
+local state = "idle"  -- idle, chase, attack
+local attackTimer = 0
 
 function Start()
-    Log("Enemy AI started")
+    playerId = FindEntityWithComponent("Player")
+    if playerId == -1 then
+        LogWarning("No player found!")
+    end
 end
 
 function Update(dt)
-    -- Find player
-    local playerEntity = FindEntityWithComponent("Player")
-    if playerEntity == -1 then return end
+    if playerId == -1 or not IsEntityValid(playerId) then return end
+    
+    -- Update attack timer
+    attackTimer = attackTimer - dt
     
     local myTransform = GetTransform()
-    local playerTransform = GetTransformFrom(playerEntity)
+    local playerTransform = GetTransformFrom(playerId)
+    if not playerTransform then return end
     
-    if myTransform and playerTransform then
-        local dx = playerTransform.position.x - myTransform.position.x
-        local dy = playerTransform.position.y - myTransform.position.y
-        local distance = math.sqrt(dx * dx + dy * dy)
+    -- Calculate distance to player
+    local dx = playerTransform.position.x - myTransform.position.x
+    local dy = playerTransform.position.y - myTransform.position.y
+    local distance = math.sqrt(dx * dx + dy * dy)
+    
+    -- State machine
+    if distance < attackRange then
+        state = "attack"
+        HandleAttackState(dt)
+    elseif distance < detectionRange then
+        state = "chase"
+        HandleChaseState(dt, dx, distance)
+    else
+        state = "idle"
+        HandleIdleState(dt)
+    end
+end
+
+function HandleChaseState(dt, dx, distance)
+    local rb = GetRigidBody()
+    if rb then
+        local dirX = dx / distance
+        rb.velocity.x = dirX * moveSpeed
         
-        -- Chase player if in range
-        if distance < detectionRange then
-            local rb = GetRigidBody()
-            if rb then
-                rb.velocity.x = (dx > 0 and 1 or -1) * patrolSpeed
-            end
-        else
-            -- Patrol
-            Patrol(dt)
+        -- Flip sprite to face player
+        local sprite = GetSprite()
+        if sprite then
+            sprite.flipX = (dirX < 0)
         end
     end
 end
 
-function Patrol(dt)
+function HandleAttackState(dt)
+    -- Stop moving
     local rb = GetRigidBody()
     if rb then
-        rb.velocity.x = direction * patrolSpeed
+        rb.velocity.x = 0
+    end
+    
+    -- Attack if cooldown ready
+    if attackTimer <= 0 then
+        Log("Enemy attacking!")
+        PlaySound("enemy_attack", 0.8, 0)
+        attackTimer = attackCooldown
+    end
+end
+
+function HandleIdleState(dt)
+    -- Stop moving
+    local rb = GetRigidBody()
+    if rb then
+        rb.velocity.x = 0
     end
 end
 
 function OnCollisionEnter(other)
-    -- Turn around on collision
-    direction = -direction
+    -- Take damage from projectiles
+    if HasColliderOn(other) then
+        local collider = GetColliderFrom(other)
+        if collider:GetEffectiveLayer() == CollisionLayer.PROJECTILE then
+            health = health - 10
+            PlaySound("enemy_hit", 0.7, 0)
+            
+            if health <= 0 then
+                Log("Enemy died!")
+                PlaySound("enemy_death", 0.8, 0)
+                DestroyEntity(EntityID)
+            end
+        end
+    end
 end
 ```
 
-### Collectible Item
+### Example 3: Collectible Pickup
 
 ```lua
 ExposedVars = {
-    points = 10
+    points = 10,
+    healAmount = 20,
+    collectType = "coin",  -- coin, health, powerup
+    collected = false
 }
 
-function OnTriggerEnter(other)
-    if HasPlayerOn(other) then
-        Log("Player collected item worth " .. points .. " points!")
-        -- Item would be destroyed by C++ system
+local rotationSpeed = 180  -- degrees per second
+local bobSpeed = 2.0
+local bobAmount = 10.0
+local timer = 0
+local startY = 0
+
+function Start()
+    local transform = GetTransform()
+    startY = transform.position.y
+    
+    -- Make sure we're a trigger
+    local collider = GetCollider()
+    if collider then
+        local shape = collider:GetPrimaryShape()
+        shape.purpose = ColliderPurpose.Trigger
+        shape.layer = CollisionLayer.PICKUP
+        shape.colliderMask = CollisionLayer.PLAYER
     end
+end
+
+function Update(dt)
+    if collected then return end
+    
+    timer = timer + dt
+    local transform = GetTransform()
+    
+    -- Rotate
+    transform.rotation = transform.rotation + (rotationSpeed * dt)
+    
+    -- Bob up and down
+    transform.position.y = startY + math.sin(timer * bobSpeed) * bobAmount
+end
+
+function OnTriggerEnter(other)
+    if collected then return end
+    
+    if HasPlayerOn(other) then
+        collected = true
+        
+        Log("Player collected " .. collectType .. " worth " .. tostring(points) .. " points!")
+        
+        -- Play collection sound based on type
+        if collectType == "coin" then
+            PlaySound("coin_pickup", 0.8, 0)
+        elseif collectType == "health" then
+            PlaySound("heal", 0.7, 0)
+        elseif collectType == "powerup" then
+            PlaySound("powerup", 0.9, 0)
+        end
+        
+        -- Destroy after short delay (could spawn particle effect here)
+        DestroyEntity(EntityID)
+    end
+end
+```
+
+### Example 4: Smooth Camera Follow
+
+```lua
+ExposedVars = {
+    smoothSpeed = 5.0,
+    offset = Vec2(0, 50),
+    lookAheadDistance = 100.0,
+    boundaryEnabled = false,
+    minX = -500,
+    maxX = 500,
+    minY = -300,
+    maxY = 300
+}
+
+local targetId = -1
+local currentVelocity = Vec2(0, 0)
+
+function Start()
+    targetId = FindEntityWithComponent("Player")
+    
+    if targetId == -1 then
+        LogError("Camera: No player found to follow!")
+    else
+        Log("Camera following entity: " .. tostring(targetId))
+    end
+end
+
+function Update(dt)
+    if targetId == -1 or not IsEntityValid(targetId) then return end
+    
+    local myTransform = GetTransform()
+    local targetTransform = GetTransformFrom(targetId)
+    if not targetTransform then return end
+    
+    -- Get target velocity for look-ahead
+    local targetRb = GetRigidBodyFrom(targetId)
+    local lookAhead = Vec2(0, 0)
+    
+    if targetRb then
+        lookAhead.x = targetRb.velocity.x * 0.2
+        lookAhead.y = targetRb.velocity.y * 0.1
+    end
+    
+    -- Calculate desired position with look-ahead
+    local desiredPos = Vec2(
+        targetTransform.position.x + offset.x + lookAhead.x,
+        targetTransform.position.y + offset.y + lookAhead.y
+    )
+    
+    -- Apply boundaries if enabled
+    if boundaryEnabled then
+        desiredPos.x = math.max(minX, math.min(maxX, desiredPos.x))
+        desiredPos.y = math.max(minY, math.min(maxY, desiredPos.y))
+    end
+    
+    -- Smooth follow
+    local currentPos = myTransform.position
+    myTransform.position.x = currentPos.x + (desiredPos.x - currentPos.x) * smoothSpeed * dt
+    myTransform.position.y = currentPos.y + (desiredPos.y - currentPos.y) * smoothSpeed * dt
+end
+```
+
+### Example 5: Enemy Spawner System
+
+```lua
+ExposedVars = {
+    spawnInterval = 2.0,
+    maxSpawns = 10,
+    spawnRadius = 50.0,
+    enemySpeed = 100.0,
+    autoStart = true
+}
+
+local timer = 0
+local spawnCount = 0
+local isActive = false
+local spawnedEnemies = {}
+
+function Start()
+    Log("Spawner initialized")
+    
+    if autoStart then
+        isActive = true
+        PlaySound("spawner_active", 0.5, -1)
+    end
+end
+
+function Update(dt)
+    if not isActive or spawnCount >= maxSpawns then
+        return
+    end
+    
+    timer = timer + dt
+    
+    if timer >= spawnInterval then
+        SpawnEnemy()
+        timer = 0
+    end
+end
+
+function SpawnEnemy()
+    -- Get spawn position with random offset
+    local myTransform = GetTransform()
+    local angle = math.random() * math.pi * 2
+    local distance = math.random() * spawnRadius
+    
+    local spawnX = myTransform.position.x + math.cos(angle) * distance
+    local spawnY = myTransform.position.y + math.sin(angle) * distance
+    
+    -- Create enemy entity
+    local enemyId = CreateEntity()
+    table.insert(spawnedEnemies, enemyId)
+    
+    spawnCount = spawnCount + 1
+    Log("Spawned enemy " .. tostring(spawnCount) .. "/" .. tostring(maxSpawns))
+    
+    PlaySound("enemy_spawn", 0.7, 0)
+    
+    -- Check if reached max spawns
+    if spawnCount >= maxSpawns then
+        isActive = false
+        StopSound("spawner_active")
+        Log("Spawner reached max capacity")
+    end
+end
+
+function OnTriggerEnter(other)
+    -- Activate spawner when player enters
+    if not isActive and HasPlayerOn(other) then
+        isActive = true
+        Log("Spawner activated by player!")
+        PlaySound("spawner_active", 0.5, -1)
+    end
+end
+
+function OnDestroy()
+    -- Clean up spawned enemies
+    for i, enemyId in ipairs(spawnedEnemies) do
+        if IsEntityValid(enemyId) then
+            DestroyEntity(enemyId)
+        end
+    end
+    
+    StopSound("spawner_active")
+    Log("Spawner destroyed, cleaned up " .. tostring(#spawnedEnemies) .. " enemies")
+end
+```
+
+### Example 6: Projectile with Lifetime
+
+```lua
+ExposedVars = {
+    speed = 400.0,
+    lifetime = 3.0,
+    damage = 25,
+    direction = Vec2(1, 0)
+}
+
+local timeAlive = 0
+local hasHit = false
+
+function Start()
+    -- Normalize direction
+    local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
+    if length > 0 then
+        direction.x = direction.x / length
+        direction.y = direction.y / length
+    end
+    
+    -- Set initial velocity
+    local rb = GetRigidBody()
+    if rb then
+        rb.velocity = Vec2(direction.x * speed, direction.y * speed)
+    end
+    
+    -- Set rotation to face direction
+    local transform = GetTransform()
+    transform.rotation = math.atan2(direction.y, direction.x) * (180 / math.pi)
+    
+    PlaySound("projectile_fire", 0.6, 0)
+end
+
+function Update(dt)
+    timeAlive = timeAlive + dt
+    
+    -- Destroy after lifetime expires
+    if timeAlive >= lifetime then
+        Log("Projectile expired")
+        DestroyEntity(EntityID)
+    end
+end
+
+function OnCollisionEnter(other)
+    if hasHit then return end
+    
+    -- Don't hit the shooter (could add shooter ID check here)
+    
+    -- Hit enemy
+    if HasEnemyOn(other) then
+        Log("Projectile hit enemy for " .. tostring(damage) .. " damage")
+        PlaySound("projectile_hit", 0.7, 0)
+        hasHit = true
+        DestroyEntity(EntityID)
+    end
+    
+    -- Hit wall
+    local collider = GetColliderFrom(other)
+    if collider then
+        local purpose = collider:GetPrimaryShape().purpose
+        if purpose == ColliderPurpose.Environment then
+            Log("Projectile hit wall")
+            PlaySound("projectile_impact", 0.6, 0)
+            DestroyEntity(EntityID)
+        end
+    end
+end
+```
+
+---
+
+## Vec2 Helper
+
+### Constructor
+
+```lua
+local v = Vec2()           -- Creates Vec2(0, 0)
+local v = Vec2(10, 20)     -- Creates Vec2(10, 20)
+```
+
+### Properties
+
+```lua
+local pos = Vec2(100, 200)
+pos.x = 150   -- Set x component
+pos.y = 250   -- Set y component
+
+Log("X: " .. tostring(pos.x))  -- Access x component
+Log("Y: " .. tostring(pos.y))  -- Access y component
+```
+
+### Operations
+
+```lua
+local a = Vec2(10, 20)
+local b = Vec2(5, 10)
+
+-- Addition
+local sum = a + b           -- Vec2(15, 30)
+
+-- Subtraction
+local diff = a - b          -- Vec2(5, 10)
+
+-- Scalar multiplication
+local scaled = a * 2        -- Vec2(20, 40)
+local scaled2 = 2 * a       -- Vec2(20, 40) - both orders work
+
+-- Scalar division
+local divided = a / 2       -- Vec2(5, 10)
+
+-- String representation
+Log(tostring(a))            -- "Vec2(10, 20)"
+```
+
+### Common Vec2 Patterns
+
+```lua
+-- Distance between two points
+function Distance(a, b)
+    local dx = b.x - a.x
+    local dy = b.y - a.y
+    return math.sqrt(dx * dx + dy * dy)
+end
+
+-- Normalize a vector
+function Normalize(v)
+    local length = math.sqrt(v.x * v.x + v.y * v.y)
+    if length > 0 then
+        return Vec2(v.x / length, v.y / length)
+    end
+    return Vec2(0, 0)
+end
+
+-- Direction from A to B
+function Direction(from, to)
+    local dir = to - from
+    return Normalize(dir)
+end
+
+-- Dot product
+function Dot(a, b)
+    return a.x * b.x + a.y * b.y
+end
+
+-- Lerp (linear interpolation)
+function Lerp(a, b, t)
+    return Vec2(
+        a.x + (b.x - a.x) * t,
+        a.y + (b.y - a.y) * t
+    )
 end
 ```
 
@@ -786,58 +1320,431 @@ end
 
 ## Best Practices
 
-1. **Always check for nil**: Component getters return `nil` if the component doesn't exist
-   ```lua
-   local transform = GetTransform()
-   if transform then
-       -- Safe to use
-   end
-   ```
+### Performance
 
-2. **Use Has functions**: Check if a component exists before getting it
+1. **Cache entity references** in `Start()` when possible
    ```lua
-   if HasRigidBody() then
-       local rb = GetRigidBody()
-       -- Use rb
-   end
-   ```
-
-3. **Validate entity IDs**: Always check if entities are valid
-   ```lua
-   if IsEntityValid(targetEntity) then
-       -- Safe to access
-   end
-   ```
-
-4. **Cache component references**: Store frequently accessed components
-   ```lua
-   local myTransform = nil
+   local playerId = -1
    
    function Start()
-       myTransform = GetTransform()
+       playerId = FindEntityWithComponent("Player")  -- Cache once
    end
    
    function Update(dt)
-       if myTransform then
+       if playerId ~= -1 then
            -- Use cached reference
        end
    end
    ```
 
-5. **Use ExposedVars for tuning**: Expose values you want to adjust in the editor
+2. **Check validity before accessing** cross-entity data
+   ```lua
+   if IsEntityValid(targetId) then
+       local transform = GetTransformFrom(targetId)
+       if transform then
+           -- Safe to use
+       end
+   end
+   ```
+
+3. **Avoid repeated lookups** in Update()
+   ```lua
+   -- Bad
+   function Update(dt)
+       local transform = GetTransform()  -- Called every frame
+       transform.position.x = transform.position.x + 1
+   end
+   
+   -- Better for multiple accesses
+   function Update(dt)
+       local transform = GetTransform()
+       local pos = transform.position
+       pos.x = pos.x + 1
+       pos.y = pos.y + 1
+   end
+   ```
+
+### Safety
+
+1. **Always check for nil** when accessing components
+   ```lua
+   local rb = GetRigidBody()
+   if rb then
+       rb.velocity = Vec2(10, 0)
+   end
+   ```
+
+2. **Use `HasComponent()` before `GetComponent()`** for extra safety
+   ```lua
+   if HasRigidBody() then
+       local rb = GetRigidBody()
+       -- Guaranteed to be non-nil
+   end
+   ```
+
+3. **Validate entity IDs** from queries
+   ```lua
+   local playerId = FindEntityWithComponent("Player")
+   if playerId ~= -1 and IsEntityValid(playerId) then
+       -- Safe to use
+   end
+   ```
+
+### Frame-Rate Independence
+
+1. **Multiply movement by delta time**
+   ```lua
+   function Update(dt)
+       local transform = GetTransform()
+       transform.position.x = transform.position.x + (speed * dt)
+   end
+   ```
+
+2. **Use timers with delta time**
+   ```lua
+   local cooldownTimer = 0
+   
+   function Update(dt)
+       cooldownTimer = cooldownTimer - dt
+       
+       if cooldownTimer <= 0 then
+           -- Ready to fire
+           cooldownTimer = cooldownDuration
+       end
+   end
+   ```
+
+### Organization
+
+1. **Use ExposedVars** for designer-tweakable values
    ```lua
    ExposedVars = {
-       speed = 100.0,
-       damage = 25
+       speed = 200.0,      -- Easy to adjust
+       jumpForce = 500.0,
+       maxHealth = 100
    }
+   ```
+
+2. **Organize code with local helper functions**
+   ```lua
+   local function CalculateDistance(a, b)
+       local dx = b.x - a.x
+       local dy = b.y - a.y
+       return math.sqrt(dx * dx + dy * dy)
+   end
+   
+   function Update(dt)
+       local dist = CalculateDistance(pos1, pos2)
+   end
+   ```
+
+3. **Use meaningful variable names**
+   ```lua
+   -- Bad
+   local e = FindEntityWithComponent("Enemy")
+   
+   -- Good
+   local enemyId = FindEntityWithComponent("Enemy")
+   ```
+
+### Cleanup
+
+1. **Stop looping sounds** in `OnDestroy()`
+   ```lua
+   function OnDestroy()
+       StopSound("engine_loop")
+       StopMusic("boss_theme")
+   end
+   ```
+
+2. **Destroy spawned entities** when parent is destroyed
+   ```lua
+   local spawnedObjects = {}
+   
+   function OnDestroy()
+       for i, objId in ipairs(spawnedObjects) do
+           if IsEntityValid(objId) then
+               DestroyEntity(objId)
+           end
+       end
+   end
+   ```
+
+3. **Clean up resources** properly
+   ```lua
+   function OnDestroy()
+       -- Stop sounds
+       StopSound("loop")
+       
+       -- Clear references
+       playerId = -1
+       spawnedObjects = {}
+       
+       Log("Cleanup complete")
+   end
    ```
 
 ---
 
-## Notes
+## Common Patterns
 
-- All component modifications are immediately reflected in the C++ engine
-- The `Update()` function receives delta time in seconds
-- Entity IDs are stable during the entity's lifetime
-- Invalid entity operations are logged as errors but won't crash
-- Scripts are hot-reloadable (exposed variables persist across reloads)
+### Singleton Pattern (Finding Single Entity)
+
+```lua
+local playerId = -1
+
+function Start()
+    playerId = FindEntityWithComponent("Player")
+    
+    if playerId == -1 then
+        LogError("Player not found!")
+    end
+end
+
+function Update(dt)
+    if playerId == -1 or not IsEntityValid(playerId) then
+        return
+    end
+    
+    -- Use player reference
+end
+```
+
+### Tracking Multiple Entities
+
+```lua
+local enemies = {}
+
+function Start()
+    RefreshEnemyList()
+end
+
+function RefreshEnemyList()
+    enemies = FindEntitiesWithComponent("Enemy")
+    Log("Found " .. tostring(#enemies) .. " enemies")
+end
+
+function Update(dt)
+    -- Process each enemy
+    for i, enemyId in ipairs(enemies) do
+        if IsEntityValid(enemyId) then
+            -- Do something with enemy
+        end
+    end
+end
+```
+
+### State Machine Pattern
+
+```lua
+local state = "idle"
+local states = {
+    idle = HandleIdleState,
+    chase = HandleChaseState,
+    attack = HandleAttackState
+}
+
+function Update(dt)
+    if states[state] then
+        states[state](dt)
+    end
+end
+
+function HandleIdleState(dt)
+    -- Idle logic
+end
+
+function HandleChaseState(dt)
+    -- Chase logic
+end
+
+function HandleAttackState(dt)
+    -- Attack logic
+end
+```
+
+### Timer Pattern
+
+```lua
+local timer = 0
+local interval = 2.0
+
+function Update(dt)
+    timer = timer + dt
+    
+    if timer >= interval then
+        timer = 0  -- or timer = timer - interval for precise timing
+        OnTimerExpired()
+    end
+end
+
+function OnTimerExpired()
+    -- Do something periodically
+end
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+1. **"Attempt to index a nil value"**
+   - Always check if component exists before accessing
+   - Use `if component then ... end`
+
+2. **Movement is too fast/slow**
+   - Make sure to multiply by `dt` for frame-rate independence
+   - Check ExposedVars values
+
+3. **Entity not found**
+   - Verify component name spelling (case-sensitive)
+   - Check if entity exists in the scene
+   - Use `IsEntityValid()` to confirm
+
+4. **Sounds not playing**
+   - Verify audio name matches ResourceManager registration
+   - Check volume is not 0
+   - Ensure audio file was loaded successfully
+
+5. **Collision not detecting**
+   - Verify both entities have Collider components
+   - Check collision layers and masks match
+   - Ensure colliders are active (`isActive = true`)
+
+### Debugging Tips
+
+```lua
+-- Log everything in Start() to verify initialization
+function Start()
+    Log("=== Script Starting ===")
+    Log("Entity ID: " .. tostring(EntityID))
+    
+    if HasTransform() then
+        local t = GetTransform()
+        Log("Position: " .. tostring(t.position))
+    end
+    
+    Log("=== Start Complete ===")
+end
+
+-- Add frame counters to track Update calls
+local frameCount = 0
+
+function Update(dt)
+    frameCount = frameCount + 1
+    
+    if frameCount % 60 == 0 then  -- Log every 60 frames
+        Log("Frame: " .. tostring(frameCount))
+    end
+end
+
+-- Use LogWarning for important events
+function OnCollisionEnter(other)
+    LogWarning("Collision with entity: " .. tostring(other))
+end
+```
+
+---
+
+## Advanced Topics
+
+### Require System
+
+You can split code into modules using Lua's `require` system. The search paths are already configured:
+
+```lua
+-- In Assets/Scripts/Utils.lua
+local Utils = {}
+
+function Utils.Distance(a, b)
+    local dx = b.x - a.x
+    local dy = b.y - a.y
+    return math.sqrt(dx * dx + dy * dy)
+end
+
+return Utils
+
+-- In your script
+local Utils = require("Utils")
+
+function Update(dt)
+    local dist = Utils.Distance(pos1, pos2)
+end
+```
+
+### State Files
+
+Place state machine definitions in separate files:
+
+```lua
+-- In Assets/Scripts/States/EnemyStates.lua
+local States = {}
+
+function States.Idle(entity, dt)
+    -- Idle behavior
+end
+
+function States.Chase(entity, dt)
+    -- Chase behavior
+end
+
+return States
+
+-- In your enemy script
+local EnemyStates = require("EnemyStates")
+
+function Update(dt)
+    EnemyStates[currentState](EntityID, dt)
+end
+```
+
+---
+
+## Quick Reference
+
+### Component Getters (Current Entity)
+- `GetTransform()`, `GetRigidBody()`, `GetSprite()`, `GetCollider()`, `GetPlayer()`, `GetEnemy()`, `GetCamera()`
+
+### Component Checkers (Current Entity)
+- `HasTransform()`, `HasRigidBody()`, `HasSprite()`, `HasCollider()`, `HasPlayer()`, `HasEnemy()`, `HasCamera()`
+
+### Cross-Entity Access
+- `GetEntity(id)` - Returns entity wrapper
+- `Get[Component]From(id)` - Direct component access
+- `Has[Component]On(id)` - Check if entity has component
+
+### Entity Management
+- `CreateEntity()`, `DestroyEntity(id)`, `DestroyWithChildren(id)`
+- `SetParent(child, parent)`, `RemoveParent(child)`, `GetParent(id)`, `HasParent(id)`, `GetChildren(id)`
+
+### Entity Queries
+- `FindEntitiesWithComponent(name)`, `FindEntityWithComponent(name)`
+- `GetEntityCount()`, `IsEntityValid(id)`
+
+### Input
+- `KeyDown(key)`, `KeyPressed(key)`, `KeyReleased(key)`
+- `MouseButtonDown(btn)`, `MouseButtonPressed(btn)`, `MouseButtonReleased(btn)`
+- `GetMousePosition()`
+
+### Audio
+- `PlaySound(name, volume, loops)`, `StopSound(name)`
+- `PlayMusic(name, volume, loops)`, `StopMusic(name)`
+
+### Utility
+- `Log(msg)`, `LogWarning(msg)`, `LogError(msg)`
+- `GetDeltaTime()`
+
+### Lifecycle Callbacks
+- `Start()`, `Update(dt)`, `OnEnable()`, `OnDisable()`, `OnDestroy()`
+- `OnCollisionEnter(other)`, `OnCollision(other)`, `OnCollisionExit(other)`
+- `OnTriggerEnter(other)`, `OnTrigger(other)`, `OnTriggerExit(other)`
+
+---
+
+**Document Version:** 1.0  
+**Last Updated:** 2024  
+**Engine:** Uma Engine  
+**Scripting Language:** Lua 5.4
+
+For additional help, refer to the engine source code or contact the development team.
