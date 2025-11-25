@@ -75,7 +75,7 @@ namespace Uma_Engine
         auto& spriteArray = pCoordinator->GetComponentArray<Uma_ECS::Sprite>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
-        if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
+        if (config.pickGameEntities && transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
             const auto& transform = transformArray.GetData(entity);
 
@@ -93,7 +93,7 @@ namespace Uma_Engine
             Graphics::AddDebugRect(transform.worldPosition, size * transform.scale,
                 config.colorSelected.x, config.colorSelected.y, config.colorSelected.z, lines);
         }
-        else if (rectTransformArray.Has(entity))
+        else if (config.pickUIEntities && rectTransformArray.Has(entity))
         {
             const auto& rectTransform = rectTransformArray.GetData(entity);
 

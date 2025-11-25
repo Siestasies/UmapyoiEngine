@@ -87,8 +87,7 @@
                     "sizeDelta": {
                         "x": 0.0,
                         "y": 0.0
-                    },
-                    "parent": 4294967295
+                    }
                 },
                 "class Uma_UI::Canvas": {
                     "sortingOrder": 0,
@@ -118,7 +117,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": 1
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -149,8 +148,7 @@
                     "sizeDelta": {
                         "x": 300.0,
                         "y": 50.0
-                    },
-                    "parent": 1
+                    }
                 },
                 "class Uma_UI::Image": {
                     "textureName": "whitePixel",
@@ -187,8 +185,7 @@
                         "g": 0.5,
                         "b": 0.5,
                         "a": 0.5
-                    },
-                    "functionName": "UI_CALLBACK_PLAY_SOUND"
+                    }
                 }
             }
         },
@@ -209,7 +206,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": 2
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -231,8 +228,7 @@
                     "sizeDelta": {
                         "x": 300.0,
                         "y": 50.0
-                    },
-                    "parent": 2
+                    }
                 },
                 "class Uma_UI::Text": {
                     "text": "Play explosion sound",
@@ -266,7 +262,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": 1
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -288,8 +284,7 @@
                     "sizeDelta": {
                         "x": 300.0,
                         "y": 50.0
-                    },
-                    "parent": 1
+                    }
                 },
                 "class Uma_UI::Image": {
                     "textureName": "whitePixel",
@@ -326,8 +321,7 @@
                         "g": 0.5,
                         "b": 0.5,
                         "a": 0.5
-                    },
-                    "functionName": "UI_CALLBACK_LOAD_SCENE"
+                    }
                 }
             }
         },
@@ -348,7 +342,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": 4
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -370,8 +364,7 @@
                     "sizeDelta": {
                         "x": 300.0,
                         "y": 50.0
-                    },
-                    "parent": 4
+                    }
                 },
                 "class Uma_UI::Text": {
                     "text": "Load test_default.scn",
