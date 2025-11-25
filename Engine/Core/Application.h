@@ -21,6 +21,7 @@ namespace Uma_Engine
     class EventSystem;
     class HybridInputSystem;
     class SceneManager;
+    class SoundManager;
     struct EngineConfig;
 
     /**
@@ -118,8 +119,10 @@ namespace Uma_Engine
         // Cached pointers to frequently used systems (not owned)
         EventSystem* mEventSystem;
         HybridInputSystem* mInputSystem;
+        SoundManager* mSoundManager;
         SceneManager* mSceneManager;
 
         bool mInitialized;
+        bool mWasFocused;
     };
 }

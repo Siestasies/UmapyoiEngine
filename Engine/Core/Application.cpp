@@ -46,7 +46,9 @@ namespace Uma_Engine
         , mEventSystem(nullptr)
         , mInputSystem(nullptr)
         , mSceneManager(nullptr)
+        , mSoundManager(nullptr)
         , mInitialized(false)
+        , mWasFocused(false)
     {
     }
 
@@ -111,6 +113,7 @@ namespace Uma_Engine
         PostInit();
 
         mInitialized = true;
+        mWasFocused = true;
         return true;
     }
 
@@ -199,7 +202,7 @@ namespace Uma_Engine
         // Register core engine systems
         mSystemManager->RegisterSystem<Debugger>();
         mSystemManager->RegisterSystem<Graphics>();
-        mSystemManager->RegisterSystem<SoundManager>();
+        mSoundManager = mSystemManager->RegisterSystem<SoundManager>();
         mSystemManager->RegisterSystem<ResourcesManager>();
 
         // Register scene manager
@@ -269,14 +272,62 @@ namespace Uma_Engine
             // Update window (processes GLFW events)
             mWindow->Update();
 
-            // Handle ESC key to close window
-            if (HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+            bool isFocused = glfwGetWindowAttrib(mWindow->GetGLFWWindow(), GLFW_FOCUSED);
+            // Check if window is minimized
+            bool isIconified = glfwGetWindowAttrib(mWindow->GetGLFWWindow(), GLFW_ICONIFIED);
+
+            if (!isFocused || isIconified)
             {
-                glfwSetWindowShouldClose(mWindow->GetGLFWWindow(), GLFW_TRUE);
+                // Lost focus or minimized (pause everything)
+                if (mWasFocused)
+                {
+                    if (mSoundManager)
+                    {
+                        mSoundManager->pauseAllSounds(true);
+                        mSoundManager->Update(deltaTime);
+                    }
+
+                    if (mInputSystem)
+                    {
+                        mInputSystem->ResetAllInput();
+                    }
+
+                    mWasFocused = false;
+                }
+
+                if (mSoundManager)
+                {
+                    mSoundManager->Update(deltaTime);
+                }
+
+                // Wait for events
+                glfwWaitEventsTimeout(0.1);
+
+                // Skip system updates
+                continue;
+            }
+
+            // Regained focus
+            if (!mWasFocused)
+            {
+                if (mSoundManager)
+                {
+                    mSoundManager->pauseAllSounds(false);
+                }
+
+                mWasFocused = true;
+            }
+
+            if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_F11))
+            {
+                mWindow->ToggleFullscreen();
             }
 
             // Update all systems
             mSystemManager->Update(deltaTime);
+
+            // Swap front and back buffers
+            glfwSwapBuffers(mWindow->GetGLFWWindow());
 
             // Let derived class perform custom update logic
             Update(deltaTime);
