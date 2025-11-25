@@ -103,6 +103,7 @@ namespace Uma_Engine
                 [this](const StopSceneRequest& e) {
                     (void)e;
                     m_Scene->m_Coordinator.RestoreState();
+                    GetLuascriptingSystem().CallStart();
                 }
             );
 

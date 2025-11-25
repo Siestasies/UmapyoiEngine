@@ -54,7 +54,14 @@ namespace Uma_ECS
             sol::lib::package
         );
 
-         RegisterLuaAPI();
+        //Set up package.path for require()
+        std::string currentPath = (*sharedLua)["package"]["path"];
+        (*sharedLua)["package"]["path"] = currentPath +
+            ";./Assets/Scripts/?.lua" +
+            ";./Assets/Scripts/States/?.lua";  // Add path for your state files
+
+        RegisterLuaAPI();
+        SubscribeToEvents();  // Re-subscribe to events after restart
     }
 
     void LuaScriptingSystem::Update(float dt)
@@ -1206,7 +1213,7 @@ namespace Uma_ECS
             script.hasError = false;
         }
 
-        // Let vector destructor run — shared_ptr handles Lua env memory safely
+        // Let vector destructor run ï¿½ shared_ptr handles Lua env memory safely
         scriptComponent.scripts.clear();
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,

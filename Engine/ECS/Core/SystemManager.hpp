@@ -67,6 +67,8 @@ namespace Uma_ECS
 
         void EntitySignatureChanged(Entity entity, Signature entitySiganture);
 
+        void ClearAllEntities();
+
     private:
 
         std::unordered_map<std::string, Signature> aSignatures{};

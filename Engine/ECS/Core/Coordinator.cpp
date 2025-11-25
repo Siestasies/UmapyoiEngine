@@ -700,8 +700,44 @@ namespace Uma_ECS
     {
         if (!mStateCache.cachedEntityManager || !mStateCache.cachedComponentManager) return;
 
+        // Step 1: Clear all entity references from systems
+        aSystemManager->ClearAllEntities();
+
+        // Step 2: Restore the cached entity and component managers
         aEntityManager = std::make_unique<EntityManager>(*mStateCache.cachedEntityManager);
         aComponentManager = std::make_unique<ComponentManager>(*mStateCache.cachedComponentManager);
+
+        // Step 3: Clear Lua runtime data from restored LuaScript components
+        auto& luaScriptArray = aComponentManager->GetComponentArray<LuaScript>();
+        for (size_t i = 0; i < luaScriptArray.Size(); ++i)
+        {
+            Entity entity = luaScriptArray.GetEntity(i);
+            auto& luaScript = luaScriptArray.GetData(entity);
+
+            // Clear runtime-only data for each script instance
+            for (auto& script : luaScript.scripts)
+            {
+                script.scriptEnv.reset();           // Release the stale Lua environment
+                script.isInitialized = false;       // Mark as uninitialized
+                script.hasError = false;            // Clear error state
+                script.errorMessage.clear();        // Clear error message
+                script.wasEnabledLastFrame = false; // Reset frame tracking
+                // Note: Keep exposedVariables, scriptPath, and isEnabled to preserve editor settings
+            }
+        }
+
+        // Step 4: Rebuild system entity sets by notifying systems of all active entities
+        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+        {
+            if (aEntityManager->IsEntityActive(entity))
+            {
+                Signature signature = aEntityManager->GetSignature(entity);
+                aSystemManager->EntitySignatureChanged(entity, signature);
+            }
+        }
+
+        mStateCache.cachedComponentManager.release();
+        mStateCache.cachedEntityManager.release();
     }
 
     Uma_Engine::EventSystem* Coordinator::GetEventSystem()

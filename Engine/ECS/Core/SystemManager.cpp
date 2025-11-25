@@ -79,6 +79,16 @@ void Uma_ECS::SystemManager::EntitySignatureChanged(Entity entity, Signature ent
                 }
             }
         }
-        
+
+    }
+}
+
+void Uma_ECS::SystemManager::ClearAllEntities()
+{
+    // Clear all entity sets from all systems
+    for (auto const& pair : aSystems)
+    {
+        auto const& system = pair.second;
+        system->aEntities.clear();
     }
 }
