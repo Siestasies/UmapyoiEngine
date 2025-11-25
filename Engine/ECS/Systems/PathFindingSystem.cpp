@@ -21,22 +21,39 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
 
     //to be removed later
     // Subscribe to mouse clicks for pathfinding
-    pEventSystem->Subscribe<Uma_Engine::SceneViewMouseEvent, PathFindingSystem>(
-        [this](const Uma_Engine::SceneViewMouseEvent& e) {
-            viewportMousePos = Vec2(e.x, e.y);
+    if (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
+    {
+        pEventSystem->Subscribe<Uma_Engine::SceneViewMouseEvent, PathFindingSystem>(
+            [this](const Uma_Engine::SceneViewMouseEvent& e) {
+                viewportMousePos = Vec2(e.x, e.y);
             });
 
-    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PathFindingSystem>(
-        [this](const Uma_Engine::MouseButtonEvent& e) {
-            if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PathFindingSystem>(
+            [this](const Uma_Engine::MouseButtonEvent& e) {
+                if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
 
-            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-            if (pfArray.Has(playerID)) {
-                auto& pf = pfArray.GetData(playerID);
-                pf.goal = pGraphics->ScreenToWorld(Vec2(viewportMousePos.x,viewportMousePos.y));
-                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-            }
-        });
+                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+                if (pfArray.Has(playerID)) {
+                    auto& pf = pfArray.GetData(playerID);
+                    pf.goal = pGraphics->ScreenToWorld(Vec2(viewportMousePos.x, viewportMousePos.y));
+                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+                }
+            });
+    }
+    else if (graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Window)
+    {
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PathFindingSystem>(
+            [this](const Uma_Engine::MouseButtonEvent& e) {
+                if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
+
+                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
+                if (pfArray.Has(playerID)) {
+                    auto& pf = pfArray.GetData(playerID);
+                    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
+                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+                }
+            });
+    }
 
     pEventSystem->Subscribe<Uma_Engine::CallPathFindToBake, PathFindingSystem>(
         [this](const Uma_Engine::CallPathFindToBake& e)
