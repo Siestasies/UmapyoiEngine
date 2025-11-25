@@ -277,7 +277,12 @@ namespace Uma_ECS
         Uma_Engine::EventSystem* GetEventSystem();
         void ShutDown()
         {
+            // DestroyAllEntities() now actually destroys and clears the queue
             DestroyAllEntities();
+
+            // Defensive: Ensure deletion queue is empty before managers are released
+            mEntitiesToDestroy.clear();
+
             mStateCache.cachedComponentManager.release();
             mStateCache.cachedEntityManager.release();
         }

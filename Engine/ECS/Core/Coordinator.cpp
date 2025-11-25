@@ -178,10 +178,17 @@ namespace Uma_ECS
     {
         std::vector<Entity> enList = aEntityManager->GetAllEntites();
 
+        // Queue all entities for destruction
         for (auto const& en : enList)
         {
             DestroyEntity(en);
         }
+
+        // IMPORTANT: Actually destroy them immediately (don't leave them in queue)
+        ProcessDeletionQueue();
+
+        // Clear queue for safety (should already be empty after processing)
+        mEntitiesToDestroy.clear();
 
         std::string log;
         std::stringstream ss(log);
