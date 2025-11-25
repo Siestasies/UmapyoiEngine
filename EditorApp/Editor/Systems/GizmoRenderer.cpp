@@ -41,6 +41,14 @@ namespace Uma_Engine
         if (!pGraphics)
             return;
 
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& spriteArray = pCoordinator->GetComponentArray<Uma_ECS::Sprite>();
+        auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+
+        if (!config.pickGameEntities && transformArray.Has(entity) && !rectTransformArray.Has(entity)) return;
+        
+        if (!config.pickUIEntities && rectTransformArray.Has(entity)) return;
+
         Vec2 screenPos = GetEntityScreenPosition(entity);
 
         switch (state.currentMode)
