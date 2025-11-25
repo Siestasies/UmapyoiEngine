@@ -620,6 +620,6 @@ namespace Uma_UI
 
     void UISystem::ButtonOnClicked(Uma_ECS::Entity entity)
     {
-        pEventSystem->Emit<Uma_Engine::ButtonOnClcikedEvent>(entity, 0);
+        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
     }
 }

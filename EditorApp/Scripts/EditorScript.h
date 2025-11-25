@@ -112,18 +112,9 @@ namespace Uma_Engine
             eventSystem->Subscribe<ClearSceneRequestEvent, EditorScript>(
                 [this](const ClearSceneRequestEvent& e) {
                     (void)e;
-                    ResetScene();
+                    m_Scene->GetCoordinator().ShutDown();
                 }
             );
-
-            // Empty scene
-            m_EventListeners.push_back(
-                eventSystem->Subscribe<EmptySceneRequestEvent>(
-                    [this](const EmptySceneRequestEvent& e) {
-                        (void)e;
-                        EmptyScene();
-                    }
-            ));
 
             // Stress test
             eventSystem->Subscribe<StressTestRequestEvent, EditorScript>(
@@ -181,7 +172,7 @@ namespace Uma_Engine
             eventSystem->Subscribe<LoadPrefabRequestEvent, EditorScript>(
                 [this](const LoadPrefabRequestEvent& e) {
                     (void)e;
-                    LoadPrefab(e.prefab_name, e.script);
+                    LoadPrefab(e.prefab_name);
                 }
             );
 
@@ -201,29 +192,29 @@ namespace Uma_Engine
                 }
             );
 
-                eventSystem->Subscribe<SpawnEntityRequestEvent, EditorScript>(
-                    [this](const SpawnEntityRequestEvent& e) {
-                        
-                        (void)e;
-                        SpawnEmptyGameObject();
-                        
-                    }
-                );
+            eventSystem->Subscribe<SpawnEntityRequestEvent, EditorScript>(
+                [this](const SpawnEntityRequestEvent& e) {
+                    
+                    (void)e;
+                    SpawnEmptyGameObject();
+                    
+                }
+            );
 
-                eventSystem->Subscribe<DuplicateEntityRequestEvent, EditorScript>(
-                    [this, &eventSystem](const DuplicateEntityRequestEvent& e) 
-                    {
-                        DuplicateGameObject(e.entity);
-                    }
-                );
+            eventSystem->Subscribe<DuplicateEntityRequestEvent, EditorScript>(
+                [this, &eventSystem](const DuplicateEntityRequestEvent& e) 
+                {
+                    DuplicateGameObject(e.entity);
+                }
+            );
 
-                eventSystem->Subscribe<CreateUIRequestEvent, EditorScript>(
-                    [this, &eventSystem](const CreateUIRequestEvent& e)
-                    {
-                        (void)e;
-                        CreateUI();
-                    }
-                );
+            eventSystem->Subscribe<CreateUIRequestEvent, EditorScript>(
+                [this, &eventSystem](const CreateUIRequestEvent& e)
+                {
+                    (void)e;
+                    CreateUI();
+                }
+            );
         }
 
         void UnsubscribeEvents()
@@ -359,15 +350,6 @@ namespace Uma_Engine
                     });
             }
 
-            GetLuascriptingSystem().Restart();
-        }
-
-        void EmptyScene()
-        {
-            using namespace Uma_ECS;
-
-            GetLuascriptingSystem().Shutdown();
-            GetCoordinator().DestroyAllEntities();
             GetLuascriptingSystem().Restart();
         }
 
@@ -1113,12 +1095,11 @@ namespace Uma_Engine
             }
         }
 
-        void LoadPrefab(std::string prefab_name, bool script = true)
+        void LoadPrefab(std::string prefab_name)
         {
            m_Scene->gGameSerializer.loadPrefab(Uma_FilePath::PREFAB_DIR + prefab_name);
 
-           if (script)
-            m_Scene->m_LuaScriptingSystem->CallStart();
+           //m_Scene->m_LuaScriptingSystem->CallStart();
         }
 
         void SavePrefab(std::string prefab_name, Entity entity)

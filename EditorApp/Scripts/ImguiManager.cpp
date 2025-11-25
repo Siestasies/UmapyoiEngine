@@ -282,6 +282,8 @@ namespace Uma_Engine
             CreatePrefabHierarchyWindow();
             CreateInspectorWindow();
             fileBrowser.Render();
+            resourcesWindow.Render();
+            CreateConsoleWindow();
         }
         else
         {
@@ -540,7 +542,7 @@ namespace Uma_Engine
             // Quit Button
             if (ImGui::Button("Quit", ImVec2(buttonWidth, 0)))
             {
-                pEventSystem->Emit<StopSceneRequest>();
+                //pEventSystem->Emit<StopSceneRequest>();
                 pEventSystem->Emit<LoadSceneRequestEvent>(fileBrowser.getPrevSceneName());
                 pEventSystem->Emit<DeleteCurrSceneRequest>(fileBrowser.getPrefabSceneName());
                 fileBrowser.setIsPrefabEdit(false);
@@ -962,7 +964,10 @@ namespace Uma_Engine
         // Build a list of root entities (entities with no parent)
         Uma_ECS::Entity rootEntity = static_cast<Uma_ECS::Entity>(-1);
         bool firstRoot = true;
-        for (size_t i = 0; i < transformArray.Size(); ++i)
+
+        rootEntity = transformArray.GetEntity(0);
+
+        /*for (size_t i = 0; i < transformArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = transformArray.GetEntity(i);
             auto& transform = transformArray.GetData(entity);
@@ -974,10 +979,8 @@ namespace Uma_Engine
                     rootEntity = entity;
                     firstRoot = false;
                 }
-                else
-                    coordinator.DestroyEntity(entity);
             }
-        }
+        }*/
 
         // Render root entity and its children recursively
         if (rootEntity != static_cast<Uma_ECS::Entity>(-1))

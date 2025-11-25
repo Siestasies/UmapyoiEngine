@@ -328,15 +328,6 @@ namespace Uma_Engine
                         if (FileDoubleClickHandler(entry))
                             break;
                     }
-                    if (entry.ext == ".prefab")
-                    {
-                        pEventSystem->Emit<StopSceneRequest>();
-                        pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
-                        pEventSystem->Emit<EmptySceneRequestEvent>();
-                        pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
-                        mPrefabName = entry.stem;
-                        mPrefabEdit = true;
-                    }
                 }
 
                 if (is_selected)
@@ -396,6 +387,24 @@ namespace Uma_Engine
                                 }
                         }
                     }
+                    if (entry.ext == ".prefab" && !mPrefabEdit)
+                    {
+                        if (ImGui::MenuItem("Open in Inspector"))
+                        {
+                            pEventSystem->Emit<StopSceneRequest>();
+                            pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
+                            pEventSystem->Emit<ClearSceneRequestEvent>();
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
+                            mPrefabName = entry.stem;
+                            mPrefabEdit = true;
+                        }
+                        if (ImGui::MenuItem("Add to Scene"))
+                        {
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name);
+                        }
+                    }
+
+
                     ImGui::EndPopup();
                 }
 

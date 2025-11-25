@@ -817,8 +817,8 @@ namespace Uma_ECS
             }
         );
 
-        pEventSystem->Subscribe<Uma_Engine::ButtonOnClcikedEvent, LuaScriptingSystem>(
-            [this](const Uma_Engine::ButtonOnClcikedEvent& e)
+        pEventSystem->Subscribe<Uma_Engine::ButtonOnClickedEvent, LuaScriptingSystem>(
+            [this](const Uma_Engine::ButtonOnClickedEvent& e)
             {
                 if (pCoordinator->HasComponent<LuaScript>(e.en))
                 {

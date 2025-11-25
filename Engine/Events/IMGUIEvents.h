@@ -182,12 +182,6 @@ namespace Uma_Engine
         ClearSceneRequestEvent() { priority = Priority::High; }
     };
 
-    class EmptySceneRequestEvent : public Event
-    {
-    public:
-        EmptySceneRequestEvent() { priority = Priority::High; }
-    };
-
     class SaveSceneRequestEvent : public Event
     {
     public:

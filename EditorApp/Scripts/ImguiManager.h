@@ -185,8 +185,6 @@ namespace Uma_Engine
         float m_dtHistory[120];
         int m_historyOffset;
 
-        Uma_ECS::Entity m_selectedEntity; // Selected entity tracking for Inspector
-
         // undo redo feature
         Uma_Editor::CommandHistory commandHistory;
 

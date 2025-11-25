@@ -104,7 +104,7 @@ namespace Uma_Engine
             }
         );
 
-        eventSystem->Subscribe<PrefabSceneRequestEvent, SceneManager>(
+        pEventSystem->Subscribe<PrefabSceneRequestEvent, SceneManager>(
             [this](const PrefabSceneRequestEvent& e) {
                 LoadScene(e.scene_name, false);
                 //SetActiveScene(e.scene_name);
@@ -113,7 +113,7 @@ namespace Uma_Engine
             }
         );
 
-        eventSystem->Subscribe<UpdateMouseOverUIEvent, SceneManager>(
+        pEventSystem->Subscribe<UpdateMouseOverUIEvent, SceneManager>(
             [this](const UpdateMouseOverUIEvent& e) {
                 m_isMouseOverUI = e.isFocus;
             }
