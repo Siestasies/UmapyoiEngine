@@ -28,6 +28,7 @@ All rights reserved.
 #include "../Events/IMGUIEvents.h"
 #include "../Events/UIToLuaEvents.h"
 #include "Systems/ResourcesTypes.hpp"
+#include "HybridInputSystem.h"
 #include "Components/Transform.h"
 #include <GLFW/glfw3.h>
 #include <algorithm>
@@ -201,7 +202,10 @@ namespace Uma_UI
     void UISystem::InputPass()
     {
         mMouseConsumedThisFrame = false;
-        mMousePositionScreen = GetMousePosition();
+        mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
+
+        mScreenSize = pGraphics->GetSceneViewport();
+
         mMousePositionNDC = Uma_UI::ScreenToNDC(
             mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
         mMouseButtonDownLastFrame = mMouseButtonDown;
