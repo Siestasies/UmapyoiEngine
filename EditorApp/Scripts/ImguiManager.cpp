@@ -559,6 +559,14 @@ namespace Uma_Engine
             {
                 m_isMouseInSceneView = false;
             }
+
+            if (pEventSystem)
+            {
+                pEventSystem->Emit(SceneViewMouseEvent(
+                    m_sceneViewMousePos.x,
+                    m_sceneViewMousePos.y,
+                    m_isMouseInSceneView));
+            }
         }
         else
         {

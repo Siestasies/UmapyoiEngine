@@ -266,4 +266,18 @@ namespace Uma_Engine
     public:
         RefreshDirectoryRequest() { priority = Priority::High; }
     };
+
+    class SceneViewMouseEvent : public Event
+    {
+    public:
+        float x;
+        float y;
+        bool inside;
+
+        SceneViewMouseEvent(float x, float y, bool inside)
+            : x(x), y(y), inside(inside)
+        {
+            priority = Priority::High;
+        }
+    };
 }

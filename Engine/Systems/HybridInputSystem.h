@@ -21,6 +21,9 @@ namespace Uma_Engine
             prevMouseX = GetMouseX();
             prevMouseY = GetMouseY();
 
+            sceneViewMousePos = Vec2(0.0f, 0.0f);
+            isMouseInSceneView = false;
+
 #ifdef _DEBUG_LOG
             std::cout << "HybridInputSystem: Initialized with UI input filtering" << std::endl;
             std::cout << "  - UI layer: HIGHEST priority (blocks game input)" << std::endl;
@@ -316,6 +319,10 @@ namespace Uma_Engine
         EventSystem* eventSystem = nullptr;
 
         inline static double prevMouseX = 0.0, prevMouseY = 0.0;
+
+        // Scene view mouse state
+        Vec2 sceneViewMousePos{ 0.0f, 0.0f };
+        bool isMouseInSceneView{ false };
     };
 
     // Simple test listener that logs received events
