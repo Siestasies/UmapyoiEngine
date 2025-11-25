@@ -95,6 +95,7 @@ namespace Uma_Engine
                 [this](const PlaySceneRequest& e) {
                     (void)e;
                     m_Scene->m_Coordinator.CacheState();
+                    GetLuascriptingSystem().ReloadAllScriptsOnPlay();
                 }
             );
 

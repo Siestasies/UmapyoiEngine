@@ -151,6 +151,28 @@ namespace Uma_ECS
         }
     }
 
+    void LuaScriptingSystem::ReloadAllScriptsOnPlay()
+    {
+        auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
+
+        for (auto const& entity : aEntities)
+        {
+            auto& scriptComponent = scriptArray.GetData(entity);
+
+            InitializeScripts(entity, scriptComponent);
+            
+            for (size_t i = 0; i < scriptComponent.scripts.size(); i++)
+            {
+                if (!scriptComponent.scripts[i].isEnabled)
+                {
+                    continue;
+                }
+
+                ReloadScript(entity, i);
+            }
+        }
+    }
+
     void LuaScriptingSystem::Shutdown()
     {
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
@@ -791,6 +813,20 @@ namespace Uma_ECS
                     auto& lua = lArray.GetData(e.en);
                     InitializeScripts(e.en, lua);
                     CallStart();
+                }
+            }
+        );
+
+        pEventSystem->Subscribe<Uma_Engine::ButtonOnClcikedEvent, LuaScriptingSystem>(
+            [this](const Uma_Engine::ButtonOnClcikedEvent& e)
+            {
+                if (pCoordinator->HasComponent<LuaScript>(e.en))
+                {
+                    auto& luaComp = pCoordinator->GetComponent<LuaScript>(e.en);
+
+                    auto& script = *luaComp.GetScript(e.scriptIndex);
+
+                    CallLuaFunction(script, "OnClicked");
                 }
             }
         );

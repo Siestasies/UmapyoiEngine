@@ -23,10 +23,15 @@ All rights reserved.
 #include "UISystem.h"
 #include "../Helpers/Layout.h"
 #include "../Helpers/Input.h"
+#include "Systems/ResourcesTypes.hpp"
+
+#include "Systems/LuaScriptingSystem.hpp"
+
+// events
 #include "../Events/WindowEvents.h"
 #include "../Events/AudioEvents.h"
 #include "../Events/IMGUIEvents.h"
-#include "Systems/ResourcesTypes.hpp"
+
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <map>
@@ -268,8 +273,9 @@ namespace Uma_UI
                         // temp solution
                         if (!button.functionName.empty())
                         {
-                            button.onClick = callbacks[button.functionName];
-                            button.onClick(entity);
+                            //button.onClick = callbacks[button.functionName];
+                            //button.onClick(entity);
+                            ButtonOnClicked(entity);
                         }
                     }
                 }
@@ -605,5 +611,10 @@ namespace Uma_UI
         Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(fontName);
         float testWidth = pGraphics->MeasureText(*uiFont, "test", 24.0f);
         return testWidth > 0.0f;
+    }
+
+    void UISystem::ButtonOnClicked(Uma_ECS::Entity entity)
+    {
+        pEventSystem->Emit<Uma_Engine::ButtonOnClcikedEvent>(entity, 0);
     }
 }

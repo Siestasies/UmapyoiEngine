@@ -35,9 +35,11 @@ All rights reserved.
 #include "Debugging/Debugger.hpp"
 #include "../Core/Coordinator.hpp"
 
+// Events
 #include "Events/CollisionEvent.h"
 #include "Events/AudioEvents.h"
 #include "Events/IMGUIEvents.h"
+#include "Events/UIToLuaEvents.h"
 
 //#define SOL_ALL_SAFETIES_ON 1
 //#define SOL_PRINT_ERRORS 1
@@ -81,6 +83,8 @@ namespace Uma_ECS
          * \brief Calls Start() function on all enabled Lua scripts
          */
         void CallStart();
+
+        void ReloadAllScriptsOnPlay();
 
     private:
         /**

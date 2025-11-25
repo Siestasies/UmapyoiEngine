@@ -134,6 +134,10 @@ namespace Uma_UI
          */
         bool IsUIHovered() const { return !mHitTestCache.empty(); }
 
+
+        // button related
+        void ButtonOnClicked(Uma_ECS::Entity entity);
+
     private:
         Uma_ECS::Coordinator* pCoordinator = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
