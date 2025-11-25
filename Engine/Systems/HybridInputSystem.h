@@ -4,6 +4,7 @@
 #include "../Core/EventSystem.h"
 #include "../Events/InputEvents.h"
 #include "../Events/WindowEvents.h"
+#include "../Events/IMGUIEvents.h"
 #include "InputSystem.h"
 #include "../UI/Helpers/InputFilter.h"
 
@@ -23,6 +24,19 @@ namespace Uma_Engine
 
             sceneViewMousePos = Vec2(0.0f, 0.0f);
             isMouseInSceneView = false;
+
+            auto* eventSystem = pSystemManager->GetSystem<EventSystem>();
+
+            eventSystem->Subscribe<SceneViewMouseEvent, HybridInputSystem>([this](const SceneViewMouseEvent& event)
+            {
+                    sceneViewMousePos = Vec2(event.x, event.y);
+                    isMouseInSceneView = true;
+            });
+
+           /* eventSystem->Subscribe<Uma_Engine::SceneViewMouseEvent, PathFindingSystem>(
+            [this](const Uma_Engine::SceneViewMouseEvent& e) {
+                viewportMousePos = Vec2(e.x, e.y);
+            });*/
 
 #ifdef _DEBUG_LOG
             std::cout << "HybridInputSystem: Initialized with UI input filtering" << std::endl;
@@ -121,8 +135,8 @@ namespace Uma_Engine
                         continue; // Skip game event - UI handled it
                     }
 
-                    double x, y;
-                    GetMousePosition(x, y);
+                    double x = !isMouseInSceneView ? GetMouseX() : sceneViewMousePos.x;
+                    double y = !isMouseInSceneView ? GetMouseY() : sceneViewMousePos.y;
 
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Mouse button " << button
@@ -135,8 +149,8 @@ namespace Uma_Engine
 
                 if (MouseButtonReleased(button))
                 {
-                    double x, y;
-                    GetMousePosition(x, y);
+                    double x = !isMouseInSceneView ? GetMouseX() : sceneViewMousePos.x;
+                    double y = !isMouseInSceneView ? GetMouseY() : sceneViewMousePos.y;
 
 #ifdef _DEBUG_LOG
                     std::cout << "HybridInputSystem: Mouse button " << button
@@ -264,8 +278,8 @@ namespace Uma_Engine
             // ================================================================
             // NORMAL PRIORITY: Mouse movement (blocked if over UI)
             // ================================================================
-            double currMouseX = GetMouseX();
-            double currMouseY = GetMouseY();
+            double currMouseX = !isMouseInSceneView ? GetMouseX() : sceneViewMousePos.x;
+            double currMouseY = !isMouseInSceneView ? GetMouseY() : sceneViewMousePos.y;
 
             double deltaX = currMouseX - prevMX;
             double deltaY = currMouseY - prevMY;
