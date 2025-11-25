@@ -32,6 +32,11 @@ namespace Uma_Engine
         mImguiManager = GetSystemManager()->RegisterSystem<ImguiManager>();
     }
 
+    void EditorApplication::PreInit()
+    {
+        SetIsEditor(true);
+    }
+
     void EditorApplication::PostInit()
     {
         // Get scene manager

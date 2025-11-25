@@ -49,6 +49,7 @@ namespace Uma_Engine
         , mSoundManager(nullptr)
         , mInitialized(false)
         , mWasFocused(false)
+        , mIsEditor(true)
     {
     }
 
@@ -67,6 +68,9 @@ namespace Uma_Engine
             std::cerr << "Application already initialized!" << std::endl;
             return false;
         }
+
+        // Call child PreInit
+        PreInit();
 
         // Initialize debug systems
         InitializeDebugSystems();
@@ -178,7 +182,8 @@ namespace Uma_Engine
         mWindow = std::make_unique<Window>(
             mConfig->screenWidth,
             mConfig->screenHeight,
-            mConfig->windowTitle
+            mConfig->windowTitle,
+            mIsEditor
         );
 
         if (!mWindow->Initialize())
@@ -201,7 +206,7 @@ namespace Uma_Engine
 
         // Register core engine systems
         mSystemManager->RegisterSystem<Debugger>();
-        mSystemManager->RegisterSystem<Graphics>();
+        mGraphics = mSystemManager->RegisterSystem<Graphics>();
         mSoundManager = mSystemManager->RegisterSystem<SoundManager>();
         mSystemManager->RegisterSystem<ResourcesManager>();
 

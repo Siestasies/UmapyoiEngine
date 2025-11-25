@@ -29,7 +29,7 @@ All rights reserved.
 
 namespace Uma_Engine
 {
-    Window::Window(int width, int height, const std::string& title, WindowMode mode, bool isEditorMode) : mWindow(nullptr),
+    Window::Window(int width, int height, const std::string& title, bool isEditorMode, WindowMode mode) : mWindow(nullptr),
         mWidth(width), mHeight(height), mWindowedWidth(width), mWindowedHeight(height), mTitle(title),
         mInitialized(false), mMode(mode), mIsEditorMode(isEditorMode) {}
 

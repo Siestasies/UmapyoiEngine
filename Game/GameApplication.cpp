@@ -26,8 +26,15 @@ namespace Uma_Engine
         // All core systems are registered in Application::RegisterCoreSystems()
     }
 
+    void GameApplication::PreInit()
+    {
+        SetIsEditor(false);
+    }
+
     void GameApplication::PostInit()
     {
+        GetGraphics()->SetRenderTarget(Uma_Engine::RenderTarget::Window);
+
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 

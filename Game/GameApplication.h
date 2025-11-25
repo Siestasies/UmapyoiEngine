@@ -31,5 +31,6 @@ namespace Uma_Engine
     protected:
         void RegisterSystems() override;
         void PostInit() override;
+        void PreInit() override;
     };
 }

@@ -22,6 +22,7 @@ namespace Uma_Engine
     class HybridInputSystem;
     class SceneManager;
     class SoundManager;
+    class Graphics;
     struct EngineConfig;
 
     /**
@@ -87,6 +88,12 @@ namespace Uma_Engine
         virtual void PostInit() = 0;
 
         /**
+         * \brief Override this to perform additional initialization before systems are registered
+         * Called during Init() after RegisterSystems()
+         */
+        virtual void PreInit() = 0;
+
+        /**
          * \brief Override this to handle application-specific update logic
          * Called every frame during Run()
          * \param deltaTime Time elapsed since last frame
@@ -103,7 +110,11 @@ namespace Uma_Engine
         EventSystem* GetEventSystem() const { return mEventSystem; }
         HybridInputSystem* GetInputSystem() const { return mInputSystem; }
         SceneManager* GetSceneManager() const { return mSceneManager; }
+        Graphics* GetGraphics() const { return mGraphics; }
         GLFWwindow* GetGLFWWindow() const;
+
+        // helpers
+        void SetIsEditor(bool isEditor) { mIsEditor = isEditor; }
 
     private:
         void InitializeDebugSystems();
@@ -120,9 +131,11 @@ namespace Uma_Engine
         EventSystem* mEventSystem;
         HybridInputSystem* mInputSystem;
         SoundManager* mSoundManager;
+        Graphics* mGraphics;
         SceneManager* mSceneManager;
 
         bool mInitialized;
         bool mWasFocused;
+        bool mIsEditor;
     };
 }
