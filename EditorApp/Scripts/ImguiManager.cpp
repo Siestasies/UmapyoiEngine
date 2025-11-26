@@ -2947,7 +2947,7 @@ namespace Uma_Engine
         if (ImGui::Button("Save Current Scene"))
         {
             if (sceneNames.size() > 0)
-                pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
+                pEventSystem->Emit<SaveSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
         //list of loaded scenes

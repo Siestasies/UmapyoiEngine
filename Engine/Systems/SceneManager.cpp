@@ -90,9 +90,16 @@ namespace Uma_Engine
             }
         );
 
+        pEventSystem->Subscribe<SaveSceneRequest, SceneManager>(
+            [this](const SaveSceneRequest& e) {
+                SaveScene(e.name);
+            }
+        );
+
         pEventSystem->Subscribe<SaveCurrSceneRequest, SceneManager>(
             [this](const SaveCurrSceneRequest& e) {
-                SaveScene(e.name);
+                (void)e;
+                SaveScene(m_ActiveScene->GetName());
             }
         );
 

@@ -238,11 +238,20 @@ namespace Uma_Engine
         DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
     };
 
-    class SaveCurrSceneRequest : public Event
+    // save scene with the scene name
+    class SaveSceneRequest : public Event
     {
     public:
         std::string name;
-        SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+        SaveSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+
+    // save current opened scene
+    class SaveCurrSceneRequest : public Event
+    {
+    public:
+        SaveCurrSceneRequest() { priority = Priority::High; }
     };
 
     class CallLuaToInitScript : public Event
