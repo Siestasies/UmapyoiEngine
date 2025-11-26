@@ -71,6 +71,10 @@ function WalkState:update(dt)
     if not self.parent or not self.parent.isValid then
         return
     end
+
+    if self.parent.mHealth <= 0 then
+        self.fsm:changeState("DieState")
+    end
     
     if self.parent:HasTransform() and self.parent:HasRigidBody() then
         currPos = Vec2.new(self.parent:GetTransform().position.x , self.parent:GetTransform().position.y)
@@ -99,14 +103,14 @@ function WalkState:update(dt)
         end
     end
     
-    if KeyPressed(KEY_2) then
-        Log("pressed")
-        self.fsm:changeState("IdleState")
-    end
-    if KeyPressed(KEY_3) then
-        Log("pressed")
-        self.fsm:changeState("ChaseState")
-    end
+    -- if KeyPressed(KEY_2) then
+    --     Log("pressed")
+    --     self.fsm:changeState("IdleState")
+    -- end
+    -- if KeyPressed(KEY_3) then
+    --     Log("pressed")
+    --     self.fsm:changeState("ChaseState")
+    -- end
 end
 
 return WalkState

@@ -45,6 +45,17 @@ end
 --! @details Logs entry message for debugging
 function ChaseState:enter()
     Log("entered the chase state")
+    local transform = self.parent:GetTransform()
+    local playerTransform = self.parent.playerEntity:GetTransform()
+
+    --insert pathfinding
+    -- local pf = self.parent:GetPathFinding()
+    -- pf.goal = playerTransform
+
+    local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    if distance:length() > 5 then
+        self.fsm:changeState("IdleState")
+    end
 end
 
 
