@@ -37,9 +37,16 @@ All rights reserved.
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/prettywriter.h>   // pretty JSON output
 
+// Forward declarations for prefab serialization
+namespace Uma_ECS
+{
+    class Coordinator;
+}
+
 namespace Uma_Engine
 {
     using Entity = unsigned int;
+    class ResourcesManager;
 
     class GameSerializer
     {
@@ -135,15 +142,49 @@ namespace Uma_Engine
             doc.SetObject();
             auto& allocator = doc.GetAllocator();
 
+            // Find Coordinator and ResourcesManager
+            ISerializer* coordinator = nullptr;
+            ISerializer* resourcesManager = nullptr;
+
             for (auto* s : serializers)
             {
                 if (s->GetSerializerName() == "coordinator")
-                {
-                    rapidjson::Value section(rapidjson::kObjectType);
-                    s->SerializePrefab(entity, section, allocator);
-                    doc.AddMember(rapidjson::StringRef("Prefab"), section, allocator);
-                    break;
-                }
+                    coordinator = s;
+                else if (s->GetSerializerName() == "resources_manager")
+                    resourcesManager = s;
+            }
+
+            if (!coordinator)
+            {
+                Debugger::Log(WarningLevel::eError, "Coordinator not found in serializers");
+                return;
+            }
+
+            // Serialize prefab entities
+            rapidjson::Value prefabSection(rapidjson::kObjectType);
+            coordinator->SerializePrefab(entity, prefabSection, allocator);
+            doc.AddMember(rapidjson::StringRef("Prefab"), prefabSection, allocator);
+
+            // Collect and serialize resources used by prefab
+            if (resourcesManager)
+            {
+                // Need to cast to Coordinator to access CollectPrefabResources
+                // This is a bit hacky but works within the current architecture
+                Uma_ECS::Coordinator* coordPtr = static_cast<Uma_ECS::Coordinator*>(coordinator);
+                Uma_ECS::Coordinator::PrefabResources resources;
+                coordPtr->CollectPrefabResources(entity, resources);
+
+                // Serialize resources
+                Uma_Engine::ResourcesManager* resMgrPtr = static_cast<Uma_Engine::ResourcesManager*>(resourcesManager);
+                rapidjson::Value resourcesSection(rapidjson::kObjectType);
+                resMgrPtr->SerializeSpecificResources(
+                    resources.textures,
+                    resources.sounds,
+                    resources.fonts,
+                    resourcesSection,
+                    allocator
+                );
+                doc.AddMember(rapidjson::StringRef("resources"), resourcesSection, allocator);
             }
 
             // write to file
@@ -170,6 +211,16 @@ namespace Uma_Engine
             doc.ParseStream(isw);
             ifs.close();
 
+            // First, load resources if available
+            for (auto* s : serializers)
+            {
+                if (s->GetSerializerName() == "resources_manager" && doc.HasMember("resources"))
+                {
+                    s->DeserializePrefab(doc["resources"]);
+                }
+            }
+
+            // Then, load prefab entities
             for (auto* s : serializers)
             {
                 if (s->GetSerializerName() == "coordinator" && doc.HasMember("Prefab"))

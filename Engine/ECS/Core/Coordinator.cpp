@@ -572,6 +572,43 @@ namespace Uma_ECS
         }
     }
 
+    void Coordinator::CollectPrefabResources(Entity root, PrefabResources& outResources)
+    {
+        // Collect all entities in the hierarchy
+        std::vector<Entity> hierarchyEntities;
+        CollectHierarchy(root, hierarchyEntities);
+
+        // Iterate through all entities and collect resource names
+        for (Entity entity : hierarchyEntities)
+        {
+            // Check for Sprite component (uses textures)
+            if (HasComponent<Sprite>(entity))
+            {
+                auto& sprite = GetComponent<Sprite>(entity);
+                if (!sprite.textureName.empty())
+                {
+                    outResources.textures.insert(sprite.textureName);
+                }
+            }
+
+            // Check for AudioComponent (uses sounds)
+            if (HasComponent<AudioComponent>(entity))
+            {
+                auto& audio = GetComponent<AudioComponent>(entity);
+                for (const auto& [soundName, soundInstance] : audio.activeSounds)
+                {
+                    if (!soundName.empty())
+                    {
+                        outResources.sounds.insert(soundName);
+                    }
+                }
+            }
+
+            // Note: Animator uses sprite sheets which are already tracked via Sprite component
+            // Note: Fonts would be tracked here if we had a Text/Label component
+        }
+    }
+
     Entity Coordinator::DeserializePrefab(const rapidjson::Value& in)
     {
         if (!in.HasMember("entities") || !in["entities"].IsArray())

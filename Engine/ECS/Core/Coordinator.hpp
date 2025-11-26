@@ -51,6 +51,7 @@ All rights reserved.
 #include "../Components/AudioListener.h"
 #include "../Components/PathFinding.h"
 #include "../Components/ParticleEmitter.h"
+#include "../Components/Prefab.h"
 
 #include <unordered_set>
 
@@ -134,6 +135,15 @@ namespace Uma_ECS
 
         // collect the entities in hierachy order
         void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
+
+        // collect resources used by prefab hierarchy
+        struct PrefabResources
+        {
+            std::unordered_set<std::string> textures;
+            std::unordered_set<std::string> sounds;
+            std::unordered_set<std::string> fonts;
+        };
+        void CollectPrefabResources(Entity root, PrefabResources& outResources);
 
         //------------------------------------------+
         //          Components functions            |
@@ -227,6 +237,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(AudioListener)
             CHECK_COMPONENT(PathFinding)
             CHECK_COMPONENT(ParticleEmitter)
+            CHECK_COMPONENT(Prefab)
 
 #undef CHECK_COMPONENT
         }

@@ -319,7 +319,8 @@ namespace Uma_Engine
 
     void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
     {
-        // we are not using this function in resources manager 
+        // Note: This is called by GameSerializer, which should handle resource collection
+        // For now, this is a placeholder - actual implementation is in SerializeSpecificResources
         (void)entity;
         (void)out;
         (void)allocator;
@@ -327,9 +328,106 @@ namespace Uma_Engine
 
     Entity ResourcesManager::DeserializePrefab(const rapidjson::Value& in)
     {
-        // we are not using this function in resources manager 
-        (void)in;
-        return static_cast<Entity>(-1);
+        // Deserialize resources used by prefab (same as regular Deserialize)
+        Deserialize(in);
+        return static_cast<Entity>(-1); // ResourcesManager doesn't create entities
+    }
+
+    void ResourcesManager::SerializeSpecificResources(
+        const std::unordered_set<std::string>& textureNames,
+        const std::unordered_set<std::string>& soundNames,
+        const std::unordered_set<std::string>& fontNames,
+        rapidjson::Value& out,
+        rapidjson::Document::AllocatorType& allocator)
+    {
+        out.SetObject();
+
+        // Serialize textures
+        rapidjson::Value texturesArr(rapidjson::kArrayType);
+        for (const std::string& textureName : textureNames)
+        {
+            auto it = mTextures.find(textureName);
+            if (it != mTextures.end())
+            {
+                rapidjson::Value textureObj(rapidjson::kObjectType);
+
+                // Name
+                rapidjson::Value nameVal;
+                nameVal.SetString(textureName.c_str(),
+                    static_cast<rapidjson::SizeType>(textureName.size()), allocator);
+                textureObj.AddMember("name", nameVal, allocator);
+
+                // Path
+                rapidjson::Value pathVal;
+                pathVal.SetString(it->second->filePath.c_str(),
+                    static_cast<rapidjson::SizeType>(it->second->filePath.size()),
+                    allocator);
+                textureObj.AddMember("path", pathVal, allocator);
+
+                texturesArr.PushBack(textureObj, allocator);
+            }
+        }
+        out.AddMember("textures", texturesArr, allocator);
+
+        // Serialize fonts
+        rapidjson::Value fontsArr(rapidjson::kArrayType);
+        for (const std::string& fontName : fontNames)
+        {
+            auto it = mFonts.find(fontName);
+            if (it != mFonts.end())
+            {
+                rapidjson::Value fontObj(rapidjson::kObjectType);
+
+                // Name
+                rapidjson::Value nameVal;
+                nameVal.SetString(fontName.c_str(),
+                    static_cast<rapidjson::SizeType>(fontName.size()), allocator);
+                fontObj.AddMember("name", nameVal, allocator);
+
+                // Path
+                rapidjson::Value pathVal;
+                pathVal.SetString(it->second.filePath.c_str(),
+                    static_cast<rapidjson::SizeType>(it->second.filePath.size()),
+                    allocator);
+                fontObj.AddMember("path", pathVal, allocator);
+
+                // Size
+                fontObj.AddMember("size", it->second.fontSize, allocator);
+
+                fontsArr.PushBack(fontObj, allocator);
+            }
+        }
+        out.AddMember("fonts", fontsArr, allocator);
+
+        // Serialize sounds
+        rapidjson::Value audioArr(rapidjson::kArrayType);
+        for (const std::string& soundName : soundNames)
+        {
+            auto it = mSoundList.find(soundName);
+            if (it != mSoundList.end())
+            {
+                rapidjson::Value soundObj(rapidjson::kObjectType);
+
+                // Name
+                rapidjson::Value nameVal;
+                nameVal.SetString(soundName.c_str(),
+                    static_cast<rapidjson::SizeType>(soundName.size()), allocator);
+                soundObj.AddMember("name", nameVal, allocator);
+
+                // Path
+                rapidjson::Value pathVal;
+                pathVal.SetString(it->second.filePath.c_str(),
+                    static_cast<rapidjson::SizeType>(it->second.filePath.size()),
+                    allocator);
+                soundObj.AddMember("path", pathVal, allocator);
+
+                // Type
+                soundObj.AddMember("type", static_cast<int>(it->second.type), allocator);
+
+                audioArr.PushBack(soundObj, allocator);
+            }
+        }
+        out.AddMember("sounds", audioArr, allocator);
     }
 
     bool ResourcesManager::LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize)
