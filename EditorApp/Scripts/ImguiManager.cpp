@@ -930,7 +930,7 @@ namespace Uma_Engine
     void ImguiManager::CreatePrefabHierarchyWindow()
     {
         bool b = true;
-        ImGui::Begin(fileBrowser.getPrefabName().c_str(), &b);
+        ImGui::Begin("Prefab Editor", &b);
 
         // Header with entity count
         if (sceneNames.size() > 0)

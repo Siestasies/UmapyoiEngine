@@ -31,6 +31,7 @@ All rights reserved.
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <unordered_set>
 
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
@@ -42,6 +43,8 @@ namespace Uma_ECS
 {
     class Coordinator;
 }
+
+#include "ECS/Components/Prefab.h"
 
 namespace Uma_Engine
 {
@@ -120,9 +123,54 @@ namespace Uma_Engine
             doc.ParseStream(isw);
             ifs.close();
 
+            // Pre-load resources from prefab files
+            if (doc.HasMember("entities") && doc["entities"].IsArray())
+            {
+                std::unordered_set<std::string> loadedPrefabs;
+
+                for (const auto& entityVal : doc["entities"].GetArray())
+                {
+                    if (entityVal.HasMember("isPrefab") && entityVal["isPrefab"].GetBool() &&
+                        entityVal.HasMember("prefabPath"))
+                    {
+                        std::string prefabPath = entityVal["prefabPath"].GetString();
+
+                        // Only load each prefab's resources once
+                        if (loadedPrefabs.find(prefabPath) == loadedPrefabs.end())
+                        {
+                            loadedPrefabs.insert(prefabPath);
+
+                            // Load prefab file to get resources
+                            if (std::filesystem::exists(prefabPath))
+                            {
+                                std::ifstream prefabIfs(prefabPath);
+                                rapidjson::IStreamWrapper prefabIsw(prefabIfs);
+                                rapidjson::Document prefabDoc;
+                                prefabDoc.ParseStream(prefabIsw);
+                                prefabIfs.close();
+
+                                // Load resources from prefab
+                                if (prefabDoc.HasMember("resources"))
+                                {
+                                    for (auto* s : serializers)
+                                    {
+                                        if (s->GetSectionName() == std::string("resources"))
+                                        {
+                                            s->Deserialize(prefabDoc["resources"]);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Load scene resources and entities
             for (auto* s : serializers)
             {
-                if (doc.HasMember(s->GetSectionName())) 
+                if (doc.HasMember(s->GetSectionName()))
                 {
                     s->Deserialize(doc[s->GetSectionName()]);
                 }
@@ -164,6 +212,31 @@ namespace Uma_Engine
             rapidjson::Value prefabSection(rapidjson::kObjectType);
             coordinator->SerializePrefab(entity, prefabSection, allocator);
             doc.AddMember(rapidjson::StringRef("Prefab"), prefabSection, allocator);
+
+            // Mark all entities in the hierarchy with Prefab component
+            Uma_ECS::Coordinator* coordPtr = static_cast<Uma_ECS::Coordinator*>(coordinator);
+            std::vector<Uma_ECS::Entity> hierarchyEntities;
+            coordPtr->CollectHierarchy(entity, hierarchyEntities);
+
+            for (size_t i = 0; i < hierarchyEntities.size(); ++i)
+            {
+                Uma_ECS::Entity e = hierarchyEntities[i];
+
+                if (!coordPtr->HasComponent<Uma_ECS::Prefab>(e))
+                {
+                    Uma_ECS::Prefab prefabComp;
+                    prefabComp.prefabPath = filename;
+                    prefabComp.isRoot = (i == 0);  // First entity is root
+                    coordPtr->AddComponent(e, prefabComp);
+                }
+                else
+                {
+                    // Update existing Prefab component
+                    auto& prefabComp = coordPtr->GetComponent<Uma_ECS::Prefab>(e);
+                    prefabComp.prefabPath = filename;
+                    prefabComp.isRoot = (i == 0);
+                }
+            }
 
             // Collect and serialize resources used by prefab
             if (resourcesManager)

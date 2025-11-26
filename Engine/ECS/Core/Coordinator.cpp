@@ -29,6 +29,7 @@ All rights reserved.
 
 #include <fstream>
 #include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
 
 #include "Components/Transform.h"
 
@@ -396,12 +397,78 @@ namespace Uma_ECS
         {
             if (!aEntityManager->IsEntityActive(en)) continue;
 
+            // Skip children of prefab instances - they will be recreated by LoadPrefabInstance
+            if (HasComponent<Prefab>(en))
+            {
+                auto& prefabComp = GetComponent<Prefab>(en);
+                if (!prefabComp.isRoot)
+                {
+                    // This is a child of a prefab instance, skip serializing it
+                    continue;
+                }
+            }
+
             rapidjson::Value entityObj(rapidjson::kObjectType);
             entityObj.AddMember("id", en, allocator);
 
-            rapidjson::Value comps(rapidjson::kObjectType);
-            aComponentManager->SerializeAll(en, comps, allocator);
-            entityObj.AddMember("components", comps, allocator);
+            // Check if this is a prefab instance (root entity with Prefab component)
+            bool isPrefabInstance = false;
+            std::string prefabPath;
+
+            if (HasComponent<Prefab>(en))
+            {
+                auto& prefabComp = GetComponent<Prefab>(en);
+                if (prefabComp.isRoot && !prefabComp.prefabPath.empty())
+                {
+                    isPrefabInstance = true;
+                    prefabPath = prefabComp.prefabPath;
+                }
+            }
+
+            if (isPrefabInstance)
+            {
+                // Serialize as prefab instance with Transform override only
+                entityObj.AddMember("isPrefab", true, allocator);
+
+                rapidjson::Value pathVal;
+                pathVal.SetString(prefabPath.c_str(),
+                    static_cast<rapidjson::SizeType>(prefabPath.size()), allocator);
+                entityObj.AddMember("prefabPath", pathVal, allocator);
+
+                // Serialize Transform override
+                if (HasComponent<Transform>(en))
+                {
+                    auto& tf = GetComponent<Transform>(en);
+                    rapidjson::Value transformOverride(rapidjson::kObjectType);
+
+                    // Position
+                    rapidjson::Value posArray(rapidjson::kArrayType);
+                    posArray.PushBack(tf.position.x, allocator);
+                    posArray.PushBack(tf.position.y, allocator);
+                    transformOverride.AddMember("position", posArray, allocator);
+
+                    // Rotation
+                    rapidjson::Value rotArray(rapidjson::kArrayType);
+                    rotArray.PushBack(tf.rotation.x, allocator);
+                    rotArray.PushBack(tf.rotation.y, allocator);
+                    transformOverride.AddMember("rotation", rotArray, allocator);
+
+                    // Scale
+                    rapidjson::Value scaleArray(rapidjson::kArrayType);
+                    scaleArray.PushBack(tf.scale.x, allocator);
+                    scaleArray.PushBack(tf.scale.y, allocator);
+                    transformOverride.AddMember("scale", scaleArray, allocator);
+
+                    entityObj.AddMember("transformOverride", transformOverride, allocator);
+                }
+            }
+            else
+            {
+                // Serialize as regular entity with all components
+                rapidjson::Value comps(rapidjson::kObjectType);
+                aComponentManager->SerializeAll(en, comps, allocator);
+                entityObj.AddMember("components", comps, allocator);
+            }
 
             out.PushBack(entityObj, allocator);
         }
@@ -421,9 +488,42 @@ namespace Uma_ECS
             Entity newID = CreateEntity();
             entityIDMap[oldID] = newID;
 
-            const auto& comps = entityVal["components"];
-            Signature sign = aComponentManager->DeserializeAll(newID, comps);
-            aEntityManager->SetSignature(newID, sign);
+            // Check if this is a prefab instance
+            bool isPrefabInstance = entityVal.HasMember("isPrefab") && entityVal["isPrefab"].GetBool();
+
+            if (isPrefabInstance && entityVal.HasMember("prefabPath"))
+            {
+                // Load prefab instance
+                std::string prefabPath = entityVal["prefabPath"].GetString();
+
+                // Get transform override if present
+                rapidjson::Value emptyOverride(rapidjson::kObjectType);
+                const rapidjson::Value& transformOverride = entityVal.HasMember("transformOverride")
+                    ? entityVal["transformOverride"]
+                    : emptyOverride;
+
+                // Load prefab and map child entities
+                std::unordered_map<Entity, Entity> prefabMapping = LoadPrefabInstance(
+                    prefabPath, newID, transformOverride);
+
+                // Add all child entities to the entity ID map for parent-child remapping
+                for (const auto& pair : prefabMapping)
+                {
+                    if (pair.second != newID)  // Don't re-add the root
+                    {
+                        // Child entities don't have old IDs in the scene file,
+                        // so we don't add them to entityIDMap
+                        // They are already handled by LoadPrefabInstance
+                    }
+                }
+            }
+            else
+            {
+                // Regular entity - deserialize normally
+                const auto& comps = entityVal["components"];
+                Signature sign = aComponentManager->DeserializeAll(newID, comps);
+                aEntityManager->SetSignature(newID, sign);
+            }
         }
 
         // Second pass: Remap parent-child relationships
@@ -787,5 +887,197 @@ namespace Uma_ECS
     Uma_Engine::EventSystem* Coordinator::GetEventSystem()
     {
         return pEventSystem;
+    }
+
+    std::unordered_map<Entity, Entity> Coordinator::LoadPrefabInstance(
+        const std::string& prefabPath,
+        Entity rootEntityID,
+        const rapidjson::Value& transformOverride)
+    {
+        std::unordered_map<Entity, Entity> prefabToWorldID;
+
+        // Load prefab file
+        std::ifstream ifs(prefabPath);
+        if (!ifs.is_open())
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Failed to load prefab file: " + prefabPath);
+            return prefabToWorldID;
+        }
+
+        rapidjson::IStreamWrapper isw(ifs);
+        rapidjson::Document prefabDoc;
+        prefabDoc.ParseStream(isw);
+        ifs.close();
+
+        if (!prefabDoc.HasMember("Prefab") || !prefabDoc["Prefab"].HasMember("entities"))
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Invalid prefab format: " + prefabPath);
+            return prefabToWorldID;
+        }
+
+        const auto& prefabEntities = prefabDoc["Prefab"]["entities"];
+        if (!prefabEntities.IsArray() || prefabEntities.Size() == 0)
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                "Empty prefab: " + prefabPath);
+            return prefabToWorldID;
+        }
+
+        // First pass: Create entities and map IDs
+        for (const auto& entityVal : prefabEntities.GetArray())
+        {
+            Entity prefabID = entityVal["id"].GetUint();
+            Entity worldID;
+
+            if (prefabID == 0)
+            {
+                // Root entity uses the provided ID
+                worldID = rootEntityID;
+            }
+            else
+            {
+                // Create new entities for children
+                worldID = CreateEntity();
+            }
+
+            prefabToWorldID[prefabID] = worldID;
+
+            // Deserialize all components
+            if (entityVal.HasMember("components"))
+            {
+                const auto& comps = entityVal["components"];
+                Signature sign = aComponentManager->DeserializeAll(worldID, comps);
+                aEntityManager->SetSignature(worldID, sign);
+            }
+        }
+
+        // Override root entity's Transform with scene values
+        if (HasComponent<Transform>(rootEntityID) && transformOverride.IsObject())
+        {
+            auto& tf = GetComponent<Transform>(rootEntityID);
+
+            if (transformOverride.HasMember("position") && transformOverride["position"].IsArray())
+            {
+                const auto& posArray = transformOverride["position"];
+                if (posArray.Size() >= 2)
+                {
+                    tf.position.x = posArray[0].GetFloat();
+                    tf.position.y = posArray[1].GetFloat();
+                }
+            }
+
+            if (transformOverride.HasMember("rotation") && transformOverride["rotation"].IsArray())
+            {
+                const auto& rotArray = transformOverride["rotation"];
+                if (rotArray.Size() >= 2)
+                {
+                    tf.rotation.x = rotArray[0].GetFloat();
+                    tf.rotation.y = rotArray[1].GetFloat();
+                }
+            }
+
+            if (transformOverride.HasMember("scale") && transformOverride["scale"].IsArray())
+            {
+                const auto& scaleArray = transformOverride["scale"];
+                if (scaleArray.Size() >= 2)
+                {
+                    tf.scale.x = scaleArray[0].GetFloat();
+                    tf.scale.y = scaleArray[1].GetFloat();
+                }
+            }
+
+            tf.isDirty = true;
+        }
+
+        // Second pass: Remap parent-child relationships
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            // Remap parent
+            if (tf.parent.has_value())
+            {
+                Entity oldParentID = tf.parent.value();
+                auto it = prefabToWorldID.find(oldParentID);
+
+                if (it != prefabToWorldID.end())
+                {
+                    tf.parent = it->second;
+                }
+                else
+                {
+                    tf.parent = std::nullopt;
+                }
+            }
+
+            // Remap children
+            std::vector<Entity> remappedChildren;
+            for (Entity oldChildID : tf.children)
+            {
+                auto it = prefabToWorldID.find(oldChildID);
+                if (it != prefabToWorldID.end())
+                {
+                    remappedChildren.push_back(it->second);
+                }
+            }
+            tf.children = std::move(remappedChildren);
+        }
+
+        // Third pass: Rebuild parent-child consistency
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+
+            if (!tfArray.Has(worldID)) continue;
+
+            auto& tf = tfArray.GetData(worldID);
+
+            if (tf.parent.has_value())
+            {
+                Entity parentID = tf.parent.value();
+
+                if (tfArray.Has(parentID))
+                {
+                    auto& parentTf = tfArray.GetData(parentID);
+
+                    // Ensure child is in parent's children list
+                    if (std::find(parentTf.children.begin(), parentTf.children.end(), worldID)
+                        == parentTf.children.end())
+                    {
+                        parentTf.children.push_back(worldID);
+                    }
+                }
+            }
+        }
+
+        // Fourth pass: Update systems
+        for (const auto& pair : prefabToWorldID)
+        {
+            Entity worldID = pair.second;
+            aSystemManager->EntitySignatureChanged(worldID, GetEntitySignature(worldID));
+        }
+
+        // Add Prefab component to mark as instance
+        for (size_t i = 0; i < prefabToWorldID.size(); ++i)
+        {
+            Entity worldID = prefabToWorldID[i];
+
+            if (!HasComponent<Prefab>(worldID))
+            {
+                Prefab prefabComp;
+                prefabComp.prefabPath = prefabPath;
+                prefabComp.isRoot = (i == 0);
+                AddComponent(worldID, prefabComp);
+            }
+        }
+
+        return prefabToWorldID;
     }
 }

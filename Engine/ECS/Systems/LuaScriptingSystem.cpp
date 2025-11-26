@@ -812,7 +812,7 @@ namespace Uma_ECS
                 {
                     auto& lua = lArray.GetData(e.en);
                     InitializeScripts(e.en, lua);
-                    CallStart();
+                    //CallStart();
                 }
             }
         );

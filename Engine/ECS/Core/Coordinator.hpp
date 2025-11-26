@@ -275,6 +275,12 @@ namespace Uma_ECS
         void SerializeEntity(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator);
         void DeserializeEntity(Entity entity, const rapidjson::Value& comps);
 
+        // Prefab instance loading
+        std::unordered_map<Entity, Entity> LoadPrefabInstance(
+            const std::string& prefabPath,
+            Entity rootEntityID,
+            const rapidjson::Value& transformOverride);
+
 
         //------------------------------------------+
         //          State cache                     |
