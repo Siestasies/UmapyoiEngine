@@ -51,6 +51,11 @@ All rights reserved.
 #include "../Components/AudioListener.h"
 #include "../Components/PathFinding.h"
 #include "../Components/ParticleEmitter.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/Button.h"
+#include "UI/Components/Canvas.h"
+#include "UI/Components/Text.h"
 
 #include <unordered_set>
 
@@ -227,6 +232,11 @@ namespace Uma_ECS
             CHECK_COMPONENT(AudioListener)
             CHECK_COMPONENT(PathFinding)
             CHECK_COMPONENT(ParticleEmitter)
+            CHECK_COMPONENT(Uma_UI::RectTransform)
+            CHECK_COMPONENT(Uma_UI::Image)
+            CHECK_COMPONENT(Uma_UI::Button)
+            CHECK_COMPONENT(Uma_UI::Canvas)
+            CHECK_COMPONENT(Uma_UI::Text)
 
 #undef CHECK_COMPONENT
         }
