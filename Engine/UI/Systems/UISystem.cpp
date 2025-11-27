@@ -176,6 +176,7 @@ namespace Uma_UI
             {
                 rectTransform.computedRect = ComputeRectInNDC(
                     rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
+                MarkEntityAndChildrenDirty(entity);
                 rectTransform.isDirty = false;
             }
         }
@@ -454,10 +455,38 @@ namespace Uma_UI
      */
     void UISystem::MarkAllDirty()
     {
-        auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
-        for (size_t i = 0; i < rectArray.Size(); ++i)
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
+        for (size_t i = 0; i < rectTransform.Size(); ++i)
         {
-            rectArray.GetComponentAt(i).isDirty = true;
+            rectTransform.GetComponentAt(i).isDirty = true;
+        }
+    }
+
+    /*!
+     * \brief Marks an entity and all its descendants as dirty.
+     * \param entity The root entity to mark dirty.
+     *
+     * Recursively traverses the Transform hierarchy and sets isDirty = true
+     * for all RectTransform components found in the subtree.
+     */
+    void UISystem::MarkEntityAndChildrenDirty(Uma_ECS::Entity entity)
+    {
+        // Mark this entity's RectTransform as dirty if it exists
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
+        if (rectTransform.Has(entity))
+        {
+            rectTransform.GetComponentAt(entity).isDirty = true;
+        }
+
+        // Recursively mark all children
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        if (transformArray.Has(entity))
+        {
+            const auto& transform = transformArray.GetComponentAt(entity);
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                MarkEntityAndChildrenDirty(child);
+            }
         }
     }
 
@@ -545,11 +574,11 @@ namespace Uma_UI
     std::vector<Uma_ECS::Entity> UISystem::GetSortedUIEntities()
     {
         std::vector<std::pair<Uma_ECS::Entity, int>> entities;
-        auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
 
-        for (size_t i = 0; i < rectArray.Size(); ++i)
+        for (size_t i = 0; i < rectTransform.Size(); ++i)
         {
-            Uma_ECS::Entity entity = rectArray.GetEntity(i);
+            Uma_ECS::Entity entity = rectTransform.GetEntity(i);
             int sortingOrder = 0;
             auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
 

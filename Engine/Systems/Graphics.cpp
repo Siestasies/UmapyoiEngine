@@ -1553,8 +1553,8 @@ void main()
             model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
             model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
 
-            // Divide X by aspect to make squares square
-            model = glm::scale(model, glm::vec3(sprite.scale.x / aspect, sprite.scale.y, 1.0f));
+            // Divide X by aspect to make squares square, otherwise don't
+            model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
             models.push_back(model);
 
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
