@@ -26,7 +26,7 @@ ExposedVars = {
 --reference to FSM
 local fsm = nil
 
-local playerEntity = -1
+--local playerEntity = -1
 
 local isWalk = false;
 
@@ -46,7 +46,7 @@ function Start()
 
     thisEntity.mHealth = 100;
     
-    playerEntity = FindEntityWithComponent("Player")
+    thisEntity.playerEntity = FindEntityWithComponent("Player")
 end
 
 function Update(dt)
