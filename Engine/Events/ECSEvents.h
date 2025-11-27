@@ -67,4 +67,14 @@ namespace Uma_Engine
         Uma_ECS::Entity entityId;
         std::type_index componentType;
     };
+
+    class EntityActiveStateChangedEvent : public Event
+    {
+    public:
+        EntityActiveStateChangedEvent(Uma_ECS::Entity entityId, bool isActive) : entityId(entityId), isActive(isActive) { priority = Priority::Normal; }
+
+    public:
+        Uma_ECS::Entity entityId;
+        bool isActive;
+    };
 }

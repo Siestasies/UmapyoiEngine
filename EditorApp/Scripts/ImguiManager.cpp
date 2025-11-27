@@ -46,6 +46,7 @@ All rights reserved.
 #include "Editor/Cmds/EntityDeleteCmd.h"
 #include "Editor/Cmds/EntityCreateCmd.h"
 #include "Editor/Cmds/EntityDuplicateCmd.h"
+#include "Editor/Cmds/EntitySetActiveCmd.h"
 
 namespace Uma_Engine
 {
@@ -1023,8 +1024,45 @@ namespace Uma_Engine
         // Push unique ID for this entity
         ImGui::PushID(static_cast<int>(entity));
 
+        // Add checkbox for enable/disable
+        bool isActive = coordinator.IsActiveSelf(entity);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0)); // Make checkbox smaller
+        if (ImGui::Checkbox("##active", &isActive))
+        {
+            // Checkbox state changed - create command and execute
+            auto cmd = std::make_unique<Uma_Editor::EntitySetActiveCmd>(
+                &coordinator,
+                entity,
+                isActive,
+                isActive ? "Enable " + GetEntityDisplayName(entity, coordinator)
+                         : "Disable " + GetEntityDisplayName(entity, coordinator)
+            );
+            commandHistory.ExecuteCommand(std::move(cmd));
+        }
+        ImGui::PopStyleVar();
+
+        // Tooltip for checkbox
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip(isActive ? "Enabled (click to disable)" : "Disabled (click to enable)");
+        }
+
+        ImGui::SameLine();
+
+        // Grey out the text if entity is disabled
+        if (!isActive)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+        }
+
         // Render tree node
         bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
+
+        if (!isActive)
+        {
+            ImGui::PopStyleColor();
+        }
 
         // Handle selection
         if (ImGui::IsItemClicked())
@@ -1107,7 +1145,7 @@ namespace Uma_Engine
             if (ImGui::MenuItem("Duplicate"))
             {
                 //pEventSystem->Emit<DuplicateEntityRequestEvent>(m_selectedEntity);
-                
+
                 auto cmd = std::make_unique<Uma_Editor::EntityDuplicateCmd>(
                     &coordinator,
                     m_selectedEntity,
@@ -1124,6 +1162,21 @@ namespace Uma_Engine
                 m_selectedEntity = rawCmd->GetCreatedEntity();
 
                 m_HierarchyScrollToBottomFrames = 2;
+            }
+
+            ImGui::Separator();
+
+            // Toggle enabled state menu item
+            bool entityIsActive = coordinator.IsActiveSelf(entity);
+            if (ImGui::MenuItem(entityIsActive ? "Disable" : "Enable"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntitySetActiveCmd>(
+                    &coordinator,
+                    entity,
+                    !entityIsActive,
+                    (!entityIsActive ? "Enable " : "Disable ") + GetEntityDisplayName(entity, coordinator)
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
 
             ImGui::Separator();
@@ -1237,8 +1290,45 @@ namespace Uma_Engine
         // Push unique ID for this entity
         ImGui::PushID(static_cast<int>(entity));
 
+        // Add checkbox for enable/disable
+        bool isActive = coordinator.IsActiveSelf(entity);
+
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0)); // Make checkbox smaller
+        if (ImGui::Checkbox("##active", &isActive))
+        {
+            // Checkbox state changed - create command and execute
+            auto cmd = std::make_unique<Uma_Editor::EntitySetActiveCmd>(
+                &coordinator,
+                entity,
+                isActive,
+                isActive ? "Enable " + GetEntityDisplayName(entity, coordinator)
+                         : "Disable " + GetEntityDisplayName(entity, coordinator)
+            );
+            commandHistory.ExecuteCommand(std::move(cmd));
+        }
+        ImGui::PopStyleVar();
+
+        // Tooltip for checkbox
+        if (ImGui::IsItemHovered())
+        {
+            ImGui::SetTooltip(isActive ? "Enabled (click to disable)" : "Disabled (click to enable)");
+        }
+
+        ImGui::SameLine();
+
+        // Grey out the text if entity is disabled
+        if (!isActive)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+        }
+
         // Render tree node
         bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
+
+        if (!isActive)
+        {
+            ImGui::PopStyleColor();
+        }
 
         // Handle selection
         if (ImGui::IsItemClicked())
@@ -1271,6 +1361,21 @@ namespace Uma_Engine
                 Entity newEntity = coordinator.DuplicateEntity(entity);
                 coordinator.SetParent(newEntity, coordinator.GetParent(entity).value());
                 m_HierarchyScrollToBottom = true;
+            }
+
+            ImGui::Separator();
+
+            // Toggle enabled state menu item
+            bool entityIsActive = coordinator.IsActiveSelf(entity);
+            if (ImGui::MenuItem(entityIsActive ? "Disable" : "Enable"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntitySetActiveCmd>(
+                    &coordinator,
+                    entity,
+                    !entityIsActive,
+                    (!entityIsActive ? "Enable " : "Disable ") + GetEntityDisplayName(entity, coordinator)
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
 
             ImGui::Separator();

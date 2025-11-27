@@ -40,6 +40,7 @@ Uma_ECS::EntityManager::EntityManager()
 Uma_ECS::EntityManager::EntityManager(const EntityManager& other) noexcept
     : aAvailableEntities(other.aAvailableEntities)
     , aEntityActive(other.aEntityActive)
+    , aEntityEnabled(other.aEntityEnabled)
     , aSignatures(other.aSignatures)
     , mActiveEntityCnt(other.mActiveEntityCnt)
 {
@@ -57,6 +58,7 @@ Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
     Entity new_entity = aAvailableEntities.front();
     aAvailableEntities.pop();
     aEntityActive[new_entity] = true;
+    aEntityEnabled[new_entity] = true;  // New entities are enabled by default
     ++mActiveEntityCnt;
 
     return new_entity;
@@ -85,6 +87,7 @@ void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
     aAvailableEntities = newQueue;
 
     aEntityActive[entity] = false;
+    aEntityEnabled[entity] = false;  // Reset enabled state
     --mActiveEntityCnt;
 }
 
@@ -126,6 +129,21 @@ std::vector<Uma_ECS::Entity> Uma_ECS::EntityManager::GetAllEntites() const
         }
     }
     return allEntities;
+}
+
+void Uma_ECS::EntityManager::SetEntityEnabled(Entity entity, bool enabled)
+{
+    assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
+    assert(aEntityActive[entity] && "ERROR: Attempting to set enabled state on inactive entity.");
+
+    aEntityEnabled[entity] = enabled;
+}
+
+bool Uma_ECS::EntityManager::IsEntityEnabled(Entity entity) const
+{
+    assert(entity >= 0 && entity < MAX_ENTITIES && "ERROR : Entity id is Invalid.");
+
+    return aEntityEnabled[entity];
 }
 
 void Uma_ECS::EntityManager::DestroyAllEntities()

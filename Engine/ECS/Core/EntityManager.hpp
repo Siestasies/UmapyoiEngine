@@ -50,6 +50,10 @@ namespace Uma_ECS
 
         inline bool IsEntityActive(Entity en) { return aEntityActive[en]; }
 
+        // Enable/Disable functionality (Unity-like SetActive)
+        void SetEntityEnabled(Entity entity, bool enabled);
+        bool IsEntityEnabled(Entity entity) const;
+
         void DestroyAllEntities();
 
     private:
@@ -59,6 +63,7 @@ namespace Uma_ECS
 
         std::array<Signature, MAX_ENTITIES> aSignatures{};
         std::array<bool, MAX_ENTITIES> aEntityActive{};
+        std::array<bool, MAX_ENTITIES> aEntityEnabled{};  // Track enabled/disabled state (Unity-like)
 
         unsigned int mActiveEntityCnt{};
     };

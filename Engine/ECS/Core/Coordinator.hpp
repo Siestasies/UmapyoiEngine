@@ -136,6 +136,14 @@ namespace Uma_ECS
         std::vector<Entity> GetChildren(Entity entity);
         void DestroyEntityAndChildren(Entity entity);
 
+        // Enable/Disable functionality (Unity-like SetActive)
+        void SetActive(Entity entity, bool active);
+        bool IsActiveSelf(Entity entity) const;
+        bool IsActiveInHierarchy(Entity entity) const;
+
+        // Helper method for systems to filter active entities
+        std::vector<Entity> GetActiveEntities(const std::vector<Entity>& entities) const;
+
         void ProcessDeletionQueue();  // Call this once per frame
 
         // collect the entities in hierachy order
