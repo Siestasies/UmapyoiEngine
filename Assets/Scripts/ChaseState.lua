@@ -69,6 +69,11 @@ function ChaseState:exit()
         rb.acceleration.x = 0
         rb.acceleration.y = 0
     end
+
+    local transform = self.parent:GetTransform()
+
+    --when leaving state make sure that the enemy stops moving so im setting the goal to current position
+    SetPathFindingGoal(self.parent.id,transform.position.x,transform.position.y)
 end
 
 
@@ -122,7 +127,7 @@ function ChaseState:update(dt)
     SetPathFindingGoal(self.parent.id,playerTransform.position.x,playerTransform.position.y)
 
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
-    if distance:length() > 5 then
+    if distance:length() > 75 then
         self.fsm:changeState("IdleState")
     end
 end

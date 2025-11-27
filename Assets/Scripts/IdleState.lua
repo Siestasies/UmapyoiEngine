@@ -58,13 +58,13 @@ function IdleState:update(dt)
         self.fsm:changeState("DieState")
     end
 
-    Log("player entity : " .. self.parent.playerEntity)
+    --Log("player entity : " .. self.parent.playerEntity)
     
     local transform = self.parent:GetTransform()
     local playerTransform = GetTransformFrom(self.parent.playerEntity)
 
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
-    if distance:length() > 1 then
+    if distance:length() < 50 then
         self.fsm:changeState("ChaseState")
     end
 
