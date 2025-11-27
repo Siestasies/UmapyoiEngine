@@ -262,7 +262,7 @@ namespace Uma_Engine
         {
             // Game mode (rendering to window) - set viewport to full window size
             auto inputSystem = pSystemManager->GetSystem<HybridInputSystem>();
-            if (inputSystem && graphics->GetWindow())
+            if (inputSystem && graphics && graphics->GetWindow())
             {
                 int width, height;
                 glfwGetWindowSize(graphics->GetWindow(), &width, &height);

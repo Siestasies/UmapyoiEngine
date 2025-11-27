@@ -271,6 +271,12 @@ namespace Uma_Engine
          */
         void UpdateProjectionMatrix();
 
+        /**
+         * \brief Gets current render target dimensions
+         *
+         * \param[out] width Current render width in pixels
+         * \param[out] height Current render height in pixels
+         */
         void GetCurrentRenderDimensions(int& width, int& height) const;
 
     public:
@@ -417,13 +423,17 @@ namespace Uma_Engine
          */
         int GetViewportHeight() const { return mViewportHeight; }
 
+        /**
+         * \brief Gets current scene viewport dimensions
+         * \return Vec2 containing width and height
+         */
         Vec2 GetSceneViewport() const 
         {
-            Vec2 size = Vec2(mViewportWidth, mViewportHeight);
+            Vec2 size = Vec2(static_cast<float>(mViewportWidth), static_cast<float>(mViewportHeight));
             
             if (mRenderTarget == RenderTarget::Framebuffer)
             {
-                size = Vec2(mSceneFBWidth, mSceneFBHeight);
+                size = Vec2(static_cast<float>(mSceneFBWidth), static_cast<float>(mSceneFBHeight));
             }
 
             return size;
@@ -654,13 +664,53 @@ namespace Uma_Engine
          */
         void DrawFilledTriangle(const Vec2& p1, const Vec2& p2, const Vec2& p3, float r, float g, float b, float alpha = 1.0f);
 
+        /**
+         * \brief Sets the current render target
+         * \param target Render target to use (Framebuffer/Viewport)
+         */
         void SetRenderTarget(RenderTarget target) { mRenderTarget = target; }
+
+        /**
+         * \brief Gets the current render target
+         * \return The active render target (Framebuffer or Viewport)
+         */
         RenderTarget GetRenderTarget() const { return mRenderTarget; }
+
+        /**
+         * \brief Initializes scene view framebuffer
+         * \param width Framebuffer width in pixels
+         * \param height Framebuffer height in pixels
+         */
         void InitSceneFramebuffer(int width, int height);
+
+        /**
+         * \brief Resizes scene view framebuffer
+         * \param width New framebuffer width in pixels
+         * \param height New framebuffer height in pixels
+         */
         void ResizeSceneFramebuffer(int width, int height);
+
+        /**
+         * \brief Gets OpenGL texture ID of scene view framebuffer
+         * \return OpenGL texture handle
+         */
         GLuint GetSceneTexture() const { return mSceneTexture; }
+
+        /**
+         * \brief Unbinds the scene view framebuffer to clear viewport
+         */
         void UnbindFramebuffer();
+
+        /**
+         * \brief Gets scene view framebuffer width
+         * \return Framebuffer width in pixels
+         */
         int GetSceneFBWidth() const { return mSceneFBWidth; }
+
+        /**
+         * \brief Gets scene view framebuffer height
+         * \return Framebuffer height in pixels
+         */
         int GetSceneFBHeight() const { return mSceneFBHeight; }
     };
 }
