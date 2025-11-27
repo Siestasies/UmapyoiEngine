@@ -7,21 +7,8 @@ local AttackState = require("AttackState")
 local DieState = require("DieState")
 
 ExposedVars = {
-    speed = 100.0,
     name = "unknown",
     isActive = true,
-
-    mHealth = 100,
-    mMaxHealth = 100,
-    mHealthRegenRate = 1.0,
-
-    mSpeed = 10.0,
-
-    mAttackDamage = 10,
-    mAttackSpeed = 1.0,
-    mAttackRange = 20.0,
-    mVisualRange = 20.0,
-    mDefense = 5,
 }
 --reference to FSM
 local fsm = nil
@@ -43,8 +30,6 @@ function Start()
     --add whatever state else
     -- Set initial state
     fsm:changeState("IdleState")
-
-    thisEntity.mHealth = 100;
     
     thisEntity.playerEntity = FindEntityWithComponent("Player")
 end

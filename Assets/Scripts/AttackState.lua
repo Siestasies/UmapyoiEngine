@@ -29,10 +29,12 @@ function AttackState:update(dt)
     --make fireball thingy
     self.parent:CreateEntity()
 
-    if self.parent.mHealth <= 0 then
+    if self.parent:GetEnemy().mHealth <= 0 then
         self.fsm:changeState("DieState")
     end
+
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    
     if distance:length() > 20 then
         self.fsm:changeState("IdleState")
     end

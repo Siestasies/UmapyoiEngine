@@ -1801,7 +1801,19 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                if (ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Health", &player.mHealth, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Max Health", &player.mMaxHealth, 0, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Health Regen", &player.mHealthRegenRate, 0.1f, 0.0f, 10.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 20.f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Dash Speed", &player.mDashSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Dash CD", &player.mDashCD, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Atk Dmg", &player.mAttackDamage, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Atk Spd", &player.mAttackSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Atk Range", &player.mAttackRange, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Def", &player.mDefense, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Mana", &player.mMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Max Mana", &player.mMaxMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Mana Regen", &player.mManaRegenRate, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Player Tag Component");
@@ -1823,7 +1835,14 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                if (ImGui::DragFloat("Speed", &enemy.mSpeed, 0.1f, 0.0f, 100.0f))  m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Health", &enemy.mHealth, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Max Health", &enemy.mMaxHealth, 0, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Health Regen", &enemy.mHealthRegenRate, 0.1f, 0.0f, 10.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Speed", &enemy.mSpeed, 0.1f, 0.0f, 20.f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Atk Dmg", &enemy.mAttackDamage, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Atk Spd", &enemy.mAttackSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Atk Range", &enemy.mAttackRange, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragInt("Def", &enemy.mDefense, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Enemy Tag Component");

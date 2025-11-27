@@ -127,6 +127,10 @@ function ChaseState:update(dt)
     pf.goal.x = playerTransform.position.x
     pf.goal.y = playerTransform.position.y
 
+    if self.parent:GetEnemy().mHealth <= 0 then
+        self.fsm:changeState("DieState")
+    end
+
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
     if distance:length() > 5 then
         self.fsm:changeState("IdleState")

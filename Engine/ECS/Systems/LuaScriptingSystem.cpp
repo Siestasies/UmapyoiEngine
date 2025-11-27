@@ -417,12 +417,32 @@ namespace Uma_ECS
 
         // Register Player component - ADD THIS IF MISSING
         sharedLua->new_usertype<Player>("Player",
-            "mSpeed", &Player::mSpeed
+            "mHealth"         ,&Player::mHealth,
+            "mMaxHealth"      ,&Player::mMaxHealth,
+            "mHealthRegenRate",&Player::mHealthRegenRate,
+            "mSpeed"          ,&Player::mSpeed,
+            "mDashSpeed"      ,&Player::mDashSpeed,
+            "mDashCD"         ,&Player::mDashCD,
+            "mAttackDamage"   ,&Player::mAttackDamage,
+            "mAttackSpeed"    ,&Player::mAttackSpeed,
+            "mAttackRange"    ,&Player::mAttackRange,
+            "mDefense"        ,&Player::mDefense,
+            "mMana"           ,&Player::mMana,
+            "mMaxMana"        ,&Player::mMaxMana,
+            "mManaRegenRate"  ,&Player::mManaRegenRate
         );
+
 
         // Register Enemy component - ADD THIS IF MISSING
         sharedLua->new_usertype<Enemy>("Enemy",
-            "mSpeed", &Enemy::mSpeed
+            "mHealth"         ,&Enemy::mHealth,
+            "mMaxHealth"      ,&Enemy::mMaxHealth,
+            "mHealthRegenRate",&Enemy::mHealthRegenRate,
+            "mSpeed"          ,&Enemy::mSpeed,
+            "mAttackDamage"   ,&Enemy::mAttackDamage,
+            "mAttackSpeed"    ,&Enemy::mAttackSpeed,
+            "mAttackRange"    ,&Enemy::mAttackRange,
+            "mDefense"        ,&Enemy::mDefense
         );
 
         // Register Camera

@@ -26,22 +26,22 @@ namespace Uma_ECS
 {
     struct Player
     {
-        int mHealth = 100;
-        int mMaxHealth = 100;
-        float mHealthRegenRate = 1.f;
+        int     mHealth = 100;
+        int     mMaxHealth = 100;
+        float   mHealthRegenRate = 1.f;
 
-        float mSpeed = 1.f;
-        float mDashSpeed = 10.f;
-        float mDashCD = 2.f;
+        float   mSpeed = 1.f;
+        float   mDashSpeed = 10.f;
+        float   mDashCD = 2.f;
 
-        int mAttackDamage = 10;
-        float mAttackSpeed = 1.f;
-        float mAttackRange = 20.f;
-        int mDefense = 5;
+        int     mAttackDamage = 10;
+        float   mAttackSpeed = 1.f;
+        float   mAttackRange = 20.f;
+        int     mDefense = 5;
 
-        int mMana = 100;
-        int mMaxMana = 100;
-        float mManaRegenRate = 5.f;
+        int     mMana = 100;
+        int     mMaxMana = 100;
+        float   mManaRegenRate = 5.f;
 
 
         // currently empty, just to let coordinator to 

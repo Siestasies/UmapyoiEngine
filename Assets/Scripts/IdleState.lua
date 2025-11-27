@@ -54,7 +54,7 @@ function IdleState:update(dt)
     -- if KeyPressed(KEY_1) then
     --     self.fsm:changeState("DieState")
     -- end
-    if self.parent.mHealth <= 0 then
+    if self.parent:GetEnemy().mHealth <= 0 then
         self.fsm:changeState("DieState")
     end
 

@@ -25,7 +25,17 @@ namespace Uma_ECS
 {
     struct Enemy
     {
-        float mSpeed = 1.f;
+        int mHealth = 100;
+        int mMaxHealth = 100;
+        float mHealthRegenRate = 1.f;
+
+        float mSpeed = 10.f;
+
+        int mAttackDamage = 10;
+        float mAttackSpeed = 1.f;
+        float mAttackRange = 20.f;
+        int mDefense = 5;
+
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the enemy
 
@@ -33,13 +43,46 @@ namespace Uma_ECS
         {
             value.SetObject();
 
+            value.AddMember("mHealth", mHealth, allocator);
+            value.AddMember("mMaxHealth", mMaxHealth, allocator);
+            value.AddMember("mHealthRegenRate", mHealthRegenRate, allocator);
+
             value.AddMember("mSpeed", mSpeed, allocator);
+
+            value.AddMember("mAttackDamage", mAttackDamage, allocator);
+            value.AddMember("mAttackSpeed", mAttackSpeed, allocator);
+            value.AddMember("mAttackRange", mAttackRange, allocator);
+            value.AddMember("mDefense", mDefense, allocator);
         }
 
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
-            mSpeed = value["mSpeed"].GetFloat();
+            if (value.HasMember("mHealth"))
+                mHealth = value["mHealth"].GetInt();
+
+            if (value.HasMember("mMaxHealth"))
+                mMaxHealth = value["mMaxHealth"].GetInt();
+
+            if (value.HasMember("mHealthRegenRate"))
+                mHealthRegenRate = value["mHealthRegenRate"].GetFloat();
+
+
+            if (value.HasMember("mSpeed"))
+                mSpeed = value["mSpeed"].GetFloat();
+
+
+            if (value.HasMember("mAttackDamage"))
+                mAttackDamage = value["mAttackDamage"].GetInt();
+
+            if (value.HasMember("mAttackSpeed"))
+                mAttackSpeed = value["mAttackSpeed"].GetFloat();
+
+            if (value.HasMember("mAttackRange"))
+                mAttackRange = value["mAttackRange"].GetFloat();
+
+            if (value.HasMember("mDefense"))
+                mDefense = value["mDefense"].GetInt();
         }
     };
 }
