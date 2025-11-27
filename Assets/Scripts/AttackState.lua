@@ -11,7 +11,9 @@ AttackState.__index = AttackState
 -- Constructor - Creates a new instance of this state
 function AttackState:new(fsm, parent)
     local instance = BaseState.new(self, fsm, parent)
-    
+
+    local attackCD = 5 * self.parent:GetEnemy().mAttackSpeed
+
     return instance
 end
 
@@ -27,7 +29,11 @@ function AttackState:update(dt)
     local dir = vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
 
     --make fireball thingy
-    self.parent:CreateEntity()
+    attackCD = attackCD - dt
+    if attackCD < 0 then
+        local entity = self.parent:CreateEntity()
+        self.parent:GetTransformFrom(entity).rotation.x = 1.0
+    end
 
     if self.parent:GetEnemy().mHealth <= 0 then
         self.fsm:changeState("DieState")
