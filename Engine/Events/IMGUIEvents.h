@@ -192,7 +192,8 @@ namespace Uma_Engine
     {
     public:
         std::string name;
-        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
+        bool load_n_play;
+        LoadSceneRequestEvent(const std::string& name, bool load_n_play = false) : name(name), load_n_play(load_n_play){ priority = Priority::High; }
     };
 
     class IMGUIStopRequest : public Event
@@ -238,11 +239,20 @@ namespace Uma_Engine
         DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
     };
 
-    class SaveCurrSceneRequest : public Event
+    // save scene with the scene name
+    class SaveSceneRequest : public Event
     {
     public:
         std::string name;
-        SaveCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+        SaveSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+    };
+
+
+    // save current opened scene
+    class SaveCurrSceneRequest : public Event
+    {
+    public:
+        SaveCurrSceneRequest() { priority = Priority::High; }
     };
 
     class CallLuaToInitScript : public Event

@@ -249,12 +249,12 @@ namespace Uma_Engine
         void HandleEditorInput()
         {
             //auto input = GetInput();
-            if (GetInput()->KeyPressed(GLFW_KEY_5)) {
-                SpawnDefaultEntities();
-            }
-            if (GetInput()->KeyDown(GLFW_KEY_6)) {
-                GetPathFindingSystem().DebugDraw();
-            }
+            //if (GetInput()->KeyPressed(GLFW_KEY_5)) {
+            //    SpawnDefaultEntities();
+            //}
+            //if (GetInput()->KeyDown(GLFW_KEY_6)) {
+            //    GetPathFindingSystem().DebugDraw();
+            //}
         }
 
         void SaveScene()
@@ -1104,6 +1104,33 @@ namespace Uma_Engine
 
         void SavePrefab(std::string prefab_name, Entity entity)
         {
+
+            if (!GetCoordinator().HasComponent<Uma_ECS::Prefab>(entity))
+            {
+                GetCoordinator().AddComponent<Uma_ECS::Prefab>(entity, Uma_ECS::Prefab
+                    {
+                        .prefabPath = Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab",
+                        .isRoot = true,
+                    });
+
+                auto& tf = GetCoordinator().GetComponent<Uma_ECS::Transform>(entity);
+
+                if (tf.children.size() > 0)
+                {
+                    for (Uma_ECS::Entity en : tf.children)
+                    {
+                        if (!GetCoordinator().HasComponent<Uma_ECS::Prefab>(en))
+                        {
+                            GetCoordinator().AddComponent<Uma_ECS::Prefab>(en, Uma_ECS::Prefab
+                                {
+                                    .prefabPath = Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab",
+                                    .isRoot = false,
+                                });
+                        }
+                    }
+                }
+            }
+
             m_Scene->gGameSerializer.savePrefab(entity, Uma_FilePath::PREFAB_DIR + prefab_name + ".prefab");
         }
 

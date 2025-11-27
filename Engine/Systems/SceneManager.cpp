@@ -90,9 +90,16 @@ namespace Uma_Engine
             }
         );
 
+        pEventSystem->Subscribe<SaveSceneRequest, SceneManager>(
+            [this](const SaveSceneRequest& e) {
+                SaveScene(e.name);
+            }
+        );
+
         pEventSystem->Subscribe<SaveCurrSceneRequest, SceneManager>(
             [this](const SaveCurrSceneRequest& e) {
-                SaveScene(e.name);
+                (void)e;
+                SaveScene(m_ActiveScene->GetName());
             }
         );
 
@@ -101,6 +108,11 @@ namespace Uma_Engine
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
                 playMode = PLAYMODE::PM_STOP;
+
+                if (e.load_n_play)
+                {
+                    pEventSystem->Emit<PlaySceneRequest>();
+                }
             }
         );
 

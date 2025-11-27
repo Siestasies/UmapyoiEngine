@@ -322,6 +322,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::AudioListener>();
         m_Coordinator.RegisterComponent<Uma_ECS::AudioComponent>();
         m_Coordinator.RegisterComponent<Uma_ECS::PathFinding>();
+        m_Coordinator.RegisterComponent<Uma_ECS::Prefab>();
         m_Coordinator.RegisterComponent<Uma_UI::RectTransform>();
         m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
         m_Coordinator.RegisterComponent<Uma_UI::Image>();

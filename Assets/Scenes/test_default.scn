@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,12 +50,12 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
-            },
-            {
                 "name": "fire bird",
                 "path": "Assets/fire bird.png"
+            },
+            {
+                "name": "floor_tatami",
+                "path": "Assets/floor_tatami.png"
             },
             {
                 "name": "player_new",
@@ -71,13 +71,8 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -86,9 +81,14 @@
                 "type": 0
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
@@ -2327,33 +2327,9 @@
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
-                            "scriptPath": "Assets/Scripts/BirdEnemy.lua",
+                            "scriptPath": "Assets/Scripts/NewEnemy.lua",
                             "isEnabled": true,
                             "exposedVariables": [
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 500.0,
-                                    "isSlider": true
-                                },
-                                {
-                                    "name": "name",
-                                    "type": 3,
-                                    "value": "bird",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "rotationSpeed",
-                                    "type": 0,
-                                    "value": 45.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
                                 {
                                     "name": "isActive",
                                     "type": 2,
@@ -2363,47 +2339,9 @@
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "testCounter",
-                                    "type": 0,
-                                    "value": 5506.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "moveDistance",
-                                    "type": 0,
-                                    "value": 50.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/testEnemy.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 500.0,
-                                    "isSlider": true
-                                },
-                                {
                                     "name": "name",
                                     "type": 3,
-                                    "value": "bird child",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
+                                    "value": "unknown",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -2413,7 +2351,14 @@
                     ]
                 },
                 "struct Uma_ECS::Enemy": {
-                    "mSpeed": 1.0
+                    "mHealth": 100,
+                    "mMaxHealth": 100,
+                    "mHealthRegenRate": 1.0,
+                    "mSpeed": 10.0,
+                    "mAttackDamage": 10,
+                    "mAttackSpeed": 1.0,
+                    "mAttackRange": 20.0,
+                    "mDefense": 5
                 },
                 "struct Uma_ECS::Animator": {
                     "autoPlay": true,
@@ -2429,6 +2374,10 @@
                             "loop": true
                         }
                     ]
+                },
+                "struct Uma_ECS::PathFinding": {
+                    "pathUpdateTimer": 0.0,
+                    "pathUpdateInterval": 0.5
                 }
             }
         },
@@ -2644,271 +2593,6 @@
                 "struct Uma_ECS::Camera": {
                     "zoom": 1.5,
                     "followPlayer": true
-                }
-            }
-        },
-        {
-            "id": 39,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "bird enemy",
-                    "position": {
-                        "x": -42.416,
-                        "y": 6.822
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 0.192,
-                        "y": 0.523
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "fire bird",
-                    "layer": 16,
-                    "flipX": true,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 12.0,
-                    "gridY": 4.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": -0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 500.0,
-                    "fric_coeff": 5.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 3.598
-                            },
-                            "size": {
-                                "x": 23.7,
-                                "y": 5.4
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 18,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": -5.098
-                            },
-                            "size": {
-                                "x": 25.5,
-                                "y": 4.296
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 8,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/BirdEnemy.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 500.0,
-                                    "isSlider": true
-                                },
-                                {
-                                    "name": "name",
-                                    "type": 3,
-                                    "value": "bird",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "rotationSpeed",
-                                    "type": 0,
-                                    "value": 45.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "testCounter",
-                                    "type": 0,
-                                    "value": 5506.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "moveDistance",
-                                    "type": 0,
-                                    "value": 50.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/testEnemy2.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "name",
-                                    "type": 3,
-                                    "value": "circle",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "isActive",
-                                    "type": 2,
-                                    "value": true,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "speed",
-                                    "type": 0,
-                                    "value": 100.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Enemy": {
-                    "mSpeed": 1.0
-                },
-                "struct Uma_ECS::Animator": {
-                    "autoPlay": true,
-                    "initialClip": "idle",
-                    "clips": [
-                        {
-                            "name": "idle",
-                            "framesX": 12,
-                            "framesY": 4,
-                            "startFrame": 0,
-                            "frameCount": 10,
-                            "speed": 10.0,
-                            "loop": true
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 40,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "bird enemy child",
-                    "position": {
-                        "x": 15.6,
-                        "y": 1.799
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 2.0,
-                        "y": 1.0
-                    },
-                    "parent": 39
-                },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "kappa_statue",
-                    "layer": 16,
-                    "flipX": false,
-                    "flipY": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 500.0,
-                    "fric_coeff": 5.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 2.0,
-                                "y": 2.0
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 8,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
                 }
             }
         }

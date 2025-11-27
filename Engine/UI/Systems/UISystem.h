@@ -132,6 +132,15 @@ namespace Uma_UI
         void MarkAllDirty();
 
         /*!
+         * \brief Marks an entity and all its descendants as dirty.
+         * \param entity The root entity to mark dirty.
+         *
+         * Recursively traverses the Transform hierarchy and sets isDirty = true
+         * for all RectTransform components found in the subtree.
+         */
+        void MarkEntityAndChildrenDirty(Uma_ECS::Entity entity);
+
+        /*!
          * \brief Queries if mouse input is being consumed by UI this frame.
          * \return True if UI is consuming mouse input.
          */

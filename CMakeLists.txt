@@ -105,3 +105,75 @@ message(STATUS "Sol2 headers available at: ${sol2_SOURCE_DIR}/include")
 add_subdirectory(Engine)
 add_subdirectory(Game)
 add_subdirectory(EditorApp)
+
+# ===== INSTALLATION RULES =====
+
+# Install game executable
+install(TARGETS UmapyoiGame
+    RUNTIME DESTINATION bin
+    COMPONENT Application
+)
+
+# Install runtime folders
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/Assets 
+    DESTINATION .
+    COMPONENT Application
+)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/Configs 
+    DESTINATION .
+    COMPONENT Application
+)
+
+# Don't install Logs - should be created in AppData at runtime
+# install(DIRECTORY ${CMAKE_SOURCE_DIR}/Logs DESTINATION .)
+
+# Install runtime DLLs
+install(FILES
+    ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll
+    ${CMAKE_SOURCE_DIR}/Engine/freetype/win64/freetype.dll
+    DESTINATION bin
+    COMPONENT Application
+)
+
+# ===== VISUAL C++ REDISTRIBUTABLE =====
+if(EXISTS "${CMAKE_SOURCE_DIR}/Redist/VC_redist.x64.exe")
+    install(FILES ${CMAKE_SOURCE_DIR}/Redist/VC_redist.x64.exe
+        DESTINATION bin
+        COMPONENT Application
+    )
+    
+    set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+        "ExecWait '\\\"$INSTDIR\\\\bin\\\\VC_redist.x64.exe\\\" /install /quiet /norestart'"
+    )
+    
+    message(STATUS "VC++ Redistributable will be included in installer")
+else()
+    message(WARNING "VC_redist.x64.exe not found in Redist/ folder")
+endif()
+
+# ===== CPACK CONFIGURATION =====
+set(CPACK_GENERATOR "NSIS;ZIP")
+set(CPACK_PACKAGE_NAME "SenkiGame")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_VENDOR "HarikitteIkou")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Senki by Harikitte Ikou")
+
+# NSIS specific settings
+set(CPACK_NSIS_DISPLAY_NAME "Senki Game")
+set(CPACK_NSIS_PACKAGE_NAME "SenkiGameInstaller")
+set(CPACK_NSIS_CONTACT "HarikitteIkou")
+set(CPACK_NSIS_MODIFY_PATH ON)
+set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
+
+# Desktop shortcut - FIXED to use UmapyoiGame.exe
+set(CPACK_NSIS_CREATE_ICONS_EXTRA
+    "CreateShortCut '$DESKTOP\\\\Senki Game.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe'"
+)
+set(CPACK_NSIS_DELETE_ICONS_EXTRA
+    "Delete '$DESKTOP\\\\Senki Game.lnk'"
+)
+
+set(CPACK_COMPONENTS_ALL Application)
+
+include(CPack)

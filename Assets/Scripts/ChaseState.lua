@@ -45,6 +45,18 @@ end
 --! @details Logs entry message for debugging
 function ChaseState:enter()
     Log("entered the chase state")
+    -- local transform = self.parent:GetTransform()
+    -- local playerTransform = self.parent.playerEntity:GetTransform()
+
+    -- --insert pathfinding
+    -- -- local pf = self.parent:GetPathFinding()
+    -- -- pf.goal = playerTransform
+    -- SetPathFindingGoal(playerTransform.position)
+
+    -- local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    -- if distance:length() > 5 then
+    --     self.fsm:changeState("IdleState")
+    -- end
 end
 
 
@@ -64,40 +76,63 @@ end
 --! @details Finds player position, calculates movement vector, applies smoothed acceleration
 --! @param dt number Delta time since last frame
 function ChaseState:update(dt)
-    if not self.parent or not self.parent.isValid then
-        return
+    -- if not self.parent or not self.parent.isValid then
+    --     return
+    -- end
+    -- 
+    -- playerEntity = FindEntityWithComponent("Player")
+    -- player = GetEntity(playerEntity)
+    -- if playerEntity ~= -1 then
+    --     local playerTf = player:GetTransform()
+    --     if playerTf then
+    --         self.playerPos.x = playerTf.position.x
+    --         self.playerPos.y = playerTf.position.y
+    --     end
+    -- end
+    -- 
+    -- if self.parent:HasTransform() and self.parent:HasRigidBody() then
+    --     local rb = self.parent:GetRigidBody()
+    --     local pos = Vec2.new(self.parent:GetTransform().position.x , self.parent:GetTransform().position.y)
+    --     local moveVec = Vec2.new(self.playerPos.x - pos.x , self.playerPos.y - pos.y)
+    --     
+    --     if moveVec.x ~= 0 or moveVec.y ~= 0 then
+    --         local targetAccel = moveVec * self.speed
+    --         self.currentAccel = self.currentAccel + (targetAccel - self.currentAccel) * self.accelSmoothFactor * dt
+    --         rb.acceleration.x = self.currentAccel.x
+    --         rb.acceleration.y = self.currentAccel.y
+    --     else
+    --         self.currentAccel = self.currentAccel + (Vec2.new(0, 0) - self.currentAccel) * self.accelSmoothFactor * dt
+    --         rb.acceleration = self.currentAccel
+    --     end
+    -- end
+    -- 
+    -- if KeyPressed(KEY_1) then
+    --     self.fsm:changeState("WalkState")
+    -- end
+    -- if KeyPressed(KEY_2) then
+    --     self.fsm:changeState("IdleState")
+    -- end
+
+    local transform = self.parent:GetTransform()
+    local playerTransform = GetTransformFrom(self.parent.playerEntity)
+
+    --insert pathfinding
+    -- local pf = self.parent:GetPathFinding()
+    -- pf.goal = playerTransform
+    -- SetPathFindingGoal(self.parent.id,playerTransform.position.x,playerTransform.position.y)
+
+    -- Log("wtf is this entity : " .. self.parent:entityID)
+
+    local pf = GetPathFindingFrom(self.parent.id)
+    pf.goal.x = playerTransform.position.x
+    pf.goal.y = playerTransform.position.y
+
+    if self.parent:GetEnemy().mHealth <= 0 then
+        self.fsm:changeState("DieState")
     end
 
-    playerEntity = FindEntityWithComponent("Player")
-    player = GetEntity(playerEntity)
-    if playerEntity ~= -1 then
-        local playerTf = player:GetTransform()
-        if playerTf then
-            self.playerPos.x = playerTf.position.x
-            self.playerPos.y = playerTf.position.y
-        end
-    end
-    
-    if self.parent:HasTransform() and self.parent:HasRigidBody() then
-        local rb = self.parent:GetRigidBody()
-        local pos = Vec2.new(self.parent:GetTransform().position.x , self.parent:GetTransform().position.y)
-        local moveVec = Vec2.new(self.playerPos.x - pos.x , self.playerPos.y - pos.y)
-        
-        if moveVec.x ~= 0 or moveVec.y ~= 0 then
-            local targetAccel = moveVec * self.speed
-            self.currentAccel = self.currentAccel + (targetAccel - self.currentAccel) * self.accelSmoothFactor * dt
-            rb.acceleration.x = self.currentAccel.x
-            rb.acceleration.y = self.currentAccel.y
-        else
-            self.currentAccel = self.currentAccel + (Vec2.new(0, 0) - self.currentAccel) * self.accelSmoothFactor * dt
-            rb.acceleration = self.currentAccel
-        end
-    end
-    
-    if KeyPressed(KEY_1) then
-        self.fsm:changeState("WalkState")
-    end
-    if KeyPressed(KEY_2) then
+    local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    if distance:length() > 5 then
         self.fsm:changeState("IdleState")
     end
 end

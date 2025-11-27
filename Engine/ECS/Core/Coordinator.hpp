@@ -51,6 +51,12 @@ All rights reserved.
 #include "../Components/AudioListener.h"
 #include "../Components/PathFinding.h"
 #include "../Components/ParticleEmitter.h"
+#include "../Components/Prefab.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/Button.h"
+#include "UI/Components/Canvas.h"
+#include "UI/Components/Text.h"
 
 #include <unordered_set>
 
@@ -134,6 +140,15 @@ namespace Uma_ECS
 
         // collect the entities in hierachy order
         void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
+
+        // collect resources used by prefab hierarchy
+        struct PrefabResources
+        {
+            std::unordered_set<std::string> textures;
+            std::unordered_set<std::string> sounds;
+            std::unordered_set<std::string> fonts;
+        };
+        void CollectPrefabResources(Entity root, PrefabResources& outResources);
 
         //------------------------------------------+
         //          Components functions            |
@@ -227,6 +242,12 @@ namespace Uma_ECS
             CHECK_COMPONENT(AudioListener)
             CHECK_COMPONENT(PathFinding)
             CHECK_COMPONENT(ParticleEmitter)
+            CHECK_COMPONENT(Prefab)
+            CHECK_COMPONENT(Uma_UI::RectTransform)
+            CHECK_COMPONENT(Uma_UI::Image)
+            CHECK_COMPONENT(Uma_UI::Button)
+            CHECK_COMPONENT(Uma_UI::Canvas)
+            CHECK_COMPONENT(Uma_UI::Text)
 
 #undef CHECK_COMPONENT
         }
@@ -263,6 +284,12 @@ namespace Uma_ECS
         Entity DeserializePrefab(const rapidjson::Value& in) override;
         void SerializeEntity(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator);
         void DeserializeEntity(Entity entity, const rapidjson::Value& comps);
+
+        // Prefab instance loading
+        std::unordered_map<Entity, Entity> LoadPrefabInstance(
+            const std::string& prefabPath,
+            Entity rootEntityID,
+            const rapidjson::Value& transformOverride);
 
 
         //------------------------------------------+

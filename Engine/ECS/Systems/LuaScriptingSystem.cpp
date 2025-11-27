@@ -417,18 +417,43 @@ namespace Uma_ECS
 
         // Register Player component - ADD THIS IF MISSING
         sharedLua->new_usertype<Player>("Player",
-            "mSpeed", &Player::mSpeed
+            "mHealth"         ,&Player::mHealth,
+            "mMaxHealth"      ,&Player::mMaxHealth,
+            "mHealthRegenRate",&Player::mHealthRegenRate,
+            "mSpeed"          ,&Player::mSpeed,
+            "mDashSpeed"      ,&Player::mDashSpeed,
+            "mDashCD"         ,&Player::mDashCD,
+            "mAttackDamage"   ,&Player::mAttackDamage,
+            "mAttackSpeed"    ,&Player::mAttackSpeed,
+            "mAttackRange"    ,&Player::mAttackRange,
+            "mDefense"        ,&Player::mDefense,
+            "mMana"           ,&Player::mMana,
+            "mMaxMana"        ,&Player::mMaxMana,
+            "mManaRegenRate"  ,&Player::mManaRegenRate
         );
+
 
         // Register Enemy component - ADD THIS IF MISSING
         sharedLua->new_usertype<Enemy>("Enemy",
-            "mSpeed", &Enemy::mSpeed
+            "mHealth"         ,&Enemy::mHealth,
+            "mMaxHealth"      ,&Enemy::mMaxHealth,
+            "mHealthRegenRate",&Enemy::mHealthRegenRate,
+            "mSpeed"          ,&Enemy::mSpeed,
+            "mAttackDamage"   ,&Enemy::mAttackDamage,
+            "mAttackSpeed"    ,&Enemy::mAttackSpeed,
+            "mAttackRange"    ,&Enemy::mAttackRange,
+            "mDefense"        ,&Enemy::mDefense
         );
 
         // Register Camera
         sharedLua->new_usertype<Camera>("Camera",
             "zoom", &Camera::mZoom,
             "followPlayer", &Camera::followPlayer
+        );
+
+        sharedLua->new_usertype<PathFinding>("PathFinding",
+            "goal", &PathFinding::goal,
+            "reachedGoal", &PathFinding::reachedGoal
         );
 
         // ===================================================================
@@ -562,7 +587,8 @@ namespace Uma_ECS
         X(Collider)    \
         X(Player)      \
         X(Enemy)       \
-        X(Camera)
+        X(Camera)      \
+        X(PathFinding) \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -680,6 +706,23 @@ namespace Uma_ECS
 
         sharedLua->set_function("PlayOneShotAtPosition", [this](float x, float y, const std::string& audioName, float vol) {
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
+            });
+
+        // path finding set goal
+        sharedLua->set_function("SetPathFindingGoal", [this](Uma_ECS::Entity entity, float x, float y)
+            {
+                if (pCoordinator->HasComponent<PathFinding>(entity))
+                {
+                    auto& pf = pCoordinator->GetComponent<PathFinding>(entity);
+
+                    pf.goal = Vec2(x, y);
+                }
+            });
+
+        // scene management
+        sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
+            {
+                pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
             });
 
     }
@@ -812,7 +855,7 @@ namespace Uma_ECS
                 {
                     auto& lua = lArray.GetData(e.en);
                     InitializeScripts(e.en, lua);
-                    CallStart();
+                    //CallStart();
                 }
             }
         );
@@ -1107,7 +1150,7 @@ namespace Uma_ECS
 
         // Mouse position (special case)
         sharedLua->set_function("GetMousePosition", [this]() -> Vec2 {
-            return pInputSystem ? pInputSystem->GetMousePosition() : Vec2{ 0, 0 };
+            return pInputSystem ? pInputSystem->GetSceneMousePosition() : Vec2{ 0, 0 };
             });
     }
 
