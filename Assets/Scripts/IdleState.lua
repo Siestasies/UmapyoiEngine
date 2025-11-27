@@ -57,9 +57,11 @@ function IdleState:update(dt)
     if self.parent.mHealth <= 0 then
         self.fsm:changeState("DieState")
     end
+
+    Log("player entity : " .. self.parent.playerEntity)
     
     local transform = self.parent:GetTransform()
-    local playerTransform = self.parent.playerEntity:GetTransform()
+    local playerTransform = GetTransformFrom(self.parent.playerEntity)
 
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
     if distance:length() > 1 then
