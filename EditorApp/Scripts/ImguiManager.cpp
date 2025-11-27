@@ -930,7 +930,7 @@ namespace Uma_Engine
     void ImguiManager::CreatePrefabHierarchyWindow()
     {
         bool b = true;
-        ImGui::Begin(fileBrowser.getPrefabName().c_str(), &b);
+        ImGui::Begin("Prefab Editor", &b);
 
         // Header with entity count
         if (sceneNames.size() > 0)
@@ -2947,7 +2947,7 @@ namespace Uma_Engine
         if (ImGui::Button("Save Current Scene"))
         {
             if (sceneNames.size() > 0)
-                pEventSystem->Emit<SaveCurrSceneRequest>(sceneNames[activeSceneIndex]);
+                pEventSystem->Emit<SaveSceneRequest>(sceneNames[activeSceneIndex]);
         }
 
         //list of loaded scenes

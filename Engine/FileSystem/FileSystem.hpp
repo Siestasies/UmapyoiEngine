@@ -392,6 +392,7 @@ namespace Uma_Engine
                         if (ImGui::MenuItem("Open in Inspector"))
                         {
                             pEventSystem->Emit<StopSceneRequest>();
+                            pEventSystem->Emit<SaveCurrSceneRequest>();
                             pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
                             pEventSystem->Emit<ClearSceneRequestEvent>();
                             pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);

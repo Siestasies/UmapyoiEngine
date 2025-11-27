@@ -35,6 +35,7 @@ All rights reserved.
 
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <optional>
 
 namespace Uma_Engine
@@ -84,6 +85,14 @@ namespace Uma_Engine
         void Deserialize(const rapidjson::Value& in) override;
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override;
         Entity DeserializePrefab(const rapidjson::Value& in) override;
+
+        // Helper to serialize specific resources (for prefabs)
+        void SerializeSpecificResources(
+            const std::unordered_set<std::string>& textureNames,
+            const std::unordered_set<std::string>& soundNames,
+            const std::unordered_set<std::string>& fontNames,
+            rapidjson::Value& out,
+            rapidjson::Document::AllocatorType& allocator);
 
     private:
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};

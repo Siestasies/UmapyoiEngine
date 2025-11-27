@@ -431,6 +431,11 @@ namespace Uma_ECS
             "followPlayer", &Camera::followPlayer
         );
 
+        sharedLua->new_usertype<PathFinding>("PathFinding",
+            "goal", &PathFinding::goal,
+            "reachedGoal", &PathFinding::reachedGoal
+        );
+
         // ===================================================================
         // COLLISION SYSTEM TYPES
         // ===================================================================
@@ -562,7 +567,8 @@ namespace Uma_ECS
         X(Collider)    \
         X(Player)      \
         X(Enemy)       \
-        X(Camera)
+        X(Camera)      \
+        X(PathFinding) \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -823,7 +829,7 @@ namespace Uma_ECS
                 {
                     auto& lua = lArray.GetData(e.en);
                     InitializeScripts(e.en, lua);
-                    CallStart();
+                    //CallStart();
                 }
             }
         );

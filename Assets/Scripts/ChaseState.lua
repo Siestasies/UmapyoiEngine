@@ -124,7 +124,13 @@ function ChaseState:update(dt)
     --insert pathfinding
     -- local pf = self.parent:GetPathFinding()
     -- pf.goal = playerTransform
-    SetPathFindingGoal(self.parent.id,playerTransform.position.x,playerTransform.position.y)
+    -- SetPathFindingGoal(self.parent.id,playerTransform.position.x,playerTransform.position.y)
+
+    -- Log("wtf is this entity : " .. self.parent:entityID)
+
+    local pf = GetPathFindingFrom(self.parent.id)
+    pf.goal.x = playerTransform.position.x
+    pf.goal.y = playerTransform.position.y
 
     local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
     if distance:length() > 75 then
