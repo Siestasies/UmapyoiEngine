@@ -249,12 +249,12 @@ namespace Uma_Engine
         void HandleEditorInput()
         {
             //auto input = GetInput();
-            if (GetInput()->KeyPressed(GLFW_KEY_5)) {
-                SpawnDefaultEntities();
-            }
-            if (GetInput()->KeyDown(GLFW_KEY_6)) {
-                GetPathFindingSystem().DebugDraw();
-            }
+            //if (GetInput()->KeyPressed(GLFW_KEY_5)) {
+            //    SpawnDefaultEntities();
+            //}
+            //if (GetInput()->KeyDown(GLFW_KEY_6)) {
+            //    GetPathFindingSystem().DebugDraw();
+            //}
         }
 
         void SaveScene()

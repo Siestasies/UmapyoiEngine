@@ -106,8 +106,13 @@ namespace Uma_Engine
         pEventSystem->Subscribe<LoadSceneRequestEvent, SceneManager>(
             [this](const LoadSceneRequestEvent& e) {
                 LoadScene(e.name, false);
-                m_UseEditorCamera = e.load_n_play ? true : false;
-                playMode = e.load_n_play ? PLAYMODE::PM_PLAY : PLAYMODE::PM_STOP;
+                m_UseEditorCamera = false;
+                playMode = PLAYMODE::PM_STOP;
+
+                if (e.load_n_play)
+                {
+                    pEventSystem->Emit<PlaySceneRequest>();
+                }
             }
         );
 
