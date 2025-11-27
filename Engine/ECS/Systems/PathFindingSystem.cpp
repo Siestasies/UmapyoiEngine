@@ -110,8 +110,8 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 
-    std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
-        << " world units" << std::endl;
+    /*std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
+        << " world units" << std::endl;*/
 
     // Find player and rebuild pathfinder around them
     if (playerArray.Size() > 0) 

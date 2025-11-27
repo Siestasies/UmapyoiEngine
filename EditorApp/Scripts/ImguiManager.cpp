@@ -2098,7 +2098,7 @@ namespace Uma_Engine
 
                         if (ImGui::Button("Remove Script", ImVec2(-1, 0)))
                         {
-                            //luaScript.scripts.erase(luaScript.scripts.begin() + i);
+                            luaScript.RemoveScript(i);
                             ImGui::TreePop();
                             ImGui::PopID();
 

@@ -45,12 +45,29 @@ end
 --! @details Listens for input to transition to walk or chase states
 --! @param dt number Delta time since last frame
 function IdleState:update(dt)
-    if KeyPressed(KEY_1) then
-        self.fsm:changeState("WalkState")
+    -- if KeyPressed(KEY_1) then
+    --     self.fsm:changeState("WalkState")
+    -- end
+    -- if KeyPressed(KEY_3) then
+    --     self.fsm:changeState("ChaseState")
+    -- end
+    -- if KeyPressed(KEY_1) then
+    --     self.fsm:changeState("DieState")
+    -- end
+    if self.parent.mHealth <= 0 then
+        self.fsm:changeState("DieState")
     end
-    if KeyPressed(KEY_3) then
+
+    Log("player entity : " .. self.parent.playerEntity)
+    
+    local transform = self.parent:GetTransform()
+    local playerTransform = GetTransformFrom(self.parent.playerEntity)
+
+    local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    if distance:length() > 1 then
         self.fsm:changeState("ChaseState")
     end
+
 end
 
 

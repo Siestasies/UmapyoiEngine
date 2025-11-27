@@ -682,6 +682,17 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
             });
 
+        // path finding set goal
+        sharedLua->set_function("SetPathFindingGoal", [this](Uma_ECS::Entity entity, float x, float y)
+            {
+                if (pCoordinator->HasComponent<PathFinding>(entity))
+                {
+                    auto& pf = pCoordinator->GetComponent<PathFinding>(entity);
+
+                    pf.goal = Vec2(x, y);
+                }
+            });
+
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
@@ -1107,7 +1118,7 @@ namespace Uma_ECS
 
         // Mouse position (special case)
         sharedLua->set_function("GetMousePosition", [this]() -> Vec2 {
-            return pInputSystem ? pInputSystem->GetMousePosition() : Vec2{ 0, 0 };
+            return pInputSystem ? pInputSystem->GetSceneMousePosition() : Vec2{ 0, 0 };
             });
     }
 
