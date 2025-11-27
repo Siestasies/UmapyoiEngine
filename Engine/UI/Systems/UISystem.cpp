@@ -80,12 +80,12 @@ namespace Uma_UI
         }
 
         // Subscribe to window resize events and mark all UI dirty
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
-            {
-                mScreenSize.x = static_cast<float>(e.width);
-                mScreenSize.y = static_cast<float>(e.height);
-                MarkAllDirty(); // CRITICAL: Recalculate layout on resize
-            });
+        //pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
+        //    {
+        //        mScreenSize.x = static_cast<float>(e.width);
+        //        mScreenSize.y = static_cast<float>(e.height);
+        //        MarkAllDirty(); // CRITICAL: Recalculate layout on resize
+        //    });
 
         mHitTestCache.clear();
     }
@@ -102,6 +102,8 @@ namespace Uma_UI
         {
             return;
         }
+
+        mScreenSize = pGraphics->GetSceneViewport();
 
         LayoutPass();
         //InputPass();
@@ -204,7 +206,7 @@ namespace Uma_UI
         mMouseConsumedThisFrame = false;
         mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
 
-        mScreenSize = pGraphics->GetSceneViewport();
+        //mScreenSize = pGraphics->GetSceneViewport();
 
         mMousePositionNDC = Uma_UI::ScreenToNDC(
             mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);

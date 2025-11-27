@@ -192,7 +192,8 @@ namespace Uma_Engine
     {
     public:
         std::string name;
-        LoadSceneRequestEvent(const std::string& s) : name(s) { priority = Priority::High; }
+        bool load_n_play;
+        LoadSceneRequestEvent(const std::string& name, bool load_n_play = false) : name(name), load_n_play(load_n_play){ priority = Priority::High; }
     };
 
     class IMGUIStopRequest : public Event

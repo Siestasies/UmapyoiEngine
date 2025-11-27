@@ -702,7 +702,7 @@ namespace Uma_ECS
         // scene management
         sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
             {
-                pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName);
+                pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
             });
 
     }

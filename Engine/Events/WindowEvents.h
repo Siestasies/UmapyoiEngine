@@ -28,7 +28,7 @@ namespace Uma_Engine
     class WindowResizeEvent : public Event
     {
     public:
-        WindowResizeEvent(int width, int height) : width(width), height(height) { priority = Priority::High; }
+        WindowResizeEvent(int width, int height) : width(width), height(height) { priority = Priority::Normal; }
 
     public:
         int width, height;
