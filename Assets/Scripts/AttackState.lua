@@ -28,11 +28,14 @@ function AttackState:update(dt)
     local playerTransform = self.parent.playerEntity:GetTransform()
     local dir = vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
 
+
+    local angle = math.atan2(localDir.y, localDir.x)
     --make fireball thingy
     attackCD = attackCD - dt
     if attackCD < 0 then
         local entity = self.parent:CreateEntity()
-        self.parent:GetTransformFrom(entity).rotation.x = 1.0
+        self.parent:GetTransformFrom(entity).rotation.x = dir.x
+        self.parent:GetTransformFrom(entity).rotation.y = dir.y
     end
 
     if self.parent:GetEnemy().mHealth <= 0 then
