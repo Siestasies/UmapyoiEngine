@@ -454,6 +454,10 @@ namespace Uma_Engine
             }
 
             ImGui::EndChild();
+
+            if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+                mSelectedPath.clear();
+            }
         }
 
         void RenderFeedback()
