@@ -73,6 +73,7 @@ end
 
 --! @brief Called when exiting idle state
 function IdleState:exit()
+    Log("exiting idle")
 end
 
 return IdleState

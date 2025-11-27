@@ -47,7 +47,7 @@ namespace Uma_ECS
         void Shutdown();
 
         void DebugDraw();
-
+        bool showDebug = false;
     private:
 
         Coordinator* pCoordinator = nullptr;
@@ -61,6 +61,5 @@ namespace Uma_ECS
 
         void RebuildPathfinder(const Vec2& center, float maxAgentRadius);
         bool isDirty = false; //to check for any new entites
-        //to be removed later
     };
 }

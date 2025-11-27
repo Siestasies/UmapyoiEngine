@@ -77,7 +77,7 @@ namespace Uma_Navigation {
         GridCell startCell = WorldToGrid(start);
         GridCell goalCell = WorldToGrid(goal);
 
-        float startClearance = GetClearance(startCell);
+        /*float startClearance = GetClearance(startCell);
         std::cout << "[DEBUG] Start cell " << startCell.x << "," << startCell.y
             << " clearance=" << startClearance
             << ", required agentRadius=" << agentRadius << std::endl;
@@ -85,19 +85,19 @@ namespace Uma_Navigation {
         float goalClearance = GetClearance(goalCell);
         std::cout << "[DEBUG] Goal cell " << goalCell.x << "," << goalCell.y
             << " clearance=" << goalClearance
-            << ", required agentRadius=" << agentRadius << std::endl;
+            << ", required agentRadius=" << agentRadius << std::endl;*/
 
         // Find nearest traversable cells for A* search
         GridCell validStart = FindNearestClearCell(start, agentRadius, /*maxSearchDist=*/50);
-        if (!IsTraversable(validStart, agentRadius)) {
+        /*if (!IsTraversable(validStart, agentRadius)) {
             std::cout << "[GridPathfinder] No clear cell near start!\n";
             return {};
-        }
+        }*/
         GridCell validGoal = FindNearestClearCell(goal, agentRadius, /*maxSearchDist=*/50);
-        if (!IsTraversable(validGoal, agentRadius)) {
+        /*if (!IsTraversable(validGoal, agentRadius)) {
             std::cout << "[GridPathfinder] No clear cell near goal!\n";
             return {};
-        }
+        }*/
 
         std::priority_queue<PathNode, std::vector<PathNode>, std::greater<PathNode>> openSet;
         std::unordered_map<GridCell, float, GridCellHash> gScore;
@@ -116,7 +116,7 @@ namespace Uma_Navigation {
             openSet.pop();
 
             if (current.cell == validGoal) {
-                std::cout << "[GridPathfinder] Path found (" << iterations << " iterations)" << std::endl;
+                //std::cout << "[GridPathfinder] Path found (" << iterations << " iterations)" << std::endl;
 
                 auto path = ReconstructPath(cameFrom, current.cell, GridToWorld(validStart), GridToWorld(validGoal));
                 return path;
@@ -153,7 +153,7 @@ namespace Uma_Navigation {
             }
         }
 
-        std::cout << "[GridPathfinder] No path found (" << iterations << " iterations)" << std::endl;
+        //std::cout << "[GridPathfinder] No path found (" << iterations << " iterations)" << std::endl;
         return {};
     }
 
@@ -317,8 +317,8 @@ namespace Uma_Navigation {
 
         //PROBLEM: No valid cell found within radius
         // This means the search radius is too small or area is completely blocked
-        std::cout << "[FindNearestClearCell] WARNING: No traversable cell found within radius "
-            << maxSearchDist << " cells for agent radius " << agentRadius << std::endl;
+        /*std::cout << "[FindNearestClearCell] WARNING: No traversable cell found within radius "
+            << maxSearchDist << " cells for agent radius " << agentRadius << std::endl;*/
         return center;  // Return center as last resort
     }
 

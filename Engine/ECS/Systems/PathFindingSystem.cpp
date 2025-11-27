@@ -75,6 +75,8 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
     bool hasPlayer = false;
     float maxAgentRadius = cellSize; // Initialize with minimum
 
+    if (showDebug) DebugDraw();
+
     // Calculate maximum agent radius across ALL entities
     for (auto const& entity : aEntities)
     {
@@ -373,24 +375,24 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
     auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
 
     // 1. Draw all collider bounding boxes
-    auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
-    for (auto entity : colliderEntities) {
-        if (!tfArray.Has(entity)) continue;
+    //auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
+    //for (auto entity : colliderEntities) {
+    //    if (!tfArray.Has(entity)) continue;
 
-        const auto& transform = tfArray.GetData(entity);
-        const auto& collider = colliderArray.GetData(entity);
+    //    const auto& transform = tfArray.GetData(entity);
+    //    const auto& collider = colliderArray.GetData(entity);
 
-        for (const auto& shape : collider.shapes) {
-            if (!shape.isActive) continue;
+    //    for (const auto& shape : collider.shapes) {
+    //        if (!shape.isActive) continue;
 
-            // Draw collider bounds in red for walls, yellow for player
-            float r = (entity == playerID) ? 1.0f : 1.0f;
-            float g = (entity == playerID) ? 1.0f : 0.0f;
-            float b = 0.0f;
+    //        // Draw collider bounds in red for walls, yellow for player
+    //        float r = (entity == playerID) ? 1.0f : 1.0f;
+    //        float g = (entity == playerID) ? 1.0f : 0.0f;
+    //        float b = 0.0f;
 
-            pGraphics->DrawDebugRect(transform.position, shape.size, r, g, b);
-        }
-    }
+    //        pGraphics->DrawDebugRect(transform.position, shape.size, r, g, b);
+    //    }
+    //}
 
     // 2. Draw blocked grid cells (optional - can be expensive)
     if (gridPathfinder && true) { // Set to true to enable
