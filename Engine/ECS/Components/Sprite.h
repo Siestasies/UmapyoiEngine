@@ -46,6 +46,15 @@ namespace Uma_ECS
         Vec2 spriteSheetGrid{ 1.0f, 1.0f };         // Total columns and rows (default = full texture)
         Vec2 spriteCell{ 0.0f, 0.0f };              // Which cell to render (col, row)
 
+        /*!
+        \brief Calculates the UV coordinates for the current sprite cell.
+
+        Converts the `spriteCell` index and `spriteSheetGrid` dimensions into
+        normalized UV space (0.0 to 1.0) for the graphics pipeline.
+
+        \param uvOffset [Out] The starting UV coordinate (top-left) of the cell.
+        \param uvSize [Out] The width and height of the cell in UV space.
+        */
         void GetUVs(Vec2& uvOffset, Vec2& uvSize) const
         {
             // Calculate size of one cell in UV space
@@ -57,6 +66,11 @@ namespace Uma_ECS
             uvOffset.y = spriteCell.y * uvSize.y;
         }
 
+        /*!
+        \brief Serializes the sprite component to a JSON object.
+        \param value The JSON object to write to.
+        \param allocator The JSON allocator for string management.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -86,7 +100,10 @@ namespace Uma_ECS
             value.AddMember("alpha", alpha, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserializes the sprite component from a JSON object.
+        \param value The JSON object to read from.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             textureName = value["textureName"].GetString();

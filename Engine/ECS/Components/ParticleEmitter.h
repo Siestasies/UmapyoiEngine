@@ -1,3 +1,21 @@
+/*!
+\file    ParticleEmitter.h
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+This file contains the configuration structs for particle behavior and runtime containers.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include <vector>
 #include <string>
@@ -5,6 +23,10 @@
 
 namespace Uma_ECS
 {
+    /*!
+    \enum EmitterMode
+    \brief Defines how particles are generated over time.
+    */
     enum class EmitterMode
     {
         Burst,        // One-time burst at emitter position
@@ -12,6 +34,10 @@ namespace Uma_ECS
         ScreenFill    // Fill entire viewport (like for example for snowing effect on screen)
     };
 
+    /*!
+    \struct Particle
+    \brief Represents the runtime state of a single particle.
+    */
     struct Particle
     {
         Vec2 position = { 0, 0 };
@@ -28,6 +54,10 @@ namespace Uma_ECS
         bool active = false;
     };
 
+    /*!
+    \struct ParticleAppearance
+    \brief Configuration for the visual properties of particles.
+    */
     struct ParticleAppearance
     {
         Vec2 scaleRange = { 0.5f, 1.5f };
@@ -106,6 +136,10 @@ namespace Uma_ECS
         }
     };
 
+    /*
+    \struct FadeSettings
+    \brief Configuration for alpha fading behavior at the start and end of particle life.
+    */
     struct FadeSettings
     {
         // Fade In (when particle spawns)
@@ -142,6 +176,10 @@ namespace Uma_ECS
         }
     };
 
+    /*
+    \struct ParticlePhysics
+    \brief Configuration for movement and kinematics.
+    */
     struct ParticlePhysics
     {
         Vec2 speedRange = { 50, 100 };
@@ -191,6 +229,10 @@ namespace Uma_ECS
         }
     };
 
+    /*!
+    \struct SpawnSettings
+    \brief Configuration for the spatial distribution and direction of spawned particles.
+    */
     struct SpawnSettings
     {
         // For Burst/Continuous
@@ -228,6 +270,10 @@ namespace Uma_ECS
         }
     };
 
+    /*
+    \struct EmissionSettings
+    \brief Configuration for timing and rate of particle generation.
+    */
     struct EmissionSettings
     {
         float emissionRate = 50.0f; // Particles per second (for continuous)
@@ -252,6 +298,10 @@ namespace Uma_ECS
         }
     };
 
+    /*
+    \struct ScreenFillSettings
+    \brief Specialized settings for EmitterMode::ScreenFill (e.g. Rain/Snow).
+    */
     struct ScreenFillSettings
     {
         // Velocity ranges for viewport particles
@@ -295,6 +345,11 @@ namespace Uma_ECS
         }
     };
 
+    /*!
+    \struct EmitterInstance
+    \brief A single, self-contained particle effect instance.
+    An entity can hold multiple EmitterInstance to create effects.
+    */
     struct EmitterInstance
     {
         std::string name = "Emitter";

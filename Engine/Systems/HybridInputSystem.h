@@ -14,6 +14,11 @@ namespace Uma_Engine
     class HybridInputSystem : public Uma_Engine::InputSystem
     {
     public:
+
+        /*!
+        \brief Initializes the input system and viewport defaults.
+        Calls the base InputSystem::Init to setup GLFW callbacks.
+        */
         void Init() override
         {
             Uma_Engine::InputSystem::Init();
@@ -37,6 +42,12 @@ namespace Uma_Engine
 #endif
         }
 
+        /*!
+        \brief Resets internal input states and clears hardware buffers.
+
+        Useful when the window loses focus or when switching scenes to prevent "stuck" keys.
+        Dispatches KeyRelease events for all currently held keys to ensure logic continuity.
+        */
         void ResetAllInput()
         {
             // Reset mouse deltas
@@ -69,6 +80,14 @@ namespace Uma_Engine
             Uma_Engine::InputSystem::ResetInputState();
         }
 
+        /*!
+        \brief Per-frame update loop.
+
+        1. Polls current mouse position.
+        2. Calls HandleInputEvents to process logic and dispatch events.
+        3. Updates base InputSystem.
+        \param dt Delta time (unused for input polling, but required by interface).
+        */
         void Update(float dt) override
         {
             double currMouseX = GetMouseX();
@@ -84,6 +103,10 @@ namespace Uma_Engine
             prevMouseY = currMouseY;
         }
 
+        /*!
+        \brief Links the InputSystem to the central EventSystem.
+        \param eventSys Pointer to the engine's EventSystem.
+        */
         void SetEventSystem(EventSystem* eventSys)
         {
             eventSystem = eventSys;

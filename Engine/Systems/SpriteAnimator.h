@@ -117,7 +117,7 @@ namespace Uma_Engine
 
             if (!playing)
             {
-                currentFrame = 0;
+                return;
             }
             else
             {

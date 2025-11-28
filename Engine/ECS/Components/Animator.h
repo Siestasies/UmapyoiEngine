@@ -41,6 +41,7 @@ namespace Uma_ECS
         Uma_Engine::SpriteAnimator animator;
         bool autoPlay = true;
         std::string initialClip = "";
+        bool isInitialized = false;
 
         // Current frame UVs
         Vec2 uvOffset = Vec2(0.0f, 0.0f);
@@ -87,7 +88,7 @@ namespace Uma_ECS
 
             value.AddMember("clips", clipsArray, allocator);
 
-            std::cout << "Serialized " << clips.size() << " animation clips" << std::endl;
+            //std::cout << "Serialized " << clips.size() << " animation clips" << std::endl;
         }
 
         /**
@@ -127,14 +128,8 @@ namespace Uma_ECS
                         frameCount, speed, loop);
                 }
 
-                std::cout << "Deserialized " << clipsArray.Size() << " animation clips" << std::endl;
-
-                // Auto-play the initial clip if specified
-                if (autoPlay && !initialClip.empty())
-                {
-                    animator.Play(initialClip);
-                    animator.GetUVs(uvOffset, uvSize);
-                }
+                //std::cout << "Deserialized " << clipsArray.Size() << " animation clips" << std::endl;
+                animator.GetUVs(uvOffset, uvSize);
             }
         }
     };

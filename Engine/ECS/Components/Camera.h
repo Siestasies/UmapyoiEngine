@@ -39,6 +39,12 @@ namespace Uma_ECS
         float mShakeTimer{ 0.0f };
         float mShakeIntensity{ 0.0f };
 
+        /*!
+        \brief Serializes the camera configuration to a JSON object.
+        \note Screen shake variables are runtime-only and are not saved.
+        \param value The JSON object to write to.
+        \param allocator The JSON allocator.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -47,7 +53,10 @@ namespace Uma_ECS
             value.AddMember("followPlayer", followPlayer, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserializes the camera configuration from a JSON object.
+        \param value The JSON object to read from.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             mZoom = value["zoom"].GetFloat();

@@ -33,10 +33,29 @@ namespace Uma_ECS
     class RenderingSystem : public ECSSystem
     {
     public:
+
+        /*!
+        \brief Initializes the rendering system with required external dependencies.
+        \param g Pointer to the low-level Graphics engine.
+        \param rm Pointer to the ResourcesManager for asset retrieval.
+        \param c Pointer to the ECS Coordinator.
+        */
         void Init(Uma_Engine::Graphics* g, Uma_Engine::ResourcesManager* rm, Coordinator* c);
 
+        /*!
+        \brief Executes the rendering pipeline for the current frame.
+
+        Collects sprite data, applies culling/checks, sorts by layer/texture, and issues draw calls.
+        \param dt Delta time (unused for rendering, but required by ISystem interface).
+        */
         void Update(float dt);
 
+        /*!
+        \brief Toggles whether this system should update the internal Graphics camera.
+
+        Useful for switching between the Game Camera (runtime) and Editor Camera (tooling).
+        \param update True to control the camera, False to leave camera control to the Editor.
+        */
         void SetUpdateCamera(bool update) { mUpdateCamera = update; }
 
     private:
