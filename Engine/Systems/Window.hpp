@@ -113,6 +113,10 @@ namespace Uma_Engine
         */
         GLFWwindow* GetGLFWWindow() const { return mWindow; }
 
+        /*!
+        \brief Retrieves the current display mode of the window.
+        \return The active WindowMode (Windowed or Fullscreen).
+        */
         WindowMode GetWindowMode() const { return mMode; }
 
         /**
@@ -121,7 +125,15 @@ namespace Uma_Engine
         */
         void SetTitle(std::string newTitle);
 
+        /*!
+        \brief Sets the window to a specific display mode.
+        \param mode The target WindowMode to apply.
+        */
         void SetWindowMode(WindowMode mode);
+
+        /*!
+        \brief Toggles the active window state between Windowed and Fullscreen.
+        */
         void ToggleFullscreen();
         
     private:

@@ -30,11 +30,25 @@ namespace Uma_ECS
     {
     public:
 
+        /*!
+        \brief Initializes the CameraSystem with a reference to the Coordinator.
+        \param c Pointer to the main ECS Coordinator to access components and entities.
+        */
         inline void Init(Coordinator* c)
         {
             pCoordinator = c;
         }
 
+        /*!
+        \brief Updates the camera logic for the current frame.
+
+        Performs the following operations:
+        1. Checks if the main camera is active.
+        2. Snaps the camera position to the player if 'followPlayer' is enabled.
+        3. Calculates and applies screen shake offsets if a shake event is active.
+
+        \param dt Delta time (time step) for the current frame, used for shake timers.
+        */
         void Update(float dt);
 
 
