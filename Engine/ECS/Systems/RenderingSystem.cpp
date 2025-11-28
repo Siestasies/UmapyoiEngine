@@ -129,7 +129,7 @@ namespace Uma_ECS
                 spriteScale = tf.worldScale;
             }
 
-            if (rbArray.Has(entity))
+            if (rbArray.Has(entity) && sr.autoFlip)
             {
                 auto& rb = rbArray.GetData(entity);
                 if (rb.velocity.x < 0) sr.flipX = true;

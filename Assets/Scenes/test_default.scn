@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "whitePixel",
-                "path": "Assets/whitePixel.png"
-            },
-            {
                 "name": "pink_enemy",
                 "path": "Assets/bird.png"
+            },
+            {
+                "name": "whitePixel",
+                "path": "Assets/whitePixel.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
-            },
-            {
                 "name": "wall_top",
                 "path": "Assets/wall_top.png"
+            },
+            {
+                "name": "kappa_statue",
+                "path": "Assets/statue.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,16 +50,20 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "fire bird",
-                "path": "Assets/fire bird.png"
-            },
-            {
                 "name": "floor_tatami",
                 "path": "Assets/floor_tatami.png"
             },
             {
+                "name": "fire bird",
+                "path": "Assets/fire bird.png"
+            },
+            {
                 "name": "player_new",
                 "path": "Assets/Player Spritesheet.png"
+            },
+            {
+                "name": "fire_ball",
+                "path": "Assets/256px VFX.png"
             }
         ],
         "fonts": [
@@ -71,8 +75,13 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -81,20 +90,16 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
-            },
-            {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
             }
         ]
     },
     "entities": [
         {
             "id": 0,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "kappa statue",
@@ -145,6 +150,7 @@
         },
         {
             "id": 1,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -217,6 +223,7 @@
         },
         {
             "id": 2,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -289,6 +296,7 @@
         },
         {
             "id": 3,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -361,6 +369,7 @@
         },
         {
             "id": 4,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -433,6 +442,7 @@
         },
         {
             "id": 5,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall btm",
@@ -505,6 +515,7 @@
         },
         {
             "id": 6,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -577,6 +588,7 @@
         },
         {
             "id": 7,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -649,6 +661,7 @@
         },
         {
             "id": 8,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -721,6 +734,7 @@
         },
         {
             "id": 9,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -793,6 +807,7 @@
         },
         {
             "id": 10,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -865,6 +880,7 @@
         },
         {
             "id": 11,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -937,6 +953,7 @@
         },
         {
             "id": 12,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -1009,6 +1026,7 @@
         },
         {
             "id": 13,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall right",
@@ -1081,6 +1099,7 @@
         },
         {
             "id": 14,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1153,6 +1172,7 @@
         },
         {
             "id": 15,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1225,6 +1245,7 @@
         },
         {
             "id": 16,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1297,6 +1318,7 @@
         },
         {
             "id": 17,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1369,6 +1391,7 @@
         },
         {
             "id": 18,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wall top",
@@ -1441,6 +1464,7 @@
         },
         {
             "id": 19,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1491,6 +1515,7 @@
         },
         {
             "id": 20,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1541,6 +1566,7 @@
         },
         {
             "id": 21,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1591,6 +1617,7 @@
         },
         {
             "id": 22,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1641,6 +1668,7 @@
         },
         {
             "id": 23,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1691,6 +1719,7 @@
         },
         {
             "id": 24,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1741,6 +1770,7 @@
         },
         {
             "id": 25,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1791,6 +1821,7 @@
         },
         {
             "id": 26,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1841,6 +1872,7 @@
         },
         {
             "id": 27,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1891,6 +1923,7 @@
         },
         {
             "id": 28,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1941,6 +1974,7 @@
         },
         {
             "id": 29,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -1991,6 +2025,7 @@
         },
         {
             "id": 30,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2041,6 +2076,7 @@
         },
         {
             "id": 31,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2091,6 +2127,7 @@
         },
         {
             "id": 32,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2141,6 +2178,7 @@
         },
         {
             "id": 33,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2191,6 +2229,7 @@
         },
         {
             "id": 34,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "floor",
@@ -2241,6 +2280,7 @@
         },
         {
             "id": 35,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
@@ -2383,6 +2423,7 @@
         },
         {
             "id": 36,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy child",
@@ -2455,6 +2496,7 @@
         },
         {
             "id": 37,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player",
@@ -2573,6 +2615,7 @@
         },
         {
             "id": 38,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",

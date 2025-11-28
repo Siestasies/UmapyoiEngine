@@ -37,6 +37,7 @@ namespace Uma_ECS
         LayerMask renderLayer = RL_NONE;
         bool flipX{ false };
         bool flipY{ false };
+        bool autoFlip{ true };
         bool UseNativeSize{};
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
@@ -69,6 +70,7 @@ namespace Uma_ECS
 
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
+            value.AddMember("autoFlip", autoFlip, allocator);
             value.AddMember("Native", UseNativeSize, allocator);
 
             value.AddMember("gridX", spriteSheetGrid.x, allocator);
@@ -94,8 +96,9 @@ namespace Uma_ECS
                 renderLayer = value["layer"].GetUint();
             }
 
-            flipX = value["flipX"].GetBool();
-            flipY = value["flipY"].GetBool();
+            if (value.HasMember("flipX")) flipX = value["flipX"].GetBool();
+            if (value.HasMember("flipY")) flipY = value["flipY"].GetBool();
+            if (value.HasMember("autoFlip")) autoFlip = value["autoFlip"].GetBool();
             UseNativeSize = value["Native"].GetBool();
 
             spriteSheetGrid.x = value.HasMember("gridX") ? value["gridX"].GetFloat() : 1.0f;

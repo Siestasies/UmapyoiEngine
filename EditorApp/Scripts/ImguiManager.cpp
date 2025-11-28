@@ -1633,6 +1633,7 @@ namespace Uma_Engine
                 // Flip flags
                 if (ImGui::Checkbox("Flip X", &sprite.flipX))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Flip Y", &sprite.flipY))  m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("auto flip", &sprite.autoFlip))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize)) m_hasUnsavedEdit = true;
 
                 // Render layer dropdown

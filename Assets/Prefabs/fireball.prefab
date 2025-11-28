@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "fireball",
                         "position": {
-                            "x": -4.25,
-                            "y": -1.25
+                            "x": 10000,
+                            "y": 10000
                         },
                         "rotation": {
                             "x": 0.0,
@@ -53,7 +53,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {

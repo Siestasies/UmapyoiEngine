@@ -438,7 +438,7 @@ namespace Uma_ECS
         // to provide a better way to handle serializing and deserializing
         // WIP
         // prefab name must include file extention
-        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName) -> Entity 
+        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName, Vec2 pos) -> Entity 
             {
                 std::string prefabPath = Uma_FilePath::PREFAB_DIR + prefabName;
             try {
@@ -465,6 +465,9 @@ namespace Uma_ECS
 
                 // Deserialize prefab and get root entity
                 Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
+
+                auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
+                tf.position = pos;
 
                 if (rootEntity != static_cast<Entity>(-1)) {
                     std::string debug = "Loaded prefab from " + prefabPath + " as entity " +
@@ -510,7 +513,8 @@ namespace Uma_ECS
             "textureName", &Sprite::textureName,
             "renderLayer", &Sprite::renderLayer,
             "flipX", &Sprite::flipX,
-            "flipY", &Sprite::flipY
+            "flipY", &Sprite::flipY,
+            "autoFlip", &Sprite::autoFlip
         );
 
         // Register Player component

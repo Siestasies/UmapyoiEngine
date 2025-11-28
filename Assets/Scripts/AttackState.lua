@@ -38,14 +38,20 @@ function AttackState:update(dt)
     local dir = Vec2(playerTransform.worldPosition.x - transform.worldPosition.x, playerTransform.worldPosition.y - transform.worldPosition.y)
 
     --make fireball thingy
-    local angle = math.atan(dir.y, dir.x)
+    local angle = math.deg(math.atan(dir.y, dir.x))
 
     AttackCD = AttackCD - dt;
     if AttackCD < 0 then
-        local entity = SpawnPrefab("fireball.prefab")
+        local entity = SpawnPrefab("fireball.prefab", Vec2(10000, 10000))
         -- SetActiveEntity(entity, false)
         -- SetActiveEntity(entity, true)
-        AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, GetProjectileFrom(entity).mSpeed, math.deg(angle))
+
+        
+        if angle < 0 then
+            angle = angle + 360
+        end
+
+        AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, GetProjectileFrom(entity).mSpeed, angle - 180)
 
         AttackCD = 1 * self.parent:GetEnemy().mAttackSpeed
     end
