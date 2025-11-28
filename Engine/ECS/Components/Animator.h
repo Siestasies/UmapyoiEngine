@@ -133,6 +133,7 @@ namespace Uma_ECS
                 if (autoPlay && !initialClip.empty())
                 {
                     animator.Play(initialClip);
+                    animator.GetUVs(uvOffset, uvSize);
                 }
             }
         }

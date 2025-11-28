@@ -152,8 +152,21 @@ namespace Uma_ECS
             if (animatorArray.Has(entity))
             {
                 auto& animator = animatorArray.GetData(entity);
-                uvOffset = animator.uvOffset;
-                uvSize = animator.uvSize;
+
+                // Use animator UVs only if it has clips and current clip is valid
+                const auto& clips = animator.animator.GetClips();
+                const std::string& currentClip = animator.animator.GetCurrentClip();
+
+                if (!clips.empty() && clips.find(currentClip) != clips.end())
+                {
+                    uvOffset = animator.uvOffset;
+                    uvSize = animator.uvSize;
+                }
+                else
+                {
+                    // Animator not active, use sprite's cell selection
+                    sr.GetUVs(uvOffset, uvSize);
+                }
             }
             else
             {

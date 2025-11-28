@@ -33,12 +33,14 @@ namespace Uma_ECS
         inline void Init(Coordinator* c) { gCoordinator = c; }
 
         void Update(float dt);
-        void ApplyVelocity(float dt); // Apply velocities to positions
 
         // this have to be done before updating in the fixed timestamp
         void SavePrevPos();
+        void ApplyVelocity(float dt); // Apply velocities to positions
 
         void PrintLog();
+
+        void AddForce(Entity entity, Vec2 pos, Vec2 dir, float force, float rotation);
 
     private:
 

@@ -26,9 +26,11 @@ namespace Uma_ECS
 {
     struct Projectile
     {
-        int mDamage;
-        bool mFadeOVerTime;
-        float mLifeTime;
+        int mDamage = 10;
+        float mSpeed = 70.f;
+        bool mFadeOVerTime = false;
+        float mLifeTime = 2.f;
+
 
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the player
@@ -38,6 +40,7 @@ namespace Uma_ECS
             value.SetObject();
 
             value.AddMember("mDamage", mDamage, allocator);
+            value.AddMember("mSpeed", mSpeed, allocator);
             value.AddMember("mFadeOVerTime", mFadeOVerTime, allocator);
             value.AddMember("mLifeTime", mLifeTime, allocator);
         }
@@ -47,6 +50,9 @@ namespace Uma_ECS
         {
             if (value.HasMember("mDamage"))
                 mDamage = value["mDamage"].GetInt();
+
+            if (value.HasMember("mSpeed"))
+                mSpeed = value["mSpeed"].GetFloat();
 
             if (value.HasMember("mFadeOVerTime"))
                 mFadeOVerTime = value["mFadeOVerTime"].GetBool();

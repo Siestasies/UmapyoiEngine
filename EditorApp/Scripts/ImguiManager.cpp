@@ -263,7 +263,7 @@ namespace Uma_Engine
         {
             // Game mode (rendering to window) - set viewport to full window size
             auto inputSystem = pSystemManager->GetSystem<HybridInputSystem>();
-            if (inputSystem && graphics->GetWindow())
+            if (inputSystem && graphics && graphics->GetWindow())
             {
                 int width, height;
                 glfwGetWindowSize(graphics->GetWindow(), &width, &height);
@@ -1996,7 +1996,7 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Animation Clips");
 
-                // List all clips with play button
+                // List all clips with play and delete buttons
                 const auto& clips = animator.animator.GetClips();
                 for (const auto& [name, clip] : clips)
                 {
@@ -2011,19 +2011,56 @@ namespace Uma_Engine
                         ImGui::Text("Speed: %.2f fps", clip.speed);
                         ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
 
-                        if (ImGui::Button("Play"))
+                        ImGui::Spacing();
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        // Control buttons
+                        if (ImGui::Button("Play", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name);
                             m_hasUnsavedEdit = true;
                         }
                         ImGui::SameLine();
-                        if (ImGui::Button("Play (Restart)"))
+
+                        if (ImGui::Button("Play (Restart)", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name, true);
                             m_hasUnsavedEdit = true;
                         }
 
-                        // TODO: Add edit/delete functionality if needed
+                        ImGui::Spacing();
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        // Delete button with confirmation color
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
+
+                        if (ImGui::Button("Delete Clip", ImVec2(-1, 0)))
+                        {
+                            // Store name before removing (since we're iterating over the map)
+                            std::string clipToRemove = name;
+
+                            if (animator.animator.RemoveClip(clipToRemove))
+                            {
+                                // If this was the initial clip, clear it
+                                if (animator.initialClip == clipToRemove)
+                                {
+                                    animator.initialClip.clear();
+                                }
+
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            ImGui::PopStyleColor(3);
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::PopStyleColor(3);
 
                         ImGui::TreePop();
                     }
@@ -3078,6 +3115,107 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Prefab>())
+        {
+            if (ImGui::CollapsingHeader("Prefab"))
+            {
+                auto& prefab = coordinator.GetComponent<Uma_ECS::Prefab>(entity);
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // Prefab Path (read-only display)
+                ImGui::Text("Prefab Path:");
+                ImGui::TextWrapped("%s", prefab.prefabPath.empty() ? "(None)" : prefab.prefabPath.c_str());
+
+                // Make it editable if needed
+                static char prefabPathBuffer[512];
+                strncpy(prefabPathBuffer, prefab.prefabPath.c_str(), 511);
+                prefabPathBuffer[511] = '\0';
+                if (ImGui::InputText("Path", prefabPathBuffer, 512))
+                {
+                    prefab.prefabPath = prefabPathBuffer;
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                // Is Root flag
+                if (ImGui::Checkbox("Is Root Entity", &prefab.isRoot))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Marks this as the root entity of the prefab instance");
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("This entity is linked to a prefab asset");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Prefab");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Projectile>())
+        {
+            if (ImGui::CollapsingHeader("Projectile"))
+            {
+                auto& projectile = coordinator.GetComponent<Uma_ECS::Projectile>(entity);
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // Damage
+                if (ImGui::DragInt("Damage", &projectile.mDamage, 1.0F, 0, 1000))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Damage
+                if (ImGui::DragFloat("Speed", &projectile.mSpeed, 1.0f, 0, 300.f))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                // Fade Over Time
+                if (ImGui::Checkbox("Fade Over Time", &projectile.mFadeOVerTime))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Makes the projectile gradually fade out during its lifetime");
+                }
+
+                // Life Time
+                if (ImGui::DragFloat("Life Time", &projectile.mLifeTime, 0.1f, 0.0f, 60.0f))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("How long the projectile exists before being destroyed (seconds)");
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("This entity is marked as a projectile");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Projectile");
+
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -3341,6 +3479,14 @@ namespace Uma_Engine
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::PathFinding{});
                 pEventSystem->Emit<CallPathFindToBake>();
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Projectile>()) && ImGui::MenuItem("Projectile"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Projectile{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Prefab>()) && ImGui::MenuItem("Prefab"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Prefab{});
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::ParticleEmitter>()) && ImGui::MenuItem("ParticleEmitter"))
             {

@@ -39,6 +39,8 @@ All rights reserved.
 #include "ECS/Components/AudioComponent.h"
 #include "ECS/Components/AudioListener.h"
 #include "ECS/Components/PathFinding.h"
+#include "ECS/Components/Prefab.h"
+#include "ECS/Components/Projectile.h"
 
 #include "Systems/ResourcesManager.hpp"
 

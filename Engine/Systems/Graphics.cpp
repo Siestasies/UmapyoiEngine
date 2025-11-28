@@ -1535,9 +1535,6 @@ void main()
 
         size_t instanceCount = std::min(sprites.size(), MAX_INSTANCES);
 
-        // Calculate current aspect ratio
-        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
-
         std::vector<glm::mat4> models;
         std::vector<glm::vec4> uvData;
         std::vector<glm::vec4> tintData;
