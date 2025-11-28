@@ -90,6 +90,12 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/fireball.prefab",
                         "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mDamage": 10,
+                        "mSpeed": 70.0,
+                        "mFadeOVerTime": false,
+                        "mLifeTime": 2.0
                     }
                 }
             }

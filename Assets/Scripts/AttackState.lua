@@ -27,9 +27,15 @@ end
 -- Called every frame while in this state
 function AttackState:update(dt)
     local transform = self.parent:GetTransform()
-    local playerTransform = GetTransformFrom(self.parent.playerEntity)
+
+    local playerID = self.parent.playerEntity
+    if GetParent(playerID) ~= -1 then 
+        playerID = GetParent(playerID)
+    end
+
+    local playerTransform = GetTransformFrom(playerID)
     --use Vec2 when passing function to C++ functions
-    local dir = Vec2(playerTransform.position.x - transform.position.x, playerTransform.position.y - transform.position.y)
+    local dir = Vec2(playerTransform.worldPosition.x - transform.worldPosition.x, playerTransform.worldPosition.y - transform.worldPosition.y)
 
     --make fireball thingy
     local angle = math.atan(dir.y, dir.x)
@@ -37,7 +43,9 @@ function AttackState:update(dt)
     AttackCD = AttackCD - dt;
     if AttackCD < 0 then
         local entity = SpawnPrefab("fireball.prefab")
-        AddForce(entity, Vec2(transform.position.x,transform.position.y), dir, 10.0, math.deg(angle))
+        -- SetActiveEntity(entity, false)
+        -- SetActiveEntity(entity, true)
+        AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, GetProjectileFrom(entity).mSpeed, math.deg(angle))
 
         AttackCD = 1 * self.parent:GetEnemy().mAttackSpeed
     end
@@ -47,7 +55,7 @@ function AttackState:update(dt)
     end
 
     --use MyVec2 when trying to use functions like lenght which arent bound to c++ but in the Vec2 lua scripts
-    local distance = MyVec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    local distance = MyVec2.new(transform.worldPosition.x - playerTransform.worldPosition.x, transform.worldPosition.y - playerTransform.worldPosition.y)
     if distance:length() > 70 then
         self.fsm:changeState("IdleState")
     end

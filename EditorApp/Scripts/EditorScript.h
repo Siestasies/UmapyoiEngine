@@ -94,7 +94,10 @@ namespace Uma_Engine
             eventSystem->Subscribe<PlaySceneRequest, EditorScript>(
                 [this](const PlaySceneRequest& e) {
                     (void)e;
-                    m_Scene->m_Coordinator.CacheState();
+                    if (!e.isPrevModePause)
+                    {
+                        m_Scene->m_Coordinator.CacheState();
+                    }
                     GetLuascriptingSystem().ReloadAllScriptsOnPlay();
                 }
             );

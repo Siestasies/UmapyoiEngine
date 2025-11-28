@@ -187,10 +187,10 @@ namespace Uma_ECS
         }
 
         template<typename T>
-        void RemoveComponent(Entity entity, const T& component)
+        void RemoveComponent(Entity entity)
         {
             // remove component
-            aComponentManager->RemoveComponent<T>(entity, component);
+            aComponentManager->RemoveComponent<T>(entity);
 
             // get curr signature of the entity 
             // set the bitset of the component to false
