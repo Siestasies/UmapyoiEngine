@@ -1,4 +1,22 @@
 #pragma once
+/*!
+\file   PathFinding.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Koh Kai Yang (100%)
+\par    E-mail: k.kaiyang@digipen.edu
+\par    DigiPen login: k.kaiyang
+
+\brief
+Adds the component to the entity to allow for pathfinding
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include <vector>
 #include "../pathfinding/NavMesh.hpp"
 #include "../Math/Vector.h"
