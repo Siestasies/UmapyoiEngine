@@ -15,7 +15,7 @@
 --! All rights reserved.
 
 local BaseState = require("baseState")
-local Vec2 = require("Vec2")
+local MyVec2 = require("Vec2")
 
 --! @class IdleState
 --! @brief Passive idle behavior with state transitions
@@ -63,7 +63,7 @@ function IdleState:update(dt)
     local transform = self.parent:GetTransform()
     local playerTransform = GetTransformFrom(self.parent.playerEntity)
 
-    local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    local distance = MyVec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
     if distance:length() < 50 then
         self.fsm:changeState("ChaseState")
     end

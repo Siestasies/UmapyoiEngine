@@ -16,7 +16,7 @@
 --! All rights reserved.
 
 local BaseState = require("baseState")
-local Vec2 = require("Vec2")
+local MyVec2 = require("Vec2")
 
 --! @class ChaseState
 --! @brief Player pursuit behavior with smooth acceleration
@@ -32,9 +32,9 @@ ChaseState.__index = ChaseState
 function ChaseState:new(fsm, parent)
     local instance = BaseState.new(self, fsm, parent)
     
-    instance.playerPos = Vec2.new(0, 0)
+    instance.playerPos = Vec2(0, 0)
     instance.speed = 10
-    instance.currentAccel = Vec2.new(0, 0)
+    instance.currentAccel = Vec2(0, 0)
     instance.accelSmoothFactor = 15.0
 
     return instance
@@ -139,7 +139,7 @@ function ChaseState:update(dt)
         self.fsm:changeState("DieState")
     end
 
-    local distance = Vec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
+    local distance = MyVec2.new(transform.position.x - playerTransform.position.x,transform.position.y - playerTransform.position.y)
     if distance:length() > 75 then
         self.fsm:changeState("IdleState")
     end
