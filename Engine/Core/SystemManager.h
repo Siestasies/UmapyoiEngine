@@ -144,6 +144,7 @@ namespace Uma_Engine
 
     private:
         std::vector<std::unique_ptr<ISystem>> systems;
+        
         std::vector<double> timings;
         double lastTotalTime = 0.0;
     };

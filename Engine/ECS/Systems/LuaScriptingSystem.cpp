@@ -8,6 +8,8 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
+#include "Events/ApplicationEvents.h"
+
 #include <functional>
 
 // temp
@@ -826,10 +828,9 @@ namespace Uma_ECS
                 pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
             });
 
-        sharedLua->set_function("QuitGame", [this]()
+        sharedLua->set_function("CloseApplication", [this]()
             {
-                // quit game 
-                // wip
+                pEventSystem->Emit<Uma_Engine::ApplicationQuitRequest>();
             });
     }
 

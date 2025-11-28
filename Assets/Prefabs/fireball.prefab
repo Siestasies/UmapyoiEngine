@@ -26,6 +26,7 @@
                         "layer": 128,
                         "flipX": true,
                         "flipY": false,
+                        "autoFlip": false,
                         "Native": true,
                         "gridX": 6.0,
                         "gridY": 2.0,

@@ -106,6 +106,7 @@ namespace Uma_Engine
          */
         virtual void PreShutdown() {}
 
+
         // Protected access to key systems for derived classes
         EventSystem* GetEventSystem() const { return mEventSystem; }
         HybridInputSystem* GetInputSystem() const { return mInputSystem; }
@@ -122,6 +123,7 @@ namespace Uma_Engine
         void MakeWindow();
         void RegisterCoreSystems();
         void MainLoop();
+        void SubscribeToEvents();
 
         std::unique_ptr<Window> mWindow;
         std::unique_ptr<SystemManager> mSystemManager;

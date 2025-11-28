@@ -16,6 +16,9 @@ All rights reserved.
 #include "Scripts/EditorScript.h"
 #include "WIP_Scripts/GameSceneScript.h"
 
+// Events
+#include "Events/ApplicationEvents.h"
+
 namespace Uma_Engine
 {
     EditorApplication::EditorApplication()
@@ -37,8 +40,20 @@ namespace Uma_Engine
         SetIsEditor(true);
     }
 
+    void EditorApplication::SubscribeEvents()
+    {
+        EventSystem* eventSystem = GetEventSystem();
+
+        eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>([this](const ApplicationQuitRequest& e)
+            {
+                GetWindow()->Close();
+            });
+    }
+
     void EditorApplication::PostInit()
     {
+        SubscribeEvents();
+
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 

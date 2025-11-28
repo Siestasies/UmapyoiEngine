@@ -35,6 +35,8 @@ namespace Uma_Engine
         void PreInit() override;
 
     private:
+        void SubscribeEvents();
+
         EditorSystem* mEditorSystem;
         ImguiManager* mImguiManager;
     };
