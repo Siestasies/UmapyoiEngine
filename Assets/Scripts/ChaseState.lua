@@ -139,6 +139,9 @@ function ChaseState:update(dt)
     if distance:length() > 75 then
         self.fsm:changeState("IdleState")
     end
+    if distance:length() < 20 then
+        self.fsm:changeState("AttackState")
+    end
 end
 
 return ChaseState
