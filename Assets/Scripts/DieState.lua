@@ -22,7 +22,8 @@ end
 --! @brief Called when entering idle state
 --! @details Logs entry message for debugging
 function DieState:enter()
-    Log("entering die")
+    Log("entering die ".. self.parent.id)
+    PlayAnimation(self.parent.id, "die")
 end
 
 
@@ -30,8 +31,8 @@ end
 --! @details Listens for input to transition to walk or chase states
 --! @param dt number Delta time since last frame
 function DieState:update(dt)
-    Log("im dying ere")
-    DestroyWithChildren(self.parent.id)
+    -- Log("im dying ere")
+    --DestroyWithChildren(self.parent.id)
 end
 
 

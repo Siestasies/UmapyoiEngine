@@ -402,6 +402,18 @@ namespace Uma_ECS
                 }
             });
 
+        // temp animator exposure
+        sharedLua->set_function("PlayAnimation", [this](Entity entity, std::string name)
+            {
+                if (!pCoordinator->HasActiveEntity(entity)) return;
+                if (!pCoordinator->IsActiveInHierarchy(entity)) return;
+
+                auto& animator = pCoordinator->GetComponent<Animator>(entity);
+
+                animator.animator.Play(name, true);
+            
+            });
+
         // Add Force
         sharedLua->set_function("AddForce", [this](Entity entity, Vec2 pos, Vec2 dir, float force, float rotation)
             {
@@ -550,7 +562,7 @@ namespace Uma_ECS
         );
 
         // Register projectile component
-        sharedLua->new_usertype<Projectile>("Enemy",
+        sharedLua->new_usertype<Projectile>("Projectile",
             "mDamage",          &Projectile::mDamage,
             "mSpeed",           &Projectile::mSpeed,
             "mFadeOVerTime",    &Projectile::mFadeOVerTime,

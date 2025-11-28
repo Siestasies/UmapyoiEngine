@@ -20,20 +20,6 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
 
     gridPathfinder = new Uma_Navigation::GridPathfinder(cellSize);
 
-    //to be removed later
-    // Subscribe to mouse clicks for pathfinding
-    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PathFindingSystem>(
-        [this](const Uma_Engine::MouseButtonEvent& e) {
-            if (e.button != GLFW_MOUSE_BUTTON_RIGHT || e.action != GLFW_PRESS) return;
-
-                auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-                if (pfArray.Has(playerID)) {
-                    auto& pf = pfArray.GetData(playerID);
-                    pf.goal = pGraphics->ScreenToWorld(Uma_Engine::HybridInputSystem::GetSceneMousePosition());
-                    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-                }
-            });
-
     pEventSystem->Subscribe<Uma_Engine::CallPathFindToBake, PathFindingSystem>(
         [this](const Uma_Engine::CallPathFindToBake& e)
         {
@@ -41,26 +27,6 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
             isDirty = true;
         }
     );
-
-    //eventListeners.push_back(
-    //    pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent>(
-    //        [this](const Uma_Engine::MouseButtonEvent& e) {
-    //            if (e.button != GLFW_MOUSE_BUTTON_LEFT || e.action != GLFW_PRESS) return;
-
-    //            auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-    //            //if (pfArray.Has(playerID)) {
-    //            //    auto& pf = pfArray.GetData(playerID);
-    //            //    pf.goal = pGraphics->ScreenToWorld(Vec2(e.x, e.y));
-    //            //    pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
-    //            //}
-    //            if (!pfArray.Has(playerID)) return;
-    //            for (auto const& entity : aEntities) {
-    //                auto& pf = pfArray.GetData(entity);
-    //                pf.goal = pfArray.GetData(playerID).goal;
-    //                pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f;
-    //            }
-    //        })
-    //);
 }
 
 void Uma_ECS::PathFindingSystem::Update(float dt)
@@ -210,7 +176,12 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         Vec2 toGoal = pf.goal - currentPos;
         float distToGoal = std::sqrt(toGoal.x * toGoal.x + toGoal.y * toGoal.y);
 
-        if (isPlayer && distToGoal < goalDeadZone && !pf.hasValidPath) {
+        // Dynamic goal threshold based on movement per frame to handle different frame rates
+        // At 50 units/s: 60fps moves 0.833 units/frame, 120fps moves 0.417 units/frame
+        float goalThreshold = 50.0f * dt * 2.0f; // 2x max movement per frame
+        if (goalThreshold < 1.0f) goalThreshold = 1.0f; // Minimum threshold
+
+        if (isPlayer && distToGoal < goalThreshold && !pf.hasValidPath) {
             pf.reachedGoal = true;
             rb.velocity = Vec2(0, 0);
             pf.pathUpdateTimer = 0.0f;
@@ -236,13 +207,28 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             Vec2 direction = target - currentPos;
             float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-            float waypointTolerance = cellSize * 0.5f;
+            // Get speed first to calculate dynamic tolerance
+            float spd = 50.0f;
             if (isPlayer) {
-                waypointTolerance = cellSize * 0.2f;
+                spd = 50.0f;
             }
             else if (isEnemy) {
-                waypointTolerance = cellSize * 0.6f;
+                spd = enemyArray.GetData(entity).mSpeed;
             }
+
+            // Dynamic waypoint tolerance based on speed and dt to handle different frame rates
+            // Tolerance = base tolerance + max distance entity can move in one frame
+            float baseWaypointTolerance = cellSize * 0.5f;
+            if (isPlayer) {
+                baseWaypointTolerance = cellSize * 0.3f;
+            }
+            else if (isEnemy) {
+                baseWaypointTolerance = cellSize * 0.6f;
+            }
+
+            // Add safety margin: max movement per frame + small buffer
+            float maxFrameMovement = spd * dt * 1.2f; // 1.2x for safety
+            float waypointTolerance = baseWaypointTolerance + maxFrameMovement;
 
             if (distance < waypointTolerance) {
                 pf.pathIndex++;
@@ -253,21 +239,21 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 }
             }
             else if (distance > 0.001f) {
-                float spd = 50.0f;
-                if (isPlayer) {
-                    spd = 50.0f;
-                }
-                else if (isEnemy) {
-                    spd = enemyArray.GetData(entity).mSpeed;
-                }
-
                 rb.velocity = Vec2(direction.x / distance * spd, direction.y / distance * spd);
             }
         }
         else {
             rb.velocity = Vec2(0, 0);
 
-            if (isEnemy && distToGoal < goalDeadZone * 0.5f) {
+            // Use dynamic threshold for enemy goal reaching as well
+            float enemyGoalThreshold = cellSize * 2.0f;
+            if (isEnemy) {
+                float enemySpeed = enemyArray.GetData(entity).mSpeed;
+                float enemyFrameMovement = enemySpeed * dt * 2.0f;
+                enemyGoalThreshold = (std::max)(enemyGoalThreshold, enemyFrameMovement);
+            }
+
+            if (isEnemy && distToGoal < enemyGoalThreshold) {
                 pf.reachedGoal = true;
             }
         }

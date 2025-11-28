@@ -11,30 +11,45 @@
 \par    DigiPen login: waimen.leong
 
 \brief
+Declares the ProjectileSystem, responsible for managing projectile-related
+behaviors such as updating projectile movement, handling lifetimes, and
+processing interactions (e.g., collisions) within the ECS framework.
 
-
+The system inherits from ECSSystem and operates on entities that contain
+components relevant to projectile behavior. It also provides initialization
+using a Coordinator reference and per-frame projectile updates.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
-
-#pragma once
 
 #include "../Core/System.hpp"
 #include "../Core/Coordinator.hpp"
 
 namespace Uma_ECS
 {
+    /*!
+    \class ProjectileSystem
+    \brief Handles all projectile logic, including movement and lifetime updates.
+    */
     class ProjectileSystem : public ECSSystem
     {
     public:
 
+        /*!
+        \brief Initializes the system with a Coordinator reference.
+        \param c Pointer to the ECS Coordinator.
+        */
         inline void Init(Coordinator* c) { pCoordinator = c; }
 
+        /*!
+        \brief Updates all projectile entities each frame.
+        \param dt Delta time for frame-based updates.
+        */
         void Update(float dt);
 
     private:
 
-        Coordinator* pCoordinator = nullptr;
+        Coordinator* pCoordinator = nullptr; //!< Pointer to ECS Coordinator.
     };
 }

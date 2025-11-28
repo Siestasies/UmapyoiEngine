@@ -31,13 +31,14 @@ All rights reserved.
 
 #include "Systems/InputSystem.h"
 #include "Systems/HybridInputSystem.h"
+#include "Systems/Graphics.hpp"
 
 namespace Uma_ECS
 {
     class PlayerControllerSystem : public ECSSystem
     {
     public:
-        void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c);
+        void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c, Uma_Engine::Graphics* g);
         
         void Update(float dt);
 
@@ -47,23 +48,32 @@ namespace Uma_ECS
         void OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event);
 
         void HandleMovementInput(float dt);
-        void HandleActionInput();
+        void HandleActionInput(float dt);
         void SubscribeToEvents();
+
+        void HandlePlayerAnimation();
+
+        void HandleCollision(Entity deffender, Entity attacker);
+
+        void OnHurt(Entity entity, int damage);
 
     private:
         struct InputState
         {
-            bool moveUp = false;
-            bool moveDown = false;
-            bool moveLeft = false;
-            bool moveRight = false;
-            // bool jumpPressed = false;
-            bool attackPressed = false;
+            bool attack_1 = false;
+            bool attack_2 = false;
+
             bool interactPressed = false;
             bool dashPressed = false;
+            bool movePressed = false;
+
+            // Mouse input buffering for fixed timestep
+            bool rightMousePressed = false;
+            bool rightMouseConsumed = false;  // Track if we've already processed this press
         } inputState;
 
         Uma_Engine::EventSystem* pEventSystem = nullptr;
+        Uma_Engine::Graphics* pGraphicsSystem = nullptr;
         Uma_Engine::HybridInputSystem* pHybridInputSystem = nullptr;
         Coordinator* pCoordinator = nullptr;
     };

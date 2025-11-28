@@ -303,7 +303,6 @@ namespace Uma_Engine
             // NORMAL PRIORITY: Movement keys (can be blocked by future UI text input)
             // ================================================================
             std::vector<int> movementKeys = {
-                GLFW_KEY_W, GLFW_KEY_A, GLFW_KEY_S, GLFW_KEY_D,
                 GLFW_KEY_UP, GLFW_KEY_DOWN, GLFW_KEY_LEFT, GLFW_KEY_RIGHT
             };
 
@@ -345,6 +344,7 @@ namespace Uma_Engine
             // HIGH PRIORITY: Action keys (SPACE, ENTER, SHIFT, CTRL)
             // ================================================================
             std::vector<int> actionKeys = {
+                GLFW_KEY_Q, GLFW_KEY_W, GLFW_KEY_E, GLFW_KEY_R,
                 GLFW_KEY_SPACE, GLFW_KEY_ENTER,
                 GLFW_KEY_LEFT_SHIFT, GLFW_KEY_LEFT_CONTROL,
                 GLFW_KEY_K, GLFW_KEY_L,

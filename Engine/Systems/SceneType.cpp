@@ -338,9 +338,10 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Player>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::PathFinding>());
             m_Coordinator.SetSystemSignature<Uma_ECS::PlayerControllerSystem>(sign);
         }
-        m_PlayerController->Init(m_EventSystem, m_HybridInputSystem, &m_Coordinator);
+        m_PlayerController->Init(m_EventSystem, m_HybridInputSystem, &m_Coordinator, m_Graphics);
 
         // Transform System
         m_TransformSystem = m_Coordinator.RegisterSystem<Uma_ECS::TransformSystem>();
@@ -480,8 +481,8 @@ namespace Uma_Engine
 
     void Scene::UpdateECSSystems(float dt)
     {
-        if (m_PlayerController)
-            m_PlayerController->Update(dt);
+        //if (m_PlayerController)
+        //    m_PlayerController->Update(m_FixedTimeStep);
 
         if (m_LuaScriptingSystem)
             m_LuaScriptingSystem->Update(dt);
@@ -520,6 +521,10 @@ namespace Uma_Engine
     void Scene::FixedUpdateECSSystems()
     {
         // Physics runs at FIXED timestep
+
+        if (m_PlayerController)
+            m_PlayerController->Update(m_FixedTimeStep);
+
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
 

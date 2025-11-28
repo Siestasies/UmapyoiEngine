@@ -1,5 +1,5 @@
 /*!
-\file   Player.h
+\file   Projectile.h // Changed from Player.h
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -10,11 +10,12 @@
 \par    DigiPen login: waimen.leong
 
 \brief
-Defines Player tag component with speed parameter for entity identification in game systems.
+Defines Projectile component with damage, speed, and lifetime parameters. // Updated description
 
-Marker component enabling systems to distinguish player entity from other entities for input handling and camera tracking.
-Includes JSON serialization/deserialization for mSpeed property. Contains design notes for event-driven architecture
-using state-based continuous input and event-based skill/damage systems with UI subscriptions.
+Marker component used by systems (e.g., MovementSystem, CollisionSystem) to process entities that behave as projectiles.
+Properties include: damage on hit, movement speed, and time before automatic destruction.
+Includes JSON serialization/deserialization for all properties. // Updated detail
+Contains design notes for event-driven architecture... (Keep the design notes section if still relevant to the project structure)
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.

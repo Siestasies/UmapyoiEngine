@@ -96,9 +96,7 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
             Vec2 halfSize = scaledSize * 0.5f;
 
-            // SWEPT: Cover both current AND previous position
             Vec2 currentWorldPos = tf.worldPosition + worldOffset;
-            Vec2 prevWorldPos = tf.prevWorldPos + worldOffset;
 
             // Calculate bounds at current position
             Vec2 currentMin = Vec2{
@@ -110,25 +108,39 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
                 currentWorldPos.y + halfSize.y
             };
 
-            // Calculate bounds at previous position
-            Vec2 prevMin = Vec2{
-                prevWorldPos.x - halfSize.x,
-                prevWorldPos.y - halfSize.y
-            };
-            Vec2 prevMax = Vec2{
-                prevWorldPos.x + halfSize.x,
-                prevWorldPos.y + halfSize.y
-            };
+            // For Triggers: use current position only (precise detection)
+            // For Physics/Environment: use swept AABB (prevents tunneling)
+            if (shape.purpose == ColliderPurpose::Trigger)
+            {
+                // Triggers use current position only - no swept bounds
+                c.bounds[i].min = currentMin;
+                c.bounds[i].max = currentMax;
+            }
+            else
+            {
+                // SWEPT: Cover both current AND previous position for physics
+                Vec2 prevWorldPos = tf.prevWorldPos + worldOffset;
 
-            // Combine to create swept AABB
-            c.bounds[i].min = Vec2{
-                min(currentMin.x, prevMin.x),
-                min(currentMin.y, prevMin.y)
-            };
-            c.bounds[i].max = Vec2{
-                max(currentMax.x, prevMax.x),
-                max(currentMax.y, prevMax.y)
-            };
+                // Calculate bounds at previous position
+                Vec2 prevMin = Vec2{
+                    prevWorldPos.x - halfSize.x,
+                    prevWorldPos.y - halfSize.y
+                };
+                Vec2 prevMax = Vec2{
+                    prevWorldPos.x + halfSize.x,
+                    prevWorldPos.y + halfSize.y
+                };
+
+                // Combine to create swept AABB
+                c.bounds[i].min = Vec2{
+                    min(currentMin.x, prevMin.x),
+                    min(currentMin.y, prevMin.y)
+                };
+                c.bounds[i].max = Vec2{
+                    max(currentMax.x, prevMax.x),
+                    max(currentMax.y, prevMax.y)
+                };
+            }
 
             /*if (tf.parent.has_value())
             {

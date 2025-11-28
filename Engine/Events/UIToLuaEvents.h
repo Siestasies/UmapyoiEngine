@@ -5,9 +5,9 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Jedrek Lee Jing Wei (100%)
-\par    E-mail: jedrekjingwei.lee@digipen.edu
-\par    DigiPen login: jedrekjingwei.lee
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
 
 \brief
 Defines events related to resource loading status within the engine.

@@ -10,10 +10,14 @@
 \par    DigiPen login: waimen.leong
 
 \brief
-Defines rigid body physics system that handles velocity integration, acceleration, and friction.
+Defines the PhysicsSystem responsible for rigid-body physics updates.
+This includes velocity integration, position updates, force application,
+and interpolation support during fixed-timestep simulation.
 
-Inherits from ECSSystem and operates on entities with both Transform and RigidBody components.
-Provides initialization with Coordinator reference, per-frame Update for physics calculations, and PrintLog for debugging.
+The system inherits from ECSSystem and operates on entities that contain
+both Transform and RigidBody components. It provides initialization using
+a Coordinator reference, per-frame Update for physics calculations, and
+debug logging support through PrintLog().
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.

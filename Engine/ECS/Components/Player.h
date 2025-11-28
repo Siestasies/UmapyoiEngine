@@ -24,6 +24,28 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    enum AnimatorState
+    {
+        PS_Idle,
+        PS_Run,
+        PS_Atk_1,
+        PS_Atk_2,
+        PS_Hurt,
+        PS_Die
+    };
+
+    struct CombatState
+    {
+        bool attack_1_is_in_cd = false;
+        bool attack_2_is_in_cd = false;
+
+        float attack_1_cd;
+        float attack_2_cd;
+
+        float attack_1_cd_curr;
+        float attack_2_cd_curr;
+    };
+
     struct Player
     {
         int     mHealth = 100;
@@ -42,6 +64,10 @@ namespace Uma_ECS
         int     mMana = 100;
         int     mMaxMana = 100;
         float   mManaRegenRate = 5.f;
+
+        // runtime data
+        CombatState combatState;
+        AnimatorState animatorState;
 
 
         // currently empty, just to let coordinator to 
@@ -113,6 +139,17 @@ namespace Uma_ECS
 
             if (value.HasMember("mManaRegenRate"))
                 mManaRegenRate = value["mManaRegenRate"].GetFloat();
+
+            combatState.attack_1_is_in_cd = false;
+            combatState.attack_2_is_in_cd = false;
+
+            combatState.attack_1_cd = 1.f / mAttackSpeed;
+            combatState.attack_2_cd = 1.f / mAttackSpeed;
+
+            combatState.attack_1_cd_curr = 0.f;
+            combatState.attack_2_cd_curr = 0.f;
+
+            animatorState = PS_Idle;
         }
     };
 }

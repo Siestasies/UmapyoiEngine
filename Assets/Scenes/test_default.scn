@@ -2,12 +2,12 @@
     "resources": {
         "textures": [
             {
-                "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
+            },
+            {
+                "name": "pink_enemy",
+                "path": "Assets/bird.png"
             },
             {
                 "name": "player",
@@ -30,12 +30,12 @@
                 "path": "Assets/bg.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
+            },
+            {
+                "name": "wall_top",
+                "path": "Assets/wall_top.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,12 +50,12 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
-            },
-            {
                 "name": "fire bird",
                 "path": "Assets/fire bird.png"
+            },
+            {
+                "name": "floor_tatami",
+                "path": "Assets/floor_tatami.png"
             },
             {
                 "name": "player_new",
@@ -75,13 +75,8 @@
         ],
         "sounds": [
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -90,9 +85,14 @@
                 "type": 0
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             }
         ]
     },
@@ -122,6 +122,7 @@
                     "layer": 8,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -173,6 +174,7 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -246,6 +248,7 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -319,6 +322,7 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -392,6 +396,7 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -465,6 +470,7 @@
                     "layer": 64,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -538,6 +544,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -611,6 +618,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -684,6 +692,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -757,6 +766,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -830,6 +840,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -903,6 +914,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -976,6 +988,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1049,6 +1062,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1122,6 +1136,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1195,6 +1210,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1268,6 +1284,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1341,6 +1358,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1414,6 +1432,7 @@
                     "layer": 2,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1487,6 +1506,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1538,6 +1558,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1589,6 +1610,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1640,6 +1662,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1691,6 +1714,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1742,6 +1766,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1793,6 +1818,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1844,6 +1870,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1895,6 +1922,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1946,6 +1974,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -1997,6 +2026,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2048,6 +2078,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2099,6 +2130,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2150,6 +2182,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2201,6 +2234,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2252,6 +2286,7 @@
                     "layer": 4,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2285,16 +2320,16 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": -22.715,
-                        "y": 6.822
+                        "x": -26.215,
+                        "y": 7.464
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.192,
-                        "y": 0.523
+                        "x": 0.384,
+                        "y": 1.046
                     },
                     "parent": -1
                 },
@@ -2303,6 +2338,7 @@
                     "layer": 16,
                     "flipX": true,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 12.0,
                     "gridY": 4.0,
@@ -2402,16 +2438,25 @@
                 },
                 "struct Uma_ECS::Animator": {
                     "autoPlay": true,
-                    "initialClip": "idle",
+                    "initialClip": "",
                     "clips": [
                         {
                             "name": "idle",
-                            "framesX": 12,
+                            "framesX": 11,
                             "framesY": 4,
                             "startFrame": 0,
                             "frameCount": 10,
                             "speed": 10.0,
                             "loop": true
+                        },
+                        {
+                            "name": "die",
+                            "framesX": 11,
+                            "framesY": 4,
+                            "startFrame": 33,
+                            "frameCount": 11,
+                            "speed": 24.0,
+                            "loop": false
                         }
                     ]
                 },
@@ -2428,11 +2473,11 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy child",
                     "position": {
-                        "x": 15.6,
-                        "y": 1.799
+                        "x": -2.4,
+                        "y": -0.101
                     },
                     "rotation": {
-                        "x": 0.0,
+                        "x": -267.0,
                         "y": 0.0
                     },
                     "scale": {
@@ -2446,6 +2491,7 @@
                     "layer": 16,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": true,
                     "Native": true,
                     "gridX": 1.0,
                     "gridY": 1.0,
@@ -2521,7 +2567,7 @@
                     "mSpeed": 1.0,
                     "mDashSpeed": 10.0,
                     "mDashCD": 2.0,
-                    "mAttackDamage": 10,
+                    "mAttackDamage": 30,
                     "mAttackSpeed": 1.0,
                     "mAttackRange": 20.0,
                     "mDefense": 5,
@@ -2534,6 +2580,7 @@
                     "layer": 32,
                     "flipX": false,
                     "flipY": false,
+                    "autoFlip": false,
                     "Native": true,
                     "gridX": 10.0,
                     "gridY": 9.0,
@@ -2561,7 +2608,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -2592,6 +2639,21 @@
                             "colliderMask": 8,
                             "isActive": true,
                             "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": 10.798,
+                                "y": -9.199
+                            },
+                            "size": {
+                                "x": 20.197,
+                                "y": 18.899
+                            },
+                            "purpose": 2,
+                            "layer": 2,
+                            "colliderMask": 4,
+                            "isActive": false,
+                            "autoFitToSprite": false
                         }
                     ]
                 },
@@ -2600,6 +2662,15 @@
                     "initialClip": "idle",
                     "clips": [
                         {
+                            "name": "atk_3",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 60,
+                            "frameCount": 6,
+                            "speed": 24.0,
+                            "loop": false
+                        },
+                        {
                             "name": "idle",
                             "framesX": 10,
                             "framesY": 9,
@@ -2607,10 +2678,68 @@
                             "frameCount": 10,
                             "speed": 12.0,
                             "loop": true
+                        },
+                        {
+                            "name": "run",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 10,
+                            "frameCount": 10,
+                            "speed": 24.0,
+                            "loop": true
+                        },
+                        {
+                            "name": "die",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 40,
+                            "frameCount": 6,
+                            "speed": 24.0,
+                            "loop": false
+                        },
+                        {
+                            "name": "atk_1",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 20,
+                            "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false
+                        },
+                        {
+                            "name": "dash_1",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 30,
+                            "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false
+                        },
+                        {
+                            "name": "hurt",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 40,
+                            "frameCount": 3,
+                            "speed": 24.0,
+                            "loop": false
+                        },
+                        {
+                            "name": "atk_2",
+                            "framesX": 10,
+                            "framesY": 9,
+                            "startFrame": 50,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false
                         }
                     ]
                 },
-                "struct Uma_ECS::AudioListener": null
+                "struct Uma_ECS::AudioListener": null,
+                "struct Uma_ECS::PathFinding": {
+                    "pathUpdateTimer": 0.0,
+                    "pathUpdateInterval": 0.5
+                }
             }
         },
         {

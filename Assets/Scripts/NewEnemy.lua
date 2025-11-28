@@ -74,20 +74,44 @@ function Update(dt)
     
 end
 
-function OnCollisionEnter(otherEntity)
-    Log(name .. " -- Collision entered -- " .. otherEntity)
-    local transform = GetTransform(EntityID)
-    if transform then
-        PlayOneShotAtEntity(EntityID, "hurt", 0.5)
-    end
-    transform = GetTransform(otherEntity)
+function HandleCollision(trigger)
+    if thisEntity.playerEntity == trigger then
+        local playerComp = GetPlayerFrom(thisEntity.playerEntity)
+        if playerComp then
+            OnHurt(thisEntity.playerEntity, playerComp.mAttackDamage)
 
+            local transform = GetTransform(EntityID)
+            if transform then
+                PlayOneShotAtEntity(EntityID, "hurt", 0.5)
+            end
+        end
+    end
+end
+
+function OnHurt(player, damage)
+    -- damage handling logic here
+
+    local enemy = GetEnemy()
+    enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
+
+    Log("============================================================")
+    Log("Player " .. player .. " took " .. damage .. " damage")
+    Log("============================================================")
+end
+
+function OnTriggerEnter(otherEntity)
+    HandleCollision(otherEntity)
+
+end
+
+function OnCollisionEnter(otherEntity)
+    -- Collision logic here
 end
 
 function OnCollision(otherEntity)
-    --Log(name .. " -- Collided -- " .. otherEntity)
+    -- Collision logic here
 end
 
 function OnCollisionExit(otherEntity)
-    --Log(name .. " -- Collided exit -- " .. otherEntity)
+    -- Collision logic here
 end

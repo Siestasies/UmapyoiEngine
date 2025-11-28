@@ -24,11 +24,14 @@ All rights reserved.
 
 #include "PlayerControllerSystem.hpp"
 
-#include "../Components/RigidBody.h"
-#include "../Components/Transform.h"
-#include "../Components/Player.h"
+#include "Components/RigidBody.h"
+#include "Components/Transform.h"
+#include "Components/Player.h"
+#include "Components/Projectile.h"
 
 #include "Debugging/Debugger.hpp"
+
+#include "Math/Math.h"
 
 // events
 #include "Events/PlayerEvents.h"
@@ -44,11 +47,12 @@ All rights reserved.
 
 namespace Uma_ECS
 {
-    void PlayerControllerSystem::Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c)
+    void PlayerControllerSystem::Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c, Uma_Engine::Graphics* g)
     {
         pEventSystem = es;
         pHybridInputSystem = is;
         pCoordinator = c;
+        pGraphicsSystem = g;
 
         SubscribeToEvents();
     }
@@ -60,9 +64,12 @@ namespace Uma_ECS
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
 
+        if (pCoordinator->GetComponent<Player>(aEntities[0]).mHealth < 0) return;
+
         // by right shd only have 1 player
         HandleMovementInput(dt);
-        HandleActionInput();
+        HandleActionInput(dt);
+        HandlePlayerAnimation();
     }
 
     void PlayerControllerSystem::SubscribeToEvents()
@@ -70,6 +77,20 @@ namespace Uma_ECS
         pEventSystem->Subscribe<Uma_Engine::KeyPressEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
         pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
         pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
+
+        // Subscribe to mouse button events for fixed timestep compatibility
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PlayerControllerSystem>([this](const Uma_Engine::MouseButtonEvent& e) {
+            if (e.button == GLFW_MOUSE_BUTTON_2 && e.action == GLFW_PRESS) {
+                inputState.rightMousePressed = true;
+                inputState.rightMouseConsumed = false;  // Reset consumed flag on new press
+            }
+        });
+
+        pEventSystem->Subscribe<Uma_Engine::MouseButtonEvent, PlayerControllerSystem>([this](const Uma_Engine::MouseButtonEvent& e) {
+            if (e.button == GLFW_MOUSE_BUTTON_2 && e.action == GLFW_RELEASE) {
+                inputState.rightMousePressed = false;
+            }
+        });
 
         // collision
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionEnterEvent& e) 
@@ -87,50 +108,171 @@ namespace Uma_ECS
 
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
-                // do nth yet
-                std::stringstream ss;
+                if (!pCoordinator) return;
+                if (e.entity != aEntities[0] && e.trigger != aEntities[0]) return;
+
+              /*  std::stringstream ss;
                 ss << "Trigger enter player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
 
                 // proccess trigger
+
+                Entity trigger = (e.entity != aEntities[0]) ? e.entity : e.trigger;
+
+                HandleCollision(aEntities[0], trigger);
             });
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEvent& e)
             {
                 // do nth yet
-                std::stringstream ss;
+               /* std::stringstream ss;
                 ss << "Trigger in player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
             });
         pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerExitEvent& e)
             {
                 // do nth yet
-                std::stringstream ss;
+              /*  std::stringstream ss;
                 ss << "Trigger exits player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
             });
+    }
+
+    void PlayerControllerSystem::HandlePlayerAnimation()
+    {
+        if (pCoordinator->HasComponent<Animator>(aEntities[0]))
+        {
+            auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+            auto& tf = pCoordinator->GetComponent<Transform>(aEntities[0]);
+            auto& rb = pCoordinator->GetComponent<RigidBody>(aEntities[0]);
+            auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
+            auto& collider = pCoordinator->GetComponent<Collider>(aEntities[0]);
+
+            if (rb.velocity.x < 0) tf.scale.x = -abs(tf.scale.x);
+            if (rb.velocity.x > 0) tf.scale.x = abs(tf.scale.x);
+
+            // State transition logic
+            float velocityMagnitude = Uma_Math::magnitude(rb.velocity);
+
+            // If moving and in idle state, transition to run
+            if (velocityMagnitude > 0.1f && player.animatorState == PS_Idle)
+            {
+                player.animatorState = PS_Run;  // Assignment, not comparison
+            }
+            // If stopped and in run state, transition to idle
+            else if (velocityMagnitude < 0.1f && player.animatorState == PS_Run)
+            {
+                player.animatorState = PS_Idle;  // Assignment, not comparison
+            }
+            // If attack animation finished, return to appropriate state
+            else if ((player.animatorState == PS_Atk_1 || player.animatorState == PS_Atk_2)
+                && animator.animator.HasFinished())
+            {
+                // Return to run or idle based on current velocity
+                player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
+                collider.shapes[2].isActive = false;
+            }
+            else if (player.animatorState == PS_Hurt && animator.animator.HasFinished())
+            {
+                player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
+                collider.shapes[2].isActive = false;
+            }
+
+            if (player.mHealth <= 0) player.animatorState = PS_Die;
+
+            switch (player.animatorState)
+            {
+            case PS_Idle:
+            {
+                if (animator.animator.GetCurrentClip() != "idle")
+                {
+                    animator.animator.Play("idle", true);
+                }
+                break;
+            }
+            case PS_Run:
+            {
+                if (animator.animator.GetCurrentClip() != "run")
+                {
+                    animator.animator.Play("run", true);
+                }
+                break;
+            }
+            case PS_Atk_1:
+            {
+                if (animator.animator.GetCurrentClip() != "atk_1")
+                {
+                    animator.animator.Play("atk_1", true); 
+                    collider.shapes[2].isActive = true;
+                }
+                break;
+            }
+            case PS_Atk_2:
+            {
+                if (animator.animator.GetCurrentClip() != "atk_2")
+                {
+                    animator.animator.Play("atk_2", true);
+                    collider.shapes[2].isActive = true;
+                }
+                break;
+            }
+            case PS_Hurt:
+            {
+                if (animator.animator.GetCurrentClip() != "hurt")
+                {
+                    animator.animator.Play("hurt", true);
+                }
+                break;
+            }
+            case PS_Die:
+            {
+                if (animator.animator.GetCurrentClip() != "die")
+                {
+                    animator.animator.Play("die", true);
+                }
+                break;
+            }
+            default:
+                break;
+            }
+
+           
+        }
+    }
+
+    void PlayerControllerSystem::HandleCollision(Entity deffender, Entity attacker)
+    {
+        if (pCoordinator->HasComponent<Projectile>(attacker))
+        {
+            // its a projectile 
+            auto& player = pCoordinator->GetComponent<Player>(deffender);
+            auto& projectile = pCoordinator->GetComponent<Projectile>(attacker);
+
+            OnHurt(deffender, projectile.mDamage);
+
+
+            auto& rb = pCoordinator->GetComponent<RigidBody>(attacker);
+            pCoordinator->DestroyEntityAndChildren(attacker);
+        }
+    }
+
+    void PlayerControllerSystem::OnHurt(Entity entity, int damage)
+    {
+        auto& player = pCoordinator->GetComponent<Player>(entity);
+
+        player.mHealth -= damage - player.mDefense;
+
+        player.animatorState = PS_Hurt;
     }
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
     {
         switch (event.key)
         {
+        case GLFW_KEY_Q:
+            inputState.attack_1 = true;
+            break;
         case GLFW_KEY_W:
-            inputState.moveUp = true;
-            break;
-        case GLFW_KEY_A:
-            inputState.moveLeft = true;
-            break;
-        case GLFW_KEY_S:
-            inputState.moveDown = true;
-            break;
-        case GLFW_KEY_D:
-            inputState.moveRight = true;
-            break;
-            //case GLFW_KEY_SPACE:
-            //	inputState.jumpPressed = true;
-            break;
-        case GLFW_KEY_LEFT_CONTROL:
-            inputState.attackPressed = true;
+            inputState.attack_2 = true;
             break;
         case GLFW_KEY_E:
             inputState.interactPressed = true;
@@ -144,23 +286,11 @@ namespace Uma_ECS
     {
         switch (event.key)
         {
+        case GLFW_KEY_Q:
+            inputState.attack_1 = false;
+            break;
         case GLFW_KEY_W:
-            inputState.moveUp = false;
-            break;
-        case GLFW_KEY_A:
-            inputState.moveLeft = false;
-            break;
-        case GLFW_KEY_S:
-            inputState.moveDown = false;
-            break;
-        case GLFW_KEY_D:
-            inputState.moveRight = false;
-            break;
-            //case GLFW_KEY_SPACE:
-            //	inputState.jumpPressed = false;
-            break;
-        case GLFW_KEY_LEFT_CONTROL:
-            inputState.attackPressed = false;
+            inputState.attack_2 = false;
             break;
         case GLFW_KEY_E:
             inputState.interactPressed = false;
@@ -178,99 +308,78 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::HandleMovementInput(float dt)
     {
-        if (aEntities.empty()) return;
+        if (aEntities.empty() || !pCoordinator->HasComponent<PathFinding>(aEntities[0])) return;
 
-        Entity player = aEntities[0];
-        auto& rb = pCoordinator->GetComponent<RigidBody>(player);
-
-        Vec2 targetAccel = { 0, 0 };
-
-        if (inputState.moveRight)   targetAccel.x += rb.accel_strength;
-        if (inputState.moveLeft )   targetAccel.x -= rb.accel_strength;
-        if (inputState.moveUp   )   targetAccel.y += rb.accel_strength;
-        if (inputState.moveDown )   targetAccel.y -= rb.accel_strength;
-
-        if (magnitude(rb.velocity) > 0.1f)
+        // Use event-based input instead of state polling for fixed timestep compatibility
+        // Only process if not consumed (single-press detection)
+        if (inputState.rightMousePressed && !inputState.rightMouseConsumed)
         {
-            if (pEventSystem)
-            {
-                //eventSystem->Emit<Uma_Engine::PlayerMoveEvent>(player, rb.velocity.x, rb.velocity.y);
-            }
+            auto& pf = pCoordinator->GetComponent<PathFinding>(aEntities[0]);
+            pf.goal = pGraphicsSystem->ScreenToWorld(pHybridInputSystem->GetSceneMousePosition());
+            pf.pathUpdateTimer = pf.pathUpdateInterval + 0.1f; // Force immediate update
+
+            inputState.rightMouseConsumed = true;  // Mark as consumed
         }
-
-        // Smooth acceleration to prevent jerk
-        const float accelSmoothFactor = 15.f; // tweak for responsiveness
-        rb.acceleration += (targetAccel - rb.acceleration) * accelSmoothFactor * dt;
-     
-#ifdef _DEBUG_LOG
-
-        std::stringstream ss{ "" };
-        ss << "Player Movement: " << rb.velocity;
-        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
-#endif
-
     }
 
-    void PlayerControllerSystem::HandleActionInput()
+    void PlayerControllerSystem::HandleActionInput(float dt)
     {
         if (aEntities.empty()) return;
 
-        Entity player = *(aEntities.begin());
-
-        // Handle action inputs (only trigger once per press)
-        //static bool lastJumpState = false;
-        static bool lastAttackState = false;
         static bool lastInteractState = false;
         static bool lastDashState = false;
 
-        //		if (inputState.jumpPressed && !lastJumpState)
-        //		{
-        //			if (eventSystem)
-        //			{
-        //				eventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Jump);
-        //			}
-        //#ifdef _DEBUG_LOG
-        //			std::cout << "Player Jump Action" << std::endl;
-        //#endif
-        //		}
+        auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
 
-        if (inputState.attackPressed && !lastAttackState)
+        if (player.combatState.attack_1_cd_curr > 0.f)
         {
-            if (pEventSystem)
+            player.combatState.attack_1_cd_curr -= dt;
+
+            if (player.combatState.attack_1_cd_curr <= 0)
             {
-                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Attack);
+                player.combatState.attack_1_cd_curr = 0.f;
+                player.combatState.attack_1_is_in_cd = false;
             }
-#ifdef _DEBUG_LOG
-            std::cout << "Player Attack Action" << std::endl;
-#endif
         }
 
-        if (inputState.interactPressed && !lastInteractState)
+        if (player.combatState.attack_2_cd_curr > 0.f)
         {
-            if (pEventSystem)
+            player.combatState.attack_2_cd_curr -= dt;
+            if (player.combatState.attack_2_cd_curr <= 0)
             {
-                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Interact);
+                player.combatState.attack_2_cd_curr = 0.f;
+                player.combatState.attack_2_is_in_cd = false;
             }
-#ifdef _DEBUG_LOG
-            std::cout << "Player Interact Action" << std::endl;
-#endif
         }
 
-        if (inputState.dashPressed && !lastDashState)
+        // Use event-based input instead of state polling for fixed timestep compatibility
+        static bool lastAttack1State = false;
+        static bool lastAttack2State = false;
+
+        // Detect rising edge (just pressed) to avoid repeated triggers
+        if (inputState.attack_1 && !lastAttack1State && !player.combatState.attack_1_is_in_cd)
         {
-            if (pEventSystem)
-            {
-                pEventSystem->Emit<Uma_Engine::PlayerActionEvent>(player, Uma_Engine::PlayerActionEvent::ActionType::Dash);
-            }
-#ifdef _DEBUG_LOG
-            std::cout << "Player Dash Action" << std::endl;
-#endif
+            //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+            //animator.animator.Play("atk_1", true);
+            player.animatorState = PS_Atk_1;
+
+            player.combatState.attack_1_cd_curr = player.combatState.attack_1_cd;
+            player.combatState.attack_1_is_in_cd = true;
         }
 
-        // Update previous states
-        //lastJumpState = inputState.jumpPressed;
-        lastAttackState = inputState.attackPressed;
-        lastInteractState = inputState.interactPressed;
-        lastDashState = inputState.dashPressed;
+        // Attack 2 support (W key)
+        if (inputState.attack_2 && !lastAttack2State && !player.combatState.attack_2_is_in_cd)
+        {
+            // Implement attack_2 logic here if needed
+            //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+            //animator.animator.Play("atk_2", true);
+            player.animatorState = PS_Atk_2;
+
+            player.combatState.attack_2_cd_curr = player.combatState.attack_2_cd;
+            player.combatState.attack_2_is_in_cd = true;
+        }
+
+        lastAttack1State = inputState.attack_1;
+        lastAttack2State = inputState.attack_2;
     }
 }
