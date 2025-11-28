@@ -47,6 +47,8 @@ All rights reserved.
 #include "Editor/Cmds/EntityCreateCmd.h"
 #include "Editor/Cmds/EntityDuplicateCmd.h"
 #include "Editor/Cmds/EntitySetActiveCmd.h"
+#include "Editor/Cmds/EntityAddComponentCmd.h"
+#include "Editor/Cmds/EntityRemoveComponentCmd.h"
 
 namespace Uma_Engine
 {
@@ -1565,7 +1567,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##RigidBody"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::RigidBody>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::RigidBody>>(
+                        &coordinator,
+                        entity,
+                        "Remove RigidBody"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -1608,7 +1616,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Sprite"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Sprite>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Sprite>>(
+                        &coordinator,
+                        entity,
+                        "Remove Sprite"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -1724,7 +1738,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Collider"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Collider>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Collider>>(
+                        &coordinator,
+                        entity,
+                        "Remove Collider"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -1899,7 +1919,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Camera"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Camera>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Camera>>(
+                        &coordinator,
+                        entity,
+                        "Remove Camera"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -1931,7 +1957,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Player"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Player>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Player>>(
+                        &coordinator,
+                        entity,
+                        "Remove Player"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -1971,7 +2003,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Enemy"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Enemy>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Enemy>>(
+                        &coordinator,
+                        entity,
+                        "Remove Enemy"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
                 auto& enemy = coordinator.GetComponent<Uma_ECS::Enemy>(entity);
@@ -2005,7 +2043,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Animator"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Animator>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Animator>>(
+                        &coordinator,
+                        entity,
+                        "Remove Animator"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
                 auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
@@ -2181,7 +2225,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##LuaScript"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::LuaScript>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::LuaScript>>(
+                        &coordinator,
+                        entity,
+                        "Remove LuaScript"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
                 auto& luaScript = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);
@@ -2440,7 +2490,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##AudioComponent"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::AudioComponent>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::AudioComponent>>(
+                        &coordinator,
+                        entity,
+                        "Remove AudioComponent"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -2517,7 +2573,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##AudioListener"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::AudioListener>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::AudioListener>>(
+                        &coordinator,
+                        entity,
+                        "Remove AudioListener"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -2535,7 +2597,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##PathFinding"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::PathFinding>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::PathFinding>>(
+                        &coordinator,
+                        entity,
+                        "Remove PathFinding"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -2586,7 +2654,13 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##ParticleEmitter"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::ParticleEmitter>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::ParticleEmitter>>(
+                        &coordinator,
+                        entity,
+                        "Remove ParticleEmitter"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
@@ -2887,9 +2961,16 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("RectTransform", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                if (ImGui::Button("Remove Component"))
+                if (ImGui::Button("Remove Component##RectTransform"))
                 {
-                    coordinator.RemoveComponent<Uma_UI::RectTransform>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::RectTransform>>(
+                        &coordinator,
+                        entity,
+                        "Remove RectTransform"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
                 }
 
                 auto& rectTransform = coordinator.GetComponent<Uma_UI::RectTransform>(entity);
@@ -2961,9 +3042,16 @@ namespace Uma_Engine
         {
            if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
            {
-               if (ImGui::Button("Remove Component"))
+               if (ImGui::Button("Remove Component##Image"))
                {
-                   coordinator.RemoveComponent<Uma_UI::Image>(entity);
+                   auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Image>>(
+                       &coordinator,
+                       entity,
+                       "Remove Image"
+                   );
+                   commandHistory.ExecuteCommand(std::move(cmd));
+
+                   return true;
                }
 
                auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
@@ -3010,9 +3098,16 @@ namespace Uma_Engine
         {
            if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
            {
-               if (ImGui::Button("Remove Component"))
+               if (ImGui::Button("Remove Component##Button"))
                {
-                   coordinator.RemoveComponent<Uma_UI::Button>(entity);
+                   auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Button>>(
+                       &coordinator,
+                       entity,
+                       "Remove Button"
+                   );
+                   commandHistory.ExecuteCommand(std::move(cmd));
+
+                   return true;
                }
 
                auto& button = coordinator.GetComponent<Uma_UI::Button>(entity);
@@ -3085,9 +3180,16 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Canvas", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                if (ImGui::Button("Remove Component"))
+                if (ImGui::Button("Remove Component##Canvas"))
                 {
-                    coordinator.RemoveComponent<Uma_UI::Canvas>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Canvas>>(
+                        &coordinator,
+                        entity,
+                        "Remove Canvas"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
                 }
 
                 auto& canvas = coordinator.GetComponent<Uma_UI::Canvas>(entity);
@@ -3145,9 +3247,16 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Text", ImGuiTreeNodeFlags_DefaultOpen))
             {
-                if (ImGui::Button("Remove Component"))
+                if (ImGui::Button("Remove Component##Text"))
                 {
-                    coordinator.RemoveComponent<Uma_UI::Text>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Text>>(
+                        &coordinator,
+                        entity,
+                        "Remove Text"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
                 }
 
                 auto& text = coordinator.GetComponent<Uma_UI::Text>(entity);
@@ -3218,9 +3327,16 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Prefab"))
             {
-                if (ImGui::Button("Remove Component"))
+                if (ImGui::Button("Remove Component##Prefab"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Prefab>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Prefab>>(
+                        &coordinator,
+                        entity,
+                        "Remove Prefab"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
                 }
 
                 auto& prefab = coordinator.GetComponent<Uma_ECS::Prefab>(entity);
@@ -3269,9 +3385,16 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Projectile"))
             {
-                if (ImGui::Button("Remove Component"))
+                if (ImGui::Button("Remove Component##Projectile"))
                 {
-                    coordinator.RemoveComponent<Uma_ECS::Projectile>(entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Projectile>>(
+                        &coordinator,
+                        entity,
+                        "Remove Projectile"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
                 }
 
                 auto& projectile = coordinator.GetComponent<Uma_ECS::Projectile>(entity);
@@ -3550,76 +3673,188 @@ namespace Uma_Engine
 
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Sprite>()) && ImGui::MenuItem("Sprite"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Sprite{});
+                Uma_ECS::Sprite defaultSprite;
+                defaultSprite.textureName = "whitePixel.png";
+
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Sprite>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    defaultSprite,
+                    "Add Sprite"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::RigidBody>()) && ImGui::MenuItem("RigidBody"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::RigidBody{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::RigidBody>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::RigidBody{},
+                    "Add RigidBody"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Collider>()) && ImGui::MenuItem("Collider"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Collider{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Collider>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Collider{},
+                    "Add Collider"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Camera>()) && ImGui::MenuItem("Camera"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Camera{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Camera>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Camera{},
+                    "Add Camera"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::LuaScript>()) && ImGui::MenuItem("LuaScript"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::LuaScript{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::LuaScript>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::LuaScript{},
+                    "Add LuaScript"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Enemy>()) && ImGui::MenuItem("Enemy"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Enemy{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Enemy>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Enemy{},
+                    "Add Enemy"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Animator>()) && ImGui::MenuItem("Animator"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Animator{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Animator>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Animator{},
+                    "Add Animator"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::AudioComponent>()) && ImGui::MenuItem("AudioComponent"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::AudioComponent{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::AudioComponent>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::AudioComponent{},
+                    "Add AudioComponent"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::AudioListener>()) && ImGui::MenuItem("AudioListener"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::AudioListener{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::AudioListener>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::AudioListener{},
+                    "Add AudioListener"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::PathFinding>()) && ImGui::MenuItem("PathFinding"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::PathFinding{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::PathFinding>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::PathFinding{},
+                    "Add PathFinding"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+
                 pEventSystem->Emit<CallPathFindToBake>();
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Projectile>()) && ImGui::MenuItem("Projectile"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Projectile{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Projectile>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Projectile{},
+                    "Add Projectile"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Prefab>()) && ImGui::MenuItem("Prefab"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Prefab{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Prefab>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Prefab{},
+                    "Add Prefab"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::ParticleEmitter>()) && ImGui::MenuItem("ParticleEmitter"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_ECS::ParticleEmitter{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::ParticleEmitter>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::ParticleEmitter{},
+                    "Add ParticleEmitter"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::RectTransform>()) && ImGui::MenuItem("RectTransform"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_UI::RectTransform{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::RectTransform>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::RectTransform{},
+                    "Add RectTransform"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Image>()) && ImGui::MenuItem("Image"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_UI::Image{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Image>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Image{},
+                    "Add Image"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Button>()) && ImGui::MenuItem("Button"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_UI::Button{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Button>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Button{},
+                    "Add Button"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Canvas>()) && ImGui::MenuItem("Canvas"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_UI::Canvas{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Canvas>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Canvas{},
+                    "Add Canvas"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Text>()) && ImGui::MenuItem("Text"))
             {
-                coordinator.AddComponent(m_selectedEntity, Uma_UI::Text{});
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Text>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Text{},
+                    "Add Text"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
 
             ImGui::EndPopup();
