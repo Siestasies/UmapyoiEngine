@@ -8,6 +8,8 @@
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
 
+#include "Events/ApplicationEvents.h"
+
 #include <functional>
 
 namespace Uma_ECS
@@ -726,6 +728,11 @@ namespace Uma_ECS
         sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
             {
                 pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
+            });
+
+        sharedLua->set_function("CloseApplication", [this]()
+            {
+                pEventSystem->Emit<Uma_Engine::ApplicationQuitRequest>();
             });
 
     }

@@ -31,6 +31,9 @@ All rights reserved.
 #include "Debugging/CrashLogger.hpp"
 #include "FileSystem/DropCallback.hpp"
 
+// Events
+#include "Events/ApplicationEvents.h"
+
 #ifdef _DEBUG
     #define _CRTDBG_MAP_ALLOC
     #include <crtdbg.h>
@@ -112,6 +115,8 @@ namespace Uma_Engine
         Debugger::Log(WarningLevel::eInfo, "MouseMove listeners: " +
             std::to_string(mEventSystem->GetListenerCount<MouseMoveEvent>()));
 #endif
+
+        SubscribeToEvents();
 
         // Let derived class perform post-initialization
         PostInit();
@@ -213,6 +218,14 @@ namespace Uma_Engine
         // Register scene manager
         mSceneManager = mSystemManager->RegisterSystem<SceneManager>();
         mSceneManager->SetSystemManager(mSystemManager.get());
+    }
+
+    void Application::SubscribeToEvents()
+    {
+       /* mEventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>([this](const ApplicationQuitRequest& e)
+            {
+                mWindow->Close();
+            });*/
     }
 
     void Application::MainLoop()

@@ -28,7 +28,7 @@
     "entities": [
         {
             "id": 0,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Main cnv",
@@ -165,7 +165,7 @@
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
                         "x": 0.5,
-                        "y": 0.5
+                        "y": 0.0
                     },
                     "anchorMax": {
                         "x": 0.5,
@@ -177,7 +177,7 @@
                     },
                     "anchoredPosition": {
                         "x": 0.0,
-                        "y": -75.0
+                        "y": -122.0
                     },
                     "sizeDelta": {
                         "x": 300.0,
@@ -329,7 +329,7 @@
         },
         {
             "id": 5,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Settings btn",
@@ -717,7 +717,7 @@
         },
         {
             "id": 11,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Settings cnv",
@@ -816,14 +816,14 @@
                         "r": 1.0,
                         "g": 1.0,
                         "b": 1.0,
-                        "a": 0.498
+                        "a": 0.497
                     },
                     "visible": true
                 }
             }
         },
         {
-            "id": 15,
+            "id": 13,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -867,7 +867,7 @@
             }
         },
         {
-            "id": 16,
+            "id": 14,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -970,7 +970,7 @@
             }
         },
         {
-            "id": 17,
+            "id": 15,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -987,7 +987,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 15
+                    "parent": 13
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -1014,7 +1014,7 @@
                 "class Uma_UI::Text": {
                     "text": "Volume",
                     "fontName": "Fujimaru-Regular",
-                    "fontSize": 2.599,
+                    "fontSize": 2.598,
                     "colour": {
                         "r": 0.0,
                         "g": 0.0,
@@ -1027,7 +1027,7 @@
             }
         },
         {
-            "id": 18,
+            "id": 16,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -1044,7 +1044,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 15
+                    "parent": 13
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -1084,7 +1084,7 @@
             }
         },
         {
-            "id": 19,
+            "id": 17,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -1164,7 +1164,7 @@
             }
         },
         {
-            "id": 20,
+            "id": 18,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -1181,7 +1181,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 19
+                    "parent": 17
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -1221,7 +1221,7 @@
             }
         },
         {
-            "id": 21,
+            "id": 19,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -1238,7 +1238,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 19
+                    "parent": 17
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
