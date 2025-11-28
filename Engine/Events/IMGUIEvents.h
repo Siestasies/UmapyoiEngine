@@ -211,7 +211,8 @@ namespace Uma_Engine
     class PlaySceneRequest : public Event
     {
     public:
-        PlaySceneRequest() { priority = Priority::High; }
+        bool isPrevModePause;
+        PlaySceneRequest(bool isPrevModePause = false) : isPrevModePause(isPrevModePause) { priority = Priority::High; }
     };
 
     class StopSceneRequest : public Event

@@ -412,7 +412,7 @@ namespace Uma_Engine
                     if (m_playState == PlayState::Stopped || m_playState == PlayState::Paused)
                     {
                         commandHistory.Clear();
-                        pEventSystem->Emit<PlaySceneRequest>();
+                        pEventSystem->Emit<PlaySceneRequest>((m_playState == PlayState::Paused ? true : false));
                         m_playState = PlayState::Playing;
                     }
                 }
@@ -1493,6 +1493,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                /*if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Transform>(entity);
+                }*/
+
                 auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(entity);
                 ImGui::Indent();
 
@@ -1558,6 +1563,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("RigidBody", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                if (ImGui::Button("Remove Component##RigidBody"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::RigidBody>(entity);
+                    return true;
+                }
+
                 auto& rb = coordinator.GetComponent<Uma_ECS::RigidBody>(entity);
                 ImGui::Indent();
 
@@ -1595,6 +1606,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Sprite"))
             {
+                if (ImGui::Button("Remove Component##Sprite"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Sprite>(entity);
+                    return true;
+                }
+
                 auto& sprite = coordinator.GetComponent<Uma_ECS::Sprite>(entity);
                 ImGui::Indent();
 
@@ -1705,6 +1722,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Collider"))
             {
+                if (ImGui::Button("Remove Component##Collider"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Collider>(entity);
+                    return true;
+                }
+
                 auto& collider = coordinator.GetComponent<Uma_ECS::Collider>(entity);
                 ImGui::Indent();
 
@@ -1874,6 +1897,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Camera"))
             {
+                if (ImGui::Button("Remove Component##Camera"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Camera>(entity);
+                    return true;
+                }
+
                 auto& camera = coordinator.GetComponent<Uma_ECS::Camera>(entity);
                 ImGui::Indent();
 
@@ -1900,6 +1929,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Player"))
             {
+                if (ImGui::Button("Remove Component##Player"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Player>(entity);
+                    return true;
+                }
+
                 auto& player = coordinator.GetComponent<Uma_ECS::Player>(entity);
                 ImGui::Indent();
 
@@ -1934,6 +1969,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Enemy"))
             {
+                if (ImGui::Button("Remove Component##Enemy"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Enemy>(entity);
+                    return true;
+                }
                 auto& enemy = coordinator.GetComponent<Uma_ECS::Enemy>(entity);
                 ImGui::Indent();
 
@@ -1963,6 +2003,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Animator"))
             {
+                if (ImGui::Button("Remove Component##Animator"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Animator>(entity);
+                    return true;
+                }
                 auto& animator = coordinator.GetComponent<Uma_ECS::Animator>(entity);
                 ImGui::Indent();
 
@@ -2134,6 +2179,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("LuaScript"))
             {
+                if (ImGui::Button("Remove Component##LuaScript"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::LuaScript>(entity);
+                    return true;
+                }
                 auto& luaScript = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);
                 ImGui::Indent();
 
@@ -2388,6 +2438,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("AudioComponent"))
             {
+                if (ImGui::Button("Remove Component##AudioComponent"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::AudioComponent>(entity);
+                    return true;
+                }
+
                 auto& audio = coordinator.GetComponent<Uma_ECS::AudioComponent>(entity);
                 ImGui::Indent();
             
@@ -2459,6 +2515,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("AudioListener"))
             {
+                if (ImGui::Button("Remove Component##AudioListener"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::AudioListener>(entity);
+                    return true;
+                }
+
                 ImGui::Indent();
                 ImGui::Text("Audio Listener Component");
                 ImGui::Separator();
@@ -2471,6 +2533,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("PathFinding"))
             {
+                if (ImGui::Button("Remove Component##PathFinding"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::PathFinding>(entity);
+                    return true;
+                }
+
                 auto& pathfinding = coordinator.GetComponent<Uma_ECS::PathFinding>(entity);
                 ImGui::Indent();
             
@@ -2516,6 +2584,12 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("ParticleEmitter", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                if (ImGui::Button("Remove Component##ParticleEmitter"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::ParticleEmitter>(entity);
+                    return true;
+                }
+
                 auto& emitterArray = coordinator.GetComponentArray<Uma_ECS::ParticleEmitter>();
                 auto& component = emitterArray.GetData(entity);
 
@@ -2813,6 +2887,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("RectTransform", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_UI::RectTransform>(entity);
+                }
+
                 auto& rectTransform = coordinator.GetComponent<Uma_UI::RectTransform>(entity);
                 ImGui::Indent();
             
@@ -2882,6 +2961,11 @@ namespace Uma_Engine
         {
            if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
            {
+               if (ImGui::Button("Remove Component"))
+               {
+                   coordinator.RemoveComponent<Uma_UI::Image>(entity);
+               }
+
                auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
                ImGui::Indent();
            
@@ -2926,6 +3010,11 @@ namespace Uma_Engine
         {
            if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
            {
+               if (ImGui::Button("Remove Component"))
+               {
+                   coordinator.RemoveComponent<Uma_UI::Button>(entity);
+               }
+
                auto& button = coordinator.GetComponent<Uma_UI::Button>(entity);
                ImGui::Indent();
            
@@ -2996,6 +3085,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Canvas", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_UI::Canvas>(entity);
+                }
+
                 auto& canvas = coordinator.GetComponent<Uma_UI::Canvas>(entity);
                 ImGui::Indent();
             
@@ -3051,6 +3145,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Text", ImGuiTreeNodeFlags_DefaultOpen))
             {
+                if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_UI::Text>(entity);
+                }
+
                 auto& text = coordinator.GetComponent<Uma_UI::Text>(entity);
                 ImGui::Indent();
             
@@ -3119,6 +3218,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Prefab"))
             {
+                if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Prefab>(entity);
+                }
+
                 auto& prefab = coordinator.GetComponent<Uma_ECS::Prefab>(entity);
                 ImGui::Indent();
 
@@ -3165,6 +3269,11 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("Projectile"))
             {
+                if (ImGui::Button("Remove Component"))
+                {
+                    coordinator.RemoveComponent<Uma_ECS::Projectile>(entity);
+                }
+
                 auto& projectile = coordinator.GetComponent<Uma_ECS::Projectile>(entity);
                 ImGui::Indent();
 

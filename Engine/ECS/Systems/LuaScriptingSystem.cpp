@@ -369,13 +369,11 @@ namespace Uma_ECS
             }
             });
 
-        // ============ UPDATED: Return -1 for Lua if no parent ============
         sharedLua->set_function("GetParent", [&](Entity entity) -> int {
             auto parent = pCoordinator->GetParent(entity);
             return parent.has_value() ? static_cast<int>(parent.value()) : -1;
             });
 
-        // ============ NEW: Check if entity has parent ============
         sharedLua->set_function("HasParent", [&](Entity entity) -> bool {
             return pCoordinator->GetParent(entity).has_value();
             });
@@ -394,6 +392,14 @@ namespace Uma_ECS
             }
             });
 
+        sharedLua->set_function("SetActiveEntity", [this](Uma_ECS::Entity entity, bool isActive)
+            {
+                if (pCoordinator->HasActiveEntity(entity))
+                {
+                    pCoordinator->SetActive(entity, isActive);
+                }
+            });
+
         // Add Force
         sharedLua->set_function("AddForce", [this](Entity entity, Vec2 pos, Vec2 dir, float force, float rotation)
             {
@@ -405,9 +411,12 @@ namespace Uma_ECS
 
 
                 tf.position = pos;
-                tf.rotation = rotation;
+                tf.rotation.x = rotation;
 
-                rb.velocity = dir * force;
+                rb.velocity = dir;
+                rb.velocity.normalize();
+
+                rb.velocity *= force;
             });
 
         // path finding set goal
@@ -484,7 +493,8 @@ namespace Uma_ECS
         sharedLua->new_usertype<Transform>("Transform",
             "position", &Transform::position,
             "rotation", &Transform::rotation,
-            "scale", &Transform::scale
+            "scale", &Transform::scale,
+            "worldPosition", &Transform::worldPosition
         );
 
         // Register RigidBody
