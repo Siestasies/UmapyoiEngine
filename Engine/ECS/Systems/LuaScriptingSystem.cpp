@@ -10,6 +10,10 @@
 
 #include <functional>
 
+// temp
+#include <rapidjson/istreamwrapper.h>
+#include "Core/FilePaths.h"
+
 namespace Uma_ECS
 {
     
@@ -390,7 +394,88 @@ namespace Uma_ECS
             }
             });
 
+        // Add Force
+        sharedLua->set_function("AddForce", [this](Entity entity, Vec2 pos, Vec2 dir, float force, float rotation)
+            {
+                if (!pCoordinator->HasActiveEntity(entity)) return;
+                if (!pCoordinator->IsActiveInHierarchy(entity)) return;
+
+                auto& tf = pCoordinator->GetComponent<Transform>(entity);
+                auto& rb = pCoordinator->GetComponent<RigidBody>(entity);
+
+
+                tf.position = pos;
+                tf.rotation = rotation;
+
+                rb.velocity = dir * force;
+            });
+
+        // path finding set goal
+        sharedLua->set_function("SetPathFindingGoal", [this](Uma_ECS::Entity entity, float x, float y)
+            {
+                if (pCoordinator->HasComponent<PathFinding>(entity))
+                {
+                    auto& pf = pCoordinator->GetComponent<PathFinding>(entity);
+
+                    pf.goal = Vec2(x, y);
+                }
+            });
+
         // add component remove component
+
+        // Load prefab from file
+        // this method of doing is very ugly 
+        // but it requires the need of refactoring the Gameserializer and coordinator 
+        // to provide a better way to handle serializing and deserializing
+        // WIP
+        // prefab name must include file extention
+        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName) -> Entity 
+            {
+                std::string prefabPath = Uma_FilePath::PREFAB_DIR + prefabName;
+            try {
+
+
+                // Load JSON file
+                std::ifstream ifs(prefabPath);
+                if (!ifs.is_open()) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                        "Failed to open prefab file: " + prefabPath);
+                    return static_cast<Entity>(-1);
+                }
+
+                rapidjson::IStreamWrapper isw(ifs);
+                rapidjson::Document doc;
+                doc.ParseStream(isw);
+                ifs.close();
+
+                if (!doc.HasMember("Prefab")) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                        "Invalid prefab format: missing 'Prefab' key in " + prefabPath);
+                    return static_cast<Entity>(-1);
+                }
+
+                // Deserialize prefab and get root entity
+                Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
+
+                if (rootEntity != static_cast<Entity>(-1)) {
+                    std::string debug = "Loaded prefab from " + prefabPath + " as entity " +
+                        std::to_string(rootEntity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+
+                return rootEntity;
+            }
+            catch (const std::exception& e) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Exception loading prefab from " + prefabPath + ": " + e.what());
+                return static_cast<Entity>(-1);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Unknown error loading prefab from " + prefabPath);
+                return static_cast<Entity>(-1);
+            }
+            });
     }
 
     void LuaScriptingSystem::RegisterComponentTypes()
@@ -418,7 +503,7 @@ namespace Uma_ECS
             "flipY", &Sprite::flipY
         );
 
-        // Register Player component - ADD THIS IF MISSING
+        // Register Player component
         sharedLua->new_usertype<Player>("Player",
             "mHealth"         ,&Player::mHealth,
             "mMaxHealth"      ,&Player::mMaxHealth,
@@ -436,7 +521,7 @@ namespace Uma_ECS
         );
 
 
-        // Register Enemy component - ADD THIS IF MISSING
+        // Register Enemy component
         sharedLua->new_usertype<Enemy>("Enemy",
             "mHealth"         ,&Enemy::mHealth,
             "mMaxHealth"      ,&Enemy::mMaxHealth,
@@ -446,6 +531,14 @@ namespace Uma_ECS
             "mAttackSpeed"    ,&Enemy::mAttackSpeed,
             "mAttackRange"    ,&Enemy::mAttackRange,
             "mDefense"        ,&Enemy::mDefense
+        );
+
+        // Register projectile component
+        sharedLua->new_usertype<Projectile>("Enemy",
+            "mDamage",          &Projectile::mDamage,
+            "mSpeed",           &Projectile::mSpeed,
+            "mFadeOVerTime",    &Projectile::mFadeOVerTime,
+            "mLifeTime",        &Projectile::mLifeTime
         );
 
         // Register Camera
@@ -592,6 +685,7 @@ namespace Uma_ECS
         X(Enemy)       \
         X(Camera)      \
         X(PathFinding) \
+        X(Projectile) \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -711,16 +805,6 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
             });
 
-        // path finding set goal
-        sharedLua->set_function("SetPathFindingGoal", [this](Uma_ECS::Entity entity, float x, float y)
-            {
-                if (pCoordinator->HasComponent<PathFinding>(entity))
-                {
-                    auto& pf = pCoordinator->GetComponent<PathFinding>(entity);
-
-                    pf.goal = Vec2(x, y);
-                }
-            });
 
         // scene management
         sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
@@ -728,6 +812,11 @@ namespace Uma_ECS
                 pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
             });
 
+        sharedLua->set_function("QuitGame", [this]()
+            {
+                // quit game 
+                // wip
+            });
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)

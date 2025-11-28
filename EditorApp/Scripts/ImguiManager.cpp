@@ -3078,6 +3078,107 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Prefab>())
+        {
+            if (ImGui::CollapsingHeader("Prefab"))
+            {
+                auto& prefab = coordinator.GetComponent<Uma_ECS::Prefab>(entity);
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // Prefab Path (read-only display)
+                ImGui::Text("Prefab Path:");
+                ImGui::TextWrapped("%s", prefab.prefabPath.empty() ? "(None)" : prefab.prefabPath.c_str());
+
+                // Make it editable if needed
+                static char prefabPathBuffer[512];
+                strncpy(prefabPathBuffer, prefab.prefabPath.c_str(), 511);
+                prefabPathBuffer[511] = '\0';
+                if (ImGui::InputText("Path", prefabPathBuffer, 512))
+                {
+                    prefab.prefabPath = prefabPathBuffer;
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                // Is Root flag
+                if (ImGui::Checkbox("Is Root Entity", &prefab.isRoot))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Marks this as the root entity of the prefab instance");
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("This entity is linked to a prefab asset");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Prefab");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Projectile>())
+        {
+            if (ImGui::CollapsingHeader("Projectile"))
+            {
+                auto& projectile = coordinator.GetComponent<Uma_ECS::Projectile>(entity);
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // Damage
+                if (ImGui::DragInt("Damage", &projectile.mDamage, 1.0F, 0, 1000))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Damage
+                if (ImGui::DragFloat("Speed", &projectile.mSpeed, 1.0f, 0, 300.f))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                // Fade Over Time
+                if (ImGui::Checkbox("Fade Over Time", &projectile.mFadeOVerTime))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Makes the projectile gradually fade out during its lifetime");
+                }
+
+                // Life Time
+                if (ImGui::DragFloat("Life Time", &projectile.mLifeTime, 0.1f, 0.0f, 60.0f))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("How long the projectile exists before being destroyed (seconds)");
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("This entity is marked as a projectile");
+
+                // end tracking
+                EndComponentEdit(entity, coordinator, "Projectile");
+
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -3341,6 +3442,14 @@ namespace Uma_Engine
             {
                 coordinator.AddComponent(m_selectedEntity, Uma_ECS::PathFinding{});
                 pEventSystem->Emit<CallPathFindToBake>();
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Projectile>()) && ImGui::MenuItem("Projectile"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Projectile{});
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Prefab>()) && ImGui::MenuItem("Prefab"))
+            {
+                coordinator.AddComponent(m_selectedEntity, Uma_ECS::Prefab{});
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::ParticleEmitter>()) && ImGui::MenuItem("ParticleEmitter"))
             {

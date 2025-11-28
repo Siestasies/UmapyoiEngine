@@ -49,8 +49,6 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         // Rotation update
         tf.rotation.x += tf.rotation.y;
 
-
-
         // Apply acceleration to velocity
         rb.velocity += rb.acceleration * dt;
 
@@ -61,8 +59,6 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         const float epsilon = 0.1f;
         if (std::abs(rb.velocity.x) < epsilon) rb.velocity.x = 0.f;
         if (std::abs(rb.velocity.y) < epsilon) rb.velocity.y = 0.f;
-
-
     }
 }
 
@@ -142,4 +138,18 @@ void Uma_ECS::PhysicsSystem::PrintLog()
 
     std::cout << std::setw(100) << std::setfill('-') << "\n";
     std::cout << std::setw(100) << std::setfill('-') << "\n";
+}
+
+void Uma_ECS::PhysicsSystem::AddForce(Entity entity, Vec2 pos, Vec2 dir, float force, float rotation)
+{
+    if (!gCoordinator->IsActiveInHierarchy(entity)) return;
+
+    auto& tf = gCoordinator->GetComponent<Transform>(entity);
+    auto& rb = gCoordinator->GetComponent<RigidBody>(entity);
+
+    
+    tf.position = pos;
+    tf.rotation = rotation;
+
+    rb.velocity = dir * force;
 }
