@@ -37,6 +37,9 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
 
     for (auto const& entity : aEntities)
     {
+        if (!gCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 

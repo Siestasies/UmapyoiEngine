@@ -70,6 +70,9 @@ namespace Uma_ECS
 
         for (auto const& entity : aEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& scriptComponent = scriptArray.GetData(entity);
 
             // Initialize scripts if needed

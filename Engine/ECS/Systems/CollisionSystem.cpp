@@ -57,6 +57,9 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
     for (auto const& entity : aEntities)
     {
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
@@ -151,6 +154,9 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 
     for (const auto& entity : aEntities)
     {
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         auto& collider = cArray.GetData(entity);
 
         // Insert entity into grid based on ALL active shapes, not just shape[0]

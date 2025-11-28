@@ -45,6 +45,9 @@ namespace Uma_ECS
     {
         if (aEntities.empty()) return;
 
+        if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
+            return;
+
         // by right shd only have 1 player
         HandleMovementInput(dt);
         HandleActionInput();

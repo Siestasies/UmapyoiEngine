@@ -48,6 +48,9 @@ namespace Uma_ECS
 
         for (const auto& entity : aEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& component = emitterArray.GetData(entity);
             auto& transform = tfArray.GetData(entity);
 

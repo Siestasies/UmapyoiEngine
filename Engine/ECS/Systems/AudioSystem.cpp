@@ -170,6 +170,9 @@ void Uma_ECS::AudioSystem::UpdateListener(float dt)
     {
         Entity entity = alArray.GetEntity(i);
 
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         auto& tf = tfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
@@ -194,6 +197,9 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
     {
         Entity entity = audioArray.GetEntity(i);
         auto& ac = audioArray.GetComponentAt(i);
+
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
 
         // Check if entity has required components
         if (!tfArray.Has(entity)) {

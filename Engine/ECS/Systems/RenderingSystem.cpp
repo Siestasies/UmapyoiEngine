@@ -94,6 +94,10 @@ namespace Uma_ECS
         // Gather all sprite info with layer data
         for (const auto& entity : aEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
+
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 

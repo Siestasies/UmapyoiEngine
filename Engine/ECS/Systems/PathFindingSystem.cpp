@@ -78,6 +78,9 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
     // Calculate maximum agent radius across ALL entities
     for (auto const& entity : aEntities)
     {
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         if (colArray.Has(entity) && tfArray.Has(entity)) {
             const auto& collider = colArray.GetData(entity);
             const auto& tf = tfArray.GetData(entity);

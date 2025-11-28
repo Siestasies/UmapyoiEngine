@@ -41,6 +41,9 @@ namespace Uma_ECS
         (void)dt;
         if (aEntities.size() == 0) return;
 
+        if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
+            return;
+
         auto& pArray = pCoordinator->GetComponentArray<Player>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();

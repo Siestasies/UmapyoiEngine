@@ -35,6 +35,9 @@ namespace Uma_ECS
 
         for (const auto& entity : aEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& animator = animatorArray.GetData(entity);
 
             // Update animation timer and advance frames
