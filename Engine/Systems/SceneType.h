@@ -33,6 +33,7 @@ All rights reserved.
 #include "ECS/Systems/AnimatorSystem.hpp"
 #include "ECS/Systems/PathFindingSystem.hpp"
 #include "ECS/Systems/ParticleSystem.hpp"
+#include "ECS/Systems/ProjectileSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -42,6 +43,7 @@ All rights reserved.
 #include "ECS/Components/Collider.h"
 #include "ECS/Components/Camera.h"
 #include "ECS/Components/Enemy.h"
+#include "ECS/Components/Projectile.h"
 #include "ECS/Components/LuaScript.h"
 #include "ECS/Components/Animator.h"
 #include "ECS/Components/AudioListener.h"
@@ -230,6 +232,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::AudioSystem> m_AudioSystem;
             std::shared_ptr<Uma_ECS::PathFindingSystem> m_PathFindingSystem;
             std::shared_ptr<Uma_ECS::ParticleSystem> m_ParticleSystem;
+            std::shared_ptr<Uma_ECS::ProjectileSystem> m_ProjectileSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;

@@ -149,6 +149,9 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     previousCollisions = std::move(currentCollisions);
     currentCollisions.clear();
 
+    previousTriggers = std::move(currentTriggers);
+    currentTriggers.clear();
+
     // Build spatial grid for broad phase
     std::unordered_map<Cell, std::vector<Entity>, CellHash> grid;
 
@@ -169,6 +172,9 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
         }
     }
 
+    // Track which entity pairs have been checked this frame to avoid duplicates
+    std::unordered_set<EntityPair, EntityPairHash> checkedPairs;
+
     // Check collisions within each cell
     for (auto const& [cell, entities] : grid)
     {
@@ -179,6 +185,12 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
                 Entity e1 = entities[i];
                 Entity e2 = entities[j];
 
+                // Skip if we already checked this pair this frame
+                EntityPair pair(e1, e2);
+                if (checkedPairs.find(pair) != checkedPairs.end())
+                    continue;
+
+                checkedPairs.insert(pair);
                 CheckEntityPairCollision(e1, e2, tfArray, cArray, rbArray, dt);
             }
         }
@@ -195,6 +207,20 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
                 pair.entityA, pair.entityB);
         }
     }
+
+    // update the Trigger pair that has exited
+    for (const auto& pair : previousTriggers)
+    {
+        // means has ended
+        if (currentTriggers.find(pair) == currentTriggers.end())
+        {
+            // Trigger ended - emit exit event
+            pEventSystem->Emit<Uma_Engine::OnTriggerExitEvent>(
+                pair.entityA, pair.entityB);
+        }
+    }
+
+
 }
 
 Uma_ECS::Entity Uma_ECS::CollisionSystem::GetPhysicsEntity(Entity entity, ComponentArray<Transform>& tfArray, ComponentArray<RigidBody>& rbArray)
@@ -322,20 +348,25 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     // Handle triggers (no physics resolution)
     if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
     {
-        // TODO: Emit trigger event when event system is available
-         // Check if this is a new trigger interaction
-        bool wasColliding = previousCollisions.find(pair) != previousCollisions.end();
-        currentCollisions.insert(pair);
+        // Check if this is a new trigger interaction
+        bool wasColliding = previousTriggers.find(pair) != previousTriggers.end();
 
-        if (!wasColliding)
+        // Only emit events if this is the first shape collision for this pair this frame
+        auto insertResult = currentTriggers.insert(pair);
+        bool isFirstCollisionThisFrame = insertResult.second;
+
+        if (isFirstCollisionThisFrame)
         {
-            // New trigger - emit enter event
-            pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(e1, e2);
-        }
-        else
-        {
-            // Ongoing trigger - emit stay event
-            pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(e1, e2);
+            if (!wasColliding)
+            {
+                // New trigger - emit enter event
+                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(e1, e2);
+            }
+            else
+            {
+                // Ongoing trigger - emit stay event
+                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(e1, e2);
+            }
         }
 
         return;
@@ -343,18 +374,24 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
 
     // track collision for physics colliders
     bool wasColliding = previousCollisions.find(pair) != previousCollisions.end();
-    currentCollisions.insert(pair);
 
-    // Emit appropriate collision event
-    if (!wasColliding)
+    // Only emit events if this is the first shape collision for this pair this frame
+    auto insertResult = currentCollisions.insert(pair);
+    bool isFirstCollisionThisFrame = insertResult.second;
+
+    if (isFirstCollisionThisFrame)
     {
-        // New collision - emit enter event
-        pEventSystem->Emit<Uma_Engine::OnCollisionEnterEvent>(e1, e2);
-    }
-    else
-    {
-        // Ongoing collision - emit stay event
-        pEventSystem->Emit<Uma_Engine::OnCollisionEvent>(e1, e2);
+        // Emit appropriate collision event
+        if (!wasColliding)
+        {
+            // New collision - emit enter event
+            pEventSystem->Emit<Uma_Engine::OnCollisionEnterEvent>(e1, e2);
+        }
+        else
+        {
+            // Ongoing collision - emit stay event
+            pEventSystem->Emit<Uma_Engine::OnCollisionEvent>(e1, e2);
+        }
     }
 
     // Determine if entities can move
@@ -584,6 +621,9 @@ void Uma_ECS::CollisionSystem::DebugRender()
 
     for (const auto& entity : aEntities)
     {
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
         if (!cArray.Has(entity)) continue;
 
         auto& c = cArray.GetData(entity);

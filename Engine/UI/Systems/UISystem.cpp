@@ -228,6 +228,9 @@ namespace Uma_UI
         // Build hit test cache with proper NDC rectangles
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
                 continue;
 
@@ -326,6 +329,9 @@ namespace Uma_UI
         // Render images
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& imageArray = pCoordinator->GetComponentArray<Image>();
             if (!imageArray.Has(entity))
             {
@@ -379,6 +385,10 @@ namespace Uma_UI
         // Render text - alignment computed every frame based on current rect
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& textArray = pCoordinator->GetComponentArray<Text>();
             if (!textArray.Has(entity))
             {

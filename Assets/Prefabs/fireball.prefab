@@ -3,6 +3,7 @@
         "entities": [
             {
                 "id": 0,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "fireball",
@@ -52,7 +53,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": false,
+                        "showBBox": true,
                         "shapes": [
                             {
                                 "offset": {
@@ -60,14 +61,14 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 1.0,
-                                    "y": 1.0
+                                    "x": 13.3,
+                                    "y": 1.899
                                 },
-                                "purpose": 0,
-                                "layer": 0,
-                                "colliderMask": 0,
+                                "purpose": 2,
+                                "layer": 16,
+                                "colliderMask": 2,
                                 "isActive": true,
-                                "autoFitToSprite": true
+                                "autoFitToSprite": false
                             }
                         ]
                     },
