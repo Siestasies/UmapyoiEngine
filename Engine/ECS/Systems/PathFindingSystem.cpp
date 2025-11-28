@@ -88,15 +88,13 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             const auto& collider = colArray.GetData(entity);
             const auto& tf = tfArray.GetData(entity);
 
-            // FIX #1: Check playerArray.Has(entity) instead of hasPlayer
             if (playerArray.Has(entity) && collider.shapes.size() > 1 && collider.shapes[1].isActive) {
-                // For player, use ONLY shapes[1] (the navigation collider)
+                // For player, use shapes[1]
                 const auto& navShape = collider.shapes[1];
                 float sx = navShape.size.x * tf.scale.x;
                 float sy = navShape.size.y * tf.scale.y;
                 float playerRadius = (std::max)(sx, sy) * 0.5f;
 
-                // FIX #2: Use max() to compare, not overwrite
                 maxAgentRadius = (std::max)(maxAgentRadius, playerRadius);
             }
             else 
@@ -181,13 +179,12 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             }
         }
 
-        // FIX #3: Calculate agent radius per entity, using shapes[1] for player
         float agentRad = cellSize;
         if (colArray.Has(entity)) {
             const auto& collider = colArray.GetData(entity);
 
             if (isPlayer && collider.shapes.size() > 1 && collider.shapes[1].isActive) {
-                // For player, use ONLY shapes[1]
+                // For player, use shapes[1]
                 const auto& navShape = collider.shapes[1];
                 float sx = navShape.size.x * tf.scale.x;
                 float sy = navShape.size.y * tf.scale.y;
@@ -255,7 +252,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             else if (distance > 0.001f) {
                 float spd = 50.0f;
                 if (isPlayer) {
-                    spd = 50.0f;
+                    spd = playerArray.GetData(playerID).mSpeed;
                 }
                 else if (isEnemy) {
                     spd = enemyArray.GetData(entity).mSpeed;
