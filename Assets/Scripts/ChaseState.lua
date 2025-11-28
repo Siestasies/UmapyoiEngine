@@ -72,7 +72,11 @@ function ChaseState:exit()
 
     local transform = self.parent:GetTransform()
     --when leaving state make sure that the enemy stops moving so im setting the goal to current position
-    SetPathFindingGoal(self.parent.id,transform.position.x,transform.position.y)
+    --SetPathFindingGoal(self.parent.id,transform.position.x,transform.position.y)
+
+    local pf = GetPathFindingFrom(self.parent.id)
+    pf.goal.x = self.parent:GetTransform().position.x
+    pf.goal.y = self.parent:GetTransform().position.x
 end
 
 
