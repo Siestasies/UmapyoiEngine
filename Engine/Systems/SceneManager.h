@@ -224,6 +224,7 @@ namespace Uma_Engine
 
         bool m_IsEditorMode = false;
         PLAYMODE playMode = PLAYMODE::PM_STOP;
+        bool mGamePause = false;
 
         bool isUnloading = false;
 

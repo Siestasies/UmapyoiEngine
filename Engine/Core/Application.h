@@ -139,5 +139,6 @@ namespace Uma_Engine
         bool mInitialized;
         bool mWasFocused;
         bool mIsEditor;
+        bool mGamePause;
     };
 }

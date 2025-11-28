@@ -29,6 +29,7 @@ All rights reserved.
 #include "../Events/IMGUIEvents.h"
 #include "../Events/EditorEvents.h"
 #include "../Events/SceneEvents.h"
+#include "../Events/ApplicationEvents.h"
 
 #include <algorithm>
 
@@ -108,6 +109,7 @@ namespace Uma_Engine
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
                 playMode = PLAYMODE::PM_STOP;
+                pEventSystem->Emit<IMGUIStopRequest>();
 
                 if (e.load_n_play)
                 {
@@ -128,6 +130,12 @@ namespace Uma_Engine
         pEventSystem->Subscribe<UpdateMouseOverUIEvent, SceneManager>(
             [this](const UpdateMouseOverUIEvent& e) {
                 m_isMouseOverUI = e.isFocus;
+            }
+        );
+
+        pEventSystem->Subscribe<ApplicationGamePauseRequest, SceneManager>(
+            [this](const ApplicationGamePauseRequest& e) {
+                mGamePause = e.pause;
             }
         );
     }
@@ -199,9 +207,21 @@ namespace Uma_Engine
                 }
             }
 
+            if (mGamePause)
+            {          
+                m_ActiveScene->GetSound()->pauseAllSounds(1);
+            }
+            else
+            {
+                m_ActiveScene->GetSound()->pauseAllSounds(0);
+            }
+
             if (playMode == PLAYMODE::PM_PLAY)
             {
-                m_ActiveScene->Update(dt);
+                if (mGamePause)
+                    m_ActiveScene->Update(0.f);
+                else
+                    m_ActiveScene->Update(dt);
             }
             else if (playMode == PLAYMODE::PM_PAUSE)
             {
@@ -209,8 +229,6 @@ namespace Uma_Engine
             }
             else
             {
-                //std::filesystem::remove("Assets/Scenes/" + m_ActiveScene->GetName());
-
                 // things that need to be constantly updated no matter what
                 // shouldn't affect game stop?
                 m_ActiveScene->UpdateSelective(0.f);

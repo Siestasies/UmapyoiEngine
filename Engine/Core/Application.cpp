@@ -53,6 +53,7 @@ namespace Uma_Engine
         , mInitialized(false)
         , mWasFocused(false)
         , mIsEditor(true)
+        , mGamePause(false)
     {
     }
 
@@ -344,6 +345,12 @@ namespace Uma_Engine
             if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_F11))
             {
                 mWindow->ToggleFullscreen();
+            }
+
+            if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_BACKSPACE))
+            {
+                mGamePause = !mGamePause;
+                mEventSystem->Emit<ApplicationGamePauseRequest>(mGamePause);
             }
 
             // Update all systems
