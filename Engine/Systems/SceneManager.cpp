@@ -108,6 +108,11 @@ namespace Uma_Engine
                 LoadScene(e.name, false);
                 m_UseEditorCamera = false;
                 playMode = PLAYMODE::PM_STOP;
+
+                if (e.load_n_play)
+                {
+                    pEventSystem->Emit<PlaySceneRequest>();
+                }
             }
         );
 

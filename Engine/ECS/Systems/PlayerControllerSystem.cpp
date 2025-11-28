@@ -28,8 +28,11 @@ All rights reserved.
 #include "../Components/Transform.h"
 #include "../Components/Player.h"
 
-#include "Events/PlayerEvents.h"
 #include "Debugging/Debugger.hpp"
+
+// events
+#include "Events/PlayerEvents.h"
+#include "Events/CollisionEvent.h"
 
 #include <GLFW/glfw3.h>
 
@@ -41,13 +44,70 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    void PlayerControllerSystem::Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c)
+    {
+        pEventSystem = es;
+        pHybridInputSystem = is;
+        pCoordinator = c;
+
+        SubscribeToEvents();
+    }
+
     void PlayerControllerSystem::Update(float dt)
     {
         if (aEntities.empty()) return;
 
+        if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
+            return;
+
         // by right shd only have 1 player
         HandleMovementInput(dt);
         HandleActionInput();
+    }
+
+    void PlayerControllerSystem::SubscribeToEvents()
+    {
+        pEventSystem->Subscribe<Uma_Engine::KeyPressEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
+        pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
+        pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
+
+        // collision
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionEnterEvent& e) 
+            { 
+                // do nth yet
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionEvent& e)
+            {
+                // do nth yet
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionExitEvent& e)
+            {
+                // do nth yet
+            });
+
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
+            {
+                // do nth yet
+                std::stringstream ss;
+                ss << "Trigger enter player collider " << e.trigger << " " << e.entity;
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+
+                // proccess trigger
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEvent& e)
+            {
+                // do nth yet
+                std::stringstream ss;
+                ss << "Trigger in player collider " << e.trigger << " " << e.entity;
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerExitEvent& e)
+            {
+                // do nth yet
+                std::stringstream ss;
+                ss << "Trigger exits player collider " << e.trigger << " " << e.entity;
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());
+            });
     }
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)

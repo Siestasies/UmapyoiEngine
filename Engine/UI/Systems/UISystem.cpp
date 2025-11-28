@@ -80,12 +80,12 @@ namespace Uma_UI
         }
 
         // Subscribe to window resize events and mark all UI dirty
-        pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
-            {
-                mScreenSize.x = static_cast<float>(e.width);
-                mScreenSize.y = static_cast<float>(e.height);
-                MarkAllDirty(); // CRITICAL: Recalculate layout on resize
-            });
+        //pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
+        //    {
+        //        mScreenSize.x = static_cast<float>(e.width);
+        //        mScreenSize.y = static_cast<float>(e.height);
+        //        MarkAllDirty(); // CRITICAL: Recalculate layout on resize
+        //    });
 
         mHitTestCache.clear();
     }
@@ -102,6 +102,8 @@ namespace Uma_UI
         {
             return;
         }
+
+        mScreenSize = pGraphics->GetSceneViewport();
 
         LayoutPass();
         //InputPass();
@@ -174,6 +176,7 @@ namespace Uma_UI
             {
                 rectTransform.computedRect = ComputeRectInNDC(
                     rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
+                MarkEntityAndChildrenDirty(entity);
                 rectTransform.isDirty = false;
             }
         }
@@ -204,7 +207,7 @@ namespace Uma_UI
         mMouseConsumedThisFrame = false;
         mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
 
-        mScreenSize = pGraphics->GetSceneViewport();
+        //mScreenSize = pGraphics->GetSceneViewport();
 
         mMousePositionNDC = Uma_UI::ScreenToNDC(
             mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
@@ -225,6 +228,9 @@ namespace Uma_UI
         // Build hit test cache with proper NDC rectangles
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
                 continue;
 
@@ -323,6 +329,9 @@ namespace Uma_UI
         // Render images
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& imageArray = pCoordinator->GetComponentArray<Image>();
             if (!imageArray.Has(entity))
             {
@@ -376,6 +385,10 @@ namespace Uma_UI
         // Render text - alignment computed every frame based on current rect
         for (Uma_ECS::Entity entity : sortedEntities)
         {
+
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
             auto& textArray = pCoordinator->GetComponentArray<Text>();
             if (!textArray.Has(entity))
             {
@@ -452,10 +465,38 @@ namespace Uma_UI
      */
     void UISystem::MarkAllDirty()
     {
-        auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
-        for (size_t i = 0; i < rectArray.Size(); ++i)
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
+        for (size_t i = 0; i < rectTransform.Size(); ++i)
         {
-            rectArray.GetComponentAt(i).isDirty = true;
+            rectTransform.GetComponentAt(i).isDirty = true;
+        }
+    }
+
+    /*!
+     * \brief Marks an entity and all its descendants as dirty.
+     * \param entity The root entity to mark dirty.
+     *
+     * Recursively traverses the Transform hierarchy and sets isDirty = true
+     * for all RectTransform components found in the subtree.
+     */
+    void UISystem::MarkEntityAndChildrenDirty(Uma_ECS::Entity entity)
+    {
+        // Mark this entity's RectTransform as dirty if it exists
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
+        if (rectTransform.Has(entity))
+        {
+            rectTransform.GetComponentAt(entity).isDirty = true;
+        }
+
+        // Recursively mark all children
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        if (transformArray.Has(entity))
+        {
+            const auto& transform = transformArray.GetComponentAt(entity);
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                MarkEntityAndChildrenDirty(child);
+            }
         }
     }
 
@@ -543,11 +584,11 @@ namespace Uma_UI
     std::vector<Uma_ECS::Entity> UISystem::GetSortedUIEntities()
     {
         std::vector<std::pair<Uma_ECS::Entity, int>> entities;
-        auto& rectArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& rectTransform = pCoordinator->GetComponentArray<RectTransform>();
 
-        for (size_t i = 0; i < rectArray.Size(); ++i)
+        for (size_t i = 0; i < rectTransform.Size(); ++i)
         {
-            Uma_ECS::Entity entity = rectArray.GetEntity(i);
+            Uma_ECS::Entity entity = rectTransform.GetEntity(i);
             int sortingOrder = 0;
             auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
 

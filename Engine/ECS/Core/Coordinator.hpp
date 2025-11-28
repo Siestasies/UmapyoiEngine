@@ -52,6 +52,12 @@ All rights reserved.
 #include "../Components/PathFinding.h"
 #include "../Components/ParticleEmitter.h"
 #include "../Components/Prefab.h"
+#include "../Components/Projectile.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/Button.h"
+#include "UI/Components/Canvas.h"
+#include "UI/Components/Text.h"
 
 #include <unordered_set>
 
@@ -130,6 +136,14 @@ namespace Uma_ECS
         std::optional<Entity> GetParent(Entity entity);
         std::vector<Entity> GetChildren(Entity entity);
         void DestroyEntityAndChildren(Entity entity);
+
+        // Enable/Disable functionality (Unity-like SetActive)
+        void SetActive(Entity entity, bool active);
+        bool IsActiveSelf(Entity entity) const;
+        bool IsActiveInHierarchy(Entity entity) const;
+
+        // Helper method for systems to filter active entities
+        std::vector<Entity> GetActiveEntities(const std::vector<Entity>& entities) const;
 
         void ProcessDeletionQueue();  // Call this once per frame
 
@@ -238,6 +252,12 @@ namespace Uma_ECS
             CHECK_COMPONENT(PathFinding)
             CHECK_COMPONENT(ParticleEmitter)
             CHECK_COMPONENT(Prefab)
+            CHECK_COMPONENT(Projectile)
+            CHECK_COMPONENT(Uma_UI::RectTransform)
+            CHECK_COMPONENT(Uma_UI::Image)
+            CHECK_COMPONENT(Uma_UI::Button)
+            CHECK_COMPONENT(Uma_UI::Canvas)
+            CHECK_COMPONENT(Uma_UI::Text)
 
 #undef CHECK_COMPONENT
         }

@@ -454,6 +454,10 @@ namespace Uma_Engine
             }
 
             ImGui::EndChild();
+
+            if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+                mSelectedPath.clear();
+            }
         }
 
         void RenderFeedback()
@@ -492,7 +496,14 @@ namespace Uma_Engine
             }
             else if (ext == ".prefab")
             {
-                pEventSystem->Emit<LoadPrefabRequestEvent>(file.name);
+                //pEventSystem->Emit<LoadPrefabRequestEvent>(file.name);
+                pEventSystem->Emit<StopSceneRequest>();
+                pEventSystem->Emit<SaveCurrSceneRequest>();
+                pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
+                pEventSystem->Emit<ClearSceneRequestEvent>();
+                pEventSystem->Emit<LoadPrefabRequestEvent>(file.name, false);
+                mPrefabName = file.stem;
+                mPrefabEdit = true;
                 return true;
             }
             else

@@ -243,5 +243,8 @@ namespace Uma_ECS
 
         std::unordered_set<EntityPair, EntityPairHash> currentCollisions;  ///< Collisions detected this frame
         std::unordered_set<EntityPair, EntityPairHash> previousCollisions; ///< Collisions detected last frame
+
+        std::unordered_set<EntityPair, EntityPairHash> currentTriggers;  ///< Collisions detected this frame
+        std::unordered_set<EntityPair, EntityPairHash> previousTriggers; ///< Collisions detected last frame
     };
 }

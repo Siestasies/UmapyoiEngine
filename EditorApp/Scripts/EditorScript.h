@@ -249,9 +249,9 @@ namespace Uma_Engine
         void HandleEditorInput()
         {
             //auto input = GetInput();
-            if (GetInput()->KeyPressed(GLFW_KEY_5)) {
-                SpawnDefaultEntities();
-            }
+            // if (GetInput()->KeyPressed(GLFW_KEY_5)) {
+            //     SpawnDefaultEntities();
+            // }
             if (GetInput()->KeyPressed(GLFW_KEY_6)) {
                 GetPathFindingSystem().showDebug = !GetPathFindingSystem().showDebug;
             }

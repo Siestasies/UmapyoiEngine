@@ -333,6 +333,87 @@ namespace Uma_ECS
         }
     }
 
+    void Coordinator::SetActive(Entity entity, bool active)
+    {
+        if (!aEntityManager->IsEntityActive(entity)) {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Attempting to SetActive on inactive/destroyed entity");
+            return;
+        }
+
+        aEntityManager->SetEntityEnabled(entity, active);
+
+        // Emit event for editor/system updates
+        if (pEventSystem) {
+            pEventSystem->Emit<Uma_Engine::EntityActiveStateChangedEvent>(entity, active);
+        }
+    }
+
+    bool Coordinator::IsActiveSelf(Entity entity) const
+    {
+        if (!aEntityManager->IsEntityActive(entity)) {
+            return false;
+        }
+
+        return aEntityManager->IsEntityEnabled(entity);
+    }
+
+    bool Coordinator::IsActiveInHierarchy(Entity entity) const
+    {
+        if (!aEntityManager->IsEntityActive(entity)) {
+            return false;
+        }
+
+        // Check if this entity itself is disabled
+        if (!aEntityManager->IsEntityEnabled(entity)) {
+            return false;
+        }
+
+        // Traverse up the parent hierarchy to check if any parent is disabled
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (!tfArray.Has(entity)) {
+            // No transform means no parent, so just return own enabled state
+            return true;
+        }
+
+        std::optional<Entity> currentParent = tfArray.GetData(entity).parent;
+        while (currentParent.has_value())
+        {
+            Entity parent = currentParent.value();
+
+            // If parent doesn't exist or is disabled, this entity is inactive in hierarchy
+            if (!aEntityManager->IsEntityActive(parent) || !aEntityManager->IsEntityEnabled(parent)) {
+                return false;
+            }
+
+            // Move to next parent up the chain
+            if (tfArray.Has(parent)) {
+                currentParent = tfArray.GetData(parent).parent;
+            }
+            else {
+                break;
+            }
+        }
+
+        return true;
+    }
+
+    std::vector<Entity> Coordinator::GetActiveEntities(const std::vector<Entity>& entities) const
+    {
+        std::vector<Entity> activeEntities;
+        activeEntities.reserve(entities.size());
+
+        for (Entity entity : entities)
+        {
+            if (IsActiveInHierarchy(entity))
+            {
+                activeEntities.push_back(entity);
+            }
+        }
+
+        return activeEntities;
+    }
+
     void Coordinator::ProcessDeletionQueue()
     {
         if (mEntitiesToDestroy.empty() || mIsProcessingDeletions) {
@@ -410,6 +491,7 @@ namespace Uma_ECS
 
             rapidjson::Value entityObj(rapidjson::kObjectType);
             entityObj.AddMember("id", en, allocator);
+            entityObj.AddMember("isActive", aEntityManager->IsEntityEnabled(en), allocator);
 
             // Check if this is a prefab instance (root entity with Prefab component)
             bool isPrefabInstance = false;
@@ -487,6 +569,14 @@ namespace Uma_ECS
             Entity oldID = entityVal["id"].GetUint();
             Entity newID = CreateEntity();
             entityIDMap[oldID] = newID;
+
+            // Restore active state (default to true if not present for backward compatibility)
+            bool isActive = true;
+            if (entityVal.HasMember("isActive"))
+            {
+                isActive = entityVal["isActive"].GetBool();
+            }
+            aEntityManager->SetEntityEnabled(newID, isActive);
 
             // Check if this is a prefab instance
             bool isPrefabInstance = entityVal.HasMember("isPrefab") && entityVal["isPrefab"].GetBool();
@@ -603,6 +693,7 @@ namespace Uma_ECS
 
             Entity prefabID = worldToPrefabID[e];
             entityObj.AddMember("id", prefabID, allocator);
+            entityObj.AddMember("isActive", aEntityManager->IsEntityEnabled(e), allocator);
 
             // Serialize components
             rapidjson::Value comps(rapidjson::kObjectType);
@@ -729,6 +820,14 @@ namespace Uma_ECS
             Entity prefabID = entityVal["id"].GetUint();
             Entity newWorldID = CreateEntity();
             prefabToWorldID[prefabID] = newWorldID;
+
+            // Restore active state (default to true if not present for backward compatibility)
+            bool isActive = true;
+            if (entityVal.HasMember("isActive"))
+            {
+                isActive = entityVal["isActive"].GetBool();
+            }
+            aEntityManager->SetEntityEnabled(newWorldID, isActive);
 
             const auto& comps = entityVal["components"];
             Signature sign = aComponentManager->DeserializeAll(newWorldID, comps);

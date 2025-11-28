@@ -323,6 +323,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::AudioComponent>();
         m_Coordinator.RegisterComponent<Uma_ECS::PathFinding>();
         m_Coordinator.RegisterComponent<Uma_ECS::Prefab>();
+        m_Coordinator.RegisterComponent<Uma_ECS::Projectile>();
         m_Coordinator.RegisterComponent<Uma_UI::RectTransform>();
         m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
         m_Coordinator.RegisterComponent<Uma_UI::Image>();
@@ -359,6 +360,17 @@ namespace Uma_Engine
             m_Coordinator.SetSystemSignature<Uma_ECS::PhysicsSystem>(sign);
         }
         m_PhysicsSystem->Init(&m_Coordinator);
+
+        // Projectile System
+        m_ProjectileSystem = m_Coordinator.RegisterSystem<Uma_ECS::ProjectileSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Projectile>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::ProjectileSystem>(sign);
+        }
+        m_ProjectileSystem->Init(&m_Coordinator);
 
         // Collision System
         m_CollisionSystem = m_Coordinator.RegisterSystem<Uma_ECS::CollisionSystem>();

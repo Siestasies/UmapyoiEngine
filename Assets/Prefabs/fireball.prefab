@@ -1,0 +1,109 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "fireball",
+                        "position": {
+                            "x": -4.25,
+                            "y": -1.25
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.479,
+                            "y": 1.0
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "fire_ball",
+                        "layer": 128,
+                        "flipX": true,
+                        "flipY": false,
+                        "Native": true,
+                        "gridX": 6.0,
+                        "gridY": 2.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 13.3,
+                                    "y": 1.899
+                                },
+                                "purpose": 2,
+                                "layer": 16,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "flying",
+                                "framesX": 6,
+                                "framesY": 2,
+                                "startFrame": 6,
+                                "frameCount": 5,
+                                "speed": 10.0,
+                                "loop": true
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/fireball.prefab",
+                        "isRoot": true
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "name": "fire_ball",
+                "path": "Assets/256px VFX.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

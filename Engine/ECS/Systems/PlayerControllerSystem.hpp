@@ -37,16 +37,7 @@ namespace Uma_ECS
     class PlayerControllerSystem : public ECSSystem
     {
     public:
-        inline void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c)
-        {
-            pEventSystem = es;
-            pHybridInputSystem = is;
-            pCoordinator = c;
-
-            pEventSystem->Subscribe<Uma_Engine::KeyPressEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyPressEvent& e) { OnKeyPress(e); });
-            pEventSystem->Subscribe<Uma_Engine::KeyReleaseEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyReleaseEvent& e) { OnKeyRelease(e); });
-            pEventSystem->Subscribe<Uma_Engine::KeyRepeatEvent, PlayerControllerSystem>([this](const Uma_Engine::KeyRepeatEvent& e) { OnKeyRepeat(e); });
-        }
+        void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c);
         
         void Update(float dt);
 
@@ -57,6 +48,7 @@ namespace Uma_ECS
 
         void HandleMovementInput(float dt);
         void HandleActionInput();
+        void SubscribeToEvents();
 
     private:
         struct InputState
