@@ -31,5 +31,12 @@ namespace Uma_Engine
         ApplicationQuitRequest(){ priority = Priority::High; }
     };
 
+    class ApplicationGamePauseRequest : public Event
+    {
+    public:
+        ApplicationGamePauseRequest(bool b) : pause(b) { priority = Priority::High; }
+    public:
+        bool pause;
+    };
    
 }

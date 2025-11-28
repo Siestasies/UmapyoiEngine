@@ -60,13 +60,13 @@ namespace Uma_Engine
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
 
         // Create and setup default game scene
-        auto gameScene = sceneManager->CreateScene("test_default.scn", "test_default.scn");
+        auto gameScene = sceneManager->CreateScene("main_menu.scn", "main_menu.scn");
         gameScene->g_EngineConfig = *GetConfig();
 
         // Attach game script to scene
-        sceneManager->AttachScriptToScene("test_default.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("main_menu.scn", "GameBehaviour");
 
         // Load the scene
-        sceneManager->LoadScene("test_default.scn");
+        sceneManager->LoadScene("main_menu.scn");
     }
 }
