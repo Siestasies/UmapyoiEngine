@@ -226,6 +226,29 @@ namespace Uma_Engine
             return clips;
         }
 
+        /**
+         * \brief Removes animation clip by name
+         * \param name Name of the clip to remove
+         * \return true if clip was found and removed
+         */
+        bool RemoveClip(const std::string& name)
+        {
+            auto it = clips.find(name);
+            if (it == clips.end())
+                return false;
+
+            if (currentClip == name)
+            {
+                playing = false;
+                currentClip.clear();
+                currentFrame = 0;
+                timer = 0.0f;
+            }
+
+            clips.erase(it);
+            return true;
+        }
+
     private:
         std::unordered_map<std::string, AnimationClip> clips; // Map storing all animation clips by name
         std::string currentClip;                              // Name of current active clip

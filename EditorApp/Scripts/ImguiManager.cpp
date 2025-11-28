@@ -263,7 +263,7 @@ namespace Uma_Engine
         {
             // Game mode (rendering to window) - set viewport to full window size
             auto inputSystem = pSystemManager->GetSystem<HybridInputSystem>();
-            if (inputSystem && graphics->GetWindow())
+            if (inputSystem && graphics && graphics->GetWindow())
             {
                 int width, height;
                 glfwGetWindowSize(graphics->GetWindow(), &width, &height);
@@ -1996,7 +1996,7 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Animation Clips");
 
-                // List all clips with play button
+                // List all clips with play and delete buttons
                 const auto& clips = animator.animator.GetClips();
                 for (const auto& [name, clip] : clips)
                 {
@@ -2011,19 +2011,56 @@ namespace Uma_Engine
                         ImGui::Text("Speed: %.2f fps", clip.speed);
                         ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
 
-                        if (ImGui::Button("Play"))
+                        ImGui::Spacing();
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        // Control buttons
+                        if (ImGui::Button("Play", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name);
                             m_hasUnsavedEdit = true;
                         }
                         ImGui::SameLine();
-                        if (ImGui::Button("Play (Restart)"))
+
+                        if (ImGui::Button("Play (Restart)", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name, true);
                             m_hasUnsavedEdit = true;
                         }
 
-                        // TODO: Add edit/delete functionality if needed
+                        ImGui::Spacing();
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        // Delete button with confirmation color
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.2f, 0.2f, 1.0f));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.0f, 0.3f, 0.3f, 1.0f));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.6f, 0.1f, 0.1f, 1.0f));
+
+                        if (ImGui::Button("Delete Clip", ImVec2(-1, 0)))
+                        {
+                            // Store name before removing (since we're iterating over the map)
+                            std::string clipToRemove = name;
+
+                            if (animator.animator.RemoveClip(clipToRemove))
+                            {
+                                // If this was the initial clip, clear it
+                                if (animator.initialClip == clipToRemove)
+                                {
+                                    animator.initialClip.clear();
+                                }
+
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            ImGui::PopStyleColor(3);
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::PopStyleColor(3);
 
                         ImGui::TreePop();
                     }
