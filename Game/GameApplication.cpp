@@ -50,6 +50,8 @@ namespace Uma_Engine
 
         GetGraphics()->SetRenderTarget(Uma_Engine::RenderTarget::Window);
 
+        GetWindow()->SetWindowMode(WindowMode::Fullscreen);
+
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 

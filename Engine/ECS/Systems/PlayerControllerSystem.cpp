@@ -108,7 +108,7 @@ namespace Uma_ECS
 
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
-                if (!pCoordinator) return;
+                if (!pCoordinator || aEntities.empty()) return;
                 if (e.entity != aEntities[0] && e.trigger != aEntities[0]) return;
 
               /*  std::stringstream ss;
