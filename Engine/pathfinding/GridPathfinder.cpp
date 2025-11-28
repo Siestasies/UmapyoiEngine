@@ -1,3 +1,21 @@
+/*!
+\file   GridPathfinder.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Koh Kai Yang (100%)
+\par    E-mail: k.kaiyang@digipen.edu
+\par    DigiPen login: k.kaiyang
+
+\brief
+This implements the algorithm for entity pathfinding
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "GridPathfinder.hpp"
 #include <iostream>
 #include <algorithm>

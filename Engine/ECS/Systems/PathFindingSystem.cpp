@@ -37,6 +37,7 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
     pEventSystem->Subscribe<Uma_Engine::CallPathFindToBake, PathFindingSystem>(
         [this](const Uma_Engine::CallPathFindToBake& e)
         {
+            (void)(e);
             isDirty = true;
         }
     );
@@ -375,7 +376,7 @@ void Uma_ECS::PathFindingSystem::DebugDraw()
 
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();
     auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-    auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
+    //auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
 
     // 1. Draw all collider bounding boxes
     //auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
