@@ -129,6 +129,7 @@ namespace Uma_ECS
                 }
 
                 //std::cout << "Deserialized " << clipsArray.Size() << " animation clips" << std::endl;
+                animator.GetUVs(uvOffset, uvSize);
             }
         }
     };

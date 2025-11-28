@@ -2019,6 +2019,7 @@ namespace Uma_Engine
                         if (ImGui::Button("Play", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name);
+                            animator.animator.GetUVs(animator.uvOffset, animator.uvSize);
                             //m_hasUnsavedEdit = true;
                         }
                         ImGui::SameLine();
@@ -2026,6 +2027,7 @@ namespace Uma_Engine
                         if (ImGui::Button("Play (Restart)", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name, true);
+                            animator.animator.GetUVs(animator.uvOffset, animator.uvSize);
                             //m_hasUnsavedEdit = true;
                         }
 

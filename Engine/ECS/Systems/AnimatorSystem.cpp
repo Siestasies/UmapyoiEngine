@@ -40,7 +40,7 @@ namespace Uma_ECS
 
             auto& animator = animatorArray.GetData(entity);
 
-            // Only play the initial clip if we haven't initialized this component yet
+            // Only play the initial clip if haven't initialized this beofre
             if (!animator.isInitialized)
             {
                 if (animator.autoPlay && !animator.initialClip.empty())
