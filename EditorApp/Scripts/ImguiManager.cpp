@@ -2019,14 +2019,14 @@ namespace Uma_Engine
                         if (ImGui::Button("Play", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name);
-                            m_hasUnsavedEdit = true;
+                            //m_hasUnsavedEdit = true;
                         }
                         ImGui::SameLine();
 
                         if (ImGui::Button("Play (Restart)", ImVec2(100, 0)))
                         {
                             animator.animator.Play(name, true);
-                            m_hasUnsavedEdit = true;
+                            //m_hasUnsavedEdit = true;
                         }
 
                         ImGui::Spacing();
@@ -2125,7 +2125,7 @@ namespace Uma_Engine
                 }
 
                 // end tracking
-                EndComponentEdit(entity, coordinator, "RigidBody");
+                EndComponentEdit(entity, coordinator, "Animator");
 
                 ImGui::Unindent();
             }
