@@ -523,6 +523,9 @@ namespace Uma_Engine
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
 
+        if (m_ProjectileSystem)
+            m_ProjectileSystem->Update(m_FixedTimeStep);
+
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();
 

@@ -95,7 +95,7 @@
                     "struct Uma_ECS::Projectile": {
                         "mDamage": 10,
                         "mSpeed": 70.0,
-                        "mFadeOVerTime": false,
+                        "mFadeOVerTime": true,
                         "mLifeTime": 2.0
                     }
                 }

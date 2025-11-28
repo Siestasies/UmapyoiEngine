@@ -29,12 +29,12 @@ namespace Uma_ECS
     {
     public:
 
-        inline void Init(Coordinator* c) { gCoordinator = c; }
+        inline void Init(Coordinator* c) { pCoordinator = c; }
 
         void Update(float dt);
 
     private:
 
-        Coordinator* gCoordinator = nullptr;
+        Coordinator* pCoordinator = nullptr;
     };
 }
