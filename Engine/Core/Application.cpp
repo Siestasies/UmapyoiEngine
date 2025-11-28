@@ -310,6 +310,11 @@ namespace Uma_Engine
                         mInputSystem->ResetAllInput();
                     }
 
+                    if (!isFocused && !isIconified)
+                    {
+                        glfwIconifyWindow(mWindow->GetGLFWWindow());
+                    }
+
                     mWasFocused = false;
                 }
 
