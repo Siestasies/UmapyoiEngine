@@ -2865,7 +2865,7 @@ namespace Uma_Engine
                ImGui::Text("Color & Visibility");
            
                float imageColor[4] = { image.colour.r, image.colour.g, image.colour.b, image.colour.a };
-               if (ImGui::ColorEdit4("Color", imageColor))
+               if (ImGui::ColorEdit4("Image Color", imageColor))
                {
                    image.colour.r = imageColor[0];
                    image.colour.g = imageColor[1];
@@ -2874,7 +2874,7 @@ namespace Uma_Engine
                    m_hasUnsavedEdit = true;
                }
            
-               if (ImGui::Checkbox("Visible", &image.visible))
+               if (ImGui::Checkbox("Image Visible", &image.visible))
                {
                    m_hasUnsavedEdit = true;
                }
@@ -3050,7 +3050,7 @@ namespace Uma_Engine
                 ImGui::Text("Appearance");
             
                 float textColor[4] = { text.colour.r, text.colour.g, text.colour.b, text.colour.a };
-                if (ImGui::ColorEdit4("Color", textColor))
+                if (ImGui::ColorEdit4("Text Color", textColor))
                 {
                     text.colour.r = textColor[0];
                     text.colour.g = textColor[1];
@@ -3067,7 +3067,7 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
             
-                if (ImGui::Checkbox("Visible", &text.visible))
+                if (ImGui::Checkbox("Text Visible", &text.visible))
                 {
                     m_hasUnsavedEdit = true;
                 }
