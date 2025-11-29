@@ -52,7 +52,7 @@ namespace Uma_ECS
         int     mMaxHealth = 100;
         float   mHealthRegenRate = 1.f;
 
-        float   mSpeed = 1.f;
+        float   mSpeed = 50.f;
         float   mDashSpeed = 10.f;
         float   mDashCD = 2.f;
 

@@ -25,7 +25,7 @@
                         "mHealth": 100,
                         "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 1.0,
+                        "mSpeed": 50.0,
                         "mDashSpeed": 10.0,
                         "mDashCD": 2.0,
                         "mAttackDamage": 30,

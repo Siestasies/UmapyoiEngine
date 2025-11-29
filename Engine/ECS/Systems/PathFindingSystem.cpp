@@ -37,7 +37,7 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
     pGraphics = graphics;
 
     gridPathfinder = new Uma_Navigation::GridPathfinder(cellSize);
-
+    isDirty = true;
     pEventSystem->Subscribe<Uma_Engine::CallPathFindToBake, PathFindingSystem>(
         [this](const Uma_Engine::CallPathFindToBake& e)
         {
