@@ -112,6 +112,5 @@ namespace Uma_ECS
 
         // Flag indicating that navigation data needs to be rebuilt (e.g. new entities).
         bool isDirty = false;
-        bool initGoal = false;
     };
 }

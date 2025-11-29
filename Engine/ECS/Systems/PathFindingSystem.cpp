@@ -45,22 +45,6 @@ void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e
             isDirty = true;
         }
     );
-
-    pEventSystem->Subscribe<Uma_Engine::PlaySceneRequest, PathFindingSystem>(
-        [this](const Uma_Engine::PlaySceneRequest& e)
-        {
-            (void)(e);
-            initGoal = true;
-        }
-    );
-
-    pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent, PathFindingSystem>(
-        [this](const Uma_Engine::LoadSceneRequestEvent& e)
-        {
-            (void)(e);
-            initGoal = true;
-        }
-    );
 }
 
 void Uma_ECS::PathFindingSystem::Update(float dt)
@@ -111,16 +95,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                     maxAgentRadius = (std::max)(maxAgentRadius, candidateRadius);
                 }
             }
-
-            if (initGoal && pfArray.Has(entity)) {
-                auto& pf = pfArray.GetData(entity);
-                pf.goal = tf.position;
-            }
         }
-    }
-
-    if (initGoal) {
-        initGoal = false;
     }
 
     /*std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
