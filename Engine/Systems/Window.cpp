@@ -207,6 +207,9 @@ namespace Uma_Engine
 
             mWidth = videoMode->width;
             mHeight = videoMode->height;
+
+            // Force cursor to appear
+            glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
         else
         {

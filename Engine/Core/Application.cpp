@@ -258,6 +258,8 @@ namespace Uma_Engine
 
         std::stringstream titleStream;
 
+        bool lastFrameFocused = true;
+
         while (!mWindow->ShouldClose())
         {
             // Frame rate limiting - wait until it's time for next frame
@@ -309,9 +311,17 @@ namespace Uma_Engine
             // Check if window is minimized
             bool isIconified = glfwGetWindowAttrib(mWindow->GetGLFWWindow(), GLFW_ICONIFIED);
 
-            if (!isFocused || isIconified)
+            if (!mIsEditor && !isFocused && !isIconified)
             {
-                // Lost focus or minimized (pause everything)
+                glfwIconifyWindow(mWindow->GetGLFWWindow());
+                isIconified = true;
+            }
+
+            bool shouldPause = mIsEditor ? isIconified : (!isFocused || isIconified);
+
+            if (shouldPause)
+            {
+                // Transition to paused State
                 if (mWasFocused)
                 {
                     if (mSoundManager)
@@ -325,23 +335,19 @@ namespace Uma_Engine
                         mInputSystem->ResetAllInput();
                     }
 
-                    if (!isFocused && !isIconified)
-                    {
-                        glfwIconifyWindow(mWindow->GetGLFWWindow());
-                    }
-
                     mWasFocused = false;
                 }
 
+                // Keep audio updating while paused
                 if (mSoundManager)
                 {
                     mSoundManager->Update(deltaTime);
                 }
 
-                // Wait for events
                 glfwWaitEventsTimeout(0.1);
 
-                // Skip system updates
+                // Track focus
+                lastFrameFocused = isFocused;
                 continue;
             }
 
@@ -352,9 +358,18 @@ namespace Uma_Engine
                 {
                     mSoundManager->pauseAllSounds(false);
                 }
-
                 mWasFocused = true;
             }
+
+            // Reset input once when focus is lost, but keep running (for editor mode)
+            if (mIsEditor && !isFocused && lastFrameFocused)
+            {
+                if (mInputSystem)
+                {
+                    mInputSystem->ResetAllInput();
+                }
+            }
+            lastFrameFocused = isFocused;
 
             if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_F11))
             {
