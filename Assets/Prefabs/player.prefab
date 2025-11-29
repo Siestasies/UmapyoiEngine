@@ -113,7 +113,7 @@
                                 "purpose": 2,
                                 "layer": 2,
                                 "colliderMask": 4,
-                                "isActive": true,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             }
                         ]

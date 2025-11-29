@@ -63,7 +63,7 @@ namespace Uma_ECS
 
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
-
+        auto& tf = pCoordinator->GetComponent<Transform>(aEntities[0]);
         auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
 
         if (!player.combatState.isAlive) return;

@@ -48,6 +48,8 @@ namespace Uma_ECS
         */
         void Update(float dt);
 
+        void Shutdown();
+
     private:
 
         void HandleCollision(Entity self, Entity trigger);

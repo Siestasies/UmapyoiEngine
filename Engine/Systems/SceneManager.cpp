@@ -33,6 +33,9 @@ All rights reserved.
 
 #include <algorithm>
 
+//temp 
+#include "Application.h"
+
 namespace Uma_Engine
 {
     // ISYSTEM OVERRIDES
@@ -113,6 +116,17 @@ namespace Uma_Engine
 
                 if (e.load_n_play)
                 {
+                    // Force transform system to update world positions before playing
+                    if (m_ActiveScene && m_ActiveScene->m_TransformSystem)
+                    {
+                        m_ActiveScene->m_TransformSystem->UpdateWorldTransform();
+                    }
+
+                    // Cache state before playing so we can restore later
+                    if (m_ActiveScene)
+                    {
+                        m_ActiveScene->GetCoordinator().CacheState();
+                    }
                     pEventSystem->Emit<PlaySceneRequest>();
                 }
             }
@@ -348,6 +362,7 @@ namespace Uma_Engine
         pEventSystem->Emit<SceneLoadedEvent>(name);
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
+
         return scene;
     }
 

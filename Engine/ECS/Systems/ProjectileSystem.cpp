@@ -68,6 +68,11 @@ namespace Uma_ECS
         }
     }
 
+    void ProjectileSystem::Shutdown()
+    {
+        pEventSystem->UnsubscribeSystem<ProjectileSystem>();
+    }
+
     void ProjectileSystem::Update(float dt)
     {
         std::vector<Entity> entityToDestroy;

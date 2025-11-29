@@ -88,6 +88,8 @@ namespace Uma_Engine
 
         m_PlayerController->Shutdown();
 
+        m_ProjectileSystem->Shutdown();
+
         m_LuaScriptingSystem->Shutdown();
         
         m_UISystem->Shutdown();
