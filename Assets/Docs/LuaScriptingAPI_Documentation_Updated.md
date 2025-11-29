@@ -278,14 +278,6 @@ SetActiveEntity(enemyId, false)
 SetActiveEntity(enemyId, true)
 ```
 
-#### `GetActiveEntity(entity)`
-Sets whether an entity is active or inactive.
-
-```lua
--- get isActive for a entity
-local isEntityActive = GetActiveEntity(enemyId)
-```
-
 ---
 
 ## Entity-Queries
@@ -894,6 +886,53 @@ Closes the application/game.
 -- Quit game
 if KeyPressed(KEY_ESCAPE) then
     CloseApplication()
+end
+```
+
+### Game State Management (NEW)
+
+#### `PauseGame(isPaused)`
+Pauses or unpauses the game.
+
+**Parameters:**
+- `isPaused` (bool): True to pause, false to unpause
+
+```lua
+-- Pause the game
+PauseGame(true)
+
+-- Unpause the game
+PauseGame(false)
+
+-- Toggle pause with a key
+if KeyPressed(KEY_ESCAPE) then
+    local currentlyPaused = IsGamePause()
+    PauseGame(not currentlyPaused)
+end
+```
+
+#### `IsGamePause()`
+Returns whether the game is currently paused.
+
+**Returns:**
+- `bool`: True if game is paused, false otherwise
+
+```lua
+-- Check if game is paused
+if IsGamePause() then
+    Log("Game is paused")
+else
+    Log("Game is running")
+end
+
+-- Only update when not paused
+function Update(dt)
+    if IsGamePause() then
+        return
+    end
+    
+    -- Normal game logic
+    UpdatePlayer(dt)
 end
 ```
 
@@ -1563,6 +1602,131 @@ function Update(dt)
 end
 ```
 
+### Example 9: Pause Menu Manager (NEW)
+
+```lua
+ExposedVars = {
+    pauseKey = KEY_ESCAPE,
+    showPauseUI = true
+}
+
+local isPaused = false
+local pauseMenuId = -1
+
+function Start()
+    Log("Pause Manager initialized")
+    
+    -- Find pause menu UI entity (if exists)
+    pauseMenuId = FindEntityWithComponent("PauseMenu")
+    
+    -- Make sure game starts unpaused
+    PauseGame(false)
+    
+    if pauseMenuId ~= -1 then
+        SetActiveEntity(pauseMenuId, false)
+    end
+end
+
+function Update(dt)
+    -- Toggle pause on key press
+    if KeyPressed(pauseKey) then
+        TogglePause()
+    end
+end
+
+function TogglePause()
+    isPaused = not isPaused
+    PauseGame(isPaused)
+    
+    if isPaused then
+        Log("Game paused")
+        PlaySound("pause", 0.7, 0)
+        
+        -- Show pause menu
+        if pauseMenuId ~= -1 then
+            SetActiveEntity(pauseMenuId, true)
+        end
+    else
+        Log("Game resumed")
+        PlaySound("unpause", 0.7, 0)
+        
+        -- Hide pause menu
+        if pauseMenuId ~= -1 then
+            SetActiveEntity(pauseMenuId, false)
+        end
+    end
+end
+
+-- Called by resume button
+function OnResumeClicked()
+    if isPaused then
+        TogglePause()
+    end
+end
+
+-- Called by quit button
+function OnQuitClicked()
+    Log("Quitting to main menu")
+    LoadScene("MainMenu")
+end
+```
+
+### Example 10: Pause-Aware Enemy AI (NEW)
+
+```lua
+ExposedVars = {
+    speed = 150.0,
+    detectionRange = 200.0
+}
+
+local playerId = -1
+
+function Start()
+    playerId = FindEntityWithComponent("Player")
+end
+
+function Update(dt)
+    -- Don't update AI when game is paused
+    if IsGamePause() then
+        return
+    end
+    
+    if playerId == -1 or not IsEntityValid(playerId) then return end
+    
+    local myPos = GetTransform().position
+    local playerPos = GetTransformFrom(playerId).position
+    
+    -- Calculate distance
+    local dx = playerPos.x - myPos.x
+    local dy = playerPos.y - myPos.y
+    local distance = math.sqrt(dx * dx + dy * dy)
+    
+    -- Chase player if in range
+    if distance < detectionRange then
+        local rb = GetRigidBody()
+        if rb then
+            local dirX = dx / distance
+            local dirY = dy / distance
+            
+            rb.velocity.x = dirX * speed
+            rb.velocity.y = dirY * speed
+        end
+    end
+end
+
+function OnCollisionEnter(other)
+    -- Don't process collisions when paused
+    if IsGamePause() then
+        return
+    end
+    
+    if HasPlayerOn(other) then
+        Log("Enemy hit player!")
+        PlaySound("player_hit", 0.8, 0)
+    end
+end
+```
+
 ---
 
 ## Vec2 Helper
@@ -2082,6 +2246,7 @@ end
 - `AddForce(entity, position, direction, force, rotation)`
 - `SetPathFindingGoal(entity, x, y)`
 - `LoadScene(sceneName)`, `CloseApplication()`
+- `PauseGame(isPaused)`, `IsGamePause()`
 
 ### Lifecycle Callbacks
 - `Start()`, `Update(dt)`, `OnEnable()`, `OnDisable()`, `OnDestroy()`, `OnClicked()`
@@ -2107,6 +2272,7 @@ end
 - **Pathfinding**: `SetPathFindingGoal(entity, x, y)`
 - **Prefabs**: `SpawnPrefab(prefabName, position)`
 - **Scene Management**: `LoadScene(sceneName)`, `CloseApplication()`
+- **Game State**: `PauseGame(isPaused)`, `IsGamePause()`
 - **Entity Control**: `SetActiveEntity(entity, isActive)`
 
 ### New Lifecycle Callbacks
