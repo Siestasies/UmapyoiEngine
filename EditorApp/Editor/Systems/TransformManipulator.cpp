@@ -15,7 +15,7 @@ Implementation of the TransformManipulator class.
 This file provides the concrete logic for applying transformations (translate, rotate, scale)
 to entities during gizmo drag operations, supporting both game and UI entities.
 
-CORRECTED: Uses Transform hierarchy for parent lookups, marks UI dirty properly.
+Uses Transform hierarchy for parent lookups, marks UI dirty properly.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.

@@ -15,8 +15,14 @@ Implementation of a hybrid event system for managing game events with both immed
 This file defines a flexible, type-safe event dispatch and subscription system, enabling systems to respond to
 events in real-time or defer handling through prioritised event queues. It supports listener registration,
 event emission with priority-based ordering, and safe type-erased storage for runtime event handling.
+
+The system supports optional predicate functions (std::function<bool(const T&)>) during subscription,
+allowing listeners to filter events based on custom criteria without requiring additional event dispatching overhead.
+This enables fine-grained control over which events trigger specific callbacks.
+
 The system also includes facilities for managing event listeners, limiting event processing per frame,
 and integrating cleanly with the game's system architecture. Designed for use in modular ECS-style engines.
+
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
