@@ -1,3 +1,21 @@
+/*!
+\file   PathFindingSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Koh Kai Yang (100%)
+\par    E-mail: k.kaiyang@digipen.edu
+\par    DigiPen login: k.kaiyang
+
+\brief
+Implementation of updating the pathfinding component
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "PathFindingSystem.hpp"
 
 #include "Components/Transform.h"
@@ -216,7 +234,25 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
         pf.pathUpdateTimer += dt;
         if (pf.pathUpdateTimer >= pf.pathUpdateInterval) {
-            pf.path = gridPathfinder->FindPath(currentPos, pf.goal, agentRad);
+            bool goalChanged = !pf.haveLastGoal || (pf.goal != pf.lastGoal);
+            bool needRepath = (!pf.hasValidPath || pf.reachedGoal || goalChanged);
+
+            if (needRepath) {
+                pf.path = gridPathfinder->FindPath(currentPos, pf.goal, agentRad);
+                pf.path = gridPathfinder->SmoothPath(pf.path);
+                pf.pathIndex = 0;
+                pf.hasValidPath = !pf.path.empty();
+                pf.pathUpdateTimer = 0.0f;
+
+                pf.lastGoal = pf.goal;
+                pf.haveLastGoal = true;
+
+                if (isPlayer) {
+                    pf.reachedGoal = false;   // starting a fresh path to a goal
+                }
+            }
+
+            /*pf.path = gridPathfinder->FindPath(currentPos, pf.goal, agentRad);
             pf.path = gridPathfinder->SmoothPath(pf.path);
             pf.pathIndex = 0;
             pf.hasValidPath = !pf.path.empty();
@@ -224,7 +260,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
             if (isPlayer) {
                 pf.reachedGoal = false;
-            }
+            }*/
         }
 
         // Follow the path

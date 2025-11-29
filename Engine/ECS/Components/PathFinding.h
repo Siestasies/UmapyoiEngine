@@ -36,6 +36,9 @@ namespace Uma_ECS{
 		bool hasValidPath = false;
 		bool reachedGoal = false;
 
+		Vec2  lastGoal;
+		bool  haveLastGoal = false;
+
 		Vec2 goal{ 0.f,0.f };
 
 		void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
