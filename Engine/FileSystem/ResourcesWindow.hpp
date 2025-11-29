@@ -45,6 +45,7 @@ namespace Uma_Engine
             , m_TexturePopupJustOpened(false)
             , m_FontPopupJustOpened(false)
             , m_SoundPopupJustOpened(false)
+            , m_ErrorPopupJustOpened(false)
         {
         }
 
@@ -70,10 +71,10 @@ namespace Uma_Engine
 
             ImGui::End();
 
-            // CRITICAL: Render popups every frame, AFTER the main window
             RenderTexturePopup();
             RenderFontPopup();
             RenderSoundPopup();
+            RenderErrorPopup();
         }
 
     private:
@@ -98,6 +99,10 @@ namespace Uma_Engine
         char m_SoundNameBuffer[128];
         int m_SoundType = 0;
         bool m_SoundPopupJustOpened;
+
+        // Error popup state
+        std::string m_ErrorMsg;
+        bool m_ErrorPopupJustOpened;
 
         /**
          * \brief Renders textures section with table displaying loaded texture assets
@@ -314,14 +319,26 @@ namespace Uma_Engine
                         const char* droppedPath = (const char*)accepted->Data;
 
                         std::string filepath = std::string(droppedPath);
-                        filepath = filepath.substr(filepath.find("Assets"));
-                        for_each(std::begin(filepath), std::end(filepath), [](char& c)
-                            {
-                                c = (c == '\\') ? '/' : c;
-                            });
+                        size_t assetsPos = filepath.find("Assets");
 
-                        std::cout << "[ResourcesWindow] Accepted drop: " << filepath << std::endl;
-                        HandleResourceDrop(filepath);
+                        // SAFETY CHECK: Ensure file is in Assets folder to prevent crash
+                        if (assetsPos != std::string::npos)
+                        {
+                            filepath = filepath.substr(assetsPos);
+                            std::for_each(std::begin(filepath), std::end(filepath), [](char& c)
+                                {
+                                    c = (c == '\\') ? '/' : c;
+                                });
+
+                            std::cout << "[ResourcesWindow] Accepted drop: " << filepath << std::endl;
+                            HandleResourceDrop(filepath);
+                        }
+                        else
+                        {
+                            std::cout << "[ResourcesWindow] Error: File must be in 'Assets' directory!" << std::endl;
+                            m_ErrorMsg = "Invalid file location!\nFile must be inside the 'Assets' folder.";
+                            m_ErrorPopupJustOpened = true;
+                        }
                     }
                 }
 
@@ -386,6 +403,8 @@ namespace Uma_Engine
             else
             {
                 std::cout << "[ResourcesWindow] Unsupported type: " << ext << std::endl;
+                m_ErrorMsg = "Unsupported file type: " + ext + "\n\nSupported types:\n- Textures: .png, .jpg, .jpeg, .bmp\n- Fonts: .ttf, .otf\n- Audio: .mp3, .wav, .ogg";
+                m_ErrorPopupJustOpened = true;
             }
         }
 
@@ -585,6 +604,41 @@ namespace Uma_Engine
                     ImGui::CloseCurrentPopup();
                 }
 
+                ImGui::EndPopup();
+            }
+        }
+
+        /**
+         * \brief Renders modal popup for error message
+         */
+        void RenderErrorPopup()
+        {
+            if (m_ErrorPopupJustOpened)
+            {
+                ImGui::OpenPopup("Error");
+                m_ErrorPopupJustOpened = false;
+            }
+
+            // Center the popup
+            ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+            ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
+
+            if (ImGui::BeginPopupModal("Error", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+            {
+                ImGui::TextWrapped("%s", m_ErrorMsg.c_str());
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+
+                // Center the OK button
+                float buttonWidth = 120.0f;
+                float windowWidth = ImGui::GetWindowSize().x;
+                ImGui::SetCursorPosX((windowWidth - buttonWidth) * 0.5f);
+
+                if (ImGui::Button("OK", ImVec2(buttonWidth, 0)))
+                {
+                    ImGui::CloseCurrentPopup();
+                }
                 ImGui::EndPopup();
             }
         }

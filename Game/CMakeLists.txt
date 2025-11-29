@@ -5,7 +5,7 @@ file(GLOB GAME_SOURCES
 )
 
 # Create the executable
-add_executable(UmapyoiGame ${GAME_SOURCES})
+add_executable(UmapyoiGame WIN32 ${GAME_SOURCES})
 
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
@@ -80,3 +80,7 @@ add_custom_command(TARGET UmapyoiGame POST_BUILD
         $<TARGET_FILE_DIR:UmapyoiGame>
     COMMENT "Copying freetype.dll next to executable"
 )
+
+if(MSVC)
+    set_target_properties(UmapyoiGame PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()

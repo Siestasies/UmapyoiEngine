@@ -65,7 +65,7 @@ file(GLOB EDITOR_APP_ROOT_SOURCES
  )
 
 # Create the UmapyoiEditor executable
-add_executable(UmapyoiEditor ${EDITOR_APP_SOURCES} ${EDITOR_APP_HEADERS})
+add_executable(UmapyoiEditor WIN32 ${EDITOR_APP_SOURCES} ${EDITOR_APP_HEADERS})
 
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
@@ -148,3 +148,7 @@ add_custom_command(TARGET UmapyoiEditor POST_BUILD
         $<TARGET_FILE_DIR:UmapyoiEditor>
     COMMENT "Copying freetype.dll next to executable"
 )
+
+if(MSVC)
+    set_target_properties(UmapyoiEditor PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
