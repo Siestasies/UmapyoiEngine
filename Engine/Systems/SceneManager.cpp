@@ -87,7 +87,7 @@ namespace Uma_Engine
 
         pEventSystem->Subscribe<DeleteCurrSceneRequest, SceneManager>(
             [this](const DeleteCurrSceneRequest& e) {
-                RemoveScene(e.name);
+                RemoveScene(e.name, e.loadNewScene);
             }
         );
 
@@ -432,7 +432,7 @@ namespace Uma_Engine
         scene->gGameSerializer.save(scene->GetFilePath());
     }
 
-    void SceneManager::RemoveScene(const std::string& name)
+    void SceneManager::RemoveScene(const std::string& name, bool needLoadNewScene)
     {
         if (!HasScene(name))
         {
@@ -462,7 +462,7 @@ namespace Uma_Engine
         // Remove from map
         m_Scenes.erase(name);
         std::cout << "Scene '" << name << "' removed" << std::endl;
-        if (m_Scenes.size() > 0)
+        if (m_Scenes.size() > 0 && needLoadNewScene)
             LoadScene(m_Scenes.begin()->second->GetName());
         UpdateIMGUIWindow();
     }

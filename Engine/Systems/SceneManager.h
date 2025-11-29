@@ -100,7 +100,7 @@ namespace Uma_Engine
         * \brief Unloads and removes a scene from the manager's tracking
         * \param name The name of the scene to remove
         */
-        void RemoveScene(const std::string& name);
+        void RemoveScene(const std::string& name, bool needLoadNewScene);
 
         /**
         * \brief Unloads all currently loaded and loading scenes

@@ -119,7 +119,7 @@
                         "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 10.0,
-                        "mAttackDamage": 10,
+                        "mAttackDamage": 25,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 20.0,
                         "mDefense": 5

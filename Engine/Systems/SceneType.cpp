@@ -86,6 +86,8 @@ namespace Uma_Engine
         // shut down Coodinator
         m_Coordinator.ShutDown();
 
+        m_PlayerController->Shutdown();
+
         m_LuaScriptingSystem->Shutdown();
         
         m_UISystem->Shutdown();

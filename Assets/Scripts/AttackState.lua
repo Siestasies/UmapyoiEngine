@@ -21,7 +21,7 @@ end
 -- Called once when entering this state
 function AttackState:enter()
     print("Entered AttackState")
-    AttackCD = 1 * self.parent:GetEnemy().mAttackSpeed
+    AttackCD = 1 / self.parent:GetEnemy().mAttackSpeed
 end
 
 -- Called every frame while in this state
@@ -46,6 +46,8 @@ function AttackState:update(dt)
         -- SetActiveEntity(entity, false)
         -- SetActiveEntity(entity, true)
 
+        GetProjectileFrom(entity).mDamage = self.parent:GetEnemy().mAttackDamage
+
         
         if angle < 0 then
             angle = angle + 360
@@ -53,7 +55,7 @@ function AttackState:update(dt)
 
         AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, GetProjectileFrom(entity).mSpeed, angle - 180)
 
-        AttackCD = 1 * self.parent:GetEnemy().mAttackSpeed
+        AttackCD = 1 / self.parent:GetEnemy().mAttackSpeed
     end
 
     if self.parent:GetEnemy().mHealth <= 0 then

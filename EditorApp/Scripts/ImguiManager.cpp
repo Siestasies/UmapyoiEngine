@@ -291,6 +291,7 @@ namespace Uma_Engine
             fileBrowser.Render();
             resourcesWindow.Render();
             CreateConsoleWindow();
+            CreateEditorCameraWindow();
         }
         else
         {
@@ -551,7 +552,7 @@ namespace Uma_Engine
             {
                 //pEventSystem->Emit<StopSceneRequest>();
                 pEventSystem->Emit<LoadSceneRequestEvent>(fileBrowser.getPrevSceneName());
-                pEventSystem->Emit<DeleteCurrSceneRequest>(fileBrowser.getPrefabSceneName());
+                pEventSystem->Emit<DeleteCurrSceneRequest>(fileBrowser.getPrefabSceneName(), false);
                 fileBrowser.setIsPrefabEdit(false);
             }
         }

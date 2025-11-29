@@ -231,7 +231,8 @@ namespace Uma_Engine
     {
     public:
         std::string name;
-        DeleteCurrSceneRequest(std::string const& s) : name(s) { priority = Priority::High; }
+        bool loadNewScene;
+        DeleteCurrSceneRequest(std::string const& s, bool loadNewScene = true) : name(s), loadNewScene(loadNewScene) { priority = Priority::High; }
     };
 
     // save scene with the scene name

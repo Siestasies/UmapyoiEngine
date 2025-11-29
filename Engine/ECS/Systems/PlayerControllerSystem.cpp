@@ -64,7 +64,7 @@ namespace Uma_ECS
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
 
-        if (pCoordinator->GetComponent<Player>(aEntities[0]).mHealth < 0) return;
+        if (pCoordinator->GetComponent<Player>(aEntities[0]).mHealth <= 0) return;
 
         // by right shd only have 1 player
         HandleMovementInput(dt);
@@ -146,6 +146,7 @@ namespace Uma_ECS
             auto& rb = pCoordinator->GetComponent<RigidBody>(aEntities[0]);
             auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
             auto& collider = pCoordinator->GetComponent<Collider>(aEntities[0]);
+            auto& pf = pCoordinator->GetComponent<PathFinding>(aEntities[0]);
 
             if (rb.velocity.x < 0) tf.scale.x = -abs(tf.scale.x);
             if (rb.velocity.x > 0) tf.scale.x = abs(tf.scale.x);
@@ -229,6 +230,9 @@ namespace Uma_ECS
                 {
                     animator.animator.Play("die", true);
                 }
+
+                pf.reachedGoal = true;
+
                 break;
             }
             default:
@@ -262,6 +266,11 @@ namespace Uma_ECS
         player.mHealth -= damage - player.mDefense;
 
         player.animatorState = PS_Hurt;
+    }
+
+    void PlayerControllerSystem::Shutdown()
+    {
+        pEventSystem->UnsubscribeSystem<PlayerControllerSystem>();
     }
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)

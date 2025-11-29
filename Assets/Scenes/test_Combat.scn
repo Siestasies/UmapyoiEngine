@@ -30,20 +30,20 @@
                 "path": "Assets/whitePixel.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
                 "name": "player",
                 "path": "Assets/hello.jpg"
             },
             {
-                "name": "enemy",
-                "path": "Assets/marisa.png"
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
                 "name": "wall_left",
                 "path": "Assets/wall_left.png"
+            },
+            {
+                "name": "enemy",
+                "path": "Assets/marisa.png"
             },
             {
                 "name": "background",
@@ -54,12 +54,12 @@
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "WoodF_3",
-                "path": "Assets/Environment/m3 floor 1.png"
-            },
-            {
                 "name": "wall_right",
                 "path": "Assets/wall_right.png"
+            },
+            {
+                "name": "WoodF_3",
+                "path": "Assets/Environment/m3 floor 1.png"
             },
             {
                 "name": "wall_btm",
@@ -84,6 +84,10 @@
             {
                 "name": "fire_ball",
                 "path": "Assets/256px VFX.png"
+            },
+            {
+                "name": "hp",
+                "path": "Assets/hp point.png"
             }
         ],
         "fonts": [
@@ -95,8 +99,13 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -105,14 +114,9 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
-            },
-            {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
             }
         ]
     },
@@ -2289,7 +2293,7 @@
             "transformOverride": {
                 "position": [
                     -165.078,
-                    74.295
+                    74.294
                 ],
                 "rotation": [
                     0.0,
@@ -2309,7 +2313,7 @@
                     "name": "cam",
                     "position": {
                         "x": -165.078,
-                        "y": 74.295
+                        "y": 74.294
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17218,7 +17222,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Roof_Corner_Right_dup_dup_dup",
                     "position": {
-                        "x": -89.072,
+                        "x": -89.071,
                         "y": 76.984
                     },
                     "rotation": {
@@ -17270,7 +17274,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "new entity_dup",
                     "position": {
-                        "x": -99.197,
+                        "x": -99.196,
                         "y": 77.027
                     },
                     "rotation": {
@@ -17590,6 +17594,26 @@
                 "scale": [
                     0.384,
                     1.046
+                ]
+            }
+        },
+        {
+            "id": 301,
+            "isActive": true,
+            "isPrefab": true,
+            "prefabPath": "Assets/Prefabs/hp.prefab",
+            "transformOverride": {
+                "position": [
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0
                 ]
             }
         }
