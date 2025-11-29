@@ -5,9 +5,9 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Leong Wai Men (100%)
-\par    E-mail: waimen.leong@digipen.edu
-\par    DigiPen login: waimen.leong
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
 
 \brief
 Defines the EntityAddComponentCmd class, a templated command used by the Editor's
