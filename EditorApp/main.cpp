@@ -1,5 +1,8 @@
 /*!
 \file   main.cpp
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
 \brief  Entry point for the UmapyoiEditor application
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.

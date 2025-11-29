@@ -1,3 +1,29 @@
+/*!
+\file   LuaScriptingSystem.cpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines Lua scripting system for entity behavior execution and script lifecycle management.
+
+Manages initialization, update, and shutdown of Lua scripts attached to entities. Provides
+comprehensive Lua API bindings including entity queries, component access, input handling,
+cross-entity manipulation, and utility functions. Handles collision/trigger callback events
+(OnCollisionEnter/Exit, OnTriggerEnter/Exit) via EventSystem subscription. Maintains isolated
+Sol2 environments per script instance with variable synchronization between C++ and Lua. Supports
+script hot-reloading, exposed variable discovery, and entity destruction cleanup. Integrates with
+HybridInputSystem for input bindings and EventSystem for game events.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "LuaScriptingSystem.hpp"
 
 #include "../Components/Transform.h"

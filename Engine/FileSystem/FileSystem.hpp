@@ -1,4 +1,29 @@
 #pragma once
+/*!
+\file   FileBrowser.hpp
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author     Lai Jun Siang (100%)
+\par        E-mail: lai.j@digipen.edu
+\par        DigiPen login: lai.j
+
+\brief
+Declares the FileBrowser class, responsible for rendering and managing the
+editor-side file navigation interface.
+
+Provides directory traversal, sorting, filtering, drag-and-drop operations,
+file manipulation (copy, delete, rename), prefab editing workflow integration,
+and automatic directory refresh via event callbacks. Supports real-time
+interaction with the underlying filesystem using ImGui, with additional
+workflow-specific features such as scene loading, prefab editing mode
+switching, and directory monitoring.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
 #include <string>
 #include <vector>
 #include <filesystem>

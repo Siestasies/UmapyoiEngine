@@ -1,6 +1,24 @@
 /*!
 \file   GameApplication.cpp
-\brief  Implementation of GameApplication
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements the GameApplication class, the runtime application layer used when
+building and launching the engine in **Game Mode**. Unlike the editor version,
+GameApplication provides a clean execution environment without any editor-only
+systems or tools.
+
+This class configures the engine for fullscreen gameplay, registers only
+game-related scripts, subscribes to application events such as quit requests,
+and loads the primary game scene. It ensures that the engine initializes
+strictly with gameplay behavior, optimized for release/runtime execution.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -18,44 +36,70 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    /**
+     * \brief Constructs the GameApplication. Initialization occurs in
+     * PreInit(), RegisterSystems(), and PostInit().
+     * GameApplication strips out all editor features and prepares the engine
+     * for a clean runtime execution environment.
+     */
     GameApplication::GameApplication()
         : Application()
     {
     }
 
+    /**
+     * \brief Registers systems needed for game builds.
+     * Since the game mode does not require editor tools, no additional systems
+     * are registered here. Core systems are registered in Application::RegisterCoreSystems().
+     */
     void GameApplication::RegisterSystems()
     {
         // Game build has NO editor systems
         // All core systems are registered in Application::RegisterCoreSystems()
     }
 
+    /**
+     * \brief Executed before engine initialization. Explicitly disables editor mode.
+     */
     void GameApplication::PreInit()
     {
         SetIsEditor(false);
     }
 
+    /**
+     * \brief Subscribes to application-level events required at runtime,
+     * such as handling Quit requests when the user exits the game.
+     */
     void GameApplication::SubscribeEvents()
     {
         EventSystem* eventSystem = GetEventSystem();
 
-        eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>([this](const ApplicationQuitRequest& e)
-           {
-               GetWindow()->Close();
-           });
+        eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>(
+            [this](const ApplicationQuitRequest& e)
+            {
+                GetWindow()->Close();
+            });
     }
 
+    /**
+     * \brief Executed after initialization. Configures window mode for gameplay,
+     * sets the render target, registers game-specific scripts, creates the
+     * main scene, and loads it as the active scene.
+     */
     void GameApplication::PostInit()
     {
         SubscribeEvents();
 
+        // Render directly to the game window
         GetGraphics()->SetRenderTarget(Uma_Engine::RenderTarget::Window);
 
+        // Fullscreen mode for game runtime
         GetWindow()->SetWindowMode(WindowMode::Fullscreen);
 
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 
-        // Configure for game mode
+        // Ensure engine is configured for runtime game behavior
         sceneManager->SetEditorMode(false);
 
         // Register game script only (no editor script)

@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Shahir Rasid (100%)
+\author Shahir Rasid (everything else)
 \par    E-mail: b.muhammadshahir@digipen.edu
 \par    DigiPen login: b.muhammadshahir
+
+\author Leong Wai Men (all ECS related)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
 
 \brief
 This file implements the definitions for a base class of scene in that

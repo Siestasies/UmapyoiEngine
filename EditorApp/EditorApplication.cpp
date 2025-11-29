@@ -1,6 +1,23 @@
 /*!
 \file   EditorApplication.cpp
-\brief  Implementation of EditorApplication
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implements the EditorApplication class, the specialized application layer
+used when running the engine in Editor Mode. This class extends the base
+Application system by registering editor-specific systems, setting up the
+editor scene, and subscribing to editor/application events.
+
+EditorApplication configures the SceneManager for editor behavior, registers
+editor scripts, initializes the ImGui manager, and loads a default editor
+scene used for development workflows.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -21,6 +38,10 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    /**
+     * \brief Constructs the EditorApplication and initializes pointers.
+     * The actual initialization work occurs in PreInit(), RegisterSystems(), and PostInit().
+     */
     EditorApplication::EditorApplication()
         : Application()
         , mEditorSystem(nullptr)
@@ -28,51 +49,62 @@ namespace Uma_Engine
     {
     }
 
+    /**
+     * \brief Registers all systems required specifically for the editor.
+     * This includes EditorSystem and ImguiManager, which provide UI and tool functionality.
+     */
     void EditorApplication::RegisterSystems()
     {
-        // Register editor-specific systems
         mEditorSystem = GetSystemManager()->RegisterSystem<EditorSystem>();
         mImguiManager = GetSystemManager()->RegisterSystem<ImguiManager>();
     }
 
+    /**
+     * \brief Executed before engine initialization. Enables editor mode.
+     */
     void EditorApplication::PreInit()
     {
         SetIsEditor(true);
     }
 
+    /**
+     * \brief Subscribes editor-related events such as quit requests.
+     */
     void EditorApplication::SubscribeEvents()
     {
         EventSystem* eventSystem = GetEventSystem();
 
-        eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>([this](const ApplicationQuitRequest& e)
+        eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>(
+            [this](const ApplicationQuitRequest&)
             {
                 GetWindow()->Close();
             });
     }
 
+    /**
+     * \brief Executed after engine initialization.
+     * Sets up the editor environment, loads the default editor scene,
+     * and registers editor/game scripts to the SceneManager.
+     */
     void EditorApplication::PostInit()
     {
         SubscribeEvents();
 
-        // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
-
-        // Configure for editor mode
         sceneManager->SetEditorMode(true);
 
-        // Register scripts
+        // Register script classes for use in the editor scene
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
-        // Create and setup default editor scene
+        // Create the editor scene and configure it
         auto editorScene = sceneManager->CreateScene("test_default.scn", "test_default.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        // Attach scripts to scene
         sceneManager->AttachScriptToScene("test_default.scn", "GameBehaviour");
         sceneManager->AttachScriptToScene("test_default.scn", "EditorBehaviour");
 
-        // Load the scene
+        // Load the default scene
         sceneManager->LoadScene("test_default.scn");
     }
 }

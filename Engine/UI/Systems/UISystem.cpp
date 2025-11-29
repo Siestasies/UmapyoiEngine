@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Jedrek Lee Jing Wei (100%)
+\author Jedrek Lee Jing Wei (everthing else)
 \par    E-mail: jedrekjingwei.lee@digipen.edu
 \par    DigiPen login: jedrekjingwei.lee
+
+\author Leong Wai Men (isActive, mouse input & window res bug fixing)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
 
 \brief
 Implementation of the main UI system with three-pass architecture.

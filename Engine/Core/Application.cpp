@@ -1,10 +1,25 @@
 /*!
 \file   Application.cpp
-\brief  Implementation of the Application base class
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+\brief  Implementation of the core Application class responsible for
+        initializing, running, and shutting down the engine framework.
+
+This class handles:
+- Window creation and GLFW initialization
+- Loading engine configuration
+- Registering and initializing core systems (input, graphics, audio, scene manager)
+- Handling the main update loop, delta time, and framerate limiting
+- Event system initialization and dispatch
+- Focus/minimize behaviour
+- Debug and memory systems (in debug builds)
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
+
 
 #include "Application.h"
 

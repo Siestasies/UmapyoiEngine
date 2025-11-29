@@ -3,9 +3,14 @@
 \brief  Base application class that encapsulates the engine's core systems.
         Provides a framework for derived applications (Editor, Game) to run.
 
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
+
 
 #pragma once
 

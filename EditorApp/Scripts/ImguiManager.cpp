@@ -5,17 +5,21 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Shahir Rasid (Everything else)
-\par    E-mail: b.muhammadshahir@digipen.edu
-\par    DigiPen login: b.muhammadshahir
+\author     Shahir Rasid (Everything else)
+\par        E-mail: b.muhammadshahir@digipen.edu
+\par        DigiPen login: b.muhammadshahir
 
-\co-author Lai Jun Siang (Hierarchy/Inspector/Dockspace)
-\par       E-mail: lai.j@digipen.edu
-\par       DigiPen login: lai.j
+\co-author  Lai Jun Siang (Hierarchy/Inspector/Dockspace)
+\par        E-mail: lai.j@digipen.edu
+\par        DigiPen login: lai.j
 
-\co-author Javier Chua Dong Qing (EditorCamera)
-\par       E-mail: javierdongqing.chua@digipen.edu
-\par       DigiPen login: javierdongqing.chua
+\co-author  Javier Chua Dong Qing (EditorCamera)
+\par        E-mail: javierdongqing.chua@digipen.edu
+\par        DigiPen login: javierdongqing.chua
+
+\author     Leong Wai Men (Display Component modify, Bug fix for loading scene / play stop)
+\par        E-mail: waimen.leong@digipen.edu
+\par        DigiPen login: waimen.leong
 
 \brief
 Definition of functions for all IMGUI windows and their logics.

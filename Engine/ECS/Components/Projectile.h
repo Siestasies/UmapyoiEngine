@@ -1,5 +1,5 @@
 /*!
-\file   Projectile.h // Changed from Player.h
+\file   Projectile.h
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A

@@ -1,3 +1,28 @@
+/*!
+\file   EntityDeleteCmd.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Defines the EntityDeleteCmd class, a command used by the Editor's Undo/Redo
+system to delete entities. This command supports two deletion behaviors:
+removing only the selected entity, or removing the entity along with all
+its children (its entire hierarchy).
+
+The command captures full entity snapshots before deletion, storing all
+components and hierarchy information so that Undo() can fully restore the
+original state, even for complex multi-level hierarchies.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "Editor/Core/Command.h"
@@ -11,9 +36,28 @@
 
 namespace Uma_Editor
 {
+    /**
+     * \class EntityDeleteCmd
+     * \brief Command that deletes an entity from the ECS.
+     *
+     * Supports:
+     * - Deleting only the root entity.
+     * - Deleting the entire hierarchy (entity + all children).
+     *
+     * The Undo() operation restores the full state of all involved entities,
+     * recreating components, hierarchy relationships, and transforming data.
+     */
     class EntityDeleteCmd : public ICommand
     {
     public:
+        /**
+         * \brief Constructor for the entity deletion command.
+         *
+         * \param coord Pointer to the ECS Coordinator.
+         * \param entity The entity to delete.
+         * \param deleteChildren Whether to delete the entity’s full hierarchy.
+         * \param desc Optional description used for the UI.
+         */
         EntityDeleteCmd(
             Uma_ECS::Coordinator* coord,
             Uma_ECS::Entity entity,
@@ -25,24 +69,33 @@ namespace Uma_Editor
             , deleteWithChild(deleteChildren)
             , description(desc)
         {
+            // Take a snapshot before deletion.
             CaptureEntityState();
         }
 
+        /**
+         * \brief Executes the deletion of the entity or hierarchy.
+         */
         void Execute() override
         {
             if (coordinator->HasActiveEntity(rootEntityID))
             {
                 if (!deleteWithChild)
                 {
+                    // Delete only the entity itself.
                     coordinator->DestroyEntity(rootEntityID);
                 }
                 else
                 {
+                    // Delete the entity and the entire hierarchy of children.
                     coordinator->DestroyEntityAndChildren(rootEntityID);
                 }
             }
         }
 
+        /**
+         * \brief Restores the entity or entire hierarchy depending on deletion mode.
+         */
         void Undo() override
         {
             if (!deleteWithChild)
@@ -55,6 +108,10 @@ namespace Uma_Editor
             }
         }
 
+        /**
+         * \brief Gets the description of the command.
+         * \return The descriptive string.
+         */
         std::string GetDescription() override
         {
             return description;
@@ -62,6 +119,13 @@ namespace Uma_Editor
 
     private:
 
+        // =====================================================================
+        //  Snapshot Capture
+        // =====================================================================
+
+        /**
+         * \brief Captures the state of the entity before deletion.
+         */
         void CaptureEntityState()
         {
             if (!coordinator->HasActiveEntity(rootEntityID))
@@ -69,29 +133,32 @@ namespace Uma_Editor
 
             if (!deleteWithChild)
             {
-                // Capture parent and all children (children's transforms will be modified on delete)
+                // Single-entity delete: capture the entity and its children.
                 CaptureSingleEntityAndChildren(rootEntityID);
             }
             else
             {
-                // Capture entire hierarchy (all will be deleted)
+                // Hierarchy delete: capture entire subtree.
                 CaptureHierarchySnapshots(rootEntityID);
             }
         }
 
+        /**
+         * \brief Records the components and hierarchy data of one entity.
+         */
         void CaptureSnapshot(Uma_ECS::Entity entity)
         {
-            // Create snapshot using unique_ptr
             auto snapshot = std::make_unique<EntitySnapshot>();
             snapshot->entityID = entity;
             snapshot->componentData.SetObject();
             auto& allocator = snapshot->componentData.GetAllocator();
 
+            // Serialize all components.
             rapidjson::Value componentsObj(rapidjson::kObjectType);
             coordinator->SerializeEntity(entity, componentsObj, allocator);
             snapshot->componentData.AddMember("components", componentsObj, allocator);
 
-            // Capture hierarchy
+            // Capture hierarchy data (parent & children).
             auto& tfArray = coordinator->GetComponentArray<Uma_ECS::Transform>();
             if (tfArray.Has(entity))
             {
@@ -100,49 +167,49 @@ namespace Uma_Editor
                 snapshot->childrenIDs = tf.children;
             }
 
-            // Store in map using move
             entitySnapshots[entity] = std::move(snapshot);
         }
 
+        /**
+         * \brief Captures the entity and all its immediate children.
+         */
         void CaptureSingleEntityAndChildren(Uma_ECS::Entity parent)
         {
-            // Capture the parent entity
             CaptureSnapshot(parent);
 
-            // Get children list
             auto& tfArray = coordinator->GetComponentArray<Uma_ECS::Transform>();
             if (tfArray.Has(parent))
             {
                 auto& tf = tfArray.GetData(parent);
-                affectedChildren = tf.children; // Store children IDs
+                affectedChildren = tf.children;
 
-                // Capture all children (their transforms will be modified during delete)
                 for (Uma_ECS::Entity child : tf.children)
                 {
                     if (coordinator->HasActiveEntity(child))
-                    {
                         CaptureSnapshot(child);
-                    }
                 }
             }
         }
 
+        /**
+         * \brief Captures the entire entity hierarchy (breadth-first order).
+         */
         void CaptureHierarchySnapshots(Uma_ECS::Entity root)
         {
-            // Build list of all entities in hierarchy (breadth-first to maintain order)
             std::vector<Uma_ECS::Entity> hierarchyList;
             CollectHierarchyOrdered(root, hierarchyList);
 
-            // Capture snapshots for all entities
             for (Uma_ECS::Entity entity : hierarchyList)
             {
                 CaptureSnapshot(entity);
             }
 
-            // Store the restoration order
             restorationOrder = hierarchyList;
         }
 
+        /**
+         * \brief Recursively collects hierarchy entities in order.
+         */
         void CollectHierarchyOrdered(Uma_ECS::Entity root, std::vector<Uma_ECS::Entity>& outList)
         {
             if (!coordinator->HasActiveEntity(root))
@@ -161,12 +228,17 @@ namespace Uma_Editor
             }
         }
 
+
+        // =====================================================================
+        //  Entity Restoration
+        // =====================================================================
+
+        /**
+         * \brief Restores a single entity and its children.
+         */
         void RestoreSingleEntityWithChildren()
         {
-            // First restore the parent entity
             Uma_ECS::Entity restoredParentID = RestoreEntity(rootEntityID);
-
-            // Then restore all affected children's transforms
             auto& tfArray = coordinator->GetComponentArray<Uma_ECS::Transform>();
 
             for (Uma_ECS::Entity childID : affectedChildren)
@@ -180,95 +252,61 @@ namespace Uma_Editor
 
                 EntitySnapshot* snapshot = it->second.get();
 
-                // Restore child's transform component from snapshot
                 if (snapshot->componentData.HasMember("components"))
                 {
                     coordinator->DeserializeEntity(childID, snapshot->componentData["components"]);
                 }
 
-                // Re-establish parent-child relationship
                 if (tfArray.Has(childID))
                 {
                     auto& childTf = tfArray.GetData(childID);
-
-                    // Restore parent pointer
                     childTf.parent = restoredParentID;
-
-                    // Restore children list from snapshot
                     childTf.children = snapshot->childrenIDs;
-
                     childTf.isDirty = true;
                 }
             }
 
-            // Ensure parent has correct children list
+            // Rebuild parent's child list.
             if (tfArray.Has(restoredParentID))
             {
                 auto& parentTf = tfArray.GetData(restoredParentID);
-
-                // Update children list (some might have new IDs if restoration failed)
                 std::vector<Uma_ECS::Entity> validChildren;
+
                 for (Uma_ECS::Entity child : affectedChildren)
                 {
                     if (coordinator->HasActiveEntity(child))
-                    {
                         validChildren.push_back(child);
-
-                        // Make sure child points to parent
-                        if (tfArray.Has(child))
-                        {
-                            auto& childTf = tfArray.GetData(child);
-                            childTf.parent = restoredParentID;
-                        }
-                    }
                 }
+
                 parentTf.children = validChildren;
                 parentTf.isDirty = true;
             }
         }
 
+        /**
+         * \brief Restores a single entity from its snapshot.
+         * \return The restored entity ID (may differ from original).
+         */
         Uma_ECS::Entity RestoreEntity(Uma_ECS::Entity originalID)
         {
             auto it = entitySnapshots.find(originalID);
             if (it == entitySnapshots.end())
-            {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "No snapshot found for entity " + std::to_string(originalID));
                 return originalID;
-            }
 
             EntitySnapshot* snapshot = it->second.get();
-
-            // Create entity - should get same ID if it was pushed to front
             Uma_ECS::Entity restoredID = coordinator->CreateEntity();
 
-            // Track ID mapping in case it changed
-            if (restoredID != originalID)
-            {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                    "Failed to restore entity with same ID: expected " +
-                    std::to_string(originalID) + ", got " + std::to_string(restoredID));
-
-                // Update the snapshot's ID for future reference
-                snapshot->entityID = restoredID;
-            }
-
-            // Restore all components from snapshot
             if (snapshot->componentData.HasMember("components"))
             {
                 coordinator->DeserializeEntity(restoredID, snapshot->componentData["components"]);
             }
 
-            // Restore hierarchy relationships
             auto& tfArray = coordinator->GetComponentArray<Uma_ECS::Transform>();
             if (tfArray.Has(restoredID))
             {
                 auto& tf = tfArray.GetData(restoredID);
-
-                // Restore children list
                 tf.children = snapshot->childrenIDs;
 
-                // Restore parent relationship
                 if (snapshot->parentID.has_value())
                 {
                     if (coordinator->HasActiveEntity(snapshot->parentID.value()))
@@ -287,19 +325,19 @@ namespace Uma_Editor
             return restoredID;
         }
 
+        /**
+         * \brief Restores a full deleted hierarchy.
+         *
+         * Restores entity IDs, components, and hierarchy using a two-pass approach.
+         */
         void RestoreHierarchy()
         {
             if (restorationOrder.empty())
-            {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "No restoration order found for hierarchy");
                 return;
-            }
 
-            // Map old entity IDs to new entity IDs
             std::unordered_map<Uma_ECS::Entity, Uma_ECS::Entity> idRemapping;
 
-            // First pass: Create all entities and restore components
+            // First pass: create entities & restore components.
             for (Uma_ECS::Entity originalID : restorationOrder)
             {
                 auto it = entitySnapshots.find(originalID);
@@ -307,110 +345,83 @@ namespace Uma_Editor
                     continue;
 
                 EntitySnapshot* snapshot = it->second.get();
-
-                // Create entity
                 Uma_ECS::Entity newID = coordinator->CreateEntity();
                 idRemapping[originalID] = newID;
 
-                // Restore components
                 if (snapshot->componentData.HasMember("components"))
                 {
                     coordinator->DeserializeEntity(newID, snapshot->componentData["components"]);
                 }
-
-                // Log if ID changed
-                if (newID != originalID)
-                {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                        "Entity ID remapped: " + std::to_string(originalID) +
-                        " -> " + std::to_string(newID));
-                }
             }
 
-            // Second pass: Restore hierarchy relationships with remapped IDs
+            // Second pass: restore hierarchy relationships.
             auto& tfArray = coordinator->GetComponentArray<Uma_ECS::Transform>();
 
             for (Uma_ECS::Entity originalID : restorationOrder)
             {
                 Uma_ECS::Entity newID = idRemapping[originalID];
                 auto it = entitySnapshots.find(originalID);
+
                 if (it == entitySnapshots.end() || !tfArray.Has(newID))
                     continue;
 
                 EntitySnapshot* snapshot = it->second.get();
                 auto& tf = tfArray.GetData(newID);
 
-                // Remap and restore parent
+                // Remap parent.
                 if (snapshot->parentID.has_value())
                 {
-                    Uma_ECS::Entity oldParentID = snapshot->parentID.value();
+                    Uma_ECS::Entity oldParent = snapshot->parentID.value();
 
-                    // Check if parent was part of deleted hierarchy
-                    auto parentIt = idRemapping.find(oldParentID);
-                    if (parentIt != idRemapping.end())
+                    if (idRemapping.count(oldParent))
                     {
-                        // Parent was restored, use remapped ID
-                        Uma_ECS::Entity newParentID = parentIt->second;
-                        coordinator->SetParent(newID, newParentID);
+                        coordinator->SetParent(newID, idRemapping[oldParent]);
                     }
-                    else if (coordinator->HasActiveEntity(oldParentID))
+                    else if (coordinator->HasActiveEntity(oldParent))
                     {
-                        // Parent still exists with original ID
-                        coordinator->SetParent(newID, oldParentID);
+                        coordinator->SetParent(newID, oldParent);
                     }
                     else
                     {
-                        // Parent no longer exists
                         tf.parent = std::nullopt;
                     }
                 }
 
-                // Remap and restore children
-                std::vector<Uma_ECS::Entity> remappedChildren;
-                for (Uma_ECS::Entity oldChildID : snapshot->childrenIDs)
+                // Remap children.
+                std::vector<Uma_ECS::Entity> remapped;
+                for (Uma_ECS::Entity oldChild : snapshot->childrenIDs)
                 {
-                    auto childIt = idRemapping.find(oldChildID);
-                    if (childIt != idRemapping.end())
-                    {
-                        // Child was restored, use remapped ID
-                        remappedChildren.push_back(childIt->second);
-                    }
-                    else if (coordinator->HasActiveEntity(oldChildID))
-                    {
-                        // Child still exists with original ID
-                        remappedChildren.push_back(oldChildID);
-                    }
+                    if (idRemapping.count(oldChild))
+                        remapped.push_back(idRemapping[oldChild]);
                 }
-                tf.children = remappedChildren;
 
-                // Ensure all children have correct parent pointer
-                for (Uma_ECS::Entity childID : tf.children)
+                tf.children = remapped;
+
+                // Fix child parent links.
+                for (Uma_ECS::Entity child : tf.children)
                 {
-                    if (tfArray.Has(childID))
-                    {
-                        auto& childTf = tfArray.GetData(childID);
-                        childTf.parent = newID;
-                    }
+                    if (tfArray.Has(child))
+                        tfArray.GetData(child).parent = newID;
                 }
 
                 tf.isDirty = true;
             }
 
-            // Update root entity ID if it changed
-            if (idRemapping.find(rootEntityID) != idRemapping.end())
-            {
+            if (idRemapping.count(rootEntityID))
                 rootEntityID = idRemapping[rootEntityID];
-            }
         }
 
-        Uma_ECS::Coordinator* coordinator;
-        Uma_ECS::Entity rootEntityID;
-        bool deleteWithChild;
-        std::string description;
+        // =====================================================================
+        //  Member Variables
+        // =====================================================================
 
-        // Storage for snapshots using unique_ptr to avoid copy issues
+        Uma_ECS::Coordinator* coordinator; ///< Coordinator pointer for ECS operations.
+        Uma_ECS::Entity rootEntityID;      ///< Entity being deleted.
+        bool deleteWithChild;              ///< Whether deletion includes children.
+        std::string description;           ///< Command description.
+
         std::unordered_map<Uma_ECS::Entity, std::unique_ptr<EntitySnapshot>> entitySnapshots;
         std::vector<Uma_ECS::Entity> restorationOrder;
-        std::vector<Uma_ECS::Entity> affectedChildren; // Children affected by single parent deletion
+        std::vector<Uma_ECS::Entity> affectedChildren;
     };
 }
