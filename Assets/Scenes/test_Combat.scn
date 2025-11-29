@@ -2,32 +2,32 @@
     "resources": {
         "textures": [
             {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
-            },
-            {
                 "name": "wall_top",
                 "path": "Assets/wall_top.png"
+            },
+            {
+                "name": "kappa_statue",
+                "path": "Assets/statue.png"
             },
             {
                 "name": "player_new",
                 "path": "Assets/Player Spritesheet.png"
             },
             {
-                "name": "fire bird",
-                "path": "Assets/fire bird.png"
-            },
-            {
                 "name": "floor_tatami",
                 "path": "Assets/floor_tatami.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
+                "name": "fire bird",
+                "path": "Assets/fire bird.png"
             },
             {
                 "name": "player",
                 "path": "Assets/hello.jpg"
+            },
+            {
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
                 "name": "whitePixel",
@@ -38,12 +38,12 @@
                 "path": "Assets/bird.png"
             },
             {
-                "name": "wall_left",
-                "path": "Assets/wall_left.png"
-            },
-            {
                 "name": "enemy",
                 "path": "Assets/marisa.png"
+            },
+            {
+                "name": "wall_left",
+                "path": "Assets/wall_left.png"
             },
             {
                 "name": "background",
@@ -54,12 +54,12 @@
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "wall_right",
-                "path": "Assets/wall_right.png"
-            },
-            {
                 "name": "WoodF_3",
                 "path": "Assets/Environment/m3 floor 1.png"
+            },
+            {
+                "name": "wall_right",
+                "path": "Assets/wall_right.png"
             },
             {
                 "name": "wall_btm",
@@ -74,12 +74,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "pause",
-                "path": "Assets/pause menu.png"
-            },
-            {
                 "name": "HallWay_Hori1",
                 "path": "Assets/Environment/horizontal hallway.png"
+            },
+            {
+                "name": "pause",
+                "path": "Assets/pause menu.png"
             },
             {
                 "name": "Kappa_1",
@@ -113,9 +113,9 @@
                 "type": 1
             },
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
             },
             {
                 "name": "explosion",
@@ -126,6 +126,11 @@
                 "name": "hurt",
                 "path": "Assets/sounds/hurt.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             },
             {
                 "name": "footsteps",
@@ -145,6 +150,21 @@
             {
                 "name": "fire_enemy_attack",
                 "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            },
+            {
+                "name": "player_n_attack",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "type": 0
+            },
+            {
+                "name": "player_fire_attack",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "player_death",
+                "path": "Assets/sounds/Player Wav/PlayerDeathLoud.wav",
                 "type": 0
             }
         ]
@@ -16089,8 +16109,8 @@
                         "y": -200.0
                     },
                     "sizeDelta": {
-                        "x": 325.0,
-                        "y": 75.0
+                        "x": 620.0,
+                        "y": 100.0
                     }
                 },
                 "class Uma_UI::Button": {
@@ -16169,7 +16189,7 @@
                         "y": -350.0
                     },
                     "sizeDelta": {
-                        "x": 100.0,
+                        "x": 620.0,
                         "y": 100.0
                     }
                 },
@@ -16427,6 +16447,37 @@
                     },
                     "alignment": 1,
                     "visible": true
+                }
+            }
+        },
+        {
+            "id": 281,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "BGM Object",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 }
             }
         }

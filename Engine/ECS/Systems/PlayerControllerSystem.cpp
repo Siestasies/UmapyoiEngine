@@ -36,6 +36,7 @@ All rights reserved.
 // events
 #include "Events/PlayerEvents.h"
 #include "Events/CollisionEvent.h"
+#include "Events/AudioEvents.h"
 
 #include <GLFW/glfw3.h>
 
@@ -199,6 +200,7 @@ namespace Uma_ECS
                 if (animator.animator.GetCurrentClip() != "run")
                 {
                     animator.animator.Play("run", true);
+                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("footsteps", 0.8, 0);
                 }
                 break;
             }
@@ -208,6 +210,7 @@ namespace Uma_ECS
                 {
                     animator.animator.Play("atk_1", true); 
                     collider.shapes[2].isActive = true;
+                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_n_attack", 0.8, 0);
                 }
                 break;
             }
@@ -217,6 +220,7 @@ namespace Uma_ECS
                 {
                     animator.animator.Play("atk_2", true);
                     collider.shapes[2].isActive = true;
+                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_fire_attack", 0.8, 0);
                 }
                 break;
             }
@@ -225,6 +229,7 @@ namespace Uma_ECS
                 if (animator.animator.GetCurrentClip() != "hurt")
                 {
                     animator.animator.Play("hurt", true);
+                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_hurt", 1.0, 0);
                 }
                 break;
             }
@@ -233,6 +238,7 @@ namespace Uma_ECS
                 if (animator.animator.GetCurrentClip() != "die")
                 {
                     animator.animator.Play("die", true);
+                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_death", 1.0, 0);
                 }
 
                 pf.reachedGoal = true;

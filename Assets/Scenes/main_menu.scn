@@ -27,6 +27,16 @@
                 "name": "mainmenu_bgm",
                 "path": "Assets/sounds/Music/MainMenuBGM.wav",
                 "type": 0
+            },
+            {
+                "name": "startbtn_sound",
+                "path": "Assets/sounds/GameStart.wav",
+                "type": 0
+            },
+            {
+                "name": "quitbtn_sound",
+                "path": "Assets/sounds/MenuClick.wav",
+                "type": 0
             }
         ]
     },

@@ -5,7 +5,7 @@ end
 
 function Update(dt)
     if start == false then
-        PlaySound("combat_bgm", 0.2, -1); 
+        PlaySound("combat_bgm", 0.05, -1); 
         start = true
     end
 end
