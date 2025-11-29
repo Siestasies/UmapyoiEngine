@@ -95,7 +95,7 @@ namespace Uma_Engine
         GetGraphics()->SetRenderTarget(Uma_Engine::RenderTarget::Window);
 
         // Fullscreen mode for game runtime
-        GetWindow()->SetWindowMode(WindowMode::Windowed);
+        GetWindow()->SetWindowMode(WindowMode::Fullscreen);
 
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
@@ -116,6 +116,59 @@ namespace Uma_Engine
         // Load the scene
         sceneManager->LoadScene("main_menu.scn");
     }
+
+    bool GameApplication::HandleInterruptions(float deltaTime)
+    {
+        // Game mode: Full pause when unfocused or minimized
+        bool isFocused = glfwGetWindowAttrib(GetGLFWWindow(), GLFW_FOCUSED);
+        bool isIconified = glfwGetWindowAttrib(GetGLFWWindow(), GLFW_ICONIFIED);
+
+        if (!isFocused || isIconified)
+        {
+            // Lost focus or minimized (pause everything)
+            if (mWasFocused)
+            {
+                if (GetSoundManager())
+                {
+                    GetSoundManager()->pauseAllSounds(true);
+                }
+
+                if (GetInputSystem())
+                {
+                    GetInputSystem()->ResetAllInput();
+                }
+
+                mWasFocused = false;
+            }
+
+            // Update sound system even when paused
+            if (GetSoundManager())
+            {
+                GetSoundManager()->Update(deltaTime);
+            }
+
+            // Wait for events
+            glfwWaitEventsTimeout(0.1);
+
+            // Skip system updates and buffer swap
+            return false;
+        }
+
+        // Regained focus
+        if (!mWasFocused)
+        {
+            if (GetSoundManager())
+            {
+                GetSoundManager()->pauseAllSounds(false);
+            }
+
+            mWasFocused = true;
+        }
+
+        // Continue normal frame processing
+        return true;
+    }
+
 
     void GameApplication::Update(float dt)
     {

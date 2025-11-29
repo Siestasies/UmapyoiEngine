@@ -34,6 +34,7 @@ namespace Uma_Engine
     enum class WindowMode
     {
         Windowed,
+        Maximized,
         Fullscreen
     };
 
