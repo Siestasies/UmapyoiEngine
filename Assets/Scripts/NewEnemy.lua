@@ -82,7 +82,7 @@ function HandleCollision(trigger)
 
             local transform = GetTransform(EntityID)
             if transform then
-                PlayOneShotAtEntity(EntityID, "hurt", 0.5)
+                --PlayOneShotAtEntity(EntityID, "hurt", 0.5)
             end
         end
     end
@@ -97,6 +97,9 @@ function OnHurt(player, damage)
     Log("============================================================")
     Log("Player " .. player .. " took " .. damage .. " damage")
     Log("============================================================")
+
+    PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
+    PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
 end
 
 function OnTriggerEnter(otherEntity)

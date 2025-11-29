@@ -2,10 +2,6 @@
     "resources": {
         "textures": [
             {
-                "name": "player_new",
-                "path": "Assets/Player Spritesheet.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
             },
@@ -14,12 +10,8 @@
                 "path": "Assets/wall_top.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
-                "name": "player",
-                "path": "Assets/hello.jpg"
+                "name": "player_new",
+                "path": "Assets/Player Spritesheet.png"
             },
             {
                 "name": "fire bird",
@@ -30,6 +22,14 @@
                 "path": "Assets/floor_tatami.png"
             },
             {
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
+            },
+            {
+                "name": "player",
+                "path": "Assets/hello.jpg"
+            },
+            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
             },
@@ -38,12 +38,12 @@
                 "path": "Assets/bird.png"
             },
             {
-                "name": "enemy",
-                "path": "Assets/marisa.png"
-            },
-            {
                 "name": "wall_left",
                 "path": "Assets/wall_left.png"
+            },
+            {
+                "name": "enemy",
+                "path": "Assets/marisa.png"
             },
             {
                 "name": "background",
@@ -54,12 +54,12 @@
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "WoodF_3",
-                "path": "Assets/Environment/m3 floor 1.png"
-            },
-            {
                 "name": "wall_right",
                 "path": "Assets/wall_right.png"
+            },
+            {
+                "name": "WoodF_3",
+                "path": "Assets/Environment/m3 floor 1.png"
             },
             {
                 "name": "wall_btm",
@@ -74,12 +74,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "HallWay_Hori1",
-                "path": "Assets/Environment/horizontal hallway.png"
-            },
-            {
                 "name": "pause",
                 "path": "Assets/pause menu.png"
+            },
+            {
+                "name": "HallWay_Hori1",
+                "path": "Assets/Environment/horizontal hallway.png"
             },
             {
                 "name": "Kappa_1",
@@ -108,8 +108,18 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -118,14 +128,24 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
+                "name": "enemy_hurt",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "enemy_hit",
+                "path": "Assets/sounds/EnemyWav/OnHitSFX.wav",
+                "type": 0
+            },
+            {
+                "name": "fire_enemy_attack",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
             }
         ]
     },
