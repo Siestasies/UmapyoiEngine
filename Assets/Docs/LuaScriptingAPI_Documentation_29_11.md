@@ -92,6 +92,7 @@ if sprite then
     sprite.renderLayer = 1
     sprite.flipX = true
     sprite.flipY = false
+    sprite.autoFlip = true
 end
 ```
 
@@ -110,6 +111,18 @@ end
 local player = GetPlayer()
 if player then
     player.mSpeed = 200
+    player.mHealth = 100
+    player.mMaxHealth = 100
+    player.mHealthRegenRate = 5
+    player.mDashSpeed = 400
+    player.mDashCD = 1.0
+    player.mAttackDamage = 25
+    player.mAttackSpeed = 1.5
+    player.mAttackRange = 50
+    player.mDefense = 10
+    player.mMana = 100
+    player.mMaxMana = 100
+    player.mManaRegenRate = 10
 end
 ```
 
@@ -118,6 +131,13 @@ end
 local enemy = GetEnemy()
 if enemy then
     enemy.mSpeed = 150
+    enemy.mHealth = 100
+    enemy.mMaxHealth = 100
+    enemy.mHealthRegenRate = 2
+    enemy.mAttackDamage = 15
+    enemy.mAttackSpeed = 1.0
+    enemy.mAttackRange = 30
+    enemy.mDefense = 5
 end
 ```
 
@@ -130,6 +150,28 @@ if camera then
 end
 ```
 
+#### `GetPathFinding()`
+```lua
+local pathfinding = GetPathFinding()
+if pathfinding then
+    pathfinding.goal = Vec2(100, 200)
+    if pathfinding.reachedGoal then
+        Log("Reached destination!")
+    end
+end
+```
+
+#### `GetProjectile()`
+```lua
+local projectile = GetProjectile()
+if projectile then
+    projectile.mDamage = 25
+    projectile.mSpeed = 400
+    projectile.mLifeTime = 3.0
+    projectile.mFadeOVerTime = true
+end
+```
+
 ### Checking for Components (Current Entity)
 
 #### `HasTransform()`, `HasRigidBody()`, etc.
@@ -137,6 +179,16 @@ end
 if HasRigidBody() then
     local rb = GetRigidBody()
     -- Safe to use rb
+end
+
+if HasPathFinding() then
+    local pf = GetPathFinding()
+    -- Safe to use pathfinding
+end
+
+if HasProjectile() then
+    local proj = GetProjectile()
+    -- Safe to use projectile
 end
 ```
 
@@ -213,6 +265,19 @@ for i, childId in ipairs(children) do
 end
 ```
 
+### Entity Activation
+
+#### `SetActiveEntity(entity, isActive)`
+Sets whether an entity is active or inactive.
+
+```lua
+-- Deactivate an entity
+SetActiveEntity(enemyId, false)
+
+-- Reactivate an entity
+SetActiveEntity(enemyId, true)
+```
+
 ---
 
 ## Entity-Queries
@@ -237,6 +302,8 @@ end
 - `"Player"`
 - `"Enemy"`
 - `"Camera"`
+- `"PathFinding"`
+- `"Projectile"`
 
 #### `FindEntityWithComponent(componentName)`
 Returns the first entity ID with the specified component, or -1 if not found.
@@ -281,6 +348,11 @@ if player.isValid then
         local rb = player:GetRigidBody()
         rb.velocity = Vec2(10, 0)
     end
+    
+    if player:HasPathFinding() then
+        local pf = player:GetPathFinding()
+        pf.goal = Vec2(200, 200)
+    end
 end
 ```
 
@@ -292,6 +364,8 @@ end
 - `entity:GetPlayer()` / `entity:HasPlayer()`
 - `entity:GetEnemy()` / `entity:HasEnemy()`
 - `entity:GetCamera()` / `entity:HasCamera()`
+- `entity:GetPathFinding()` / `entity:HasPathFinding()`
+- `entity:GetProjectile()` / `entity:HasProjectile()`
 
 #### Method 2: Direct Functions (Functional)
 
@@ -305,6 +379,11 @@ if HasRigidBodyOn(targetEntity) then
     local rb = GetRigidBodyFrom(targetEntity)
     rb.velocity = Vec2(0, 0)
 end
+
+if HasPathFindingOn(targetEntity) then
+    local pf = GetPathFindingFrom(targetEntity)
+    pf.goal = Vec2(300, 300)
+end
 ```
 
 **Available cross-entity functions:**
@@ -315,6 +394,8 @@ end
 - `GetPlayerFrom(entity)` / `HasPlayerOn(entity)`
 - `GetEnemyFrom(entity)` / `HasEnemyOn(entity)`
 - `GetCameraFrom(entity)` / `HasCameraOn(entity)`
+- `GetPathFindingFrom(entity)` / `HasPathFindingOn(entity)`
+- `GetProjectileFrom(entity)` / `HasProjectileOn(entity)`
 
 ---
 
@@ -393,6 +474,7 @@ Log("Mouse: " .. tostring(mousePos.x) .. ", " .. tostring(mousePos.y))
 - `KEY_0` through `KEY_9` - Number keys
 - `KEY_F1` through `KEY_F12` - Function keys
 - `KEY_W`, `KEY_A`, `KEY_S`, `KEY_D` - WASD keys
+- `KEY_U` - U key
 - `KEY_SPACE` - Spacebar
 - `KEY_SHIFT` - Left Shift
 - `KEY_CTRL` - Left Control
@@ -608,6 +690,54 @@ StopMusic("cave")
 StopMusic("boss_theme")
 ```
 
+### Spatial Audio (NEW)
+
+#### `PlayEntitySound(entity, audioName, loop, volume)`
+Plays a sound attached to a specific entity (follows entity position).
+
+**Parameters:**
+- `entity` (Entity): The entity to attach the sound to
+- `audioName` (string): The audio resource name
+- `loop` (bool): Whether the sound should loop
+- `volume` (float): Volume level from 0.0 to 1.0
+
+```lua
+-- Play engine sound that follows the entity
+PlayEntitySound(EntityID, "engine_loop", true, 0.7)
+
+-- Play one-time sound at entity
+PlayEntitySound(enemyId, "enemy_growl", false, 0.8)
+```
+
+#### `StopEntitySound(entity)`
+Stops all sounds attached to an entity.
+
+```lua
+StopEntitySound(EntityID)
+```
+
+#### `StopEntitySoundByName(entity, soundName)`
+Stops a specific sound by name attached to an entity.
+
+```lua
+StopEntitySoundByName(EntityID, "engine_loop")
+```
+
+#### `PlayOneShotAtEntity(entity, audioName, volume)`
+Plays a one-time sound at an entity's position (doesn't follow entity).
+
+```lua
+PlayOneShotAtEntity(EntityID, "explosion", 1.0)
+```
+
+#### `PlayOneShotAtPosition(x, y, audioName, volume)`
+Plays a one-time sound at a specific world position.
+
+```lua
+local pos = GetTransform().position
+PlayOneShotAtPosition(pos.x, pos.y, "impact", 0.9)
+```
+
 > **Note:** Audio names are the identifiers you set when loading resources in the ResourceManager, NOT file paths or extensions. For example, if you loaded "Assets/Audio/explosion.wav" with the name "explosion", you would use `PlaySound("explosion", 1.0, 0)`.
 
 ---
@@ -655,6 +785,107 @@ function Update(dt)
     
     -- Update timer
     timer = timer + deltaTime
+end
+```
+
+### Animation (NEW)
+
+#### `PlayAnimation(entity, animationName)`
+Plays an animation on the specified entity.
+
+```lua
+-- Play walk animation on this entity
+PlayAnimation(EntityID, "walk")
+
+-- Play attack animation on an enemy
+PlayAnimation(enemyId, "attack")
+```
+
+### Physics (NEW)
+
+#### `AddForce(entity, position, direction, force, rotation)`
+Applies a force to an entity with RigidBody.
+
+**Parameters:**
+- `entity` (Entity): Target entity
+- `position` (Vec2): New position to set
+- `direction` (Vec2): Direction vector (will be normalized)
+- `force` (float): Force magnitude
+- `rotation` (float): Rotation angle
+
+```lua
+-- Launch projectile
+local dir = Vec2(1, 0.5)
+AddForce(projectileId, Vec2(100, 100), dir, 500, 45)
+
+-- Knockback effect
+local knockbackDir = Vec2(-1, 0)
+AddForce(enemyId, currentPos, knockbackDir, 300, 0)
+```
+
+### Pathfinding (NEW)
+
+#### `SetPathFindingGoal(entity, x, y)`
+Sets the goal position for an entity with PathFinding component.
+
+```lua
+-- Set enemy to pathfind to player position
+local playerPos = GetTransformFrom(playerId).position
+SetPathFindingGoal(enemyId, playerPos.x, playerPos.y)
+
+-- Set goal to specific location
+SetPathFindingGoal(EntityID, 500, 300)
+```
+
+### Prefab Spawning (NEW)
+
+#### `SpawnPrefab(prefabName, position)`
+Spawns a prefab at the specified position and returns the root entity ID.
+
+**Parameters:**
+- `prefabName` (string): Name of the prefab file (including .json extension)
+- `position` (Vec2): World position to spawn at
+
+**Returns:**
+- `Entity`: The root entity ID of the spawned prefab, or -1 on failure
+
+```lua
+-- Spawn enemy prefab at position
+local spawnPos = Vec2(200, 100)
+local enemyId = SpawnPrefab("Enemy.json", spawnPos)
+
+if enemyId ~= -1 then
+    Log("Enemy spawned successfully: " .. tostring(enemyId))
+else
+    LogError("Failed to spawn enemy prefab")
+end
+
+-- Spawn projectile
+local projectileId = SpawnPrefab("Fireball.json", GetTransform().position)
+```
+
+> **Note:** Prefab files must be located in the prefabs directory and include the `.json` extension in the filename.
+
+### Scene Management (NEW)
+
+#### `LoadScene(sceneName)`
+Loads a different scene.
+
+```lua
+-- Load main menu
+LoadScene("MainMenu")
+
+-- Load next level
+LoadScene("Level2")
+```
+
+#### `CloseApplication()`
+Closes the application/game.
+
+```lua
+-- Quit game
+if KeyPressed(KEY_ESCAPE) then
+    CloseApplication()
 end
 ```
 
@@ -768,6 +999,21 @@ function OnDestroy()
     for i, spawnId in ipairs(spawnedObjects) do
         DestroyEntity(spawnId)
     end
+end
+```
+
+#### `OnClicked()` (NEW)
+Called when a UI button with this script is clicked.
+
+**Use for:**
+- Button click handlers
+- UI interactions
+
+```lua
+function OnClicked()
+    Log("Button clicked!")
+    PlaySound("button_click", 0.8, 0)
+    LoadScene("MainMenu")
 end
 ```
 
@@ -1084,7 +1330,8 @@ ExposedVars = {
     maxSpawns = 10,
     spawnRadius = 50.0,
     enemySpeed = 100.0,
-    autoStart = true
+    autoStart = true,
+    enemyPrefab = "Enemy.json"
 }
 
 local timer = 0
@@ -1120,17 +1367,22 @@ function SpawnEnemy()
     local angle = math.random() * math.pi * 2
     local distance = math.random() * spawnRadius
     
-    local spawnX = myTransform.position.x + math.cos(angle) * distance
-    local spawnY = myTransform.position.y + math.sin(angle) * distance
+    local spawnPos = Vec2(
+        myTransform.position.x + math.cos(angle) * distance,
+        myTransform.position.y + math.sin(angle) * distance
+    )
     
-    -- Create enemy entity
-    local enemyId = CreateEntity()
-    table.insert(spawnedEnemies, enemyId)
+    -- Spawn enemy from prefab
+    local enemyId = SpawnPrefab(enemyPrefab, spawnPos)
     
-    spawnCount = spawnCount + 1
-    Log("Spawned enemy " .. tostring(spawnCount) .. "/" .. tostring(maxSpawns))
-    
-    PlaySound("enemy_spawn", 0.7, 0)
+    if enemyId ~= -1 then
+        table.insert(spawnedEnemies, enemyId)
+        spawnCount = spawnCount + 1
+        Log("Spawned enemy " .. tostring(spawnCount) .. "/" .. tostring(maxSpawns))
+        PlaySound("enemy_spawn", 0.7, 0)
+    else
+        LogError("Failed to spawn enemy prefab")
+    end
     
     -- Check if reached max spawns
     if spawnCount >= maxSpawns then
@@ -1228,6 +1480,77 @@ function OnCollisionEnter(other)
             PlaySound("projectile_impact", 0.6, 0)
             DestroyEntity(EntityID)
         end
+    end
+end
+```
+
+### Example 7: UI Button Handler (NEW)
+
+```lua
+ExposedVars = {
+    targetScene = "MainMenu",
+    buttonText = "Start Game"
+}
+
+function Start()
+    Log("Button initialized: " .. buttonText)
+end
+
+function OnClicked()
+    Log("Button clicked: " .. buttonText)
+    PlaySound("button_click", 0.8, 0)
+    
+    -- Load target scene
+    LoadScene(targetScene)
+end
+```
+
+### Example 8: Pathfinding Enemy (NEW)
+
+```lua
+ExposedVars = {
+    detectionRange = 300.0,
+    updateInterval = 0.5
+}
+
+local playerId = -1
+local updateTimer = 0
+
+function Start()
+    playerId = FindEntityWithComponent("Player")
+    
+    if playerId == -1 then
+        LogWarning("No player found for pathfinding!")
+    end
+end
+
+function Update(dt)
+    if playerId == -1 or not IsEntityValid(playerId) then return end
+    
+    updateTimer = updateTimer + dt
+    
+    -- Update pathfinding goal periodically
+    if updateTimer >= updateInterval then
+        updateTimer = 0
+        
+        local myPos = GetTransform().position
+        local playerPos = GetTransformFrom(playerId).position
+        
+        -- Calculate distance
+        local dx = playerPos.x - myPos.x
+        local dy = playerPos.y - myPos.y
+        local distance = math.sqrt(dx * dx + dy * dy)
+        
+        -- Set pathfinding goal if in range
+        if distance < detectionRange then
+            SetPathFindingGoal(EntityID, playerPos.x, playerPos.y)
+        end
+    end
+    
+    -- Check if reached goal
+    local pf = GetPathFinding()
+    if pf and pf.reachedGoal then
+        Log("Reached player!")
     end
 end
 ```
@@ -1454,6 +1777,7 @@ end
    function OnDestroy()
        StopSound("engine_loop")
        StopMusic("boss_theme")
+       StopEntitySound(EntityID)
    end
    ```
 
@@ -1475,6 +1799,7 @@ end
    function OnDestroy()
        -- Stop sounds
        StopSound("loop")
+       StopEntitySound(EntityID)
        
        -- Clear references
        playerId = -1
@@ -1612,6 +1937,11 @@ end
    - Check collision layers and masks match
    - Ensure colliders are active (`isActive = true`)
 
+6. **Prefab not spawning**
+   - Verify prefab file exists in prefabs directory
+   - Include `.json` extension in filename
+   - Check console for error messages
+
 ### Debugging Tips
 
 ```lua
@@ -1704,10 +2034,10 @@ end
 ## Quick Reference
 
 ### Component Getters (Current Entity)
-- `GetTransform()`, `GetRigidBody()`, `GetSprite()`, `GetCollider()`, `GetPlayer()`, `GetEnemy()`, `GetCamera()`
+- `GetTransform()`, `GetRigidBody()`, `GetSprite()`, `GetCollider()`, `GetPlayer()`, `GetEnemy()`, `GetCamera()`, `GetPathFinding()`, `GetProjectile()`
 
 ### Component Checkers (Current Entity)
-- `HasTransform()`, `HasRigidBody()`, `HasSprite()`, `HasCollider()`, `HasPlayer()`, `HasEnemy()`, `HasCamera()`
+- `HasTransform()`, `HasRigidBody()`, `HasSprite()`, `HasCollider()`, `HasPlayer()`, `HasEnemy()`, `HasCamera()`, `HasPathFinding()`, `HasProjectile()`
 
 ### Cross-Entity Access
 - `GetEntity(id)` - Returns entity wrapper
@@ -1717,6 +2047,8 @@ end
 ### Entity Management
 - `CreateEntity()`, `DestroyEntity(id)`, `DestroyWithChildren(id)`
 - `SetParent(child, parent)`, `RemoveParent(child)`, `GetParent(id)`, `HasParent(id)`, `GetChildren(id)`
+- `SetActiveEntity(entity, isActive)`
+- `SpawnPrefab(prefabName, position)`
 
 ### Entity Queries
 - `FindEntitiesWithComponent(name)`, `FindEntityWithComponent(name)`
@@ -1730,19 +2062,55 @@ end
 ### Audio
 - `PlaySound(name, volume, loops)`, `StopSound(name)`
 - `PlayMusic(name, volume, loops)`, `StopMusic(name)`
+- `PlayEntitySound(entity, name, loop, volume)`, `StopEntitySound(entity)`
+- `StopEntitySoundByName(entity, soundName)`
+- `PlayOneShotAtEntity(entity, name, volume)`
+- `PlayOneShotAtPosition(x, y, name, volume)`
 
 ### Utility
 - `Log(msg)`, `LogWarning(msg)`, `LogError(msg)`
 - `GetDeltaTime()`
+- `PlayAnimation(entity, animationName)`
+- `AddForce(entity, position, direction, force, rotation)`
+- `SetPathFindingGoal(entity, x, y)`
+- `LoadScene(sceneName)`, `CloseApplication()`
 
 ### Lifecycle Callbacks
-- `Start()`, `Update(dt)`, `OnEnable()`, `OnDisable()`, `OnDestroy()`
+- `Start()`, `Update(dt)`, `OnEnable()`, `OnDisable()`, `OnDestroy()`, `OnClicked()`
 - `OnCollisionEnter(other)`, `OnCollision(other)`, `OnCollisionExit(other)`
 - `OnTriggerEnter(other)`, `OnTrigger(other)`, `OnTriggerExit(other)`
 
 ---
 
-**Document Version:** 1.0  
+## Summary of NEW Features (Latest Update)
+
+### New Components
+- **PathFinding**: AI pathfinding with goal tracking
+- **Projectile**: Projectile-specific properties (damage, speed, lifetime, fade)
+
+### New Audio Functions
+- **Spatial Audio**: Entity-attached sounds and positional audio
+- `PlayEntitySound()`, `StopEntitySound()`, `StopEntitySoundByName()`
+- `PlayOneShotAtEntity()`, `PlayOneShotAtPosition()`
+
+### New Utility Functions
+- **Animation**: `PlayAnimation(entity, animationName)`
+- **Physics**: `AddForce(entity, position, direction, force, rotation)`
+- **Pathfinding**: `SetPathFindingGoal(entity, x, y)`
+- **Prefabs**: `SpawnPrefab(prefabName, position)`
+- **Scene Management**: `LoadScene(sceneName)`, `CloseApplication()`
+- **Entity Control**: `SetActiveEntity(entity, isActive)`
+
+### New Lifecycle Callbacks
+- **UI Events**: `OnClicked()` for button interactions
+
+### Enhanced Component Access
+- All new components available through both wrapper and direct access methods
+- PathFinding and Projectile added to entity query system
+
+---
+
+**Document Version:** 2.0  
 **Last Updated:** 2024  
 **Engine:** Uma Engine  
 **Scripting Language:** Lua 5.4

@@ -72,7 +72,7 @@ namespace Uma_UI
 
         if (pGraphics)
         {
-            mScreenSize = { static_cast<float>(pGraphics->GetViewportWidth()), static_cast<float>(pGraphics->GetViewportHeight()) };
+            mScreenSize = pGraphics->GetSceneViewport();
         }
         else
         {

@@ -10,32 +10,32 @@
                 "path": "Assets/bird.png"
             },
             {
-                "name": "player",
-                "path": "Assets/hello.jpg"
-            },
-            {
                 "name": "wall_top_right",
                 "path": "Assets/wall_top_right.png"
             },
             {
-                "name": "wall_left",
-                "path": "Assets/wall_left.png"
+                "name": "player",
+                "path": "Assets/hello.jpg"
             },
             {
                 "name": "enemy",
                 "path": "Assets/marisa.png"
             },
             {
+                "name": "wall_left",
+                "path": "Assets/wall_left.png"
+            },
+            {
                 "name": "background",
                 "path": "Assets/bg.png"
             },
             {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
-            },
-            {
                 "name": "wall_top",
                 "path": "Assets/wall_top.png"
+            },
+            {
+                "name": "kappa_statue",
+                "path": "Assets/statue.png"
             },
             {
                 "name": "wall_top_left",
@@ -50,12 +50,12 @@
                 "path": "Assets/wall_btm.png"
             },
             {
-                "name": "fire bird",
-                "path": "Assets/fire bird.png"
-            },
-            {
                 "name": "floor_tatami",
                 "path": "Assets/floor_tatami.png"
+            },
+            {
+                "name": "fire bird",
+                "path": "Assets/fire bird.png"
             },
             {
                 "name": "player_new",
@@ -64,6 +64,10 @@
             {
                 "name": "fire_ball",
                 "path": "Assets/256px VFX.png"
+            },
+            {
+                "name": "hp",
+                "path": "Assets/hp point.png"
             }
         ],
         "fonts": [
@@ -75,8 +79,13 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -85,14 +94,9 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
-            },
-            {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
             }
         ]
     },
@@ -2765,6 +2769,278 @@
                 "struct Uma_ECS::Camera": {
                     "zoom": 1.5,
                     "followPlayer": true
+                }
+            }
+        },
+        {
+            "id": 39,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 0,
+                    "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 40,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 39
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -500.0,
+                        "y": 225.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "textureName": "hp",
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 41,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 39
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -450.0,
+                        "y": 225.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "textureName": "hp",
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 43,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 4",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 39
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -350.0,
+                        "y": 225.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "textureName": "hp",
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 44,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 3",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 39
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -400.0,
+                        "y": 225.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "textureName": "hp",
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
                 }
             }
         }
