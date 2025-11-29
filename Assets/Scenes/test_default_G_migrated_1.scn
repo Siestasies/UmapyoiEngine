@@ -95,6 +95,11 @@
         ],
         "sounds": [
             {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
                 "name": "footsteps",
                 "path": "Assets/sounds/footsteps.wav",
                 "type": 0
@@ -113,6 +118,21 @@
                 "name": "cave",
                 "path": "Assets/sounds/cave.mp3",
                 "type": 1
+            },
+            {
+                "name": "enemy_hurt",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "enemy_hit",
+                "path": "Assets/sounds/EnemyWav/OnHitSFX.wav",
+                "type": 0
+            },
+            {
+                "name": "fire_enemy_attack",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
             }
         ]
     },
@@ -2289,7 +2309,7 @@
             "transformOverride": {
                 "position": [
                     -165.078,
-                    74.295
+                    74.291
                 ],
                 "rotation": [
                     0.0,
@@ -2309,7 +2329,7 @@
                     "name": "cam",
                     "position": {
                         "x": -165.078,
-                        "y": 74.295
+                        "y": 74.291
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17218,7 +17238,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Roof_Corner_Right_dup_dup_dup",
                     "position": {
-                        "x": -89.072,
+                        "x": -89.069,
                         "y": 76.984
                     },
                     "rotation": {
@@ -17270,7 +17290,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "new entity_dup",
                     "position": {
-                        "x": -99.197,
+                        "x": -99.194,
                         "y": 77.027
                     },
                     "rotation": {
@@ -17591,6 +17611,37 @@
                     0.384,
                     1.046
                 ]
+            }
+        },
+        {
+            "id": 301,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "BGM Object",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                }
             }
         }
     ]

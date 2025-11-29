@@ -47,6 +47,7 @@ function AttackState:update(dt)
         -- SetActiveEntity(entity, true)
 
         GetProjectileFrom(entity).mDamage = self.parent:GetEnemy().mAttackDamage
+        PlayEntitySound(self.parent.id, "fire_enemy_attack", false, 0.3);
 
         
         if angle < 0 then

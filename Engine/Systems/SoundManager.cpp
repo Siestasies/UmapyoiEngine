@@ -84,7 +84,7 @@ namespace Uma_Engine {
 
         FMOD_System_CreateSoundGroup(pFmodSystem, "SFX_SG", &SFX_SG);
 
-        FMOD_SoundGroup_SetMaxAudible(SFX_SG, 5);
+        FMOD_SoundGroup_SetMaxAudible(SFX_SG, 120);
         FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
 
         // Set 3D settings (doppler scale, distance factor, rolloff scale)
