@@ -893,7 +893,7 @@ namespace Uma_ECS
                 pEventSystem->Emit<Uma_Engine::ApplicationGamePauseRequest>(isPause);
             });
 
-        sharedLua->set_function("IsGamePause", [this](bool isPause) -> bool
+        sharedLua->set_function("IsGamePause", [this]() -> bool
             {
                 return Uma_Engine::Application::GetGamePause();
             });
