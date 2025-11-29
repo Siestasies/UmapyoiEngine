@@ -1,0 +1,256 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "bird enemy",
+                        "position": {
+                            "x": -26.215,
+                            "y": 7.464
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.384,
+                            "y": 1.046
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "fire bird",
+                        "layer": 16,
+                        "flipX": true,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": true,
+                        "gridX": 12.0,
+                        "gridY": 4.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": -0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 500.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 3.598
+                                },
+                                "size": {
+                                    "x": 23.7,
+                                    "y": 5.4
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 18,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -5.098
+                                },
+                                "size": {
+                                    "x": 25.5,
+                                    "y": 4.296
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/NewEnemy.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "isActive",
+                                        "type": 2,
+                                        "value": true,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "name",
+                                        "type": 3,
+                                        "value": "unknown",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Enemy": {
+                        "mHealth": 100,
+                        "mMaxHealth": 100,
+                        "mHealthRegenRate": 1.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": 10,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 20.0,
+                        "mDefense": 5
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "idle",
+                                "framesX": 11,
+                                "framesY": 4,
+                                "startFrame": 0,
+                                "frameCount": 10,
+                                "speed": 10.0,
+                                "loop": true
+                            },
+                            {
+                                "name": "die",
+                                "framesX": 11,
+                                "framesY": 4,
+                                "startFrame": 33,
+                                "frameCount": 11,
+                                "speed": 24.0,
+                                "loop": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::PathFinding": {
+                        "pathUpdateTimer": 0.0,
+                        "pathUpdateInterval": 0.5
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "isRoot": true
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "bird enemy child",
+                        "position": {
+                            "x": -2.4,
+                            "y": -0.101
+                        },
+                        "rotation": {
+                            "x": -267.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 2.0,
+                            "y": 1.0
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "kappa_statue",
+                        "layer": 16,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": true,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 500.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 2.0,
+                                    "y": 2.0
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "name": "fire bird",
+                "path": "Assets/fire bird.png"
+            },
+            {
+                "name": "kappa_statue",
+                "path": "Assets/statue.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

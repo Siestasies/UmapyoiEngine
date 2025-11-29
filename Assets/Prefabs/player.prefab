@@ -1,0 +1,223 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "player",
+                        "position": {
+                            "x": -2.278,
+                            "y": 11.597
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.354,
+                            "y": 0.354
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Player": {
+                        "mHealth": 100,
+                        "mMaxHealth": 100,
+                        "mHealthRegenRate": 1.0,
+                        "mSpeed": 1.0,
+                        "mDashSpeed": 10.0,
+                        "mDashCD": 2.0,
+                        "mAttackDamage": 30,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 20.0,
+                        "mDefense": 5,
+                        "mMana": 100,
+                        "mMaxMana": 100,
+                        "mManaRegenRate": 5.0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "player_new",
+                        "layer": 32,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 10.0,
+                        "gridY": 9.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 300.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.6,
+                                    "y": -8.8
+                                },
+                                "size": {
+                                    "x": 8.8,
+                                    "y": 25.0
+                                },
+                                "purpose": 0,
+                                "layer": 2,
+                                "colliderMask": 20,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.5,
+                                    "y": -19.85
+                                },
+                                "size": {
+                                    "x": 19.6,
+                                    "y": 3.2
+                                },
+                                "purpose": 0,
+                                "layer": 2,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 10.798,
+                                    "y": -9.199
+                                },
+                                "size": {
+                                    "x": 20.197,
+                                    "y": 18.899
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "atk_3",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 60,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "idle",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 0,
+                                "frameCount": 10,
+                                "speed": 12.0,
+                                "loop": true
+                            },
+                            {
+                                "name": "run",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 10,
+                                "frameCount": 10,
+                                "speed": 24.0,
+                                "loop": true
+                            },
+                            {
+                                "name": "die",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 40,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "atk_1",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 20,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "dash_1",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 30,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "hurt",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 40,
+                                "frameCount": 3,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "atk_2",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 50,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::AudioListener": null,
+                    "struct Uma_ECS::PathFinding": {
+                        "pathUpdateTimer": 0.0,
+                        "pathUpdateInterval": 0.5
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/player.prefab",
+                        "isRoot": true
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "name": "player_new",
+                "path": "Assets/Player Spritesheet.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}
