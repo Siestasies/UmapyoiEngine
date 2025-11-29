@@ -56,7 +56,6 @@ namespace Uma_Engine
         if (mIsEditorMode)
         {
             glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         }
         else
         {
@@ -85,12 +84,7 @@ namespace Uma_Engine
         }
 
         // Center window if windowed mode
-        if (mIsEditorMode)
-        {
-            glfwMaximizeWindow(mWindow);
-            glfwGetWindowSize(mWindow, &mWidth, &mHeight);
-        }
-        else if (mMode == WindowMode::Windowed)
+        if (mMode == WindowMode::Windowed)
         {
             GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
