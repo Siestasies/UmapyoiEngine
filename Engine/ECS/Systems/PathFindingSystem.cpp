@@ -114,10 +114,13 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
             if (initGoal && pfArray.Has(entity)) {
                 auto& pf = pfArray.GetData(entity);
-                pf.goal = tf.worldPosition;
-                initGoal = false;
+                pf.goal = tf.position;
             }
         }
+    }
+
+    if (initGoal) {
+        initGoal = false;
     }
 
     /*std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
