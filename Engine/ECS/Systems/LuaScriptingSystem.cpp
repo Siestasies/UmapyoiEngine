@@ -402,6 +402,11 @@ namespace Uma_ECS
                 }
             });
 
+        sharedLua->set_function("GetActiveEntity", [this](Uma_ECS::Entity entity) -> bool
+            {
+               return  pCoordinator->IsActiveInHierarchy(entity);
+            });
+
         // temp animator exposure
         sharedLua->set_function("PlayAnimation", [this](Entity entity, std::string name)
             {

@@ -278,6 +278,14 @@ SetActiveEntity(enemyId, false)
 SetActiveEntity(enemyId, true)
 ```
 
+#### `GetActiveEntity(entity)`
+Sets whether an entity is active or inactive.
+
+```lua
+-- get isActive for a entity
+local isEntityActive = GetActiveEntity(enemyId)
+```
+
 ---
 
 ## Entity-Queries
