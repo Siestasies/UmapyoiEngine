@@ -184,11 +184,14 @@ namespace Uma_Engine
 
     void Application::MakeWindow()
     {
+        WindowMode mode = mIsEditor ? WindowMode::Windowed : mConfig->GetWindowMode();
+
         mWindow = std::make_unique<Window>(
             mConfig->screenWidth,
             mConfig->screenHeight,
             mConfig->windowTitle,
-            mIsEditor
+            mIsEditor,
+            mode
         );
 
         if (!mWindow->Initialize())
