@@ -95,6 +95,17 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                     maxAgentRadius = (std::max)(maxAgentRadius, candidateRadius);
                 }
             }
+
+            if (initGoal && pfArray.Has(entity)) {
+                auto& pf = pfArray.GetData(entity);
+                pf.goal = tf.position;
+                if (playerArray.Has(entity) && collider.shapes.size() > 1 && collider.shapes[1].isActive) {
+                    // For player, use shapes[1]
+                    const auto& navShape = collider.shapes[1];
+                    Vec2 offset{ navShape.offset.x * tf.scale.x ,navShape.offset.y * tf.scale.y };
+                    pf.goal += offset;
+                }
+            }
         }
     }
 
