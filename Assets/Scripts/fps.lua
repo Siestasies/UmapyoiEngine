@@ -1,7 +1,7 @@
 local active = false;
 
 function Update(dt)
-    if KeyPressed(KEY_F) then
+    if KeyPressed(KEY_F3) then
         active = not active;
     end
 
