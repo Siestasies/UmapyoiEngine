@@ -76,7 +76,7 @@ function ChaseState:exit()
 
     local pf = GetPathFindingFrom(self.parent.id)
     pf.goal.x = self.parent:GetTransform().position.x
-    pf.goal.y = self.parent:GetTransform().position.x
+    pf.goal.y = self.parent:GetTransform().position.y
 end
 
 
