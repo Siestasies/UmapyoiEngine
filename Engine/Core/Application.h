@@ -120,6 +120,7 @@ namespace Uma_Engine
         SceneManager* GetSceneManager() const { return mSceneManager; }
         Graphics* GetGraphics() const { return mGraphics; }
         GLFWwindow* GetGLFWWindow() const;
+        bool& GamePause() { return mGamePause; }
 
         // helpers
         void SetIsEditor(bool isEditor) { mIsEditor = isEditor; }

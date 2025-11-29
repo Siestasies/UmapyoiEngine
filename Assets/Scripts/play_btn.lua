@@ -1,3 +1,3 @@
 function OnClicked()
-    LoadScene("test_default.scn")
+    LoadScene("test_combat.scn")
 end

@@ -180,7 +180,6 @@ namespace Uma_UI
             {
                 rectTransform.computedRect = ComputeRectInNDC(
                     rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
-                MarkEntityAndChildrenDirty(entity);
                 rectTransform.isDirty = false;
             }
         }
@@ -198,6 +197,12 @@ namespace Uma_UI
             auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(entity);
             for (Uma_ECS::Entity child : transform.children)
             {
+                if (pCoordinator->GetComponentArray<RectTransform>().Has(child))
+                {
+                    auto& rectTransform = pCoordinator->GetComponent<RectTransform>(child);
+                    rectTransform.isDirty = true;
+                }
+
                 ComputeLayoutRecursive(child, currentRect, canvasScale);
             }
         }
@@ -405,9 +410,13 @@ namespace Uma_UI
                 continue;
             }
 
-            if (!text.fontName.empty())
+            if (!text.fontName.empty() && EnsureFontLoaded(text.fontName))
             {
-                EnsureFontLoaded(text.fontName);
+                /* Empty by design */
+            }
+            else
+            {
+                continue;
             }
 
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))

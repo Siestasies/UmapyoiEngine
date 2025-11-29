@@ -95,7 +95,7 @@ namespace Uma_Engine
         GetGraphics()->SetRenderTarget(Uma_Engine::RenderTarget::Window);
 
         // Fullscreen mode for game runtime
-        GetWindow()->SetWindowMode(WindowMode::Fullscreen);
+        GetWindow()->SetWindowMode(WindowMode::Windowed);
 
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
@@ -119,7 +119,12 @@ namespace Uma_Engine
 
     void GameApplication::Update(float dt)
     {
-        // do nth yet
         (void)dt;
+
+        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        {
+            GamePause() = !GamePause();
+            GetEventSystem()->Emit<ApplicationGamePauseRequest>(GamePause());
+        }
     }
 }

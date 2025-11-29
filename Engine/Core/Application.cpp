@@ -361,12 +361,6 @@ namespace Uma_Engine
                 mWindow->ToggleFullscreen();
             }
 
-            if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_BACKSPACE))
-            {
-                mGamePause = !mGamePause;
-                mEventSystem->Emit<ApplicationGamePauseRequest>(mGamePause);
-            }
-
             // Update all systems
             mSystemManager->Update(deltaTime);
 

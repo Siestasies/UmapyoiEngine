@@ -111,6 +111,5 @@ namespace Uma_Engine
     void EditorApplication::Update(float dt)
     {
         (void)dt;
-        // do nth yet
     }
 }

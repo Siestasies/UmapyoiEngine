@@ -3200,6 +3200,7 @@ namespace Uma_Engine
                     return true;
                 }
 
+                auto& rectTransform = coordinator.GetComponent<Uma_UI::RectTransform>(entity);
                 auto& canvas = coordinator.GetComponent<Uma_UI::Canvas>(entity);
                 ImGui::Indent();
             
@@ -3208,6 +3209,7 @@ namespace Uma_Engine
             
                 if (ImGui::DragInt("Sorting Order", &canvas.sortingOrder, 1.0f, -100, 100))
                 {
+                    rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3218,6 +3220,7 @@ namespace Uma_Engine
                 if (ImGui::DragFloat2("Resolution", refResolution, 1.0f, 1.0f, 10000.0f, "%.0f"))
                 {
                     canvas.referenceResolution = Vec2(refResolution[0], refResolution[1]);
+                    rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3229,6 +3232,7 @@ namespace Uma_Engine
                 if (ImGui::Combo("Scale Mode", &currentScaleMode, scaleModes, IM_ARRAYSIZE(scaleModes)))
                 {
                     canvas.scaleMode = static_cast<Uma_UI::CanvasScaleMode>(currentScaleMode);
+                    rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3236,6 +3240,7 @@ namespace Uma_Engine
                 {
                     if (ImGui::SliderFloat("Match Width/Height", &canvas.matchWidthOrHeight, 0.0f, 1.0f, "%.2f"))
                     {
+                        rectTransform.isDirty = true;
                         m_hasUnsavedEdit = true;
                     }
                     ImGui::TextDisabled("0 = Match Width, 1 = Match Height");
