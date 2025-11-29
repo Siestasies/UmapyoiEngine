@@ -79,7 +79,7 @@ namespace Uma_Engine
          */
         EngineConfig* GetConfig() const { return mConfig.get(); }
 
-        static bool GetGamePause() { return mGamePause; }
+        static bool& GetGamePause() { return mGamePause; }
 
     protected:
         /**
