@@ -107,4 +107,10 @@ namespace Uma_Engine
         // Load the default scene
         sceneManager->LoadScene("test_default.scn");
     }
+
+    void EditorApplication::Update(float dt)
+    {
+        (void)dt;
+        // do nth yet
+    }
 }

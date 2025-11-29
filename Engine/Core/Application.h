@@ -28,7 +28,7 @@ namespace Uma_Engine
     class SceneManager;
     class SoundManager;
     class Graphics;
-    struct EngineConfig;
+    class EngineConfig;
 
     /**
      * \brief Base application class that manages the engine lifecycle
@@ -103,7 +103,7 @@ namespace Uma_Engine
          * Called every frame during Run()
          * \param deltaTime Time elapsed since last frame
          */
-        virtual void Update(float deltaTime) {}
+        virtual void Update(float deltaTime) { (void)deltaTime; }
 
         /**
          * \brief Override this to perform application-specific shutdown logic

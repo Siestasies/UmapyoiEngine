@@ -29,10 +29,6 @@ namespace Uma_ECS
 {
     void ProjectileSystem::Update(float dt)
     {
-        auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
-        auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-        auto& pArray = pCoordinator->GetComponentArray<Projectile>();
-
         std::vector<Entity> entityToDestroy;
 
         for (auto const& entity : aEntities)

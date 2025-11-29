@@ -97,14 +97,17 @@ namespace Uma_ECS
         // collision
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionEnterEvent& e) 
             { 
+                (void)e;
                 // do nth yet
             });
         pEventSystem->Subscribe<Uma_Engine::OnCollisionEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionEvent& e)
             {
+                (void)e;
                 // do nth yet
             });
         pEventSystem->Subscribe<Uma_Engine::OnCollisionExitEvent, PlayerControllerSystem>([this](const Uma_Engine::OnCollisionExitEvent& e)
             {
+                (void)e;
                 // do nth yet
             });
 
@@ -112,10 +115,6 @@ namespace Uma_ECS
             {
                 if (!pCoordinator || aEntities.empty()) return;
                 if (e.entity != aEntities[0] && e.trigger != aEntities[0]) return;
-
-              /*  std::stringstream ss;
-                ss << "Trigger enter player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
 
                 // proccess trigger
 
@@ -125,17 +124,13 @@ namespace Uma_ECS
             });
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEvent& e)
             {
+                (void)e;
                 // do nth yet
-               /* std::stringstream ss;
-                ss << "Trigger in player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
             });
         pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerExitEvent& e)
             {
+                (void)e;
                 // do nth yet
-              /*  std::stringstream ss;
-                ss << "Trigger exits player collider " << e.trigger << " " << e.entity;
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, ss.str());*/
             });
     }
 
@@ -258,13 +253,10 @@ namespace Uma_ECS
         if (pCoordinator->HasComponent<Projectile>(attacker))
         {
             // its a projectile 
-            auto& player = pCoordinator->GetComponent<Player>(deffender);
             auto& projectile = pCoordinator->GetComponent<Projectile>(attacker);
 
             OnHurt(deffender, projectile.mDamage);
 
-
-            auto& rb = pCoordinator->GetComponent<RigidBody>(attacker);
             pCoordinator->DestroyEntityAndChildren(attacker);
         }
     }
@@ -327,6 +319,7 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::HandleMovementInput(float dt)
     {
+        (void)dt;
         if (aEntities.empty() || !pCoordinator->HasComponent<PathFinding>(aEntities[0])) return;
 
         // Use event-based input instead of state polling for fixed timestep compatibility

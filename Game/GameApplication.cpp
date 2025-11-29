@@ -77,6 +77,7 @@ namespace Uma_Engine
         eventSystem->Subscribe<Uma_Engine::ApplicationQuitRequest, Application>(
             [this](const ApplicationQuitRequest& e)
             {
+                (void)e;
                 GetWindow()->Close();
             });
     }
@@ -114,5 +115,11 @@ namespace Uma_Engine
 
         // Load the scene
         sceneManager->LoadScene("main_menu.scn");
+    }
+
+    void GameApplication::Update(float dt)
+    {
+        // do nth yet
+        (void)dt;
     }
 }

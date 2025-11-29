@@ -886,6 +886,11 @@ namespace Uma_ECS
             {
                 pEventSystem->Emit<Uma_Engine::ApplicationQuitRequest>();
             });
+
+        sharedLua->set_function("PauseGame", [this](bool isPause)
+            {
+                pEventSystem->Emit<Uma_Engine::ApplicationGamePauseRequest>(isPause);
+            });
     }
 
     void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)

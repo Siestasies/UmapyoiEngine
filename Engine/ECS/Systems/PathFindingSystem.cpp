@@ -136,7 +136,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         }
     }
 
-    const float goalDeadZone = cellSize * 2.0f;
+    //const float goalDeadZone = cellSize * 2.0f;
 
     // Process pathfinding for all entities
     for (auto const& entity : aEntities)
@@ -272,7 +272,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                 }
             }
             else if (distance > 0.001f) {
-                float spd = 50.0f;
+                spd = 50.0f;
                 if (isPlayer) {
                     spd = playerArray.GetData(playerID).mSpeed;
                 }

@@ -971,7 +971,7 @@ namespace Uma_Engine
 
         // Build a list of root entities (entities with no parent)
         Uma_ECS::Entity rootEntity = static_cast<Uma_ECS::Entity>(-1);
-        bool firstRoot = true;
+        //bool firstRoot = true;
 
         rootEntity = transformArray.GetEntity(0);
 
@@ -1081,11 +1081,11 @@ namespace Uma_Engine
                 auto sceneManager = pSystemManager->GetSystem<SceneManager>();
                 if (sceneManager && sceneManager->GetActiveScene())
                 {
-                    auto& coordinator = sceneManager->GetActiveScene()->GetCoordinator();
-                    Uma_Editor::EntitySnapshot snapshotAfter = CaptureEntitySnapshot(m_editingEntity, coordinator);
+                    auto& newCoordinator = sceneManager->GetActiveScene()->GetCoordinator();
+                    Uma_Editor::EntitySnapshot snapshotAfter = CaptureEntitySnapshot(m_editingEntity, newCoordinator);
 
                     auto cmd = std::make_unique<Uma_Editor::EntitySnapshotCmd>(
-                        &coordinator,
+                        &newCoordinator,
                         std::move(m_snapshotBeforeEdit),
                         std::move(snapshotAfter),       
                         "Transform Edit"
@@ -3508,6 +3508,8 @@ namespace Uma_Engine
 
     Uma_Editor::EntitySnapshot ImguiManager::CaptureEntitySnapshot(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coord)
     {
+        (void)coord;
+
         Uma_ECS::Coordinator& coordinator = pSystemManager->GetSystem<SceneManager>()->GetActiveScene()->GetCoordinator();
 
         Uma_Editor::EntitySnapshot snapshot;

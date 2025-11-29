@@ -50,6 +50,7 @@ namespace Uma_Engine
         void RegisterSystems() override;
         void PostInit() override;
         void PreInit() override;
+        void Update(float dt) override;
         void SubscribeEvents();
     };
 }

@@ -243,9 +243,9 @@ namespace Uma_Engine
             {
                 // Need to cast to Coordinator to access CollectPrefabResources
                 // This is a bit hacky but works within the current architecture
-                Uma_ECS::Coordinator* coordPtr = static_cast<Uma_ECS::Coordinator*>(coordinator);
+                Uma_ECS::Coordinator* newCoord = static_cast<Uma_ECS::Coordinator*>(coordinator);
                 Uma_ECS::Coordinator::PrefabResources resources;
-                coordPtr->CollectPrefabResources(entity, resources);
+                newCoord->CollectPrefabResources(entity, resources);
 
                 // Serialize resources
                 Uma_Engine::ResourcesManager* resMgrPtr = static_cast<Uma_Engine::ResourcesManager*>(resourcesManager);

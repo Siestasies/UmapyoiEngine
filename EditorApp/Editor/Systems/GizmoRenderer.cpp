@@ -42,7 +42,6 @@ namespace Uma_Engine
             return;
 
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
-        auto& spriteArray = pCoordinator->GetComponentArray<Uma_ECS::Sprite>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
         if (!config.pickGameEntities && transformArray.Has(entity) && !rectTransformArray.Has(entity)) return;
