@@ -44,17 +44,17 @@ function Update(dt)
     if rb then
         local isMoving = (rb.velocity.x ~= 0 or rb.velocity.y ~= 0)
         
-        if isMoving then
-            if not isWalk then
-                PlayEntitySound(EntityID,"footsteps", true, 1.0)
-                isWalk = true
-            end
-        else
-            if isWalk then
-                StopEntitySoundByName(EntityID,"footsteps")
-                isWalk = false
-            end
-        end
+        -- if isMoving then
+        --     if not isWalk then
+        --         PlayEntitySound(EntityID,"footsteps", true, 1.0)
+        --         isWalk = true
+        --     end
+        -- else
+        --     if isWalk then
+        --         StopEntitySoundByName(EntityID,"footsteps")
+        --         isWalk = false
+        --     end
+        -- end
     end
 
 

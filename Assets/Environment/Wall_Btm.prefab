@@ -1,0 +1,57 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Wall_Btm",
+                        "position": {
+                            "x": -89.083,
+                            "y": 16.513
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.25,
+                            "y": 1.0
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "textureName": "EnvSprite1",
+                        "layer": 8,
+                        "flipX": true,
+                        "flipY": false,
+                        "Native": true,
+                        "gridX": 16.0,
+                        "gridY": 4.0,
+                        "cellX": 2.0,
+                        "cellY": 3.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 200.0,
+                        "fric_coeff": 100.0
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    }
+}

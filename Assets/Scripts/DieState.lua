@@ -24,6 +24,16 @@ end
 function DieState:enter()
     Log("entering die ".. self.parent.id)
     PlayAnimation(self.parent.id, "die")
+
+    local collider = GetColliderFrom(self.parent.id)
+    if collider then
+
+        for i = 1, #collider.shapes do
+        local s = collider.shapes[i]
+        s.isActive = false
+
+    end
+end
 end
 
 
