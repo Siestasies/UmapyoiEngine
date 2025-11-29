@@ -17,34 +17,6 @@ GLFW for window management
 GLAD for OpenGL loading
 GLM for math operations
 
-- Single and instanced textured sprite rendering (DrawSprite, DrawSpritesInstanced).
-- Screen-space and world-space text rendering using FreeType (DrawTextScreen, DrawTextWorld)
-- Solid shape rendering (DrawFilledRect, DrawFilledCircle, DrawFilledTriangle)
-- Debug drawing (lines, rects, circles) with instanced support
-- 2D camera with position and zoom (SetCamInfo, UpdateProjectionMatrix)
-- Coordinate space conversion (ScreenToWorld, WorldToScreen)
-- Resource loading for textures (stb_image) and fonts (FreeType)
-
-Per-Frame Rendering:
--------------------
-|    Update(dt)     | - Handle viewport resize, update projection matrix
--------------------
--------------------
-| ClearBackground | - Set clear color, clear screen
--------------------
----------------------------------------------------
-|                 Render Scene                    |
-|-------------------------------------------------|
-| • DrawBackground()         - Fullscreen texture |
-| • DrawSprite()             - Single sprite      |
-| • DrawSpritesInstanced()    - Batch sprites     |
-| • DrawTextScreen() / World() - Render text      |
-| • DrawFilledRect() / Circle() - Solid shapes    |
-| • DrawDebug() / Instanced() - Debug lines       |
----------------------------------------------------
-Coordinate Transformation Pipeline:
-Model Space -> World Space -> View Space -> NDC -> Viewport (Screen Space)
-
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
@@ -331,7 +303,7 @@ void main()
             glViewport(0, 0, mSceneFBWidth, mSceneFBHeight);
         }
 
-        ClearBackground(0.2f, 0.3f, 0.3f);
+        ClearBackground(0.18f, 0.02f, 0.02f);
         UpdateProjectionMatrix();
     }
 
