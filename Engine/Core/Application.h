@@ -81,6 +81,8 @@ namespace Uma_Engine
 
         static bool& GetGamePause() { return mGamePause; }
 
+        static float GetFps() { return mFps; }
+
     protected:
         /**
          * \brief Override this to register application-specific systems
@@ -148,5 +150,6 @@ namespace Uma_Engine
         bool mWasFocused;
         bool mIsEditor;
         inline static bool mGamePause = false;
+        inline static float mFps = 0;
     };
 }

@@ -33,6 +33,7 @@ All rights reserved.
 #include "../Components/Camera.h"
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
+#include "../UI/Components/Text.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -612,6 +613,12 @@ namespace Uma_ECS
             "mLifeTime",        &Projectile::mLifeTime
         );
 
+        //Register Text component
+        sharedLua->new_usertype<Uma_UI::Text>("Text",
+            "text", &Uma_UI::Text::text,
+            "visible", &Uma_UI::Text::visible
+        );
+
         // Register Camera
         sharedLua->new_usertype<Camera>("Camera",
             "zoom", &Camera::mZoom,
@@ -897,6 +904,11 @@ namespace Uma_ECS
         sharedLua->set_function("IsGamePause", [this]() -> bool
             {
                 return Uma_Engine::Application::GetGamePause();
+            });
+
+        sharedLua->set_function("GetFps", [this]() -> float
+            {
+                return Uma_Engine::Application::GetFps();
             });
     }
 

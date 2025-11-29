@@ -249,7 +249,6 @@ namespace Uma_Engine
         float lastFrame = 0.0f;
         float deltaTime = 0.0f;
         float lastTime = 0.0f;
-        float fps = 0.0f;
         int frameCount = 0;
 
         // Frame rate limiting
@@ -288,14 +287,14 @@ namespace Uma_Engine
             // Update FPS display once per second
             if (currentFrame - lastTime >= 1.0f)
             {
-                fps = frameCount / (currentFrame - lastTime);
+                mFps = frameCount / (currentFrame - lastTime);
                 frameCount = 0;
                 lastTime = currentFrame;
 
                 titleStream.str("");
                 titleStream.clear();
                 titleStream << mConfig->windowTitle << " | FPS: " << std::fixed
-                           << std::setprecision(2) << fps;
+                           << std::setprecision(2) << mFps;
                 mWindow->SetTitle(titleStream.str());
             }
 
