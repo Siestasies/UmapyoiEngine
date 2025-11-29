@@ -108,12 +108,12 @@
                                 },
                                 "size": {
                                     "x": 20.197,
-                                    "y": 18.899
+                                    "y": 31.999
                                 },
                                 "purpose": 2,
                                 "layer": 2,
                                 "colliderMask": 4,
-                                "isActive": false,
+                                "isActive": true,
                                 "autoFitToSprite": false
                             }
                         ]

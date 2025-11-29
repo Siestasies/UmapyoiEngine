@@ -68,7 +68,6 @@ namespace Uma_Engine
         , mInitialized(false)
         , mWasFocused(false)
         , mIsEditor(true)
-        , mGamePause(false)
     {
     }
 

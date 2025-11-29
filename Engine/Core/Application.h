@@ -79,6 +79,8 @@ namespace Uma_Engine
          */
         EngineConfig* GetConfig() const { return mConfig.get(); }
 
+        static bool& GetGamePause() { return mGamePause; }
+
     protected:
         /**
          * \brief Override this to register application-specific systems
@@ -144,6 +146,6 @@ namespace Uma_Engine
         bool mInitialized;
         bool mWasFocused;
         bool mIsEditor;
-        bool mGamePause;
+        inline static bool mGamePause = false;
     };
 }

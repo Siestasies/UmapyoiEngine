@@ -41,6 +41,7 @@ All rights reserved.
 // temp
 #include <rapidjson/istreamwrapper.h>
 #include "Core/FilePaths.h"
+#include "Application.h"
 
 namespace Uma_ECS
 {
@@ -890,6 +891,11 @@ namespace Uma_ECS
         sharedLua->set_function("PauseGame", [this](bool isPause)
             {
                 pEventSystem->Emit<Uma_Engine::ApplicationGamePauseRequest>(isPause);
+            });
+
+        sharedLua->set_function("IsGamePause", [this](bool isPause) -> bool
+            {
+                return Uma_Engine::Application::GetGamePause();
             });
     }
 
