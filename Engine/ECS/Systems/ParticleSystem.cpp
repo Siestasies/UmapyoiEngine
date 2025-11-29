@@ -1,3 +1,22 @@
+/*!
+\file    ParticleSystem.cpp
+\par     Project: GAM200
+\par     Course: CSD2401
+\par     Section A
+\par     Software Engineering Project 3
+
+\author Javier Chua Dong Qing (100%)
+\par     E-mail: javierdongqing.chua@digipen.edu
+\par     DigiPen login: javierdongqing.chua
+
+\brief
+Defines the ECS System for updating and rendering of all particles.
+It handles: Spawning logic, Physics integration, Visual updates, Rendering
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "ParticleSystem.hpp"
 #include "Components/ParticleEmitter.h"
 #include "Components/Transform.h"
