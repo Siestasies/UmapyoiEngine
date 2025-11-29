@@ -64,7 +64,9 @@ namespace Uma_ECS
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
 
-        if (pCoordinator->GetComponent<Player>(aEntities[0]).mHealth <= 0) return;
+        auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
+
+        if (!player.combatState.isAlive) return;
 
         // by right shd only have 1 player
         HandleMovementInput(dt);
@@ -178,7 +180,14 @@ namespace Uma_ECS
                 collider.shapes[2].isActive = false;
             }
 
-            if (player.mHealth <= 0) player.animatorState = PS_Die;
+            if (player.mHealth <= 0)
+            {
+                player.animatorState = PS_Die;
+            }
+            else if (player.mHealth > 0 && !player.combatState.isAlive)
+            {
+                player.combatState.isAlive = true;
+            }
 
             switch (player.animatorState)
             {
@@ -232,6 +241,7 @@ namespace Uma_ECS
                 }
 
                 pf.reachedGoal = true;
+                player.combatState.isAlive = false;
 
                 break;
             }

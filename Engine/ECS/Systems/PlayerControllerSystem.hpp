@@ -74,6 +74,8 @@ namespace Uma_ECS
             bool rightMouseConsumed = false;  // Track if we've already processed this press
         } inputState;
 
+        bool isPlayerDead = false;
+
         Uma_Engine::EventSystem* pEventSystem = nullptr;
         Uma_Engine::Graphics* pGraphicsSystem = nullptr;
         Uma_Engine::HybridInputSystem* pHybridInputSystem = nullptr;

@@ -201,19 +201,22 @@ namespace Uma_ECS
 
         // Now group by texture and render in layer order
         std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
-        LayerMask currentLayer = 0;
+        LayerMask currentLayer = allSprites.empty() ? 0 : allSprites[0].layer;
 
         for (const auto& layeredSprite : allSprites)
         {
             // If we've moved to a new layer, flush previous batches
-            if (layeredSprite.layer != currentLayer && !sorted_sprites.empty())
+            if (layeredSprite.layer != currentLayer)
             {
-                // Render all batches from previous layer
-                for (const auto& pair : sorted_sprites)
+                if (!sorted_sprites.empty())
                 {
-                    pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                    // Render all batches from previous layer
+                    for (const auto& pair : sorted_sprites)
+                    {
+                        pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                    }
+                    sorted_sprites.clear();
                 }
-                sorted_sprites.clear();
                 currentLayer = layeredSprite.layer;
             }
 

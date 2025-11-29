@@ -44,6 +44,8 @@ namespace Uma_ECS
 
         float attack_1_cd_curr;
         float attack_2_cd_curr;
+
+        bool isAlive;
     };
 
     struct Player
@@ -150,6 +152,7 @@ namespace Uma_ECS
             combatState.attack_2_cd_curr = 0.f;
 
             animatorState = PS_Idle;
+            combatState.isAlive = true;
         }
     };
 }
