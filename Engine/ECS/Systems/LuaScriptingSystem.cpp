@@ -752,7 +752,7 @@ namespace Uma_ECS
 
         // first is entity wrapper (like accessing a struct / class)
         // then the direct access method with the entity id
-
+        using Text = Uma_UI::Text;
        // Component list macro
 #define COMPONENT_LIST \
         X(Transform)   \
@@ -763,7 +763,8 @@ namespace Uma_ECS
         X(Enemy)       \
         X(Camera)      \
         X(PathFinding) \
-        X(Projectile) \
+        X(Projectile)  \
+        X(Text)        \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1139,6 +1140,8 @@ namespace Uma_ECS
        // USING MARCO TO DO THE JOB 
        // More effecient
 
+        using Text = Uma_UI::Text;
+
 #define COMPONENT_LIST \
         BIND_COMPONENT_GETTER(Transform)   \
         BIND_COMPONENT_GETTER(RigidBody)   \
@@ -1146,7 +1149,8 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Collider)    \
         BIND_COMPONENT_GETTER(Player)      \
         BIND_COMPONENT_GETTER(Enemy)       \
-        BIND_COMPONENT_GETTER(Camera)
+        BIND_COMPONENT_GETTER(Camera)      \
+        BIND_COMPONENT_GETTER(Text)        \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \

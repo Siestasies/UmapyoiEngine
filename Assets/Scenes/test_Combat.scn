@@ -2,6 +2,10 @@
     "resources": {
         "textures": [
             {
+                "name": "player_new",
+                "path": "Assets/Player Spritesheet.png"
+            },
+            {
                 "name": "wall_top",
                 "path": "Assets/wall_top.png"
             },
@@ -10,8 +14,12 @@
                 "path": "Assets/statue.png"
             },
             {
-                "name": "player_new",
-                "path": "Assets/Player Spritesheet.png"
+                "name": "player",
+                "path": ""
+            },
+            {
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
                 "name": "floor_tatami",
@@ -22,44 +30,36 @@
                 "path": "Assets/fire bird.png"
             },
             {
-                "name": "player",
-                "path": "Assets/hello.jpg"
-            },
-            {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
             },
             {
                 "name": "pink_enemy",
-                "path": "Assets/bird.png"
-            },
-            {
-                "name": "enemy",
-                "path": "Assets/marisa.png"
+                "path": ""
             },
             {
                 "name": "wall_left",
                 "path": "Assets/wall_left.png"
             },
             {
+                "name": "enemy",
+                "path": ""
+            },
+            {
                 "name": "background",
-                "path": "Assets/bg.png"
+                "path": ""
             },
             {
                 "name": "wall_top_left",
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "WoodF_3",
-                "path": "Assets/Environment/m3 floor 1.png"
-            },
-            {
                 "name": "wall_right",
                 "path": "Assets/wall_right.png"
+            },
+            {
+                "name": "WoodF_3",
+                "path": "Assets/Environment/m3 floor 1.png"
             },
             {
                 "name": "wall_btm",
@@ -74,12 +74,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "HallWay_Hori1",
-                "path": "Assets/Environment/horizontal hallway.png"
-            },
-            {
                 "name": "pause",
                 "path": "Assets/pause menu.png"
+            },
+            {
+                "name": "HallWay_Hori1",
+                "path": "Assets/Environment/horizontal hallway.png"
             },
             {
                 "name": "Kappa_1",
@@ -108,18 +108,8 @@
         ],
         "sounds": [
             {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -133,8 +123,18 @@
                 "type": 1
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
                 "type": 0
             },
             {
@@ -16478,6 +16478,125 @@
                             "exposedVariables": []
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 282,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "fps",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 283,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "fps txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 282
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/fps.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 825.0,
+                        "y": 437.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontName": "Fujimaru-Regular",
+                    "fontSize": 3.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
                 }
             }
         }
