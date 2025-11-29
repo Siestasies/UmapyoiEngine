@@ -1,38 +1,33 @@
---basically include
-ExposedVars = {
-    isActive = true
-}
-
 local playerEntity = -1
+
+local maxHealth = 100
 
 function Start()
     -- Global utilities (same for everyone)
-    Log("Script started at " .. GetDeltaTime())
+    Log("Script started at: " .. GetDeltaTime())
     
     -- Entity-specific context
     Log("My entity ID: " .. EntityID)
 
     thisEntity = GetEntity(EntityID)
     
-    local myTransform = GetTransform(EntityID)
-    if myTransform then
-        Log("I'm active?: " .. myTransform.isActive)
-    end
-    
     -- Cross-entity access
     playerEntity = FindEntityWithComponent("Player")
-    Log("player : " .. playerEntity)
-    
+    Log("Player: " .. playerEntity)
+
+    local maxHealth = GetPlayerFrom(playerEntity).mHealth
+
 end
 
 function Update(dt)
     local health = GetPlayerFrom(playerEntity).mHealth
 
-    local children = GetChildren(thisEntity)
+    local children = GetChildren(EntityID)
 
     if #children > 0 then
         local child = children[1]
-        if health >= health * 0 then
+        Log("Children 1: " .. child)
+        if health <= (maxHealth * 0) then
             SetActiveEntity(child, false)
         else
             SetActiveEntity(child, true)
@@ -41,7 +36,8 @@ function Update(dt)
 
     if #children >= 2 then
         local child = children[2]
-        if health >= health * 0.25 then
+        Log("Children 2: " .. child)        
+        if health <= (maxHealth * 0.25) then
             SetActiveEntity(child, false)
         else
             SetActiveEntity(child, true)
@@ -50,7 +46,8 @@ function Update(dt)
 
     if #children >= 3 then
         local child = children[3]
-        if health >= health * 0.5 then
+        Log("Children 3: " .. child)        
+        if health <= (maxHealth * 0.5) then
             SetActiveEntity(child, false)
         else
             SetActiveEntity(child, true)
@@ -59,12 +56,11 @@ function Update(dt)
 
     if #children >= 4 then
         local child = children[4]
-        if health >= health * 0.75 then
+        Log("Children 4: " .. child)
+        if health <= (maxHealth * 0.75) then
             SetActiveEntity(child, false)
         else
             SetActiveEntity(child, true)
         end
     end
-
-
 end

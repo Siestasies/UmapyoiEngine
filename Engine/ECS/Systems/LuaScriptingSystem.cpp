@@ -298,6 +298,17 @@ namespace Uma_ECS
             [](float x, float y) { return Vec2(x, y); }
         ));
 
+        sharedLua->new_usertype<std::vector<Entity>>("EntityVector",
+            sol::meta_function::length, &std::vector<Entity>::size,
+            sol::meta_function::index, [](std::vector<Entity>& vec, int index) -> Entity {
+                if (index < 1 || index > static_cast<int>(vec.size())) {
+                    return static_cast<Entity>(-1);
+                }
+                return vec[index - 1];
+            }
+        );
+
+
         // need to add more (tf rb for testing now)
         // more...
 
