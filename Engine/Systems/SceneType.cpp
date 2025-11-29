@@ -377,7 +377,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Projectile>());
             m_Coordinator.SetSystemSignature<Uma_ECS::ProjectileSystem>(sign);
         }
-        m_ProjectileSystem->Init(&m_Coordinator);
+        m_ProjectileSystem->Init(&m_Coordinator, m_EventSystem);
 
         // Collision System
         m_CollisionSystem = m_Coordinator.RegisterSystem<Uma_ECS::CollisionSystem>();

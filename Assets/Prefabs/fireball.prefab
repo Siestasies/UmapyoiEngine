@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "fireball",
                         "position": {
-                            "x": 10000,
-                            "y": 10000
+                            "x": 10000.0,
+                            "y": 10000.0
                         },
                         "rotation": {
                             "x": 0.0,
@@ -67,7 +67,7 @@
                                 },
                                 "purpose": 2,
                                 "layer": 16,
-                                "colliderMask": 2,
+                                "colliderMask": 10,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }
@@ -94,7 +94,7 @@
                     },
                     "struct Uma_ECS::Projectile": {
                         "mDamage": 10,
-                        "mSpeed": 70.0,
+                        "mSpeed": 40.0,
                         "mFadeOVerTime": true,
                         "mLifeTime": 2.0
                     }

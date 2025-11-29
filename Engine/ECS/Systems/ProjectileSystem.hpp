@@ -40,7 +40,7 @@ namespace Uma_ECS
         \brief Initializes the system with a Coordinator reference.
         \param c Pointer to the ECS Coordinator.
         */
-        inline void Init(Coordinator* c) { pCoordinator = c; }
+        void Init(Coordinator* c, Uma_Engine::EventSystem* es);
 
         /*!
         \brief Updates all projectile entities each frame.
@@ -50,6 +50,9 @@ namespace Uma_ECS
 
     private:
 
+        void HandleCollision(Entity self, Entity trigger);
+
         Coordinator* pCoordinator = nullptr; //!< Pointer to ECS Coordinator.
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
     };
 }

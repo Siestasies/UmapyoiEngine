@@ -25,8 +25,49 @@ All rights reserved.
 
 #include "ProjectileSystem.hpp"
 
+#include "Events/CollisionEvent.h"
+
 namespace Uma_ECS
 {
+
+    void ProjectileSystem::Init(Coordinator* c, Uma_Engine::EventSystem* es)
+    {
+        pCoordinator = c;
+        pEventSystem = es;
+
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, ProjectileSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
+            {
+                if (!pCoordinator || aEntities.empty()) return;
+
+                if (!pCoordinator->HasComponent<Projectile>(e.trigger) && !pCoordinator->HasComponent<Projectile>(e.entity)) return;
+
+                Entity self = (pCoordinator->HasComponent<Projectile>(e.trigger)) ? e.trigger : e.entity;
+                Entity trigger = (self == e.entity) ? e.trigger : e.entity;
+
+                HandleCollision(self, trigger);
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, ProjectileSystem>([this](const Uma_Engine::OnTriggerEvent& e)
+            {
+                (void)e;
+                // do nth yet
+            });
+        pEventSystem->Subscribe<Uma_Engine::OnTriggerExitEvent, ProjectileSystem>([this](const Uma_Engine::OnTriggerExitEvent& e)
+            {
+                (void)e;
+                // do nth yet
+            });
+    }
+
+    void ProjectileSystem::HandleCollision(Entity self, Entity trigger)
+    {
+        auto& colliderB = pCoordinator->GetComponent<Collider>(trigger);
+
+        if (colliderB.GetPrimaryShape().layer == CL_WALL)
+        {
+            pCoordinator->DestroyEntityAndChildren(self);
+        }
+    }
+
     void ProjectileSystem::Update(float dt)
     {
         std::vector<Entity> entityToDestroy;

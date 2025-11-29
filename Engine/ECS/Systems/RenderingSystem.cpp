@@ -43,6 +43,7 @@ All rights reserved.
 #include <cassert>
 #include <sstream>
 #include <algorithm>
+#include <map>
 
 namespace Uma_ECS
 {
@@ -86,6 +87,7 @@ namespace Uma_ECS
             Uma_Engine::Sprite_Info info;
             LayerMask layer;
             unsigned int texId;
+            Entity entityId;
         };
 
         std::vector<LayeredSprite> allSprites;
@@ -186,21 +188,24 @@ namespace Uma_ECS
                     .alpha = sr.alpha
                 },
                 .layer = sr.renderLayer,
-                .texId = sr.texture->tex_id
+                .texId = sr.texture->tex_id,
+                .entityId = entity
                 });
         }
 
-        // Sort by layer FIRST, then by texture (for batching within same layer)
+        // Sort by layer FIRST, then by texture (for batching within same layer), then by entity ID (for stability)
         std::sort(allSprites.begin(), allSprites.end(),
             [](const LayeredSprite& a, const LayeredSprite& b)
             {
                 if (a.layer != b.layer)
-                    return a.layer < b.layer;  // Sort by layer first
-                return a.texId < b.texId;      // Then by texture for batching
+                    return a.layer < b.layer;      // Sort by layer first
+                if (a.texId != b.texId)
+                    return a.texId < b.texId;      // Then by texture for batching
+                return a.entityId < b.entityId;    // Finally by entity ID for deterministic ordering
             });
 
         // Now group by texture and render in layer order
-        std::unordered_map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
+        std::map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
         LayerMask currentLayer = allSprites.empty() ? 0 : allSprites[0].layer;
 
         for (const auto& layeredSprite : allSprites)

@@ -28,7 +28,7 @@
                         "mSpeed": 50.0,
                         "mDashSpeed": 10.0,
                         "mDashCD": 2.0,
-                        "mAttackDamage": 30,
+                        "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 20.0,
                         "mDefense": 5,

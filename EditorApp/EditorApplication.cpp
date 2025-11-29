@@ -98,14 +98,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
         // Create the editor scene and configure it
-        auto editorScene = sceneManager->CreateScene("test_default.scn", "test_default.scn");
+        auto editorScene = sceneManager->CreateScene("test_combat.scn", "test_combat.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        sceneManager->AttachScriptToScene("test_default.scn", "GameBehaviour");
-        sceneManager->AttachScriptToScene("test_default.scn", "EditorBehaviour");
+        sceneManager->AttachScriptToScene("test_combat.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("test_combat.scn", "EditorBehaviour");
 
         // Load the default scene
-        sceneManager->LoadScene("test_default.scn");
+        sceneManager->LoadScene("test_combat.scn");
     }
 
     void EditorApplication::Update(float dt)
