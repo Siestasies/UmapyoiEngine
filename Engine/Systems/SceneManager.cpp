@@ -221,14 +221,8 @@ namespace Uma_Engine
                 }
             }
 
-            if (mGamePause)
-            {          
-                m_ActiveScene->GetSound()->pauseAllSounds(1);
-            }
-            else
-            {
-                m_ActiveScene->GetSound()->pauseAllSounds(0);
-            }
+            // mGamePause only affects dt, not audio
+            // Audio pause is controlled by playMode (PM_PAUSE/PM_STOP)
 
             if (playMode == PLAYMODE::PM_PLAY)
             {
