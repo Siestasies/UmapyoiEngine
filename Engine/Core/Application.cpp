@@ -293,8 +293,9 @@ namespace Uma_Engine
 
                 titleStream.str("");
                 titleStream.clear();
-                titleStream << mConfig->windowTitle << " | FPS: " << std::fixed
-                           << std::setprecision(2) << mFps;
+                /*titleStream << mConfig->windowTitle << " | FPS: " << std::fixed
+                           << std::setprecision(2) << mFps;*/
+                titleStream << mConfig->windowTitle;
                 mWindow->SetTitle(titleStream.str());
             }
 
