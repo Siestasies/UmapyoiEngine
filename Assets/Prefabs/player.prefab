@@ -16,8 +16,8 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.354,
-                            "y": 0.354
+                            "x": 0.493,
+                            "y": 0.493
                         },
                         "parent": -1
                     },
@@ -41,7 +41,7 @@
                         "default3D": true
                     },
                     "struct Uma_ECS::Sprite": {
-                        "textureName": "player_new",
+                        "textureName": "player_ss",
                         "layer": 32,
                         "flipX": false,
                         "flipY": false,
@@ -82,7 +82,7 @@
                                 },
                                 "size": {
                                     "x": 8.8,
-                                    "y": 25.0
+                                    "y": 17.299
                                 },
                                 "purpose": 0,
                                 "layer": 2,
@@ -93,10 +93,10 @@
                             {
                                 "offset": {
                                     "x": 0.5,
-                                    "y": -19.85
+                                    "y": -15.85
                                 },
                                 "size": {
-                                    "x": 19.6,
+                                    "x": 14.399,
                                     "y": 3.2
                                 },
                                 "purpose": 0,
@@ -107,12 +107,12 @@
                             },
                             {
                                 "offset": {
-                                    "x": 10.798,
-                                    "y": -9.199
+                                    "x": 9.897,
+                                    "y": -8.098
                                 },
                                 "size": {
-                                    "x": 20.197,
-                                    "y": 31.999
+                                    "x": 17.697,
+                                    "y": 26.298
                                 },
                                 "purpose": 2,
                                 "layer": 2,
@@ -217,8 +217,8 @@
     "resources": {
         "textures": [
             {
-                "name": "player_new",
-                "path": "Assets/Player Spritesheet.png"
+                "name": "player_ss",
+                "path": "Assets/player_ss.png"
             }
         ],
         "fonts": [],
