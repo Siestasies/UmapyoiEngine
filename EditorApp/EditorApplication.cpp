@@ -112,6 +112,7 @@ namespace Uma_Engine
 
     bool EditorApplication::HandleInterruptions(float deltaTime)
     {
+        (void)deltaTime;
         // Editor mode: Only reset input when not focused, but continue rendering
         bool isFocused = glfwGetWindowAttrib(GetGLFWWindow(), GLFW_FOCUSED);
 

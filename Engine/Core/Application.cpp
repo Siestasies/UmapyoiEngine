@@ -255,7 +255,7 @@ namespace Uma_Engine
 
         std::stringstream titleStream;
 
-        bool lastFrameFocused = true;
+        //bool lastFrameFocused = true;
 
         while (!mWindow->ShouldClose())
         {
