@@ -36,6 +36,10 @@
                         "mMaxMana": 100,
                         "mManaRegenRate": 5.0
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true
+                    },
                     "struct Uma_ECS::Sprite": {
                         "textureName": "player_new",
                         "layer": 32,

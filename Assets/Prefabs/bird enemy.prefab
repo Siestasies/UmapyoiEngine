@@ -21,6 +21,10 @@
                         },
                         "parent": -1
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true
+                    },
                     "struct Uma_ECS::Sprite": {
                         "textureName": "fire bird",
                         "layer": 16,

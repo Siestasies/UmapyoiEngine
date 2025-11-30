@@ -54,8 +54,10 @@ namespace Uma_ECS
         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
-            (void)value;
-            (void)allocator;
+            value.SetObject();
+
+            value.AddMember("defaultVolume", defaultVolume, allocator);
+            value.AddMember("default3D", default3D, allocator);
         }
 
         /*!
@@ -65,7 +67,8 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
-            (void)value;
+            defaultVolume = value["defaultVolume"].GetFloat();
+            default3D = value["default3D"].GetBool();
         }
 
         // Helper methods
