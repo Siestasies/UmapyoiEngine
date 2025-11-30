@@ -64,7 +64,7 @@ namespace Uma_ECS
 
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
-        auto& tf = pCoordinator->GetComponent<Transform>(aEntities[0]);
+
         auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
 
         if (!player.combatState.isAlive) return;
@@ -208,7 +208,7 @@ namespace Uma_ECS
             {
                 if (animator.animator.GetCurrentClip() != "atk_1")
                 {
-                    animator.animator.Play("atk_1", true); 
+                    animator.animator.Play("atk_1", true);
                     collider.shapes[2].isActive = true;
                     pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_n_attack", 0.8, 0);
                 }
