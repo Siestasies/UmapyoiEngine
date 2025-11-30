@@ -123,6 +123,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/Assets
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/Configs 
     DESTINATION .
     COMPONENT Application
+    PATTERN "imgui.ini" EXCLUDE
 )
 
 # Don't install Logs - should be created in AppData at runtime
@@ -161,19 +162,40 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Senki by Harikitte Ikou")
 
 # NSIS specific settings
 set(CPACK_NSIS_DISPLAY_NAME "Senki Game")
-set(CPACK_NSIS_PACKAGE_NAME "SenkiGameInstaller")
+set(CPACK_NSIS_PACKAGE_NAME "SenkiGame")
 set(CPACK_NSIS_CONTACT "HarikitteIkou")
 set(CPACK_NSIS_MODIFY_PATH ON)
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
 
-# Desktop shortcut - FIXED to use UmapyoiGame.exe
+# Set install location to Program Files\DigiPen\Senki (per rubric)
+set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "DigiPen\\\\Senki")
+
+# Start Menu shortcut
 set(CPACK_NSIS_CREATE_ICONS_EXTRA
-    "CreateShortCut '$DESKTOP\\\\Senki Game.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe'"
+    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Senki Game.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe' '' '$INSTDIR\\\\Assets\\\\icon.ico'"
 )
 set(CPACK_NSIS_DELETE_ICONS_EXTRA
-    "Delete '$DESKTOP\\\\Senki Game.lnk'"
+    "Delete '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Senki Game.lnk'"
 )
 
+# Desktop shortcut - using MUI_FINISHPAGE
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    ${CPACK_NSIS_EXTRA_INSTALL_COMMANDS}
+    CreateShortCut '$DESKTOP\\\\Senki.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe' '' '$INSTDIR\\\\Assets\\\\icon.ico'
+")
+
+set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    Delete '$DESKTOP\\\\Senki Game.lnk'
+")
+
+# Enable the "Create Desktop Shortcut" checkbox on finish page
+set(CPACK_NSIS_MODIFY_PATH ON)
+set(CPACK_NSIS_MUI_FINISHPAGE_RUN "UmapyoiGame.exe")
+
 set(CPACK_COMPONENTS_ALL Application)
+
+# Tie NSIS “Create Desktop Icon” checkbox to our exe
+set(CPACK_PACKAGE_EXECUTABLES "UmapyoiGame" "Senki")
 
 include(CPack)
