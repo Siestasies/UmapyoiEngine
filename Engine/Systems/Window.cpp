@@ -74,6 +74,10 @@ namespace Uma_Engine
             glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
             glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
         }
+        else if (mMode == WindowMode::Maximized)
+        {
+            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        }
 
         mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), monitor, nullptr);
         if (!mWindow)
@@ -207,6 +211,21 @@ namespace Uma_Engine
 
             mWidth = videoMode->width;
             mHeight = videoMode->height;
+
+            // Force cursor to appear
+            glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        }
+        else if (mMode == WindowMode::Maximized)
+        {
+            // Switch to windowed mode first
+            glfwSetWindowMonitor(mWindow, nullptr, 0, 0,
+                mWindowedWidth, mWindowedHeight,
+                GLFW_DONT_CARE);
+
+            // Then maximize
+            glfwMaximizeWindow(mWindow);
+
+            glfwGetWindowSize(mWindow, &mWidth, &mHeight);
         }
         else
         {

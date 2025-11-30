@@ -90,6 +90,8 @@ namespace Uma_Engine
     {
         SubscribeEvents();
 
+        GetWindow()->SetWindowMode(WindowMode::Maximized);
+
         SceneManager* sceneManager = GetSceneManager();
         sceneManager->SetEditorMode(true);
 
@@ -107,6 +109,31 @@ namespace Uma_Engine
         // Load the default scene
         sceneManager->LoadScene("test_combat.scn");
     }
+
+    bool EditorApplication::HandleInterruptions(float deltaTime)
+    {
+        // Editor mode: Only reset input when not focused, but continue rendering
+        bool isFocused = glfwGetWindowAttrib(GetGLFWWindow(), GLFW_FOCUSED);
+
+        if (!isFocused && mWasFocused)
+        {
+            // Lost focus - reset input only
+            if (GetInputSystem())
+            {
+                GetInputSystem()->ResetAllInput();
+            }
+            mWasFocused = false;
+        }
+        else if (isFocused && !mWasFocused)
+        {
+            // Regained focus
+            mWasFocused = true;
+        }
+
+        // Editor continues rendering even when unfocused
+        return true;
+    }
+
 
     void EditorApplication::Update(float dt)
     {

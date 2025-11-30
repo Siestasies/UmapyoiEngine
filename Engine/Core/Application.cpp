@@ -66,7 +66,6 @@ namespace Uma_Engine
         , mSceneManager(nullptr)
         , mSoundManager(nullptr)
         , mInitialized(false)
-        , mWasFocused(false)
         , mIsEditor(true)
     {
     }
@@ -137,7 +136,6 @@ namespace Uma_Engine
         PostInit();
 
         mInitialized = true;
-        mWasFocused = true;
         return true;
     }
 
@@ -257,6 +255,8 @@ namespace Uma_Engine
 
         std::stringstream titleStream;
 
+        bool lastFrameFocused = true;
+
         while (!mWindow->ShouldClose())
         {
             // Frame rate limiting - wait until it's time for next frame
@@ -304,55 +304,10 @@ namespace Uma_Engine
             // Update window (processes GLFW events)
             mWindow->Update();
 
-            bool isFocused = glfwGetWindowAttrib(mWindow->GetGLFWWindow(), GLFW_FOCUSED);
-            // Check if window is minimized
-            bool isIconified = glfwGetWindowAttrib(mWindow->GetGLFWWindow(), GLFW_ICONIFIED);
-
-            if (!isFocused || isIconified)
+            // Handle focus/minimization interruptions
+            if (!HandleInterruptions(deltaTime))
             {
-                // Lost focus or minimized (pause everything)
-                if (mWasFocused)
-                {
-                    if (mSoundManager)
-                    {
-                        mSoundManager->pauseAllSounds(true);
-                        mSoundManager->Update(deltaTime);
-                    }
-
-                    if (mInputSystem)
-                    {
-                        mInputSystem->ResetAllInput();
-                    }
-
-                    if (!isFocused && !isIconified)
-                    {
-                        glfwIconifyWindow(mWindow->GetGLFWWindow());
-                    }
-
-                    mWasFocused = false;
-                }
-
-                if (mSoundManager)
-                {
-                    mSoundManager->Update(deltaTime);
-                }
-
-                // Wait for events
-                glfwWaitEventsTimeout(0.1);
-
-                // Skip system updates
-                continue;
-            }
-
-            // Regained focus
-            if (!mWasFocused)
-            {
-                if (mSoundManager)
-                {
-                    mSoundManager->pauseAllSounds(false);
-                }
-
-                mWasFocused = true;
+                continue; // Skip frame update
             }
 
             if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_F11))

@@ -52,5 +52,9 @@ namespace Uma_Engine
         void PreInit() override;
         void Update(float dt) override;
         void SubscribeEvents();
+        bool HandleInterruptions(float deltaTime) override;
+
+    private:
+        bool mWasFocused = true;
     };
 }

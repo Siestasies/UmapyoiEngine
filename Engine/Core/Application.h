@@ -121,11 +121,13 @@ namespace Uma_Engine
         HybridInputSystem* GetInputSystem() const { return mInputSystem; }
         SceneManager* GetSceneManager() const { return mSceneManager; }
         Graphics* GetGraphics() const { return mGraphics; }
+        SoundManager* GetSoundManager() const { return mSoundManager; }
         GLFWwindow* GetGLFWWindow() const;
         bool& GamePause() { return mGamePause; }
 
         // helpers
         void SetIsEditor(bool isEditor) { mIsEditor = isEditor; }
+        virtual bool HandleInterruptions(float deltaTime) = 0;
 
     private:
         void InitializeDebugSystems();
@@ -147,7 +149,6 @@ namespace Uma_Engine
         SceneManager* mSceneManager;
 
         bool mInitialized;
-        bool mWasFocused;
         bool mIsEditor;
         inline static bool mGamePause = false;
         inline static float mFps = 0;

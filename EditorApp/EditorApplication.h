@@ -38,11 +38,14 @@ namespace Uma_Engine
         void PostInit() override;
         void PreInit() override;
         void Update(float dt) override;
+        bool HandleInterruptions(float deltaTime) override;
 
     private:
         void SubscribeEvents();
 
         EditorSystem* mEditorSystem;
         ImguiManager* mImguiManager;
+
+        bool mWasFocused = true;
     };
 }
