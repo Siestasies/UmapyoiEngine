@@ -173,10 +173,10 @@ set(CPACK_PACKAGE_INSTALL_DIRECTORY "DigiPen\\\\Senki")
 
 # Start Menu shortcut
 set(CPACK_NSIS_CREATE_ICONS_EXTRA
-    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Senki Game.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe' '' '$INSTDIR\\\\Assets\\\\icon.ico'"
+    "CreateShortCut '$SMPROGRAMS\\\\SenkiGame\\\\Senki Game.lnk' '$INSTDIR\\\\bin\\\\UmapyoiGame.exe' '' '$INSTDIR\\\\Assets\\\\icon.ico'"
 )
 set(CPACK_NSIS_DELETE_ICONS_EXTRA
-    "Delete '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\Senki Game.lnk'"
+    "Delete '$SMPROGRAMS\\\\SenkiGame\\\\Senki Game.lnk'"
 )
 
 # Desktop shortcut - using MUI_FINISHPAGE
@@ -186,7 +186,8 @@ set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
 ")
 
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
-    Delete '$DESKTOP\\\\Senki Game.lnk'
+    Delete '$DESKTOP\\\\Senki.lnk'
+    Delete '$SMPROGRAMS\\\\SenkiGame\\\\Senki Game.lnk'
 ")
 
 # Enable the "Create Desktop Shortcut" checkbox on finish page
