@@ -211,9 +211,6 @@ namespace Uma_Engine
 
             mWidth = videoMode->width;
             mHeight = videoMode->height;
-
-            // Force cursor to appear
-            glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         }
         else if (mMode == WindowMode::Maximized)
         {
@@ -246,6 +243,10 @@ namespace Uma_Engine
 
         // Update OpenGL viewport
         glViewport(0, 0, mWidth, mHeight);
+
+        // Ensure cursor is visible after window mode change
+        // This must be set AFTER glfwSetWindowMonitor to prevent it from being reset
+        glfwSetInputMode(mWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
 
     void Window::ToggleFullscreen()
