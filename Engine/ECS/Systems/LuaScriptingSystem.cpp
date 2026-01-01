@@ -112,7 +112,7 @@ namespace Uma_ECS
             // Initialize scripts if needed
             /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
             {
-                InitializeScripts(entity, scriptComponent);
+                InitializeEntityScripts(entity, scriptComponent);
             }*/
 
             // update each script instance
@@ -138,7 +138,7 @@ namespace Uma_ECS
 
                     if (!script.isInitialized)
                     {
-                        InitializeScript(entity, script);
+                        InitializeEntityScript(entity, script);
                     }
 
                     CallLuaFunction(script, "OnEnable");
@@ -146,7 +146,7 @@ namespace Uma_ECS
 
                 if (!script.isInitialized)
                 {
-                    InitializeScript(entity, script);
+                    InitializeEntityScript(entity, script);
                 }
 
                 if (script.isVariableDirty) // oni update when there is changes being made
@@ -166,7 +166,7 @@ namespace Uma_ECS
         lastDeltaTime = dt;
     }
 
-    void LuaScriptingSystem::CallStart() 
+    void LuaScriptingSystem::InitializeAllScripts()
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
@@ -174,21 +174,11 @@ namespace Uma_ECS
         {
             auto& scriptComponent = scriptArray.GetData(entity);
 
-            InitializeScripts(entity, scriptComponent);
-
-            for (auto& script : scriptComponent.scripts)
-            {
-                if (!script.isEnabled || !script.isInitialized || script.hasError)
-                {
-                    continue;
-                }
-
-                CallLuaFunction(script, "Start");
-            }
+            InitializeEntityScripts(entity, scriptComponent);
         }
     }
 
-    void LuaScriptingSystem::ReloadAllScriptsOnPlay()
+    void LuaScriptingSystem::StartScripts()
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
@@ -196,8 +186,8 @@ namespace Uma_ECS
         {
             auto& scriptComponent = scriptArray.GetData(entity);
 
-            InitializeScripts(entity, scriptComponent);
-            
+            InitializeEntityScripts(entity, scriptComponent);
+
             for (size_t i = 0; i < scriptComponent.scripts.size(); i++)
             {
                 if (!scriptComponent.scripts[i].isEnabled)
@@ -205,7 +195,11 @@ namespace Uma_ECS
                     continue;
                 }
 
-                ReloadScript(entity, i);
+                // refresh the varaibles of the script
+                RefreshScript(entity, i);
+                
+                // call start on the lua script
+                CallLuaFunction(scriptComponent.scripts[i], "Start");
             }
         }
     }
@@ -913,18 +907,18 @@ namespace Uma_ECS
             });
     }
 
-    void LuaScriptingSystem::InitializeScripts(Entity entity, LuaScript& scriptComponent)
+    void LuaScriptingSystem::InitializeEntityScripts(Entity entity, LuaScript& scriptComponent)
     {
         for (auto& script : scriptComponent.scripts)
         {
             if (!script.isInitialized)
             {
-                InitializeScript(entity, script);
+                InitializeEntityScript(entity, script);
             }
         }
     }
 
-    void LuaScriptingSystem::InitializeScript(Entity entity, LuaScriptInstance& script)
+    void LuaScriptingSystem::InitializeEntityScript(Entity entity, LuaScriptInstance& script)
     {
         if (!sharedLua || !sharedLua->lua_state())
         {
@@ -1040,7 +1034,7 @@ namespace Uma_ECS
                 if (lArray.Has(e.en))
                 {
                     auto& lua = lArray.GetData(e.en);
-                    InitializeScripts(e.en, lua);
+                    InitializeEntityScripts(e.en, lua);
                     //CallStart();
                 }
             }
@@ -1276,7 +1270,7 @@ namespace Uma_ECS
     }
 
     // for hot reload 
-    void LuaScriptingSystem::ReloadScript(Entity entity, size_t scriptIndex)
+    void LuaScriptingSystem::RefreshScript(Entity entity, size_t scriptIndex)
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
         if (!scriptArray.Has(entity)) return;
@@ -1294,7 +1288,7 @@ namespace Uma_ECS
         script.isInitialized = false;
         script.hasError = false;
 
-        InitializeScript(entity, script);
+        InitializeEntityScript(entity, script);
 
         // Restore variable values where names match
         for (auto& newVar : script.exposedVariables)
@@ -1311,7 +1305,6 @@ namespace Uma_ECS
 
         // Re-sync to Lua
         SyncVariablesToLua(script);
-        CallLuaFunction(script, "Start");
     }
 
     template<typename Func>

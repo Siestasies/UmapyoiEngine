@@ -126,6 +126,9 @@ namespace Uma_Engine
         void CreateSceneViewWindow();
         void AddConsoleLog(const std::string& message);
 
+        // external helper function
+        void OpenScriptInVSCode(const std::string& filepath);
+
         // Hierarchy helper functions
         void RenderEntityNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);

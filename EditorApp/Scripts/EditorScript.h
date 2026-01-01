@@ -98,7 +98,7 @@ namespace Uma_Engine
                     {
                         m_Scene->m_Coordinator.CacheState();
                     }
-                    GetLuascriptingSystem().ReloadAllScriptsOnPlay();
+                    GetLuascriptingSystem().StartScripts();
                 }
             );
 
@@ -107,7 +107,7 @@ namespace Uma_Engine
                 [this](const StopSceneRequest& e) {
                     (void)e;
                     m_Scene->m_Coordinator.RestoreState();
-                    GetLuascriptingSystem().CallStart();
+                    GetLuascriptingSystem().InitializeAllScripts();
                 }
             );
 
@@ -348,6 +348,7 @@ namespace Uma_Engine
             GetLuascriptingSystem().Restart();
         }
 
+        // THIS IS FOR DEBUGGING PURPOSE ONLY
         void SpawnDefaultEntities()
         {
             GetCoordinator().DestroyAllEntities();
@@ -825,7 +826,7 @@ namespace Uma_Engine
                     });
             }
 
-            m_Scene->m_LuaScriptingSystem->CallStart();
+            m_Scene->m_LuaScriptingSystem->InitializeAllScripts();
         }
 
         void StressTest()

@@ -79,12 +79,9 @@ namespace Uma_ECS
          */
         void Restart();
 
-        /**
-         * \brief Calls Start() function on all enabled Lua scripts
-         */
-        void CallStart();
+        void InitializeAllScripts();
 
-        void ReloadAllScriptsOnPlay();
+        void StartScripts();
 
     private:
         /**
@@ -92,14 +89,14 @@ namespace Uma_ECS
          * \param entity Entity owning the scripts
          * \param scriptComponent LuaScript component containing script instances
          */
-        void InitializeScripts(Entity entity, LuaScript& scriptComponent);
+        void InitializeEntityScripts(Entity entity, LuaScript& scriptComponent);
 
         /**
          * \brief Initializes a single script instance with isolated environment
          * \param entity Entity owning the script
          * \param script Script instance to initialize
          */
-        void InitializeScript(Entity entity, LuaScriptInstance& script);
+        void InitializeEntityScript(Entity entity, LuaScriptInstance& script);
 
         /**
          * \brief Registers complete Lua API including components, entities, and utilities
@@ -124,7 +121,7 @@ namespace Uma_ECS
          * \param entity Entity owning the script
          * \param scriptIndex Index of script in LuaScript component
          */
-        void ReloadScript(Entity entity, size_t scriptIndex);
+        void RefreshScript(Entity entity, size_t scriptIndex);
 
         /**
          * \brief Synchronizes C++ exposed variables to Lua environment

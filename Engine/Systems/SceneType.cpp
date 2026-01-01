@@ -305,7 +305,10 @@ namespace Uma_Engine
         {
             Deserialize();
 
-            m_LuaScriptingSystem->CallStart();
+            // 1/2/2026
+            // wm commented this code
+            // bc loading a scene is not supposed to trigger the script function
+            //m_LuaScriptingSystem->CallStart();
         }
 
         m_FixedTimeStep = g_EngineConfig.fixedTimeStep;

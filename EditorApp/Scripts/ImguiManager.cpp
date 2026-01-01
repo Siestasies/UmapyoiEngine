@@ -4061,4 +4061,18 @@ namespace Uma_Engine
 
         ImGui::End();
     }
+
+    void ImguiManager::OpenScriptInVSCode(const std::string& filepath)
+    {
+#ifdef _WIN32
+        std::string command = "code \"" + filepath + "\"";
+        system(command.c_str());
+#elif __APPLE__
+        std::string command = "code \"" + filepath + "\"";
+        system(command.c_str());
+#elif __linux__
+        std::string command = "code \"" + filepath + "\"";
+        system(command.c_str());
+#endif
+    }
 }

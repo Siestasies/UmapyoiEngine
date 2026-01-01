@@ -500,6 +500,22 @@ namespace Uma_Engine
             ImGui::PopStyleVar();
         }
 
+        void OpenScriptInExternalEditor(const std::string& filepath)
+        {
+#ifdef _WIN32
+            // Window - use ShellExecuteA instead of system() - much faster and non-blocking
+            ShellExecuteA(NULL, "open", filepath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#elif __APPLE__
+            // macOS
+            std::string command = "open \"" + filepath + "\"";
+            system(command.c_str());
+#elif __linux__
+            // Linux
+            std::string command = "xdg-open \"" + filepath + "\"";
+            system(command.c_str());
+#endif
+        }
+
         bool FileDoubleClickHandler(const File& file)
         {
             if (file.isFolder) {
@@ -531,6 +547,11 @@ namespace Uma_Engine
                 mPrefabEdit = true;
                 return true;
             }
+            else if (ext == ".lua")
+            {
+                OpenScriptInExternalEditor(file.path);
+                feedback = "opened script " + file.path;
+            }
             else
             {
                 feedback = "Unknown file type";
@@ -539,5 +560,4 @@ namespace Uma_Engine
         }
 
     };
-
 } // namespace Uma_Engine
