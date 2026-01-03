@@ -2256,12 +2256,21 @@ namespace Uma_Engine
                     ImGui::PushID(static_cast<int>(i));
 
                     std::string label = "Script " + std::to_string(i);
+
+                    bool isScriptEnabled = script.isEnabled;
+
                     if (ImGui::TreeNode(label.c_str(), "%s %s",
                         script.scriptPath.c_str(),
-                        script.isEnabled ? "" : "(Disabled)"))
+                        isScriptEnabled ? "" : "(Disabled)"))
                     {
-                        if (ImGui::Checkbox("Enabled", &script.isEnabled))
+                        if (ImGui::Checkbox("Enabled", &isScriptEnabled))
                         {
+                            // Inform the lua scripting system that a script has been disabled / enabled
+                            if (IsPlaying())
+                            {
+                                pEventSystem->Emit<Uma_Engine::EntityScriptActiveStateChangedEvent>(entity, i, isScriptEnabled);
+                            }
+
                             m_hasUnsavedEdit = true;
                         }
 

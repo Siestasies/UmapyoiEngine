@@ -1,5 +1,5 @@
 -- ====================================================================
--- FILE: ComprehensiveLuaTest.lua
+-- FILE: test_lua_2_0.lua
 -- PROJECT: GAM200 - Uma Engine
 -- COURSE: CSD2401
 -- SECTION: A
@@ -65,14 +65,14 @@ function OnEnable()
     Log("========================================")
 end
 
-function OnDisabled()
+function OnDisable()
      Log("========================================")
     Log("SCRIPT DISABLED")
     Log("========================================")
 end
 
-function OnDestroyed()
+function OnDestroy()
      Log("========================================")
-    Log("SCRIPT OnDestroyed")
+    Log("SCRIPT DESTROYED")
     Log("========================================")
 end

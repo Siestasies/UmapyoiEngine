@@ -77,4 +77,22 @@ namespace Uma_Engine
         Uma_ECS::Entity entityId;
         bool isActive;
     };
+
+    // Lua scripting system
+
+    class EntityScriptActiveStateChangedEvent : public Event
+    {
+    public:
+        EntityScriptActiveStateChangedEvent(Uma_ECS::Entity entityId, int scriptIndex, bool state)
+            : entityId(entityId)
+            , scriptIndex(scriptIndex)
+            , isActive(state)
+        {
+            priority = Priority::High;
+        }
+    public:
+        Uma_ECS::Entity entityId;
+        int scriptIndex;
+        bool isActive;
+    };
 }

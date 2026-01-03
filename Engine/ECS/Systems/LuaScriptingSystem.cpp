@@ -125,7 +125,7 @@ namespace Uma_ECS
                 {
                     if (script.wasEnabledLastFrame)
                     {
-                        CallLuaFunction(script, "OnDisable");
+                        //CallLuaFunction(script, "OnDisable");
                         script.wasEnabledLastFrame = false;
                     }
                     continue;
@@ -141,7 +141,7 @@ namespace Uma_ECS
                         InitializeEntityScript(entity, script);
                     }
 
-                    CallLuaFunction(script, "OnEnable");
+                    //CallLuaFunction(script, "OnEnable");
                 }
 
                 if (!script.isInitialized)
@@ -1051,6 +1051,34 @@ namespace Uma_ECS
                 }
             }
         );
+
+        pEventSystem->Subscribe<Uma_Engine::EntityScriptActiveStateChangedEvent, LuaScriptingSystem>(
+            [this](const Uma_Engine::EntityScriptActiveStateChangedEvent& e)
+            {
+                if (!pCoordinator->HasComponent<LuaScript>(e.entityId)) return;
+
+                auto& luaScriptComp = pCoordinator->GetComponent<LuaScript>(e.entityId);
+                auto& script = *luaScriptComp.GetScript(e.scriptIndex);
+
+                if (!script.scriptEnv)
+                {
+                    InitializeEntityScript(e.entityId, script);
+                }
+
+                if (script.isEnabled != e.isActive)
+                {
+                    if (e.isActive)
+                    {
+                        CallLuaFunction(script, "OnEnable");
+                    }
+                    else
+                    {
+                        CallLuaFunction(script, "OnDisable");
+                    }
+                    script.isEnabled = e.isActive;
+                }
+            }
+        );
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
@@ -1423,8 +1451,8 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)
     {
-        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-            "=== OnEntityDestroyed START for entity: " + std::to_string(entity));
+        /*Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "=== OnEntityDestroyed START for entity: " + std::to_string(entity));*/
 
         if (!pCoordinator)
             return;
