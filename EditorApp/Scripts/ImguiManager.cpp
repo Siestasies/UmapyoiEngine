@@ -2260,7 +2260,7 @@ namespace Uma_Engine
                     bool isScriptEnabled = script.isEnabled;
 
                     if (ImGui::TreeNode(label.c_str(), "%s %s",
-                        script.scriptPath.c_str(),
+                        script.scriptName.c_str(),
                         isScriptEnabled ? "" : "(Disabled)"))
                     {
                         if (ImGui::Checkbox("Enabled", &isScriptEnabled))

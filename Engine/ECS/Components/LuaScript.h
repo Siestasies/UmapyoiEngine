@@ -64,6 +64,7 @@ namespace Uma_ECS
 		struct LuaScriptInstance
 		{
 				std::string scriptPath;
+				std::string scriptName;
 				std::vector<LuaVariable> exposedVariables;
 
 				// runtime data dont need serialization
@@ -92,6 +93,10 @@ namespace Uma_ECS
 						value.AddMember("scriptPath",
 								rapidjson::Value(scriptPath.c_str(), allocator), 
 								allocator);
+
+						value.AddMember("scriptName",
+							rapidjson::Value(scriptName.c_str(), allocator),
+							allocator);
 
 						value.AddMember("isEnabled", isEnabled, allocator);
 
@@ -142,6 +147,15 @@ namespace Uma_ECS
 						if (value.HasMember("isEnabled"))
 						{
 								isEnabled = value["isEnabled"].GetBool();
+						}
+
+						if (!value.HasMember("scriptName"))
+						{
+							scriptName = scriptPath.substr(scriptPath.find_last_of('/') + 1);
+						}
+						else
+						{
+							scriptName = value["scriptName"].GetString();
 						}
 
 						if (value.HasMember("exposedVariables") && value["exposedVariables"].IsArray())
@@ -199,6 +213,10 @@ namespace Uma_ECS
 				{
 						LuaScriptInstance instance;
 						instance.scriptPath = scriptPath;
+
+						//scriptPath.substr(scriptPath.find_last_of('/'), scriptPath.find(".lua"));
+
+						instance.scriptName = scriptPath.substr(scriptPath.find_last_of('/') + 1);
 						instance.isEnabled = true;
 						scripts.push_back(instance);
 				}
