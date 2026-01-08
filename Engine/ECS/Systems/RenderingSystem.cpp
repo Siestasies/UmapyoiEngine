@@ -147,6 +147,10 @@ namespace Uma_ECS
                 spriteScale.y = -spriteScale.y;
             }
 
+            // Add offset
+            Vec2 spritePos;
+            spritePos = tf.position + sr.spriteOffset;
+
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
             Vec2 uvSize(1.0f, 1.0f);
@@ -178,7 +182,7 @@ namespace Uma_ECS
             allSprites.push_back(LayeredSprite{
                 .info = Uma_Engine::Sprite_Info{
                     .tex_id = sr.texture->tex_id,
-                    .pos = tf.worldPosition,
+                    .pos = spritePos, //tf.worldPosition,
                     .scale = spriteScale,
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,

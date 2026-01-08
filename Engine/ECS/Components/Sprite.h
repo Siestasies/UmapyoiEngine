@@ -45,6 +45,7 @@ namespace Uma_ECS
         float alpha = 1.0f;                         // Opacity
         Vec2 spriteSheetGrid{ 1.0f, 1.0f };         // Total columns and rows (default = full texture)
         Vec2 spriteCell{ 0.0f, 0.0f };              // Which cell to render (col, row)
+        Vec2 spriteOffset{ 0.0f, 0.0f };            // Offset of sprite (x, y)
 
         /*!
         \brief Calculates the UV coordinates for the current sprite cell.
@@ -91,6 +92,8 @@ namespace Uma_ECS
             value.AddMember("gridY", spriteSheetGrid.y, allocator);
             value.AddMember("cellX", spriteCell.x, allocator);
             value.AddMember("cellY", spriteCell.y, allocator);
+            value.AddMember("offsetX", spriteOffset.x, allocator);
+            value.AddMember("offsetY", spriteOffset.y, allocator);
 
             rapidjson::Value tintArray(rapidjson::kArrayType);
             tintArray.PushBack(tintColor.x, allocator);
@@ -122,6 +125,8 @@ namespace Uma_ECS
             spriteSheetGrid.y = value.HasMember("gridY") ? value["gridY"].GetFloat() : 1.0f;
             spriteCell.x = value.HasMember("cellX") ? value["cellX"].GetFloat() : 0.0f;
             spriteCell.y = value.HasMember("cellY") ? value["cellY"].GetFloat() : 0.0f;
+            spriteOffset.x = value.HasMember("offsetX") ? value["offsetX"].GetFloat() : 0.0f;
+            spriteOffset.y = value.HasMember("offsetY") ? value["offsetY"].GetFloat() : 0.0f;
 
             if (value.HasMember("tintColor") && value["tintColor"].IsArray())
             {

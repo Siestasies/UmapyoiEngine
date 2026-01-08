@@ -1655,6 +1655,15 @@ namespace Uma_Engine
                 if (ImGui::Checkbox("auto flip", &sprite.autoFlip))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize)) m_hasUnsavedEdit = true;
 
+                // Sprite offset slider
+                float offsetArray[2] = { sprite.spriteOffset.x, sprite.spriteOffset.y };
+                if (ImGui::DragFloat2("Sprite Offset", offsetArray, 1.0f))
+                {
+                    sprite.spriteOffset.x = offsetArray[0];
+                    sprite.spriteOffset.y = offsetArray[1];
+                    m_hasUnsavedEdit = true;
+                }
+
                 // Render layer dropdown
                 const char* renderLayerNames[] = {
                     "RL_NONE",
