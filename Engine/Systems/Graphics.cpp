@@ -31,6 +31,8 @@ All rights reserved.
 
 #include <iostream>
 #include <cassert>
+#include <fstream>
+#include <sstream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -511,7 +513,9 @@ void main()
     bool Graphics::InitializeRenderer()
     {
         // Create shader program
-        mShaderProgram = CreateShader(vertexShaderSource, fragmentShaderSource);
+        Shader shader = LoadShaderFromFile("Assets/Shaders/sprite.vert", "Assets/Shaders/sprite.frag");
+        mShaderProgram = shader.shaderProgramID;
+
         if (mShaderProgram == 0) return false;
 
         // Set up quad vertices
@@ -852,7 +856,8 @@ void main()
     bool Graphics::InitializeInstancedRenderer()
     {
         // Create instanced shader program
-        mInstanceShaderProgram = CreateShader(instancedVertexShaderSource, instancedFragmentShaderSource);
+        Shader shader = LoadShaderFromFile("Assets/Shaders/instanced.vert", "Assets/Shaders/instanced.frag");
+        mInstanceShaderProgram = shader.shaderProgramID;
         if (mInstanceShaderProgram == 0) 
         {
             std::cerr << "Failed to create instanced shader program!" << std::endl;
@@ -917,7 +922,9 @@ void main()
     bool Graphics::InitializeDebugRenderer()
     {
         // Create shader
-        mDebugLineShaderProgram = CreateShader(debugLineVertexShaderSource, debugLineFragmentShaderSource);
+        Shader shader = LoadShaderFromFile("Assets/Shaders/debug.vert", "Assets/Shaders/debug.frag");
+        mDebugLineShaderProgram = shader.shaderProgramID;
+
         if (mDebugLineShaderProgram == 0)
         {
             std::cerr << "Failed to create debug line shader!" << std::endl;
@@ -973,10 +980,8 @@ void main()
     bool Graphics::InitializeShapeRenderer()
     {
         // Create shader
-        mShapeShaderProgram = CreateShader(
-            shapeVertexShaderSource,
-            shapeFragmentShaderSource
-        );
+        Shader shader = LoadShaderFromFile("Assets/Shaders/shape.vert", "Assets/Shaders/shape.frag");
+        mShapeShaderProgram = shader.shaderProgramID;
 
         if (mShapeShaderProgram == 0)
         {
@@ -1156,7 +1161,9 @@ void main()
     bool Graphics::InitializeTextRenderer()
     {
         // Create text shader
-        mTextShaderProgram = CreateTextShader();
+        Shader shader = LoadShaderFromFile("Assets/Shaders/text.vert", "Assets/Shaders/text.frag");
+        mTextShaderProgram = shader.shaderProgramID;
+
         if (!mTextShaderProgram) 
         {
             std::cerr << "Failed to create text shader" << std::endl;
@@ -1416,36 +1423,6 @@ void main()
 
         glBindVertexArray(0);
         glBindTextureUnit(0, 0);
-    }
-
-    GLuint Graphics::CreateTextShader()
-    {
-        const char* textVertexShaderSource = R"(
-        #version 450 core
-        layout (location = 0) in vec4 vertex;
-        out vec2 TexCoords;
-        uniform mat4 projection;
-        
-        void main() {
-            gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
-            TexCoords = vertex.zw;
-        }
-    )";
-
-        const char* textFragmentShaderSource = R"(
-        #version 450 core
-        in vec2 TexCoords;
-        out vec4 FragColor;
-        layout (binding = 0) uniform sampler2D text;
-        uniform vec3 textColor;
-        
-        void main() {
-            float alpha = texture(text, TexCoords).r;
-            FragColor = vec4(textColor, 1.0) * vec4(1.0, 1.0, 1.0, alpha);
-        }
-    )";
-
-        return CreateShader(textVertexShaderSource, textFragmentShaderSource);
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
@@ -1952,5 +1929,44 @@ void main()
             width = mViewportWidth;
             height = mViewportHeight;
         }
+    }
+
+    void Graphics::UnloadShader(unsigned int shaderID)
+    {
+        if (shaderID != 0)
+        {
+            glDeleteProgram(shaderID);
+        }
+    }
+
+    Shader Graphics::LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        Shader shader = { 0, vertexPath, fragmentPath };
+
+        auto ReadFile = [](const std::string& path) -> std::string {
+            std::ifstream file(path);
+            if (!file.is_open()) {
+                std::cerr << "Failed to open shader file: " << path << std::endl;
+                return "";
+            }
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            return buffer.str();
+            };
+
+        std::string vertexCode = ReadFile(vertexPath);
+        std::string fragmentCode = ReadFile(fragmentPath);
+
+        if (vertexCode.empty() || fragmentCode.empty()) {
+            return shader;
+        }
+
+        shader.shaderProgramID = CreateShader(vertexCode, fragmentCode);
+
+        if (shader.shaderProgramID != 0) {
+            std::cout << "Shader loaded: " << vertexPath << std::endl;
+        }
+
+        return shader;
     }
 }

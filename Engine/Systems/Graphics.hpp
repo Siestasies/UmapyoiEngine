@@ -203,12 +203,6 @@ namespace Uma_Engine
         void ShutdownShapeRenderer();
 
         /**
-         * \brief Compiles and links the text rendering shader
-         * \return OpenGL shader program ID, 0 if failed
-         */
-        GLuint CreateTextShader();
-
-        /**
          * \brief Initializes the basic 2D sprite renderer
          * \return true if initialization succeeded, false otherwise
          *
@@ -712,5 +706,8 @@ namespace Uma_Engine
          * \return Framebuffer height in pixels
          */
         int GetSceneFBHeight() const { return mSceneFBHeight; }
+
+        Shader LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath);
+        void UnloadShader(unsigned int shaderID);
     };
 }

@@ -195,6 +195,14 @@ namespace Uma_Engine
         \return A constant reference to the underlying unordered map of FontData.
         */
         const std::unordered_map<std::string, FontData>& GetLoadedFonts() const;
+
+        // Shaders
+        bool LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+        void UnloadShader(const std::string& shaderName);
+        std::shared_ptr<Shader> GetShader(const std::string& shaderName);
+        bool HasShader(const std::string& shaderName) const;
+        void UnloadAllShaders();
+        const std::unordered_map<std::string, std::shared_ptr<Shader>>& GetLoadedShaders() const;
         
         // serializer
         /*!
@@ -261,5 +269,7 @@ namespace Uma_Engine
         SoundManager* mSound = nullptr;
 
         std::unordered_map<std::string, FontData> mFonts{};
+
+        std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders{};
     };
 }

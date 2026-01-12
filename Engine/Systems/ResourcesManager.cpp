@@ -61,6 +61,7 @@ namespace Uma_Engine
         UnloadAllTextures();
         UnloadAllFonts();
         UnloadAllSound();
+        UnloadAllShaders();
 
         mSound->release();
     }
@@ -219,6 +220,28 @@ namespace Uma_Engine
             audioArr.PushBack(soundObj, allocator);
         }
         out.AddMember("sounds", audioArr, allocator);
+
+        // Shaders
+        rapidjson::Value shadersArr(rapidjson::kArrayType);
+        for (const auto& pair : mShaders)
+        {
+            rapidjson::Value obj(rapidjson::kObjectType);
+
+            rapidjson::Value nameVal;
+            nameVal.SetString(pair.first.c_str(), allocator);
+            obj.AddMember("name", nameVal, allocator);
+
+            rapidjson::Value vPath;
+            vPath.SetString(pair.second->vertexPath.c_str(), allocator);
+            obj.AddMember("vertexPath", vPath, allocator);
+
+            rapidjson::Value fPath;
+            fPath.SetString(pair.second->fragmentPath.c_str(), allocator);
+            obj.AddMember("fragmentPath", fPath, allocator);
+
+            shadersArr.PushBack(obj, allocator);
+        }
+        out.AddMember("shaders", shadersArr, allocator);
     }
 
     void ResourcesManager::Deserialize(const rapidjson::Value& in)
@@ -265,6 +288,21 @@ namespace Uma_Engine
                     SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
 
                     LoadSound(name, path, type);
+                }
+            }
+        }
+
+        if (in.HasMember("shaders") && in["shaders"].IsArray())
+        {
+            for (const auto& val : in["shaders"].GetArray())
+            {
+                if (val.HasMember("name") && val.HasMember("vertexPath") && val.HasMember("fragmentPath"))
+                {
+                    LoadShader(
+                        val["name"].GetString(),
+                        val["vertexPath"].GetString(),
+                        val["fragmentPath"].GetString()
+                    );
                 }
             }
         }
@@ -315,6 +353,53 @@ namespace Uma_Engine
     {
         auto it = mSoundList.find(name);
         return (it != mSoundList.end()) ? &it->second : nullptr;
+    }
+
+    bool ResourcesManager::LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        if (HasShader(shaderName)) {
+            std::cout << "Warning: Shader '" << shaderName << "' already loaded." << std::endl;
+            return true;
+        }
+
+        Shader shaderData = mGraphics->LoadShaderFromFile(vertexPath, fragmentPath);
+        if (shaderData.shaderProgramID == 0) return false;
+
+        mShaders[shaderName] = std::make_shared<Shader>(shaderData);
+        return true;
+    }
+
+    void ResourcesManager::UnloadShader(const std::string& shaderName)
+    {
+        auto it = mShaders.find(shaderName);
+        if (it != mShaders.end()) {
+            mGraphics->UnloadShader(it->second->shaderProgramID);
+            mShaders.erase(it);
+        }
+    }
+
+    std::shared_ptr<Shader> ResourcesManager::GetShader(const std::string& shaderName)
+    {
+        auto it = mShaders.find(shaderName);
+        return (it != mShaders.end()) ? it->second : nullptr;
+    }
+
+    bool ResourcesManager::HasShader(const std::string& shaderName) const
+    {
+        return mShaders.find(shaderName) != mShaders.end();
+    }
+
+    void ResourcesManager::UnloadAllShaders()
+    {
+        for (auto& pair : mShaders) {
+            mGraphics->UnloadShader(pair.second->shaderProgramID);
+        }
+        mShaders.clear();
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<Shader>>& ResourcesManager::GetLoadedShaders() const
+    {
+        return mShaders;
     }
 
     void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)

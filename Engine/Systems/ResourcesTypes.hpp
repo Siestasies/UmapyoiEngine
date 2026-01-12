@@ -42,6 +42,13 @@ struct FMOD_VECTOR;
 
 namespace Uma_Engine
 {
+	struct Shader
+	{
+		unsigned int shaderProgramID;
+		std::string vertexPath;
+		std::string fragmentPath;
+	};
+
     struct Texture
     {
         unsigned int tex_id;
