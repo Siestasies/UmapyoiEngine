@@ -157,9 +157,6 @@ namespace Uma_Engine
         // Text rendering
         GLuint mTextShaderProgram;
 
-        // Fallback Shader
-        GLuint mFallbackShaderProgram;
-
         // Frame buffer
         GLuint mSceneFramebuffer;
         GLuint mSceneTexture;
@@ -171,8 +168,6 @@ namespace Uma_Engine
         int mViewportWidth, mViewportHeight;
 
         // Helper functions
-        bool InitializeFallbackShader();
-        void ShutdownFallbackShader();
 
         /**
          * \brief Initializes FreeType text renderer and shader

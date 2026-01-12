@@ -47,34 +47,151 @@ namespace
 
 namespace Uma_Engine
 {
-    const std::string fallbackVertexShader = R"(
-    #version 450 core
-    layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
-    
-    uniform mat4 model;
-    uniform mat4 projection;
-    
-    void main()
-    {
-        gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
-    }
-    )";
+    // Vertex shader for 2D sprite rendering
+    // Transforms vertex positions from model space to clip space using model and projection matrices
+    // Passes texture coordinates to fragment shader
+    const std::string vertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
 
-    const std::string fallbackFragmentShader = R"(
-    #version 450 core
-    out vec4 color;
-    
-    void main()
-    {
-        color = vec4(1.0, 0.0, 1.0, 1.0); 
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    TexCoords = vertex.zw;
+    gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+}
+)";
+
+    // Fragment shader for 2D sprite rendering
+    // Samples texture or uses debug color based on uniform flag
+    const std::string fragmentShaderSource = R"(
+#version 450 core
+in vec2 TexCoords;
+out vec4 color;
+
+uniform sampler2D image;
+uniform vec3 debugColor;
+uniform int useDebugColor;
+uniform vec3 tintColor;
+uniform float alpha;
+
+void main()
+{
+    if (useDebugColor == 1) {
+        color = vec4(debugColor, 1.0);
+    } else {
+        vec4 texColor = texture(image, TexCoords);
+        color = vec4(texColor.rgb * tintColor, texColor.a * alpha);
     }
-    )";
+}
+)";
+
+    // Vertex shader for 2D sprite instanced rendering
+    // Uses per-instance model matrices for batch rendering multiple sprites
+    const std::string instancedVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
+layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
+layout (location = 5) in vec4 instanceUV; // <vec2 uvOffset, vec2 uvSize>
+layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
+
+out vec2 TexCoords;
+out vec4 Tint;
+
+uniform mat4 projection;
+
+void main()
+{
+    // Apply UV transformation
+    vec2 uv = vertex.zw;
+    TexCoords = instanceUV.xy + uv * instanceUV.zw;
+    
+    // Pass tint to fragment shader
+    Tint = instanceTint;
+    
+    gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
+}
+)";
+
+    // Fragment shader for 2D sprite instanced rendering
+    // Texture sampling for instanced sprites
+    const std::string instancedFragmentShaderSource = R"(
+#version 450 core
+in vec2 TexCoords;
+in vec4 Tint;
+out vec4 color;
+
+uniform sampler2D image;
+
+void main()
+{
+    vec4 texColor = texture(image, TexCoords);
+    // Apply tint to RGB and alpha separately
+    color = vec4(texColor.rgb * Tint.rgb, texColor.a * Tint.a);
+}
+)";
+
+    const std::string debugLineVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec2 vertex;
+layout (location = 1) in mat4 instanceModel;
+layout (location = 5) in vec3 instanceColor;
+
+out vec3 Color;
+
+uniform mat4 projection;
+
+void main()
+{
+    Color = instanceColor;
+    gl_Position = projection * instanceModel * vec4(vertex, 0.0, 1.0);
+}
+)";
+
+    const std::string debugLineFragmentShaderSource = R"(
+#version 450 core
+in vec3 Color;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(Color, 1.0);
+}
+)";
+
+    const std::string shapeVertexShaderSource = R"(
+#version 450 core
+layout (location = 0) in vec2 position;
+
+uniform mat4 model;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * model * vec4(position, 0.0, 1.0);
+}
+)";
+
+    const std::string shapeFragmentShaderSource = R"(
+#version 450 core
+out vec4 FragColor;
+
+uniform vec4 color;
+
+void main()
+{
+    FragColor = color;
+}
+)";
 
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
-        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0),
+        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
         mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
-        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0),
-        mRenderTarget(RenderTarget::Framebuffer), mFallbackShaderProgram(0) {}
+        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {}
 
     Graphics::~Graphics()
     {
@@ -117,12 +234,7 @@ namespace Uma_Engine
         // V sync 
         //SetVSync(true);
 
-        // Initialize
-        if (!InitializeFallbackShader())
-        {
-            std::cerr << "Failed to initialize Fallback Shader!" << std::endl;
-        }
-
+        // Initialize 2D renderer
         if (!InitializeRenderer())
         {
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
@@ -216,7 +328,6 @@ namespace Uma_Engine
             ShutdownInstancedRenderer();
             ShutdownDebugRenderer();
             ShutdownShapeRenderer();
-            ShutdownFallbackShader();
 
             mInitialized = false;
         }
@@ -1830,58 +1941,32 @@ namespace Uma_Engine
 
     Shader Graphics::LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath)
     {
-        auto ReadFile = [](const std::string& path) -> std::string
-            {
-                std::ifstream file(path);
-                if (!file.is_open()) return "";
-                std::stringstream buffer;
-                buffer << file.rdbuf();
-                return buffer.str();
+        Shader shader = { 0, vertexPath, fragmentPath };
+
+        auto ReadFile = [](const std::string& path) -> std::string {
+            std::ifstream file(path);
+            if (!file.is_open()) {
+                std::cerr << "Failed to open shader file: " << path << std::endl;
+                return "";
+            }
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            return buffer.str();
             };
 
-        std::string vCode = ReadFile(vertexPath);
-        std::string fCode = ReadFile(fragmentPath);
+        std::string vertexCode = ReadFile(vertexPath);
+        std::string fragmentCode = ReadFile(fragmentPath);
 
-        // Check if files exist
-        if (vCode.empty() || fCode.empty())
-        {
-            std::cout << "Error: Failed to read shader files: " << vertexPath << " | " << fragmentPath << std::endl;
-            return { mFallbackShaderProgram, vertexPath, fragmentPath };
+        if (vertexCode.empty() || fragmentCode.empty()) {
+            return shader;
         }
 
-        // Try to compile
-        GLuint programID = CreateShader(vCode, fCode);
+        shader.shaderProgramID = CreateShader(vertexCode, fragmentCode);
 
-        // Check compilation result
-        if (programID == 0)
-        {
-            std::cout << "Error: Shader compilation failed" << std::endl;
-            return { mFallbackShaderProgram, vertexPath, fragmentPath };
+        if (shader.shaderProgramID != 0) {
+            std::cout << "Shader loaded: " << vertexPath << std::endl;
         }
 
-        return { programID, vertexPath, fragmentPath };
-    }
-
-    bool Graphics::InitializeFallbackShader()
-    {
-        if (mFallbackShaderProgram != 0) return true;
-
-        mFallbackShaderProgram = CreateShader(fallbackVertexShader, fallbackFragmentShader);
-
-        if (mFallbackShaderProgram == 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    void Graphics::ShutdownFallbackShader()
-    {
-        if (mFallbackShaderProgram != 0)
-        {
-            glDeleteProgram(mFallbackShaderProgram);
-            mFallbackShaderProgram = 0;
-        }
+        return shader;
     }
 }
