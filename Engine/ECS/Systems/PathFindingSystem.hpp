@@ -23,7 +23,7 @@ All rights reserved.
 
 #include "../Systems/ResourcesManager.hpp"
 
-#include "pathfinding/NavMesh.hpp"
+//#include "pathfinding/NavMesh.hpp"
 #include "pathfinding/GridPathfinder.hpp"
 
 namespace Uma_ECS
