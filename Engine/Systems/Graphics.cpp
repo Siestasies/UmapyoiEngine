@@ -38,6 +38,7 @@ All rights reserved.
 #include <stb_image.h>
 
 #include <ft2build.h>
+#include <ResourcesManager.hpp>
 #include FT_FREETYPE_H
 
 namespace
@@ -73,6 +74,10 @@ namespace Uma_Engine
             return;
         }
 
+        // Get ResourcesManager reference
+        mResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+        assert(mResourcesManager != nullptr && "Error: ResourcesManager not initialized");
+
         // Enable blending for transparency
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -87,13 +92,7 @@ namespace Uma_Engine
         }
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
-        // Set camera
-        //mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
-
-        // V sync 
-        //SetVSync(true);
-
-        // Initialize 2D renderer
+        // Initialize renderers
         if (!InitializeRenderer())
         {
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
@@ -124,14 +123,13 @@ namespace Uma_Engine
         }
 
         // init cam info
-        cam = 
+        cam =
         {
             .pos = {0,0},
             .zoom = 1.f
         };
 
         UpdateProjectionMatrix();
-
         InitSceneFramebuffer(1280, 720);
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
@@ -371,11 +369,23 @@ namespace Uma_Engine
 
     bool Graphics::InitializeRenderer()
     {
-        // Create shader program
-        Shader shader = LoadShaderFromFile("Assets/Shaders/sprite.vert", "Assets/Shaders/sprite.frag");
-        mShaderProgram = shader.shaderProgramID;
+        // Load shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_SPRITE,
+            "Assets/Shaders/sprite.vert",
+            "Assets/Shaders/sprite.frag"))
+        {
+            std::cerr << "Failed to load sprite shader!" << std::endl;
+            return false;
+        }
 
-        if (mShaderProgram == 0) return false;
+        auto shader = mResourcesManager->GetShader(SHADER_SPRITE);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve sprite shader!" << std::endl;
+            return false;
+        }
+
+        mShaderProgram = shader->shaderProgramID;
 
         // Set up quad vertices
         float vertices[] = {
@@ -424,9 +434,9 @@ namespace Uma_Engine
         // Clean up OpenGL resources
         if (mVAO != 0) glDeleteVertexArrays(1, &mVAO);
         if (mVBO != 0) glDeleteBuffers(1, &mVBO);
-        if (mShaderProgram != 0) glDeleteProgram(mShaderProgram);
 
-        mVAO = mVBO = mShaderProgram = 0;
+        mVAO = mVBO = 0;
+        mShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     GLuint Graphics::CreateShader(const std::string& vertexSource, const std::string& fragmentSource)
@@ -714,14 +724,23 @@ namespace Uma_Engine
 
     bool Graphics::InitializeInstancedRenderer()
     {
-        // Create instanced shader program
-        Shader shader = LoadShaderFromFile("Assets/Shaders/instanced.vert", "Assets/Shaders/instanced.frag");
-        mInstanceShaderProgram = shader.shaderProgramID;
-        if (mInstanceShaderProgram == 0) 
+        // Load instanced shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_INSTANCED,
+            "Assets/Shaders/instanced.vert",
+            "Assets/Shaders/instanced.frag"))
         {
-            std::cerr << "Failed to create instanced shader program!" << std::endl;
+            std::cerr << "Failed to load instanced shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_INSTANCED);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve instanced shader!" << std::endl;
+            return false;
+        }
+
+        mInstanceShaderProgram = shader->shaderProgramID;
 
         // Create instance VAO
         glGenVertexArrays(1, &mInstanceVAO);
@@ -735,12 +754,10 @@ namespace Uma_Engine
         // Create instance VBO for model matrices
         glGenBuffers(1, &mInstanceVBO);
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
-
-        // Allocate space for up to MAX_INSTANCES
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
         // Set up instance attributes
-        for (int i = 0; i < 4; ++i) 
+        for (int i = 0; i < 4; ++i)
         {
             glEnableVertexAttribArray(1 + i);
             glVertexAttribPointer(1 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * i));
@@ -752,7 +769,6 @@ namespace Uma_Engine
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
-        // Set up UV attribute
         glEnableVertexAttribArray(5);
         glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(5, 1);
@@ -762,7 +778,6 @@ namespace Uma_Engine
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
-        // Set up Tint attribute
         glEnableVertexAttribArray(6);
         glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(6, 1);
@@ -780,17 +795,25 @@ namespace Uma_Engine
 
     bool Graphics::InitializeDebugRenderer()
     {
-        // Create shader
-        Shader shader = LoadShaderFromFile("Assets/Shaders/debug.vert", "Assets/Shaders/debug.frag");
-        mDebugLineShaderProgram = shader.shaderProgramID;
-
-        if (mDebugLineShaderProgram == 0)
+        // Load debug shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_DEBUG,
+            "Assets/Shaders/debug.vert",
+            "Assets/Shaders/debug.frag"))
         {
-            std::cerr << "Failed to create debug line shader!" << std::endl;
+            std::cerr << "Failed to load debug shader!" << std::endl;
             return false;
         }
 
-        float lineVertices[] = 
+        auto shader = mResourcesManager->GetShader(SHADER_DEBUG);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve debug shader!" << std::endl;
+            return false;
+        }
+
+        mDebugLineShaderProgram = shader->shaderProgramID;
+
+        float lineVertices[] =
         {
             -0.5f, 0.0f,
              0.5f, 0.0f
@@ -838,15 +861,23 @@ namespace Uma_Engine
 
     bool Graphics::InitializeShapeRenderer()
     {
-        // Create shader
-        Shader shader = LoadShaderFromFile("Assets/Shaders/shape.vert", "Assets/Shaders/shape.frag");
-        mShapeShaderProgram = shader.shaderProgramID;
-
-        if (mShapeShaderProgram == 0)
+        // Load shape shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_SHAPE,
+            "Assets/Shaders/shape.vert",
+            "Assets/Shaders/shape.frag"))
         {
-            std::cerr << "Failed to create shape shader!" << std::endl;
+            std::cerr << "Failed to load shape shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_SHAPE);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve shape shader!" << std::endl;
+            return false;
+        }
+
+        mShapeShaderProgram = shader->shaderProgramID;
 
         // Create VAO and VBO
         glGenVertexArrays(1, &mShapeVAO);
@@ -961,73 +992,75 @@ namespace Uma_Engine
 
     void Graphics::ShutdownInstancedRenderer()
     {
-        if (mInstanceVAO != 0) 
+        if (mInstanceVAO != 0)
         {
             glDeleteVertexArrays(1, &mInstanceVAO);
             mInstanceVAO = 0;
         }
-        if (mInstanceVBO != 0) 
+        if (mInstanceVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceVBO);
             mInstanceVBO = 0;
         }
-        if (mInstanceUVVBO != 0) 
+        if (mInstanceUVVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceUVVBO);
             mInstanceUVVBO = 0;
         }
-        if (mInstanceTintVBO != 0) 
+        if (mInstanceTintVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceTintVBO);
             mInstanceTintVBO = 0;
         }
-        if (mInstanceShaderProgram != 0) 
-        {
-            glDeleteProgram(mInstanceShaderProgram);
-            mInstanceShaderProgram = 0;
-        }
+
+        mInstanceShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::ShutdownDebugRenderer()
     {
-        if (mDebugLineVAO != 0) 
+        if (mDebugLineVAO != 0)
         {
             glDeleteVertexArrays(1, &mDebugLineVAO);
             mDebugLineVAO = 0;
         }
-        if (mDebugLineVBO != 0) 
+        if (mDebugLineVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineVBO);
             mDebugLineVBO = 0;
         }
-        if (mDebugLineInstanceVBO != 0) 
+        if (mDebugLineInstanceVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineInstanceVBO);
             mDebugLineInstanceVBO = 0;
         }
-        if (mDebugLineColorVBO != 0) 
+        if (mDebugLineColorVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineColorVBO);
             mDebugLineColorVBO = 0;
         }
-        if (mDebugLineShaderProgram != 0) 
-        {
-            glDeleteProgram(mDebugLineShaderProgram);
-            mDebugLineShaderProgram = 0;
-        }
+
+        mDebugLineShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     bool Graphics::InitializeTextRenderer()
     {
-        // Create text shader
-        Shader shader = LoadShaderFromFile("Assets/Shaders/text.vert", "Assets/Shaders/text.frag");
-        mTextShaderProgram = shader.shaderProgramID;
-
-        if (!mTextShaderProgram) 
+        // Load text shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_TEXT,
+            "Assets/Shaders/text.vert",
+            "Assets/Shaders/text.frag"))
         {
-            std::cerr << "Failed to create text shader" << std::endl;
+            std::cerr << "Failed to load text shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_TEXT);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve text shader!" << std::endl;
+            return false;
+        }
+
+        mTextShaderProgram = shader->shaderProgramID;
 
         std::cout << "Text renderer initialized successfully" << std::endl;
         return true;
@@ -1035,11 +1068,7 @@ namespace Uma_Engine
 
     void Graphics::ShutdownTextRenderer()
     {
-        if (mTextShaderProgram)
-        {
-            glDeleteProgram(mTextShaderProgram);
-            mTextShaderProgram = 0;
-        }
+        mTextShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::UnloadFontData(FontData& fontData)
@@ -1698,21 +1727,18 @@ namespace Uma_Engine
 
     void Graphics::ShutdownShapeRenderer()
     {
-        if (mShapeVAO != 0) 
+        if (mShapeVAO != 0)
         {
             glDeleteVertexArrays(1, &mShapeVAO);
             mShapeVAO = 0;
         }
-        if (mShapeVBO != 0) 
+        if (mShapeVBO != 0)
         {
             glDeleteBuffers(1, &mShapeVBO);
             mShapeVBO = 0;
         }
-        if (mShapeShaderProgram != 0) 
-        {
-            glDeleteProgram(mShapeShaderProgram);
-            mShapeShaderProgram = 0;
-        }
+
+        mShapeShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::InitSceneFramebuffer(int width, int height)

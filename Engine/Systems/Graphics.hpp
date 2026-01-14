@@ -38,6 +38,8 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    class ResourcesManager;
+
     enum class RenderTarget
     {
         Window,      // GLFW window
@@ -166,6 +168,16 @@ namespace Uma_Engine
 
         // Viewport size
         int mViewportWidth, mViewportHeight;
+
+        ResourcesManager* mResourcesManager;
+
+        // Shader names for system shaders
+        const std::string SHADER_SPRITE = "system_sprite";
+        const std::string SHADER_INSTANCED = "system_instanced";
+        const std::string SHADER_DEBUG = "system_debug";
+        const std::string SHADER_TEXT = "system_text";
+        const std::string SHADER_SHAPE = "system_shape";
+
 
         // Helper functions
 
