@@ -66,6 +66,7 @@ namespace Uma_Engine
         , m_showPerformanceWindow(true)
         , m_showEditorCameraWindow(true)
         , m_showSystemsWindow(true)
+        , m_showEditorControlBar(true)
         , m_historyOffset(0)
         , pEventSystem(nullptr)
         , pResourcesManager(nullptr)
