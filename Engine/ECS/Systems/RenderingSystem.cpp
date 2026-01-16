@@ -37,6 +37,8 @@ All rights reserved.
 #include "Components/Player.h"
 #include "Components/Animator.h"
 
+#include "UI/Components/Canvas.h"
+
 
 #include "Debugging/Debugger.hpp"
 
@@ -56,15 +58,30 @@ namespace Uma_ECS
 
     void RenderingSystem::Update(float dt)
     {
+        RenderWorldPass(dt);
+
+        RenderUIPass(dt);
+    }
+
+    void RenderingSystem::RenderWorldPass(float dt)
+    {
         (void)dt;
 
+        std::vector<LayeredSprite> sprites;
+
+        GatherWorldSprites(sprites);
+        RenderWorldSprites(sprites);
+    }
+
+    void RenderingSystem::GatherWorldSprites(std::vector<LayeredSprite>& allSprites)
+    {
         if (!aEntities.size()) return;
 
         auto& srArray = pCoordinator->GetComponentArray<Sprite>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
-        
+
         auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         // one camera for now
@@ -81,16 +98,6 @@ namespace Uma_ECS
             }
         }
 
-        // Structure to hold sprite info WITH layer information
-        struct LayeredSprite
-        {
-            Uma_Engine::Sprite_Info info;
-            LayerMask layer;
-            unsigned int texId;
-            Entity entityId;
-        };
-
-        std::vector<LayeredSprite> allSprites;
         allSprites.reserve(aEntities.size());
 
         // Gather all sprite info with layer data
@@ -192,7 +199,10 @@ namespace Uma_ECS
                 .entityId = entity
                 });
         }
+    }
 
+    void RenderingSystem::RenderWorldSprites(std::vector<LayeredSprite>& allSprites)
+    {
         // Sort by layer FIRST, then by texture (for batching within same layer), then by entity ID (for stability)
         std::sort(allSprites.begin(), allSprites.end(),
             [](const LayeredSprite& a, const LayeredSprite& b)
@@ -233,5 +243,201 @@ namespace Uma_ECS
         {
             pGraphics->DrawSpritesInstanced(pair.first, pair.second);
         }
+    }
+
+    void RenderingSystem::GatherUIElements(std::vector<UIDrawCommand>& uiDrawCommands)
+    {
+        auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
+        auto& tfArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& rtfArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+
+        std::vector<Entity> sortedCanvasIds = canvasArray.GetAllEntities();
+
+        std::sort(sortedCanvasIds.begin(), sortedCanvasIds.end(),
+            [&](const Entity& lhs, const Entity& rhs)
+            {
+                int lhs_sorting_order = canvasArray.GetData(lhs).sortingOrder;
+                int rhs_sorting_order = canvasArray.GetData(rhs).sortingOrder;
+
+                return lhs_sorting_order < rhs_sorting_order;
+            });
+
+        for (const auto& canvasId : sortedCanvasIds)
+        {
+            std::vector<Entity> childrenList;
+
+            GetAllChildren(canvasId, childrenList);
+
+            auto& canvas = canvasArray.GetData(canvasId);
+
+            for (const auto& childUI : childrenList)
+            {
+                if (!pCoordinator->IsActiveInHierarchy(childUI)) continue;
+
+                auto& rectTransform = rtfArray.GetData(childUI);
+                
+
+                if (pCoordinator->HasComponent<Uma_UI::Text>(childUI))
+                {
+                    UIDrawCommand::Type uiType = UIDrawCommand::UI_TEXT;
+
+                    auto& textComp = pCoordinator->GetComponent<Uma_UI::Text>(childUI);
+                    if (!textComp.visible || textComp.text.empty())
+                    {
+                        continue;
+                    }
+
+                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
+                    if (uiFont == nullptr)
+                    {
+                        std::stringstream log;
+                        log << "UI object(" << childUI << ") font is not loaded or invalid.";
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                        continue;
+                    }
+
+                    // text
+                    uiDrawCommands.push_back(UIDrawCommand
+                        {
+                            .type = uiType,
+                            .layer = RL_UI,
+                            .entity = childUI,
+
+                            .text = textComp.text,
+                            .font = uiFont,
+                            .fontSize = textComp.fontSize,
+                            .alignment = textComp.alignment,
+                            .textColor = textComp.color
+                        }
+                        );
+                }
+                if (pCoordinator->HasComponent<Uma_UI::Image>(childUI))
+                {
+                    UIDrawCommand::Type uiType = UIDrawCommand::UI_IMAGE;
+
+                    auto& image = pCoordinator->GetComponent<Uma_UI::Image>(childUI);
+
+                    if (!image.texture || image.texture->tex_id == 0)
+                    {
+                        image.texture = pResourcesManager->GetTexture(image.textureName);
+                    }
+
+                    // Verify texture is valid before using it
+                    if (!image.texture || image.texture->tex_id == 0)
+                    {
+                        std::stringstream log;
+                        log << "Entity(" << childUI << ") texture is not valid.";
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                        continue;
+                    }
+
+                    Uma_Engine::Sprite_Info spriteInfo = Uma_Engine::Sprite_Info
+                    {
+                        .tex_id = image.texture->tex_id,
+
+                        .pos = rectTransform.computedRect.Center(),
+                        .scale = rectTransform.computedRect.Size(),
+                        .rot = 0.0f,
+                        .rot_speed = 0.0f,
+
+                        .uvOffset = Vec2(0.0f, 0.0f),
+                        .uvSize = Vec2(1.0f, 1.0f),
+
+                        .tintColor = image.color.ToVec3(),
+                        .alpha = image.color.a
+                    };
+
+                    // image
+                    uiDrawCommands.push_back(UIDrawCommand
+                        {
+                            .type = uiType,
+                            .layer = RL_UI,
+                            .entity = childUI,
+
+                            .spriteInfo = spriteInfo,
+                        }
+                        );
+                }
+
+                
+            }
+        }
+    }
+
+    void RenderingSystem::GetAllChildren(Entity parent, std::vector<Entity>& childrenList)
+    {
+        const auto& transform = pCoordinator->GetComponent<Transform>(parent);
+
+        if (!transform.children.size()) return;
+
+        for (const auto& childObj : transform.children)
+        {
+            childrenList.push_back(childObj);
+
+            GetAllChildren(childObj, childrenList);
+        }
+    }
+
+    void RenderingSystem::RenderUIElements(std::vector<UIDrawCommand>& uiDrawCommands)
+    {
+        for (const auto& command : uiDrawCommands)
+        {
+            switch (command.type)
+            {
+            case UIDrawCommand::UI_IMAGE:
+            {
+                pGraphics->DrawSprite(
+                    command.spriteInfo.tex_id, 
+                    command.spriteInfo.pos,
+                    command.spriteInfo.scale,
+                    command.spriteInfo.rot,
+                    command.spriteInfo.tintColor,
+                    command.spriteInfo.alpha);
+
+                break;
+            }
+            case UIDrawCommand::UI_TEXT:
+            {
+                auto& rectTransform = pCoordinator->GetComponent<Uma_UI::RectTransform>(command.entity);
+
+                // Measure text width in NDC space
+                float textWidthNDC = pGraphics->MeasureText(*command.font, command.text, command.fontSize);
+                float alignX = 0.0f;
+
+                // Calculate horizontal alignment based on rect bounds
+                switch (command.alignment)
+                {
+                case Uma_UI::TextAlignment::Left:
+                    alignX = rectTransform.computedRect.Left();
+                    break;
+                case Uma_UI::TextAlignment::Center:
+                    alignX = rectTransform.computedRect.Center().x - textWidthNDC * 0.5f;
+                    break;
+                case Uma_UI::TextAlignment::Right:
+                    alignX = rectTransform.computedRect.Right() - textWidthNDC;
+                    break;
+                }
+
+                // Calculate vertical center
+                float fontHeightNDC = (command.fontSize * 48.f) / static_cast<float>(pGraphics->GetSceneViewport().y) * 2.0f;
+                float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
+
+                pGraphics->DrawTextScreen(*command.font, command.text, alignX, alignY,
+                    command.fontSize, command.textColor.r, command.textColor.g, command.textColor.b);
+
+                break;
+            }
+            }
+        }
+    }
+
+    void RenderingSystem::RenderUIPass(float dt)
+    {
+        (void)dt;
+
+        std::vector<UIDrawCommand> UIElements;
+
+        GatherUIElements(UIElements);
+        RenderUIElements(UIElements);
     }
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Types.hpp"
+#include "../Core/Types.hpp"
 #include <vector>
 
 namespace Uma_ECS
@@ -13,6 +13,6 @@ namespace Uma_ECS
 
 	struct FSM
 	{
-		std::vector<state> states;
+		std::vector<State> states;
 	};
 }

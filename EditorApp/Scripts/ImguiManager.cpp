@@ -3090,13 +3090,13 @@ namespace Uma_Engine
                ImGui::Separator();
                ImGui::Text("Color & Visibility");
            
-               float imageColor[4] = { image.colour.r, image.colour.g, image.colour.b, image.colour.a };
+               float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
                if (ImGui::ColorEdit4("Image Color", imageColor))
                {
-                   image.colour.r = imageColor[0];
-                   image.colour.g = imageColor[1];
-                   image.colour.b = imageColor[2];
-                   image.colour.a = imageColor[3];
+                   image.color.r = imageColor[0];
+                   image.color.g = imageColor[1];
+                   image.color.b = imageColor[2];
+                   image.color.a = imageColor[3];
                    m_hasUnsavedEdit = true;
                }
            
@@ -3316,13 +3316,13 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Appearance");
             
-                float textColor[4] = { text.colour.r, text.colour.g, text.colour.b, text.colour.a };
+                float textColor[4] = { text.color.r, text.color.g, text.color.b, text.color.a };
                 if (ImGui::ColorEdit4("Text Color", textColor))
                 {
-                    text.colour.r = textColor[0];
-                    text.colour.g = textColor[1];
-                    text.colour.b = textColor[2];
-                    text.colour.a = textColor[3];
+                    text.color.r = textColor[0];
+                    text.color.g = textColor[1];
+                    text.color.b = textColor[2];
+                    text.color.a = textColor[3];
                     m_hasUnsavedEdit = true;
                 }
             
