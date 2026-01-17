@@ -30,7 +30,7 @@ All rights reserved.
 #include "../Events/WindowEvents.h"
 #include "../Events/AudioEvents.h"
 #include "../Events/IMGUIEvents.h"
-#include "../Events/UIToLuaEvents.h"
+#include "../Events/LuaScriptingEvents.h"
 #include "Systems/ResourcesTypes.hpp"
 #include "HybridInputSystem.h"
 #include "Components/Transform.h"

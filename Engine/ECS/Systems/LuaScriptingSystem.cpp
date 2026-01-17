@@ -33,6 +33,7 @@ All rights reserved.
 #include "../Components/Camera.h"
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
+#include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
 
 #include "Events/ApplicationEvents.h"
@@ -905,7 +906,14 @@ namespace Uma_ECS
             {
                 return Uma_Engine::Application::GetFps();
             });
+
+        // FSM 
+        sharedLua->set_function("ChangeState", [this](std::string nextState)
+            {
+                // do ur thing
+            });
     }
+
 
     void LuaScriptingSystem::InitializeEntityScripts(Entity entity, LuaScript& scriptComponent)
     {
@@ -1079,6 +1087,14 @@ namespace Uma_ECS
                 }
             }
         );
+
+        pEventSystem->Subscribe<Uma_Engine::CallLuaFunction, LuaScriptingSystem>(
+            [this](const Uma_Engine::CallLuaFunction& e)
+            {
+                auto& luaComp = pCoordinator->GetComponent<LuaScript>(e.entity);
+                auto& script = *luaComp.GetScriptByName(e.scriptName);
+                CallLuaFunction(script, e.functionName.c_str());
+            });
     }
 
     void LuaScriptingSystem::OnCollisionEvent(Entity entityA, Entity entityB)
