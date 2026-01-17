@@ -221,6 +221,11 @@ namespace Uma_Engine
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
         fileBrowser.setEventSystem(pEventSystem);
+        auto pGraphics = pSystemManager->GetSystem<Graphics>();
+        if (pGraphics)
+        {
+            fileBrowser.setGraphicsSystem(pGraphics);
+        }
 
         m_initialized = true;
     }

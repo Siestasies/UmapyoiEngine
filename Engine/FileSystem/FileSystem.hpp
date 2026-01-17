@@ -34,6 +34,7 @@ All rights reserved.
 #include "Events/IMGUIEvents.h"
 #include "Events/ECSEvents.h"
 #include "Events/EditorEvents.h"
+#include "Systems/Graphics.hpp"
 
 #include "Core/FilePaths.h"
 
@@ -77,7 +78,7 @@ namespace Uma_Engine
     class FileBrowser
     {
     public:
-        FileBrowser(const std::string& root_path = ".")
+        FileBrowser(const std::string& root_path = Uma_FilePath::ASSET_ROOT)
             : mCurrPath(fs::absolute(root_path))
             , eSortMode(SortMode::Name)
             , bSortAscending(true)
@@ -88,6 +89,19 @@ namespace Uma_Engine
         {
             mFilter[0] = '\0';
             RefreshDirectory();
+        }
+
+        ~FileBrowser()
+        {
+            UnloadAllTextures();
+
+            if (pGraphics)
+            {
+                if (mDefaultFileIcon != 0)
+                    pGraphics->UnloadTexture(mDefaultFileIcon);
+                if (mDefaultFolderIcon != 0)
+                    pGraphics->UnloadTexture(mDefaultFolderIcon);
+            }
         }
 
         void Render() {
@@ -101,6 +115,9 @@ namespace Uma_Engine
 
             RenderFilterBar();
             ImGui::Separator();
+
+            // Process texture loading queue
+            ProcessTextureQueue();
 
             RenderFileList();
 
@@ -195,6 +212,14 @@ namespace Uma_Engine
             return mPrevSceneName;
         }
 
+        void setGraphicsSystem(Graphics* graphics)
+        {
+            pGraphics = graphics;
+
+            // Load default icons
+            LoadDefaultIcons();
+        }
+
     private:
         // Files
         fs::path mCurrPath;
@@ -223,12 +248,128 @@ namespace Uma_Engine
         std::string mPrevSceneName;
         std::string mPrefabName;
 
+        // Texture
+        Graphics* pGraphics = nullptr;
+        GLuint mDefaultFileIcon = 0;
+        GLuint mDefaultFolderIcon = 0;
+        std::unordered_map<std::string, GLuint> mLoadedTextures;
+        std::queue<std::string> mLoadQueue;
+        size_t mMaxLoadsPerFrame = 2;
+        float mIconSize = 64.0f;
+
+        void LoadDefaultIcons()
+        {
+            if (!pGraphics) return;
+
+            // Load default icons
+            Texture fileIcon = pGraphics->LoadTextureFromFile("Assets/Icons/file_icon.png");
+            mDefaultFileIcon = fileIcon.tex_id;
+
+            Texture folderIcon = pGraphics->LoadTextureFromFile("Assets/Icons/folder_icon.png");
+            mDefaultFolderIcon = folderIcon.tex_id;
+        }
+
+        void UnloadAllTextures()
+        {
+            if (!pGraphics) return;
+
+            for (auto& [path, texID] : mLoadedTextures)
+            {
+                pGraphics->UnloadTexture(texID);
+            }
+            mLoadedTextures.clear();
+
+            // Clear the load queue
+            while (!mLoadQueue.empty()) mLoadQueue.pop();
+        }
+
+        bool IsImageFile(const std::string& ext)
+        {
+            static const std::unordered_set<std::string> imageExts =
+            {
+                ".png", ".jpg", ".jpeg", ".bmp"
+            };
+
+            std::string lowerExt = ext;
+            std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
+            return imageExts.count(lowerExt) > 0;
+        }
+
+        void QueueTextureLoad(const std::string& filepath)
+        {
+            // Skip if already loaded
+            if (mLoadedTextures.count(filepath)) return;
+
+            // Skip if already in queue
+            std::queue<std::string> temp = mLoadQueue;
+            while (!temp.empty())
+            {
+                if (temp.front() == filepath) return;
+                temp.pop();
+            }
+
+            mLoadQueue.push(filepath);
+        }
+
+        void ProcessTextureQueue()
+        {
+            if (!pGraphics) return;
+
+            size_t loadsThisFrame = 0;
+
+            while (!mLoadQueue.empty() && loadsThisFrame < mMaxLoadsPerFrame)
+            {
+                std::string filepath = mLoadQueue.front();
+                mLoadQueue.pop();
+
+                // Skip if already loaded
+                if (mLoadedTextures.count(filepath)) continue;
+
+                // Load the texture
+                Texture tex = pGraphics->LoadTextureFromFile(filepath);
+                if (tex.tex_id != 0)
+                {
+                    mLoadedTextures[filepath] = tex.tex_id;
+                    loadsThisFrame++;
+                }
+            }
+        }
+
+        GLuint GetFileTexture(const File& file)
+        {
+            // Folders use folder icon
+            if (file.isFolder)
+                return mDefaultFolderIcon;
+
+            // Check if image file
+            if (!IsImageFile(file.ext))
+                return mDefaultFileIcon;
+
+            // Check if texture is already loaded
+            auto it = mLoadedTextures.find(file.path);
+            if (it != mLoadedTextures.end())
+                return it->second;
+
+            // Not loaded yet, so queue and return default icon
+            QueueTextureLoad(file.path);
+            return mDefaultFileIcon;
+        }
+
         void RefreshDirectory() {
+            // Unload old directory textures
+            UnloadAllTextures();
+
             aFiles.clear();
 
             try {
                 for (const auto& entry : fs::directory_iterator(mCurrPath)) {
                     aFiles.emplace_back(entry);
+
+                    // Queue image files for loading
+                    if (!entry.is_directory() && IsImageFile(entry.path().extension().string()))
+                    {
+                        QueueTextureLoad(entry.path().string());
+                    }
                 }
                 SortFiles();
             }
@@ -331,87 +472,162 @@ namespace Uma_Engine
             bDoubleClick = false;
 
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
-            ImGui::CalcTextSize(feedback.c_str());
             ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y - ImGui::GetTextLineHeight() - 15.f), true);
+
             for (const auto& entry : aFiles) {
                 // Apply filter
-                if (mFilter[0] != '\0' &&
-                    entry.name.find(mFilter) == std::string::npos) {
+                if (mFilter[0] != '\0' && entry.name.find(mFilter) == std::string::npos) {
                     continue;
                 }
 
-                std::string fileName = entry.isFolder ? "[FOLDER] " : "[FILE] ";
-                fileName += entry.name;
+                // Get texture for this file
+                GLuint texID = GetFileTexture(entry);
 
                 bool is_selected = (mSelectedPath == entry.path);
 
-                if (ImGui::Selectable(fileName.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
-                    mSelectedPath = entry.path;
+                // Push unique ID for this item
+                ImGui::PushID(entry.path.c_str());
 
-                    // Double-click
-                    if (ImGui::IsMouseDoubleClicked(0)) {
-                        if (FileDoubleClickHandler(entry))
-                            break;
+                // Render icon + text in horizontal layout
+                ImGui::BeginGroup();
+
+                // Draw icon
+                if (texID != 0)
+                {
+                    ImGui::Image((void*)(intptr_t)texID, ImVec2(mIconSize, mIconSize));
+                }
+                else
+                {
+                    // Fallback: just draw a colored rect
+                    ImGui::Dummy(ImVec2(mIconSize, mIconSize));
+                }
+
+                ImGui::SameLine();
+
+                // Draw text with some padding
+                ImGui::BeginGroup();
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f); // Vertical align
+                ImGui::Text("%s", entry.name.c_str());
+
+                if (!entry.isFolder)
+                {
+                    ImGui::TextDisabled("Size: %llu bytes", entry.size);
+                }
+                ImGui::EndGroup();
+
+                ImGui::EndGroup();
+
+                // Invisible button over the entire group for selection
+                ImVec2 itemMin = ImGui::GetItemRectMin();
+                ImVec2 itemMax = ImGui::GetItemRectMax();
+                ImGui::SetCursorScreenPos(itemMin);
+                ImGui::InvisibleButton("##fileitem", ImVec2(itemMax.x - itemMin.x, itemMax.y - itemMin.y));
+
+                // Selection handling
+                if (ImGui::IsItemClicked())
+                {
+                    mSelectedPath = entry.path;
+                }
+
+                // Double-click detection
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                {
+                    mSelectedPath = entry.path;
+                    if (FileDoubleClickHandler(entry))
+                    {
+                        ImGui::PopID();
+                        break;
                     }
                 }
 
+                // Highlight selection
                 if (is_selected)
                 {
-                    if (ImGui::IsKeyPressed(ImGuiKey_Delete)) // Delete
+                    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+                    ImVec2 p_min = itemMin;
+                    ImVec2 p_max = itemMax;
+                    draw_list->AddRectFilled(p_min, p_max, IM_COL32(64, 128, 255, 80)); // Blue highlight
+                    draw_list->AddRect(p_min, p_max, IM_COL32(64, 128, 255, 255), 0.0f, 0, 2.0f); // Blue border
+
+                    // Keyboard shortcuts (only for selected item)
+                    if (ImGui::IsKeyPressed(ImGuiKey_Delete))
                     {
-                        fs::remove(mSelectedPath);
-                        RefreshDirectory();
-                        mSelectedPath.clear();
+                        try
+                        {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e)
+                        {
+                            feedback = e.what();
+                        }
+                        ImGui::PopID();
                         break;
                     }
-                    else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C)) // Copy
+                    else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C))
                     {
                         copySource = entry.path;
                     }
                 }
 
-                if (ImGui::BeginPopupContextItem())
+                // Context menu
+                if (ImGui::BeginPopupContextItem("##contextmenu"))
                 {
                     if (ImGui::MenuItem("Copy"))
                     {
                         copySource = entry.path;
                     }
+
                     if (ImGui::MenuItem("Delete"))
                     {
-                        fs::remove(mSelectedPath);
-                        RefreshDirectory();
-                        mSelectedPath.clear();
+                        try
+                        {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e)
+                        {
+                            feedback = e.what();
+                        }
                     }
+
+                    // Rename functionality
                     static char renameText[256];
                     renameText[255] = '\0';
+
                     if (ImGui::InputText("##name", renameText, 256)) {}
                     ImGui::SameLine();
                     float inputHeight = ImGui::GetFrameHeight();
                     float textHeight = ImGui::GetTextLineHeight();
                     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (inputHeight - textHeight) * 0.5f);
+
                     if (ImGui::MenuItem("Rename"))
                     {
                         std::string newName(renameText);
                         if (!newName.empty())
                         {
                             newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
-                                if (fs::exists(newName))
-                                    feedback = "rename: file already exists";
-                                else
+                            if (fs::exists(newName))
+                                feedback = "rename: file already exists";
+                            else
+                            {
+                                try
                                 {
-                                    try
-                                    {
-                                        fs::rename(entry.path, newName);
-                                        RefreshDirectory();
-                                        mSelectedPath.clear();
-                                    }
-                                    catch (const std::exception& e)
-                                    {
-                                        feedback = e.what();
-                                    }
+                                    fs::rename(entry.path, newName);
+                                    RefreshDirectory();
+                                    mSelectedPath.clear();
                                 }
+                                catch (const std::exception& e)
+                                {
+                                    feedback = e.what();
+                                }
+                            }
                         }
                     }
+
+                    // Prefab-specific menu items
                     if (entry.ext == ".prefab" && !mPrefabEdit)
                     {
                         if (ImGui::MenuItem("Open in Inspector"))
@@ -424,20 +640,28 @@ namespace Uma_Engine
                             mPrefabName = entry.stem;
                             mPrefabEdit = true;
                         }
+
                         if (ImGui::MenuItem("Add to Scene"))
                         {
                             pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name);
                         }
                     }
 
-
                     ImGui::EndPopup();
                 }
 
                 // Drag and drop source
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    // Store the full path in the payload
-                    ImGui::SetDragDropPayload(entry.name.c_str(), entry.path.c_str(), entry.path.size() + 1);
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+                {
+                    // Create payload
+                    FilePayload payload;
+                    strncpy_s(payload.filepath, entry.path.c_str(), sizeof(payload.filepath) - 1);
+                    payload.filepath[sizeof(payload.filepath) - 1] = '\0';
+                    payload.isFolder = entry.isFolder;
+
+                    ImGui::SetDragDropPayload(entry.name.c_str(), &payload, sizeof(FilePayload));
+
+                    // Preview
                     ImGui::Text("%s", entry.name.c_str());
                     ImGui::EndDragDropSource();
 
@@ -445,42 +669,65 @@ namespace Uma_Engine
                     dropSource = entry.name.c_str();
                 }
 
-                if (entry.isFolder && ImGui::BeginDragDropTarget() && !dropSource.empty()) {
-                    if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
-                        FilePayload plData = *(FilePayload*)pl->Data;
-                        try
+                // Drag and drop target (only for folders)
+                if (entry.isFolder && ImGui::BeginDragDropTarget())
+                {
+                    if (!dropSource.empty())
+                    {
+                        if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str()))
                         {
-                            fs::copy(plData.filepath, entry.path, std::filesystem::copy_options::recursive);
-                            fs::remove(plData.filepath);
+                            FilePayload* plData = (FilePayload*)pl->Data;
+                            try
+                            {
+                                fs::copy(plData->filepath, entry.path, std::filesystem::copy_options::recursive);
+                                fs::remove(plData->filepath);
+                                RefreshDirectory();
+                            }
+                            catch (const std::exception& e)
+                            {
+                                feedback = e.what();
+                            }
+                            bDropStart = false;
+                            dropSource.clear();
+                            ImGui::EndDragDropTarget();
+                            ImGui::PopID();
+                            break;
                         }
-                        catch (const std::exception& e)
-                        {
-                            feedback = e.what();
-                        }
-                        bDropStart = false;
-                        dropSource.clear();
-                        RefreshDirectory();
-                        break;
                     }
                     ImGui::EndDragDropTarget();
                 }
 
                 // Tooltip with details
-                if (ImGui::IsItemHovered()) {
+                if (ImGui::IsItemHovered())
+                {
                     ImGui::BeginTooltip();
                     ImGui::Text("Path: %s", entry.path.c_str());
-                    if (!entry.isFolder) {
-                        ImGui::Text("Size: %llu bytes", entry.size);
-                    }
-                    ImGui::EndTooltip();
 
+                    if (!entry.isFolder)
+                    {
+                        ImGui::Text("Size: %llu bytes", entry.size);
+
+                        // Show loading status for images
+                        if (IsImageFile(entry.ext))
+                        {
+                            if (mLoadedTextures.count(entry.path) == 0)
+                            {
+                                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Loading preview...");
+                            }
+                        }
+                    }
+
+                    ImGui::EndTooltip();
                 }
 
+                ImGui::PopID();
             }
 
             ImGui::EndChild();
 
-            if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+            // Clear selection when clicking empty space
+            if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered())
+            {
                 mSelectedPath.clear();
             }
         }
