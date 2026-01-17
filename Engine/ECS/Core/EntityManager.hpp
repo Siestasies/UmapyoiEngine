@@ -56,6 +56,18 @@ namespace Uma_ECS
 
         void DestroyAllEntities();
 
+        // Move entity up/down in hierarchy
+        void MoveEntityInHierarchy(Entity entity, int newIndex);
+
+        // Move one position up
+        void MoveEntityUp(Entity entity);
+
+        // Move one position down
+        void MoveEntityDown(Entity entity);
+
+        // Get hierarchy order for rendering inspector
+        const std::vector<Entity>& GetHierarchyOrder() const;
+
     private:
 
         // a queue of all the unused entities id
@@ -66,6 +78,8 @@ namespace Uma_ECS
         std::array<bool, MAX_ENTITIES> aEntityEnabled{};  // Track enabled/disabled state (Unity-like)
 
         unsigned int mActiveEntityCnt{};
+
+        std::vector<Entity> aHierarchyOrder;
     };
 }
 
