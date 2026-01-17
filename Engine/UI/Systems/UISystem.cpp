@@ -110,8 +110,8 @@ namespace Uma_UI
         mScreenSize = pGraphics->GetSceneViewport();
 
         LayoutPass();
-        InputPass();
-        BuildDrawListPass();
+        //InputPass();
+        //BuildDrawListPass();
     }
 
     /*!
