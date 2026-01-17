@@ -1281,9 +1281,10 @@ namespace Uma_Engine
         // Render children recursively
         if (nodeOpen && hasChildren)
         {
-            for (Uma_ECS::Entity child : transform.children)
+            for (int i = 0; i < transform.children.size(); i++)
             {
-                RenderEntityNode(child, coordinator, transformArray);
+                RenderHierarchyDropZone(i, coordinator, entity);
+                RenderEntityNode(transform.children[i], coordinator, transformArray);
             }
             ImGui::TreePop();
         }
@@ -1806,6 +1807,10 @@ namespace Uma_Engine
                     sprite.renderLayer = (1u << currentRenderLayer);
                     m_hasUnsavedEdit = true;
                 }
+                ImGui::Separator();
+                ImGui::Text("Render Order");
+                if (ImGui::InputInt("##Sprite Sorting Order", &sprite.renderOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
+                
 
                 ImGui::Separator();
                 ImGui::Text("Color & Alpha");
@@ -3218,6 +3223,9 @@ namespace Uma_Engine
                    image.textureName = imageTextureBuffer;
                    m_hasUnsavedEdit = true;
                }
+               ImGui::Separator();
+               ImGui::Text("Sorting Order");
+               if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
            
                ImGui::Separator();
                ImGui::Text("Color & Visibility");
@@ -3277,6 +3285,18 @@ namespace Uma_Engine
                    button.currentState == Uma_UI::ButtonState::Pressed ? "Pressed" : "Disabled");
            
                ImGui::Separator();
+
+               
+               static char imageTextureBuffer[256];
+               strncpy(imageTextureBuffer, button.scriptName.c_str(), 255);
+               imageTextureBuffer[255] = '\0';
+               if (ImGui::InputText("Script Name", imageTextureBuffer, 256))
+               {
+                   button.scriptName = imageTextureBuffer;
+                   m_hasUnsavedEdit = true;
+               }
+               ImGui::Separator();
+
                ImGui::Text("Button Colors");
            
                float normalColor[4] = { button.normalColour.r, button.normalColour.g, button.normalColour.b, button.normalColour.a };
@@ -3414,6 +3434,7 @@ namespace Uma_Engine
                 }
 
                 auto& text = coordinator.GetComponent<Uma_UI::Text>(entity);
+
                 ImGui::Indent();
             
                 // Begin tracking
@@ -3422,11 +3443,16 @@ namespace Uma_Engine
                 static char textContentBuffer[1024];
                 strncpy(textContentBuffer, text.text.c_str(), 1023);
                 textContentBuffer[1023] = '\0';
-                if (ImGui::InputTextMultiline("Text Content", textContentBuffer, 1024, ImVec2(-1, 80)))
+                ImGui::Text("Text Content");
+                if (ImGui::InputTextMultiline("##Text Content", textContentBuffer, 1024, ImVec2(-1, 80)))
                 {
                     text.text = textContentBuffer;
                     m_hasUnsavedEdit = true;
                 }
+
+                ImGui::Separator();
+                ImGui::Text("Sorting Order");
+                if (ImGui::InputInt("##Text Sorting Order", &text.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
             
                 ImGui::Separator();
                 ImGui::Text("Font Settings");

@@ -1351,19 +1351,6 @@ namespace Uma_ECS
         SyncVariablesToLua(script);
     }
 
-    template<typename Func>
-    void LuaScriptingSystem::BindInputFunction(const char* name, Func func)
-    {
-        sharedLua->set_function(name, [this, func, name](int param) -> bool {
-            if (!pInputSystem) {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
-                    std::string("Lua: InputSystem not available for ") + name);
-                return false;
-            }
-            return std::invoke(func, param);
-            });
-    }
-
     void LuaScriptingSystem::RegisterInputBindings()
     {
         // Bind all input functions
@@ -1428,41 +1415,6 @@ namespace Uma_ECS
         sharedLua->set("KEY_TAB", GLFW_KEY_TAB);
         sharedLua->set("KEY_BACKSPACE", GLFW_KEY_BACKSPACE);
         sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
-    }
-
-
-    // Invoking the Lua code
-    // BISMILLAH PLEASE WORK
-    template<typename... Args>
-    void LuaScriptingSystem::CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args)
-    {
-        try
-        {
-            sol::optional<sol::protected_function> func = (*script.scriptEnv)[funcName];
-
-            if (!func)
-                return;
-
-            auto result = (*func)(std::forward<Args>(args)...);
-
-            if (!result.valid())
-            {
-                sol::error err = result;
-                script.hasError = true;
-                script.errorMessage = err.what();
-
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Lua Error in " + std::string(funcName) + "(): " + script.errorMessage);
-            }
-        }
-        catch (const sol::error& e)
-        {
-            script.hasError = true;
-            script.errorMessage = e.what();
-
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                "Lua Exception in " + std::string(funcName) + "(): " + script.errorMessage);
-        }
     }
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)

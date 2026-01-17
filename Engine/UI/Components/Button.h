@@ -35,6 +35,9 @@ namespace Uma_UI
     {
     public:
         bool interactable = true;
+
+        std::string scriptName = "";
+
         Uma_UI::ButtonState currentState = Uma_UI::ButtonState::Normal;
 
         Uma_UI::Color normalColour = Uma_UI::Color::White();
@@ -56,6 +59,10 @@ namespace Uma_UI
         {
             value.SetObject();
             value.AddMember("interactable", interactable, allocator);
+
+            value.AddMember("scriptName",
+                rapidjson::Value(scriptName.c_str(), allocator),
+                allocator);
 
             rapidjson::Value nCol(rapidjson::kObjectType);
             nCol.AddMember("r", normalColour.r, allocator);
@@ -93,6 +100,11 @@ namespace Uma_UI
         void Deserialize(const rapidjson::Value& value)
         {
             interactable = value["interactable"].GetBool();
+
+            if (value.HasMember("scriptName"))
+            {
+                scriptName = value["scriptName"].GetString();
+            }
 
             const auto& nCol = value["normalColour"];
             normalColour.r = nCol["r"].GetFloat();

@@ -290,6 +290,12 @@ namespace Uma_ECS
         }
 
         template<typename T>
+        std::shared_ptr<T> GetSystem()
+        {
+            return aSystemManager->GetSystem<T>();
+        }
+
+        template<typename T>
         void SetSystemSignature(Signature signature)
         {
             aSystemManager->SetSignature<T>(signature);

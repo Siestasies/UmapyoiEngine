@@ -36,10 +36,12 @@ namespace Uma_UI
     public:
         std::string text = "";
         std::string fontName = "";
+        int sortingOrder = 0;
         float fontSize = 24.0f;
         Uma_UI::Color color = Uma_UI::Color::Black();
         Uma_UI::TextAlignment alignment = Uma_UI::TextAlignment::Center;
         bool visible = true;
+
 
         /*!
          * \brief Serializes text properties to a JSON value.
@@ -51,6 +53,7 @@ namespace Uma_UI
             value.SetObject();
             value.AddMember("text", rapidjson::Value(text.c_str(), allocator), allocator);
             value.AddMember("fontName", rapidjson::Value(fontName.c_str(), allocator), allocator);
+            value.AddMember("sortingOrder", sortingOrder, allocator);
             value.AddMember("fontSize", fontSize, allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
@@ -72,6 +75,12 @@ namespace Uma_UI
         {
             text = value["text"].GetString();
             fontName = value["fontName"].GetString();
+
+            if (value.HasMember("sortingOrder"))
+            {
+                sortingOrder = value["sortingOrder"].GetInt();
+            }
+
             fontSize = value["fontSize"].GetFloat();
 
             const auto& col = value["colour"];

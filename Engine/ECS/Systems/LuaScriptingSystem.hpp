@@ -83,6 +83,15 @@ namespace Uma_ECS
 
         void StartScripts();
 
+        template<typename... Args>
+        void CallScriptFunction(Entity entity, std::string scriptName, std::string functionName, Args&&... args)
+        {
+            auto& luaScript = pCoordinator->GetComponent<LuaScript>(entity);
+
+            CallLuaFunction(*luaScript.GetScriptByName(scriptName), functionName.c_str(), std::forward<Args>(args)...);
+        }
+
+
     private:
         /**
          * \brief Initializes all scripts attached to an entity
@@ -143,7 +152,36 @@ namespace Uma_ECS
          * \param args Arguments to pass to function
          */
         template<typename... Args>
-        void CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args);
+        void CallLuaFunction(LuaScriptInstance& script, const char* funcName, Args&&... args)
+        {
+            try
+            {
+                sol::optional<sol::protected_function> func = (*script.scriptEnv)[funcName];
+
+                if (!func)
+                    return;
+
+                auto result = (*func)(std::forward<Args>(args)...);
+
+                if (!result.valid())
+                {
+                    sol::error err = result;
+                    script.hasError = true;
+                    script.errorMessage = err.what();
+
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                        "Lua Error in " + std::string(funcName) + "(): " + script.errorMessage);
+                }
+            }
+            catch (const sol::error& e)
+            {
+                script.hasError = true;
+                script.errorMessage = e.what();
+
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Lua Exception in " + std::string(funcName) + "(): " + script.errorMessage);
+            }
+        }
 
         /**
          * \brief Subscribes to collision and trigger events
@@ -217,7 +255,17 @@ namespace Uma_ECS
          * \param func Function pointer to bind
          */
         template<typename Func>
-        void BindInputFunction(const char* name, Func func);
+        void BindInputFunction(const char* name, Func func)
+        {
+            sharedLua->set_function(name, [this, func, name](int param) -> bool {
+                if (!pInputSystem) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                        std::string("Lua: InputSystem not available for ") + name);
+                    return false;
+                }
+                return std::invoke(func, param);
+                });
+        }
 
         /**
          * \brief Registers input key/button bindings to Lua

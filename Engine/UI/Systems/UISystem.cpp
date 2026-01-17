@@ -31,6 +31,9 @@ All rights reserved.
 #include "../Events/AudioEvents.h"
 #include "../Events/IMGUIEvents.h"
 #include "../Events/LuaScriptingEvents.h"
+
+#include "../ECS/Systems/LuaScriptingSystem.hpp"
+
 #include "Systems/ResourcesTypes.hpp"
 #include "HybridInputSystem.h"
 #include "Components/Transform.h"
@@ -303,7 +306,7 @@ namespace Uma_UI
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
 
-                        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+                        ButtonOnClicked(entity);
                     }
                 }
                 else
@@ -720,6 +723,11 @@ namespace Uma_UI
 
     void UISystem::ButtonOnClicked(Uma_ECS::Entity entity)
     {
-        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+        //pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+
+        auto& button = pCoordinator->GetComponent<Button>(entity);
+
+        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+        system->CallScriptFunction(entity, button.scriptName, "OnClicked");
     }
 }

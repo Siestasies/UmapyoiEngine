@@ -2,10 +2,6 @@
     "resources": {
         "textures": [
             {
-                "name": "HTP_Image",
-                "path": "Assets/HowToPlay.png"
-            },
-            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
             },
@@ -14,8 +10,8 @@
                 "path": "Assets/wall_top.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
+                "name": "HTP_Image",
+                "path": "Assets/HowToPlay.png"
             },
             {
                 "name": "fire bird",
@@ -26,28 +22,32 @@
                 "path": "Assets/floor_tatami.png"
             },
             {
-                "name": "whitePixel",
-                "path": "Assets/whitePixel.png"
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
-                "name": "wall_left",
-                "path": "Assets/wall_left.png"
+                "name": "whitePixel",
+                "path": "Assets/whitePixel.png"
             },
             {
                 "name": "player_ss",
                 "path": "Assets/player_ss.png"
             },
             {
+                "name": "wall_left",
+                "path": "Assets/wall_left.png"
+            },
+            {
                 "name": "wall_top_left",
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "WoodF_3",
-                "path": "Assets/Environment/m3 floor 1.png"
-            },
-            {
                 "name": "wall_right",
                 "path": "Assets/wall_right.png"
+            },
+            {
+                "name": "WoodF_3",
+                "path": "Assets/Environment/m3 floor 1.png"
             },
             {
                 "name": "wall_btm",
@@ -62,12 +62,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "HallWay_Hori1",
-                "path": "Assets/Environment/horizontal hallway.png"
-            },
-            {
                 "name": "pause",
                 "path": "Assets/pause menu.png"
+            },
+            {
+                "name": "HallWay_Hori1",
+                "path": "Assets/Environment/horizontal hallway.png"
             },
             {
                 "name": "Kappa_1",
@@ -96,8 +96,18 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -111,19 +121,9 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
-            },
-            {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
             },
             {
                 "name": "enemy_hurt",
@@ -190,6 +190,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "kappa_statue",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -242,6 +243,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_btm",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -316,6 +318,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_btm",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -390,6 +393,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_btm",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -464,6 +468,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_btm",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -538,6 +543,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_btm",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -612,6 +618,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -686,6 +693,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -760,6 +768,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -834,6 +843,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -908,6 +918,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -982,6 +993,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1056,6 +1068,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1130,6 +1143,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_right",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1204,6 +1218,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_top",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1278,6 +1293,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_top",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1352,6 +1368,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_top",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1426,6 +1443,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_top",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1500,6 +1518,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "wall_top",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1574,6 +1593,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1626,6 +1646,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1678,6 +1699,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1730,6 +1752,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1782,6 +1805,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1834,6 +1858,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1886,6 +1911,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1938,6 +1964,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -1990,6 +2017,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2042,6 +2070,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2094,6 +2123,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2146,6 +2176,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2198,6 +2229,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2250,6 +2282,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2302,6 +2335,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "floor_tatami",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2406,6 +2440,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2458,6 +2493,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2510,6 +2546,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2562,6 +2599,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2614,6 +2652,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -2666,6 +2705,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2718,6 +2758,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2770,6 +2811,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -2822,6 +2864,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2874,6 +2917,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2926,6 +2970,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -2978,6 +3023,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3052,6 +3098,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3104,6 +3151,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3156,6 +3204,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3230,6 +3279,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3282,6 +3332,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3334,6 +3385,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3386,6 +3438,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3475,6 +3528,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3549,6 +3603,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3623,6 +3678,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3697,6 +3753,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3771,6 +3828,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -3845,6 +3903,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -3919,6 +3978,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -3971,6 +4031,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -4045,6 +4106,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4097,6 +4159,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4149,6 +4212,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4201,6 +4265,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4253,6 +4318,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4305,6 +4371,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4357,6 +4424,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4409,6 +4477,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4449,6 +4518,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4501,6 +4571,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4590,6 +4661,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4642,6 +4714,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -4716,6 +4789,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4768,6 +4842,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4820,6 +4895,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -4894,6 +4970,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4946,6 +5023,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -4998,6 +5076,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5050,6 +5129,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5102,6 +5182,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -5176,6 +5257,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5250,6 +5332,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -5324,6 +5407,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -5398,6 +5482,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5472,6 +5557,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5546,6 +5632,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5620,6 +5707,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5694,6 +5782,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5768,6 +5857,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5842,6 +5932,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5916,6 +6007,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -5990,6 +6082,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6079,6 +6172,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6131,6 +6225,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -6205,6 +6300,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -6279,6 +6375,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -6353,6 +6450,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6427,6 +6525,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6479,6 +6578,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6553,6 +6653,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6627,6 +6728,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "HallWay_Hori1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6701,6 +6803,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6753,6 +6856,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6805,6 +6909,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6857,6 +6962,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6909,6 +7015,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -6961,6 +7068,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7013,6 +7121,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_2",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7065,6 +7174,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7139,6 +7249,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7191,6 +7302,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7265,6 +7377,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7339,6 +7452,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7413,6 +7527,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7487,6 +7602,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7561,6 +7677,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7635,6 +7752,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -7709,6 +7827,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7761,6 +7880,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7813,6 +7933,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7865,6 +7986,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "WoodF_3",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7917,6 +8039,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -7969,6 +8092,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -8021,6 +8145,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8095,6 +8220,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8169,6 +8295,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8243,6 +8370,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8317,6 +8445,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8391,6 +8520,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8465,6 +8595,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8539,6 +8670,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8613,6 +8745,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8687,6 +8820,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8761,6 +8895,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8835,6 +8970,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8909,6 +9045,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -8983,6 +9120,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -9057,6 +9195,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -9218,6 +9357,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -9379,6 +9519,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -9468,6 +9609,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 2,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9542,6 +9684,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9616,6 +9759,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9690,6 +9834,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9764,6 +9909,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9838,6 +9984,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9890,6 +10037,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9942,6 +10090,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -9994,6 +10143,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10046,6 +10196,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10098,6 +10249,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10150,6 +10302,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10202,6 +10355,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10254,6 +10408,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10306,6 +10461,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10358,6 +10514,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10410,6 +10567,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10462,6 +10620,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10514,6 +10673,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10566,6 +10726,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10618,6 +10779,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10670,6 +10832,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10722,6 +10885,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10774,6 +10938,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10826,6 +10991,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10878,6 +11044,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10930,6 +11097,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -10982,6 +11150,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11034,6 +11203,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11086,6 +11256,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11138,6 +11309,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11190,6 +11362,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11242,6 +11415,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11294,6 +11468,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11346,6 +11521,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11398,6 +11574,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11450,6 +11627,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11502,6 +11680,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11554,6 +11733,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11606,6 +11786,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11658,6 +11839,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11710,6 +11892,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11762,6 +11945,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -11814,6 +11998,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -11854,6 +12039,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -11906,6 +12092,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -11958,6 +12145,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -12010,6 +12198,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -12062,6 +12251,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12114,6 +12304,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12166,6 +12357,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12218,6 +12410,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12270,6 +12463,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12322,6 +12516,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12374,6 +12569,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12414,6 +12610,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12466,6 +12663,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12518,6 +12716,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -12570,6 +12769,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -12622,6 +12822,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -12674,6 +12875,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -12726,6 +12928,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -12778,6 +12981,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -12830,6 +13034,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -12882,6 +13087,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -12934,6 +13140,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -12986,6 +13193,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13038,6 +13246,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13090,6 +13299,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13142,6 +13352,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13194,6 +13405,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13246,6 +13458,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13286,6 +13499,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13338,6 +13552,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13390,6 +13605,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13442,6 +13658,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13494,6 +13711,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -13546,6 +13764,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13586,6 +13805,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13638,6 +13858,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13690,6 +13911,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13742,6 +13964,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13794,6 +14017,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13846,6 +14070,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13898,6 +14123,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -13950,6 +14176,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14002,6 +14229,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14054,6 +14282,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -14106,6 +14335,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14158,6 +14388,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14210,6 +14441,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14262,6 +14494,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14314,6 +14547,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -14366,6 +14600,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -14418,6 +14653,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14470,6 +14706,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14522,6 +14759,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -14574,6 +14812,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14626,6 +14865,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14678,6 +14918,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14730,6 +14971,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14804,6 +15046,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14856,6 +15099,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -14908,6 +15152,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -14982,6 +15227,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15056,6 +15302,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15130,6 +15377,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15182,6 +15430,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15234,6 +15483,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15286,6 +15536,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 4,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15338,6 +15589,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15412,6 +15664,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15486,6 +15739,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15542,6 +15796,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "Kappa_1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15703,6 +15958,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15765,6 +16021,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 128,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15817,6 +16074,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 128,
+                    "order": 0,
                     "flipX": true,
                     "flipY": false,
                     "autoFlip": true,
@@ -15869,6 +16127,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 128,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15909,6 +16168,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 128,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -15949,6 +16209,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -16001,6 +16262,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": true,
                     "flipY": true,
                     "autoFlip": true,
@@ -16053,6 +16315,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 64,
+                    "order": 0,
                     "flipX": false,
                     "flipY": true,
                     "autoFlip": true,
@@ -16109,6 +16372,7 @@
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
                     "layer": 8,
+                    "order": 0,
                     "flipX": false,
                     "flipY": false,
                     "autoFlip": true,
@@ -16323,6 +16587,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/pause.lua",
+                            "scriptName": "pause.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -16405,6 +16670,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "pause",
+                    "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
@@ -16439,6 +16705,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/resume_btn.lua",
+                            "scriptName": "resume_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -16468,6 +16735,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "resume_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -16519,6 +16787,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/back_btn.lua",
+                            "scriptName": "back_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -16548,6 +16817,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "back_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -16620,6 +16890,7 @@
                 "class Uma_UI::Text": {
                     "text": "Resume",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -16677,6 +16948,7 @@
                 "class Uma_UI::Text": {
                     "text": "Resume",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -16734,6 +17006,7 @@
                 "class Uma_UI::Text": {
                     "text": "Back to main",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
                         "r": 0.0,
@@ -16791,6 +17064,7 @@
                 "class Uma_UI::Text": {
                     "text": "Back to main",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -16827,6 +17101,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                            "scriptName": "BGM_combat.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -16911,6 +17186,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/fps.lua",
+                            "scriptName": "fps.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -16941,6 +17217,7 @@
                 "class Uma_UI::Text": {
                     "text": "",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.0,
                     "colour": {
                         "r": 1.0,
@@ -16977,6 +17254,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/HTP.lua",
+                            "scriptName": "HTP.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -17006,6 +17284,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "HTP.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -17078,6 +17357,7 @@
                 "class Uma_UI::Text": {
                     "text": "How to Play",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
                         "r": 0.0,
@@ -17135,6 +17415,7 @@
                 "class Uma_UI::Text": {
                     "text": "How to Play",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -17171,6 +17452,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/CloseHTP.lua",
+                            "scriptName": "CloseHTP.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -17200,6 +17482,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "CloseHTP.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -17272,6 +17555,7 @@
                 "class Uma_UI::Text": {
                     "text": "Close",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -17329,6 +17613,7 @@
                 "class Uma_UI::Text": {
                     "text": "Close",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -17385,6 +17670,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "HTP_Image",
+                    "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
                         "g": 1.0,

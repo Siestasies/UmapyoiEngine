@@ -277,7 +277,18 @@ namespace Uma_ECS
                 int lhs_sorting_order = canvasArray.GetData(lhs).sortingOrder;
                 int rhs_sorting_order = canvasArray.GetData(rhs).sortingOrder;
 
-                return lhs_sorting_order < rhs_sorting_order;
+                int lhs_hierarchyOrder = pCoordinator->GetHierarchyIndex(lhs);
+                int rhs_hierarchyOrder = pCoordinator->GetHierarchyIndex(rhs);
+
+                if (lhs_sorting_order != rhs_sorting_order)
+                {
+                    return lhs_sorting_order < rhs_sorting_order;
+                }
+
+                if (lhs_hierarchyOrder != rhs_hierarchyOrder)
+                {
+                    return lhs_hierarchyOrder < rhs_hierarchyOrder;
+                }
             });
 
         for (const auto& canvasId : sortedCanvasIds)
@@ -288,8 +299,10 @@ namespace Uma_ECS
 
             auto& canvas = canvasArray.GetData(canvasId);
 
-            for (const auto& childUI : childrenList)
+            for (int i = 0; i < childrenList.size(); i++)
             {
+                Entity childUI = childrenList[i];
+
                 if (!pCoordinator->IsActiveInHierarchy(childUI)) continue;
 
                 auto& rectTransform = rtfArray.GetData(childUI);
@@ -319,6 +332,8 @@ namespace Uma_ECS
                         {
                             .type = uiType,
                             .layer = RL_UI,
+                            .order = textComp.sortingOrder,
+                            .hierarchyOrder = i,
                             .entity = childUI,
 
                             .text = textComp.text,
@@ -370,6 +385,8 @@ namespace Uma_ECS
                         {
                             .type = uiType,
                             .layer = RL_UI,
+                            .order = image.sortingOrder,
+                            .hierarchyOrder = i,
                             .entity = childUI,
 
                             .spriteInfo = spriteInfo,
@@ -377,7 +394,17 @@ namespace Uma_ECS
                         );
                 }
 
-                
+                // sort based on children's sorting order
+                std::sort(uiDrawCommands.begin(), uiDrawCommands.end(),
+                    [&](const UIDrawCommand& lhs, const UIDrawCommand& rhs)
+                    {
+                        if (lhs.order != rhs.order)
+                        {
+                            return lhs.order < rhs.order;
+                        }
+
+                        return lhs.hierarchyOrder < rhs.hierarchyOrder;
+                    });
             }
         }
     }

@@ -51,6 +51,8 @@ namespace Uma_ECS
 
         Type type;
         LayerMask layer;                // layer
+        int order;
+        int hierarchyOrder;
         Entity entity;
 
         // For images
