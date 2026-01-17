@@ -252,7 +252,7 @@ namespace Uma_Engine
         Graphics* pGraphics = nullptr;
         GLuint mDefaultFileIcon = 0;
         GLuint mDefaultFolderIcon = 0;
-        std::unordered_map<std::string, GLuint> mLoadedTextures;
+        std::unordered_map<std::string, Texture> mLoadedTextures;
         std::queue<std::string> mLoadQueue;
         size_t mMaxLoadsPerFrame = 2;
         float mIconSize = 64.0f;
@@ -273,9 +273,9 @@ namespace Uma_Engine
         {
             if (!pGraphics) return;
 
-            for (auto& [path, texID] : mLoadedTextures)
+            for (auto& [path, tex] : mLoadedTextures)
             {
-                pGraphics->UnloadTexture(texID);
+                pGraphics->UnloadTexture(tex.tex_id);
             }
             mLoadedTextures.clear();
 
@@ -293,6 +293,33 @@ namespace Uma_Engine
             std::string lowerExt = ext;
             std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
             return imageExts.count(lowerExt) > 0;
+        }
+
+        std::string FormatFileSize(uintmax_t bytes)
+        {
+            const char* units[] = { "B", "KB", "MB", "GB", "TB" };
+            int unitIndex = 0;
+            double size = static_cast<double>(bytes);
+
+            while (size >= 1024.0 && unitIndex < 4)
+            {
+                size /= 1024.0;
+                unitIndex++;
+            }
+
+            char buffer[64];
+            if (unitIndex == 0)
+            {
+                // Bytes=
+                snprintf(buffer, sizeof(buffer), "%d %s", static_cast<int>(size), units[unitIndex]);
+            }
+            else
+            {
+                // KB, MB, GB, TB
+                snprintf(buffer, sizeof(buffer), "%.2f %s", size, units[unitIndex]);
+            }
+
+            return std::string(buffer);
         }
 
         void QueueTextureLoad(const std::string& filepath)
@@ -329,7 +356,7 @@ namespace Uma_Engine
                 Texture tex = pGraphics->LoadTextureFromFile(filepath);
                 if (tex.tex_id != 0)
                 {
-                    mLoadedTextures[filepath] = tex.tex_id;
+                    mLoadedTextures[filepath] = tex;
                     loadsThisFrame++;
                 }
             }
@@ -348,7 +375,7 @@ namespace Uma_Engine
             // Check if texture is already loaded
             auto it = mLoadedTextures.find(file.path);
             if (it != mLoadedTextures.end())
-                return it->second;
+                return it->second.tex_id;
 
             // Not loaded yet, so queue and return default icon
             QueueTextureLoad(file.path);
@@ -474,6 +501,18 @@ namespace Uma_Engine
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
             ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y - ImGui::GetTextLineHeight() - 15.f), true);
 
+            // Grid layout settings
+            const float itemWidth = mIconSize + 20.0f;
+            const float itemHeight = mIconSize + 50.0f;
+            const float itemSpacing = 15.0f;
+
+            // Calculate items per row
+            float availableWidth = ImGui::GetContentRegionAvail().x;
+            int itemsPerRow = max(1, static_cast<int>((availableWidth + itemSpacing) / (itemWidth + itemSpacing)));
+
+            int currentColumn = 0;
+            ImVec2 startPos = ImGui::GetCursorPos();
+
             for (const auto& entry : aFiles) {
                 // Apply filter
                 if (mFilter[0] != '\0' && entry.name.find(mFilter) == std::string::npos) {
@@ -482,44 +521,69 @@ namespace Uma_Engine
 
                 // Get texture for this file
                 GLuint texID = GetFileTexture(entry);
-
                 bool is_selected = (mSelectedPath == entry.path);
 
                 // Push unique ID for this item
                 ImGui::PushID(entry.path.c_str());
 
-                // Render icon + text in horizontal layout
+                // Calculate grid position
+                float xPos = startPos.x + (currentColumn * (itemWidth + itemSpacing));
+                float yPos = startPos.y + ((currentColumn / itemsPerRow) * 0) * (itemHeight + itemSpacing);
+
+                // Set cursor to grid position
+                if (currentColumn > 0) {
+                    ImGui::SameLine(xPos);
+                }
+
+                // Begin item group
                 ImGui::BeginGroup();
 
-                // Draw icon
+                // Icon
+                float iconPosX = (itemWidth - mIconSize) * 0.5f;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + iconPosX);
+
                 if (texID != 0)
                 {
                     ImGui::Image((void*)(intptr_t)texID, ImVec2(mIconSize, mIconSize));
                 }
                 else
                 {
-                    // Fallback: just draw a colored rect
                     ImGui::Dummy(ImVec2(mIconSize, mIconSize));
                 }
 
-                ImGui::SameLine();
+                // Small spacing between icon and text
+                ImGui::Spacing();
 
-                // Draw text with some padding
-                ImGui::BeginGroup();
-                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5.0f); // Vertical align
-                ImGui::Text("%s", entry.name.c_str());
-
-                if (!entry.isFolder)
+                // File name
+                std::string displayName = entry.name;
+                const size_t maxNameLength = 18;
+                if (displayName.length() > maxNameLength)
                 {
-                    ImGui::TextDisabled("Size: %llu bytes", entry.size);
+                    displayName = displayName.substr(0, maxNameLength - 3) + "...";
                 }
-                ImGui::EndGroup();
+
+                // Push text wrapping
+                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + itemWidth);
+
+                float textWidth = ImGui::CalcTextSize(displayName.c_str(), nullptr, false, itemWidth).x;
+                float textPosX = (itemWidth - textWidth) * 0.5f;
+                if (textPosX > 0) {
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + textPosX);
+                }
+
+                ImGui::Text("%s", displayName.c_str());
+                ImGui::PopTextWrapPos();
+
+                // Dummy to ensure consistent height
+                ImGui::Dummy(ImVec2(itemWidth, 0));
 
                 ImGui::EndGroup();
 
-                // Invisible button over the entire group for selection
+                // Store item rect for interaction
                 ImVec2 itemMin = ImGui::GetItemRectMin();
                 ImVec2 itemMax = ImGui::GetItemRectMax();
+
+                // Make item selectable (invisible button over the group)
                 ImGui::SetCursorScreenPos(itemMin);
                 ImGui::InvisibleButton("##fileitem", ImVec2(itemMax.x - itemMin.x, itemMax.y - itemMin.y));
 
@@ -546,10 +610,17 @@ namespace Uma_Engine
                     ImDrawList* draw_list = ImGui::GetWindowDrawList();
                     ImVec2 p_min = itemMin;
                     ImVec2 p_max = itemMax;
-                    draw_list->AddRectFilled(p_min, p_max, IM_COL32(64, 128, 255, 80)); // Blue highlight
-                    draw_list->AddRect(p_min, p_max, IM_COL32(64, 128, 255, 255), 0.0f, 0, 2.0f); // Blue border
 
-                    // Keyboard shortcuts (only for selected item)
+                    // Add padding to selection rect
+                    p_min.x -= 5.0f;
+                    p_min.y -= 5.0f;
+                    p_max.x += 5.0f;
+                    p_max.y += 5.0f;
+
+                    draw_list->AddRectFilled(p_min, p_max, IM_COL32(64, 128, 255, 80));
+                    draw_list->AddRect(p_min, p_max, IM_COL32(64, 128, 255, 255), 4.0f, 0, 2.0f);
+
+                    // Keyboard shortcuts
                     if (ImGui::IsKeyPressed(ImGuiKey_Delete))
                     {
                         try
@@ -593,7 +664,6 @@ namespace Uma_Engine
                         }
                     }
 
-                    // Rename functionality
                     static char renameText[256];
                     renameText[255] = '\0';
 
@@ -627,7 +697,6 @@ namespace Uma_Engine
                         }
                     }
 
-                    // Prefab-specific menu items
                     if (entry.ext == ".prefab" && !mPrefabEdit)
                     {
                         if (ImGui::MenuItem("Open in Inspector"))
@@ -653,15 +722,12 @@ namespace Uma_Engine
                 // Drag and drop source
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
                 {
-                    // Create payload
                     FilePayload payload;
                     strncpy_s(payload.filepath, entry.path.c_str(), sizeof(payload.filepath) - 1);
                     payload.filepath[sizeof(payload.filepath) - 1] = '\0';
                     payload.isFolder = entry.isFolder;
 
                     ImGui::SetDragDropPayload(entry.name.c_str(), &payload, sizeof(FilePayload));
-
-                    // Preview
                     ImGui::Text("%s", entry.name.c_str());
                     ImGui::EndDragDropSource();
 
@@ -697,30 +763,80 @@ namespace Uma_Engine
                     ImGui::EndDragDropTarget();
                 }
 
-                // Tooltip with details
+                // Hover preview
                 if (ImGui::IsItemHovered())
                 {
                     ImGui::BeginTooltip();
+
+                    // Show large preview for images with proper aspect ratio
+                    if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0)
+                    {
+                        const Texture& tex = mLoadedTextures[entry.path];
+                        GLuint previewTexID = tex.tex_id;
+
+                        // Maximum preview size (constrain to fit in tooltip)
+                        const float maxPreviewSize = 256.0f;
+
+                        // Calculate aspect-ratio-preserving size
+                        float texWidth = tex.tex_size.x;
+                        float texHeight = tex.tex_size.y;
+
+                        ImVec2 previewSize;
+                        if (texWidth > texHeight)
+                        {
+                            // Width is limiting factor
+                            previewSize.x = maxPreviewSize;
+                            previewSize.y = (texHeight / texWidth) * maxPreviewSize;
+                        }
+                        else
+                        {
+                            // Height is limiting factor
+                            previewSize.y = maxPreviewSize;
+                            previewSize.x = (texWidth / texHeight) * maxPreviewSize;
+                        }
+
+                        ImGui::Image((void*)(intptr_t)previewTexID, previewSize);
+                        ImGui::Separator();
+                    }
+
+                    // File details
+                    ImGui::Text("Name: %s", entry.name.c_str());
                     ImGui::Text("Path: %s", entry.path.c_str());
 
                     if (!entry.isFolder)
                     {
-                        ImGui::Text("Size: %llu bytes", entry.size);
+                        ImGui::Text("Size: %s", FormatFileSize(entry.size).c_str());
+                        ImGui::Text("Type: %s", entry.ext.c_str());
 
-                        // Show loading status for images
-                        if (IsImageFile(entry.ext))
+                        // Show dimensions for images
+                        if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0)
                         {
-                            if (mLoadedTextures.count(entry.path) == 0)
-                            {
-                                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Loading preview...");
-                            }
+                            const Texture& tex = mLoadedTextures[entry.path];
+                            ImGui::Text("Dimensions: %.0f x %.0f", tex.tex_size.x, tex.tex_size.y);
                         }
+                        else if (IsImageFile(entry.ext))
+                        {
+                            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Loading preview...");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::Text("Type: Folder");
                     }
 
                     ImGui::EndTooltip();
                 }
 
                 ImGui::PopID();
+
+                // Update column counter and handle wrapping
+                currentColumn++;
+                if (currentColumn >= itemsPerRow)
+                {
+                    currentColumn = 0;
+                    // Add vertical spacing between rows
+                    ImGui::Dummy(ImVec2(0, itemSpacing));
+                }
             }
 
             ImGui::EndChild();
