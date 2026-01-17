@@ -35,6 +35,7 @@ namespace Uma_ECS
         // pointer pointing to the texture in resources manager
         std::string textureName{};
         LayerMask renderLayer = RL_NONE;
+        int renderOrder = 0;
         bool flipX{ false };
         bool flipY{ false };
         bool autoFlip{ true };
@@ -81,6 +82,7 @@ namespace Uma_ECS
                 allocator);
 
             value.AddMember("layer", renderLayer, allocator);
+            value.AddMember("order", renderOrder, allocator);
 
             value.AddMember("flipX", flipX, allocator);
             value.AddMember("flipY", flipY, allocator);
@@ -111,6 +113,11 @@ namespace Uma_ECS
             if (value.HasMember("layer"))
             {
                 renderLayer = value["layer"].GetUint();
+            }
+
+            if (value.HasMember("order"))
+            {
+                renderOrder = value["order"].GetInt();
             }
 
             if (value.HasMember("flipX")) flipX = value["flipX"].GetBool();

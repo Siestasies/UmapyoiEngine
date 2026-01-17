@@ -56,6 +56,8 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::EntityCreatedEvent>(en, GetEntityCount());
         }
 
+        aHierarchyOrder.push_back(en);
+
         std::string log;
         std::stringstream ss(log);
         ss << "Created Entity : " << en;
@@ -454,6 +456,12 @@ namespace Uma_ECS
                         childTf.position = childTf.worldPosition;
                     }
                 }
+            }
+
+            // Remove from hierarchy order
+            auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+            if (it != aHierarchyOrder.end()) {
+                aHierarchyOrder.erase(it);
             }
 
             // Actual deletion
@@ -1240,5 +1248,94 @@ namespace Uma_ECS
         }
 
         return prefabToWorldID;
+    }
+
+    // Move entity to a specific index in hierarchy
+    void Coordinator::MoveEntityInHierarchy(Entity entity, int newIndex) {
+        // Update global hierarchy order
+        auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+        if (it == aHierarchyOrder.end()) return;
+
+        aHierarchyOrder.erase(it);
+        newIndex = std::clamp(newIndex, 0, static_cast<int>(aHierarchyOrder.size()));
+        aHierarchyOrder.insert(aHierarchyOrder.begin() + newIndex, entity);
+    }
+
+    // Move entity to a specific index within its parent's children list
+    void Coordinator::MoveChildInParent(Entity entity, int newIndex) {
+        auto& transformArray = GetComponentArray<Transform>();
+        auto& transform = transformArray.GetData(entity);
+
+        if (!transform.parent.has_value()) return;
+
+        Entity parentEntity = transform.parent.value();
+        auto& parentTransform = transformArray.GetData(parentEntity);
+
+        auto it = std::find(parentTransform.children.begin(), parentTransform.children.end(), entity);
+        if (it == parentTransform.children.end()) return;
+
+        parentTransform.children.erase(it);
+        newIndex = std::clamp(newIndex, 0, static_cast<int>(parentTransform.children.size()));
+        parentTransform.children.insert(parentTransform.children.begin() + newIndex, entity);
+    }
+
+    // Move one position up
+    void Coordinator::MoveEntityUp(Entity entity) {
+        auto& transformArray = GetComponentArray<Transform>();
+        auto& transform = transformArray.GetData(entity);
+
+        // If entity has a parent, move within parent's children
+        if (transform.parent.has_value()) {
+            Entity parentEntity = transform.parent.value();
+            auto& parentTransform = transformArray.GetData(parentEntity);
+
+            auto it = std::find(parentTransform.children.begin(), parentTransform.children.end(), entity);
+            if (it != parentTransform.children.end() && it != parentTransform.children.begin()) {
+                std::iter_swap(it, it - 1);
+            }
+        }
+
+        // Also update global hierarchy order
+        auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+        if (it != aHierarchyOrder.end() && it != aHierarchyOrder.begin()) {
+            std::iter_swap(it, it - 1);
+        }
+    }
+
+    // Move one position down
+    void Coordinator::MoveEntityDown(Entity entity) {
+        auto& transformArray = GetComponentArray<Transform>();
+        auto& transform = transformArray.GetData(entity);
+
+        // If entity has a parent, move within parent's children
+        if (transform.parent.has_value()) {
+            Entity parentEntity = transform.parent.value();
+            auto& parentTransform = transformArray.GetData(parentEntity);
+
+            auto it = std::find(parentTransform.children.begin(), parentTransform.children.end(), entity);
+            if (it != parentTransform.children.end() && it + 1 != parentTransform.children.end()) {
+                std::iter_swap(it, it + 1);
+            }
+        }
+
+        // Also update global hierarchy order
+        auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+        if (it != aHierarchyOrder.end() && it + 1 != aHierarchyOrder.end()) {
+            std::iter_swap(it, it + 1);
+        }
+    }
+
+    int Coordinator::GetHierarchyIndex(Entity entity) const
+    {
+        for (int i = 0; i < aHierarchyOrder.size(); i++)
+        {
+            if (entity == aHierarchyOrder[i]) return i;
+        }
+        return -1;
+    }
+
+    // Get hierarchy order for rendering inspector
+    const std::vector<Entity>& Coordinator::GetHierarchyOrder() const {
+        return aHierarchyOrder;
     }
 }

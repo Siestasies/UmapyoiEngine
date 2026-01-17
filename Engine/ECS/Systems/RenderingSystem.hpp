@@ -35,6 +35,8 @@ namespace Uma_ECS
     {
         Uma_Engine::Sprite_Info info;
         LayerMask layer;
+        int order;
+        int hierarchyOrder;
         unsigned int texId;
         Entity entityId;
     };

@@ -126,6 +126,9 @@ namespace Uma_ECS
                 continue;
             }
 
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
             Vec2 spriteScale;
             if (sr.UseNativeSize)
             {
@@ -195,6 +198,8 @@ namespace Uma_ECS
                     .alpha = sr.alpha
                 },
                 .layer = sr.renderLayer,
+                .order = sr.renderOrder,
+                .hierarchyOrder = hierarchyOrder,      
                 .texId = sr.texture->tex_id,
                 .entityId = entity
                 });
@@ -203,45 +208,58 @@ namespace Uma_ECS
 
     void RenderingSystem::RenderWorldSprites(std::vector<LayeredSprite>& allSprites)
     {
-        // Sort by layer FIRST, then by texture (for batching within same layer), then by entity ID (for stability)
         std::sort(allSprites.begin(), allSprites.end(),
             [](const LayeredSprite& a, const LayeredSprite& b)
             {
                 if (a.layer != b.layer)
-                    return a.layer < b.layer;      // Sort by layer first
+                    return a.layer < b.layer;
+                if (a.order != b.order)
+                    return a.order < b.order;
+                if (a.hierarchyOrder != b.hierarchyOrder)
+                    return a.hierarchyOrder < b.hierarchyOrder;
                 if (a.texId != b.texId)
-                    return a.texId < b.texId;      // Then by texture for batching
-                return a.entityId < b.entityId;    // Finally by entity ID for deterministic ordering
+                    return a.texId < b.texId;
+                return a.entityId < b.entityId;
             });
 
-        // Now group by texture and render in layer order
+        // Batch within same layer+order+hierarchy only
         std::map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
-        LayerMask currentLayer = allSprites.empty() ? 0 : allSprites[0].layer;
 
-        for (const auto& layeredSprite : allSprites)
+        if (!allSprites.empty())
         {
-            // If we've moved to a new layer, flush previous batches
-            if (layeredSprite.layer != currentLayer)
+            LayerMask currentLayer = allSprites[0].layer;
+            int currentOrder = allSprites[0].order;
+            int currentHierarchy = allSprites[0].hierarchyOrder;
+
+            for (const auto& layeredSprite : allSprites)
             {
-                if (!sorted_sprites.empty())
+                // Flush if ANY of the sorting criteria changed
+                if (layeredSprite.layer != currentLayer ||
+                    layeredSprite.order != currentOrder ||
+                    layeredSprite.hierarchyOrder != currentHierarchy)
                 {
-                    // Render all batches from previous layer
+                    // Render all batches from previous group
                     for (const auto& pair : sorted_sprites)
                     {
                         pGraphics->DrawSpritesInstanced(pair.first, pair.second);
                     }
                     sorted_sprites.clear();
+
+                    // Update current sorting group
+                    currentLayer = layeredSprite.layer;
+                    currentOrder = layeredSprite.order;
+                    currentHierarchy = layeredSprite.hierarchyOrder;
                 }
-                currentLayer = layeredSprite.layer;
+
+                // Add to batch
+                sorted_sprites[layeredSprite.texId].push_back(layeredSprite.info);
             }
 
-            sorted_sprites[layeredSprite.texId].push_back(layeredSprite.info);
-        }
-
-        // Render remaining batches
-        for (const auto& pair : sorted_sprites)
-        {
-            pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+            // Render remaining batches
+            for (const auto& pair : sorted_sprites)
+            {
+                pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+            }
         }
     }
 

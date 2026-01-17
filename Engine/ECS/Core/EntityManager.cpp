@@ -62,8 +62,6 @@ Uma_ECS::Entity Uma_ECS::EntityManager::CreateEntity()
     aEntityEnabled[new_entity] = true;  // New entities are enabled by default
     ++mActiveEntityCnt;
 
-    aHierarchyOrder.push_back(new_entity);
-
     return new_entity;
 }
 
@@ -92,12 +90,6 @@ void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
     aEntityActive[entity] = false;
     aEntityEnabled[entity] = false;  // Reset enabled state
     --mActiveEntityCnt;
-
-    // Remove from hierarchy order
-    auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
-    if (it != aHierarchyOrder.end()) {
-        aHierarchyOrder.erase(it);
-    }
 }
 
 bool Uma_ECS::EntityManager::HasActiveEntity(Entity entity) const
@@ -162,35 +154,4 @@ void Uma_ECS::EntityManager::DestroyAllEntities()
     //{
     //    DestroyEntity(entity);
     //}
-}
-
-// Move entity up/down in hierarchy
-void Uma_ECS::EntityManager::MoveEntityInHierarchy(Entity entity, int newIndex) {
-    auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
-    if (it == aHierarchyOrder.end()) return;
-
-    aHierarchyOrder.erase(it);
-    newIndex = std::clamp(newIndex, 0, static_cast<int>(aHierarchyOrder.size()));
-    aHierarchyOrder.insert(aHierarchyOrder.begin() + newIndex, entity);
-}
-
-// Move one position up
-void Uma_ECS::EntityManager::MoveEntityUp(Entity entity) {
-    auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
-    if (it != aHierarchyOrder.end() && it != aHierarchyOrder.begin()) {
-        std::iter_swap(it, it - 1);
-    }
-}
-
-// Move one position down
-void Uma_ECS::EntityManager::MoveEntityDown(Entity entity) {
-    auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
-    if (it != aHierarchyOrder.end() && it + 1 != aHierarchyOrder.end()) {
-        std::iter_swap(it, it + 1);
-    }
-}
-
-// Get hierarchy order for rendering inspector
-const std::vector<Uma_ECS::Entity>& Uma_ECS::EntityManager::GetHierarchyOrder() const {
-    return aHierarchyOrder;
 }

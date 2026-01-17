@@ -906,11 +906,13 @@ namespace Uma_Engine
         auto& coordinator = activeScene->GetCoordinator();
         auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
 
+        const auto& hierarchyOrder = coordinator.GetHierarchyOrder();
+
         // Build a list of root entities (entities with no parent)
         std::vector<Uma_ECS::Entity> rootEntities;
-        for (size_t i = 0; i < transformArray.Size(); ++i)
+        for (size_t i = 0; i < hierarchyOrder.size(); ++i)
         {
-            Uma_ECS::Entity entity = transformArray.GetEntity(i);
+            Uma_ECS::Entity entity = hierarchyOrder[i];
             auto& transform = transformArray.GetData(entity);
 
             if (!transform.parent.has_value())
@@ -920,10 +922,15 @@ namespace Uma_Engine
         }
 
         // Render each root entity and its children recursively
-        for (Uma_ECS::Entity rootEntity : rootEntities)
+        for (int i = 0; i < static_cast<int>(rootEntities.size()); i++)
         {
-            RenderEntityNode(rootEntity, coordinator, transformArray);
+            // Get actual hierarchy index for this root entity
+            int hierarchyIdx = coordinator.GetHierarchyIndex(rootEntities[i]);
+            RenderHierarchyDropZone(hierarchyIdx, coordinator);
+            RenderEntityNode(rootEntities[i], coordinator, transformArray);
         }
+        // Final drop zone after last entity (end of hierarchy)
+        RenderHierarchyDropZone(static_cast<int>(hierarchyOrder.size()), coordinator);
 
         if (m_HierarchyScrollToBottomFrames > 0)
         {
@@ -1241,13 +1248,22 @@ namespace Uma_Engine
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
             ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
-            ImGui::Text("Reparent: %s", entityName.c_str());
+            ImGui::Text("Dragging: %s", entityName.c_str()); // Preview while dragging
             ImGui::EndDragDropSource();
         }
 
+        ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(100, 150, 255, 255));
+
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            const ImGuiPayload* payload = ImGui::GetDragDropPayload();
+
+            if (payload != nullptr && payload->IsDataType("ENTITY_NODE") && payload->IsPreview()) // hovering
+            {
+                ImGui::SetTooltip("Reparent to: %s", entityName.c_str());
+            }
+
+            if (payload = ImGui::AcceptDragDropPayload("ENTITY_NODE")) // accept
             {
                 Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
 
@@ -1260,6 +1276,8 @@ namespace Uma_Engine
             ImGui::EndDragDropTarget();
         }
 
+        ImGui::PopStyleColor();
+
         // Render children recursively
         if (nodeOpen && hasChildren)
         {
@@ -1269,6 +1287,120 @@ namespace Uma_Engine
             }
             ImGui::TreePop();
         }
+
+        ImGui::PopID();
+    }
+
+    void ImguiManager::RenderHierarchyDropZone(int insertIndex, Uma_ECS::Coordinator& coordinator,
+        std::optional<Uma_ECS::Entity> parentEntity)
+    {
+        ImGui::PushID(insertIndex);
+
+        // Create a small invisible drop target area
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+        // Invisible button to create the drop zone (thin horizontal area)
+        ImGui::InvisibleButton("##dropzone", ImVec2(availWidth, 4.0f));
+        ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(0, 0, 0, 0));
+
+        // Draw visual feedback when dragging over
+        if (ImGui::BeginDragDropTarget())
+        {
+            // Draw a highlight line to indicate drop position
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+            drawList->AddLine(
+                ImVec2(cursorPos.x, cursorPos.y + 2.0f),
+                ImVec2(cursorPos.x + availWidth, cursorPos.y + 2.0f),
+                IM_COL32(100, 150, 255, 255),
+                2.0f
+            );
+
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            {
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+
+                if (parentEntity.has_value())
+                {
+                    // Reordering within a parent's children list
+                    auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+                    auto& droppedTransform = transformArray.GetData(droppedEntity);
+
+                    // Only allow reordering if the dropped entity is a child of this parent
+                    if (droppedTransform.parent.has_value() &&
+                        droppedTransform.parent.value() == parentEntity.value())
+                    {
+                        auto& parentTransform = transformArray.GetData(parentEntity.value());
+
+                        // Find current index in parent's children
+                        int currentIndex = -1;
+                        for (int i = 0; i < static_cast<int>(parentTransform.children.size()); i++)
+                        {
+                            if (parentTransform.children[i] == droppedEntity)
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                        }
+
+                        int targetIndex = insertIndex;
+                        if (currentIndex >= 0 && currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveChildInParent(droppedEntity, targetIndex);
+                        }
+                    }
+                }
+                else
+                {
+                    // Reordering root entities in global hierarchy
+                    auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+                    auto& droppedTransform = transformArray.GetData(droppedEntity);
+
+                    // Only allow root entities to be reordered at root level
+                    if (!droppedTransform.parent.has_value())
+                    {
+                        int currentIndex = coordinator.GetHierarchyIndex(droppedEntity);
+                        int targetIndex = insertIndex;
+
+                        // Adjust target index if moving down (since removal shifts indices)
+                        if (currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                        }
+                    }
+                    else // disattaching from the parent 
+                    {
+                        coordinator.RemoveParent(droppedEntity);
+
+                        int currentIndex = coordinator.GetHierarchyIndex(droppedEntity);
+                        int targetIndex = insertIndex;
+
+                        // Adjust target index if moving down (since removal shifts indices)
+                        if (currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                        }
+                    }
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+        ImGui::PopStyleColor();
 
         ImGui::PopID();
     }
