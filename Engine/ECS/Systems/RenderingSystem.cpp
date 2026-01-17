@@ -386,11 +386,13 @@ namespace Uma_ECS
             {
             case UIDrawCommand::UI_IMAGE:
             {
-                pGraphics->DrawSprite(
-                    command.spriteInfo.tex_id, 
-                    command.spriteInfo.pos,
-                    command.spriteInfo.scale,
+                pGraphics->DrawSpriteScreen(
+                    command.spriteInfo.tex_id,
+                    command.spriteInfo.pos,   // Position (NDC)
+                    command.spriteInfo.scale, // Size (NDC)
                     command.spriteInfo.rot,
+                    command.spriteInfo.uvOffset,
+                    command.spriteInfo.uvSize,
                     command.spriteInfo.tintColor,
                     command.spriteInfo.alpha);
 
