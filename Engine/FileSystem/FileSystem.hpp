@@ -528,7 +528,6 @@ namespace Uma_Engine
 
                 // Calculate grid position
                 float xPos = startPos.x + (currentColumn * (itemWidth + itemSpacing));
-                float yPos = startPos.y + ((currentColumn / itemsPerRow) * 0) * (itemHeight + itemSpacing);
 
                 // Set cursor to grid position
                 if (currentColumn > 0) {
