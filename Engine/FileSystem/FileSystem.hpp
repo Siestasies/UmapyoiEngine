@@ -38,6 +38,9 @@ All rights reserved.
 
 #include "Core/FilePaths.h"
 
+#include <windows.h>
+#include <commdlg.h>
+
 namespace Uma_Engine
 {
     namespace fs = std::filesystem;
@@ -470,6 +473,29 @@ namespace Uma_Engine
             ImGui::SameLine();
             if (ImGui::Button("Refresh")) {
                 RefreshDirectory();
+            }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Upload File")) {
+                std::string path = OpenFileDialog();
+                if (!path.empty()) {
+                    try {
+                        fs::path source = path;
+                        fs::path target = mCurrPath / source.filename();
+
+                        if (fs::exists(target)) {
+                            feedback = "Error: File already exists in this folder.";
+                        }
+                        else {
+                            fs::copy(source, target);
+                            RefreshDirectory();
+                            feedback = "Uploaded: " + source.filename().string();
+                        }
+                    }
+                    catch (const std::exception& e) {
+                        feedback = std::string("Upload Error: ") + e.what();
+                    }
+                }
             }
         }
 
@@ -920,5 +946,31 @@ namespace Uma_Engine
             }
             return false;
         }
+
+        std::string OpenFileDialog()
+        {
+#ifdef _WIN32
+            OPENFILENAMEA ofn;
+            CHAR szFile[260] = { 0 };
+            ZeroMemory(&ofn, sizeof(ofn));
+            ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = GetActiveWindow();
+            ofn.lpstrFile = szFile;
+            ofn.nMaxFile = sizeof(szFile);
+            ofn.lpstrFilter = "All Files\0*.*\0";
+            ofn.nFilterIndex = 1;
+            ofn.lpstrFileTitle = NULL;
+            ofn.nMaxFileTitle = 0;
+            ofn.lpstrInitialDir = NULL;
+            ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+            if (GetOpenFileNameA(&ofn) == TRUE)
+            {
+                return std::string(ofn.lpstrFile);
+            }
+#endif
+            return std::string();
+        }
+
     };
 } // namespace Uma_Engine
