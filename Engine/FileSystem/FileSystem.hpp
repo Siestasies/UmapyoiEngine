@@ -920,6 +920,5 @@ namespace Uma_Engine
             }
             return false;
         }
-
     };
 } // namespace Uma_Engine

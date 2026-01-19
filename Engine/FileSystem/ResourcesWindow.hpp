@@ -12,12 +12,13 @@
 \brief
 Defines ImGui-based resource management window for engine asset loading and inspection.
 
-Provides visual interface for textures, fonts, and sounds with drag-and-drop support.
+Provides visual interface for textures, fonts, sounds, and shaders with drag-and-drop support.
 Displays loaded resources in collapsible tables showing name, path, and metadata (texture ID,
-font size, sound type). Handles file drops from OS with automatic type detection and popup
-dialogs for resource naming and configuration. Supports texture formats (png, jpg, jpeg, bmp),
+font size, sound type, shader program ID). Handles file drops from OS with automatic type detection 
+and popup dialogs for resource naming and configuration. Supports texture formats (png, jpg, jpeg, bmp),
 font formats (ttf, otf), and audio formats (mp3, wav, ogg). Includes unload functionality for
-resource cleanup. Integrates with ResourcesManager for actual asset loading/unloading operations.
+manual resource cleanup. Shaders are displayed read-only for automated resource management.
+Integrates with ResourcesManager for actual asset loading/unloading operations.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -67,6 +68,7 @@ namespace Uma_Engine
             RenderTextures();
             RenderFonts();
             RenderSounds();
+            RenderShaders();  // Read-only display for automated management
             RenderDropTarget();
 
             ImGui::End();
@@ -285,6 +287,67 @@ namespace Uma_Engine
         }
 
         /**
+         * \brief Renders shaders section with table displaying loaded shader programs (READ-ONLY)
+         * This section is read-only for automated resource management
+         */
+        void RenderShaders()
+        {
+            if (ImGui::CollapsingHeader("Shaders"))
+            {
+                ImGui::Indent();
+
+                // Info text for automated management
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.6f, 0.8f, 1.0f, 1.0f));
+                ImGui::TextWrapped("Shaders are managed automatically by the engine");
+                ImGui::PopStyleColor();
+                ImGui::Spacing();
+
+                const auto& shaders = m_ResourcesManager->GetLoadedShaders();
+
+                if (shaders.empty())
+                {
+                    ImGui::TextDisabled("No shaders loaded");
+                }
+                else
+                {
+                    if (ImGui::BeginTable("ShadersTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    {
+                        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+                        ImGui::TableSetupColumn("Vertex Shader", ImGuiTableColumnFlags_WidthStretch);
+                        ImGui::TableSetupColumn("Fragment Shader", ImGuiTableColumnFlags_WidthStretch);
+                        ImGui::TableSetupColumn("Program ID", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+                        ImGui::TableHeadersRow();
+
+                        for (const auto& [name, shader] : shaders)
+                        {
+                            ImGui::TableNextRow();
+                            
+                            ImGui::TableSetColumnIndex(0);
+                            ImGui::Text("%s", name.c_str());
+
+                            ImGui::TableSetColumnIndex(1);
+                            ImGui::TextWrapped("%s", shader->vertexPath.c_str());
+
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::TextWrapped("%s", shader->fragmentPath.c_str());
+
+                            ImGui::TableSetColumnIndex(3);
+                            ImGui::Text("%u", shader->shaderProgramID);
+                        }
+
+                        ImGui::EndTable();
+                    }
+
+                    // Display total count
+                    ImGui::Spacing();
+                    ImGui::TextDisabled("Total: %zu shader(s)", shaders.size());
+                }
+
+                ImGui::Unindent();
+            }
+        }
+
+        /**
          * \brief Renders drag-and-drop target area for file imports
          */
         void RenderDropTarget()
@@ -400,10 +463,16 @@ namespace Uma_Engine
                 m_SoundNameBuffer[sizeof(m_SoundNameBuffer) - 1] = '\0';
                 m_SoundPopupJustOpened = true;
             }
+            else if (ext == ".vert" || ext == ".frag" || ext == ".glsl")
+            {
+                std::cout << "[ResourcesWindow] Shader files are managed automatically" << std::endl;
+                m_ErrorMsg = "Shader Management:\n\nShaders are loaded automatically by the engine.\nManual shader loading is not supported through drag-and-drop.";
+                m_ErrorPopupJustOpened = true;
+            }
             else
             {
                 std::cout << "[ResourcesWindow] Unsupported type: " << ext << std::endl;
-                m_ErrorMsg = "Unsupported file type: " + ext + "\n\nSupported types:\n- Textures: .png, .jpg, .jpeg, .bmp\n- Fonts: .ttf, .otf\n- Audio: .mp3, .wav, .ogg";
+                m_ErrorMsg = "Unsupported file type: " + ext + "\n\nSupported types:\n- Textures: .png, .jpg, .jpeg, .bmp\n- Fonts: .ttf, .otf\n- Audio: .mp3, .wav, .ogg\n- Shaders: .vert, .frag, .glsl (auto-managed)";
                 m_ErrorPopupJustOpened = true;
             }
         }
