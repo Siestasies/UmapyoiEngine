@@ -158,8 +158,7 @@ namespace Uma_ECS
             }
 
             // Add offset
-            Vec2 spritePos;
-            spritePos = tf.position + sr.spriteOffset;
+            Vec2 spritePos = tf.worldPosition + sr.spriteOffset;
 
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
