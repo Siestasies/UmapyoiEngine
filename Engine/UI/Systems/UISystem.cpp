@@ -30,7 +30,10 @@ All rights reserved.
 #include "../Events/WindowEvents.h"
 #include "../Events/AudioEvents.h"
 #include "../Events/IMGUIEvents.h"
-#include "../Events/UIToLuaEvents.h"
+#include "../Events/LuaScriptingEvents.h"
+
+#include "../ECS/Systems/LuaScriptingSystem.hpp"
+
 #include "Systems/ResourcesTypes.hpp"
 #include "HybridInputSystem.h"
 #include "Components/Transform.h"
@@ -43,21 +46,21 @@ namespace
     struct SpriteWithColor
     {
         Uma_Engine::Sprite_Info sprite;
-        Uma_UI::Colour colour;
+        Uma_UI::Color color;
     };
 
     struct BatchKey
     {
         unsigned int texId;
-        Uma_UI::Colour colour;
+        Uma_UI::Color color;
 
         bool operator<(const BatchKey& other) const
         {
             if (texId != other.texId) return texId < other.texId;
-            if (colour.r != other.colour.r) return colour.r < other.colour.r;
-            if (colour.g != other.colour.g) return colour.g < other.colour.g;
-            if (colour.b != other.colour.b) return colour.b < other.colour.b;
-            return colour.a < other.colour.a;
+            if (color.r != other.color.r) return color.r < other.color.r;
+            if (color.g != other.color.g) return color.g < other.color.g;
+            if (color.b != other.color.b) return color.b < other.color.b;
+            return color.a < other.color.a;
         }
     };
 }
@@ -111,7 +114,7 @@ namespace Uma_UI
 
         LayoutPass();
         //InputPass();
-        BuildDrawListPass();
+        //BuildDrawListPass();
     }
 
     /*!
@@ -303,7 +306,7 @@ namespace Uma_UI
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
 
-                        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+                        ButtonOnClicked(entity);
                     }
                 }
                 else
@@ -372,17 +375,17 @@ namespace Uma_UI
             sprite.rot_speed = 0.0f;
             sprite.uvOffset = Vec2(0.0f, 0.0f);
             sprite.uvSize = Vec2(1.0f, 1.0f);
-            sprite.tintColor = image.colour.ToVec3();
-            sprite.alpha = image.colour.a;
+            sprite.tintColor = image.color.ToVec3();
+            sprite.alpha = image.color.a;
             sprite.tex_id = texId;
-            spritesWithColours.push_back({ sprite, image.colour });
+            spritesWithColours.push_back({ sprite, image.color });
         }
 
         // Batch and draw images
         std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
         for (const auto& swc : spritesWithColours)
         {
-            BatchKey key{ swc.sprite.tex_id, swc.colour };
+            BatchKey key{ swc.sprite.tex_id, swc.color };
             batches[key].push_back(swc.sprite);
         }
 
@@ -450,7 +453,7 @@ namespace Uma_UI
             float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
 
             pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY,
-                text.fontSize, text.colour.r, text.colour.g, text.colour.b);
+                text.fontSize, text.color.r, text.color.g, text.color.b);
         }
 
         batches.clear();
@@ -583,10 +586,10 @@ namespace Uma_UI
 
         switch (button.currentState)
         {
-        case ButtonState::Normal: image.colour = button.normalColour; break;
-        case ButtonState::Hovered: image.colour = button.hoverColour; break;
-        case ButtonState::Pressed: image.colour = button.pressedColour; break;
-        case ButtonState::Disabled: image.colour = button.disabledColour; break;
+        case ButtonState::Normal: image.color = button.normalColour; break;
+        case ButtonState::Hovered: image.color = button.hoverColour; break;
+        case ButtonState::Pressed: image.color = button.pressedColour; break;
+        case ButtonState::Disabled: image.color = button.disabledColour; break;
         }
     }
 
@@ -720,6 +723,11 @@ namespace Uma_UI
 
     void UISystem::ButtonOnClicked(Uma_ECS::Entity entity)
     {
-        pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+        //pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
+
+        auto& button = pCoordinator->GetComponent<Button>(entity);
+
+        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+        system->CallScriptFunction(entity, button.scriptName, "OnClicked");
     }
 }

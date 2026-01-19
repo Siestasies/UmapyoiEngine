@@ -912,11 +912,13 @@ namespace Uma_Engine
         auto& coordinator = activeScene->GetCoordinator();
         auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
 
+        const auto& hierarchyOrder = coordinator.GetHierarchyOrder();
+
         // Build a list of root entities (entities with no parent)
         std::vector<Uma_ECS::Entity> rootEntities;
-        for (size_t i = 0; i < transformArray.Size(); ++i)
+        for (size_t i = 0; i < hierarchyOrder.size(); ++i)
         {
-            Uma_ECS::Entity entity = transformArray.GetEntity(i);
+            Uma_ECS::Entity entity = hierarchyOrder[i];
             auto& transform = transformArray.GetData(entity);
 
             if (!transform.parent.has_value())
@@ -926,10 +928,15 @@ namespace Uma_Engine
         }
 
         // Render each root entity and its children recursively
-        for (Uma_ECS::Entity rootEntity : rootEntities)
+        for (int i = 0; i < static_cast<int>(rootEntities.size()); i++)
         {
-            RenderEntityNode(rootEntity, coordinator, transformArray);
+            // Get actual hierarchy index for this root entity
+            int hierarchyIdx = coordinator.GetHierarchyIndex(rootEntities[i]);
+            RenderHierarchyDropZone(hierarchyIdx, coordinator);
+            RenderEntityNode(rootEntities[i], coordinator, transformArray);
         }
+        // Final drop zone after last entity (end of hierarchy)
+        RenderHierarchyDropZone(static_cast<int>(hierarchyOrder.size()), coordinator);
 
         if (m_HierarchyScrollToBottomFrames > 0)
         {
@@ -1247,13 +1254,22 @@ namespace Uma_Engine
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
             ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
-            ImGui::Text("Reparent: %s", entityName.c_str());
+            ImGui::Text("Dragging: %s", entityName.c_str()); // Preview while dragging
             ImGui::EndDragDropSource();
         }
 
+        ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(100, 150, 255, 255));
+
         if (ImGui::BeginDragDropTarget())
         {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            const ImGuiPayload* payload = ImGui::GetDragDropPayload();
+
+            if (payload != nullptr && payload->IsDataType("ENTITY_NODE") && payload->IsPreview()) // hovering
+            {
+                ImGui::SetTooltip("Reparent to: %s", entityName.c_str());
+            }
+
+            if (payload = ImGui::AcceptDragDropPayload("ENTITY_NODE")) // accept
             {
                 Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
 
@@ -1266,15 +1282,132 @@ namespace Uma_Engine
             ImGui::EndDragDropTarget();
         }
 
+        ImGui::PopStyleColor();
+
         // Render children recursively
         if (nodeOpen && hasChildren)
         {
-            for (Uma_ECS::Entity child : transform.children)
+            for (int i = 0; i < transform.children.size(); i++)
             {
-                RenderEntityNode(child, coordinator, transformArray);
+                RenderHierarchyDropZone(i, coordinator, entity);
+                RenderEntityNode(transform.children[i], coordinator, transformArray);
             }
             ImGui::TreePop();
         }
+
+        ImGui::PopID();
+    }
+
+    void ImguiManager::RenderHierarchyDropZone(int insertIndex, Uma_ECS::Coordinator& coordinator,
+        std::optional<Uma_ECS::Entity> parentEntity)
+    {
+        ImGui::PushID(insertIndex);
+
+        // Create a small invisible drop target area
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+        // Invisible button to create the drop zone (thin horizontal area)
+        ImGui::InvisibleButton("##dropzone", ImVec2(availWidth, 4.0f));
+        ImGui::PushStyleColor(ImGuiCol_DragDropTarget, ImVec4(0, 0, 0, 0));
+
+        // Draw visual feedback when dragging over
+        if (ImGui::BeginDragDropTarget())
+        {
+            // Draw a highlight line to indicate drop position
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+            drawList->AddLine(
+                ImVec2(cursorPos.x, cursorPos.y + 2.0f),
+                ImVec2(cursorPos.x + availWidth, cursorPos.y + 2.0f),
+                IM_COL32(100, 150, 255, 255),
+                2.0f
+            );
+
+            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
+            {
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+
+                if (parentEntity.has_value())
+                {
+                    // Reordering within a parent's children list
+                    auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+                    auto& droppedTransform = transformArray.GetData(droppedEntity);
+
+                    // Only allow reordering if the dropped entity is a child of this parent
+                    if (droppedTransform.parent.has_value() &&
+                        droppedTransform.parent.value() == parentEntity.value())
+                    {
+                        auto& parentTransform = transformArray.GetData(parentEntity.value());
+
+                        // Find current index in parent's children
+                        int currentIndex = -1;
+                        for (int i = 0; i < static_cast<int>(parentTransform.children.size()); i++)
+                        {
+                            if (parentTransform.children[i] == droppedEntity)
+                            {
+                                currentIndex = i;
+                                break;
+                            }
+                        }
+
+                        int targetIndex = insertIndex;
+                        if (currentIndex >= 0 && currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveChildInParent(droppedEntity, targetIndex);
+                        }
+                    }
+                }
+                else
+                {
+                    // Reordering root entities in global hierarchy
+                    auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+                    auto& droppedTransform = transformArray.GetData(droppedEntity);
+
+                    // Only allow root entities to be reordered at root level
+                    if (!droppedTransform.parent.has_value())
+                    {
+                        int currentIndex = coordinator.GetHierarchyIndex(droppedEntity);
+                        int targetIndex = insertIndex;
+
+                        // Adjust target index if moving down (since removal shifts indices)
+                        if (currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                        }
+                    }
+                    else // disattaching from the parent 
+                    {
+                        coordinator.RemoveParent(droppedEntity);
+
+                        int currentIndex = coordinator.GetHierarchyIndex(droppedEntity);
+                        int targetIndex = insertIndex;
+
+                        // Adjust target index if moving down (since removal shifts indices)
+                        if (currentIndex < targetIndex)
+                        {
+                            targetIndex--;
+                        }
+
+                        if (currentIndex != targetIndex)
+                        {
+                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                        }
+                    }
+                }
+            }
+            ImGui::EndDragDropTarget();
+        }
+        ImGui::PopStyleColor();
 
         ImGui::PopID();
     }
@@ -1689,6 +1822,10 @@ namespace Uma_Engine
                     sprite.renderLayer = (1u << currentRenderLayer);
                     m_hasUnsavedEdit = true;
                 }
+                ImGui::Separator();
+                ImGui::Text("Render Order");
+                if (ImGui::InputInt("##Sprite Sorting Order", &sprite.renderOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
+                
 
                 ImGui::Separator();
                 ImGui::Text("Color & Alpha");
@@ -3101,17 +3238,20 @@ namespace Uma_Engine
                    image.textureName = imageTextureBuffer;
                    m_hasUnsavedEdit = true;
                }
+               ImGui::Separator();
+               ImGui::Text("Sorting Order");
+               if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
            
                ImGui::Separator();
                ImGui::Text("Color & Visibility");
            
-               float imageColor[4] = { image.colour.r, image.colour.g, image.colour.b, image.colour.a };
+               float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
                if (ImGui::ColorEdit4("Image Color", imageColor))
                {
-                   image.colour.r = imageColor[0];
-                   image.colour.g = imageColor[1];
-                   image.colour.b = imageColor[2];
-                   image.colour.a = imageColor[3];
+                   image.color.r = imageColor[0];
+                   image.color.g = imageColor[1];
+                   image.color.b = imageColor[2];
+                   image.color.a = imageColor[3];
                    m_hasUnsavedEdit = true;
                }
            
@@ -3160,6 +3300,18 @@ namespace Uma_Engine
                    button.currentState == Uma_UI::ButtonState::Pressed ? "Pressed" : "Disabled");
            
                ImGui::Separator();
+
+               
+               static char imageTextureBuffer[256];
+               strncpy(imageTextureBuffer, button.scriptName.c_str(), 255);
+               imageTextureBuffer[255] = '\0';
+               if (ImGui::InputText("Script Name", imageTextureBuffer, 256))
+               {
+                   button.scriptName = imageTextureBuffer;
+                   m_hasUnsavedEdit = true;
+               }
+               ImGui::Separator();
+
                ImGui::Text("Button Colors");
            
                float normalColor[4] = { button.normalColour.r, button.normalColour.g, button.normalColour.b, button.normalColour.a };
@@ -3297,6 +3449,7 @@ namespace Uma_Engine
                 }
 
                 auto& text = coordinator.GetComponent<Uma_UI::Text>(entity);
+
                 ImGui::Indent();
             
                 // Begin tracking
@@ -3305,11 +3458,16 @@ namespace Uma_Engine
                 static char textContentBuffer[1024];
                 strncpy(textContentBuffer, text.text.c_str(), 1023);
                 textContentBuffer[1023] = '\0';
-                if (ImGui::InputTextMultiline("Text Content", textContentBuffer, 1024, ImVec2(-1, 80)))
+                ImGui::Text("Text Content");
+                if (ImGui::InputTextMultiline("##Text Content", textContentBuffer, 1024, ImVec2(-1, 80)))
                 {
                     text.text = textContentBuffer;
                     m_hasUnsavedEdit = true;
                 }
+
+                ImGui::Separator();
+                ImGui::Text("Sorting Order");
+                if (ImGui::InputInt("##Text Sorting Order", &text.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
             
                 ImGui::Separator();
                 ImGui::Text("Font Settings");
@@ -3331,13 +3489,13 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Appearance");
             
-                float textColor[4] = { text.colour.r, text.colour.g, text.colour.b, text.colour.a };
+                float textColor[4] = { text.color.r, text.color.g, text.color.b, text.color.a };
                 if (ImGui::ColorEdit4("Text Color", textColor))
                 {
-                    text.colour.r = textColor[0];
-                    text.colour.g = textColor[1];
-                    text.colour.b = textColor[2];
-                    text.colour.a = textColor[3];
+                    text.color.r = textColor[0];
+                    text.color.g = textColor[1];
+                    text.color.b = textColor[2];
+                    text.color.a = textColor[3];
                     m_hasUnsavedEdit = true;
                 }
             

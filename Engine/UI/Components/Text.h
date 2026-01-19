@@ -36,10 +36,12 @@ namespace Uma_UI
     public:
         std::string text = "";
         std::string fontName = "";
+        int sortingOrder = 0;
         float fontSize = 24.0f;
-        Uma_UI::Colour colour = Uma_UI::Colour::Black();
+        Uma_UI::Color color = Uma_UI::Color::Black();
         Uma_UI::TextAlignment alignment = Uma_UI::TextAlignment::Center;
         bool visible = true;
+
 
         /*!
          * \brief Serializes text properties to a JSON value.
@@ -51,13 +53,14 @@ namespace Uma_UI
             value.SetObject();
             value.AddMember("text", rapidjson::Value(text.c_str(), allocator), allocator);
             value.AddMember("fontName", rapidjson::Value(fontName.c_str(), allocator), allocator);
+            value.AddMember("sortingOrder", sortingOrder, allocator);
             value.AddMember("fontSize", fontSize, allocator);
 
             rapidjson::Value col(rapidjson::kObjectType);
-            col.AddMember("r", colour.r, allocator);
-            col.AddMember("g", colour.g, allocator);
-            col.AddMember("b", colour.b, allocator);
-            col.AddMember("a", colour.a, allocator);
+            col.AddMember("r", color.r, allocator);
+            col.AddMember("g", color.g, allocator);
+            col.AddMember("b", color.b, allocator);
+            col.AddMember("a", color.a, allocator);
             value.AddMember("colour", col, allocator);
 
             value.AddMember("alignment", static_cast<int>(alignment), allocator);
@@ -72,13 +75,19 @@ namespace Uma_UI
         {
             text = value["text"].GetString();
             fontName = value["fontName"].GetString();
+
+            if (value.HasMember("sortingOrder"))
+            {
+                sortingOrder = value["sortingOrder"].GetInt();
+            }
+
             fontSize = value["fontSize"].GetFloat();
 
             const auto& col = value["colour"];
-            colour.r = col["r"].GetFloat();
-            colour.g = col["g"].GetFloat();
-            colour.b = col["b"].GetFloat();
-            colour.a = col["a"].GetFloat();
+            color.r = col["r"].GetFloat();
+            color.g = col["g"].GetFloat();
+            color.b = col["b"].GetFloat();
+            color.a = col["a"].GetFloat();
 
             alignment = static_cast<Uma_UI::TextAlignment>(value["alignment"].GetInt());
             visible = value["visible"].GetBool();

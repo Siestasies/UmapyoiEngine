@@ -1,5 +1,5 @@
 /*!
-\file   UIToLuaEvents.h
+\file   LuaScriptingEvents.h
 \par    Project: GAM200
 \par    Course: CSD2401
 \par    Section A
@@ -39,5 +39,23 @@ namespace Uma_Engine
     public:
         Uma_ECS::Entity entity;
         size_t scriptIndex;
+    };
+
+    // cant pass in parameter yet
+    class CallLuaFunction : public Event
+    {
+    public:
+        CallLuaFunction(Entity entity, std::string scriptName, std::string functionName)
+            : entity(entity)
+            , scriptName(scriptName)
+            , functionName(functionName)
+        {
+            priority = Priority::Normal;
+        }
+    public:
+        Entity entity;
+        std::string scriptName;
+        std::string functionName;
+        
     };
 }

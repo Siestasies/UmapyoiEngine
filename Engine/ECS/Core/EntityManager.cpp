@@ -25,6 +25,7 @@ All rights reserved.
 
 #include <iostream>
 #include <cassert>
+#include <algorithm>
 
 Uma_ECS::EntityManager::EntityManager()
 {

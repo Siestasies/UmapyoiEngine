@@ -1342,7 +1342,7 @@ namespace Uma_Engine
             model = glm::translate(model, glm::vec3(-size.x * 0.5f, -size.y * 0.5f, 0.0f));
         }
 
-        model = glm::scale(model, glm::vec3(size.x / aspect, size.y, 1.0f));
+        model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
 
         GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
