@@ -27,6 +27,8 @@ All rights reserved.
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "FileSystem/DropCallback.hpp"
+
 namespace Uma_Engine
 {
     Window::Window(int width, int height, const std::string& title, bool isEditorMode, WindowMode mode) : mWindow(nullptr),
@@ -86,6 +88,8 @@ namespace Uma_Engine
             glfwTerminate();
             return false;
         }
+
+        glfwSetDropCallback(mWindow, FileDropHandler::DropCallback);
 
         // Center window if windowed mode
         if (mMode == WindowMode::Windowed)

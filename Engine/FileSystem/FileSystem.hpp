@@ -38,8 +38,10 @@ All rights reserved.
 
 #include "Core/FilePaths.h"
 
+#ifdef _WIN32
 #include <windows.h>
 #include <commdlg.h>
+#endif
 
 namespace Uma_Engine
 {
