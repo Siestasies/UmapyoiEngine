@@ -35,12 +35,15 @@ namespace Uma_UI
     {
     public:
         bool interactable = true;
+
+        std::string scriptName = "";
+
         Uma_UI::ButtonState currentState = Uma_UI::ButtonState::Normal;
 
-        Uma_UI::Colour normalColour = Uma_UI::Colour::White();
-        Uma_UI::Colour hoverColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
-        Uma_UI::Colour pressedColour = Uma_UI::Colour(0.7f, 0.7f, 0.7f, 1.0f);
-        Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
+        Uma_UI::Color normalColour = Uma_UI::Color::White();
+        Uma_UI::Color hoverColour = Uma_UI::Color(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Color pressedColour = Uma_UI::Color(0.7f, 0.7f, 0.7f, 1.0f);
+        Uma_UI::Color disabledColour = Uma_UI::Color(0.5f, 0.5f, 0.5f, 0.5f);
 
         //std::string functionName = {};
 
@@ -56,6 +59,10 @@ namespace Uma_UI
         {
             value.SetObject();
             value.AddMember("interactable", interactable, allocator);
+
+            value.AddMember("scriptName",
+                rapidjson::Value(scriptName.c_str(), allocator),
+                allocator);
 
             rapidjson::Value nCol(rapidjson::kObjectType);
             nCol.AddMember("r", normalColour.r, allocator);
@@ -93,6 +100,11 @@ namespace Uma_UI
         void Deserialize(const rapidjson::Value& value)
         {
             interactable = value["interactable"].GetBool();
+
+            if (value.HasMember("scriptName"))
+            {
+                scriptName = value["scriptName"].GetString();
+            }
 
             const auto& nCol = value["normalColour"];
             normalColour.r = nCol["r"].GetFloat();

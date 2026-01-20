@@ -26,6 +26,7 @@ All rights reserved.
 
 #include "Types.hpp"
 #include "System.hpp"
+#include "Debugging/Debugger.hpp"
 
 #include <string>
 #include <unordered_map>
@@ -51,6 +52,22 @@ namespace Uma_ECS
             auto system = std::make_shared<T>();
             aSystems.insert({ type_name, system });
             return system;
+        }
+
+        template<typename T>
+        std::shared_ptr<T> GetSystem()
+        {
+            std::string system_name = std::string(typeid(T).name());
+
+            auto it = aSystems.find(system_name);
+
+            if (it == aSystems.end())
+            {
+                std::string log = "system (" + system_name + ") cant be found!";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log);
+                return nullptr;
+            }
+            return std::static_pointer_cast<T>(it->second);
         }
         
         template<typename T> 

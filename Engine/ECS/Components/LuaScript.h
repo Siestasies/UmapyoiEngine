@@ -241,6 +241,20 @@ namespace Uma_ECS
 						return nullptr;
 				}
 
+				// get script 
+				LuaScriptInstance* GetScriptByName(const std::string& name)
+				{
+						for (LuaScriptInstance& script : scripts)
+						{
+								if (script.scriptName == name)
+								{
+										return &script;
+								}
+						}
+
+						return nullptr;
+				}
+
 				// get script by path
 				LuaScriptInstance* GetScriptByPath(const std::string& path)
 				{

@@ -150,6 +150,23 @@ namespace Uma_ECS
         // collect the entities in hierachy order
         void CollectHierarchy(Entity root, std::vector<Entity>& outEntities);
 
+        // Move entity to a specific index in global hierarchy
+        void MoveEntityInHierarchy(Entity entity, int newIndex);
+
+        // Move entity to a specific index within its parent's children list
+        void MoveChildInParent(Entity entity, int newIndex);
+
+        // Move one position up (updates both parent's children and global hierarchy)
+        void MoveEntityUp(Entity entity);
+
+        // Move one position down (updates both parent's children and global hierarchy)
+        void MoveEntityDown(Entity entity);
+
+        int GetHierarchyIndex(Entity entity) const;
+
+        // Get hierarchy order for rendering inspector
+        const std::vector<Entity>& GetHierarchyOrder() const;
+
         // collect resources used by prefab hierarchy
         struct PrefabResources
         {
@@ -273,6 +290,12 @@ namespace Uma_ECS
         }
 
         template<typename T>
+        std::shared_ptr<T> GetSystem()
+        {
+            return aSystemManager->GetSystem<T>();
+        }
+
+        template<typename T>
         void SetSystemSignature(Signature signature)
         {
             aSystemManager->SetSignature<T>(signature);
@@ -342,6 +365,9 @@ namespace Uma_ECS
         // gameobject deletion queue
         std::unordered_set<Entity> mEntitiesToDestroy;
         bool mIsProcessingDeletions = false;
+
+        // hierarchy 
+        std::vector<Entity> aHierarchyOrder;
     };
 }
 

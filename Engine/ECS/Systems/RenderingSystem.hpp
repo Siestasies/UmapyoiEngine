@@ -30,6 +30,42 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    // Structure to hold sprite info WITH layer information
+    struct LayeredSprite
+    {
+        Uma_Engine::Sprite_Info info;
+        LayerMask layer;
+        int order;
+        int hierarchyOrder;
+        unsigned int texId;
+        Entity entityId;
+    };
+
+    struct UIDrawCommand
+    {
+        enum Type
+        {
+            UI_TEXT,
+            UI_IMAGE
+        };
+
+        Type type;
+        LayerMask layer;                // layer
+        int order;
+        int hierarchyOrder;
+        Entity entity;
+
+        // For images
+        Uma_Engine::Sprite_Info spriteInfo;
+
+        // For text
+        std::string text;
+        Uma_Engine::FontData* font;
+        float fontSize;
+        Uma_UI::TextAlignment alignment;
+        Uma_UI::Color textColor;
+    };
+
     class RenderingSystem : public ECSSystem
     {
     public:
@@ -59,6 +95,17 @@ namespace Uma_ECS
         void SetUpdateCamera(bool update) { mUpdateCamera = update; }
 
     private:
+
+        void RenderWorldPass(float dt);
+        void RenderUIPass(float dt);
+
+        void GatherWorldSprites(std::vector<LayeredSprite>& outSprites);
+        void RenderWorldSprites(std::vector<LayeredSprite>& sprites);
+
+        void GatherUIElements(std::vector<UIDrawCommand>& outSprites);
+        void RenderUIElements(std::vector<UIDrawCommand>& sprites);
+
+        void GetAllChildren(Entity parent, std::vector<Entity>& childrenList);
 
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;

@@ -35,8 +35,13 @@ namespace Uma_UI
     {
     public:
         std::string textureName = "";
-        Uma_UI::Colour colour = Uma_UI::Colour::White();
+        int sortingOrder = 0;
+        Uma_UI::Color color = Uma_UI::Color::White();
         bool visible = true;
+
+
+        // runtime variable
+        std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
         /*!
          * \brief Serializes image properties to a JSON value.
@@ -48,11 +53,13 @@ namespace Uma_UI
             value.SetObject();
             value.AddMember("textureName", rapidjson::Value(textureName.c_str(), allocator), allocator);
 
+            value.AddMember("sortingOrder", sortingOrder, allocator);
+
             rapidjson::Value col(rapidjson::kObjectType);
-            col.AddMember("r", colour.r, allocator);
-            col.AddMember("g", colour.g, allocator);
-            col.AddMember("b", colour.b, allocator);
-            col.AddMember("a", colour.a, allocator);
+            col.AddMember("r", color.r, allocator);
+            col.AddMember("g", color.g, allocator);
+            col.AddMember("b", color.b, allocator);
+            col.AddMember("a", color.a, allocator);
             value.AddMember("color", col, allocator);
 
             value.AddMember("visible", visible, allocator);
@@ -66,11 +73,16 @@ namespace Uma_UI
         {
             textureName = value["textureName"].GetString();
 
+            if (value.HasMember("sortingOrder"))
+            {
+                sortingOrder = value["sortingOrder"].GetInt();
+            }
+
             const auto& col = value["color"];
-            colour.r = col["r"].GetFloat();
-            colour.g = col["g"].GetFloat();
-            colour.b = col["b"].GetFloat();
-            colour.a = col["a"].GetFloat();
+            color.r = col["r"].GetFloat();
+            color.g = col["g"].GetFloat();
+            color.b = col["b"].GetFloat();
+            color.a = col["a"].GetFloat();
 
             visible = value["visible"].GetBool();
         }

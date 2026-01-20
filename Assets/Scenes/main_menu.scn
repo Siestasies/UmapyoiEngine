@@ -138,6 +138,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "main",
+                    "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
@@ -172,6 +173,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/play_btn.lua",
+                            "scriptName": "play_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -201,6 +203,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "play_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -273,6 +276,7 @@
                 "class Uma_UI::Text": {
                     "text": "Play",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -330,6 +334,7 @@
                 "class Uma_UI::Text": {
                     "text": "Play",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -366,6 +371,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/settings_btn.lua",
+                            "scriptName": "settings_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -395,6 +401,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "settings_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -467,6 +474,7 @@
                 "class Uma_UI::Text": {
                     "text": "Settings",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
                         "r": 0.0,
@@ -524,6 +532,7 @@
                 "class Uma_UI::Text": {
                     "text": "Settings",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -560,6 +569,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/quit_btn.lua",
+                            "scriptName": "quit_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -589,6 +599,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "quit_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -661,6 +672,7 @@
                 "class Uma_UI::Text": {
                     "text": "Quit",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -718,6 +730,7 @@
                 "class Uma_UI::Text": {
                     "text": "Quit",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -827,6 +840,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "main",
+                    "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
@@ -905,6 +919,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/settings_btn.lua",
+                            "scriptName": "settings_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -934,6 +949,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "white",
+                    "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
@@ -944,6 +960,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "settings_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -972,6 +989,7 @@
                 "class Uma_UI::Text": {
                     "text": "100",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 1.5,
                     "colour": {
                         "r": 1.0,
@@ -1029,6 +1047,7 @@
                 "class Uma_UI::Text": {
                     "text": "Volume",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 2.598,
                     "colour": {
                         "r": 0.0,
@@ -1086,6 +1105,7 @@
                 "class Uma_UI::Text": {
                     "text": "Volume",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 2.5,
                     "colour": {
                         "r": 1.0,
@@ -1122,6 +1142,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/quit_btn.lua",
+                            "scriptName": "quit_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -1151,6 +1172,7 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
+                    "scriptName": "quit_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -1223,6 +1245,7 @@
                 "class Uma_UI::Text": {
                     "text": "Back",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -1280,6 +1303,7 @@
                 "class Uma_UI::Text": {
                     "text": "Back",
                     "fontName": "Fujimaru-Regular",
+                    "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -1316,6 +1340,7 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/BGM_mainmenu.lua",
+                            "scriptName": "BGM_mainmenu.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }

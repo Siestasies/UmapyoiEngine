@@ -134,6 +134,8 @@ namespace Uma_Engine
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
         void RenderPrefabNode(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
+        void RenderHierarchyDropZone(int insertIndex, Uma_ECS::Coordinator& coordinator,
+            std::optional<Uma_ECS::Entity> parentEntity = std::nullopt);
         std::string GetEntityDisplayName(Uma_ECS::Entity entity, Uma_ECS::Coordinator& coordinator);
         bool IsChildOf(Uma_ECS::Entity potentialChild, Uma_ECS::Entity potentialParent,
             Uma_ECS::ComponentArray<Uma_ECS::Transform>& transformArray);
