@@ -126,31 +126,77 @@ namespace Uma_Engine
 
             RenderFileList();
 
-            if (!FileDropHandler::aDroppedFiles.empty() && ImGui::IsWindowHovered()) {
-                for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles) {
+            if (!FileDropHandler::aDroppedFiles.empty() &&
+                ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+            {
+                feedback = "Uploading file(s)...";  // Show uploading message
+                mFeedbackTimer = mFeedbackDuration;
+
+                for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles)
+                {
                     try
                     {
-                        fs::copy(droppedfilepath, mCurrPath, std::filesystem::copy_options::recursive);
-                        RefreshDirectory();
+                        fs::path source = droppedfilepath;
+                        fs::path target = mCurrPath / source.filename();
+
+                        if (fs::exists(target))
+                        {
+                            feedback = "Error: File already exists - " + source.filename().string();
+                            mFeedbackTimer = mFeedbackDuration;
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                            feedback = "Uploaded: " + source.filename().string();
+                            mFeedbackTimer = mFeedbackDuration;
+                        }
                     }
                     catch (const std::exception& e)
                     {
-                        feedback = e.what();
+                        feedback = std::string("Error: ") + e.what();
+                        mFeedbackTimer = mFeedbackDuration;
                     }
                 }
+
+                RefreshDirectory();
                 FileDropHandler::aDroppedFiles.clear();
             }
+            else if (!FileDropHandler::aDroppedFiles.empty())
+            {
+                FileDropHandler::aDroppedFiles.clear();
+            }
+
             //Paste
             if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_V) && !copySource.empty())
             {
                 try
                 {
-                    fs::copy(copySource, mCurrPath, std::filesystem::copy_options::recursive);
-                    RefreshDirectory();
+                    SetFeedback("Pasting...");
+
+                    fs::path source = copySource;
+                    fs::path target = mCurrPath / source.filename();
+
+                    if (fs::exists(target))
+                    {
+                        SetFeedback("Error: File already exists in this folder.");
+                    }
+                    else
+                    {
+                        if (fs::is_directory(source))
+                        {
+                            fs::copy(source, target, std::filesystem::copy_options::recursive);
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                        }
+                        RefreshDirectory();
+                        SetFeedback("Pasted: " + source.filename().string());
+                    }
                 }
                 catch (const std::exception& e)
                 {
-                    feedback = e.what();
+                    SetFeedback(std::string("Paste Error: ") + e.what());
                 }
             }
 
@@ -242,7 +288,9 @@ namespace Uma_Engine
         // Copy
         std::string copySource;
         // Log
-        std::string feedback = ":P";
+        std::string feedback = "";
+        float mFeedbackTimer = 0.0f;
+        const float mFeedbackDuration = 5.0f;
         // Mutex
         std::mutex mFileSysMutex;
         // Events
@@ -261,6 +309,12 @@ namespace Uma_Engine
         std::queue<std::string> mLoadQueue;
         size_t mMaxLoadsPerFrame = 2;
         float mIconSize = 64.0f;
+
+        void SetFeedback(const std::string& msg)
+        {
+            feedback = msg;
+            mFeedbackTimer = mFeedbackDuration;
+        }
 
         void LoadDefaultIcons()
         {
@@ -451,12 +505,27 @@ namespace Uma_Engine
                     FilePayload plData = *(FilePayload*)pl->Data;
                     try
                     {
-                        fs::copy(plData.filepath, mCurrPath.parent_path(), std::filesystem::copy_options::recursive);
-                        fs::remove(plData.filepath);
+                        fs::path source = plData.filepath;
+                        fs::path target = mCurrPath.parent_path() / source.filename();
+
+                        // Copy
+                        if (plData.isFolder)
+                        {
+                            fs::copy(source, target, std::filesystem::copy_options::recursive);
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                        }
+
+                        // Remove original
+                        fs::remove_all(source);
+
+                        SetFeedback("Moved: " + source.filename().string());
                     }
                     catch (const std::exception& e)
                     {
-                        feedback = e.what();
+                        SetFeedback(std::string("Move Error: ") + e.what());
                     }
                     bDropStart = false;
                     dropSource.clear();
@@ -486,16 +555,16 @@ namespace Uma_Engine
                         fs::path target = mCurrPath / source.filename();
 
                         if (fs::exists(target)) {
-                            feedback = "Error: File already exists in this folder.";
+                            SetFeedback("Error: File already exists in this folder.");
                         }
                         else {
                             fs::copy(source, target);
                             RefreshDirectory();
-                            feedback = "Uploaded: " + source.filename().string();
+                            SetFeedback("Uploaded: " + source.filename().string());
                         }
                     }
                     catch (const std::exception& e) {
-                        feedback = std::string("Upload Error: ") + e.what();
+                        SetFeedback(std::string("Upload Error: ") + e.what());
                     }
                 }
             }
@@ -670,6 +739,10 @@ namespace Uma_Engine
                 }
 
                 // Context menu
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+                {
+                    mSelectedPath = entry.path;
+                }
                 if (ImGui::BeginPopupContextItem("##contextmenu"))
                 {
                     if (ImGui::MenuItem("Copy"))
@@ -772,13 +845,28 @@ namespace Uma_Engine
                             FilePayload* plData = (FilePayload*)pl->Data;
                             try
                             {
-                                fs::copy(plData->filepath, entry.path, std::filesystem::copy_options::recursive);
-                                fs::remove(plData->filepath);
+                                fs::path source = plData->filepath;
+                                fs::path target = entry.path / source.filename();
+
+                                // Copy
+                                if (plData->isFolder)
+                                {
+                                    fs::copy(source, target, std::filesystem::copy_options::recursive);
+                                }
+                                else
+                                {
+                                    fs::copy(source, target);
+                                }
+
+                                // Remove original
+                                fs::remove_all(source);
+
                                 RefreshDirectory();
+                                SetFeedback("Moved to: " + entry.name);
                             }
                             catch (const std::exception& e)
                             {
-                                feedback = e.what();
+                                SetFeedback(std::string("Move Error: ") + e.what());
                             }
                             bDropStart = false;
                             dropSource.clear();
@@ -877,15 +965,42 @@ namespace Uma_Engine
 
         void RenderFeedback()
         {
+            // Update timer
+            if (mFeedbackTimer > 0.0f)
+            {
+                mFeedbackTimer -= ImGui::GetIO().DeltaTime;
+
+                if (mFeedbackTimer <= 0.0f)
+                {
+                    feedback.clear();
+                }
+            }
+
             if (feedback.empty())
                 return;
+
             ImGuiWindowFlags flags = 0;
-            flags |= ImGuiWindowFlags_NoScrollbar;          // No scrollbars at all
-            flags |= ImGuiWindowFlags_NoScrollWithMouse;    // Can't scroll with mouse wheel
+            flags |= ImGuiWindowFlags_NoScrollbar;
+            flags |= ImGuiWindowFlags_NoScrollWithMouse;
+
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.f, 5.f));
             ImGui::BeginChild("Feedback", ImVec2(parentSize.x, 0), true, flags);
-            ImGui::Text("%s", feedback.c_str());
+
+            // Color-code feedback
+            if (feedback.find("Error") != std::string::npos)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "%s", feedback.c_str());
+            }
+            else if (feedback.find("Uploading") != std::string::npos || feedback.find("Pasting") != std::string::npos)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", feedback.c_str());
+            }
+            else
+            {
+                ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "%s", feedback.c_str());
+            }
+
             ImGui::EndChild();
             ImGui::PopStyleVar();
         }
