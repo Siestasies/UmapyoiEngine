@@ -1794,27 +1794,34 @@ namespace Uma_Engine
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
                     {
                         const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
-
                         std::string fullPath = data->filepath;
                         std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
-                        // Get relative path
-                        std::string relativePath = fullPath;
-                        size_t assetsPos = fullPath.find("Assets/");
-                        if (assetsPos != std::string::npos)
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                         {
-                            relativePath = fullPath.substr(assetsPos);
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            sprite.texturePath = relativePath;
+                            sprite.textureName = p.stem().string();
+                            sprite.texture = nullptr;
+                            m_hasUnsavedEdit = true;
                         }
-
-                        sprite.texturePath = relativePath;
-
-                        // Extract filename
-                        std::filesystem::path p(relativePath);
-                        sprite.textureName = p.stem().string();
-
-                        // Set texture to null to trigger RenderingSystem update
-                        sprite.texture = nullptr;
-                        m_hasUnsavedEdit = true;
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Sprite!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
                     }
                     ImGui::EndDragDropTarget();
                 }
@@ -3511,6 +3518,43 @@ namespace Uma_Engine
                     text.fontName = fontNameBuffer;
                     m_hasUnsavedEdit = true;
                 }
+
+                // Drag and Drop for Fonts
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        // Validation
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".ttf" || ext == ".otf")
+                        {
+                            // Success Logic
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            text.fontPath = relativePath;
+                            text.fontName = p.stem().string();
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Font!\nExpected: .ttf, .otf";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
             
                 if (ImGui::DragFloat("Font Size", &text.fontSize, 1.0f, 1.0f, 200.0f, "%.1f"))
                 {
@@ -4087,6 +4131,27 @@ namespace Uma_Engine
 
             ImGui::EndPopup();
         }
+
+        // Error popup
+        if (ImGui::BeginPopupModal("Invalid File Format", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Error:");
+            ImGui::TextWrapped("%s", m_popupErrorMessage.c_str());
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            // Center the OK button
+            float buttonWidth = 120.0f;
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - buttonWidth) * 0.5f);
+
+            if (ImGui::Button("OK", ImVec2(buttonWidth, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
         ImGui::End();
     }
 

@@ -207,5 +207,7 @@ namespace Uma_Engine
         bool m_sceneViewHovered = false;
         Vec2 m_sceneViewMousePos = Vec2(-1, -1);
         bool m_isMouseInSceneView = false;
+
+        std::string m_popupErrorMessage = "";
     };
 }

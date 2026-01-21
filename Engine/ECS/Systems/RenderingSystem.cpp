@@ -366,6 +366,48 @@ namespace Uma_ECS
                     }
 
                     Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
+
+                    // Load and duplicate check
+                    if (uiFont == nullptr && !textComp.fontPath.empty())
+                    {
+                        // Check if PATH is already loaded under a different name
+                        bool alreadyLoaded = false;
+                        std::string existingName = "";
+
+                        const auto& loadedFonts = pResourcesManager->GetLoadedFonts();
+                        for (const auto& [name, fontData] : loadedFonts)
+                        {
+                            // Normalize paths for comparison
+                            std::string loadedPath = fontData.filePath;
+                            std::replace(loadedPath.begin(), loadedPath.end(), '\\', '/');
+
+                            std::string compPath = textComp.fontPath;
+                            std::replace(compPath.begin(), compPath.end(), '\\', '/');
+
+                            if (loadedPath == compPath)
+                            {
+                                alreadyLoaded = true;
+                                existingName = name;
+                                break;
+                            }
+                        }
+
+                        if (alreadyLoaded)
+                        {
+                            // Found it, use existing name
+                            textComp.fontName = existingName;
+                            uiFont = pResourcesManager->GetFont(existingName);
+                        }
+                        else
+                        {
+                            // Not found, load it
+                            if (pResourcesManager->LoadFont(textComp.fontName, textComp.fontPath, static_cast<unsigned int>(textComp.fontSize)))
+                            {
+                                uiFont = pResourcesManager->GetFont(textComp.fontName);
+                            }
+                        }
+                    }
+
                     if (uiFont == nullptr)
                     {
                         std::stringstream log;
