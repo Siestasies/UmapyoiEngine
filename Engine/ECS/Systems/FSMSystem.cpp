@@ -18,10 +18,22 @@ void Uma_ECS::FSMSystem::Update(float dt)
 
 
 		auto& curr = FSMArray.GetData(entity);
+		if (curr.current.empty() && curr.next.empty()) {
+			if(!curr.states.empty())
+				curr.current = curr.states.begin()->first;
+		}
+
+		if (!curr.current.empty()) {
+			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+			system->CallScriptFunction(entity, curr.current, "Update", dt);
+		}
 
 		if (!curr.next.empty()) {
+			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
 			//call exit on curr script
+			system->CallScriptFunction(entity, curr.current, "onExit", entity);
 			//call enter on next script
+			system->CallScriptFunction(entity, curr.next, "onEnter", entity);
 
 			//set next state to current 
 			curr.current = curr.next;

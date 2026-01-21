@@ -908,9 +908,10 @@ namespace Uma_ECS
             });
 
         // FSM 
-        sharedLua->set_function("ChangeState", [this](std::string nextState)
+        sharedLua->set_function("ChangeState", [this](Uma_ECS::Entity e, std::string nextState)
             {
-                // do ur thing
+                auto& fsm = pCoordinator->GetComponent<FSM>(e);
+                fsm.next = nextState;
             });
     }
 

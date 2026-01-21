@@ -45,7 +45,6 @@ namespace Uma_ECS
 
 			auto [iter, inserted] = states.emplace(name, State{ name, isActive, static_cast<int>(nextId) });
 			if (!inserted) {
-				// already exists, do not override
 				return false;
 			}
 			++nextId;

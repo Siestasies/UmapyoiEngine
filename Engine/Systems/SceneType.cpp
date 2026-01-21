@@ -341,6 +341,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
         m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
+        m_Coordinator.RegisterComponent<Uma_ECS::FSM>();
         
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -445,7 +446,8 @@ namespace Uma_Engine
         m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
 
         //path finding system
-        m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); {
+        m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); 
+        {
             Uma_ECS::Signature sign;
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
@@ -464,6 +466,17 @@ namespace Uma_Engine
             m_Coordinator.SetSystemSignature<Uma_ECS::ParticleSystem>(sign);
         }
         m_ParticleSystem->Init(m_Graphics, m_ResourcesManager, &m_Coordinator);
+
+        //FSM
+        m_FSMSystem = m_Coordinator.RegisterSystem<Uma_ECS::FSMSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::FSM>());
+
+            m_Coordinator.SetSystemSignature<Uma_ECS::FSMSystem>(sign);
+        }
+        m_FSMSystem->Init(&m_Coordinator);
 
         InitializeUISystem();
 
@@ -527,6 +540,9 @@ namespace Uma_Engine
 
         if (m_PathFindingSystem)
             m_PathFindingSystem->Update(dt);
+
+        if (m_FSMSystem)
+            m_FSMSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()
