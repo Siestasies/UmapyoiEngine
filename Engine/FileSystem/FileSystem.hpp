@@ -129,8 +129,7 @@ namespace Uma_Engine
             if (!FileDropHandler::aDroppedFiles.empty() &&
                 ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
             {
-                feedback = "Uploading file(s)...";  // Show uploading message
-                mFeedbackTimer = mFeedbackDuration;
+                SetFeedback("Uploading file(s)...");
 
                 for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles)
                 {
@@ -141,20 +140,17 @@ namespace Uma_Engine
 
                         if (fs::exists(target))
                         {
-                            feedback = "Error: File already exists - " + source.filename().string();
-                            mFeedbackTimer = mFeedbackDuration;
+                            SetFeedback("Error: File already exists - " + source.filename().string());
                         }
                         else
                         {
                             fs::copy(source, target);
-                            feedback = "Uploaded: " + source.filename().string();
-                            mFeedbackTimer = mFeedbackDuration;
+                            SetFeedback("Uploaded: " + source.filename().string());
                         }
                     }
                     catch (const std::exception& e)
                     {
-                        feedback = std::string("Error: ") + e.what();
-                        mFeedbackTimer = mFeedbackDuration;
+                        SetFeedback(std::string("Error: ") + e.what());
                     }
                 }
 
@@ -460,7 +456,7 @@ namespace Uma_Engine
                 SortFiles();
             }
             catch (const fs::filesystem_error& e) {
-                feedback = e.what();
+                SetFeedback(e.what());
             }
         }
 
@@ -727,7 +723,7 @@ namespace Uma_Engine
                         }
                         catch (const std::exception& e)
                         {
-                            feedback = e.what();
+                            SetFeedback(e.what());
                         }
                         ImGui::PopID();
                         break;
@@ -760,7 +756,7 @@ namespace Uma_Engine
                         }
                         catch (const std::exception& e)
                         {
-                            feedback = e.what();
+                            SetFeedback(e.what());
                         }
                     }
 
@@ -780,7 +776,7 @@ namespace Uma_Engine
                         {
                             newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
                             if (fs::exists(newName))
-                                feedback = "rename: file already exists";
+                                SetFeedback("rename: file already exists");
                             else
                             {
                                 try
@@ -791,7 +787,7 @@ namespace Uma_Engine
                                 }
                                 catch (const std::exception& e)
                                 {
-                                    feedback = e.what();
+                                    SetFeedback(e.what());
                                 }
                             }
                         }
@@ -1055,11 +1051,11 @@ namespace Uma_Engine
             else if (ext == ".lua")
             {
                 OpenScriptInExternalEditor(file.path);
-                feedback = "opened script " + file.path;
+                SetFeedback("opened script " + file.path);
             }
             else
             {
-                feedback = "Unknown file type";
+                SetFeedback("Unknown file type");
             }
             return false;
         }
