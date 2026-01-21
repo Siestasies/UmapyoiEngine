@@ -34,6 +34,7 @@ namespace Uma_ECS
     {
         // pointer pointing to the texture in resources manager
         std::string textureName{};
+        std::string texturePath{};
         LayerMask renderLayer = RL_NONE;
         int renderOrder = 0;
         bool flipX{ false };
@@ -81,6 +82,7 @@ namespace Uma_ECS
             value.AddMember("textureName",
                 rapidjson::Value(textureName.c_str(), allocator),
                 allocator);
+            value.AddMember("texturePath", rapidjson::Value(texturePath.c_str(), allocator), allocator);
 
             value.AddMember("layer", renderLayer, allocator);
             value.AddMember("order", renderOrder, allocator);
@@ -112,6 +114,11 @@ namespace Uma_ECS
         void Deserialize(const rapidjson::Value& value) //override
         {
             textureName = value["textureName"].GetString();
+
+            if (value.HasMember("texturePath"))
+            {
+                texturePath = value["texturePath"].GetString();
+            }
 
             if (value.HasMember("layer"))
             {

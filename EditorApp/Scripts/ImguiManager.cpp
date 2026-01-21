@@ -1788,6 +1788,37 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
+                // Drag and Drop Target for Textures
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        // Get relative path
+                        std::string relativePath = fullPath;
+                        size_t assetsPos = fullPath.find("Assets/");
+                        if (assetsPos != std::string::npos)
+                        {
+                            relativePath = fullPath.substr(assetsPos);
+                        }
+
+                        sprite.texturePath = relativePath;
+
+                        // Extract filename
+                        std::filesystem::path p(relativePath);
+                        sprite.textureName = p.stem().string();
+
+                        // Set texture to null to trigger RenderingSystem update
+                        sprite.texture = nullptr;
+                        m_hasUnsavedEdit = true;
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
                 // Flip flags
                 if (ImGui::Checkbox("Flip X", &sprite.flipX))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Flip Y", &sprite.flipY))  m_hasUnsavedEdit = true;

@@ -114,7 +114,51 @@ namespace Uma_ECS
             // or texture became invalid (tex_id == 0)
             if (!sr.texture || sr.texture->tex_id == 0)
             {
-                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                // Try to get by name first
+                if (pResourcesManager->HasTexture(sr.textureName))
+                {
+                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                }
+                // If name not found, but we have a path
+                else if (!sr.texturePath.empty())
+                {
+                    // CHECK FOR DUPLICATES BY PATH
+                    bool alreadyLoaded = false;
+                    std::string existingName = "";
+
+                    const auto& loadedTextures = pResourcesManager->GetLoadedTextures();
+                    for (const auto& [name, texturePtr] : loadedTextures)
+                    {
+                        // Normalize paths for comparison
+                        std::string loadedPath = texturePtr->filePath;
+                        std::replace(loadedPath.begin(), loadedPath.end(), '\\', '/');
+
+                        std::string spritePath = sr.texturePath;
+                        std::replace(spritePath.begin(), spritePath.end(), '\\', '/');
+
+                        if (loadedPath == spritePath)
+                        {
+                            alreadyLoaded = true;
+                            existingName = name;
+                            break;
+                        }
+                    }
+
+                    if (alreadyLoaded)
+                    {
+                        // Found, update sprite to use the EXISTING name
+                        sr.textureName = existingName;
+                        sr.texture = pResourcesManager->GetTexture(existingName);
+                    }
+                    else
+                    {
+                        // Not found at all, load it
+                        if (pResourcesManager->LoadTexture(sr.textureName, sr.texturePath))
+                        {
+                            sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                        }
+                    }
+                }
             }
 
             // Verify texture is valid before using it
