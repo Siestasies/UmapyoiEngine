@@ -271,6 +271,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(ParticleEmitter)
             CHECK_COMPONENT(Prefab)
             CHECK_COMPONENT(Projectile)
+            CHECK_COMPONENT(FSM)
             CHECK_COMPONENT(Uma_UI::RectTransform)
             CHECK_COMPONENT(Uma_UI::Image)
             CHECK_COMPONENT(Uma_UI::Button)

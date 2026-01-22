@@ -3628,6 +3628,70 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::FSM>())
+        {
+            if (ImGui::CollapsingHeader("FSM"))
+            {
+                if (ImGui::Button("Remove Component##FSM"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::FSM>>(
+                        &coordinator,
+                        entity,
+                        "Remove FSM"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& fsm = coordinator.GetComponent<Uma_ECS::FSM>(entity);
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                static char newStateBuffer[256] = "";
+                ImGui::InputText("State Name", newStateBuffer, 256);
+
+                if (ImGui::Button("Add State", ImVec2(ImGui::GetContentRegionAvail().x, 0)) && strlen(newStateBuffer) > 0)
+                {
+                    std::string stateName(newStateBuffer);
+                    fsm.AddStates(stateName, true);
+                    newStateBuffer[0] = '\0';
+                }
+
+                ImGui::Separator();
+
+                std::vector<std::string> stateKeys;
+                for (const auto& p : fsm.states) stateKeys.push_back(p.first);
+
+                for (size_t i = 0; i < stateKeys.size(); ++i)
+                {
+                    const std::string& key = stateKeys[i];
+                    auto it = fsm.states.find(key);
+                    if (it == fsm.states.end()) continue;
+
+                    ImGui::PushID((int)i);
+
+                    if (ImGui::TreeNode(key.c_str()))
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(200, 50, 50, 255));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 75, 75, 255));
+                        if (ImGui::Button("Remove"))
+                        {
+                            fsm.states.erase(key);
+                        }
+                        ImGui::PopStyleColor(2);
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                EndComponentEdit(entity, coordinator, "FSM");
+
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -4035,6 +4099,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Text{},
                     "Add Text"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::FSM>()) && ImGui::MenuItem("FSM"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::FSM>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::FSM{},
+                    "Add StateMachine"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }
