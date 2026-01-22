@@ -5,7 +5,7 @@
 #include "../Events/InputEvents.h"
 #include "../Events/WindowEvents.h"
 #include "InputSystem.h"
-#include "../UI/Helpers/InputFilter.h"
+#include "../UI/Core/InputFilter.h"
 
 //#define _DEBUG_LOG
 

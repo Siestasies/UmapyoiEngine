@@ -81,6 +81,7 @@ namespace Uma_Engine
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& spriteArray = pCoordinator->GetComponentArray<Uma_ECS::Sprite>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+        auto& imageArray = pCoordinator->GetComponentArray<Uma_UI::Image>();
 
         if (config.pickGameEntities && transformArray.Has(entity) && !rectTransformArray.Has(entity))
         {
@@ -129,6 +130,17 @@ namespace Uma_Engine
             Vec2 worldSize = worldBottomRight - worldTopLeft;
             worldSize.x = std::abs(worldSize.x);
             worldSize.y = std::abs(worldSize.y);
+
+            if (imageArray.Has(entity))
+            {
+                const auto& image = imageArray.GetData(entity);
+
+                if (image.texture && !image.texture->tex_id == 0)
+                {
+                    worldSize.x = static_cast<float>(image.texture->tex_size.x) / static_cast<float>(image.texture->pixelsPerUnit);
+                    worldSize.y = static_cast<float>(image.texture->tex_size.y) / static_cast<float>(image.texture->pixelsPerUnit);
+                }
+            }
 
             Graphics::AddDebugRect(worldCenter, worldSize,
                 config.colorSelected.x, config.colorSelected.y, config.colorSelected.z, lines);
@@ -263,7 +275,7 @@ namespace Uma_Engine
 
         std::vector<DebugLineInfo> lines;
         Vec2 centerWorld = pGraphics->ScreenToWorld(screenPos);
-        Graphics::AddDebugCircle(centerWorld, radius * 0.01f, color.x, color.y, color.z, lines);
+        Graphics::AddDebugCircle(centerWorld, radius * 0.1f, color.x, color.y, color.z, lines);
 
         pGraphics->DrawDebugLinesInstanced(lines);
     }

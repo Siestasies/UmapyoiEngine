@@ -20,7 +20,7 @@ All rights reserved.
 
 #include "EditorCamera.h"
 #include "Systems/HybridInputSystem.h"
-#include "UI/Helpers/InputFilter.h"
+#include "UI/Core/InputFilter.h"
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <cmath>

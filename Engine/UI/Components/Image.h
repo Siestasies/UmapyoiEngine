@@ -38,9 +38,6 @@ namespace Uma_UI
         int sortingOrder = 0;
         Uma_UI::Color color = Uma_UI::Color::White();
         bool visible = true;
-
-
-        // runtime variable
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
         /*!

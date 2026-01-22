@@ -181,7 +181,7 @@ namespace Uma_Engine
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
-        if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
+        if (transformArray.Has(entity))
         {
             // Game entity - straightforward translation
             auto& transform = transformArray.GetData(entity);
@@ -195,9 +195,10 @@ namespace Uma_Engine
             transform.position = newPos;
             transform.isDirty = true;
         }
-        else if (rectTransformArray.Has(entity))
+        if (rectTransformArray.Has(entity))
         {
             // UI entity - need to translate anchoredPosition in pixel space
+            auto& transform = transformArray.GetData(entity);
             auto& rectTransform = rectTransformArray.GetData(entity);
 
             int screenWidth = pGraphics->GetViewportWidth();
@@ -224,10 +225,10 @@ namespace Uma_Engine
 
             // Convert screen delta to scaled pixel delta for anchoredPosition
             // anchoredPosition is in canvas-scaled pixels
-            Vec2 pixelDelta = screenDelta / canvasScale;
+            Vec2 position = transform.position;
 
             // Update anchoredPosition
-            rectTransform.anchoredPosition = rectTransform.anchoredPosition + pixelDelta;
+            rectTransform.anchoredPosition = position;
 
             // CRITICAL: Mark as dirty so UISystem recalculates
             rectTransform.isDirty = true;
@@ -250,7 +251,7 @@ namespace Uma_Engine
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
-        if (transformArray.Has(entity) && !rectTransformArray.Has(entity))
+        if (transformArray.Has(entity))
         {
             // Game entity
             auto& transform = transformArray.GetData(entity);

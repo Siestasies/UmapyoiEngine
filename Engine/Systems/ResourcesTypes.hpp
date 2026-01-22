@@ -45,14 +45,14 @@ namespace Uma_Engine
     struct Texture
     {
         unsigned int tex_id;
-				std::string filePath;
+		std::string filePath;
         Vec2 tex_size;
-				float pixelsPerUnit = 100.f; // by default to 100
+		float pixelsPerUnit = 100.f; // by default to 100
 
-				Vec2 GetNativeSize() const
-				{
-						return tex_size / pixelsPerUnit;
-				}
+		Vec2 GetNativeSize() const
+		{
+			return tex_size / pixelsPerUnit;
+		}
     };
 
 	enum class SoundType {

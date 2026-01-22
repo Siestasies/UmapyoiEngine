@@ -77,14 +77,7 @@ namespace Uma_UI
         if (!pGraphics) { std::cerr << "UISystem::Init - Warning: Graphics not set!" << std::endl; }
         if (!pResourcesManager) { std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl; }
 
-        if (pGraphics)
-        {
-            mScreenSize = pGraphics->GetSceneViewport();
-        }
-        else
-        {
-            mScreenSize = { 1280.f, 720.f };
-        }
+        mScreenSize = pGraphics->GetSceneViewport();
 
         // Subscribe to window resize events and mark all UI dirty
         //pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
@@ -110,11 +103,9 @@ namespace Uma_UI
             return;
         }
 
-        mScreenSize = pGraphics->GetSceneViewport();
-
+        Vec2 screenSize = pGraphics->GetSceneViewport();
+        if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty(); // Refactor into a function later...
         LayoutPass();
-        //InputPass();
-        //BuildDrawListPass();
     }
 
     /*!
@@ -140,25 +131,25 @@ namespace Uma_UI
     void UISystem::LayoutPass()
     {
         auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
-        std::vector<std::pair<Uma_ECS::Entity, int>> canvasEntities;
+        std::vector<std::pair<Uma_ECS::Entity, int>> canvases;
 
         // Gather all canvases
         for (size_t i = 0; i < canvasArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = canvasArray.GetEntity(i);
             auto& canvas = canvasArray.GetComponentAt(i);
-            canvasEntities.push_back({ entity, canvas.sortingOrder });
+            canvases.push_back({ entity, canvas.sortingOrder });
         }
 
         // Sort canvases by sorting order
-        std::sort(canvasEntities.begin(), canvasEntities.end(),
+        std::sort(canvases.begin(), canvases.end(),
             [](const auto& a, const auto& b) { return a.second < b.second; });
 
         // Process each canvas and its hierarchy
-        for (const auto& [canvasEntity, sortOrder] : canvasEntities)
+        for (const auto& [canvasEntity, sortOrder] : canvases)
         {
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
-            canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y);
+            canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y); // Need to fix this.
 
             // Recursively compute layout for this canvas's children
             ComputeLayoutRecursive(canvasEntity, GetScreenRect(), canvas.scaleFactor);
@@ -324,141 +315,146 @@ namespace Uma_UI
         }
     }
 
-    /*!
-     * \brief Third pass: Generates draw lists for rendering images and text.
-     */
-    void UISystem::BuildDrawListPass()
-    {
-        std::vector<SpriteWithColor> spritesWithColours;
+    ///*!
+    // * \brief Third pass: Generates draw lists for rendering images and text.
+    // */
+    //void UISystem::BuildDrawListPass()
+    //{
+    //    std::vector<SpriteWithColor> spritesWithColours;
 
-        if (!pResourcesManager)
-        {
-            return;
-        }
+    //    if (!pResourcesManager)
+    //    {
+    //        return;
+    //    }
 
-        auto sortedEntities = GetSortedUIEntities();
+    //    auto sortedEntities = GetSortedUIEntities();
 
-        // Render images
-        for (Uma_ECS::Entity entity : sortedEntities)
-        {
-            if (!pCoordinator->IsActiveInHierarchy(entity))
-                continue;
+    //    // Render images
+    //    for (Uma_ECS::Entity entity : sortedEntities)
+    //    {
+    //        if (!pCoordinator->IsActiveInHierarchy(entity))
+    //            continue;
 
-            auto& imageArray = pCoordinator->GetComponentArray<Image>();
-            if (!imageArray.Has(entity))
-            {
-                continue;
-            }
+    //        auto& imageArray = pCoordinator->GetComponentArray<Image>();
+    //        if (!imageArray.Has(entity))
+    //        {
+    //            continue;
+    //        }
 
-            auto& image = pCoordinator->GetComponent<Image>(entity);
-            if (!image.visible || image.textureName.empty())
-            {
-                continue;
-            }
+    //        auto& image = pCoordinator->GetComponent<Image>(entity);
+    //        if (!image.visible || image.textureName.empty())
+    //        {
+    //            continue;
+    //        }
 
-            if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-            {
-                continue;
-            }
+    //        if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
+    //        {
+    //            continue;
+    //        }
 
-            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            unsigned int texId = GetOrLoadTexture(image.textureName);
-            if (texId == 0)
-            {
-                continue;
-            }
+    //        auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
+    //        unsigned int texId = GetOrLoadTexture(image.textureName);
+    //        if (texId == 0)
+    //        {
+    //            continue;
+    //        }
 
-            Uma_Engine::Sprite_Info sprite;
-            sprite.pos = rectTransform.computedRect.Center();
-            sprite.scale = rectTransform.computedRect.Size();
-            sprite.rot = 0.0f;
-            sprite.rot_speed = 0.0f;
-            sprite.uvOffset = Vec2(0.0f, 0.0f);
-            sprite.uvSize = Vec2(1.0f, 1.0f);
-            sprite.tintColor = image.color.ToVec3();
-            sprite.alpha = image.color.a;
-            sprite.tex_id = texId;
-            spritesWithColours.push_back({ sprite, image.color });
-        }
+    //        if (!image.texture || image.texture->tex_id == 0)
+    //        {
+    //            image.texture = pResourcesManager->GetTexture(image.textureName);
+    //        }
 
-        // Batch and draw images
-        std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
-        for (const auto& swc : spritesWithColours)
-        {
-            BatchKey key{ swc.sprite.tex_id, swc.color };
-            batches[key].push_back(swc.sprite);
-        }
+    //        Uma_Engine::Sprite_Info sprite;
+    //        sprite.pos = rectTransform.computedRect.Center();
+    //        sprite.scale = rectTransform.computedRect.Size();
+    //        sprite.rot = 0.0f;
+    //        sprite.rot_speed = 0.0f;
+    //        sprite.uvOffset = Vec2(0.0f, 0.0f);
+    //        sprite.uvSize = Vec2(1.0f, 1.0f);
+    //        sprite.tintColor = image.color.ToVec3();
+    //        sprite.alpha = image.color.a;
+    //        sprite.tex_id = texId;
+    //        spritesWithColours.push_back({ sprite, image.color });
+    //    }
 
-        for (const auto& [key, sprites] : batches)
-        {
-            pGraphics->DrawSpritesScreenInstanced(key.texId, sprites);
-        }
+    //    // Batch and draw images
+    //    std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
+    //    for (const auto& swc : spritesWithColours)
+    //    {
+    //        BatchKey key{ swc.sprite.tex_id, swc.color };
+    //        batches[key].push_back(swc.sprite);
+    //    }
 
-        // Render text - alignment computed every frame based on current rect
-        for (Uma_ECS::Entity entity : sortedEntities)
-        {
+    //    for (const auto& [key, sprites] : batches)
+    //    {
+    //        pGraphics->DrawSpritesScreenInstanced(key.texId, sprites);
+    //    }
 
-            if (!pCoordinator->IsActiveInHierarchy(entity))
-                continue;
+    //    // Render text - alignment computed every frame based on current rect
+    //    for (Uma_ECS::Entity entity : sortedEntities)
+    //    {
 
-            auto& textArray = pCoordinator->GetComponentArray<Text>();
-            if (!textArray.Has(entity))
-            {
-                continue;
-            }
+    //        if (!pCoordinator->IsActiveInHierarchy(entity))
+    //            continue;
 
-            auto& text = pCoordinator->GetComponent<Text>(entity);
-            if (!text.visible || text.text.empty())
-            {
-                continue;
-            }
+    //        auto& textArray = pCoordinator->GetComponentArray<Text>();
+    //        if (!textArray.Has(entity))
+    //        {
+    //            continue;
+    //        }
 
-            if (!text.fontName.empty() && EnsureFontLoaded(text.fontName))
-            {
-                /* Empty by design */
-            }
-            else
-            {
-                continue;
-            }
+    //        auto& text = pCoordinator->GetComponent<Text>(entity);
+    //        if (!text.visible || text.text.empty())
+    //        {
+    //            continue;
+    //        }
 
-            if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-            {
-                continue;
-            }
+    //        if (!text.fontName.empty() && EnsureFontLoaded(text.fontName))
+    //        {
+    //            /* Empty by design */
+    //        }
+    //        else
+    //        {
+    //            continue;
+    //        }
 
-            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
+    //        if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
+    //        {
+    //            continue;
+    //        }
 
-            // Measure text width in NDC space
-            float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
-            float alignX = 0.0f;
+    //        auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
+    //        Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
 
-            // Calculate horizontal alignment based on rect bounds
-            switch (text.alignment)
-            {
-            case TextAlignment::Left:
-                alignX = rectTransform.computedRect.Left();
-                break;
-            case TextAlignment::Center:
-                alignX = rectTransform.computedRect.Center().x - textWidthNDC * 0.5f;
-                break;
-            case TextAlignment::Right:
-                alignX = rectTransform.computedRect.Right() - textWidthNDC;
-                break;
-            }
+    //        // Measure text width in NDC space
+    //        float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
+    //        float alignX = 0.0f;
 
-            // Calculate vertical center
-            float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
-            float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
+    //        // Calculate horizontal alignment based on rect bounds
+    //        switch (text.alignment)
+    //        {
+    //        case TextAlignment::Left:
+    //            alignX = rectTransform.computedRect.Left();
+    //            break;
+    //        case TextAlignment::Center:
+    //            alignX = rectTransform.computedRect.Center().x - textWidthNDC * 0.5f;
+    //            break;
+    //        case TextAlignment::Right:
+    //            alignX = rectTransform.computedRect.Right() - textWidthNDC;
+    //            break;
+    //        }
 
-            pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY,
-                text.fontSize, text.color.r, text.color.g, text.color.b);
-        }
+    //        // Calculate vertical center
+    //        float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
+    //        float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
 
-        batches.clear();
-        spritesWithColours.clear();
-    }
+    //        pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY,
+    //            text.fontSize, text.color.r, text.color.g, text.color.b);
+    //    }
+
+    //    batches.clear();
+    //    spritesWithColours.clear();
+    //}
 
     /*!
      * \brief Gets the current mouse position in screen pixel coordinates.
@@ -466,14 +462,9 @@ namespace Uma_UI
      */
     Vec2 UISystem::GetMousePosition() const
     {
-        if (!pGraphics)
-        {
-            return Vec2(0.0f, 0.0f);
-        }
-
-        double xpos, ypos;
-        glfwGetCursorPos(static_cast<GLFWwindow*>(pGraphics->GetWindow()), &xpos, &ypos);
-        return Vec2(static_cast<float>(xpos), static_cast<float>(ypos));
+        double x = 0.0, y = 0.0;
+        glfwGetCursorPos(static_cast<GLFWwindow*>(pGraphics->GetWindow()), &x, &y);
+        return Vec2(static_cast<float>(x), static_cast<float>(y));
     }
 
     /*!

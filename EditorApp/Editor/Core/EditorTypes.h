@@ -61,7 +61,7 @@ namespace Uma_Engine
     struct EditorConfig
     {
         float gamePickRadius = 10.0f;
-        bool pickUIEntities = false;
+        bool pickUIEntities = true;
         bool pickGameEntities = true;
 
         float gizmoSize = 50.0f;
