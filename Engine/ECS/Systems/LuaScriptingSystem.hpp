@@ -156,13 +156,13 @@ namespace Uma_ECS
         {
             try
             {
-                if (!script)
+                /*if (!script.)
                 {
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "script (" + std::string(script) + "): " + "is invalid / doesn't exists");
+                        "script (" + std::string(script.scriptName) + "): " + "is invalid / doesn't exists");
 
                     return;
-                }
+                }*/
 
                 sol::optional<sol::protected_function> func = (*script.scriptEnv)[funcName];
 

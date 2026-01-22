@@ -85,6 +85,12 @@ namespace Uma_ECS
 				// it has more freedom and dont need me to handle the destrruction
 				// fuiyooo
 				
+				//check if null (thanks kai yang >:( )
+				/*bool operator!() const noexcept {
+					return !scriptEnv || !isInitialized || hasError;
+				}*/
+
+
 
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{

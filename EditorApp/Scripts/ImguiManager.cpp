@@ -3644,22 +3644,51 @@ namespace Uma_Engine
                 }
 
                 auto& fsm = coordinator.GetComponent<Uma_ECS::FSM>(entity);
-                ImGui::Indent();
+                auto& luaScripts = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);  // Assuming component type is LuaScripts
 
-                // begin tracking
+                ImGui::Indent();
                 BeginComponentEdit(entity, coordinator);
 
-                static char newStateBuffer[256] = "";
-                ImGui::InputText("State Name", newStateBuffer, 256);
+                static int selectedScriptIndex = -1;
 
-                if (ImGui::Button("Add State", ImVec2(ImGui::GetContentRegionAvail().x, 0)) && strlen(newStateBuffer) > 0)
+                // Build list of script names
+                std::vector<std::string> scriptNames;
+                for (const auto& script : luaScripts.scripts) {
+                    scriptNames.push_back(script.scriptName);
+                }
+
+                const char* previewText = scriptNames.empty() ? "No scripts" : "Select script";
+                if (selectedScriptIndex >= 0 && selectedScriptIndex < (int)scriptNames.size()) {
+                    previewText = scriptNames[selectedScriptIndex].c_str();
+                }
+
+                if (ImGui::BeginCombo("Script Name##FSM", previewText)) {
+                    for (int i = 0; i < (int)scriptNames.size(); ++i) {
+                        bool isSelected = (i == selectedScriptIndex);
+                        if (ImGui::Selectable(scriptNames[i].c_str(), isSelected)) {
+                            selectedScriptIndex = i;
+                        }
+                        if (isSelected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Add State from Script", ImVec2(ImGui::GetContentRegionAvail().x, 0))
+                    && selectedScriptIndex >= 0
+                    && selectedScriptIndex < (int)scriptNames.size())
                 {
-                    std::string stateName(newStateBuffer);
+                    std::string stateName = scriptNames[selectedScriptIndex];
                     fsm.AddStates(stateName, true);
-                    newStateBuffer[0] = '\0';
+                    // Optional: reset selection
+                    selectedScriptIndex = -1;
                 }
 
                 ImGui::Separator();
+
+                // Your existing state list loop (unchanged)...
+
 
                 std::vector<std::string> stateKeys;
                 for (const auto& p : fsm.states) stateKeys.push_back(p.first);

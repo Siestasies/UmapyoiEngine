@@ -18,7 +18,7 @@ void Uma_ECS::FSMSystem::Update(float dt)
 
 
 		auto& curr = FSMArray.GetData(entity);
-		if (curr.current.empty() && curr.next.empty()) {
+		if (curr.current.empty() && curr.next.empty() && !curr.states.empty()) {
 			if(!curr.states.empty())
 				curr.current = curr.states.begin()->first;
 			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
