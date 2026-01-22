@@ -43,7 +43,8 @@ namespace Uma_ECS
 		bool AddStates(const std::string& name, bool isActive) {
 			if (name.empty()) return false;
 
-			auto [iter, inserted] = states.emplace(name, State{ name, isActive, static_cast<int>(nextId) });
+			std::string path = name + ".lua";
+			auto [iter, inserted] = states.emplace(name, State{ path, isActive, static_cast<int>(nextId) });
 			if (!inserted) {
 				return false;
 			}
