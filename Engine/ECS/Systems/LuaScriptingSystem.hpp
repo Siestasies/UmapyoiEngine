@@ -168,8 +168,8 @@ namespace Uma_ECS
 
                 if (!func)
                 {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "function " + std::string(funcName) + "(): " + "is invalid / doesn't exists");
+                    /*Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                        "function " + std::string(funcName) + "(): " + "is invalid / doesn't exists");*/
 
                     return;
                 }

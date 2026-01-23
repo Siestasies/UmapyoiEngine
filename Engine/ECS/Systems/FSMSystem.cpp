@@ -18,30 +18,52 @@ void Uma_ECS::FSMSystem::Update(float dt)
 
 
 		auto& curr = FSMArray.GetData(entity);
-		if (curr.current.empty() && curr.next.empty() && !curr.states.empty()) {
-			if(!curr.states.empty())
-				curr.current = curr.states.begin()->first;
-			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
-			system->CallScriptFunction(entity, curr.states.find(curr.current)->second.name, "state_enter", dt);
-		}
+		if (curr.current.empty() && !curr.states.empty()) {
+			// If next has a value set current to that value
+			if (!curr.next.empty()) {
+				curr.current = std::move(curr.next);
+				curr.next.clear();
+			}
+			if (curr.current.empty()) {
+				auto it = curr.states.begin();
+				curr.current = it->first;
+			}
 
+			auto state_it = curr.states.find(curr.current + ".lua");
+			if (state_it != curr.states.end()) {
+				auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+				system->CallScriptFunction(entity, state_it->second.name, "state_enter", entity);
+			}
+		}
 		if (!curr.current.empty()) {
-			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
-			system->CallScriptFunction(entity, curr.states.find(curr.current)->second.name, "state_update", dt);
+			auto state_it = curr.states.find(curr.current + ".lua");
+			if (state_it != curr.states.end()) {
+				auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+				system->CallScriptFunction(entity, state_it->second.name, "state_update", dt);
+			}
 		}
 
-		if (!curr.next.empty()) {
+		if (!curr.next.empty() && !curr.current.empty()) {
 			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
-			//call exit on curr script
-			system->CallScriptFunction(entity, curr.states.find(curr.current)->second.name, "state_exit", entity);
-			//call enter on next script
-			system->CallScriptFunction(entity, curr.states.find(curr.next)->second.name, "state_enter", entity);
 
-			//set next state to current 
-			curr.current = curr.next;
-			//setting next state to empty to indicate there is no more change in state
+			auto curr_it = curr.states.find(curr.current + ".lua");
+			if (curr_it != curr.states.end()) {
+				system->CallScriptFunction(entity, curr_it->second.name, "state_exit", dt);
+			}
+
+			auto next_it = curr.states.find(curr.next + ".lua");
+			if (next_it != curr.states.end()) {
+				system->CallScriptFunction(entity, next_it->second.name, "state_enter", dt);
+			}
+			else {
+				curr.next.clear();  // Prevent stuck transition
+				return;
+			}
+
+			curr.current = std::move(curr.next);
 			curr.next.clear();
 		}
+
 	}
 }
 

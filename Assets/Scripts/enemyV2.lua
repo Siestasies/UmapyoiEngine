@@ -14,6 +14,7 @@ local playerEntity = nil
 function Start()
     playerEntity = FindEntityWithComponent("Player")
     Log("EnemyFSM controller started on " .. EntityID)
+    ChangeState(EntityID, "IdleV2")
 end
 
 function Update(dt)
@@ -21,17 +22,22 @@ function Update(dt)
     
     -- Health management
     UpdateHealth()
-    
-    -- Test: walkV2 only
-    if ExposedVars.enableWalkV2 then
-        ChangeState(EntityID, "walkV2")
+
+    if KeyReleased(KEY_2) then
+        ChangeState(EntityID,"IdleV2")
+        Log("STOPPPPPPPPP")
+    end
+
+    if KeyReleased(KEY_3) then
+        ChangeState(EntityID,"walkV2")
+        Log("WALKKKKKKKKKKKK")
     end
 end
 
 function UpdateHealth()
     local enemy = GetEnemy()
     if enemy and enemy.mHealth <= 0 then
-        RequestFSMState(EntityID, "die")
+        ChangeState(EntityID, "die")
     end
 end
 
@@ -54,7 +60,9 @@ function OnTriggerEnter(otherEntity)
 end
 
 -- Debug toggle
-if KeyPressed(KEY_1) then 
+if KeyReleased(KEY_1) then 
     ExposedVars.enableWalkV2 = not ExposedVars.enableWalkV2 
     Log("walkV2 enabled: " .. tostring(ExposedVars.enableWalkV2))
 end
+
+
