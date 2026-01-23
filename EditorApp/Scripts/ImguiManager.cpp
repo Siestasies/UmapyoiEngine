@@ -3628,6 +3628,257 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Tilemap>())
+        {
+            if (ImGui::CollapsingHeader("Tilemap"))
+            {
+                if (ImGui::Button("Remove Component##Tilemap"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Tilemap>>(
+                        &coordinator,
+                        entity,
+                        "Remove Projectile"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
+                }
+
+                ImGui::Indent();
+
+                // begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                auto& tilemap = coordinator.GetComponent<Uma_ECS::Tilemap>(entity);
+
+                // === Map Properties Section ===
+                if (ImGui::TreeNode("Map Properties"))
+                {
+                    // Editable map dimensions
+                    int mapWidth = tilemap.mapWidth;
+                    int mapHeight = tilemap.mapHeight;
+
+                    if (ImGui::DragInt("Map Width (tiles)", &mapWidth, 1.0f, 1, 1000))
+                    {
+                        if (mapWidth != tilemap.mapWidth)
+                        {
+                            tilemap.mapWidth = mapWidth;
+                            // Resize all layers
+                            for (auto& layer : tilemap.layers)
+                            {
+                                layer.width = static_cast<unsigned int>(mapWidth);
+                                layer.tiles.resize(static_cast<size_t>(mapWidth * layer.height), -1);
+                            }
+                        }
+                    }
+
+                    if (ImGui::DragInt("Map Height (tiles)", &mapHeight, 1.0f, 1, 1000))
+                    {
+                        if (mapHeight != tilemap.mapHeight)
+                        {
+                            tilemap.mapHeight = mapHeight;
+                            // Resize all layers
+                            for (auto& layer : tilemap.layers)
+                            {
+                                layer.height = static_cast<unsigned int>(mapHeight);
+                                layer.tiles.resize(static_cast<size_t>(layer.width * mapHeight), -1);
+                            }
+                        }
+                    }
+
+                    int tileSize = tilemap.tileSize;
+                    if (ImGui::DragInt("Tile Size (pixels)", &tileSize, 1.0f, 1, 256))
+                    {
+                        tilemap.tileSize = tileSize;
+                    }
+
+                    ImGui::Separator();
+                    ImGui::Text("World Size: %dx%d units",
+                        tilemap.mapWidth * tilemap.tileSize,
+                        tilemap.mapHeight * tilemap.tileSize);
+
+                    ImGui::TreePop();
+                }
+
+                ImGui::Separator();
+
+                // === Layers Section ===
+                if (ImGui::TreeNode("Layers", "Layers (%zu)", tilemap.layers.size()))
+                {
+                    for (size_t i = 0; i < tilemap.layers.size(); i++)
+                    {
+                        ImGui::PushID(static_cast<int>(i));
+
+                        auto& layer = tilemap.layers[i];
+
+                        // Layer header with visibility toggle
+                        bool visible = tilemap.layerVisibility[i];
+                        ImGui::Checkbox("##vis", &visible);
+                        tilemap.layerVisibility[i] = visible;
+
+                        ImGui::SameLine();
+
+                        // Layer name as tree node
+                        bool layerOpen = ImGui::TreeNode("LayerNode", "%s", layer.name.c_str());
+
+                        // Right-click menu for layer operations
+                        if (ImGui::BeginPopupContextItem())
+                        {
+                            if (ImGui::MenuItem("Move Up", nullptr, false, i > 0))
+                            {
+                                std::swap(tilemap.layers[i], tilemap.layers[i - 1]);
+
+                                bool tempVis = tilemap.layerVisibility[i];
+                                tilemap.layerVisibility[i] = tilemap.layerVisibility[i - 1];
+                                tilemap.layerVisibility[i - 1] = tempVis;
+
+                                std::swap(tilemap.layerNames[i], tilemap.layerNames[i - 1]);
+                            }
+                            if (ImGui::MenuItem("Move Down", nullptr, false, i < tilemap.layers.size() - 1))
+                            {
+                                std::swap(tilemap.layers[i], tilemap.layers[i + 1]);
+
+                                bool tempVis = tilemap.layerVisibility[i];
+                                tilemap.layerVisibility[i] = tilemap.layerVisibility[i + 1];
+                                tilemap.layerVisibility[i + 1] = tempVis;
+
+                                std::swap(tilemap.layerNames[i], tilemap.layerNames[i + 1]);
+                            }
+                            ImGui::Separator();
+                            if (ImGui::MenuItem("Delete", nullptr, false, tilemap.layers.size() > 1))
+                            {
+                                tilemap.RemoveLayer(static_cast<int>(i));
+                                ImGui::PopID();
+                                ImGui::TreePop();
+                                break;
+                            }
+                            ImGui::EndPopup();
+                        }
+
+                        if (layerOpen)
+                        {
+                            ImGui::Indent();
+
+                            // Editable layer name
+                            char nameBuffer[256];
+                            strncpy(nameBuffer, layer.name.c_str(), sizeof(nameBuffer) - 1);
+                            nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+
+                            if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
+                            {
+                                layer.name = nameBuffer;
+                                tilemap.layerNames[i] = nameBuffer;
+                            }
+
+                            // Render layer dropdown (same as Sprite)
+                            const char* renderLayerNames[] = {
+                                "RL_NONE",
+                                "RL_WALL_TOP",
+                                "RL_FLOOR",
+                                "RL_ENV",
+                                "RL_ENEMY",
+                                "RL_PLAYER",
+                                "RL_WALL_BTM",
+                                "RL_UI"
+                            };
+                            int currentRenderLayer = 0;
+                            unsigned int rl = static_cast<unsigned int>(layer.renderLayer);
+                            while (rl >>= 1) ++currentRenderLayer;
+                            if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                            {
+                                layer.renderLayer = (1u << currentRenderLayer);
+                            }
+
+                            // Render order (same as Sprite)
+                            ImGui::Separator();
+                            ImGui::Text("Render Order");
+                            ImGui::InputInt("##Layer Render Order", &layer.renderOrder, 1, 0, 0);
+
+                            // Show layer size info
+                            ImGui::Separator();
+                            ImGui::Text("Size: %ux%u tiles", layer.width, layer.height);
+
+                            // Count non-empty tiles
+                            int filledTiles = 0;
+                            for (int tile : layer.tiles)
+                            {
+                                if (tile >= 0) filledTiles++;
+                            }
+                            ImGui::Text("Filled: %d / %zu tiles (%.1f%%)",
+                                filledTiles,
+                                layer.tiles.size(),
+                                layer.tiles.size() > 0 ? (filledTiles * 100.0f) / layer.tiles.size() : 0.0f);
+
+                            // Clear layer button
+                            if (ImGui::Button("Clear Layer", ImVec2(-1, 0)))
+                            {
+                                std::fill(layer.tiles.begin(), layer.tiles.end(), -1);
+                            }
+
+                            ImGui::Unindent();
+                            ImGui::TreePop();
+                        }
+
+                        ImGui::PopID();
+                    }
+
+                    ImGui::Separator();
+
+                    // Add new layer button
+                    if (ImGui::Button("+ Add Layer", ImVec2(-1, 0)))
+                    {
+                        int newIndex = static_cast<int>(tilemap.layers.size());
+                        std::string newName = "Layer " + std::to_string(newIndex);
+                        tilemap.CreateLayer(
+                            newName,
+                            static_cast<unsigned int>(tilemap.mapWidth),
+                            static_cast<unsigned int>(tilemap.mapHeight),
+                            newIndex
+                        );
+                    }
+
+                    ImGui::TreePop();
+                }
+
+                ImGui::Separator();
+
+                // === Edit Mode Section ===
+                ImGui::PushStyleColor(ImGuiCol_Button,
+                    tilemap.isInEditMode ? ImVec4(0.8f, 0.3f, 0.2f, 1.0f) : ImVec4(0.2f, 0.6f, 0.8f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+                    tilemap.isInEditMode ? ImVec4(0.9f, 0.4f, 0.3f, 1.0f) : ImVec4(0.3f, 0.7f, 0.9f, 1.0f));
+
+                const char* buttonText = tilemap.isInEditMode ? "Exit Edit Mode" : "Enter Edit Mode";
+                if (ImGui::Button(buttonText, ImVec2(-1, 40)))
+                {
+                    tilemap.isInEditMode = !tilemap.isInEditMode;
+                    if (tilemap.isInEditMode)
+                    {
+                        // Enter edit mode
+                        // tilemapEditorManager.OpenEditor(entity);
+                    }
+                    else
+                    {
+                        // Exit edit mode
+                        // tilemapEditorManager.CloseEditor();
+                    }
+                }
+
+                ImGui::PopStyleColor(2);
+
+                // Show status message when in edit mode
+                if (tilemap.isInEditMode)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.2f, 1.0f));
+                    ImGui::TextWrapped("EDIT MODE ACTIVE - Click tiles in the scene view to paint");
+                    ImGui::PopStyleColor();
+                }
+
+                EndComponentEdit(entity, coordinator, "Tilemap");
+
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -4035,6 +4286,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Text{},
                     "Add Text"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Tilemap>()) && ImGui::MenuItem("Tilemap"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Tilemap>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Tilemap{},
+                    "Add Tilemap"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

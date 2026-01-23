@@ -41,6 +41,14 @@ namespace Uma_ECS
         Entity entityId;
     };
 
+    struct tilesetLayerInfo
+    {
+        Entity tilemapId;
+        int index;
+        int sortingOrder;
+        int hierarchyOrder;
+    };
+
     struct UIDrawCommand
     {
         enum Type

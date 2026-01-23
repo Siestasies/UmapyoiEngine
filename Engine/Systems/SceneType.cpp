@@ -88,6 +88,8 @@ namespace Uma_Engine
 
         m_PlayerController->Shutdown();
 
+        m_TilemapSystem->Shutdown();
+
         m_ProjectileSystem->Shutdown();
 
         m_LuaScriptingSystem->Shutdown();
@@ -341,6 +343,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
         m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
+        m_Coordinator.RegisterComponent<Uma_ECS::Tilemap>();
         
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -465,6 +468,17 @@ namespace Uma_Engine
         }
         m_ParticleSystem->Init(m_Graphics, m_ResourcesManager, &m_Coordinator);
 
+        // tilemap 
+        m_TilemapSystem = m_Coordinator.RegisterSystem<Uma_ECS::TilemapSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Tilemap>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Sprite>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::TilemapSystem>(sign);
+        }
+        m_TilemapSystem->Init(&m_Coordinator, m_Graphics, m_ResourcesManager);
+
         InitializeUISystem();
 
         gGameSerializer.Register(m_ResourcesManager);
@@ -506,6 +520,9 @@ namespace Uma_Engine
 
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt);
+
+        if (m_TilemapSystem)
+            m_TilemapSystem->Update(dt);
 
         if (m_AnimatorSystem)
             m_AnimatorSystem->Update(dt);

@@ -34,6 +34,7 @@ All rights reserved.
 #include "ECS/Systems/PathFindingSystem.hpp"
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/ProjectileSystem.hpp"
+#include "ECS/Systems/TilemapSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -50,6 +51,7 @@ All rights reserved.
 #include "ECS/Components/AudioComponent.h"
 #include "ECS/Components/PathFinding.h"
 #include "ECS/Components/ParticleEmitter.h"
+#include "ECS/Components/Tilemap.h"
 
 
 // UI Components
@@ -233,6 +235,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::PathFindingSystem> m_PathFindingSystem;
             std::shared_ptr<Uma_ECS::ParticleSystem> m_ParticleSystem;
             std::shared_ptr<Uma_ECS::ProjectileSystem> m_ProjectileSystem;
+            std::shared_ptr<Uma_ECS::TilemapSystem> m_TilemapSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;

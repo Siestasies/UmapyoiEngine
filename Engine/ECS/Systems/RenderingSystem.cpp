@@ -36,6 +36,7 @@ All rights reserved.
 #include "Components/Collider.h"
 #include "Components/Player.h"
 #include "Components/Animator.h"
+#include "Components/Tilemap.h"
 
 #include "UI/Components/Canvas.h"
 
@@ -81,7 +82,7 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
-
+        auto& tmArray = pCoordinator->GetComponentArray<Tilemap>();
         auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         // one camera for now
@@ -179,30 +180,93 @@ namespace Uma_ECS
                     // Animator not active, use sprite's cell selection
                     sr.GetUVs(uvOffset, uvSize);
                 }
+
+                allSprites.push_back(LayeredSprite
+                    {
+                        .info = Uma_Engine::Sprite_Info{
+                            .tex_id = sr.texture->tex_id,
+                            .pos = tf.worldPosition,
+                            .scale = spriteScale,
+                            .rot = tf.worldRotation,
+                            .rot_speed = tf.rotation.y,
+                            .uvOffset = uvOffset,
+                            .uvSize = uvSize,
+                            .tintColor = sr.tintColor,
+                            .alpha = sr.alpha
+                        },
+                        .layer = sr.renderLayer,
+                        .order = sr.renderOrder,
+                        .hierarchyOrder = hierarchyOrder,
+                        .texId = sr.texture->tex_id,
+                        .entityId = entity
+                    });
+            }
+            else if (tmArray.Has(entity))
+            {
+                auto& tilemap = tmArray.GetData(entity);
+                for (auto& layer : tilemap.layers)
+                {
+                    for (int i = 0; i < layer.tiles.size(); i++)
+                    {
+                        int row = i / layer.width;
+                        int col = i % layer.width;
+
+                        // Grid position for placement
+                        Vec2 tilePos = tf.worldPosition + Vec2(col * tilemap.tileSize * tf.scale.x, -(row * tilemap.tileSize * tf.scale.y));
+
+                        // Tileset indices for UVs
+                        int tileset_row = layer.tiles[i] / int(sr.spriteSheetGrid.x);
+                        int tileset_col = layer.tiles[i] % int(sr.spriteSheetGrid.x);
+
+                        sr.spriteCell = Vec2(tileset_col, tileset_row);
+                        sr.GetUVs(uvOffset, uvSize);
+
+                        allSprites.push_back(LayeredSprite
+                            {
+                                .info = Uma_Engine::Sprite_Info{
+                                    .tex_id = sr.texture->tex_id,
+                                    .pos = tilePos,
+                                    .scale = Vec2(tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y),
+                                    .rot = tf.worldRotation,
+                                    .rot_speed = tf.rotation.y,
+                                    .uvOffset = uvOffset,
+                                    .uvSize = uvSize,
+                                    .tintColor = sr.tintColor,
+                                    .alpha = sr.alpha
+                                },
+                                .layer = layer.renderLayer,
+                                .order = layer.renderOrder,
+                                .hierarchyOrder = hierarchyOrder,
+                                .texId = sr.texture->tex_id,
+                                .entityId = entity
+                            });
+                    }
+                }
             }
             else
             {
                 sr.GetUVs(uvOffset, uvSize);
-            }
 
-            allSprites.push_back(LayeredSprite{
-                .info = Uma_Engine::Sprite_Info{
-                    .tex_id = sr.texture->tex_id,
-                    .pos = tf.worldPosition,
-                    .scale = spriteScale,
-                    .rot = tf.worldRotation,
-                    .rot_speed = tf.rotation.y,
-                    .uvOffset = uvOffset,
-                    .uvSize = uvSize,
-                    .tintColor = sr.tintColor,
-                    .alpha = sr.alpha
-                },
-                .layer = sr.renderLayer,
-                .order = sr.renderOrder,
-                .hierarchyOrder = hierarchyOrder,      
-                .texId = sr.texture->tex_id,
-                .entityId = entity
-                });
+                allSprites.push_back(LayeredSprite
+                    {
+                        .info = Uma_Engine::Sprite_Info{
+                            .tex_id = sr.texture->tex_id,
+                            .pos = tf.worldPosition,
+                            .scale = spriteScale,
+                            .rot = tf.worldRotation,
+                            .rot_speed = tf.rotation.y,
+                            .uvOffset = uvOffset,
+                            .uvSize = uvSize,
+                            .tintColor = sr.tintColor,
+                            .alpha = sr.alpha
+                        },
+                        .layer = sr.renderLayer,
+                        .order = sr.renderOrder,
+                        .hierarchyOrder = hierarchyOrder,
+                        .texId = sr.texture->tex_id,
+                        .entityId = entity
+                    });
+            }
         }
     }
 

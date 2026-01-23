@@ -41,6 +41,7 @@ All rights reserved.
 #include "ECS/Components/PathFinding.h"
 #include "ECS/Components/Prefab.h"
 #include "ECS/Components/Projectile.h"
+#include "ECS/Components/Tilemap.h"
 
 #include "Systems/ResourcesManager.hpp"
 
