@@ -6,7 +6,7 @@ function state_enter(entity)
     PlayEntitySound(entity, "footsteps", true)
 end
 
-function Update(dt)
+function state_update(dt)
     -- Pure walk behavior
     local transform = GetTransform(EntityID)
     transform.position.x = transform.position.x + ExposedVars.speed * dt

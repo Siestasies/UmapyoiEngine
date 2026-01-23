@@ -24,7 +24,7 @@ function Update(dt)
     
     -- Test: walkV2 only
     if ExposedVars.enableWalkV2 then
-        RequestFSMState(EntityID, "walkV2")
+        ChangeState(EntityID, "walkV2")
     end
 end
 
