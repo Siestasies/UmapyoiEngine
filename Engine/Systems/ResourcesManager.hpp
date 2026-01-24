@@ -37,6 +37,10 @@ All rights reserved.
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
+namespace Uma_ECS
+{
+    class Coordinator;
+}
 
 namespace Uma_Engine
 {
@@ -63,6 +67,8 @@ namespace Uma_Engine
         \brief Shuts down the system, unloading all managed resources
         */
         void Shutdown() override;
+
+        void SetCoordinator(Uma_ECS::Coordinator* coordinator);
         
         // Textures
         /*!
@@ -261,7 +267,17 @@ namespace Uma_Engine
             rapidjson::Value& out,
             rapidjson::Document::AllocatorType& allocator);
 
+        std::unordered_set<Entity> mSpritesToLoad;
+        std::unordered_set<Entity> mImagesToLoad;
+        std::unordered_set<Entity> mTextsToLoad;
+
     private:
+        Uma_ECS::Coordinator* mCoordinator = nullptr;
+
+        std::string FindTextureNameByPath(const std::string& filePath);
+        std::string FindFontNameByPath(const std::string& filePath);
+        static std::string NormalizePath(const std::string& path);
+
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};
         Graphics* mGraphics = nullptr;
 

@@ -54,6 +54,11 @@ namespace Uma_ECS
         pCoordinator = c;
         pGraphics = g;
         pResourcesManager = rm;
+
+        if (pResourcesManager)
+        {
+            pResourcesManager->SetCoordinator(c);
+        }
     }
 
     void RenderingSystem::Update(float dt)
@@ -110,60 +115,16 @@ namespace Uma_ECS
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            // Load texture if not loaded
-            // or texture became invalid (tex_id == 0)
-            if (!sr.texture || sr.texture->tex_id == 0)
+            // Get texture, if null add to load container
+            if (!sr.texture)
             {
-                // Try to get by name first
-                if (pResourcesManager->HasTexture(sr.textureName))
-                {
-                    sr.texture = pResourcesManager->GetTexture(sr.textureName);
-                }
-                // If name not found, but we have a path
-                else if (!sr.texturePath.empty())
-                {
-                    // CHECK FOR DUPLICATES BY PATH
-                    bool alreadyLoaded = false;
-                    std::string existingName = "";
-
-                    const auto& loadedTextures = pResourcesManager->GetLoadedTextures();
-                    for (const auto& [name, texturePtr] : loadedTextures)
-                    {
-                        // Normalize paths for comparison
-                        std::string loadedPath = texturePtr->filePath;
-                        std::replace(loadedPath.begin(), loadedPath.end(), '\\', '/');
-
-                        std::string spritePath = sr.texturePath;
-                        std::replace(spritePath.begin(), spritePath.end(), '\\', '/');
-
-                        if (loadedPath == spritePath)
-                        {
-                            alreadyLoaded = true;
-                            existingName = name;
-                            break;
-                        }
-                    }
-
-                    if (alreadyLoaded)
-                    {
-                        // Found, update sprite to use the EXISTING name
-                        sr.textureName = existingName;
-                        sr.texture = pResourcesManager->GetTexture(existingName);
-                    }
-                    else
-                    {
-                        // Not found at all, load it
-                        if (pResourcesManager->LoadTexture(sr.textureName, sr.texturePath))
-                        {
-                            sr.texture = pResourcesManager->GetTexture(sr.textureName);
-                        }
-                    }
-                }
+                sr.texture = pResourcesManager->GetTexture(sr.textureName);
             }
 
             // Verify texture is valid before using it
             if (!sr.texture || sr.texture->tex_id == 0)
             {
+                pResourcesManager->mSpritesToLoad.insert(entity);
                 std::stringstream log;
                 log << "Entity(" << entity << ") texture is not valid.";
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
@@ -367,49 +328,10 @@ namespace Uma_ECS
 
                     Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
 
-                    // Load and duplicate check
-                    if (uiFont == nullptr && !textComp.fontPath.empty())
-                    {
-                        // Check if PATH is already loaded under a different name
-                        bool alreadyLoaded = false;
-                        std::string existingName = "";
-
-                        const auto& loadedFonts = pResourcesManager->GetLoadedFonts();
-                        for (const auto& [name, fontData] : loadedFonts)
-                        {
-                            // Normalize paths for comparison
-                            std::string loadedPath = fontData.filePath;
-                            std::replace(loadedPath.begin(), loadedPath.end(), '\\', '/');
-
-                            std::string compPath = textComp.fontPath;
-                            std::replace(compPath.begin(), compPath.end(), '\\', '/');
-
-                            if (loadedPath == compPath)
-                            {
-                                alreadyLoaded = true;
-                                existingName = name;
-                                break;
-                            }
-                        }
-
-                        if (alreadyLoaded)
-                        {
-                            // Found it, use existing name
-                            textComp.fontName = existingName;
-                            uiFont = pResourcesManager->GetFont(existingName);
-                        }
-                        else
-                        {
-                            // Not found, load it
-                            if (pResourcesManager->LoadFont(textComp.fontName, textComp.fontPath, static_cast<unsigned int>(textComp.fontSize)))
-                            {
-                                uiFont = pResourcesManager->GetFont(textComp.fontName);
-                            }
-                        }
-                    }
-
+                    // Get font, if null add to load container
                     if (uiFont == nullptr)
                     {
+                        pResourcesManager->mTextsToLoad.insert(childUI);
                         std::stringstream log;
                         log << "UI object(" << childUI << ") font is not loaded or invalid.";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());

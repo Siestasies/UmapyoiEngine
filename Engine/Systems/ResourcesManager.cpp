@@ -49,10 +49,87 @@ namespace Uma_Engine
         std::cout << "ResourcesManager initialized" << std::endl;
     }
 
+    void ResourcesManager::SetCoordinator(Uma_ECS::Coordinator* coordinator)
+    {
+        mCoordinator = coordinator;
+    }
+
     void ResourcesManager::Update(float dt)
     {
         (void)dt;
         // EMPTY (resource manager doesn't need to update anything)
+        // sike not empty anymore
+        if (!mCoordinator) return;
+
+        // Load sprites
+        if (!mSpritesToLoad.empty())
+        {
+            auto& spriteArray = mCoordinator->GetComponentArray<Uma_ECS::Sprite>();
+
+            for (auto entity : mSpritesToLoad)
+            {
+                if (!spriteArray.Has(entity)) continue;
+
+                auto& sprite = spriteArray.GetData(entity);
+
+                // Try by name first
+                if (HasTexture(sprite.textureName))
+                {
+                    sprite.texture = GetTexture(sprite.textureName);
+                    continue;
+                }
+
+                // Check for duplicate by path
+                if (!sprite.texturePath.empty())
+                {
+                    std::string existingName = FindTextureNameByPath(sprite.texturePath);
+                    if (!existingName.empty())
+                    {
+                        sprite.textureName = existingName;
+                        sprite.texture = GetTexture(existingName);
+                    }
+                    else
+                    {
+                        // Load new
+                        LoadTexture(sprite.textureName, sprite.texturePath);
+                        sprite.texture = GetTexture(sprite.textureName);
+                    }
+                }
+            }
+            mSpritesToLoad.clear();
+        }
+
+        // Load fonts
+        if (!mTextsToLoad.empty())
+        {
+            auto& textArray = mCoordinator->GetComponentArray<Uma_UI::Text>();
+
+            for (auto entity : mTextsToLoad)
+            {
+                if (!textArray.Has(entity)) continue;
+
+                auto& text = textArray.GetData(entity);
+
+                if (HasFont(text.fontName))
+                {
+                    continue;
+                }
+
+                if (!text.fontPath.empty())
+                {
+                    std::string existingName = FindFontNameByPath(text.fontPath);
+                    if (!existingName.empty())
+                    {
+                        text.fontName = existingName;
+                    }
+                    else
+                    {
+                        LoadFont(text.fontName, text.fontPath, static_cast<unsigned int>(text.fontSize));
+                    }
+                }
+            }
+            mTextsToLoad.clear();
+        }
     }
 
     void ResourcesManager::Shutdown()
@@ -592,5 +669,40 @@ namespace Uma_Engine
     const std::unordered_map<std::string, FontData>& ResourcesManager::GetLoadedFonts() const
     {
         return mFonts;
+    }
+
+    std::string ResourcesManager::FindTextureNameByPath(const std::string& filePath)
+    {
+        std::string normalizedPath = NormalizePath(filePath);
+
+        for (const auto& [name, texturePtr] : mTextures)
+        {
+            if (texturePtr && NormalizePath(texturePtr->filePath) == normalizedPath)
+            {
+                return name;
+            }
+        }
+        return "";
+    }
+
+    std::string ResourcesManager::FindFontNameByPath(const std::string& filePath)
+    {
+        std::string normalizedPath = NormalizePath(filePath);
+
+        for (const auto& [name, fontData] : mFonts)
+        {
+            if (NormalizePath(fontData.filePath) == normalizedPath)
+            {
+                return name;
+            }
+        }
+        return "";
+    }
+
+    std::string ResourcesManager::NormalizePath(const std::string& path)
+    {
+        std::string normalized = path;
+        std::replace(normalized.begin(), normalized.end(), '\\', '/');
+        return normalized;
     }
 }
