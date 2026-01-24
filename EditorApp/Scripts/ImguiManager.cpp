@@ -3669,6 +3669,7 @@ namespace Uma_Engine
                                 layer.width = static_cast<unsigned int>(mapWidth);
                                 layer.tiles.resize(static_cast<size_t>(mapWidth * layer.height), -1);
                             }
+                            m_hasUnsavedEdit = true;
                         }
                     }
 
@@ -3683,6 +3684,7 @@ namespace Uma_Engine
                                 layer.height = static_cast<unsigned int>(mapHeight);
                                 layer.tiles.resize(static_cast<size_t>(layer.width * mapHeight), -1);
                             }
+                            m_hasUnsavedEdit = true;
                         }
                     }
 
@@ -3690,6 +3692,21 @@ namespace Uma_Engine
                     if (ImGui::DragInt("Tile Size (pixels)", &tileSize, 1.0f, 1, 256))
                     {
                         tilemap.tileSize = tileSize;
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    int tileCol = tilemap.tilesetColumns;
+                    if (ImGui::DragInt("Tile Columns", &tileCol, 1.0f, 1, 256))
+                    {
+                        tilemap.tilesetColumns = tileCol;
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    int tileRows = tilemap.tilesetRows;
+                    if (ImGui::DragInt("Tile Rows", &tileRows, 1.0f, 1, 256))
+                    {
+                        tilemap.tilesetRows = tileRows;
+                        m_hasUnsavedEdit = true;
                     }
 
                     ImGui::Separator();
@@ -3753,6 +3770,8 @@ namespace Uma_Engine
                                 break;
                             }
                             ImGui::EndPopup();
+
+                            m_hasUnsavedEdit = true;
                         }
 
                         if (layerOpen)
@@ -3768,6 +3787,8 @@ namespace Uma_Engine
                             {
                                 layer.name = nameBuffer;
                                 tilemap.layerNames[i] = nameBuffer;
+
+                                m_hasUnsavedEdit = true;
                             }
 
                             // Render layer dropdown (same as Sprite)
@@ -3787,6 +3808,8 @@ namespace Uma_Engine
                             if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                             {
                                 layer.renderLayer = (1u << currentRenderLayer);
+
+                                m_hasUnsavedEdit = true;
                             }
 
                             // Render order (same as Sprite)
@@ -3813,6 +3836,8 @@ namespace Uma_Engine
                             if (ImGui::Button("Clear Layer", ImVec2(-1, 0)))
                             {
                                 std::fill(layer.tiles.begin(), layer.tiles.end(), -1);
+
+                                m_hasUnsavedEdit = true;
                             }
 
                             ImGui::Unindent();
@@ -3835,6 +3860,8 @@ namespace Uma_Engine
                             static_cast<unsigned int>(tilemap.mapHeight),
                             newIndex
                         );
+
+                        m_hasUnsavedEdit = true;
                     }
 
                     ImGui::TreePop();

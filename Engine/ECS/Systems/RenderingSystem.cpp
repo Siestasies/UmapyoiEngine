@@ -204,8 +204,12 @@ namespace Uma_ECS
             else if (tmArray.Has(entity))
             {
                 auto& tilemap = tmArray.GetData(entity);
-                for (auto& layer : tilemap.layers)
+                for (int layerIdx = 0; layerIdx < tilemap.layers.size(); layerIdx++)
                 {
+                    TileLayer& layer = tilemap.layers[layerIdx];
+
+                    if (!tilemap.layerVisibility[layerIdx]) continue;
+
                     for (int i = 0; i < layer.tiles.size(); i++)
                     {
                         int row = i / layer.width;
@@ -215,8 +219,8 @@ namespace Uma_ECS
                         Vec2 tilePos = tf.worldPosition + Vec2(col * tilemap.tileSize * tf.scale.x, -(row * tilemap.tileSize * tf.scale.y));
 
                         // Tileset indices for UVs
-                        int tileset_row = layer.tiles[i] / int(sr.spriteSheetGrid.x);
-                        int tileset_col = layer.tiles[i] % int(sr.spriteSheetGrid.x);
+                        int tileset_row = layer.tiles[i] / int(tilemap.tilesetColumns);
+                        int tileset_col = layer.tiles[i] % int(tilemap.tilesetColumns);
 
                         sr.spriteCell = Vec2(tileset_col, tileset_row);
                         sr.GetUVs(uvOffset, uvSize);

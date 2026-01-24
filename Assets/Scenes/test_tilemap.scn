@@ -223,8 +223,8 @@
                     "mapHeight": 10,
                     "tileSize": 16,
                     "tilesetPath": "",
-                    "tilesetColumns": 0,
-                    "tilesetRows": 0,
+                    "tilesetColumns": 16,
+                    "tilesetRows": 4,
                     "layers": [
                         {
                             "name": "Layer 0",

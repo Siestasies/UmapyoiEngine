@@ -1,5 +1,6 @@
 #pragma once
 
+#include "RapidJSON/document.h"
 #include "core/Types.hpp"
 #include "../Systems/ResourcesTypes.hpp"
 #include <string>
@@ -7,14 +8,28 @@
 
 namespace Uma_ECS
 {
+    struct Tileset
+    {
+        // Tileset reference
+        std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
+        int tileWidth = 0;
+        int tileHeight = 0;
+        int columns = 0;
+        int rows = 0;
+    };
+
     struct TileLayer
     {
         std::vector<int> tiles;
         std::string name;
         unsigned int width;
         unsigned int height;
+
         int renderOrder = 0;
         LayerMask renderLayer = RL_NONE;
+
+        //Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);    // RGB multiplier
+        //float alpha = 1.0f;                         // Opacity
     };
 
     struct Tilemap
@@ -26,8 +41,8 @@ namespace Uma_ECS
 
         // Tileset reference
         Uma_Engine::Texture tilesetTexture;
-        int tilesetColumns = 0;
-        int tilesetRows = 0;
+        int tilesetColumns = 1;
+        int tilesetRows = 1;
 
         // Runtime settings (visible in inspector)
         std::vector<bool> layerVisibility;  // For each layer
