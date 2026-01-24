@@ -130,7 +130,7 @@ namespace Uma_ECS
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
-
+                
             int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
             if (hierarchyOrder == -1) continue;
 
