@@ -124,7 +124,7 @@ namespace Uma_ECS
             // Verify texture is valid before using it
             if (!sr.texture || sr.texture->tex_id == 0)
             {
-                pResourcesManager->mSpritesToLoad.insert(entity);
+                pResourcesManager->RequestSpriteLoad(entity);
                 std::stringstream log;
                 log << "Entity(" << entity << ") texture is not valid.";
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
@@ -331,7 +331,7 @@ namespace Uma_ECS
                     // Get font, if null add to load container
                     if (uiFont == nullptr)
                     {
-                        pResourcesManager->mTextsToLoad.insert(childUI);
+                        pResourcesManager->RequestTextLoad(childUI);
                         std::stringstream log;
                         log << "UI object(" << childUI << ") font is not loaded or invalid.";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
@@ -369,6 +369,7 @@ namespace Uma_ECS
                     // Verify texture is valid before using it
                     if (!image.texture || image.texture->tex_id == 0)
                     {
+                        pResourcesManager->RequestImageLoad(childUI);
                         std::stringstream log;
                         log << "Entity(" << childUI << ") texture is not valid.";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());

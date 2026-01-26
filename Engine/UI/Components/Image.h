@@ -35,6 +35,7 @@ namespace Uma_UI
     {
     public:
         std::string textureName = "";
+        std::string texturePath = "";
         int sortingOrder = 0;
         Uma_UI::Color color = Uma_UI::Color::White();
         bool visible = true;
@@ -52,6 +53,7 @@ namespace Uma_UI
         {
             value.SetObject();
             value.AddMember("textureName", rapidjson::Value(textureName.c_str(), allocator), allocator);
+            value.AddMember("texturePath", rapidjson::Value(texturePath.c_str(), allocator), allocator);
 
             value.AddMember("sortingOrder", sortingOrder, allocator);
 
@@ -72,6 +74,11 @@ namespace Uma_UI
         void Deserialize(const rapidjson::Value& value)
         {
             textureName = value["textureName"].GetString();
+
+            if (value.HasMember("texturePath"))
+            {
+                texturePath = value["texturePath"].GetString();
+            }
 
             if (value.HasMember("sortingOrder"))
             {

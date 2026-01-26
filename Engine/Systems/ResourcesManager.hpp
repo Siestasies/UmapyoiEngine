@@ -267,12 +267,16 @@ namespace Uma_Engine
             rapidjson::Value& out,
             rapidjson::Document::AllocatorType& allocator);
 
-        std::unordered_set<Entity> mSpritesToLoad;
-        std::unordered_set<Entity> mImagesToLoad;
-        std::unordered_set<Entity> mTextsToLoad;
+        void RequestSpriteLoad(Entity entity);
+        void RequestTextLoad(Entity entity);
+        void RequestImageLoad(Entity entity);
 
     private:
         Uma_ECS::Coordinator* mCoordinator = nullptr;
+
+        std::unordered_set<Entity> mSpritesToLoad;
+        std::unordered_set<Entity> mTextsToLoad;
+        std::unordered_set<Entity> mImagesToLoad;
 
         std::string FindTextureNameByPath(const std::string& filePath);
         std::string FindFontNameByPath(const std::string& filePath);

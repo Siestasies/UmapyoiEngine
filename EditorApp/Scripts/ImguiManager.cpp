@@ -3247,63 +3247,116 @@ namespace Uma_Engine
         }
         else if (type == coordinator.GetComponentType<Uma_UI::Image>())
         {
-           if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
-           {
-               if (ImGui::Button("Remove Component##Image"))
-               {
-                   auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Image>>(
-                       &coordinator,
-                       entity,
-                       "Remove Image"
-                   );
-                   commandHistory.ExecuteCommand(std::move(cmd));
+            if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Image"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Image>>(
+                        &coordinator,
+                        entity,
+                        "Remove Image"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
 
-                   return true;
-               }
+                auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
+                ImGui::Indent();
 
-               auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
-               ImGui::Indent();
-           
-               // Begin tracking
-               BeginComponentEdit(entity, coordinator);
-           
-               ImGui::Text("Texture: %s", image.textureName.c_str());
-               static char imageTextureBuffer[256];
-               strncpy(imageTextureBuffer, image.textureName.c_str(), 255);
-               imageTextureBuffer[255] = '\0';
-               if (ImGui::InputText("Texture Name", imageTextureBuffer, 256))
-               {
-                   image.textureName = imageTextureBuffer;
-                   m_hasUnsavedEdit = true;
-               }
-               ImGui::Separator();
-               ImGui::Text("Sorting Order");
-               if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
-           
-               ImGui::Separator();
-               ImGui::Text("Color & Visibility");
-           
-               float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
-               if (ImGui::ColorEdit4("Image Color", imageColor))
-               {
-                   image.color.r = imageColor[0];
-                   image.color.g = imageColor[1];
-                   image.color.b = imageColor[2];
-                   image.color.a = imageColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               if (ImGui::Checkbox("Image Visible", &image.visible))
-               {
-                   m_hasUnsavedEdit = true;
-               }
-           
-               // End tracking
-               EndComponentEdit(entity, coordinator, "Image");
-           
-               ImGui::Unindent();
-           }
-        }
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                ImGui::Text("Texture: %s", image.textureName.c_str());
+                static char imageTextureBuffer[256];
+                strncpy(imageTextureBuffer, image.textureName.c_str(), 255);
+                imageTextureBuffer[255] = '\0';
+                if (ImGui::InputText("Texture Name", imageTextureBuffer, 256))
+                {
+                    image.textureName = imageTextureBuffer;
+                    image.texture = nullptr; // Will reload
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Drag and Drop Target for Textures
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            image.texturePath = relativePath;
+                            image.textureName = p.stem().string();
+                            image.texture = nullptr;
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Image!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Sorting Order");
+                if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                ImGui::Text("Color & Visibility");
+
+                float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
+                if (ImGui::ColorEdit4("Image Color", imageColor))
+                {
+                    image.color.r = imageColor[0];
+                    image.color.g = imageColor[1];
+                    image.color.b = imageColor[2];
+                    image.color.a = imageColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::Checkbox("Image Visible", &image.visible))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Texture info
+                ImGui::Separator();
+                if (image.texture)
+                {
+                    ImGui::Text("Texture ID: %u", image.texture->tex_id);
+                    ImGui::Text("Size: %.0f x %.0f",
+                        image.texture->GetNativeSize().x,
+                        image.texture->GetNativeSize().y);
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Texture not loaded");
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Image");
+
+                ImGui::Unindent();
+            }
+            }
         else if (type == coordinator.GetComponentType<Uma_UI::Button>())
         {
            if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))

@@ -130,6 +130,44 @@ namespace Uma_Engine
             }
             mTextsToLoad.clear();
         }
+
+        // Load images
+        if (!mImagesToLoad.empty())
+        {
+            auto& imageArray = mCoordinator->GetComponentArray<Uma_UI::Image>();
+
+            for (auto entity : mImagesToLoad)
+            {
+                if (!imageArray.Has(entity)) continue;
+
+                auto& image = imageArray.GetData(entity);
+
+                // Try by name first
+                if (HasTexture(image.textureName))
+                {
+                    image.texture = GetTexture(image.textureName);
+                    continue;
+                }
+
+                // Check for duplicate by path
+                if (!image.texturePath.empty())
+                {
+                    std::string existingName = FindTextureNameByPath(image.texturePath);
+                    if (!existingName.empty())
+                    {
+                        image.textureName = existingName;
+                        image.texture = GetTexture(existingName);
+                    }
+                    else
+                    {
+                        // Load new
+                        LoadTexture(image.textureName, image.texturePath);
+                        image.texture = GetTexture(image.textureName);
+                    }
+                }
+            }
+            mImagesToLoad.clear();
+        }
     }
 
     void ResourcesManager::Shutdown()
@@ -706,5 +744,20 @@ namespace Uma_Engine
         // Convert to lowercase for case-insensitive comparison
         std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return std::tolower(c); });
         return normalized;
+    }
+
+    void ResourcesManager::RequestSpriteLoad(Entity entity)
+    {
+        mSpritesToLoad.insert(entity);
+    }
+
+    void ResourcesManager::RequestTextLoad(Entity entity)
+    {
+        mTextsToLoad.insert(entity);
+    }
+
+    void ResourcesManager::RequestImageLoad(Entity entity)
+    {
+        mImagesToLoad.insert(entity);
     }
 }
