@@ -86,7 +86,7 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
-
+        auto& particleArray = pCoordinator->GetComponentArray<ParticleEmitter>();
         auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         // one camera for now
@@ -211,6 +211,56 @@ namespace Uma_ECS
                 .texId = sr.texture->tex_id,
                 .entityId = entity
                 });
+
+            // Particle gathering
+            if (particleArray.Has(entity))
+            {
+                auto& component = particleArray.GetData(entity);
+                int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+                if (hierarchyOrder == -1) continue;
+
+                // Loop through each emitter in this component
+                for (int emitterIdx = 0; emitterIdx < component.GetEmitterCount(); ++emitterIdx)
+                {
+                    auto* emitter = component.GetEmitter(emitterIdx);
+                    if (!emitter || !emitter->isActive) continue;
+
+                    // Get texture
+                    auto texture = pResourcesManager->GetTexture(emitter->textureName);
+                    if (!texture || texture->tex_id == 0)
+                    {
+                        std::stringstream log;
+                        log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->textureName << "'";
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                        continue;
+                    }
+
+                    // Add each active particle as a LayeredSprite
+                    for (const auto& particle : emitter->particles)
+                    {
+                        if (!particle.active) continue;
+
+                        allSprites.push_back(LayeredSprite{
+                            .info = Uma_Engine::Sprite_Info{
+                                .tex_id = texture->tex_id,
+                                .pos = particle.position,
+                                .scale = Vec2(particle.scale, particle.scale),
+                                .rot = particle.rotation,
+                                .rot_speed = 0.0f,
+                                .uvOffset = Vec2(0.0f, 0.0f),
+                                .uvSize = Vec2(1.0f, 1.0f),
+                                .tintColor = particle.color,
+                                .alpha = particle.opacity
+                            },
+                            .layer = emitter->renderLayer,
+                            .order = emitter->renderOrder,
+                            .hierarchyOrder = hierarchyOrder,
+                            .texId = texture->tex_id,
+                            .entityId = entity
+                            });
+                    }
+                }
+            }
         }
     }
 

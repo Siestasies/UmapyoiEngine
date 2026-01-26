@@ -170,7 +170,7 @@ namespace Uma_ECS
                 }
 
                 // Render particles
-                auto texture = pResourcesManager->GetTexture(emitter.textureName);
+                /*auto texture = pResourcesManager->GetTexture(emitter.textureName);
                 if (!texture || texture->tex_id == 0)
                 {
                     std::stringstream log;
@@ -201,7 +201,7 @@ namespace Uma_ECS
                 if (!instanceData.empty())
                 {
                     pGraphics->DrawSpritesInstanced(texture->tex_id, instanceData);
-                }
+                }*/
             }
         }
     }

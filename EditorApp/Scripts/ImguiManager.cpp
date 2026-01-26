@@ -2970,6 +2970,32 @@ namespace Uma_Engine
 
                         ImGui::Separator();
 
+                        ImGui::Text("Rendering");
+
+                        // Render layer dropdown
+                        const char* renderLayerNames[] = {
+                            "RL_NONE",
+                            "RL_WALL_TOP",
+                            "RL_FLOOR",
+                            "RL_ENV",
+                            "RL_ENEMY",
+                            "RL_PLAYER",
+                            "RL_WALL_BTM",
+                            "RL_UI"
+                        };
+                        int currentRenderLayer = 0;
+                        unsigned int rl = static_cast<unsigned int>(emitter->renderLayer);
+                        while (rl >>= 1) ++currentRenderLayer;
+                        if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                        {
+                            emitter->renderLayer = (1u << currentRenderLayer);
+                        }
+
+                        ImGui::Text("Render Order");
+                        ImGui::InputInt("##Particle Render Order", &emitter->renderOrder, 1, 0, 0);
+
+                        ImGui::Separator();
+
                         // Appearance settings
                         if (ImGui::CollapsingHeader("Appearance", ImGuiTreeNodeFlags_DefaultOpen))
                         {
