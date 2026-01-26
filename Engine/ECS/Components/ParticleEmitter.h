@@ -358,10 +358,13 @@ namespace Uma_ECS
         EmitterMode mode = EmitterMode::Continuous;
         int maxParticles = 100;
         std::string textureName = "whitePixel";
+        std::string texturePath = "";
         bool isActive = true; // Enable/disable emitter
 
         LayerMask renderLayer = RL_NONE;
         int renderOrder = 0;
+
+        std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
 
         ParticleAppearance appearance;
         FadeSettings fade;
@@ -454,6 +457,10 @@ namespace Uma_ECS
             textureVal.SetString(textureName.c_str(), static_cast<rapidjson::SizeType>(textureName.size()), allocator);
             out.AddMember("textureName", textureVal, allocator);
 
+            rapidjson::Value pathVal;
+            pathVal.SetString(texturePath.c_str(), static_cast<rapidjson::SizeType>(texturePath.size()), allocator);
+            out.AddMember("texturePath", pathVal, allocator);
+
             rapidjson::Value appearanceVal;
             appearance.Serialize(appearanceVal, allocator);
             out.AddMember("appearance", appearanceVal, allocator);
@@ -489,6 +496,8 @@ namespace Uma_ECS
             if (in.HasMember("renderOrder")) renderOrder = in["renderOrder"].GetInt();
 
             if (in.HasMember("textureName")) textureName = in["textureName"].GetString();
+
+            if (in.HasMember("texturePath")) texturePath = in["texturePath"].GetString();
 
             if (in.HasMember("appearance")) appearance.Deserialize(in["appearance"]);
             if (in.HasMember("fade")) fade.Deserialize(in["fade"]);

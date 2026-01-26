@@ -2960,15 +2960,65 @@ namespace Uma_Engine
                         ImGui::DragInt("Max Particles", &emitter->maxParticles, 1.0f, 1, 10000);
 
                         // Texture Name
+                        ImGui::Text("Texture: %s", emitter->textureName.c_str());
                         char texBuffer[128];
                         strncpy(texBuffer, emitter->textureName.c_str(), sizeof(texBuffer) - 1);
                         texBuffer[sizeof(texBuffer) - 1] = '\0';
                         if (ImGui::InputText("Texture Name", texBuffer, sizeof(texBuffer)))
                         {
                             emitter->textureName = texBuffer;
+                            emitter->texture = nullptr; // Will reload
+                        }
+
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                            {
+                                const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                std::string fullPath = data->filepath;
+                                std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                std::filesystem::path p(fullPath);
+                                std::string ext = p.extension().string();
+
+                                // Convert to lowercase for comparison
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                {
+                                    std::string relativePath = fullPath;
+                                    size_t assetsPos = fullPath.find("Assets/");
+                                    if (assetsPos != std::string::npos)
+                                    {
+                                        relativePath = fullPath.substr(assetsPos);
+                                    }
+
+                                    emitter->texturePath = relativePath;
+                                    emitter->textureName = p.stem().string();
+                                    emitter->texture = nullptr;
+                                }
+                                else
+                                {
+                                    m_popupErrorMessage = "Invalid file type for Particle Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                    ImGui::OpenPopup("Invalid File Format");
+                                }
+                            }
+                            ImGui::EndDragDropTarget();
                         }
 
                         ImGui::Separator();
+
+                        if (emitter->texture)
+                        {
+                            ImGui::Text("Texture ID: %u", emitter->texture->tex_id);
+                            ImGui::Text("Size: %.0f x %.0f",
+                                emitter->texture->GetNativeSize().x,
+                                emitter->texture->GetNativeSize().y);
+                        }
+                        else
+                        {
+                            ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Texture not loaded");
+                        }
 
                         ImGui::Text("Rendering");
 

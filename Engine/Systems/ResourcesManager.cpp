@@ -168,6 +168,50 @@ namespace Uma_Engine
             }
             mImagesToLoad.clear();
         }
+
+        // Load particle texture
+        if (!mParticlesToLoad.empty())
+        {
+            auto& particleArray = mCoordinator->GetComponentArray<Uma_ECS::ParticleEmitter>();
+
+            for (const auto& [entity, emitterIndex] : mParticlesToLoad)
+            {
+                if (!particleArray.Has(entity)) continue;
+
+                auto& component = particleArray.GetData(entity);
+
+                if (emitterIndex < 0 || emitterIndex >= component.GetEmitterCount())
+                    continue;
+
+                auto* emitter = component.GetEmitter(emitterIndex);
+                if (!emitter) continue;
+
+                // Try by name first
+                if (HasTexture(emitter->textureName))
+                {
+                    emitter->texture = GetTexture(emitter->textureName);
+                    continue;
+                }
+
+                // Check for duplicate by path
+                if (!emitter->texturePath.empty())
+                {
+                    std::string existingName = FindTextureNameByPath(emitter->texturePath);
+                    if (!existingName.empty())
+                    {
+                        emitter->textureName = existingName;
+                        emitter->texture = GetTexture(existingName);
+                    }
+                    else
+                    {
+                        // Load new
+                        LoadTexture(emitter->textureName, emitter->texturePath);
+                        emitter->texture = GetTexture(emitter->textureName);
+                    }
+                }
+            }
+            mParticlesToLoad.clear();
+        }
     }
 
     void ResourcesManager::Shutdown()
@@ -759,5 +803,10 @@ namespace Uma_Engine
     void ResourcesManager::RequestImageLoad(Entity entity)
     {
         mImagesToLoad.insert(entity);
+    }
+
+    void ResourcesManager::RequestParticleLoad(Entity entity, int emitterIndex)
+    {
+        mParticlesToLoad.insert({ entity, emitterIndex });
     }
 }
