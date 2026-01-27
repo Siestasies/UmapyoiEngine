@@ -31,7 +31,8 @@ function state_update(entity, dt)
         if HasPathFinding() then 
             local pf = GetPathFinding()
             if pf then
-                pf.goal = Vec2(playerTransform.position.x, playerTransform.position.y)
+                pf.goal.x = playerTransform.position.x
+                pf.goal.y = playerTransform.position.y
             end
         end 
     end
