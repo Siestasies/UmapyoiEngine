@@ -1,4 +1,8 @@
--- EnemyFSM.lua - Full structure, walkV2 tester only
+--this master script should purely handle entity wide behavior like collision logic
+--or health tracking stuff and force transition only if it is required to
+--state specific stuff should stay with states
+--examples like taking damage/collision with other entities should be in master script
+--walking, attack, running should be its own script
 ExposedVars = {
     name = "Enemy FSM Controller",
     isActive = true,
@@ -31,6 +35,10 @@ function Update(dt)
     if KeyReleased(KEY_3) then
         ChangeState(EntityID,"walkV2")
         Log("WALKKKKKKKKKKKK")
+    end
+
+    if KeyReleased(KEY_4) then
+        ChangeState(EntityID, "ChaseStateV2")
     end
 end
 

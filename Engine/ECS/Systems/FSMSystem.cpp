@@ -39,7 +39,7 @@ void Uma_ECS::FSMSystem::Update(float dt)
 			auto state_it = curr.states.find(curr.current + ".lua");
 			if (state_it != curr.states.end()) {
 				auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
-				system->CallScriptFunction(entity, state_it->second.name, "state_update", dt);
+				system->CallScriptFunction(entity, state_it->second.name, "state_update", entity, dt);
 			}
 		}
 
@@ -48,12 +48,12 @@ void Uma_ECS::FSMSystem::Update(float dt)
 
 			auto curr_it = curr.states.find(curr.current + ".lua");
 			if (curr_it != curr.states.end()) {
-				system->CallScriptFunction(entity, curr_it->second.name, "state_exit", dt);
+				system->CallScriptFunction(entity, curr_it->second.name, "state_exit", entity);
 			}
 
 			auto next_it = curr.states.find(curr.next + ".lua");
 			if (next_it != curr.states.end()) {
-				system->CallScriptFunction(entity, next_it->second.name, "state_enter", dt);
+				system->CallScriptFunction(entity, next_it->second.name, "state_enter", entity);
 			}
 			else {
 				curr.next.clear();  // Prevent stuck transition

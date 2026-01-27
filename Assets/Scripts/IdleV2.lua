@@ -5,7 +5,7 @@ function state_enter(entity)
     Log("IdleState entered")
 end
 
-function state_update(dt)
+function state_update(entity, dt)
     -- Pure walk behavior
     -- local transform = GetTransform(EntityID)
     -- transform.position.x = transform.position.x + ExposedVars.speed * dt
