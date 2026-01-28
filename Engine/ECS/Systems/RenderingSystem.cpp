@@ -226,16 +226,11 @@ namespace Uma_ECS
                     if (!emitter || !emitter->isActive) continue;
 
                     // Get texture
-                    if (!emitter->texture)
+                    auto texture = pResourcesManager->GetTexture(emitter->textureName);
+                    if (!texture || texture->tex_id == 0)
                     {
-                        emitter->texture = pResourcesManager->GetTexture(emitter->textureName);
-                    }
-
-                    if (!emitter->texture || emitter->texture->tex_id == 0)
-                    {
-                        pResourcesManager->RequestParticleLoad(entity, emitterIdx);
                         std::stringstream log;
-                        log << "ParticleEmitter '" << emitter->name << "': texture is not valid.";
+                        log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->textureName << "'";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                         continue;
                     }
@@ -247,7 +242,7 @@ namespace Uma_ECS
 
                         allSprites.push_back(LayeredSprite{
                             .info = Uma_Engine::Sprite_Info{
-                                .tex_id = emitter->texture->tex_id,
+                                .tex_id = texture->tex_id,
                                 .pos = particle.position,
                                 .scale = Vec2(particle.scale, particle.scale),
                                 .rot = particle.rotation,
@@ -260,7 +255,7 @@ namespace Uma_ECS
                             .layer = emitter->renderLayer,
                             .order = emitter->renderOrder,
                             .hierarchyOrder = hierarchyOrder,
-                            .texId = emitter->texture->tex_id,
+                            .texId = texture->tex_id,
                             .entityId = entity
                             });
                     }

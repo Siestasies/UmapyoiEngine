@@ -36,9 +36,7 @@ All rights reserved.
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <set>
 #include <optional>
-
 namespace Uma_ECS
 {
     class Coordinator;
@@ -272,7 +270,6 @@ namespace Uma_Engine
         void RequestSpriteLoad(Entity entity);
         void RequestTextLoad(Entity entity);
         void RequestImageLoad(Entity entity);
-        void RequestParticleLoad(Entity entity, int emitterIndex);
 
     private:
         Uma_ECS::Coordinator* mCoordinator = nullptr;
@@ -280,7 +277,6 @@ namespace Uma_Engine
         std::unordered_set<Entity> mSpritesToLoad;
         std::unordered_set<Entity> mTextsToLoad;
         std::unordered_set<Entity> mImagesToLoad;
-        std::set<std::pair<Entity, int>> mParticlesToLoad;
 
         std::string FindTextureNameByPath(const std::string& filePath);
         std::string FindFontNameByPath(const std::string& filePath);
