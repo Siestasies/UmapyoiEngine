@@ -148,7 +148,6 @@ namespace Uma_Engine
 
         std::string normalizedPath = NormalizePath(filePath);
 
-        // Check cache
         auto it = mTextures.find(normalizedPath);
         if (it != mTextures.end())
         {

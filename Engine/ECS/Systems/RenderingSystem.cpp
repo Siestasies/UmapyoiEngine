@@ -223,11 +223,11 @@ namespace Uma_ECS
                     if (!emitter || !emitter->isActive) continue;
 
                     // Get texture
-                    auto texture = pResourcesManager->GetTexture(emitter->textureName);
+                    auto texture = pResourcesManager->GetTexture(emitter->texturePath);
                     if (!texture || texture->tex_id == 0)
                     {
                         std::stringstream log;
-                        log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->textureName << "'";
+                        log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->texturePath << "'";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                         continue;
                     }
