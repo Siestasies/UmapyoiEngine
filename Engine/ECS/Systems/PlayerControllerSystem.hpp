@@ -32,6 +32,8 @@ All rights reserved.
 #include "Systems/InputSystem.h"
 #include "Systems/HybridInputSystem.h"
 #include "Systems/Graphics.hpp"
+#include "Systems/FSMSystem.hpp"
+#include "Components/FSM.h"
 
 namespace Uma_ECS
 {
@@ -39,46 +41,119 @@ namespace Uma_ECS
     {
     public:
         void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c, Uma_Engine::Graphics* g);
-        
         void Update(float dt);
-
         void Shutdown();
 
-    private:
-        void OnKeyPress(const Uma_Engine::KeyPressEvent& event);
-        void OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event);
-        void OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event);
+        // ============================================================
+        // Input Query API - Called by Lua scripts
+        // ============================================================
 
-        void HandleMovementInput(float dt);
-        void HandleActionInput(float dt);
+        bool IsAttack1Pressed() const { return inputState.attack_1 && !inputState.attack_1_consumed; }
+        bool IsAttack2Pressed() const { return inputState.attack_2 && !inputState.attack_2_consumed; }
+        bool IsInteractPressed() const { return inputState.interactPressed && !inputState.interactConsumed; }
+        bool IsDashPressed() const { return inputState.dashPressed && !inputState.dashConsumed; }
+        bool IsMovePressed() const { return inputState.rightMousePressed && !inputState.rightMouseConsumed; }
+
+        // Input consumption - prevents multiple state transitions from same input
+        void ConsumeAttack1() { inputState.attack_1_consumed = true; }
+        void ConsumeAttack2() { inputState.attack_2_consumed = true; }
+        void ConsumeInteract() { inputState.interactConsumed = true; }
+        void ConsumeDash() { inputState.dashConsumed = true; }
+        void ConsumeMove() { inputState.rightMouseConsumed = true; }
+
+        // Get world position for movement target
+        Uma_Math::Vec2 GetMoveTargetPosition() const;
+
+    private:
         void SubscribeToEvents();
 
-        void HandlePlayerAnimation();
+        // Input event handlers
+        void OnKeyPress(const Uma_Engine::KeyPressEvent& event);
+        void OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event);
 
-        void HandleCollision(Entity deffender, Entity attacker);
-
-        void OnHurt(Entity entity, int damage);
+        // Collision handling
+        void HandleTriggerEnter(Entity player, Entity other);
+        void OnPlayerHurt(Entity entity, int damage);
 
     private:
         struct InputState
         {
+            // Attack inputs
             bool attack_1 = false;
             bool attack_2 = false;
+            bool attack_1_consumed = false;
+            bool attack_2_consumed = false;
 
+            // Action inputs
             bool interactPressed = false;
+            bool interactConsumed = false;
             bool dashPressed = false;
-            bool movePressed = false;
+            bool dashConsumed = false;
 
-            // Mouse input buffering for fixed timestep
+            // Movement input
             bool rightMousePressed = false;
-            bool rightMouseConsumed = false;  // Track if we've already processed this press
-        } inputState;
+            bool rightMouseConsumed = false;
 
-        bool isPlayerDead = false;
+            void ResetConsumedFlags()
+            {
+                attack_1_consumed = false;
+                attack_2_consumed = false;
+                interactConsumed = false;
+                dashConsumed = false;
+            }
+        } inputState;
 
         Uma_Engine::EventSystem* pEventSystem = nullptr;
         Uma_Engine::Graphics* pGraphicsSystem = nullptr;
         Uma_Engine::HybridInputSystem* pHybridInputSystem = nullptr;
         Coordinator* pCoordinator = nullptr;
     };
+
+    //class PlayerControllerSystem : public ECSSystem
+    //{
+    //public:
+    //    void Init(Uma_Engine::EventSystem* es, Uma_Engine::HybridInputSystem* is, Coordinator* c, Uma_Engine::Graphics* g);
+    //    
+    //    void Update(float dt);
+
+    //    void Shutdown();
+
+    //private:
+    //    void OnKeyPress(const Uma_Engine::KeyPressEvent& event);
+    //    void OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event);
+    //    void OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event);
+
+    //    void HandleMovementInput(float dt);
+    //    void HandleActionInput(float dt);
+    //    void SubscribeToEvents();
+
+    //    void HandlePlayerAnimation();
+
+    //    void HandleCollision(Entity deffender, Entity attacker);
+
+    //    void OnHurt(Entity entity, int damage);
+
+    //private:
+    //    struct InputState
+    //    {
+    //        bool attack_1 = false;
+    //        bool attack_2 = false;
+
+    //        bool interactPressed = false;
+    //        bool dashPressed = false;
+    //        bool movePressed = false;
+
+    //        // Mouse input buffering for fixed timestep
+    //        bool rightMousePressed = false;
+    //        bool rightMouseConsumed = false;  // Track if we've already processed this press
+    //    } inputState;
+
+    //    bool isPlayerDead = false;
+
+    //    Uma_Engine::EventSystem* pEventSystem = nullptr;
+    //    Uma_Engine::Graphics* pGraphicsSystem = nullptr;
+    //    Uma_Engine::HybridInputSystem* pHybridInputSystem = nullptr;
+    //    Coordinator* pCoordinator = nullptr;
+    //};
+
 }
