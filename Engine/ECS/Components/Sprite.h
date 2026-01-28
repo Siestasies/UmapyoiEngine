@@ -33,7 +33,6 @@ namespace Uma_ECS
     struct Sprite
     {
         // pointer pointing to the texture in resources manager
-        std::string textureName{};
         std::string texturePath{};
         LayerMask renderLayer = RL_NONE;
         int renderOrder = 0;
@@ -78,10 +77,6 @@ namespace Uma_ECS
         {
             value.SetObject();
 
-            // Save texture name (not the pointer)
-            value.AddMember("textureName",
-                rapidjson::Value(textureName.c_str(), allocator),
-                allocator);
             value.AddMember("texturePath", rapidjson::Value(texturePath.c_str(), allocator), allocator);
 
             value.AddMember("layer", renderLayer, allocator);
@@ -113,8 +108,6 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
-            textureName = value["textureName"].GetString();
-
             if (value.HasMember("texturePath"))
             {
                 texturePath = value["texturePath"].GetString();

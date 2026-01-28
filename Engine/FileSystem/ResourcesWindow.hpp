@@ -84,8 +84,6 @@ namespace Uma_Engine
 
         // Texture popup state
         std::string m_PendingTexturePath;
-        std::string m_PendingTextureName;
-        char m_TextureNameBuffer[128];
         bool m_TexturePopupJustOpened;
 
         // Font popup state
@@ -123,32 +121,29 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    if (ImGui::BeginTable("TexturesTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    if (ImGui::BeginTable("TexturesTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
                     {
-                        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
                         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
                         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 60.0f);
                         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                         ImGui::TableHeadersRow();
 
                         std::string toDelete;
-                        for (const auto& [name, texture] : textures)
+                        for (const auto& [path, texture] : textures)
                         {
                             ImGui::TableNextRow();
+
                             ImGui::TableSetColumnIndex(0);
-                            ImGui::Text("%s", name.c_str());
+                            ImGui::TextWrapped("%s", path.c_str());
 
                             ImGui::TableSetColumnIndex(1);
-                            ImGui::TextWrapped("%s", texture->filePath.c_str());
-
-                            ImGui::TableSetColumnIndex(2);
                             ImGui::Text("%u", texture->tex_id);
 
-                            ImGui::TableSetColumnIndex(3);
-                            ImGui::PushID(name.c_str());
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::PushID(path.c_str());
                             if (ImGui::SmallButton("X"))
                             {
-                                toDelete = name;
+                                toDelete = path;
                             }
                             ImGui::PopID();
                         }
@@ -440,9 +435,6 @@ namespace Uma_Engine
             {
                 std::cout << "[ResourcesWindow] Triggering texture popup" << std::endl;
                 m_PendingTexturePath = filePath;
-                m_PendingTextureName = name;
-                strncpy(m_TextureNameBuffer, m_PendingTextureName.c_str(), sizeof(m_TextureNameBuffer));
-                m_TextureNameBuffer[sizeof(m_TextureNameBuffer) - 1] = '\0';
                 m_TexturePopupJustOpened = true;
             }
             else if (ext == ".ttf" || ext == ".otf")
@@ -493,10 +485,8 @@ namespace Uma_Engine
             // Define popup EVERY frame
             if (ImGui::BeginPopupModal("Add Texture", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
             {
-                ImGui::Text("Texture Name:");
-                ImGui::SameLine();
-                ImGui::SetNextItemWidth(150);
-                ImGui::InputText("##texturename", m_TextureNameBuffer, IM_ARRAYSIZE(m_TextureNameBuffer));
+                ImGui::Text("Texture Path:");
+                ImGui::TextWrapped("%s", m_PendingTexturePath.c_str());
 
                 ImGui::Spacing();
                 ImGui::Separator();
@@ -504,22 +494,13 @@ namespace Uma_Engine
 
                 if (ImGui::Button("Add Texture", ImVec2(120, 0)))
                 {
-                    m_PendingTextureName = std::string(m_TextureNameBuffer);
-
-                    if (m_ResourcesManager->HasTexture(m_PendingTextureName))
+                    if (m_ResourcesManager->LoadTexture(m_PendingTexturePath))
                     {
-                        std::cout << "[ResourcesWindow] Texture already exists: " << m_PendingTextureName << std::endl;
+                        std::cout << "[ResourcesWindow] Added texture: " << m_PendingTexturePath << std::endl;
                     }
                     else
                     {
-                        if (m_ResourcesManager->LoadTexture(m_PendingTextureName, m_PendingTexturePath))
-                        {
-                            std::cout << "[ResourcesWindow] Added texture: " << m_PendingTextureName << std::endl;
-                        }
-                        else
-                        {
-                            std::cout << "[ResourcesWindow] Failed to load texture: " << m_PendingTextureName << std::endl;
-                        }
+                        std::cout << "[ResourcesWindow] Failed to load texture: " << m_PendingTexturePath << std::endl;
                     }
                     ImGui::CloseCurrentPopup();
                 }

@@ -61,44 +61,6 @@ namespace Uma_Engine
         // sike not empty anymore
         if (!mCoordinator) return;
 
-        // Load sprites
-        if (!mSpritesToLoad.empty())
-        {
-            auto& spriteArray = mCoordinator->GetComponentArray<Uma_ECS::Sprite>();
-
-            for (auto entity : mSpritesToLoad)
-            {
-                if (!spriteArray.Has(entity)) continue;
-
-                auto& sprite = spriteArray.GetData(entity);
-
-                // Try by name first
-                if (HasTexture(sprite.textureName))
-                {
-                    sprite.texture = GetTexture(sprite.textureName);
-                    continue;
-                }
-
-                // Check for duplicate by path
-                if (!sprite.texturePath.empty())
-                {
-                    std::string existingName = FindTextureNameByPath(sprite.texturePath);
-                    if (!existingName.empty())
-                    {
-                        sprite.textureName = existingName;
-                        sprite.texture = GetTexture(existingName);
-                    }
-                    else
-                    {
-                        // Load new
-                        LoadTexture(sprite.textureName, sprite.texturePath);
-                        sprite.texture = GetTexture(sprite.textureName);
-                    }
-                }
-            }
-            mSpritesToLoad.clear();
-        }
-
         // Load fonts
         if (!mTextsToLoad.empty())
         {
@@ -130,44 +92,6 @@ namespace Uma_Engine
             }
             mTextsToLoad.clear();
         }
-
-        // Load images
-        if (!mImagesToLoad.empty())
-        {
-            auto& imageArray = mCoordinator->GetComponentArray<Uma_UI::Image>();
-
-            for (auto entity : mImagesToLoad)
-            {
-                if (!imageArray.Has(entity)) continue;
-
-                auto& image = imageArray.GetData(entity);
-
-                // Try by name first
-                if (HasTexture(image.textureName))
-                {
-                    image.texture = GetTexture(image.textureName);
-                    continue;
-                }
-
-                // Check for duplicate by path
-                if (!image.texturePath.empty())
-                {
-                    std::string existingName = FindTextureNameByPath(image.texturePath);
-                    if (!existingName.empty())
-                    {
-                        image.textureName = existingName;
-                        image.texture = GetTexture(existingName);
-                    }
-                    else
-                    {
-                        // Load new
-                        LoadTexture(image.textureName, image.texturePath);
-                        image.texture = GetTexture(image.textureName);
-                    }
-                }
-            }
-            mImagesToLoad.clear();
-        }
     }
 
     void ResourcesManager::Shutdown()
@@ -181,34 +105,72 @@ namespace Uma_Engine
         mSound->release();
     }
 
-    bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
+    bool ResourcesManager::LoadTexture(const std::string& filePath)
     {
-        assert(mGraphics != nullptr && "Error: Graphics system is not initialized properly.");
+        assert(mGraphics != nullptr && "Graphics system not initialized");
 
-        // Check if texture is already loaded
-        if (HasTexture(textureName))
+        if (filePath.empty())
         {
-            std::cout << "Warning: Texture '" << textureName << "' is already loaded!" << std::endl;
+            std::cout << "Warning: Empty file path" << std::endl;
+            return false;
+        }
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        // Check if already loaded
+        if (mTextures.find(normalizedPath) != mTextures.end())
+        {
+            std::cout << "Texture already loaded: " << normalizedPath << std::endl;
             return true;
         }
 
-        // Use Graphics class to load file texture
-        std::shared_ptr<Texture> texture = std::make_shared<Texture>(mGraphics->LoadTextureFromFile(filePath));
+        // Load texture
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>(
+            mGraphics->LoadTextureFromFile(filePath)
+        );
 
-        // Store in map
-        mTextures[textureName] = texture;
+        if (texture->tex_id == 0)
+        {
+            std::cerr << "Failed to load texture: " << filePath << std::endl;
+            return false;
+        }
+
+        // Store with path as key
+        mTextures[normalizedPath] = texture;
+
         return true;
     }
 
-    std::shared_ptr<Texture> ResourcesManager::GetTexture(const std::string& textureName)
+    std::shared_ptr<Texture> ResourcesManager::GetTexture(const std::string& filePath)
     {
-        auto it = mTextures.find(textureName);
-        return (it != mTextures.end()) ? it->second : nullptr;
+        if (filePath.empty())
+            return nullptr;
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        // Check cache
+        auto it = mTextures.find(normalizedPath);
+        if (it != mTextures.end())
+        {
+            return it->second;
+        }
+
+        // Not found
+        if (LoadTexture(filePath))
+        {
+            return mTextures[normalizedPath];
+        }
+
+        return nullptr;
     }
 
-    bool ResourcesManager::HasTexture(const std::string& textureName) const
+    bool ResourcesManager::HasTexture(const std::string& filePath) const
     {
-        return mTextures.find(textureName) != mTextures.end();
+        if (filePath.empty())
+            return false;
+
+        std::string normalizedPath = NormalizePath(filePath);
+        return mTextures.find(normalizedPath) != mTextures.end();
     }
 
     void ResourcesManager::PrintLoadedTextureNames() const
@@ -220,25 +182,21 @@ namespace Uma_Engine
         }
     }
 
-    void ResourcesManager::UnloadTexture(const std::string& textureName)
+    void ResourcesManager::UnloadTexture(const std::string& filePath)
     {
-        auto it = mTextures.find(textureName);
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mTextures.find(normalizedPath);
         if (it != mTextures.end())
         {
-            // Unload texture
-            mGraphics->UnloadTexture((*it->second).tex_id);
-
-            // tex_id become invalid so set to 0
-            (*it->second).tex_id = 0;
-
-            // Remove from our map
+            mGraphics->UnloadTexture(it->second->tex_id);
+            it->second->tex_id = 0;
             mTextures.erase(it);
-
-            std::cout << "Texture '" << textureName << "' unloaded" << std::endl;
+            std::cout << "Texture unloaded: " << normalizedPath << std::endl;
         }
         else
         {
-            std::cout << "Warning: Texture does not exist: '" << textureName << "'" << std::endl;
+            std::cout << "Warning: Texture not found: " << normalizedPath << std::endl;
         }
     }
 
@@ -263,20 +221,14 @@ namespace Uma_Engine
         out.SetObject();
 
         rapidjson::Value texturesArr(rapidjson::kArrayType);
-        for (const auto& tex : mTextures)
+        for (const auto& [path, texture] : mTextures)
         {
             rapidjson::Value textureObj(rapidjson::kObjectType);
 
-            // Name
-            rapidjson::Value nameVal;
-            nameVal.SetString(tex.first.c_str(), static_cast<rapidjson::SizeType>(tex.first.size()), allocator);
-            textureObj.AddMember("name", nameVal, allocator);
-
-            // Path
+            // Save path
             rapidjson::Value pathVal;
-            pathVal.SetString(tex.second->filePath.c_str(),
-                static_cast<rapidjson::SizeType>(tex.second->filePath.size()),
-                allocator);
+            pathVal.SetString(path.c_str(),
+                static_cast<rapidjson::SizeType>(path.size()), allocator);
             textureObj.AddMember("path", pathVal, allocator);
 
             texturesArr.PushBack(textureObj, allocator);
@@ -367,12 +319,16 @@ namespace Uma_Engine
         {
             for (const auto& texVal : in["textures"].GetArray())
             {
-                if (texVal.HasMember("name") && texVal.HasMember("path"))
+                if (texVal.HasMember("path"))
                 {
-                    std::string name = texVal["name"].GetString();
                     std::string path = texVal["path"].GetString();
-
-                    LoadTexture(name, path); // reuse your existing loader
+                    LoadTexture(path);
+                }
+                // Backward compatibility
+                else if (texVal.HasMember("name") && texVal.HasMember("path"))
+                {
+                    std::string path = texVal["path"].GetString();
+                    LoadTexture(path);
                 }
             }
         }
@@ -534,7 +490,7 @@ namespace Uma_Engine
     }
 
     void ResourcesManager::SerializeSpecificResources(
-        const std::unordered_set<std::string>& textureNames,
+        const std::unordered_set<std::string>& texturePaths,
         const std::unordered_set<std::string>& soundNames,
         const std::unordered_set<std::string>& fontNames,
         rapidjson::Value& out,
@@ -544,24 +500,17 @@ namespace Uma_Engine
 
         // Serialize textures
         rapidjson::Value texturesArr(rapidjson::kArrayType);
-        for (const std::string& textureName : textureNames)
+        for (const std::string& texturePath : texturePaths)
         {
-            auto it = mTextures.find(textureName);
+            std::string normalized = NormalizePath(texturePath);
+            auto it = mTextures.find(normalized);
             if (it != mTextures.end())
             {
                 rapidjson::Value textureObj(rapidjson::kObjectType);
 
-                // Name
-                rapidjson::Value nameVal;
-                nameVal.SetString(textureName.c_str(),
-                    static_cast<rapidjson::SizeType>(textureName.size()), allocator);
-                textureObj.AddMember("name", nameVal, allocator);
-
-                // Path
                 rapidjson::Value pathVal;
-                pathVal.SetString(it->second->filePath.c_str(),
-                    static_cast<rapidjson::SizeType>(it->second->filePath.size()),
-                    allocator);
+                pathVal.SetString(it->first.c_str(),
+                    static_cast<rapidjson::SizeType>(it->first.size()), allocator);
                 textureObj.AddMember("path", pathVal, allocator);
 
                 texturesArr.PushBack(textureObj, allocator);
@@ -709,20 +658,6 @@ namespace Uma_Engine
         return mFonts;
     }
 
-    std::string ResourcesManager::FindTextureNameByPath(const std::string& filePath)
-    {
-        std::string normalizedPath = NormalizePath(filePath);
-
-        for (const auto& [name, texturePtr] : mTextures)
-        {
-            if (texturePtr && NormalizePath(texturePtr->filePath) == normalizedPath)
-            {
-                return name;
-            }
-        }
-        return "";
-    }
-
     std::string ResourcesManager::FindFontNameByPath(const std::string& filePath)
     {
         std::string normalizedPath = NormalizePath(filePath);
@@ -746,18 +681,8 @@ namespace Uma_Engine
         return normalized;
     }
 
-    void ResourcesManager::RequestSpriteLoad(Entity entity)
-    {
-        mSpritesToLoad.insert(entity);
-    }
-
     void ResourcesManager::RequestTextLoad(Entity entity)
     {
         mTextsToLoad.insert(entity);
-    }
-
-    void ResourcesManager::RequestImageLoad(Entity entity)
-    {
-        mImagesToLoad.insert(entity);
     }
 }

@@ -563,7 +563,7 @@ namespace Uma_ECS
 
         // Register Sprite
         sharedLua->new_usertype<Sprite>("Sprite",
-            "textureName", &Sprite::textureName,
+            "texturePath", &Sprite::texturePath,
             "renderLayer", &Sprite::renderLayer,
             "flipX", &Sprite::flipX,
             "flipY", &Sprite::flipY,

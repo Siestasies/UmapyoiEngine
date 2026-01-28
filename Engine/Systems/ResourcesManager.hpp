@@ -77,27 +77,27 @@ namespace Uma_Engine
         \param filePath The relative path to the image file
         \return True if loaded successfully or if the texture already exists; false otherwise
         */
-        bool LoadTexture(const std::string& textureName, const std::string& filePath);
+        bool LoadTexture(const std::string& filePath);
 
         /*!
         \brief Unloads a specific texture from memory
         \param textureName The unique identifier of the texture to unload
         */
-        void UnloadTexture(const std::string& textureName);
+        void UnloadTexture(const std::string& filePath);
 
         /*!
         \brief Retrieves a shared pointer to a loaded texture
         \param textureName The unique identifier of the texture
         \return A shared pointer to the Texture, or nullptr if not found
         */
-        std::shared_ptr<Texture> GetTexture(const std::string& textureName);
+        std::shared_ptr<Texture> GetTexture(const std::string& filePath);
 
         /*!
         \brief Checks if a specific texture is currently loaded
         \param textureName The unique identifier to check
         \return True if the texture exists in the cache, false otherwise
         */
-        bool HasTexture(const std::string& textureName) const;
+        bool HasTexture(const std::string& filePath) const;
 
         /*!
         \brief Prints the names and IDs of all currently loaded textures to the console
@@ -261,24 +261,19 @@ namespace Uma_Engine
         \param allocator The JSON allocator.
         */
         void SerializeSpecificResources(
-            const std::unordered_set<std::string>& textureNames,
+            const std::unordered_set<std::string>& texturePaths,
             const std::unordered_set<std::string>& soundNames,
             const std::unordered_set<std::string>& fontNames,
             rapidjson::Value& out,
             rapidjson::Document::AllocatorType& allocator);
 
-        void RequestSpriteLoad(Entity entity);
         void RequestTextLoad(Entity entity);
-        void RequestImageLoad(Entity entity);
 
     private:
         Uma_ECS::Coordinator* mCoordinator = nullptr;
 
-        std::unordered_set<Entity> mSpritesToLoad;
         std::unordered_set<Entity> mTextsToLoad;
-        std::unordered_set<Entity> mImagesToLoad;
 
-        std::string FindTextureNameByPath(const std::string& filePath);
         std::string FindFontNameByPath(const std::string& filePath);
         static std::string NormalizePath(const std::string& path);
 

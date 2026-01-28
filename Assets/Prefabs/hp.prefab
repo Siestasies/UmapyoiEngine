@@ -114,14 +114,14 @@
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "hp",
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "texturePath": "Assets/hp point.png"
                     }
                 }
             },
@@ -172,14 +172,14 @@
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "hp",
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "texturePath": "Assets/hp point.png"
                     }
                 }
             },
@@ -230,14 +230,14 @@
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "hp",
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "texturePath": "Assets/hp point.png"
                     }
                 }
             },
@@ -288,14 +288,14 @@
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "hp",
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "texturePath": "Assets/hp point.png"
                     }
                 }
             }

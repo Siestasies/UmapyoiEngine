@@ -300,7 +300,7 @@ namespace Uma_Engine
 
                 std::string texName = "player";
                 GetCoordinator().AddComponent(player, Sprite{
-                    .textureName = texName,
+                    .texturePath = texName,
                     .flipX = false,
                     .flipY = false,
                     .UseNativeSize = true,
@@ -381,7 +381,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     kappa,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_ENV,
                       .flipX = false,
                       .flipY = false,
@@ -444,7 +444,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     wall,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_WALL_TOP,
                       .flipX = false,
                       .flipY = false,
@@ -485,9 +485,9 @@ namespace Uma_Engine
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
                 
                     // set texture randomly
-                    sr.textureName = "wall_btm";
+                    sr.texturePath = "wall_btm";
                     sr.renderLayer = RL_WALL_BTM;
-                    sr.texture = GetResources()->GetTexture(sr.textureName);
+                    sr.texture = GetResources()->GetTexture(sr.texturePath);
                 }
 
                 for (int i = 0; i < 8; i++)
@@ -501,8 +501,8 @@ namespace Uma_Engine
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     // set texture randomly
-                    sr.textureName = "wall_right";
-                    sr.texture = GetResources()->GetTexture(sr.textureName);
+                    sr.texturePath = "wall_right";
+                    sr.texture = GetResources()->GetTexture(sr.texturePath);
                 }
 
                 for (int i = 0; i < 5; i++)
@@ -516,8 +516,8 @@ namespace Uma_Engine
                     Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
 
                     // set texture randomly
-                    sr.textureName = "wall_top";
-                    sr.texture = GetResources()->GetTexture(sr.textureName);
+                    sr.texturePath = "wall_top";
+                    sr.texture = GetResources()->GetTexture(sr.texturePath);
                 }
             }
 
@@ -549,7 +549,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     floor,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_FLOOR,
                       .flipX = false,
                       .flipY = false,
@@ -603,7 +603,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     enemy,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_ENEMY,
                       .flipX = false,
                       .flipY = false,
@@ -708,7 +708,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     en,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_ENEMY,
                       .flipX = false,
                       .flipY = false,
@@ -767,7 +767,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     m_Scene->m_player,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_PLAYER,
                       .flipX = false,
                       .flipY = false,
@@ -874,7 +874,7 @@ namespace Uma_Engine
                     GetCoordinator().AddComponent(
                         enemy,
                         Sprite{
-                          .textureName = texName,
+                          .texturePath = texName,
                           .renderLayer = RL_ENEMY,
                           .flipX = false,
                           .flipY = false,
@@ -939,7 +939,7 @@ namespace Uma_Engine
                 GetCoordinator().AddComponent(
                     m_Scene->m_player,
                     Sprite{
-                      .textureName = texName,
+                      .texturePath = texName,
                       .renderLayer = RL_PLAYER,
                       .flipX = false,
                       .flipY = false,
@@ -1026,7 +1026,7 @@ namespace Uma_Engine
 
                     std::string texName = "pink_enemy";
                     GetCoordinator().AddComponent(enemy, Sprite{
-                        .textureName = texName,
+                        .texturePath = texName,
                         .flipX = false,
                         .flipY = false,
                         .UseNativeSize = true,
@@ -1075,8 +1075,8 @@ namespace Uma_Engine
                 tf.position = Vec2(randPos(generator), randPos(generator));
 
                 Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-                sr.textureName = (randPos(generator) > 0.f) ? "pink_enemy" : "enemy";
-                sr.texture = GetResources()->GetTexture(sr.textureName);
+                sr.texturePath = (randPos(generator) > 0.f) ? "pink_enemy" : "enemy";
+                sr.texture = GetResources()->GetTexture(sr.texturePath);
             }
         }
 

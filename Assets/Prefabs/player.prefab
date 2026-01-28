@@ -41,7 +41,6 @@
                         "default3D": true
                     },
                     "struct Uma_ECS::Sprite": {
-                        "textureName": "player_ss",
                         "layer": 32,
                         "flipX": false,
                         "flipY": false,
@@ -56,7 +55,8 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 1.0,
+                        "texturePath": "Assets/player_ss.png"
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {

@@ -26,7 +26,6 @@
                         "default3D": true
                     },
                     "struct Uma_ECS::Sprite": {
-                        "textureName": "fire bird",
                         "layer": 16,
                         "flipX": true,
                         "flipY": false,
@@ -41,7 +40,8 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 1.0,
+                        "texturePath": "Assets/fire bird.png"
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -183,7 +183,6 @@
                         "parent": 0
                     },
                     "struct Uma_ECS::Sprite": {
-                        "textureName": "kappa_statue",
                         "layer": 16,
                         "flipX": false,
                         "flipY": false,
@@ -198,7 +197,8 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 1.0,
+                        "texturePath": "Assets/statue.png"
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {

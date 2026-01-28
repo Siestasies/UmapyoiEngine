@@ -115,18 +115,15 @@ namespace Uma_ECS
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            // Get texture, if null add to load container
-            if (!sr.texture)
-            {
-                sr.texture = pResourcesManager->GetTexture(sr.textureName);
-            }
-
-            // Verify texture is valid before using it
             if (!sr.texture || sr.texture->tex_id == 0)
             {
-                pResourcesManager->RequestSpriteLoad(entity);
+                sr.texture = pResourcesManager->GetTexture(sr.texturePath);
+            }
+
+            if (!sr.texture || sr.texture->tex_id == 0)
+            {
                 std::stringstream log;
-                log << "Entity(" << entity << ") texture is not valid.";
+                log << "Failed to load texture: " << sr.texturePath;
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
@@ -413,15 +410,13 @@ namespace Uma_ECS
 
                     if (!image.texture || image.texture->tex_id == 0)
                     {
-                        image.texture = pResourcesManager->GetTexture(image.textureName);
+                        image.texture = pResourcesManager->GetTexture(image.texturePath);
                     }
 
-                    // Verify texture is valid before using it
                     if (!image.texture || image.texture->tex_id == 0)
                     {
-                        pResourcesManager->RequestImageLoad(childUI);
                         std::stringstream log;
-                        log << "Entity(" << childUI << ") texture is not valid.";
+                        log << "Entity(" << childUI << ") failed to load texture: " << image.texturePath;
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                         continue;
                     }

@@ -1776,17 +1776,7 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                // Texture name input
-                ImGui::Text("Texture: %s", sprite.textureName.c_str());
-                static char textureBuffer[256];
-                strncpy(textureBuffer, sprite.textureName.c_str(), 255);
-                textureBuffer[255] = '\0';
-                if (ImGui::InputText("Texture Name", textureBuffer, 256))
-                {
-                    sprite.textureName = textureBuffer;
-                    sprite.texture = nullptr; // Will reload
-                    m_hasUnsavedEdit = true;
-                }
+                ImGui::Text("Texture Path: %s", sprite.texturePath.c_str());
 
                 // Drag and Drop Target for Textures
                 if (ImGui::BeginDragDropTarget())
@@ -1813,7 +1803,6 @@ namespace Uma_Engine
                             }
 
                             sprite.texturePath = relativePath;
-                            sprite.textureName = p.stem().string();
                             sprite.texture = nullptr;
                             m_hasUnsavedEdit = true;
                         }
@@ -3292,16 +3281,7 @@ namespace Uma_Engine
                 // Begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                ImGui::Text("Texture: %s", image.textureName.c_str());
-                static char imageTextureBuffer[256];
-                strncpy(imageTextureBuffer, image.textureName.c_str(), 255);
-                imageTextureBuffer[255] = '\0';
-                if (ImGui::InputText("Texture Name", imageTextureBuffer, 256))
-                {
-                    image.textureName = imageTextureBuffer;
-                    image.texture = nullptr; // Will reload
-                    m_hasUnsavedEdit = true;
-                }
+                ImGui::Text("Texture Path: %s", image.texturePath.c_str());
 
                 // Drag and Drop Target for Textures
                 if (ImGui::BeginDragDropTarget())
@@ -3328,7 +3308,6 @@ namespace Uma_Engine
                             }
 
                             image.texturePath = relativePath;
-                            image.textureName = p.stem().string();
                             image.texture = nullptr;
                             m_hasUnsavedEdit = true;
                         }
@@ -4025,8 +4004,7 @@ namespace Uma_Engine
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Sprite>()) && ImGui::MenuItem("Sprite"))
             {
                 Uma_ECS::Sprite defaultSprite;
-                defaultSprite.textureName = "whitePixel.png";
-
+                defaultSprite.texturePath = "whitePixel.png";
                 auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Sprite>>(
                     &coordinator,
                     m_selectedEntity,
