@@ -3695,25 +3695,32 @@ namespace Uma_Engine
                         m_hasUnsavedEdit = true;
                     }
 
-                    int tileCol = tilemap.tilesetColumns;
-                    if (ImGui::DragInt("Tile Columns", &tileCol, 1.0f, 1, 256))
-                    {
-                        tilemap.tilesetColumns = tileCol;
-                        m_hasUnsavedEdit = true;
-                    }
-
-                    int tileRows = tilemap.tilesetRows;
-                    if (ImGui::DragInt("Tile Rows", &tileRows, 1.0f, 1, 256))
-                    {
-                        tilemap.tilesetRows = tileRows;
-                        m_hasUnsavedEdit = true;
-                    }
-
                     ImGui::Separator();
                     ImGui::Text("World Size: %dx%d units",
                         tilemap.mapWidth * tilemap.tileSize,
                         tilemap.mapHeight * tilemap.tileSize);
 
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Tileset Properties"))
+                {
+                    static char tilsetTextureNameBuffer[512];
+                    strncpy(tilsetTextureNameBuffer, tilemap.tileset.textureName.c_str(), 511);
+                    tilsetTextureNameBuffer[511] = '\0';
+                    if (ImGui::InputText("Texture Name", tilsetTextureNameBuffer, 512))
+                    {
+                        tilemap.tileset.textureName = tilsetTextureNameBuffer;
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    float gridArray[2] = { tilemap.tileset.columns, tilemap.tileset.rows };
+                    if (ImGui::DragFloat2("Grids (Col, Row)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
+                    {
+                        tilemap.tileset.columns = gridArray[0];
+                        tilemap.tileset.rows = gridArray[1];
+                        m_hasUnsavedEdit = true;
+                    }
                     ImGui::TreePop();
                 }
 
@@ -3816,6 +3823,19 @@ namespace Uma_Engine
                             ImGui::Separator();
                             ImGui::Text("Render Order");
                             ImGui::InputInt("##Layer Render Order", &layer.renderOrder, 1, 0, 0);
+
+                            // Tint color (RGB)
+                            float tintColorArray[3] = { layer.tintColor.x, layer.tintColor.y, layer.tintColor.z };
+                            if (ImGui::ColorEdit3("Tint Color", tintColorArray))
+                            {
+                                layer.tintColor.x = tintColorArray[0];
+                                layer.tintColor.y = tintColorArray[1];
+                                layer.tintColor.z = tintColorArray[2];
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // Alpha (opacity)
+                            if (ImGui::SliderFloat("Alpha", &layer.alpha, 0.0f, 1.0f, "%.2f")) m_hasUnsavedEdit = true;
 
                             // Show layer size info
                             ImGui::Separator();

@@ -474,7 +474,6 @@ namespace Uma_Engine
             Uma_ECS::Signature sign;
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Tilemap>());
-            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Sprite>());
             m_Coordinator.SetSystemSignature<Uma_ECS::TilemapSystem>(sign);
         }
         m_TilemapSystem->Init(&m_Coordinator, m_Graphics, m_ResourcesManager);

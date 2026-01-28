@@ -201,52 +201,6 @@ namespace Uma_ECS
                         .entityId = entity
                     });
             }
-            else if (tmArray.Has(entity))
-            {
-                auto& tilemap = tmArray.GetData(entity);
-                for (int layerIdx = 0; layerIdx < tilemap.layers.size(); layerIdx++)
-                {
-                    TileLayer& layer = tilemap.layers[layerIdx];
-
-                    if (!tilemap.layerVisibility[layerIdx]) continue;
-
-                    for (int i = 0; i < layer.tiles.size(); i++)
-                    {
-                        int row = i / layer.width;
-                        int col = i % layer.width;
-
-                        // Grid position for placement
-                        Vec2 tilePos = tf.worldPosition + Vec2(col * tilemap.tileSize * tf.scale.x, -(row * tilemap.tileSize * tf.scale.y));
-
-                        // Tileset indices for UVs
-                        int tileset_row = layer.tiles[i] / int(tilemap.tilesetColumns);
-                        int tileset_col = layer.tiles[i] % int(tilemap.tilesetColumns);
-
-                        sr.spriteCell = Vec2(tileset_col, tileset_row);
-                        sr.GetUVs(uvOffset, uvSize);
-
-                        allSprites.push_back(LayeredSprite
-                            {
-                                .info = Uma_Engine::Sprite_Info{
-                                    .tex_id = sr.texture->tex_id,
-                                    .pos = tilePos,
-                                    .scale = Vec2(tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y),
-                                    .rot = tf.worldRotation,
-                                    .rot_speed = tf.rotation.y,
-                                    .uvOffset = uvOffset,
-                                    .uvSize = uvSize,
-                                    .tintColor = sr.tintColor,
-                                    .alpha = sr.alpha
-                                },
-                                .layer = layer.renderLayer,
-                                .order = layer.renderOrder,
-                                .hierarchyOrder = hierarchyOrder,
-                                .texId = sr.texture->tex_id,
-                                .entityId = entity
-                            });
-                    }
-                }
-            }
             else
             {
                 sr.GetUVs(uvOffset, uvSize);
@@ -270,6 +224,76 @@ namespace Uma_ECS
                         .texId = sr.texture->tex_id,
                         .entityId = entity
                     });
+            }
+        }
+
+        for (const auto& entity : tmArray.GetAllEntities())
+        {
+            auto& tilemap = tmArray.GetData(entity);
+            auto& tf = tfArray.GetData(entity);
+
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
+            if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
+            {
+                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.textureName);
+            }
+
+            // Verify texture is valid before using it
+            if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
+            {
+                std::stringstream log;
+                log << "Entity(" << entity << ") tileset's texture is not valid.";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                continue;
+            }
+
+
+            for (int layerIdx = 0; layerIdx < tilemap.layers.size(); layerIdx++)
+            {
+                TileLayer& layer = tilemap.layers[layerIdx];
+
+                if (!tilemap.layerVisibility[layerIdx]) continue;
+
+                for (int i = 0; i < layer.tiles.size(); i++)
+                {
+                    int row = i / layer.width;
+                    int col = i % layer.width;
+
+                    // Grid position for placement
+                    Vec2 tilePos = tf.worldPosition + Vec2(col * tilemap.tileSize * tf.scale.x, -(row * tilemap.tileSize * tf.scale.y));
+
+                    // Tileset indices for UVs
+                    int tileset_row = layer.tiles[i] / int(tilemap.tileset.columns);
+                    int tileset_col = layer.tiles[i] % int(tilemap.tileset.columns);
+
+                    // Get UV coordinates from animator if present
+                    Vec2 uvOffset(0.0f, 0.0f);
+                    Vec2 uvSize(1.0f, 1.0f);
+
+                    tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(tileset_col, tileset_row));
+
+                    allSprites.push_back(LayeredSprite
+                        {
+                            .info = Uma_Engine::Sprite_Info{
+                                .tex_id = tilemap.tileset.texture->tex_id,
+                                .pos = tilePos,
+                                .scale = Vec2(tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y),
+                                .rot = tf.worldRotation,
+                                .rot_speed = tf.rotation.y,
+                                .uvOffset = uvOffset,
+                                .uvSize = uvSize,
+                                .tintColor = layer.tintColor,
+                                .alpha = layer.alpha
+                            },
+                            .layer = layer.renderLayer,
+                            .order = layer.renderOrder,
+                            .hierarchyOrder = hierarchyOrder,
+                            .texId = tilemap.tileset.texture->tex_id,
+                            .entityId = entity
+                        });
+                }
             }
         }
     }

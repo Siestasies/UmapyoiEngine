@@ -3,6 +3,7 @@
 #include "RapidJSON/document.h"
 #include "core/Types.hpp"
 #include "../Systems/ResourcesTypes.hpp"
+#include "../../Math/Math.h"
 #include <string>
 #include <vector>
 
@@ -12,10 +13,25 @@ namespace Uma_ECS
     {
         // Tileset reference
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
-        int tileWidth = 0;
-        int tileHeight = 0;
+        std::string textureName{};
+        std::string texturePath{};
+
+        int tilesetWidth = 0;
+        int tilesetHeight = 0;
+
         int columns = 0;
         int rows = 0;
+
+        void GetUVs(Vec2& uvOffset, Vec2& uvSize, Vec2 cell) const
+        {
+            // Calculate size of one cell in UV space
+            uvSize.x = 1.0f / columns;
+            uvSize.y = 1.0f / rows;
+
+            // Calculate offset for the specific cell
+            uvOffset.x = cell.x * uvSize.x;
+            uvOffset.y = cell.y * uvSize.y;
+        }
     };
 
     struct TileLayer
@@ -28,8 +44,8 @@ namespace Uma_ECS
         int renderOrder = 0;
         LayerMask renderLayer = RL_NONE;
 
-        //Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);    // RGB multiplier
-        //float alpha = 1.0f;                         // Opacity
+        Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);    // RGB multiplier
+        float alpha = 1.0f;                         // Opacity
     };
 
     struct Tilemap
@@ -40,9 +56,7 @@ namespace Uma_ECS
         int tileSize = 16;
 
         // Tileset reference
-        Uma_Engine::Texture tilesetTexture;
-        int tilesetColumns = 1;
-        int tilesetRows = 1;
+        Tileset tileset;
 
         // Runtime settings (visible in inspector)
         std::vector<bool> layerVisibility;  // For each layer
@@ -87,10 +101,24 @@ namespace Uma_ECS
             value.AddMember("tileSize", tileSize, allocator);
 
             // Serialize tileset info
-            rapidjson::Value tilesetPath(tilesetTexture.filePath.c_str(), allocator);
-            value.AddMember("tilesetPath", tilesetPath, allocator);
-            value.AddMember("tilesetColumns", tilesetColumns, allocator);
-            value.AddMember("tilesetRows", tilesetRows, allocator);
+            if (!tileset.textureName.empty())
+            {
+                rapidjson::Value tilesetObj(rapidjson::kObjectType);
+
+                rapidjson::Value tilesetName(tileset.textureName.c_str(), allocator);
+                rapidjson::Value tilesetPath(tileset.texturePath.c_str(), allocator);
+
+                tilesetObj.AddMember("textureName", tilesetName, allocator);
+                tilesetObj.AddMember("texturePath", tilesetPath, allocator);
+
+                tilesetObj.AddMember("tilesetWidth", tileset.tilesetWidth, allocator);
+                tilesetObj.AddMember("tilesetHeight", tileset.tilesetHeight, allocator);
+
+                tilesetObj.AddMember("columns", tileset.columns, allocator);  
+                tilesetObj.AddMember("rows", tileset.rows, allocator);      
+
+                value.AddMember("tileset", tilesetObj, allocator);
+            }
 
             // Serialize layers array
             rapidjson::Value layersArray(rapidjson::kArrayType);
@@ -105,6 +133,13 @@ namespace Uma_ECS
                 layerObj.AddMember("height", layer.height, allocator);
                 layerObj.AddMember("renderLayer", layer.renderLayer, allocator);
                 layerObj.AddMember("renderOrder", layer.renderOrder, allocator);
+
+                rapidjson::Value tintArray(rapidjson::kArrayType);
+                tintArray.PushBack(layer.tintColor.x, allocator);
+                tintArray.PushBack(layer.tintColor.y, allocator);
+                tintArray.PushBack(layer.tintColor.z, allocator);
+                value.AddMember("tintColor", tintArray, allocator);
+                value.AddMember("alpha", layer.alpha, allocator);
 
                 // Serialize tiles array
                 rapidjson::Value tilesArray(rapidjson::kArrayType);
@@ -154,19 +189,30 @@ namespace Uma_ECS
                 tileSize = value["tileSize"].GetInt();
 
             // Deserialize tileset info
-            if (value.HasMember("tilesetPath") && value["tilesetPath"].IsString())
+            if (value.HasMember("tileset") && value["tileset"].IsObject())  // Fixed: check for tileset object
             {
-                std::string path = value["tilesetPath"].GetString();
-                // You'll need to load the texture through your resource manager
-                // tilesetTexture = ResourceManager::LoadTexture(path);
-                tilesetTexture.filePath = path;
+                const rapidjson::Value& tilesetObj = value["tileset"];
+
+                if (tilesetObj.HasMember("textureName") && tilesetObj["textureName"].IsString())
+                    tileset.textureName = tilesetObj["textureName"].GetString();
+
+                if (tilesetObj.HasMember("texturePath") && tilesetObj["texturePath"].IsString())
+                {
+                    tileset.texturePath = tilesetObj["texturePath"].GetString();
+                }
+
+                if (tilesetObj.HasMember("tilesetWidth") && tilesetObj["tilesetWidth"].IsInt())
+                    tileset.tilesetWidth = tilesetObj["tilesetWidth"].GetInt();
+
+                if (tilesetObj.HasMember("tilesetHeight") && tilesetObj["tilesetHeight"].IsInt())
+                    tileset.tilesetHeight = tilesetObj["tilesetHeight"].GetInt();
+
+                if (tilesetObj.HasMember("columns") && tilesetObj["columns"].IsInt())
+                    tileset.columns = tilesetObj["columns"].GetInt();
+
+                if (tilesetObj.HasMember("rows") && tilesetObj["rows"].IsInt())
+                    tileset.rows = tilesetObj["rows"].GetInt();
             }
-
-            if (value.HasMember("tilesetColumns") && value["tilesetColumns"].IsInt())
-                tilesetColumns = value["tilesetColumns"].GetInt();
-
-            if (value.HasMember("tilesetRows") && value["tilesetRows"].IsInt())
-                tilesetRows = value["tilesetRows"].GetInt();
 
             // Deserialize layers
             if (value.HasMember("layers") && value["layers"].IsArray())
@@ -189,10 +235,21 @@ namespace Uma_ECS
                         layer.height = layerObj["height"].GetUint();
 
                     if (layerObj.HasMember("renderLayer") && layerObj["renderLayer"].IsUint())
-                        layer.renderLayer = layerObj["renderLayer"].GetUint();
+                        layer.renderLayer = static_cast<LayerMask>(layerObj["renderLayer"].GetUint());  // Added cast
 
                     if (layerObj.HasMember("renderOrder") && layerObj["renderOrder"].IsInt())
                         layer.renderOrder = layerObj["renderOrder"].GetInt();
+
+                    if (value.HasMember("tintColor") && value["tintColor"].IsArray())
+                    {
+                        const auto& tintArray = value["tintColor"].GetArray();
+                        if (tintArray.Size() >= 3)
+                        {
+                            layer.tintColor.x = tintArray[0].GetFloat();
+                            layer.tintColor.y = tintArray[1].GetFloat();
+                            layer.tintColor.z = tintArray[2].GetFloat();
+                        }
+                    }
 
                     // Deserialize tiles array
                     if (layerObj.HasMember("tiles") && layerObj["tiles"].IsArray())

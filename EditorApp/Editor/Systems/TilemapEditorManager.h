@@ -50,7 +50,7 @@ namespace Uma_Engine
         bool showLayers = false;
 
         // Tileset data
-        //Tileset currentTileset;
+        Uma_ECS::Tileset currentTileset;
 
         // Systems
         Uma_ECS::Coordinator* pCoordinator;
