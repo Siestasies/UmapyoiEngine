@@ -384,12 +384,11 @@ namespace Uma_ECS
                         continue;
                     }
 
-                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
+                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontPath);
 
                     // Get font, if null add to load container
                     if (uiFont == nullptr)
                     {
-                        pResourcesManager->RequestTextLoad(childUI);
                         std::stringstream log;
                         log << "UI object(" << childUI << ") font is not loaded or invalid.";
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());

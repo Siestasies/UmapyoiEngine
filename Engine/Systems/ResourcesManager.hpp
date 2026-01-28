@@ -164,27 +164,27 @@ namespace Uma_Engine
         \param fontSize The size of the font to generate (default is 48).
         \return True if loaded successfully, false on failure.
         */
-        bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
+        bool LoadFont(const std::string& filePath, unsigned int fontSize = 48);
 
         /*!
         \brief Unloads a specific font and frees its graphics resources.
         \param fontName The unique identifier of the font to unload.
         */
-        void UnloadFont(const std::string& fontName);
+        void UnloadFont(const std::string& filePath);
 
         /*!
         \brief Retrieves a pointer to the FontData structure.
         \param fontName The unique identifier of the font.
         \return A pointer to FontData, or nullptr if not found.
         */
-        FontData* GetFont(const std::string& fontName);
+        FontData* GetFont(const std::string& filePath);
 
         /*!
         \brief Checks if a specific font is currently loaded.
         \param fontName The unique identifier to check.
         \return True if the font exists in the cache, false otherwise.
         */
-        bool HasFont(const std::string& fontName) const;
+        bool HasFont(const std::string& filePath) const;
 
         /*!
         \brief Prints the names and sizes of all currently loaded fonts to the console for debugging.
@@ -267,14 +267,9 @@ namespace Uma_Engine
             rapidjson::Value& out,
             rapidjson::Document::AllocatorType& allocator);
 
-        void RequestTextLoad(Entity entity);
-
     private:
         Uma_ECS::Coordinator* mCoordinator = nullptr;
 
-        std::unordered_set<Entity> mTextsToLoad;
-
-        std::string FindFontNameByPath(const std::string& filePath);
         static std::string NormalizePath(const std::string& path);
 
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};

@@ -58,40 +58,6 @@ namespace Uma_Engine
     {
         (void)dt;
         // EMPTY (resource manager doesn't need to update anything)
-        // sike not empty anymore
-        if (!mCoordinator) return;
-
-        // Load fonts
-        if (!mTextsToLoad.empty())
-        {
-            auto& textArray = mCoordinator->GetComponentArray<Uma_UI::Text>();
-
-            for (auto entity : mTextsToLoad)
-            {
-                if (!textArray.Has(entity)) continue;
-
-                auto& text = textArray.GetData(entity);
-
-                if (HasFont(text.fontName))
-                {
-                    continue;
-                }
-
-                if (!text.fontPath.empty())
-                {
-                    std::string existingName = FindFontNameByPath(text.fontPath);
-                    if (!existingName.empty())
-                    {
-                        text.fontName = existingName;
-                    }
-                    else
-                    {
-                        LoadFont(text.fontName, text.fontPath, static_cast<unsigned int>(text.fontSize));
-                    }
-                }
-            }
-            mTextsToLoad.clear();
-        }
     }
 
     void ResourcesManager::Shutdown()
@@ -338,11 +304,10 @@ namespace Uma_Engine
             {
                 if (fontVal.HasMember("name") && fontVal.HasMember("path") && fontVal.HasMember("size"))
                 {
-                    std::string name = fontVal["name"].GetString();
                     std::string path = fontVal["path"].GetString();
                     unsigned int size = fontVal["size"].GetUint();
 
-                    LoadFont(name, path, size);
+                    LoadFont(path, size);
                 }
             }
         }
@@ -578,14 +543,22 @@ namespace Uma_Engine
         out.AddMember("sounds", audioArr, allocator);
     }
 
-    bool ResourcesManager::LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize)
+    bool ResourcesManager::LoadFont(const std::string& filePath, unsigned int fontSize)
     {
         assert(mGraphics != nullptr && "Error: Graphics system is not initialized.");
 
-        // Check if font is already loaded
-        if (HasFont(fontName))
+        if (filePath.empty())
         {
-            std::cout << "Warning: Font '" << fontName << "' is already loaded!" << std::endl;
+            std::cout << "Warning: Empty font path" << std::endl;
+            return false;
+        }
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        // Check if already loaded
+        if (mFonts.find(normalizedPath) != mFonts.end())
+        {
+            std::cout << "Font already loaded: " << normalizedPath << std::endl;
             return true;
         }
 
@@ -599,21 +572,41 @@ namespace Uma_Engine
             return false;
         }
 
-        // Store in map
-        mFonts[fontName] = fontData;
-        std::cout << "Font '" << fontName << "' loaded and managed." << std::endl;
+        // Store in map with path as key
+        mFonts[normalizedPath] = fontData;
+        std::cout << "Font '" << normalizedPath << "' loaded and managed." << std::endl;
         return true;
     }
 
-    FontData* ResourcesManager::GetFont(const std::string& fontName)
+    FontData* ResourcesManager::GetFont(const std::string& filePath)
     {
-        auto it = mFonts.find(fontName);
-        return (it != mFonts.end()) ? &it->second : nullptr;
+        if (filePath.empty())
+            return nullptr;
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mFonts.find(normalizedPath);
+        if (it != mFonts.end())
+        {
+            return &it->second;
+        }
+
+        // Not found - try to load it
+        if (LoadFont(filePath))
+        {
+            return &mFonts[normalizedPath];
+        }
+
+        return nullptr;
     }
 
-    bool ResourcesManager::HasFont(const std::string& fontName) const
+    bool ResourcesManager::HasFont(const std::string& filePath) const
     {
-        return mFonts.find(fontName) != mFonts.end();
+        if (filePath.empty())
+            return false;
+
+        std::string normalizedPath = NormalizePath(filePath);
+        return mFonts.find(normalizedPath) != mFonts.end();
     }
 
     void ResourcesManager::PrintLoadedFontNames() const
@@ -625,9 +618,11 @@ namespace Uma_Engine
         }
     }
 
-    void ResourcesManager::UnloadFont(const std::string& fontName)
+    void ResourcesManager::UnloadFont(const std::string& filePath)
     {
-        auto it = mFonts.find(fontName);
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mFonts.find(normalizedPath);
         if (it != mFonts.end())
         {
             // Unload font data
@@ -635,11 +630,11 @@ namespace Uma_Engine
 
             // Remove from map
             mFonts.erase(it);
-            std::cout << "Font '" << fontName << "' unloaded" << std::endl;
+            std::cout << "Font '" << normalizedPath << "' unloaded" << std::endl;
         }
         else
         {
-            std::cout << "Warning: Font does not exist: '" << fontName << "'" << std::endl;
+            std::cout << "Warning: Font does not exist: '" << normalizedPath << "'" << std::endl;
         }
     }
 
@@ -657,20 +652,6 @@ namespace Uma_Engine
         return mFonts;
     }
 
-    std::string ResourcesManager::FindFontNameByPath(const std::string& filePath)
-    {
-        std::string normalizedPath = NormalizePath(filePath);
-
-        for (const auto& [name, fontData] : mFonts)
-        {
-            if (NormalizePath(fontData.filePath) == normalizedPath)
-            {
-                return name;
-            }
-        }
-        return "";
-    }
-
     std::string ResourcesManager::NormalizePath(const std::string& path)
     {
         std::string normalized = path;
@@ -678,10 +659,5 @@ namespace Uma_Engine
         // Convert to lowercase for case-insensitive comparison
         std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return std::tolower(c); });
         return normalized;
-    }
-
-    void ResourcesManager::RequestTextLoad(Entity entity)
-    {
-        mTextsToLoad.insert(entity);
     }
 }

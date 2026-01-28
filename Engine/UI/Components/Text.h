@@ -35,7 +35,6 @@ namespace Uma_UI
     {
     public:
         std::string text = "";
-        std::string fontName = "";
         std::string fontPath = "";
         int sortingOrder = 0;
         float fontSize = 64.0f;
@@ -53,7 +52,6 @@ namespace Uma_UI
         {
             value.SetObject();
             value.AddMember("text", rapidjson::Value(text.c_str(), allocator), allocator);
-            value.AddMember("fontName", rapidjson::Value(fontName.c_str(), allocator), allocator);
             value.AddMember("fontPath", rapidjson::Value(fontPath.c_str(), allocator), allocator);
             value.AddMember("sortingOrder", sortingOrder, allocator);
             value.AddMember("fontSize", fontSize, allocator);
@@ -76,7 +74,6 @@ namespace Uma_UI
         void Deserialize(const rapidjson::Value& value)
         {
             text = value["text"].GetString();
-            fontName = value["fontName"].GetString();
 
             if (value.HasMember("fontPath"))
             {

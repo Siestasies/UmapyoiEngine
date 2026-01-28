@@ -413,7 +413,7 @@ namespace Uma_UI
                 continue;
             }
 
-            if (!text.fontName.empty() && EnsureFontLoaded(text.fontName))
+            if (!text.fontPath.empty() && EnsureFontLoaded(text.fontPath))
             {
                 /* Empty by design */
             }
@@ -428,7 +428,7 @@ namespace Uma_UI
             }
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
+            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontPath);
 
             // Measure text width in NDC space
             float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);

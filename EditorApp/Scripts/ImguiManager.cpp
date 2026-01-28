@@ -3764,32 +3764,73 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Font Settings");
             
-                static char fontNameBuffer[256];
-                strncpy(fontNameBuffer, text.fontName.c_str(), 255);
-                fontNameBuffer[255] = '\0';
-                if (ImGui::InputText("Font Name", fontNameBuffer, 256))
-                {
-                    text.fontName = fontNameBuffer;
-                    m_hasUnsavedEdit = true;
-                }
+                ImGui::Separator();
+                ImGui::Text("Font Settings");
+
+                ImGui::Text("Font Path: %s", text.fontPath.empty() ? "(None)" : text.fontPath.c_str());
+
+                // Create a visible drop zone with visual feedback
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                // Draw a border box
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Font Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Font Here");
+
+                // Supported formats text
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.ttf, .otf)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.ttf, .otf)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##FontDropZone", dropZoneSize);
+
+                bool isHovered = ImGui::IsItemHovered();
 
                 // Drag and Drop for Fonts
                 if (ImGui::BeginDragDropTarget())
                 {
+                    // Highlight the drop zone when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
                     {
                         const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
                         std::string fullPath = data->filepath;
                         std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
 
-                        // Validation
                         std::filesystem::path p(fullPath);
                         std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
                         std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
 
                         if (ext == ".ttf" || ext == ".otf")
                         {
-                            // Success Logic
                             std::string relativePath = fullPath;
                             size_t assetsPos = fullPath.find("Assets/");
                             if (assetsPos != std::string::npos)
@@ -3798,7 +3839,6 @@ namespace Uma_Engine
                             }
 
                             text.fontPath = relativePath;
-                            text.fontName = p.stem().string();
                             m_hasUnsavedEdit = true;
                         }
                         else
@@ -3809,6 +3849,16 @@ namespace Uma_Engine
                     }
                     ImGui::EndDragDropTarget();
                 }
+                else if (isHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
             
                 if (ImGui::DragFloat("Font Size", &text.fontSize, 1.0f, 1.0f, 200.0f, "%.1f"))
                 {
