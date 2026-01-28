@@ -351,482 +351,482 @@ namespace Uma_Engine
         // THIS IS FOR DEBUGGING PURPOSE ONLY
         void SpawnDefaultEntities()
         {
-            GetCoordinator().DestroyAllEntities();
-
-            using namespace Uma_ECS;
-
-            Entity kappa;
-            {
-                kappa = GetCoordinator().CreateEntity();
-
-                GetCoordinator().AddComponent(
-                    kappa,
-                    Transform{
-                      .name = std::string("kappa statue"),
-                      .position = Vec2(30, 35),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(3.f, 3.f)
-                    });
-
-                GetCoordinator().AddComponent(
-                    kappa,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 200,
-                      .fric_coeff = 100
-                    });
-
-                std::string texName = "kappa_statue";
-                GetCoordinator().AddComponent(
-                    kappa,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_ENV,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName)
-                    });
-
-                //LuaScript kappaScriptComponent;
-                //{
-                //    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
-
-                //    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                //        .name = "speed",
-                //        .value = 100.0f,
-                //        .type = Uma_ECS::LuaVarType::T_FLOAT,
-                //        .min = 0.0f,
-                //        .max = 500.0f,
-                //        .isSlider = true
-                //        });
-
-                //    // this works just that i didnt want to add this now
-                //    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
-
-                //    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                //       .name = "speed",
-                //       .value = 100.0f,
-                //       .type = Uma_ECS::LuaVarType::T_FLOAT,
-                //       .min = 0.0f,
-                //       .max = 500.0f,
-                //       .isSlider = true
-                //        });*/
-
-                //    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
-                //}
-            }
-
-            Entity wall;
-            {
-                wall = GetCoordinator().CreateEntity();
-
-                GetCoordinator().AddComponent(
-                    wall,
-                    Transform{
-                      .name = std::string("wall"),
-                      .position = Vec2(-20, 0),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(1.f, 1.f)
-                    });
-
-                GetCoordinator().AddComponent(
-                    wall,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 200,
-                      .fric_coeff = 100
-                    });
-
-                std::string texName = "wall_top";
-                GetCoordinator().AddComponent(
-                    wall,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_WALL_TOP,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
-
-                // Create collider with two shapes
-                Collider wallCollider;
-
-                // Primary shape: Body hitbox (for taking damage)
-                wallCollider.shapes[0] = ColliderShape{
-                    .purpose = ColliderPurpose::Environment,
-                    .layer = CL_WALL,
-                    .colliderMask = CL_PLAYER | CL_ENEMY,  // Blocks entities,
-                    .isActive = true,
-                    .autoFitToSprite = true  // Will be 128x128 (64*2 scale)
-                };
-
-                wallCollider.bounds.resize(wallCollider.shapes.size());
-                GetCoordinator().AddComponent(wall, wallCollider);
-
-                for (int i = 0; i < 5; i++)
-                {
-                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
-                
-                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.name = "wall btm";
-                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), 0.f);
-                
-                    Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
-                    collider.shapes[0].autoFitToSprite = false;
-                    collider.shapes[0].size = Vec2(5, 1);
-                    collider.shapes[0].offset = Vec2(0, -2.0);
-                    collider.shapes[0].layer = CL_WALL;
-                    collider.shapes[0].colliderMask = CL_PLAYER | CL_ENEMY;  // Blocks entities,
-                
-                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-                
-                    // set texture randomly
-                    sr.texturePath = "wall_btm";
-                    sr.renderLayer = RL_WALL_BTM;
-                    sr.texture = GetResources()->GetTexture(sr.texturePath);
-                }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
-
-                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.name = "wall right";
-                    tf.position = Vec2(static_cast<float>(15 + (6 * 5)), static_cast<float>(0 + (i * 5)) );
-
-                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-
-                    // set texture randomly
-                    sr.texturePath = "wall_right";
-                    sr.texture = GetResources()->GetTexture(sr.texturePath);
-                }
-
-                for (int i = 0; i < 5; i++)
-                {
-                    Entity tmp = GetCoordinator().DuplicateEntity(wall);
-
-                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.name = "wall top";
-                    tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(15 + (4 * 5)) );
-
-                    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-
-                    // set texture randomly
-                    sr.texturePath = "wall_top";
-                    sr.texture = GetResources()->GetTexture(sr.texturePath);
-                }
-            }
-
-            GetCoordinator().DestroyEntity(wall);
-
-            Entity floor;
-            {
-                floor = GetCoordinator().CreateEntity();
-
-                GetCoordinator().AddComponent(
-                    floor,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 200,
-                      .fric_coeff = 100
-                    });
-
-                GetCoordinator().AddComponent(
-                    floor,
-                    Transform{
-                      .name = std::string("floor"),
-                      .position = Vec2(20, 7.5),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(2.f, 2.f)
-                    });
-
-                std::string texName = "floor_tatami";
-                GetCoordinator().AddComponent(
-                    floor,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_FLOOR,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
-
-                for (int i = 0; i < 5; i++)
-                {
-                    for (int j = 0; j < 3; j++)
-                    {
-                        Entity tmp = GetCoordinator().DuplicateEntity(floor);
-
-                        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-
-                        tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(7.5 + (j * 10)) );
-                    }
-                }
-            }
-
-            // create entities
-            Entity enemy;
-            {
-                enemy = GetCoordinator().CreateEntity();
-
-                GetCoordinator().AddComponent(
-                    enemy,
-                    Enemy{
-                        .mSpeed = 1.f
-                    });
-
-                GetCoordinator().AddComponent(
-                    enemy,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 500,
-                      .fric_coeff = 5
-                    });
-
-                GetCoordinator().AddComponent(
-                    enemy,
-                    Transform{
-                      .name = std::string("bird enemy"),
-                      .position = Vec2(-10, 0),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(2.f, 2.f)
-                    });
-
-                std::string texName = "pink_enemy";
-                GetCoordinator().AddComponent(
-                    enemy,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_ENEMY,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
-
-                // Create collider with two shapes
-                Collider enemyCollider;
-
-                enemyCollider.shapes[0] = ColliderShape{
-                    .size = Vec2(3.f, 3.f),
-                    .offset = Vec2(0.f, 1.f),
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_ENEMY,
-                    .colliderMask = CL_PLAYER | CL_PROJECTILE,
-                    .isActive = true,
-                    .autoFitToSprite = false
-                };
-
-                enemyCollider.shapes.push_back(ColliderShape{
-                    .size = Vec2(2.f, 0.7f),
-                    .offset = Vec2(0.f, -2.0f),  // Changed from -2.f to -1.0f
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_ENEMY,
-                    .colliderMask = CL_WALL,
-                    .isActive = true,
-                    .autoFitToSprite = false
-                    });
-
-                enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                GetCoordinator().AddComponent(enemy, enemyCollider);
-
-                LuaScript enemyScriptComponent;
-                {
-                    enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
-
-                    enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                        .name = "speed",
-                        .value = 100.0f,
-                        .type = Uma_ECS::LuaVarType::T_FLOAT,
-                        .min = 0.0f,
-                        .max = 500.0f,
-                        .isSlider = true
-                        });
-
-                    enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                        .name = "name",
-                        .value = "bird",
-                        .type = Uma_ECS::LuaVarType::T_STRING,
-                        .isSlider = false
-                        });
-
-                    // this works just that i didnt want to add this now
-                    enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "testEnemy.lua");
-
-                    enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                       .name = "speed",
-                       .value = 100.0f,
-                       .type = Uma_ECS::LuaVarType::T_FLOAT,
-                       .min = 0.0f,
-                       .max = 500.0f,
-                       .isSlider = true
-                        });
-
-                    enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
-                       .name = "name",
-                       .value = "bird child",
-                       .type = Uma_ECS::LuaVarType::T_STRING,
-                       .isSlider = false
-                        });
-
-                    GetCoordinator().AddComponent(enemy, enemyScriptComponent);
-                }
-
-                //testing
-                GetCoordinator().AddComponent(enemy, Uma_ECS::AudioComponent{});
-                GetCoordinator().AddComponent(enemy, Uma_ECS::PathFinding{});
-            }
-            {
-                Entity en = GetCoordinator().CreateEntity();
-
-                GetCoordinator().AddComponent(
-                    en,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 500,
-                      .fric_coeff = 5
-                    });
-
-                GetCoordinator().AddComponent(
-                    en,
-                    Transform{
-                      .name = std::string("bird enemy child"),
-                      .position = Vec2(-2, 0),
-                      .rotation = Vec2(0, 0),
-                      .scale = Vec2(0.5f, 0.5f)
-                    });
-
-                std::string texName = "kappa_statue";
-                GetCoordinator().AddComponent(
-                    en,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_ENEMY,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
-
-                // Create collider with two shapes
-                Collider enemyCollider;
-
-                enemyCollider.shapes[0] = ColliderShape{
-                    .size = Vec2(2.f, 2.f),
-                    .offset = Vec2(0.f, 0.f),  // Changed from -2.f to -1.0f
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_ENEMY,
-                    .colliderMask = CL_WALL,
-                    .isActive = true,
-                    .autoFitToSprite = false
-                };
-                enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                GetCoordinator().AddComponent(en, enemyCollider);
-
-                GetCoordinator().SetParent(en, enemy);
-            }
-            SavePrefab("bird", enemy);
-
-            // create player
-            m_Scene->m_player = GetCoordinator().CreateEntity();
-            {
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Transform
-                    {
-                        .name = std::string("player"),
-                        .position = Vec2(0.f, 0.f),
-                        .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(1,1),
-                    });
-
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 300,
-                      .fric_coeff = 5
-                    });
-
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Player{
-                        .mSpeed = 1.f
-                    });
-
-                std::string texName = "player";
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_PLAYER,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
-
-                // Create collider with two shapes
-                Collider playerCollider;
-
-                playerCollider.shapes[0] = ColliderShape{
-                        .purpose = ColliderPurpose::Physics,
-                        .layer = CL_PLAYER,
-                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
-                        .isActive = true,
-                        .autoFitToSprite = true
-                };
-
-                playerCollider.shapes.push_back(ColliderShape{
-                    .size = Vec2(7.0f, 2.f),
-                    .offset = Vec2(0, -2.75f),
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_PLAYER,
-                    .colliderMask = CL_WALL,
-                    .isActive = true,
-                    .autoFitToSprite = false
-                });
-
-                playerCollider.bounds.resize(playerCollider.shapes.size());
-                GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
-
-                AudioListener audioListener;
-                GetCoordinator().AddComponent(m_Scene->m_player, audioListener);
-                GetCoordinator().AddComponent(m_Scene->m_player, Uma_ECS::PathFinding{});
-            }
-
-            // create camera
-            m_Scene->m_cam = GetCoordinator().CreateEntity();
-            {
-                GetCoordinator().AddComponent(
-                    m_Scene->m_cam,
-                    Transform
-                    {
-                        .name = std::string("cam"),
-                        .position = Vec2(400.0f, 300.0f),
-                        .rotation = Vec2(0,0),
-                        .scale = Vec2(1,1),
-                    });
-
-                GetCoordinator().AddComponent(
-                    m_Scene->m_cam,
-                    Camera
-                    {
-                        .mZoom = 1.f,
-                        .followPlayer = true
-                    });
-            }
-
-            m_Scene->m_LuaScriptingSystem->InitializeAllScripts();
+            //GetCoordinator().DestroyAllEntities();
+
+            //using namespace Uma_ECS;
+
+            //Entity kappa;
+            //{
+            //    kappa = GetCoordinator().CreateEntity();
+
+            //    GetCoordinator().AddComponent(
+            //        kappa,
+            //        Transform{
+            //          .name = std::string("kappa statue"),
+            //          .position = Vec2(30, 35),
+            //          .rotation = Vec2(0, 0),
+            //          .scale = Vec2(3.f, 3.f)
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        kappa,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 200,
+            //          .fric_coeff = 100
+            //        });
+
+            //    std::string texName = "kappa_statue";
+            //    GetCoordinator().AddComponent(
+            //        kappa,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_ENV,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName)
+            //        });
+
+            //    //LuaScript kappaScriptComponent;
+            //    //{
+            //    //    kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappa.lua");
+
+            //    //    kappaScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //    //        .name = "speed",
+            //    //        .value = 100.0f,
+            //    //        .type = Uma_ECS::LuaVarType::T_FLOAT,
+            //    //        .min = 0.0f,
+            //    //        .max = 500.0f,
+            //    //        .isSlider = true
+            //    //        });
+
+            //    //    // this works just that i didnt want to add this now
+            //    //    /*kappaScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "kappaScale.lua");
+
+            //    //    kappaScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //    //       .name = "speed",
+            //    //       .value = 100.0f,
+            //    //       .type = Uma_ECS::LuaVarType::T_FLOAT,
+            //    //       .min = 0.0f,
+            //    //       .max = 500.0f,
+            //    //       .isSlider = true
+            //    //        });*/
+
+            //    //    GetCoordinator().AddComponent(kappa, kappaScriptComponent);
+            //    //}
+            //}
+
+            //Entity wall;
+            //{
+            //    wall = GetCoordinator().CreateEntity();
+
+            //    GetCoordinator().AddComponent(
+            //        wall,
+            //        Transform{
+            //          .name = std::string("wall"),
+            //          .position = Vec2(-20, 0),
+            //          .rotation = Vec2(0, 0),
+            //          .scale = Vec2(1.f, 1.f)
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        wall,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 200,
+            //          .fric_coeff = 100
+            //        });
+
+            //    std::string texName = "wall_top";
+            //    GetCoordinator().AddComponent(
+            //        wall,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_WALL_TOP,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
+
+            //    // Create collider with two shapes
+            //    Collider wallCollider;
+
+            //    // Primary shape: Body hitbox (for taking damage)
+            //    wallCollider.shapes[0] = ColliderShape{
+            //        .purpose = ColliderPurpose::Environment,
+            //        .layer = CL_WALL,
+            //        .colliderMask = CL_PLAYER | CL_ENEMY,  // Blocks entities,
+            //        .isActive = true,
+            //        .autoFitToSprite = true  // Will be 128x128 (64*2 scale)
+            //    };
+
+            //    wallCollider.bounds.resize(wallCollider.shapes.size());
+            //    GetCoordinator().AddComponent(wall, wallCollider);
+
+            //    for (int i = 0; i < 5; i++)
+            //    {
+            //        Entity tmp = GetCoordinator().DuplicateEntity(wall);
+            //    
+            //        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+            //        tf.name = "wall btm";
+            //        tf.position = Vec2(static_cast<float>(20 + (i * 5)), 0.f);
+            //    
+            //        Collider& collider = GetCoordinator().GetComponent<Collider>(tmp);
+            //        collider.shapes[0].autoFitToSprite = false;
+            //        collider.shapes[0].size = Vec2(5, 1);
+            //        collider.shapes[0].offset = Vec2(0, -2.0);
+            //        collider.shapes[0].layer = CL_WALL;
+            //        collider.shapes[0].colliderMask = CL_PLAYER | CL_ENEMY;  // Blocks entities,
+            //    
+            //        Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
+            //    
+            //        // set texture randomly
+            //        sr.texturePath = "wall_btm";
+            //        sr.renderLayer = RL_WALL_BTM;
+            //        sr.texture = GetResources()->GetTexture(sr.texturePath);
+            //    }
+
+            //    for (int i = 0; i < 8; i++)
+            //    {
+            //        Entity tmp = GetCoordinator().DuplicateEntity(wall);
+
+            //        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+            //        tf.name = "wall right";
+            //        tf.position = Vec2(static_cast<float>(15 + (6 * 5)), static_cast<float>(0 + (i * 5)) );
+
+            //        Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
+
+            //        // set texture randomly
+            //        sr.texturePath = "wall_right";
+            //        sr.texture = GetResources()->GetTexture(sr.texturePath);
+            //    }
+
+            //    for (int i = 0; i < 5; i++)
+            //    {
+            //        Entity tmp = GetCoordinator().DuplicateEntity(wall);
+
+            //        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+            //        tf.name = "wall top";
+            //        tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(15 + (4 * 5)) );
+
+            //        Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
+
+            //        // set texture randomly
+            //        sr.texturePath = "wall_top";
+            //        sr.texture = GetResources()->GetTexture(sr.texturePath);
+            //    }
+            //}
+
+            //GetCoordinator().DestroyEntity(wall);
+
+            //Entity floor;
+            //{
+            //    floor = GetCoordinator().CreateEntity();
+
+            //    GetCoordinator().AddComponent(
+            //        floor,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 200,
+            //          .fric_coeff = 100
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        floor,
+            //        Transform{
+            //          .name = std::string("floor"),
+            //          .position = Vec2(20, 7.5),
+            //          .rotation = Vec2(0, 0),
+            //          .scale = Vec2(2.f, 2.f)
+            //        });
+
+            //    std::string texName = "floor_tatami";
+            //    GetCoordinator().AddComponent(
+            //        floor,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_FLOOR,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
+
+            //    for (int i = 0; i < 5; i++)
+            //    {
+            //        for (int j = 0; j < 3; j++)
+            //        {
+            //            Entity tmp = GetCoordinator().DuplicateEntity(floor);
+
+            //            Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+
+            //            tf.position = Vec2(static_cast<float>(20 + (i * 5)), static_cast<float>(7.5 + (j * 10)) );
+            //        }
+            //    }
+            //}
+
+            //// create entities
+            //Entity enemy;
+            //{
+            //    enemy = GetCoordinator().CreateEntity();
+
+            //    GetCoordinator().AddComponent(
+            //        enemy,
+            //        Enemy{
+            //            .mSpeed = 1.f
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        enemy,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 500,
+            //          .fric_coeff = 5
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        enemy,
+            //        Transform{
+            //          .name = std::string("bird enemy"),
+            //          .position = Vec2(-10, 0),
+            //          .rotation = Vec2(0, 0),
+            //          .scale = Vec2(2.f, 2.f)
+            //        });
+
+            //    std::string texName = "pink_enemy";
+            //    GetCoordinator().AddComponent(
+            //        enemy,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_ENEMY,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
+
+            //    // Create collider with two shapes
+            //    Collider enemyCollider;
+
+            //    enemyCollider.shapes[0] = ColliderShape{
+            //        .size = Vec2(3.f, 3.f),
+            //        .offset = Vec2(0.f, 1.f),
+            //        .purpose = ColliderPurpose::Physics,
+            //        .layer = CL_ENEMY,
+            //        .colliderMask = CL_PLAYER | CL_PROJECTILE,
+            //        .isActive = true,
+            //        .autoFitToSprite = false
+            //    };
+
+            //    enemyCollider.shapes.push_back(ColliderShape{
+            //        .size = Vec2(2.f, 0.7f),
+            //        .offset = Vec2(0.f, -2.0f),  // Changed from -2.f to -1.0f
+            //        .purpose = ColliderPurpose::Physics,
+            //        .layer = CL_ENEMY,
+            //        .colliderMask = CL_WALL,
+            //        .isActive = true,
+            //        .autoFitToSprite = false
+            //        });
+
+            //    enemyCollider.bounds.resize(enemyCollider.shapes.size());
+            //    GetCoordinator().AddComponent(enemy, enemyCollider);
+
+            //    LuaScript enemyScriptComponent;
+            //    {
+            //        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "BirdEnemy.lua");
+
+            //        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //            .name = "speed",
+            //            .value = 100.0f,
+            //            .type = Uma_ECS::LuaVarType::T_FLOAT,
+            //            .min = 0.0f,
+            //            .max = 500.0f,
+            //            .isSlider = true
+            //            });
+
+            //        enemyScriptComponent.GetScript(0)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //            .name = "name",
+            //            .value = "bird",
+            //            .type = Uma_ECS::LuaVarType::T_STRING,
+            //            .isSlider = false
+            //            });
+
+            //        // this works just that i didnt want to add this now
+            //        enemyScriptComponent.AddScript(Uma_FilePath::SCRIPT_DIR + "testEnemy.lua");
+
+            //        enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //           .name = "speed",
+            //           .value = 100.0f,
+            //           .type = Uma_ECS::LuaVarType::T_FLOAT,
+            //           .min = 0.0f,
+            //           .max = 500.0f,
+            //           .isSlider = true
+            //            });
+
+            //        enemyScriptComponent.GetScript(1)->exposedVariables.push_back(Uma_ECS::LuaVariable{
+            //           .name = "name",
+            //           .value = "bird child",
+            //           .type = Uma_ECS::LuaVarType::T_STRING,
+            //           .isSlider = false
+            //            });
+
+            //        GetCoordinator().AddComponent(enemy, enemyScriptComponent);
+            //    }
+
+            //    //testing
+            //    GetCoordinator().AddComponent(enemy, Uma_ECS::AudioComponent{});
+            //    GetCoordinator().AddComponent(enemy, Uma_ECS::PathFinding{});
+            //}
+            //{
+            //    Entity en = GetCoordinator().CreateEntity();
+
+            //    GetCoordinator().AddComponent(
+            //        en,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 500,
+            //          .fric_coeff = 5
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        en,
+            //        Transform{
+            //          .name = std::string("bird enemy child"),
+            //          .position = Vec2(-2, 0),
+            //          .rotation = Vec2(0, 0),
+            //          .scale = Vec2(0.5f, 0.5f)
+            //        });
+
+            //    std::string texName = "kappa_statue";
+            //    GetCoordinator().AddComponent(
+            //        en,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_ENEMY,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
+
+            //    // Create collider with two shapes
+            //    Collider enemyCollider;
+
+            //    enemyCollider.shapes[0] = ColliderShape{
+            //        .size = Vec2(2.f, 2.f),
+            //        .offset = Vec2(0.f, 0.f),  // Changed from -2.f to -1.0f
+            //        .purpose = ColliderPurpose::Physics,
+            //        .layer = CL_ENEMY,
+            //        .colliderMask = CL_WALL,
+            //        .isActive = true,
+            //        .autoFitToSprite = false
+            //    };
+            //    enemyCollider.bounds.resize(enemyCollider.shapes.size());
+            //    GetCoordinator().AddComponent(en, enemyCollider);
+
+            //    GetCoordinator().SetParent(en, enemy);
+            //}
+            //SavePrefab("bird", enemy);
+
+            //// create player
+            //m_Scene->m_player = GetCoordinator().CreateEntity();
+            //{
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Transform
+            //        {
+            //            .name = std::string("player"),
+            //            .position = Vec2(0.f, 0.f),
+            //            .rotation = Vec2(0.f, 0.f),
+            //            .scale = Vec2(1,1),
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 300,
+            //          .fric_coeff = 5
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Player{
+            //            .mSpeed = 1.f
+            //        });
+
+            //    std::string texName = "player";
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_PLAYER,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
+
+            //    // Create collider with two shapes
+            //    Collider playerCollider;
+
+            //    playerCollider.shapes[0] = ColliderShape{
+            //            .purpose = ColliderPurpose::Physics,
+            //            .layer = CL_PLAYER,
+            //            .colliderMask = CL_ENEMY | CL_PROJECTILE,
+            //            .isActive = true,
+            //            .autoFitToSprite = true
+            //    };
+
+            //    playerCollider.shapes.push_back(ColliderShape{
+            //        .size = Vec2(7.0f, 2.f),
+            //        .offset = Vec2(0, -2.75f),
+            //        .purpose = ColliderPurpose::Physics,
+            //        .layer = CL_PLAYER,
+            //        .colliderMask = CL_WALL,
+            //        .isActive = true,
+            //        .autoFitToSprite = false
+            //    });
+
+            //    playerCollider.bounds.resize(playerCollider.shapes.size());
+            //    GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
+
+            //    AudioListener audioListener;
+            //    GetCoordinator().AddComponent(m_Scene->m_player, audioListener);
+            //    GetCoordinator().AddComponent(m_Scene->m_player, Uma_ECS::PathFinding{});
+            //}
+
+            //// create camera
+            //m_Scene->m_cam = GetCoordinator().CreateEntity();
+            //{
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_cam,
+            //        Transform
+            //        {
+            //            .name = std::string("cam"),
+            //            .position = Vec2(400.0f, 300.0f),
+            //            .rotation = Vec2(0,0),
+            //            .scale = Vec2(1,1),
+            //        });
+
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_cam,
+            //        Camera
+            //        {
+            //            .mZoom = 1.f,
+            //            .followPlayer = true
+            //        });
+            //}
+
+            //m_Scene->m_LuaScriptingSystem->InitializeAllScripts();
         }
 
         void StressTest()
@@ -837,258 +837,258 @@ namespace Uma_Engine
             // rand position rand velocity with texture
             // without collision
             // without lua scripts
-            using namespace Uma_ECS;
-            GetLuascriptingSystem().Shutdown();
-            GetCoordinator().DestroyAllEntities();
+            //using namespace Uma_ECS;
+            //GetLuascriptingSystem().Shutdown();
+            //GetCoordinator().DestroyAllEntities();
            
-            // create entities
-            {
-                Entity enemy;
-                {
-                    enemy = GetCoordinator().CreateEntity();
+            //// create entities
+            //{
+            //    Entity enemy;
+            //    {
+            //        enemy = GetCoordinator().CreateEntity();
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Enemy{
-                            .mSpeed = 1.f
-                        });
+            //        GetCoordinator().AddComponent(
+            //            enemy,
+            //            Enemy{
+            //                .mSpeed = 1.f
+            //            });
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        RigidBody{
-                          .velocity = Vec2(0.0f, 0.0f),
-                          .acceleration = Vec2(0.0f, 0.0f),
-                          .accel_strength = 300,
-                          .fric_coeff = 0
-                        });
+            //        GetCoordinator().AddComponent(
+            //            enemy,
+            //            RigidBody{
+            //              .velocity = Vec2(0.0f, 0.0f),
+            //              .acceleration = Vec2(0.0f, 0.0f),
+            //              .accel_strength = 300,
+            //              .fric_coeff = 0
+            //            });
 
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Transform{
-                          .position = Vec2(-10, 0),
-                          .rotation = Vec2(0, 0),
-                          .scale = Vec2(2.f, 2.f)
-                        });
+            //        GetCoordinator().AddComponent(
+            //            enemy,
+            //            Transform{
+            //              .position = Vec2(-10, 0),
+            //              .rotation = Vec2(0, 0),
+            //              .scale = Vec2(2.f, 2.f)
+            //            });
 
-                    std::string texName = "pink_enemy";
-                    GetCoordinator().AddComponent(
-                        enemy,
-                        Sprite{
-                          .texturePath = texName,
-                          .renderLayer = RL_ENEMY,
-                          .flipX = false,
-                          .flipY = false,
-                          .UseNativeSize = true,
-                          .texture = GetResources()->GetTexture(texName),
-                        });
-                }
+            //        std::string texName = "pink_enemy";
+            //        GetCoordinator().AddComponent(
+            //            enemy,
+            //            Sprite{
+            //              .texturePath = texName,
+            //              .renderLayer = RL_ENEMY,
+            //              .flipX = false,
+            //              .flipY = false,
+            //              .UseNativeSize = true,
+            //              .texture = GetResources()->GetTexture(texName),
+            //            });
+            //    }
 
-                // using 1 enemy to duplicate 2500 times and rand its transform
-                std::random_device rd;
-                std::mt19937 generator(rd());
+            //    // using 1 enemy to duplicate 2500 times and rand its transform
+            //    std::random_device rd;
+            //    std::mt19937 generator(rd());
 
-                // Define spawn area (adjust these values to fit your level bounds)
-                std::uniform_real_distribution<float> randPositionX(-50.0f, 100.0f);
-                std::uniform_real_distribution<float> randPositionY(-50.0f, 100.0f);
+            //    // Define spawn area (adjust these values to fit your level bounds)
+            //    std::uniform_real_distribution<float> randPositionX(-50.0f, 100.0f);
+            //    std::uniform_real_distribution<float> randPositionY(-50.0f, 100.0f);
 
-                for (size_t i = 0; i < 10000; i++)
-                {
-                    Entity tmp = GetCoordinator().DuplicateEntity(enemy);
+            //    for (size_t i = 0; i < 10000; i++)
+            //    {
+            //        Entity tmp = GetCoordinator().DuplicateEntity(enemy);
 
-                    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                    tf.position = Vec2(randPositionX(generator), randPositionY(generator));
-                    tf.rotation = Vec2(0, 0);
+            //        Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+            //        tf.position = Vec2(randPositionX(generator), randPositionY(generator));
+            //        tf.rotation = Vec2(0, 0);
 
-                    RigidBody& rb = GetCoordinator().GetComponent<RigidBody>(tmp);
+            //        RigidBody& rb = GetCoordinator().GetComponent<RigidBody>(tmp);
 
-                    // Random velocity distribution (adjust ranges as needed)
-                    std::uniform_real_distribution<float> randVelocity(-50.0f, 50.0f);
+            //        // Random velocity distribution (adjust ranges as needed)
+            //        std::uniform_real_distribution<float> randVelocity(-50.0f, 50.0f);
 
-                    rb.velocity = Vec2(randVelocity(generator), randVelocity(generator));
-                }
-            }
+            //        rb.velocity = Vec2(randVelocity(generator), randVelocity(generator));
+            //    }
+            //}
 
-            // create player
-            m_Scene->m_player = GetCoordinator().CreateEntity();
-            {
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Transform
-                    {
-                        .position = Vec2(0.f, 0.f),
-                        .rotation = Vec2(0.f, 0.f),
-                        .scale = Vec2(1,1),
-                    });
+            //// create player
+            //m_Scene->m_player = GetCoordinator().CreateEntity();
+            //{
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Transform
+            //        {
+            //            .position = Vec2(0.f, 0.f),
+            //            .rotation = Vec2(0.f, 0.f),
+            //            .scale = Vec2(1,1),
+            //        });
 
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    RigidBody{
-                      .velocity = Vec2(0.0f, 0.0f),
-                      .acceleration = Vec2(0.0f, 0.0f),
-                      .accel_strength = 300,
-                      .fric_coeff = 5
-                    });
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        RigidBody{
+            //          .velocity = Vec2(0.0f, 0.0f),
+            //          .acceleration = Vec2(0.0f, 0.0f),
+            //          .accel_strength = 300,
+            //          .fric_coeff = 5
+            //        });
 
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Player{
-                        .mSpeed = 1.f
-                    });
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Player{
+            //            .mSpeed = 1.f
+            //        });
 
-                std::string texName = "player";
-                GetCoordinator().AddComponent(
-                    m_Scene->m_player,
-                    Sprite{
-                      .texturePath = texName,
-                      .renderLayer = RL_PLAYER,
-                      .flipX = false,
-                      .flipY = false,
-                      .UseNativeSize = true,
-                      .texture = GetResources()->GetTexture(texName),
-                    });
+            //    std::string texName = "player";
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_player,
+            //        Sprite{
+            //          .texturePath = texName,
+            //          .renderLayer = RL_PLAYER,
+            //          .flipX = false,
+            //          .flipY = false,
+            //          .UseNativeSize = true,
+            //          .texture = GetResources()->GetTexture(texName),
+            //        });
 
-                // Create collider with two shapes
-                Collider playerCollider;
+            //    // Create collider with two shapes
+            //    Collider playerCollider;
 
-                playerCollider.shapes[0] = ColliderShape{
-                        .purpose = ColliderPurpose::Physics,
-                        .layer = CL_PLAYER,
-                        .colliderMask = CL_ENEMY | CL_PROJECTILE,
-                        .isActive = true,
-                        .autoFitToSprite = true
-                };
+            //    playerCollider.shapes[0] = ColliderShape{
+            //            .purpose = ColliderPurpose::Physics,
+            //            .layer = CL_PLAYER,
+            //            .colliderMask = CL_ENEMY | CL_PROJECTILE,
+            //            .isActive = true,
+            //            .autoFitToSprite = true
+            //    };
 
-                playerCollider.shapes.push_back(ColliderShape{
-                    .size = Vec2(7.0f, 0.5f),
-                    .offset = Vec2(0, -2.75f),
-                    .purpose = ColliderPurpose::Physics,
-                    .layer = CL_PLAYER,
-                    .colliderMask = CL_WALL,
-                    .isActive = true,
-                    .autoFitToSprite = false
-                    });
+            //    playerCollider.shapes.push_back(ColliderShape{
+            //        .size = Vec2(7.0f, 0.5f),
+            //        .offset = Vec2(0, -2.75f),
+            //        .purpose = ColliderPurpose::Physics,
+            //        .layer = CL_PLAYER,
+            //        .colliderMask = CL_WALL,
+            //        .isActive = true,
+            //        .autoFitToSprite = false
+            //        });
 
-                playerCollider.bounds.resize(playerCollider.shapes.size());
-                GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
-            }
+            //    playerCollider.bounds.resize(playerCollider.shapes.size());
+            //    GetCoordinator().AddComponent(m_Scene->m_player, playerCollider);
+            //}
 
-            // create camera
-            m_Scene->m_cam = GetCoordinator().CreateEntity();
-            {
-                GetCoordinator().AddComponent(
-                    m_Scene->m_cam,
-                    Transform
-                    {
-                        .position = Vec2(400.0f, 300.0f),
-                        .rotation = Vec2(0,0),
-                        .scale = Vec2(1,1),
-                    });
+            //// create camera
+            //m_Scene->m_cam = GetCoordinator().CreateEntity();
+            //{
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_cam,
+            //        Transform
+            //        {
+            //            .position = Vec2(400.0f, 300.0f),
+            //            .rotation = Vec2(0,0),
+            //            .scale = Vec2(1,1),
+            //        });
 
-                GetCoordinator().AddComponent(
-                    m_Scene->m_cam,
-                    Camera
-                    {
-                        .mZoom = 1.f,
-                        .followPlayer = true
-                    });
-            }
-            GetLuascriptingSystem().Restart();
+            //    GetCoordinator().AddComponent(
+            //        m_Scene->m_cam,
+            //        Camera
+            //        {
+            //            .mZoom = 1.f,
+            //            .followPlayer = true
+            //        });
+            //}
+            //GetLuascriptingSystem().Restart();
         }
 
         void DuplicateOrCreateEntity()
         {
-            using namespace Uma_ECS;
+            //using namespace Uma_ECS;
 
-            auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
+            //auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
 
-            std::default_random_engine generator(std::random_device{}());
-            std::uniform_real_distribution<float> randPos(-400, 400);
+            //std::default_random_engine generator(std::random_device{}());
+            //std::uniform_real_distribution<float> randPos(-400, 400);
 
-            if (eArray.Size() == 0)
-            {
-                // Create new enemy and save as prefab
-                Entity enemy = m_Scene->CreateEntity();
-                {
-                    GetCoordinator().AddComponent(enemy, Enemy{ .mSpeed = 1.f });
+            //if (eArray.Size() == 0)
+            //{
+            //    // Create new enemy and save as prefab
+            //    Entity enemy = m_Scene->CreateEntity();
+            //    {
+            //        GetCoordinator().AddComponent(enemy, Enemy{ .mSpeed = 1.f });
 
-                    GetCoordinator().AddComponent(enemy, RigidBody{
-                        .velocity = Vec2(0.0f, 0.0f),
-                        .acceleration = Vec2(0.0f, 0.0f),
-                        .accel_strength = 200,
-                        .fric_coeff = 100
-                        });
+            //        GetCoordinator().AddComponent(enemy, RigidBody{
+            //            .velocity = Vec2(0.0f, 0.0f),
+            //            .acceleration = Vec2(0.0f, 0.0f),
+            //            .accel_strength = 200,
+            //            .fric_coeff = 100
+            //            });
 
-                    GetCoordinator().AddComponent(enemy, Transform{
-                        .position = Vec2(-10, 0),
-                        .rotation = Vec2(0, 0),
-                        .scale = Vec2(1.f, 1.f)
-                        });
+            //        GetCoordinator().AddComponent(enemy, Transform{
+            //            .position = Vec2(-10, 0),
+            //            .rotation = Vec2(0, 0),
+            //            .scale = Vec2(1.f, 1.f)
+            //            });
 
-                    std::string texName = "pink_enemy";
-                    GetCoordinator().AddComponent(enemy, Sprite{
-                        .texturePath = texName,
-                        .flipX = false,
-                        .flipY = false,
-                        .UseNativeSize = true,
-                        .texture = GetResources()->GetTexture(texName),
-                        });
+            //        std::string texName = "pink_enemy";
+            //        GetCoordinator().AddComponent(enemy, Sprite{
+            //            .texturePath = texName,
+            //            .flipX = false,
+            //            .flipY = false,
+            //            .UseNativeSize = true,
+            //            .texture = GetResources()->GetTexture(texName),
+            //            });
 
-                    Collider enemyCollider;
-                    enemyCollider.shapes[0] = ColliderShape{
-                        .size = Vec2(3.f, 3.f),
-                        .offset = Vec2(0.f, 1.f),
-                        .purpose = ColliderPurpose::Physics,
-                        .layer = CL_ENEMY,
-                        .colliderMask = CL_PLAYER | CL_PROJECTILE,
-                        .isActive = true,
-                        .autoFitToSprite = false
-                    };
+            //        Collider enemyCollider;
+            //        enemyCollider.shapes[0] = ColliderShape{
+            //            .size = Vec2(3.f, 3.f),
+            //            .offset = Vec2(0.f, 1.f),
+            //            .purpose = ColliderPurpose::Physics,
+            //            .layer = CL_ENEMY,
+            //            .colliderMask = CL_PLAYER | CL_PROJECTILE,
+            //            .isActive = true,
+            //            .autoFitToSprite = false
+            //        };
 
-                    enemyCollider.shapes.push_back(ColliderShape{
-                        .size = Vec2(2.f, 0.5f),
-                        .offset = Vec2(0.f, -2.f),
-                        .purpose = ColliderPurpose::Environment,
-                        .layer = CL_WALL,
-                        .colliderMask = CL_WALL,
-                        .isActive = true,
-                        .autoFitToSprite = false
-                        });
+            //        enemyCollider.shapes.push_back(ColliderShape{
+            //            .size = Vec2(2.f, 0.5f),
+            //            .offset = Vec2(0.f, -2.f),
+            //            .purpose = ColliderPurpose::Environment,
+            //            .layer = CL_WALL,
+            //            .colliderMask = CL_WALL,
+            //            .isActive = true,
+            //            .autoFitToSprite = false
+            //            });
 
-                    enemyCollider.bounds.resize(enemyCollider.shapes.size());
-                    GetCoordinator().AddComponent(enemy, enemyCollider);
-                }
+            //        enemyCollider.bounds.resize(enemyCollider.shapes.size());
+            //        GetCoordinator().AddComponent(enemy, enemyCollider);
+            //    }
 
-                // Save as prefab
-                GameSerializer serializer;
-                serializer.Register(GetResources());
-                serializer.Register(&GetCoordinator());
-                serializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
+            //    // Save as prefab
+            //    GameSerializer serializer;
+            //    serializer.Register(GetResources());
+            //    serializer.Register(&GetCoordinator());
+            //    serializer.savePrefab(enemy, Uma_FilePath::PREFAB_DIR + "enemy.json");
 
-                Transform& tf = GetCoordinator().GetComponent<Transform>(enemy);
-                tf.position = Vec2(randPos(generator), randPos(generator));
-            }
-            else
-            {
-                // Duplicate existing entity
-                Entity tmp = GetCoordinator().DuplicateEntity(eArray.GetEntity(0));
-                Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
-                tf.position = Vec2(randPos(generator), randPos(generator));
+            //    Transform& tf = GetCoordinator().GetComponent<Transform>(enemy);
+            //    tf.position = Vec2(randPos(generator), randPos(generator));
+            //}
+            //else
+            //{
+            //    // Duplicate existing entity
+            //    Entity tmp = GetCoordinator().DuplicateEntity(eArray.GetEntity(0));
+            //    Transform& tf = GetCoordinator().GetComponent<Transform>(tmp);
+            //    tf.position = Vec2(randPos(generator), randPos(generator));
 
-                Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
-                sr.texturePath = (randPos(generator) > 0.f) ? "pink_enemy" : "enemy";
-                sr.texture = GetResources()->GetTexture(sr.texturePath);
-            }
+            //    Sprite& sr = GetCoordinator().GetComponent<Sprite>(tmp);
+            //    sr.texturePath = (randPos(generator) > 0.f) ? "pink_enemy" : "enemy";
+            //    sr.texture = GetResources()->GetTexture(sr.texturePath);
+            //}
         }
 
         void DestroyRandomEntity()
         {
-            using namespace Uma_ECS;
+            /*using namespace Uma_ECS;
 
             auto& eArray = GetCoordinator().GetComponentArray<Enemy>();
             if (eArray.Size() != 0)
             {
                 GetCoordinator().DestroyEntity(eArray.GetEntity(0));
-            }
+            }*/
         }
 
         void LoadPrefab(std::string prefab_name)
