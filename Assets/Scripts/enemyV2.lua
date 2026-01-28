@@ -45,7 +45,7 @@ end
 function UpdateHealth()
     local enemy = GetEnemy()
     if enemy and enemy.mHealth <= 0 then
-        ChangeState(EntityID, "die")
+        ChangeState(EntityID, "DeadState")
     end
 end
 

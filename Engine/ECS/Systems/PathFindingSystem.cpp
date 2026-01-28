@@ -180,11 +180,24 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         bool isEnemy = enemyArray.Has(entity);
 
         // Calculate current position with collider offset
-        Vec2 currentPos = tf.position;
-        if (isPlayer && colArray.Has(entity)) {
-            const auto& collider = colArray.GetData(entity);
+        //Vec2 currentPos = tf.position;
+        //if (isPlayer && colArray.Has(entity)) {
+        //    const auto& collider = colArray.GetData(entity);
 
-            // Player uses shapes[1] for pathfinding position
+        //    // Player uses shapes[1] for pathfinding position
+        //    if (collider.shapes.size() > 1 && collider.shapes[1].isActive) {
+        //        Vec2 worldOffset = Vec2{
+        //            collider.shapes[1].offset.x * tf.scale.x,
+        //            collider.shapes[1].offset.y * tf.scale.y
+        //        };
+        //        currentPos = tf.position + worldOffset;
+        //    }
+        //}
+
+        Vec2 currentPos = tf.position;
+        if (colArray.Has(entity)) {
+            const auto& collider = colArray.GetData(entity);
+            //use shapes[1] for pathfinding position
             if (collider.shapes.size() > 1 && collider.shapes[1].isActive) {
                 Vec2 worldOffset = Vec2{
                     collider.shapes[1].offset.x * tf.scale.x,

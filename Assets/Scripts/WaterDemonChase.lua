@@ -37,6 +37,7 @@ function state_update(entity, dt)
         end 
     end
 
+    --if enemy is within attack range
     if HasEnemy() then
         local enemy = GetEnemy()
         if enemy then

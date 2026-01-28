@@ -52,17 +52,69 @@ namespace Uma_ECS
 			return true;
 		}
 
-		void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
-		{
-			(void)value;
-			(void)allocator;
-		}
+        void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
+        {
+            value.SetObject();
 
-		// Deserialize from JSON
-		void Deserialize(const rapidjson::Value& value) //override
-		{
-			(void)value;
-		}
+            // States array
+            rapidjson::Value statesArray(rapidjson::kArrayType);
+            for (const auto& [stateName, state] : states) {
+                rapidjson::Value stateObj(rapidjson::kObjectType);
+                stateObj.AddMember("name", rapidjson::Value(state.name.c_str(), allocator), allocator);
+                stateObj.AddMember("isActive", state.isActive, allocator);
+                stateObj.AddMember("scriptIndex", state.scriptIndex, allocator);
+                statesArray.PushBack(stateObj, allocator);
+            }
+            value.AddMember("states", statesArray, allocator);
+
+            // nextId (for stable indices if needed)
+            value.AddMember("nextId", static_cast<int>(nextId), allocator);
+
+            // current/next (transient but harmless backup)
+            value.AddMember("current", rapidjson::Value(current.c_str(), allocator), allocator);
+            value.AddMember("next", rapidjson::Value(next.c_str(), allocator), allocator);
+        }
+
+        void Deserialize(const rapidjson::Value& value)
+        {
+            // Full reset
+            states.clear();
+            current.clear();
+            next.clear();
+            nextId = 0;
+
+            // Restore states (uses your AddStates logic!)
+            if (value.HasMember("states") && value["states"].IsArray()) {
+                for (const auto& stateObj : value["states"].GetArray()) {
+                    if (stateObj.IsObject() &&
+                        stateObj.HasMember("name") && stateObj["name"].IsString() &&
+                        stateObj.HasMember("isActive") && stateObj["isActive"].IsBool()) {
+
+                        std::string name = stateObj["name"].GetString();
+                        AddStates(name, stateObj["isActive"].GetBool());  // Increments nextId!
+
+                        // Override saved index (stable!)
+                        if (stateObj.HasMember("scriptIndex") && stateObj["scriptIndex"].IsInt()) {
+                            states[name].scriptIndex = stateObj["scriptIndex"].GetInt();
+                        }
+                    }
+                }
+            }
+
+            // Restore counter
+            if (value.HasMember("nextId") && value["nextId"].IsInt()) {
+                nextId = static_cast<unsigned int>(value["nextId"].GetInt());
+            }
+
+            // Restore transients (FSMSystem will fix if invalid)
+            if (value.HasMember("current") && value["current"].IsString()) {
+                current = value["current"].GetString();
+            }
+            if (value.HasMember("next") && value["next"].IsString()) {
+                next = value["next"].GetString();
+            }
+        }
+
 	};
 
 }

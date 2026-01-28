@@ -2,6 +2,10 @@
     "resources": {
         "textures": [
             {
+                "name": "HTP_Image",
+                "path": "Assets/HowToPlay.png"
+            },
+            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
             },
@@ -10,8 +14,8 @@
                 "path": "Assets/wall_top.png"
             },
             {
-                "name": "HTP_Image",
-                "path": "Assets/HowToPlay.png"
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
                 "name": "fire bird",
@@ -22,32 +26,28 @@
                 "path": "Assets/floor_tatami.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
-            },
-            {
-                "name": "player_ss",
-                "path": "Assets/player_ss.png"
             },
             {
                 "name": "wall_left",
                 "path": "Assets/wall_left.png"
             },
             {
+                "name": "player_ss",
+                "path": "Assets/player_ss.png"
+            },
+            {
                 "name": "wall_top_left",
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "wall_right",
-                "path": "Assets/wall_right.png"
-            },
-            {
                 "name": "WoodF_3",
                 "path": "Assets/Environment/m3 floor 1.png"
+            },
+            {
+                "name": "wall_right",
+                "path": "Assets/wall_right.png"
             },
             {
                 "name": "wall_btm",
@@ -62,12 +62,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "pause",
-                "path": "Assets/pause menu.png"
-            },
-            {
                 "name": "HallWay_Hori1",
                 "path": "Assets/Environment/horizontal hallway.png"
+            },
+            {
+                "name": "pause",
+                "path": "Assets/pause menu.png"
             },
             {
                 "name": "Kappa_1",
@@ -96,18 +96,8 @@
         ],
         "sounds": [
             {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -121,9 +111,19 @@
                 "type": 0
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
             },
             {
                 "name": "enemy_hurt",
