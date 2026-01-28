@@ -135,7 +135,7 @@ namespace Uma_Engine
             {
                 const auto& image = imageArray.GetData(entity);
 
-                if (image.texture && !image.texture->tex_id == 0)
+                if (image.texture && image.texture->tex_id != 0)
                 {
                     worldSize.x = static_cast<float>(image.texture->tex_size.x) / static_cast<float>(image.texture->pixelsPerUnit);
                     worldSize.y = static_cast<float>(image.texture->tex_size.y) / static_cast<float>(image.texture->pixelsPerUnit);

@@ -303,10 +303,9 @@ namespace Uma_ECS
             {
                 Entity childUI = childrenList[i];
 
-                if (!pCoordinator->IsActiveInHierarchy(childUI)) continue;
+                if (!pCoordinator->IsActiveInHierarchy(childUI) || !rtfArray.Has(childUI)) continue;
 
-                auto& rectTransform = rtfArray.GetData(childUI);
-                
+                auto& rectTransform = rtfArray.GetData(childUI);                
 
                 if (pCoordinator->HasComponent<Uma_UI::Text>(childUI))
                 {
@@ -376,8 +375,8 @@ namespace Uma_ECS
                         .uvOffset = Vec2(0.0f, 0.0f),
                         .uvSize = Vec2(1.0f, 1.0f),
 
-                        .tintColor = image.color.ToVec3(),
-                        .alpha = image.color.a
+                        .tintColor = image.colour.ToVec3(),
+                        .alpha = image.colour.a
                     };
 
                     // image

@@ -38,7 +38,7 @@ namespace Uma_UI
         std::string fontName = "";
         int sortingOrder = 0;
         float fontSize = 24.0f;
-        Uma_UI::Color color = Uma_UI::Color::Black();
+        Uma_UI::Colour color = Uma_UI::Colour::Black();
         Uma_UI::TextAlignment alignment = Uma_UI::TextAlignment::Center;
         bool visible = true;
 

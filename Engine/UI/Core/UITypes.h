@@ -33,15 +33,15 @@ namespace Uma_UI
      * \struct Color
      * \brief RGBA color with float components in range [0,1].
      */
-    struct Color
+    struct Colour
     {
         float r = 1.0f;
         float g = 1.0f;
         float b = 1.0f;
         float a = 1.0f;
 
-        constexpr Color() = default;
-        constexpr Color(float r_, float g_, float b_, float a_ = 1.0f) : r(r_), g(g_), b(b_), a(a_) {}
+        constexpr Colour() = default;
+        constexpr Colour(float r_, float g_, float b_, float a_ = 1.0f) : r(r_), g(g_), b(b_), a(a_) {}
 
         /*!
          * \brief Converts color to Vec3 (RGB only).
@@ -49,13 +49,13 @@ namespace Uma_UI
          */
         Vec3 ToVec3() const { return Vec3(r, g, b); }
 
-        static constexpr Color White() { return Color(1.0f, 1.0f, 1.0f, 1.0f); }
-        static constexpr Color Black() { return Color(0.0f, 0.0f, 0.0f, 1.0f); }
-        static constexpr Color Clear() { return Color(0.0f, 0.0f, 0.0f, 0.0f); }
-        static constexpr Color Red() { return Color(1.0f, 0.0f, 0.0f, 1.0f); }
-        static constexpr Color Green() { return Color(0.0f, 1.0f, 0.0f, 1.0f); }
-        static constexpr Color Blue() { return Color(0.0f, 0.0f, 1.0f, 1.0f); }
-        static constexpr Color Gray() { return Color(0.5f, 0.5f, 0.5f, 1.0f); }
+        static constexpr Colour White() { return Colour(1.0f, 1.0f, 1.0f, 1.0f); }
+        static constexpr Colour Black() { return Colour(0.0f, 0.0f, 0.0f, 1.0f); }
+        static constexpr Colour Clear() { return Colour(0.0f, 0.0f, 0.0f, 0.0f); }
+        static constexpr Colour Red() { return Colour(1.0f, 0.0f, 0.0f, 1.0f); }
+        static constexpr Colour Green() { return Colour(0.0f, 1.0f, 0.0f, 1.0f); }
+        static constexpr Colour Blue() { return Colour(0.0f, 0.0f, 1.0f, 1.0f); }
+        static constexpr Colour Gray() { return Colour(0.5f, 0.5f, 0.5f, 1.0f); }
     };
 
     /*!
@@ -134,6 +134,14 @@ namespace Uma_UI
      * \brief Current interaction state of a button.
      */
     enum class ButtonState
+    {
+        Normal = 0,
+        Hovered = 1,
+        Pressed = 2,
+        Disabled = 3
+    };
+
+    enum class CheckboxState
     {
         Normal = 0,
         Hovered = 1,

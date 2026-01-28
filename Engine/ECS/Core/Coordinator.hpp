@@ -56,6 +56,8 @@ All rights reserved.
 #include "UI/Components/RectTransform.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Button.h"
+#include "UI/Components/Slider.h"
+#include "UI/Components/Checkbox.h"
 #include "UI/Components/Canvas.h"
 #include "UI/Components/Text.h"
 
@@ -273,6 +275,8 @@ namespace Uma_ECS
             CHECK_COMPONENT(Uma_UI::RectTransform)
             CHECK_COMPONENT(Uma_UI::Image)
             CHECK_COMPONENT(Uma_UI::Button)
+            CHECK_COMPONENT(Uma_UI::Slider)
+            CHECK_COMPONENT(Uma_UI::Checkbox)
             CHECK_COMPONENT(Uma_UI::Canvas)
             CHECK_COMPONENT(Uma_UI::Text)
 

@@ -133,12 +133,12 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
                 // Combine to create swept AABB
                 c.bounds[i].min = Vec2{
-                    min(currentMin.x, prevMin.x),
-                    min(currentMin.y, prevMin.y)
+                    std::min(currentMin.x, prevMin.x),
+                    std::min(currentMin.y, prevMin.y)
                 };
                 c.bounds[i].max = Vec2{
-                    max(currentMax.x, prevMax.x),
-                    max(currentMax.y, prevMax.y)
+                    std::max(currentMax.x, prevMax.x),
+                    std::max(currentMax.y, prevMax.y)
                 };
             }
 
@@ -489,7 +489,7 @@ void Uma_ECS::CollisionSystem::ResolveAABBCollision(
     const float BAUMGARTE_COEFF = 0.2f;  // 20% correction (reduced from 40%)
     const float PENETRATION_SLOP = 0.01f; // Allow small overlap
 
-    float correctionAmount = max(penetration - PENETRATION_SLOP, 0.0f) * BAUMGARTE_COEFF;
+    float correctionAmount = std::max(penetration - PENETRATION_SLOP, 0.0f) * BAUMGARTE_COEFF;
 
     if (e1CanMove && e2CanMove)
     {

@@ -2,7 +2,9 @@
 
 #include "../Core/UITypes.h"
 #include "rapidjson/document.h"
+#include "../EditorApp/Editor/Core/EditorMath.h"
 #include <string>
+
 
 namespace Uma_UI
 {
@@ -20,17 +22,22 @@ namespace Uma_UI
         // Value range
         float minValue = 0.0f;
         float maxValue = 1.0f;
-        float value = 0.5f;
+        float value = 1.f;
         bool wholeNumbers = false;  // Round to integers
 
         // Visual settings
         SliderDirection direction = SliderDirection::LeftToRight;
         bool interactable = true;
 
+        // Visual reference
+        Uma_ECS::Entity background = static_cast<Uma_ECS::Entity>(-1);
+        Uma_ECS::Entity fill = static_cast<Uma_ECS::Entity>(-1);
+        Uma_ECS::Entity handle = static_cast<Uma_ECS::Entity>(-1);
+
         // Colors
-        Uma_UI::Color normalColor = Uma_UI::Color::White();
-        Uma_UI::Color highlightColor = Uma_UI::Color(0.9f, 0.9f, 0.9f, 1.0f);
-        Uma_UI::Color disabledColor = Uma_UI::Color(0.5f, 0.5f, 0.5f, 0.5f);
+        Uma_UI::Colour normalColour = Uma_UI::Colour::White();
+        Uma_UI::Colour highlightColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
 
         // Callback
         std::string scriptName = "";  // Script to call on value change
@@ -50,29 +57,33 @@ namespace Uma_UI
             jsonValue.AddMember("direction", static_cast<int>(direction), allocator);
             jsonValue.AddMember("interactable", interactable, allocator);
 
+            jsonValue.AddMember("backgroundEntity", static_cast<int>(background), allocator);
+            jsonValue.AddMember("fillEntity", static_cast<int>(fill), allocator);
+            jsonValue.AddMember("handleEntity", static_cast<int>(handle), allocator);
+
             jsonValue.AddMember("scriptName",
                 rapidjson::Value(scriptName.c_str(), allocator), allocator);
 
             rapidjson::Value nCol(rapidjson::kObjectType);
-            nCol.AddMember("r", normalColor.r, allocator);
-            nCol.AddMember("g", normalColor.g, allocator);
-            nCol.AddMember("b", normalColor.b, allocator);
-            nCol.AddMember("a", normalColor.a, allocator);
-            jsonValue.AddMember("normalColor", nCol, allocator);
+            nCol.AddMember("r", normalColour.r, allocator);
+            nCol.AddMember("g", normalColour.g, allocator);
+            nCol.AddMember("b", normalColour.b, allocator);
+            nCol.AddMember("a", normalColour.a, allocator);
+            jsonValue.AddMember("normalColour", nCol, allocator);
 
             rapidjson::Value hCol(rapidjson::kObjectType);
-            hCol.AddMember("r", highlightColor.r, allocator);
-            hCol.AddMember("g", highlightColor.g, allocator);
-            hCol.AddMember("b", highlightColor.b, allocator);
-            hCol.AddMember("a", highlightColor.a, allocator);
-            jsonValue.AddMember("highlightColor", hCol, allocator);
+            hCol.AddMember("r", highlightColour.r, allocator);
+            hCol.AddMember("g", highlightColour.g, allocator);
+            hCol.AddMember("b", highlightColour.b, allocator);
+            hCol.AddMember("a", highlightColour.a, allocator);
+            jsonValue.AddMember("highlightColour", hCol, allocator);
 
             rapidjson::Value dCol(rapidjson::kObjectType);
-            dCol.AddMember("r", disabledColor.r, allocator);
-            dCol.AddMember("g", disabledColor.g, allocator);
-            dCol.AddMember("b", disabledColor.b, allocator);
-            dCol.AddMember("a", disabledColor.a, allocator);
-            jsonValue.AddMember("disabledColor", dCol, allocator);
+            dCol.AddMember("r", disabledColour.r, allocator);
+            dCol.AddMember("g", disabledColour.g, allocator);
+            dCol.AddMember("b", disabledColour.b, allocator);
+            dCol.AddMember("a", disabledColour.a, allocator);
+            jsonValue.AddMember("disabledColour", dCol, allocator);
         }
 
         void Deserialize(const rapidjson::Value& jsonValue)
@@ -84,30 +95,37 @@ namespace Uma_UI
             direction = static_cast<SliderDirection>(jsonValue["direction"].GetInt());
             interactable = jsonValue["interactable"].GetBool();
 
+            if (jsonValue.HasMember("backgroundEntity"))
+                background = static_cast<Uma_ECS::Entity>(jsonValue["backgroundEntity"].GetInt());
+            if (jsonValue.HasMember("fillEntity"))
+                fill = static_cast<Uma_ECS::Entity>(jsonValue["fillEntity"].GetInt());
+            if (jsonValue.HasMember("handleEntity"))
+                handle = static_cast<Uma_ECS::Entity>(jsonValue["handleEntity"].GetInt());
+
             if (jsonValue.HasMember("scriptName"))
             {
                 scriptName = jsonValue["scriptName"].GetString();
             }
 
-            const auto& nCol = jsonValue["normalColor"];
-            normalColor.r = nCol["r"].GetFloat();
-            normalColor.g = nCol["g"].GetFloat();
-            normalColor.b = nCol["b"].GetFloat();
-            normalColor.a = nCol["a"].GetFloat();
+            const auto& nCol = jsonValue["normalColour"];
+            normalColour.r = nCol["r"].GetFloat();
+            normalColour.g = nCol["g"].GetFloat();
+            normalColour.b = nCol["b"].GetFloat();
+            normalColour.a = nCol["a"].GetFloat();
 
-            const auto& hCol = jsonValue["highlightColor"];
-            highlightColor.r = hCol["r"].GetFloat();
-            highlightColor.g = hCol["g"].GetFloat();
-            highlightColor.b = hCol["b"].GetFloat();
-            highlightColor.a = hCol["a"].GetFloat();
+            const auto& hCol = jsonValue["highlightColour"];
+            highlightColour.r = hCol["r"].GetFloat();
+            highlightColour.g = hCol["g"].GetFloat();
+            highlightColour.b = hCol["b"].GetFloat();
+            highlightColour.a = hCol["a"].GetFloat();
 
-            const auto& dCol = jsonValue["disabledColor"];
-            disabledColor.r = dCol["r"].GetFloat();
-            disabledColor.g = dCol["g"].GetFloat();
-            disabledColor.b = dCol["b"].GetFloat();
-            disabledColor.a = dCol["a"].GetFloat();
+            const auto& dCol = jsonValue["disabledColour"];
+            disabledColour.r = dCol["r"].GetFloat();
+            disabledColour.g = dCol["g"].GetFloat();
+            disabledColour.b = dCol["b"].GetFloat();
+            disabledColour.a = dCol["a"].GetFloat();
 
-            ClampValue();
+            Uma_Engine::Clamp(value, minValue, maxValue);
             isDragging = false;
             isHovered = false;
         }
