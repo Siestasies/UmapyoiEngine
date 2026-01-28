@@ -91,23 +91,30 @@ namespace Uma_Engine
         virtual void RegisterSystems() = 0;
 
         /**
-         * \brief Override this to perform additional initialization after systems are registered
-         * Called during Init() after RegisterSystems()
-         */
-        virtual void PostInit() = 0;
-
-        /**
          * \brief Override this to perform additional initialization before systems are registered
          * Called during Init() after RegisterSystems()
          */
         virtual void PreInit() = 0;
 
         /**
+         * \brief Override this to perform additional initialization after systems are registered
+         * Called during Init() after RegisterSystems()
+         */
+        virtual void PostInit() = 0;
+
+        /**
          * \brief Override this to handle application-specific update logic
          * Called every frame during Run()
          * \param deltaTime Time elapsed since last frame
          */
-        virtual void Update(float deltaTime) { (void)deltaTime; }
+        virtual void PreUpdate(float deltaTime) { (void)deltaTime; }
+
+        /**
+         * \brief Override this to handle application-specific update logic
+         * Called every frame during Run()
+         * \param deltaTime Time elapsed since last frame
+         */
+        virtual void PostUpdate(float deltaTime) { (void)deltaTime; }
 
         /**
          * \brief Override this to perform application-specific shutdown logic
@@ -137,6 +144,13 @@ namespace Uma_Engine
         void MainLoop();
         void SubscribeToEvents();
 
+        bool mInitialized;
+        bool mIsEditor;
+        inline static bool mGamePause = false;
+        inline static float mFps = 0;
+
+    protected:
+
         std::unique_ptr<Window> mWindow;
         std::unique_ptr<SystemManager> mSystemManager;
         std::unique_ptr<EngineConfig> mConfig;
@@ -147,10 +161,5 @@ namespace Uma_Engine
         SoundManager* mSoundManager;
         Graphics* mGraphics;
         SceneManager* mSceneManager;
-
-        bool mInitialized;
-        bool mIsEditor;
-        inline static bool mGamePause = false;
-        inline static float mFps = 0;
     };
 }

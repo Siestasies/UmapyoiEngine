@@ -59,6 +59,7 @@ namespace Uma_Engine
 {
     // Forward declaration to avoid circular dependency
     class SceneManager;
+    class TilemapEditorManager;
 
     enum class PlayState
     {
@@ -79,8 +80,6 @@ namespace Uma_Engine
         void SetWindow(GLFWwindow* window) override;
 
         // ImGui-specific methods
-        void StartFrame();
-        void Render();
         void CreateDebugWindows(float fps, float deltaTime);
         bool IsInitialized() const { return m_initialized; }
 
@@ -156,6 +155,7 @@ namespace Uma_Engine
         // handlers
         EventSystem* pEventSystem = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
+        TilemapEditorManager* pTilemapEditorManager = nullptr;
         
         std::vector<std::string> sceneNames;
         std::vector<std::string> scenePaths;

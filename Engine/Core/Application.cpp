@@ -316,14 +316,17 @@ namespace Uma_Engine
                 mWindow->ToggleFullscreen();
             }
 
+            // pre update
+            PreUpdate(deltaTime);
+
             // Update all systems
             mSystemManager->Update(deltaTime);
 
+            // Let derived class perform custom update logic
+            PostUpdate(deltaTime);
+
             // Swap front and back buffers
             glfwSwapBuffers(mWindow->GetGLFWWindow());
-
-            // Let derived class perform custom update logic
-            Update(deltaTime);
         }
     }
 }

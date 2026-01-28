@@ -3,6 +3,10 @@
 #include "RapidJSON/document.h"
 #include "core/Types.hpp"
 #include "../Systems/ResourcesTypes.hpp"
+#include "../Systems/ResourcesManager.hpp"
+
+#include "../Debugging/Debugger.hpp"
+
 #include "../../Math/Math.h"
 #include <string>
 #include <vector>
@@ -13,9 +17,10 @@ namespace Uma_ECS
     {
         // Tileset reference
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
-        std::string textureName{};
+        std::string textureName{}; // will be depriciated later on
         std::string texturePath{};
 
+        // currently not in use
         int tilesetWidth = 0;
         int tilesetHeight = 0;
 
@@ -24,6 +29,11 @@ namespace Uma_ECS
 
         void GetUVs(Vec2& uvOffset, Vec2& uvSize, Vec2 cell) const
         {
+            if (!IsLoaded()) 
+            {
+                return;
+            }
+
             // Calculate size of one cell in UV space
             uvSize.x = 1.0f / columns;
             uvSize.y = 1.0f / rows;
@@ -31,6 +41,50 @@ namespace Uma_ECS
             // Calculate offset for the specific cell
             uvOffset.x = cell.x * uvSize.x;
             uvOffset.y = cell.y * uvSize.y;
+        }
+
+        void GetUVs(int tileIndex, float& u0, float& v0, float& u1, float& v1) const 
+        {
+            if (!IsLoaded() || tileIndex < 0) {
+                u0 = v0 = u1 = v1 = 0.0f;
+                return;
+            }
+
+            int col = tileIndex % columns;
+            int row = tileIndex / columns;
+
+            u0 = (float)col / columns;
+            v0 = (float)row / rows;
+            u1 = (float)(col + 1) / columns;
+            v1 = (float)(row + 1) / rows;
+        }
+
+        bool IsLoaded() const
+        {
+            return texture != nullptr;
+        }
+
+        void Load(Uma_Engine::ResourcesManager* pResourcesManager, const std::string& texture_path = "")
+        {
+            // use the path from the parameter if its not empty
+            texturePath = (!texture_path.empty()) ? texture_path : texturePath;
+            
+            // texture name is depriciated need to chane this later on
+            // WIP
+            texture = pResourcesManager->GetTexture(textureName);
+
+            // Verify texture is valid before using it
+            if (!texture || texture->tex_id == 0)
+            {
+                std::stringstream log;
+                log << "tileset is failing to get texture from path:(" << texturePath << ")";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+            }
+        }
+
+        int GetTileCount()
+        {
+            return columns * rows;
         }
     };
 
@@ -46,6 +100,8 @@ namespace Uma_ECS
 
         Vec3 tintColor = Vec3(1.0f, 1.0f, 1.0f);    // RGB multiplier
         float alpha = 1.0f;                         // Opacity
+
+        bool locked = false;
     };
 
     struct Tilemap
@@ -64,7 +120,7 @@ namespace Uma_ECS
 
         // Editor state
         bool isInEditMode = false;
-        //int activeLayerIndex = 0;
+        int activeLayerIndex = 0;
 
         void CreateLayer(std::string name, unsigned int width, unsigned int height, int sortingOrder) 
         {

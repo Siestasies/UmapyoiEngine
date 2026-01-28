@@ -31,6 +31,7 @@ All rights reserved.
 #include "Scripts/ImguiManager.h"
 #include "Systems/SceneManager.h"
 #include "Systems/Graphics.hpp"
+#include "Systems/TilemapEditorManager.h"
 
 #include <GLFW/glfw3.h>
 
@@ -96,91 +97,6 @@ namespace Uma_Engine
             return;
         }
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = "Configs/imgui.ini";
-
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-        ImGuiStyle& style = ImGui::GetStyle();
-        ImVec4* colors = style.Colors;
-
-        // Text and background colors
-        colors[ImGuiCol_Text] = ImVec4(0.90f, 0.90f, 0.90f, 1.00f); // Light text
-        colors[ImGuiCol_WindowBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f); // Dark background (Unity's blackish background)
-        colors[ImGuiCol_ChildBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Light dark child window background
-        colors[ImGuiCol_Border] = ImVec4(0.50f, 0.50f, 0.50f, 0.50f); // Dark gray border
-        colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f); // No border shadow
-
-        // Button colors
-        colors[ImGuiCol_Button] = ImVec4(0.21f, 0.44f, 0.77f, 0.80f); // Light blue button
-        colors[ImGuiCol_ButtonHovered] = ImVec4(0.22f, 0.51f, 0.94f, 1.00f); // Light blue on hover
-        colors[ImGuiCol_ButtonActive] = ImVec4(0.13f, 0.33f, 0.59f, 1.00f); // Darker blue when pressed
-
-        // Header colors
-        colors[ImGuiCol_Header] = ImVec4(0.14f, 0.35f, 0.58f, 0.60f); // Header background color (slightly faded blue)
-        colors[ImGuiCol_HeaderHovered] = ImVec4(0.19f, 0.42f, 0.73f, 0.80f); // Header hover color (brighter blue)
-        colors[ImGuiCol_HeaderActive] = ImVec4(0.12f, 0.30f, 0.52f, 0.80f); // Header active (selected) color
-
-        // Frame (input fields, etc.) colors
-        colors[ImGuiCol_FrameBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f); // Dark gray frame background (input fields, combo boxes)
-        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Frame background when hovered
-        colors[ImGuiCol_FrameBgActive] = ImVec4(0.34f, 0.34f, 0.34f, 1.00f); // Active frame background (when clicked)
-
-        colors[ImGuiCol_TitleBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Window title background
-        colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.20f, 0.20f, 0.20f, 0.75f); // Collapsed window title background
-        colors[ImGuiCol_TitleBgActive] = ImVec4(0.23f, 0.23f, 0.23f, 1.00f); // Active window title background
-
-        // Scrollbar and grab colors
-        colors[ImGuiCol_ScrollbarBg] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Scrollbar background
-        colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Scrollbar grab (blue)
-        colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.25f, 0.56f, 0.92f, 1.00f); // Scrollbar grab hover color
-        colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.20f, 0.45f, 0.77f, 1.00f); // Scrollbar grab active color
-
-        // Tab colors
-        colors[ImGuiCol_Tab] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Default tab background color
-        colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Tab hovered color
-        colors[ImGuiCol_TabActive] = ImVec4(0.14f, 0.35f, 0.59f, 1.00f); // Tab active color
-
-        // Menu and menu bar colors
-        colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f); // Menu bar background
-
-        // Disabled item colors
-        colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f); // Disabled text color
-        colors[ImGuiCol_Separator] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Separator line color
-        colors[ImGuiCol_SeparatorHovered] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f); // Hovered separator color
-        colors[ImGuiCol_SeparatorActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f); // Active separator color
-
-        // Tooltip and popup colors
-        colors[ImGuiCol_PopupBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Popup background color
-        // Adjusting style values
-        style.WindowRounding = 4.0f; // Rounded corners for windows
-        style.ChildRounding = 4.0f; // Rounded corners for child windows
-        style.FrameRounding = 4.0f; // Rounded corners for input frames
-        style.GrabRounding = 4.0f; // Rounded corners for scrollbar handles and sliders
-        style.ScrollbarRounding = 4.0f; // Rounded corners for scrollbar
-
-        // Padding adjustments
-        style.FramePadding = ImVec2(8.0f, 6.0f); // Padding inside input fields and buttons
-        style.ItemSpacing = ImVec2(6.0f, 4.0f); // Space between items
-        style.WindowPadding = ImVec2(8.0f, 8.0f); // Padding inside window borders
-
-        // set font and font size
-        float fontSize = 16.f;
-        io.Fonts->AddFontDefault();
-
-        std::string path = Uma_FilePath::ASSET_ROOT + "Roboto-Medium.ttf";
-
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(path.c_str(), fontSize);
-
-        // set up backend stuff
-        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-        const char* glsl_version = "#version 130";
-        ImGui_ImplOpenGL3_Init(glsl_version);
-
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
         pEventSystem->Subscribe<DebugLogEvent, ImguiManager>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
@@ -216,6 +132,7 @@ namespace Uma_Engine
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+        pTilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
@@ -256,8 +173,6 @@ namespace Uma_Engine
         {
             graphics->UnbindFramebuffer();
         }
-
-        StartFrame();
 
         CreateDockspace();
 
@@ -330,8 +245,6 @@ namespace Uma_Engine
         {
             HandleUndoRedoInput();
         }
-
-        Render();
     }
 
     void ImguiManager::Shutdown()
@@ -354,26 +267,6 @@ namespace Uma_Engine
         m_window = window;
         if (!m_initialized && m_window)
             Init();
-    }
-
-    // IMGUI SPECIFIC METHODS
-    void ImguiManager::StartFrame()
-    {
-        if (!m_initialized)
-            return;
-
-        // start imgui fram
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-    }
-
-    void ImguiManager::Render()
-    {
-        if (!m_initialized)
-            return;
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     // ACTUAL EDITOR METHODS
@@ -658,6 +551,31 @@ namespace Uma_Engine
         else
         {
             m_isMouseInSceneView = false;
+        }
+
+        // Handle tilemap scene interaction
+        if (pTilemapEditorManager && pTilemapEditorManager->IsEditing())
+        {
+
+            ImGui::Begin("Scene View");
+
+            Graphics* graphics = pSystemManager->GetSystem<Graphics>();
+
+            // Get mouse position relative to the image
+            ImVec2 mousePos = ImGui::GetMousePos();
+            float localX = mousePos.x - imagePos.x;
+            float localY = mousePos.y - imagePos.y;
+
+            Vec2 worldPos = graphics->ScreenToWorld(Vec2(localX, localY));
+
+            if (m_sceneViewHovered)
+            {
+                pTilemapEditorManager->HandlesSceneInput(ImVec2(worldPos.x, worldPos.y));
+            }
+
+            // render the grids
+
+            ImGui::End();
         }
 
         ImGui::End();
@@ -3899,15 +3817,18 @@ namespace Uma_Engine
                 if (ImGui::Button(buttonText, ImVec2(-1, 40)))
                 {
                     tilemap.isInEditMode = !tilemap.isInEditMode;
+
+                    TilemapEditorManager* tilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+
                     if (tilemap.isInEditMode)
                     {
                         // Enter edit mode
-                        // tilemapEditorManager.OpenEditor(entity);
+                        tilemapEditorManager->OpenEditor(entity);
                     }
                     else
                     {
                         // Exit edit mode
-                        // tilemapEditorManager.CloseEditor();
+                        tilemapEditorManager->CloseEditor();
                     }
                 }
 

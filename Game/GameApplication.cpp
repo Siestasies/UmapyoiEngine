@@ -117,6 +117,10 @@ namespace Uma_Engine
         sceneManager->LoadScene("main_menu.scn");
     }
 
+    void GameApplication::PreUpdate(float dt)
+    {
+    }
+
     bool GameApplication::HandleInterruptions(float deltaTime)
     {
         // Game mode: Full pause when unfocused or minimized
@@ -170,7 +174,7 @@ namespace Uma_Engine
     }
 
 
-    void GameApplication::Update(float dt)
+    void GameApplication::PostUpdate(float dt)
     {
         (void)dt;
 
