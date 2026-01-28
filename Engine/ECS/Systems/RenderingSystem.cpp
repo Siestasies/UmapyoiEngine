@@ -103,14 +103,17 @@ namespace Uma_ECS
             }
         }
 
-        allSprites.reserve(aEntities.size());
+        allSprites.reserve(aEntities.size() + particleArray.Size());
 
-        // Gather all sprite info with layer data
+        // Gather sprite entities
         for (const auto& entity : aEntities)
         {
             if (!pCoordinator->IsActiveInHierarchy(entity))
                 continue;
 
+            // Skip if no sprite component
+            if (!srArray.Has(entity))
+                continue;
 
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
@@ -127,7 +130,7 @@ namespace Uma_ECS
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
-                
+
             int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
             if (hierarchyOrder == -1) continue;
 
@@ -193,7 +196,7 @@ namespace Uma_ECS
             allSprites.push_back(LayeredSprite{
                 .info = Uma_Engine::Sprite_Info{
                     .tex_id = sr.texture->tex_id,
-                    .pos = spritePos, //tf.worldPosition,
+                    .pos = spritePos,
                     .scale = spriteScale,
                     .rot = tf.worldRotation,
                     .rot_speed = tf.rotation.y,
@@ -204,58 +207,66 @@ namespace Uma_ECS
                 },
                 .layer = sr.renderLayer,
                 .order = sr.renderOrder,
-                .hierarchyOrder = hierarchyOrder,      
+                .hierarchyOrder = hierarchyOrder,
                 .texId = sr.texture->tex_id,
                 .entityId = entity
                 });
+        }
 
-            // Particle gathering
-            if (particleArray.Has(entity))
+        // Gather ALL particle entities
+        std::vector<Entity> particleEntities = particleArray.GetAllEntities();
+
+        for (const auto& entity : particleEntities)
+        {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
+            if (!tfArray.Has(entity))
+                continue;
+
+            auto& component = particleArray.GetData(entity);
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
+            // Loop through each emitter in this component
+            for (int emitterIdx = 0; emitterIdx < component.GetEmitterCount(); ++emitterIdx)
             {
-                auto& component = particleArray.GetData(entity);
-                int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
-                if (hierarchyOrder == -1) continue;
+                auto* emitter = component.GetEmitter(emitterIdx);
+                if (!emitter || !emitter->isActive) continue;
 
-                // Loop through each emitter in this component
-                for (int emitterIdx = 0; emitterIdx < component.GetEmitterCount(); ++emitterIdx)
+                // Get texture
+                auto texture = pResourcesManager->GetTexture(emitter->texturePath);
+                if (!texture || texture->tex_id == 0)
                 {
-                    auto* emitter = component.GetEmitter(emitterIdx);
-                    if (!emitter || !emitter->isActive) continue;
+                    std::stringstream log;
+                    log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->texturePath << "'";
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                    continue;
+                }
 
-                    // Get texture
-                    auto texture = pResourcesManager->GetTexture(emitter->texturePath);
-                    if (!texture || texture->tex_id == 0)
-                    {
-                        std::stringstream log;
-                        log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->texturePath << "'";
-                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-                        continue;
-                    }
+                // Add each active particle as a LayeredSprite
+                for (const auto& particle : emitter->particles)
+                {
+                    if (!particle.active) continue;
 
-                    // Add each active particle as a LayeredSprite
-                    for (const auto& particle : emitter->particles)
-                    {
-                        if (!particle.active) continue;
-
-                        allSprites.push_back(LayeredSprite{
-                            .info = Uma_Engine::Sprite_Info{
-                                .tex_id = texture->tex_id,
-                                .pos = particle.position,
-                                .scale = Vec2(particle.scale, particle.scale),
-                                .rot = particle.rotation,
-                                .rot_speed = 0.0f,
-                                .uvOffset = Vec2(0.0f, 0.0f),
-                                .uvSize = Vec2(1.0f, 1.0f),
-                                .tintColor = particle.color,
-                                .alpha = particle.opacity
-                            },
-                            .layer = emitter->renderLayer,
-                            .order = emitter->renderOrder,
-                            .hierarchyOrder = hierarchyOrder,
-                            .texId = texture->tex_id,
-                            .entityId = entity
-                            });
-                    }
+                    allSprites.push_back(LayeredSprite{
+                        .info = Uma_Engine::Sprite_Info{
+                            .tex_id = texture->tex_id,
+                            .pos = particle.position,
+                            .scale = Vec2(particle.scale, particle.scale),
+                            .rot = particle.rotation,
+                            .rot_speed = 0.0f,
+                            .uvOffset = Vec2(0.0f, 0.0f),
+                            .uvSize = Vec2(1.0f, 1.0f),
+                            .tintColor = particle.color,
+                            .alpha = particle.opacity
+                        },
+                        .layer = emitter->renderLayer,
+                        .order = emitter->renderOrder,
+                        .hierarchyOrder = hierarchyOrder,
+                        .texId = texture->tex_id,
+                        .entityId = entity
+                        });
                 }
             }
         }
