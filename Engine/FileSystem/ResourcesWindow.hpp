@@ -14,9 +14,7 @@ Defines ImGui-based resource management window for engine asset loading and insp
 
 Provides visual interface for textures, fonts, sounds, and shaders.
 Displays loaded resources in collapsible tables showing name, path, and metadata (texture ID,
-font size, sound type, shader program ID). Includes unload functionality for manual resource
-cleanup. Shaders are displayed read-only for automated resource management.
-Integrates with ResourcesManager for actual asset loading/unloading operations.
+font size, sound type, shader program ID).
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
