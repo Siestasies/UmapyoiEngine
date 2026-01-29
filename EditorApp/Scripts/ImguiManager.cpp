@@ -3918,11 +3918,9 @@ namespace Uma_Engine
                     fsm.AddStates(stateName, true);
                     // Optional: reset selection
                     selectedScriptIndex = -1;
-               
+                }
 
-                
-                // Your existing state list loop (unchanged)...
-
+                ImGui::Separator();
 
                 std::vector<std::string> stateKeys;
                 for (const auto& p : fsm.states) stateKeys.push_back(p.first);
