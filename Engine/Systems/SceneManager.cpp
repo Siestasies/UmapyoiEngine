@@ -352,8 +352,15 @@ namespace Uma_Engine
         // passing message using event system
         UpdateIMGUIWindow();
 
-        // set coordinator for gizmos 
+        // set coordinator for gizmos
         pEventSystem->Emit<SceneLoadedEvent>(name);
+
+        // In game mode, call Start() on all Lua scripts after the scene is fully loaded.
+        // In editor mode, EditorScript handles this when the user clicks Play.
+        if (!m_IsEditorMode && scene->m_LuaScriptingSystem)
+        {
+            scene->m_LuaScriptingSystem->StartScripts();
+        }
 
         std::cout << "Scene '" << name << "' loaded" << (additive ? " additively" : "") << std::endl;
 
