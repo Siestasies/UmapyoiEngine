@@ -574,6 +574,16 @@ namespace Uma_Engine
             }
 
             // render the grids
+            // Render grid and highlight overlay
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+            auto& coordinator = pSystemManager->GetSystem<SceneManager>()->GetActiveScene()->GetCoordinator();
+          
+            if (coordinator.HasComponent<Uma_ECS::Tilemap>(m_selectedEntity)) 
+            {
+                auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(m_selectedEntity);
+                pTilemapEditorManager->RenderSceneOverlay(drawList, transform, imagePos);
+            }
 
             ImGui::End();
         }
@@ -831,6 +841,9 @@ namespace Uma_Engine
         for (size_t i = 0; i < hierarchyOrder.size(); ++i)
         {
             Uma_ECS::Entity entity = hierarchyOrder[i];
+
+            if (!transformArray.Has(entity)) continue;
+
             auto& transform = transformArray.GetData(entity);
 
             if (!transform.parent.has_value())
@@ -3807,32 +3820,35 @@ namespace Uma_Engine
 
                 ImGui::Separator();
 
-                // === Edit Mode Section ===
-                ImGui::PushStyleColor(ImGuiCol_Button,
-                    tilemap.isInEditMode ? ImVec4(0.8f, 0.3f, 0.2f, 1.0f) : ImVec4(0.2f, 0.6f, 0.8f, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-                    tilemap.isInEditMode ? ImVec4(0.9f, 0.4f, 0.3f, 1.0f) : ImVec4(0.3f, 0.7f, 0.9f, 1.0f));
-
-                const char* buttonText = tilemap.isInEditMode ? "Exit Edit Mode" : "Enter Edit Mode";
-                if (ImGui::Button(buttonText, ImVec2(-1, 40)))
+                if (m_playState == PlayState::Stopped)
                 {
-                    tilemap.isInEditMode = !tilemap.isInEditMode;
+                    // === Edit Mode Section ===
+                    ImGui::PushStyleColor(ImGuiCol_Button,
+                        tilemap.isInEditMode ? ImVec4(0.8f, 0.3f, 0.2f, 1.0f) : ImVec4(0.2f, 0.6f, 0.8f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+                        tilemap.isInEditMode ? ImVec4(0.9f, 0.4f, 0.3f, 1.0f) : ImVec4(0.3f, 0.7f, 0.9f, 1.0f));
 
-                    TilemapEditorManager* tilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+                    const char* buttonText = tilemap.isInEditMode ? "Exit Edit Mode" : "Enter Edit Mode";
+                    if (ImGui::Button(buttonText, ImVec2(-1, 40)))
+                    {
+                        //tilemap.isInEditMode = !tilemap.isInEditMode;
 
-                    if (tilemap.isInEditMode)
-                    {
-                        // Enter edit mode
-                        tilemapEditorManager->OpenEditor(entity);
+                        TilemapEditorManager* tilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+
+                        if (!tilemap.isInEditMode)
+                        {
+                            // Enter edit mode
+                            tilemapEditorManager->OpenEditor(entity);
+                        }
+                        else
+                        {
+                            // Exit edit mode
+                            tilemapEditorManager->CloseEditor();
+                        }
                     }
-                    else
-                    {
-                        // Exit edit mode
-                        tilemapEditorManager->CloseEditor();
-                    }
+
+                    ImGui::PopStyleColor(2);
                 }
-
-                ImGui::PopStyleColor(2);
 
                 // Show status message when in edit mode
                 if (tilemap.isInEditMode)

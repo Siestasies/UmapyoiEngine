@@ -9,6 +9,7 @@
 #include "../Systems/ResourcesTypes.hpp"
 #include "../Systems/Graphics.hpp"
 #include "../Systems/ResourcesManager.hpp"
+#include "EventSystem.h"
 
 #include "../ECS/Core/Coordinator.hpp"
 
@@ -35,7 +36,7 @@ namespace Uma_Engine
         bool IsEditing() const;
 
         void HandlesSceneInput(const ImVec2& mouseWorldPos);
-        void RenderSceneOverlay(ImDrawList* drawList, const Uma_ECS::Transform& transform);
+        void RenderSceneOverlay(ImDrawList* drawList, const Uma_ECS::Transform& transform, const ImVec2& imagePos);
 
         int GetSelectedTileIndex() const;
         bool ShouldShowGrid() const;
@@ -50,8 +51,8 @@ namespace Uma_Engine
         void PlaceTile(int x, int y, int tileIndex);
         void EraseTile(int x, int y);
         void WorldToTileCoords(const ImVec2& worldPos, int& tileX, int& tileY);
-        void DrawGridOverlay(ImDrawList* drawList, const Uma_ECS::Transform& transform);
-        void DrawTileHighlight(ImDrawList* drawList, const Uma_ECS::Transform& transform);
+        void DrawGridOverlay(ImDrawList* drawList, const Uma_ECS::Transform& transform, const ImVec2& imagePos);
+        void DrawTileHighlight(ImDrawList* drawList, const Uma_ECS::Transform& transform, const ImVec2& imagePos);
 
         Uma_ECS::Entity currEntity;
         Uma_ECS::Tilemap* currTilemap = nullptr;
@@ -71,5 +72,6 @@ namespace Uma_Engine
         Uma_ECS::Coordinator* pCoordinator = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
         Graphics* pGraphics = nullptr;
+        EventSystem* pEventSystem = nullptr;
     };
 }

@@ -31,6 +31,8 @@ All rights reserved.
 
 #include "Systems/SceneManager.h"
 
+#include "Systems/TilemapEditorManager.h"
+
 //events
 #include "Events/SceneEvents.h"
 
@@ -293,6 +295,10 @@ namespace Uma_Engine
 
         if (shouldBlockInput)
             return;
+
+        const auto& tilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+
+        if (tilemapEditorManager->IsEditing()) return;
 
         if (event.button == GLFW_MOUSE_BUTTON_LEFT)
         {
