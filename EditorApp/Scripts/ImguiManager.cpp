@@ -216,13 +216,12 @@ namespace Uma_Engine
             {
                 SceneManagerWindow();
 
+                resourcesWindow.Render();
                 // call for windows to be shown
                 float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
                 CreateDebugWindows(currentFps, deltaTime);
 
                 fileBrowser.Render();
-
-                resourcesWindow.Render();
             }
         }
 
