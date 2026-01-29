@@ -48,9 +48,10 @@ namespace Uma_Engine
 
     protected:
         void RegisterSystems() override;
-        void PostInit() override;
         void PreInit() override;
-        void Update(float dt) override;
+        void PostInit() override;
+        void PreUpdate(float dt) override;
+        void PostUpdate(float dt) override;
         void SubscribeEvents();
         bool HandleInterruptions(float deltaTime) override;
 

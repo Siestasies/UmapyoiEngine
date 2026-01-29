@@ -53,12 +53,12 @@ All rights reserved.
 #include "../Components/ParticleEmitter.h"
 #include "../Components/Prefab.h"
 #include "../Components/Projectile.h"
+#include "../Components/Tilemap.h"
 #include "UI/Components/RectTransform.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Button.h"
 #include "UI/Components/Canvas.h"
 #include "UI/Components/Text.h"
-#include "../Components/FSM.h"
 
 #include <unordered_set>
 
@@ -271,7 +271,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(ParticleEmitter)
             CHECK_COMPONENT(Prefab)
             CHECK_COMPONENT(Projectile)
-            CHECK_COMPONENT(FSM)
+            CHECK_COMPONENT(Tilemap)
             CHECK_COMPONENT(Uma_UI::RectTransform)
             CHECK_COMPONENT(Uma_UI::Image)
             CHECK_COMPONENT(Uma_UI::Button)

@@ -31,6 +31,7 @@ All rights reserved.
 #include "Scripts/ImguiManager.h"
 #include "Systems/SceneManager.h"
 #include "Systems/Graphics.hpp"
+#include "Systems/TilemapEditorManager.h"
 
 #include <GLFW/glfw3.h>
 
@@ -96,91 +97,6 @@ namespace Uma_Engine
             return;
         }
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        io.IniFilename = "Configs/imgui.ini";
-
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-        ImGuiStyle& style = ImGui::GetStyle();
-        ImVec4* colors = style.Colors;
-
-        // Text and background colors
-        colors[ImGuiCol_Text] = ImVec4(0.90f, 0.90f, 0.90f, 1.00f); // Light text
-        colors[ImGuiCol_WindowBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.00f); // Dark background (Unity's blackish background)
-        colors[ImGuiCol_ChildBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Light dark child window background
-        colors[ImGuiCol_Border] = ImVec4(0.50f, 0.50f, 0.50f, 0.50f); // Dark gray border
-        colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f); // No border shadow
-
-        // Button colors
-        colors[ImGuiCol_Button] = ImVec4(0.21f, 0.44f, 0.77f, 0.80f); // Light blue button
-        colors[ImGuiCol_ButtonHovered] = ImVec4(0.22f, 0.51f, 0.94f, 1.00f); // Light blue on hover
-        colors[ImGuiCol_ButtonActive] = ImVec4(0.13f, 0.33f, 0.59f, 1.00f); // Darker blue when pressed
-
-        // Header colors
-        colors[ImGuiCol_Header] = ImVec4(0.14f, 0.35f, 0.58f, 0.60f); // Header background color (slightly faded blue)
-        colors[ImGuiCol_HeaderHovered] = ImVec4(0.19f, 0.42f, 0.73f, 0.80f); // Header hover color (brighter blue)
-        colors[ImGuiCol_HeaderActive] = ImVec4(0.12f, 0.30f, 0.52f, 0.80f); // Header active (selected) color
-
-        // Frame (input fields, etc.) colors
-        colors[ImGuiCol_FrameBg] = ImVec4(0.18f, 0.18f, 0.18f, 1.00f); // Dark gray frame background (input fields, combo boxes)
-        colors[ImGuiCol_FrameBgHovered] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Frame background when hovered
-        colors[ImGuiCol_FrameBgActive] = ImVec4(0.34f, 0.34f, 0.34f, 1.00f); // Active frame background (when clicked)
-
-        colors[ImGuiCol_TitleBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Window title background
-        colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.20f, 0.20f, 0.20f, 0.75f); // Collapsed window title background
-        colors[ImGuiCol_TitleBgActive] = ImVec4(0.23f, 0.23f, 0.23f, 1.00f); // Active window title background
-
-        // Scrollbar and grab colors
-        colors[ImGuiCol_ScrollbarBg] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Scrollbar background
-        colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Scrollbar grab (blue)
-        colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.25f, 0.56f, 0.92f, 1.00f); // Scrollbar grab hover color
-        colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.20f, 0.45f, 0.77f, 1.00f); // Scrollbar grab active color
-
-        // Tab colors
-        colors[ImGuiCol_Tab] = ImVec4(0.16f, 0.16f, 0.16f, 1.00f); // Default tab background color
-        colors[ImGuiCol_TabHovered] = ImVec4(0.22f, 0.48f, 0.79f, 1.00f); // Tab hovered color
-        colors[ImGuiCol_TabActive] = ImVec4(0.14f, 0.35f, 0.59f, 1.00f); // Tab active color
-
-        // Menu and menu bar colors
-        colors[ImGuiCol_MenuBarBg] = ImVec4(0.15f, 0.15f, 0.15f, 1.00f); // Menu bar background
-
-        // Disabled item colors
-        colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f); // Disabled text color
-        colors[ImGuiCol_Separator] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f); // Separator line color
-        colors[ImGuiCol_SeparatorHovered] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f); // Hovered separator color
-        colors[ImGuiCol_SeparatorActive] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f); // Active separator color
-
-        // Tooltip and popup colors
-        colors[ImGuiCol_PopupBg] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f); // Popup background color
-        // Adjusting style values
-        style.WindowRounding = 4.0f; // Rounded corners for windows
-        style.ChildRounding = 4.0f; // Rounded corners for child windows
-        style.FrameRounding = 4.0f; // Rounded corners for input frames
-        style.GrabRounding = 4.0f; // Rounded corners for scrollbar handles and sliders
-        style.ScrollbarRounding = 4.0f; // Rounded corners for scrollbar
-
-        // Padding adjustments
-        style.FramePadding = ImVec2(8.0f, 6.0f); // Padding inside input fields and buttons
-        style.ItemSpacing = ImVec2(6.0f, 4.0f); // Space between items
-        style.WindowPadding = ImVec2(8.0f, 8.0f); // Padding inside window borders
-
-        // set font and font size
-        float fontSize = 16.f;
-        io.Fonts->AddFontDefault();
-
-        std::string path = Uma_FilePath::ASSET_ROOT + "Roboto-Medium.ttf";
-
-        io.FontDefault = io.Fonts->AddFontFromFileTTF(path.c_str(), fontSize);
-
-        // set up backend stuff
-        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-        const char* glsl_version = "#version 130";
-        ImGui_ImplOpenGL3_Init(glsl_version);
-
         // event listeners
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
         pEventSystem->Subscribe<DebugLogEvent, ImguiManager>([this](const DebugLogEvent& e) { AddConsoleLog(e.message); });
@@ -216,6 +132,7 @@ namespace Uma_Engine
 
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+        pTilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
@@ -256,8 +173,6 @@ namespace Uma_Engine
         {
             graphics->UnbindFramebuffer();
         }
-
-        StartFrame();
 
         CreateDockspace();
 
@@ -330,8 +245,6 @@ namespace Uma_Engine
         {
             HandleUndoRedoInput();
         }
-
-        Render();
     }
 
     void ImguiManager::Shutdown()
@@ -354,26 +267,6 @@ namespace Uma_Engine
         m_window = window;
         if (!m_initialized && m_window)
             Init();
-    }
-
-    // IMGUI SPECIFIC METHODS
-    void ImguiManager::StartFrame()
-    {
-        if (!m_initialized)
-            return;
-
-        // start imgui fram
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-    }
-
-    void ImguiManager::Render()
-    {
-        if (!m_initialized)
-            return;
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     // ACTUAL EDITOR METHODS
@@ -660,6 +553,41 @@ namespace Uma_Engine
             m_isMouseInSceneView = false;
         }
 
+        // Handle tilemap scene interaction
+        if (pTilemapEditorManager && pTilemapEditorManager->IsEditing())
+        {
+
+            ImGui::Begin("Scene View");
+
+            Graphics* graphics = pSystemManager->GetSystem<Graphics>();
+
+            // Get mouse position relative to the image
+            ImVec2 mousePos = ImGui::GetMousePos();
+            float localX = mousePos.x - imagePos.x;
+            float localY = mousePos.y - imagePos.y;
+
+            Vec2 worldPos = graphics->ScreenToWorld(Vec2(localX, localY));
+
+            if (m_sceneViewHovered)
+            {
+                pTilemapEditorManager->HandlesSceneInput(ImVec2(worldPos.x, worldPos.y));
+            }
+
+            // render the grids
+            // Render grid and highlight overlay
+            ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+            auto& coordinator = pSystemManager->GetSystem<SceneManager>()->GetActiveScene()->GetCoordinator();
+          
+            if (coordinator.HasComponent<Uma_ECS::Tilemap>(m_selectedEntity)) 
+            {
+                auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(m_selectedEntity);
+                pTilemapEditorManager->RenderSceneOverlay(drawList, transform, imagePos);
+            }
+
+            ImGui::End();
+        }
+
         ImGui::End();
     }
 
@@ -913,6 +841,9 @@ namespace Uma_Engine
         for (size_t i = 0; i < hierarchyOrder.size(); ++i)
         {
             Uma_ECS::Entity entity = hierarchyOrder[i];
+
+            if (!transformArray.Has(entity)) continue;
+
             auto& transform = transformArray.GetData(entity);
 
             if (!transform.parent.has_value())
@@ -3628,95 +3559,306 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
-        else if (type == coordinator.GetComponentType<Uma_ECS::FSM>())
+        else if (type == coordinator.GetComponentType<Uma_ECS::Tilemap>())
         {
-            if (ImGui::CollapsingHeader("FSM"))
+            if (ImGui::CollapsingHeader("Tilemap"))
             {
-                if (ImGui::Button("Remove Component##FSM"))
+                if (ImGui::Button("Remove Component##Tilemap"))
                 {
-                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::FSM>>(
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Tilemap>>(
                         &coordinator,
                         entity,
-                        "Remove FSM"
+                        "Remove Projectile"
                     );
                     commandHistory.ExecuteCommand(std::move(cmd));
+
                     return true;
                 }
 
-                auto& fsm = coordinator.GetComponent<Uma_ECS::FSM>(entity);
-                auto& luaScripts = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);  // Assuming component type is LuaScripts
-
                 ImGui::Indent();
+
+                // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                static int selectedScriptIndex = -1;
+                auto& tilemap = coordinator.GetComponent<Uma_ECS::Tilemap>(entity);
 
-                // Build list of script names
-                std::vector<std::string> scriptNames;
-                for (const auto& script : luaScripts.scripts) {
-                    scriptNames.push_back(script.scriptName);
-                }
+                // === Map Properties Section ===
+                if (ImGui::TreeNode("Map Properties"))
+                {
+                    // Editable map dimensions
+                    int mapWidth = tilemap.mapWidth;
+                    int mapHeight = tilemap.mapHeight;
 
-                const char* previewText = scriptNames.empty() ? "No scripts" : "Select script";
-                if (selectedScriptIndex >= 0 && selectedScriptIndex < (int)scriptNames.size()) {
-                    previewText = scriptNames[selectedScriptIndex].c_str();
-                }
-
-                if (ImGui::BeginCombo("Script Name##FSM", previewText)) {
-                    for (int i = 0; i < (int)scriptNames.size(); ++i) {
-                        bool isSelected = (i == selectedScriptIndex);
-                        if (ImGui::Selectable(scriptNames[i].c_str(), isSelected)) {
-                            selectedScriptIndex = i;
-                        }
-                        if (isSelected) {
-                            ImGui::SetItemDefaultFocus();
+                    if (ImGui::DragInt("Map Width (tiles)", &mapWidth, 1.0f, 1, 1000))
+                    {
+                        if (mapWidth != tilemap.mapWidth)
+                        {
+                            tilemap.mapWidth = mapWidth;
+                            // Resize all layers
+                            for (auto& layer : tilemap.layers)
+                            {
+                                layer.width = static_cast<unsigned int>(mapWidth);
+                                layer.tiles.resize(static_cast<size_t>(mapWidth * layer.height), -1);
+                            }
+                            m_hasUnsavedEdit = true;
                         }
                     }
-                    ImGui::EndCombo();
+
+                    if (ImGui::DragInt("Map Height (tiles)", &mapHeight, 1.0f, 1, 1000))
+                    {
+                        if (mapHeight != tilemap.mapHeight)
+                        {
+                            tilemap.mapHeight = mapHeight;
+                            // Resize all layers
+                            for (auto& layer : tilemap.layers)
+                            {
+                                layer.height = static_cast<unsigned int>(mapHeight);
+                                layer.tiles.resize(static_cast<size_t>(layer.width * mapHeight), -1);
+                            }
+                            m_hasUnsavedEdit = true;
+                        }
+                    }
+
+                    int tileSize = tilemap.tileSize;
+                    if (ImGui::DragInt("Tile Size (pixels)", &tileSize, 1.0f, 1, 256))
+                    {
+                        tilemap.tileSize = tileSize;
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    ImGui::Separator();
+                    ImGui::Text("World Size: %dx%d units",
+                        tilemap.mapWidth * tilemap.tileSize,
+                        tilemap.mapHeight * tilemap.tileSize);
+
+                    ImGui::TreePop();
                 }
 
-                if (ImGui::Button("Add State from Script", ImVec2(ImGui::GetContentRegionAvail().x, 0))
-                    && selectedScriptIndex >= 0
-                    && selectedScriptIndex < (int)scriptNames.size())
+                if (ImGui::TreeNode("Tileset Properties"))
                 {
-                    std::string stateName = scriptNames[selectedScriptIndex];
-                    fsm.AddStates(stateName, true);
-                    // Optional: reset selection
-                    selectedScriptIndex = -1;
+                    static char tilsetTextureNameBuffer[512];
+                    strncpy(tilsetTextureNameBuffer, tilemap.tileset.textureName.c_str(), 511);
+                    tilsetTextureNameBuffer[511] = '\0';
+                    if (ImGui::InputText("Texture Name", tilsetTextureNameBuffer, 512))
+                    {
+                        tilemap.tileset.textureName = tilsetTextureNameBuffer;
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    float gridArray[2] = { tilemap.tileset.columns, tilemap.tileset.rows };
+                    if (ImGui::DragFloat2("Grids (Col, Row)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
+                    {
+                        tilemap.tileset.columns = gridArray[0];
+                        tilemap.tileset.rows = gridArray[1];
+                        m_hasUnsavedEdit = true;
+                    }
+                    ImGui::TreePop();
                 }
 
                 ImGui::Separator();
 
-                // Your existing state list loop (unchanged)...
-
-
-                std::vector<std::string> stateKeys;
-                for (const auto& p : fsm.states) stateKeys.push_back(p.first);
-
-                for (size_t i = 0; i < stateKeys.size(); ++i)
+                // === Layers Section ===
+                if (ImGui::TreeNode("Layers", "Layers (%zu)", tilemap.layers.size()))
                 {
-                    const std::string& key = stateKeys[i];
-                    auto it = fsm.states.find(key);
-                    if (it == fsm.states.end()) continue;
-
-                    ImGui::PushID((int)i);
-
-                    if (ImGui::TreeNode(key.c_str()))
+                    for (size_t i = 0; i < tilemap.layers.size(); i++)
                     {
-                        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(200, 50, 50, 255));
-                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 75, 75, 255));
-                        if (ImGui::Button("Remove"))
+                        ImGui::PushID(static_cast<int>(i));
+
+                        auto& layer = tilemap.layers[i];
+
+                        // Layer header with visibility toggle
+                        bool visible = tilemap.layerVisibility[i];
+                        ImGui::Checkbox("##vis", &visible);
+                        tilemap.layerVisibility[i] = visible;
+
+                        ImGui::SameLine();
+
+                        // Layer name as tree node
+                        bool layerOpen = ImGui::TreeNode("LayerNode", "%s", layer.name.c_str());
+
+                        // Right-click menu for layer operations
+                        if (ImGui::BeginPopupContextItem())
                         {
-                            fsm.states.erase(key);
+                            if (ImGui::MenuItem("Move Up", nullptr, false, i > 0))
+                            {
+                                std::swap(tilemap.layers[i], tilemap.layers[i - 1]);
+
+                                bool tempVis = tilemap.layerVisibility[i];
+                                tilemap.layerVisibility[i] = tilemap.layerVisibility[i - 1];
+                                tilemap.layerVisibility[i - 1] = tempVis;
+
+                                std::swap(tilemap.layerNames[i], tilemap.layerNames[i - 1]);
+                            }
+                            if (ImGui::MenuItem("Move Down", nullptr, false, i < tilemap.layers.size() - 1))
+                            {
+                                std::swap(tilemap.layers[i], tilemap.layers[i + 1]);
+
+                                bool tempVis = tilemap.layerVisibility[i];
+                                tilemap.layerVisibility[i] = tilemap.layerVisibility[i + 1];
+                                tilemap.layerVisibility[i + 1] = tempVis;
+
+                                std::swap(tilemap.layerNames[i], tilemap.layerNames[i + 1]);
+                            }
+                            ImGui::Separator();
+                            if (ImGui::MenuItem("Delete", nullptr, false, tilemap.layers.size() > 1))
+                            {
+                                tilemap.RemoveLayer(static_cast<int>(i));
+                                ImGui::PopID();
+                                ImGui::TreePop();
+                                break;
+                            }
+                            ImGui::EndPopup();
+
+                            m_hasUnsavedEdit = true;
                         }
-                        ImGui::PopStyleColor(2);
-                        ImGui::TreePop();
+
+                        if (layerOpen)
+                        {
+                            ImGui::Indent();
+
+                            // Editable layer name
+                            char nameBuffer[256];
+                            strncpy(nameBuffer, layer.name.c_str(), sizeof(nameBuffer) - 1);
+                            nameBuffer[sizeof(nameBuffer) - 1] = '\0';
+
+                            if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
+                            {
+                                layer.name = nameBuffer;
+                                tilemap.layerNames[i] = nameBuffer;
+
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // Render layer dropdown (same as Sprite)
+                            const char* renderLayerNames[] = {
+                                "RL_NONE",
+                                "RL_WALL_TOP",
+                                "RL_FLOOR",
+                                "RL_ENV",
+                                "RL_ENEMY",
+                                "RL_PLAYER",
+                                "RL_WALL_BTM",
+                                "RL_UI"
+                            };
+                            int currentRenderLayer = 0;
+                            unsigned int rl = static_cast<unsigned int>(layer.renderLayer);
+                            while (rl >>= 1) ++currentRenderLayer;
+                            if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                            {
+                                layer.renderLayer = (1u << currentRenderLayer);
+
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // Render order (same as Sprite)
+                            ImGui::Separator();
+                            ImGui::Text("Render Order");
+                            ImGui::InputInt("##Layer Render Order", &layer.renderOrder, 1, 0, 0);
+
+                            // Tint color (RGB)
+                            float tintColorArray[3] = { layer.tintColor.x, layer.tintColor.y, layer.tintColor.z };
+                            if (ImGui::ColorEdit3("Tint Color", tintColorArray))
+                            {
+                                layer.tintColor.x = tintColorArray[0];
+                                layer.tintColor.y = tintColorArray[1];
+                                layer.tintColor.z = tintColorArray[2];
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // Alpha (opacity)
+                            if (ImGui::SliderFloat("Alpha", &layer.alpha, 0.0f, 1.0f, "%.2f")) m_hasUnsavedEdit = true;
+
+                            // Show layer size info
+                            ImGui::Separator();
+                            ImGui::Text("Size: %ux%u tiles", layer.width, layer.height);
+
+                            // Count non-empty tiles
+                            int filledTiles = 0;
+                            for (int tile : layer.tiles)
+                            {
+                                if (tile >= 0) filledTiles++;
+                            }
+                            ImGui::Text("Filled: %d / %zu tiles (%.1f%%)",
+                                filledTiles,
+                                layer.tiles.size(),
+                                layer.tiles.size() > 0 ? (filledTiles * 100.0f) / layer.tiles.size() : 0.0f);
+
+                            // Clear layer button
+                            if (ImGui::Button("Clear Layer", ImVec2(-1, 0)))
+                            {
+                                std::fill(layer.tiles.begin(), layer.tiles.end(), -1);
+
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            ImGui::Unindent();
+                            ImGui::TreePop();
+                        }
+
+                        ImGui::PopID();
                     }
 
-                    ImGui::PopID();
+                    ImGui::Separator();
+
+                    // Add new layer button
+                    if (ImGui::Button("+ Add Layer", ImVec2(-1, 0)))
+                    {
+                        int newIndex = static_cast<int>(tilemap.layers.size());
+                        std::string newName = "Layer " + std::to_string(newIndex);
+                        tilemap.CreateLayer(
+                            newName,
+                            static_cast<unsigned int>(tilemap.mapWidth),
+                            static_cast<unsigned int>(tilemap.mapHeight),
+                            newIndex
+                        );
+
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    ImGui::TreePop();
                 }
 
-                EndComponentEdit(entity, coordinator, "FSM");
+                ImGui::Separator();
+
+                if (m_playState == PlayState::Stopped)
+                {
+                    // === Edit Mode Section ===
+                    ImGui::PushStyleColor(ImGuiCol_Button,
+                        tilemap.isInEditMode ? ImVec4(0.8f, 0.3f, 0.2f, 1.0f) : ImVec4(0.2f, 0.6f, 0.8f, 1.0f));
+                    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+                        tilemap.isInEditMode ? ImVec4(0.9f, 0.4f, 0.3f, 1.0f) : ImVec4(0.3f, 0.7f, 0.9f, 1.0f));
+
+                    const char* buttonText = tilemap.isInEditMode ? "Exit Edit Mode" : "Enter Edit Mode";
+                    if (ImGui::Button(buttonText, ImVec2(-1, 40)))
+                    {
+                        //tilemap.isInEditMode = !tilemap.isInEditMode;
+
+                        TilemapEditorManager* tilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+
+                        if (!tilemap.isInEditMode)
+                        {
+                            // Enter edit mode
+                            tilemapEditorManager->OpenEditor(entity);
+                        }
+                        else
+                        {
+                            // Exit edit mode
+                            tilemapEditorManager->CloseEditor();
+                        }
+                    }
+
+                    ImGui::PopStyleColor(2);
+                }
+
+                // Show status message when in edit mode
+                if (tilemap.isInEditMode)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.9f, 0.2f, 1.0f));
+                    ImGui::TextWrapped("EDIT MODE ACTIVE - Click tiles in the scene view to paint");
+                    ImGui::PopStyleColor();
+                }
+
+                EndComponentEdit(entity, coordinator, "Tilemap");
 
                 ImGui::Unindent();
             }
@@ -4131,13 +4273,13 @@ namespace Uma_Engine
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }
-            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::FSM>()) && ImGui::MenuItem("FSM"))
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Tilemap>()) && ImGui::MenuItem("Tilemap"))
             {
-                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::FSM>>(
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Tilemap>>(
                     &coordinator,
                     m_selectedEntity,
-                    Uma_ECS::FSM{},
-                    "Add StateMachine"
+                    Uma_ECS::Tilemap{},
+                    "Add Tilemap"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

@@ -23,6 +23,8 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+
+
     struct Enemy
     {
         int mHealth = 100;

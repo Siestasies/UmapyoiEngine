@@ -18,6 +18,7 @@ namespace Uma_Engine
 {
     class EditorSystem;
     class ImguiManager;
+    class TilemapEditorManager;
 
     /**
      * \brief Editor application with full editor functionality
@@ -37,14 +38,34 @@ namespace Uma_Engine
         void RegisterSystems() override;
         void PostInit() override;
         void PreInit() override;
-        void Update(float dt) override;
+        void PreUpdate(float dt) override;
+        void PostUpdate(float dt) override;
         bool HandleInterruptions(float deltaTime) override;
 
     private:
         void SubscribeEvents();
 
+        // Imgui Handling
+        // previously imgui handler is inside the ImguiManager
+        // it has been integrate to here for many good reasons
+        // Imgui has to be render inside a loop NewFrame -> Render
+        // 
+        // but if it only stays in the imguimanager, 
+        // other systems will have to make the imguimanager 
+        // dirty by throwing all their rendering logic inside 
+        // and eventually it gets BIGGGGGG and messy
+        // 
+        // hence its has to be moved out so that each system 
+        // can render their UI in their own classes
+
+        // IMGUI SPECIFIC METHODS
+        void SetupImguiStyle();
+        void ImguiStartFrame();
+        void ImguiRender();
+
         EditorSystem* mEditorSystem;
         ImguiManager* mImguiManager;
+        TilemapEditorManager* mTilemapEditorManager;
 
         bool mWasFocused = true;
     };
