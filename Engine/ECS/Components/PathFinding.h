@@ -18,7 +18,7 @@ All rights reserved.
 */
 
 #include <vector>
-#include "../pathfinding/NavMesh.hpp"
+//#include "../pathfinding/NavMesh.hpp"
 #include "../Math/Vector.h"
 
 namespace Uma_ECS{

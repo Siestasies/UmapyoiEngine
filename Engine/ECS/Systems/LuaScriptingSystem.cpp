@@ -908,9 +908,10 @@ namespace Uma_ECS
             });
 
         // FSM 
-        sharedLua->set_function("ChangeState", [this](std::string nextState)
+        sharedLua->set_function("ChangeState", [this](Uma_ECS::Entity e, std::string nextState)
             {
-                // do ur thing
+                auto& fsm = pCoordinator->GetComponent<FSM>(e);
+                fsm.next = nextState;
             });
     }
 
@@ -1189,6 +1190,8 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Enemy)       \
         BIND_COMPONENT_GETTER(Camera)      \
         BIND_COMPONENT_GETTER(Text)        \
+        BIND_COMPONENT_GETTER(PathFinding) \
+        //BIND_COMPONENT_GETTER(Projectile)  \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \

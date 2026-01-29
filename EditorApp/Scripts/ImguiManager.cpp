@@ -3863,6 +3863,98 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::FSM>())
+        {
+            if (ImGui::CollapsingHeader("FSM"))
+            {
+                if (ImGui::Button("Remove Component##FSM"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::FSM>>(
+                        &coordinator,
+                        entity,
+                        "Remove FSM"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& fsm = coordinator.GetComponent<Uma_ECS::FSM>(entity);
+                auto& luaScripts = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);  // Assuming component type is LuaScripts
+
+                ImGui::Indent();
+                BeginComponentEdit(entity, coordinator);
+
+                static int selectedScriptIndex = -1;
+
+                // Build list of script names
+                std::vector<std::string> scriptNames;
+                for (const auto& script : luaScripts.scripts) {
+                    scriptNames.push_back(script.scriptName);
+                }
+
+                const char* previewText = scriptNames.empty() ? "No scripts" : "Select script";
+                if (selectedScriptIndex >= 0 && selectedScriptIndex < (int)scriptNames.size()) {
+                    previewText = scriptNames[selectedScriptIndex].c_str();
+                }
+
+                if (ImGui::BeginCombo("Script Name##FSM", previewText)) {
+                    for (int i = 0; i < (int)scriptNames.size(); ++i) {
+                        bool isSelected = (i == selectedScriptIndex);
+                        if (ImGui::Selectable(scriptNames[i].c_str(), isSelected)) {
+                            selectedScriptIndex = i;
+                        }
+                        if (isSelected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Add State from Script", ImVec2(ImGui::GetContentRegionAvail().x, 0))
+                    && selectedScriptIndex >= 0
+                    && selectedScriptIndex < (int)scriptNames.size())
+                {
+                    std::string stateName = scriptNames[selectedScriptIndex];
+                    fsm.AddStates(stateName, true);
+                    // Optional: reset selection
+                    selectedScriptIndex = -1;
+               
+
+                
+                // Your existing state list loop (unchanged)...
+
+
+                std::vector<std::string> stateKeys;
+                for (const auto& p : fsm.states) stateKeys.push_back(p.first);
+
+                for (size_t i = 0; i < stateKeys.size(); ++i)
+                {
+                    const std::string& key = stateKeys[i];
+                    auto it = fsm.states.find(key);
+                    if (it == fsm.states.end()) continue;
+
+                    ImGui::PushID((int)i);
+
+                    if (ImGui::TreeNode(key.c_str()))
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(200, 50, 50, 255));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 75, 75, 255));
+                        if (ImGui::Button("Remove"))
+                        {
+                            fsm.states.erase(key);
+                        }
+                        ImGui::PopStyleColor(2);
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                EndComponentEdit(entity, coordinator, "FSM");
+
+                ImGui::Unindent();
+            }
+        }
         else
         {
             return false;
@@ -4280,6 +4372,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_ECS::Tilemap{},
                     "Add Tilemap"
+                    );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::FSM>()) && ImGui::MenuItem("FSM"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::FSM>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::FSM{},
+                    "Add StateMachine"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

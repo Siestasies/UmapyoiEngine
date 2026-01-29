@@ -159,7 +159,14 @@ namespace Uma_ECS
                 sol::optional<sol::protected_function> func = (*script.scriptEnv)[funcName];
 
                 if (!func)
+                {
+                    /*Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                        "function " + std::string(funcName) + "(): " + "is invalid / doesn't exists");*/
+
+                    // if function is invalid just dont do anything
+
                     return;
+                }
 
                 auto result = (*func)(std::forward<Args>(args)...);
 

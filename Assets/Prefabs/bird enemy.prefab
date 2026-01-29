@@ -28,6 +28,7 @@
                     "struct Uma_ECS::Sprite": {
                         "textureName": "fire bird",
                         "layer": 16,
+                        "order": 0,
                         "flipX": true,
                         "flipY": false,
                         "autoFlip": true,
@@ -58,12 +59,12 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": false,
+                        "showBBox": true,
                         "shapes": [
                             {
                                 "offset": {
                                     "x": 0.0,
-                                    "y": 3.598
+                                    "y": 1.5
                                 },
                                 "size": {
                                     "x": 23.7,
@@ -78,11 +79,11 @@
                             {
                                 "offset": {
                                     "x": 0.0,
-                                    "y": -5.098
+                                    "y": -3.0
                                 },
                                 "size": {
-                                    "x": 25.5,
-                                    "y": 4.296
+                                    "x": 24.0,
+                                    "y": 2.0
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -96,6 +97,7 @@
                         "scripts": [
                             {
                                 "scriptPath": "Assets/Scripts/NewEnemy.lua",
+                                "scriptName": "NewEnemy.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -185,6 +187,7 @@
                     "struct Uma_ECS::Sprite": {
                         "textureName": "kappa_statue",
                         "layer": 16,
+                        "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
