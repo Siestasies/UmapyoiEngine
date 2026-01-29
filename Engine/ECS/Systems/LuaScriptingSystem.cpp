@@ -608,6 +608,63 @@ namespace Uma_ECS
             "mLifeTime",        &Projectile::mLifeTime
         );
 
+        // Register SpriteAnimator first (the engine class)
+        sharedLua->new_usertype<Uma_Engine::SpriteAnimator>("SpriteAnimator",
+            // Methods that take the animator instance as first parameter
+            "Play", [](Uma_Engine::SpriteAnimator& animator, const std::string& name, bool restart) {
+                animator.Play(name, restart);
+            },
+
+            "IsPlaying", [](Uma_Engine::SpriteAnimator& animator) -> bool {
+                return animator.IsPlaying();
+            },
+
+            "HasFinished", [](Uma_Engine::SpriteAnimator& animator) -> bool {
+                return animator.HasFinished();
+            },
+
+            "GetCurrentClip", [](const Uma_Engine::SpriteAnimator& animator) -> std::string {
+                return animator.GetCurrentClip();
+            },
+
+            "Reset", [](Uma_Engine::SpriteAnimator& animator) {
+                animator.Reset();
+            },
+
+            "AddClip", sol::overload(
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount,
+                    float fps, bool loop) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps, loop);
+                },
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount, float fps) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps);
+                },
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount);
+                }
+            ),
+
+            "RemoveClip", [](Uma_Engine::SpriteAnimator& animator, const std::string& name) -> bool {
+                return animator.RemoveClip(name);
+            }
+        );
+
+        // Register Animator component (the ECS component wrapper)
+        sharedLua->new_usertype<Animator>("Animator",
+            // Direct member access
+            "autoPlay", &Animator::autoPlay,
+            "initialClip", &Animator::initialClip,
+            "isInitialized", &Animator::isInitialized,
+            "uvOffset", &Animator::uvOffset,
+            "uvSize", &Animator::uvSize,
+
+            // Access to the SpriteAnimator instance
+            "animator", &Animator::animator
+        );
+
         //Register Text component
         sharedLua->new_usertype<Uma_UI::Text>("Text",
             "text", &Uma_UI::Text::text,
@@ -759,7 +816,9 @@ namespace Uma_ECS
         X(Camera)      \
         X(PathFinding) \
         X(Projectile)  \
+        X(Animator)    \
         X(Text)        \
+
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1191,7 +1250,8 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Camera)      \
         BIND_COMPONENT_GETTER(Text)        \
         BIND_COMPONENT_GETTER(PathFinding) \
-        //BIND_COMPONENT_GETTER(Projectile)  \
+        BIND_COMPONENT_GETTER(Animator)    \
+        //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
