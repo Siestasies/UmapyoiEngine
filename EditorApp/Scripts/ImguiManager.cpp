@@ -3536,7 +3536,7 @@ namespace Uma_Engine
                     ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "None");
                 }
 
-                // Handle Entity (Required!)
+                // Handle Entity (Required)
                 ImGui::Text("Handle:");
                 ImGui::SameLine(120);
 
@@ -3631,9 +3631,6 @@ namespace Uma_Engine
 
                 ImGui::Spacing();
 
-                // ====================================================================
-                // SECTION 4: Colors
-                // ====================================================================
                 ImGui::SeparatorText("Colors");
 
                 float normalColor[4] = {
@@ -3677,9 +3674,6 @@ namespace Uma_Engine
 
                 ImGui::Spacing();
 
-                // ====================================================================
-                // SECTION 5: Callback Script
-                // ====================================================================
                 ImGui::SeparatorText("Callback");
 
                 static char scriptBuffer[256];
@@ -3699,9 +3693,6 @@ namespace Uma_Engine
 
                 ImGui::Spacing();
 
-                // ====================================================================
-                // SECTION 6: Runtime State (Read-Only)
-                // ====================================================================
                 ImGui::SeparatorText("Runtime State");
 
                 ImGui::BeginDisabled();
@@ -3747,6 +3738,233 @@ namespace Uma_Engine
 
                 // End tracking
                 EndComponentEdit(entity, coordinator, "Slider");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_UI::Checkbox>())
+        {
+            if (ImGui::CollapsingHeader("Checkbox", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Checkbox"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Checkbox>>(
+                        &coordinator,
+                        entity,
+                        "Remove Checkbox"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
+                }
+
+                auto& checkbox = coordinator.GetComponent<Uma_UI::Checkbox>(entity);
+                ImGui::Indent();
+
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::Checkbox("Interactable", &checkbox.interactable))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+                ImGui::Text("Current State: %s",
+                    checkbox.currentState == Uma_UI::CheckboxState::Normal ? "Normal" :
+                    checkbox.currentState == Uma_UI::CheckboxState::Hovered ? "Hovered" :
+                    checkbox.currentState == Uma_UI::CheckboxState::Pressed ? "Pressed" : "Disabled");
+
+                
+                // Checkmark Entity (Required)
+                ImGui::Text("Checkmark:");
+                ImGui::SameLine(120);
+
+                int checkmarkEntityID = static_cast<int>(checkbox.checkmark);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Checkmark Entity", &checkmarkEntityID))
+                {
+                    if (checkmarkEntityID < 0)
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(checkmarkEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (checkbox.checkmark != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(checkbox.checkmark))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+
+                        if (!rectTransformArray.Has(checkbox.checkmark))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                        if (!imageArray.Has(checkbox.checkmark))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##checkmark"))
+                    {
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "None (Required!)");
+                }
+
+                ImGui::Spacing();
+
+                // Background Entity
+                ImGui::Text("Background:");
+                ImGui::SameLine(120);
+
+                int bgEntityID = static_cast<int>(checkbox.background);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Background Entity", &bgEntityID))
+                {
+                    if (bgEntityID < 0)
+                        checkbox.background = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        checkbox.background = static_cast<Uma_ECS::Entity>(bgEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (checkbox.background != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(checkbox.background))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+
+                        if (!rectTransformArray.Has(checkbox.background))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                        if (!imageArray.Has(checkbox.background))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##bg"))
+                    {
+                        checkbox.background = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "None");
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                static char buffer[256];
+                strncpy(buffer, checkbox.scriptName.c_str(), 255);
+                buffer[255] = '\0';
+                if (ImGui::InputText("Script Name", buffer, 256))
+                {
+                    checkbox.scriptName = buffer;
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::Separator();
+
+                ImGui::Text("Checkbox Colors");
+
+                float normalColour[4] = { checkbox.normalColour.r, checkbox.normalColour.g, checkbox.normalColour.b, checkbox.normalColour.a };
+                if (ImGui::ColorEdit4("Normal Colour", normalColour))
+                {
+                    checkbox.normalColour.r = normalColour[0];
+                    checkbox.normalColour.g = normalColour[1];
+                    checkbox.normalColour.b = normalColour[2];
+                    checkbox.normalColour.a = normalColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float hoverColour[4] = { checkbox.hoverColour.r, checkbox.hoverColour.g, checkbox.hoverColour.b, checkbox.hoverColour.a };
+                if (ImGui::ColorEdit4("Hover Colour", hoverColour))
+                {
+                    checkbox.hoverColour.r = hoverColour[0];
+                    checkbox.hoverColour.g = hoverColour[1];
+                    checkbox.hoverColour.b = hoverColour[2];
+                    checkbox.hoverColour.a = hoverColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float pressedColour[4] = { checkbox.pressedColour.r, checkbox.pressedColour.g, checkbox.pressedColour.b, checkbox.pressedColour.a };
+                if (ImGui::ColorEdit4("Pressed Colour", pressedColour))
+                {
+                    checkbox.pressedColour.r = pressedColour[0];
+                    checkbox.pressedColour.g = pressedColour[1];
+                    checkbox.pressedColour.b = pressedColour[2];
+                    checkbox.pressedColour.a = pressedColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float disabledColour[4] = { checkbox.disabledColour.r, checkbox.disabledColour.g, checkbox.disabledColour.b, checkbox.disabledColour.a };
+                if (ImGui::ColorEdit4("Disabled Colour", disabledColour))
+                {
+                    checkbox.disabledColour.r = disabledColour[0];
+                    checkbox.disabledColour.g = disabledColour[1];
+                    checkbox.disabledColour.b = disabledColour[2];
+                    checkbox.disabledColour.a = disabledColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                ImGui::Text("Checkmark Colors");
+                float checkmarkNormalColour[4] = { checkbox.checkmarkNormalColour.r, checkbox.checkmarkNormalColour.g, checkbox.checkmarkNormalColour.b, checkbox.checkmarkNormalColour.a };
+                if (ImGui::ColorEdit4("Checkmark Colour", checkmarkNormalColour))
+                {
+                    checkbox.checkmarkNormalColour.r = checkmarkNormalColour[0];
+                    checkbox.checkmarkNormalColour.g = checkmarkNormalColour[1];
+                    checkbox.checkmarkNormalColour.b = checkmarkNormalColour[2];
+                    checkbox.checkmarkNormalColour.a = checkmarkNormalColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+                float checkmarkDisabledColour[4] = { checkbox.checkmarkDisabledColour.r, checkbox.checkmarkDisabledColour.g, checkbox.checkmarkDisabledColour.b, checkbox.checkmarkDisabledColour.a };
+                if (ImGui::ColorEdit4("Checkmark Disabled Colour", checkmarkDisabledColour))
+                {
+                    checkbox.checkmarkDisabledColour.r = checkmarkDisabledColour[0];
+                    checkbox.checkmarkDisabledColour.g = checkmarkDisabledColour[1];
+                    checkbox.checkmarkDisabledColour.b = checkmarkDisabledColour[2];
+                    checkbox.checkmarkDisabledColour.a = checkmarkDisabledColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Checkbox");
 
                 ImGui::Unindent();
             }

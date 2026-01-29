@@ -349,6 +349,8 @@ namespace Uma_ECS
 
                     auto& image = pCoordinator->GetComponent<Uma_UI::Image>(childUI);
 
+                    if (!image.visible) continue;
+
                     if (!image.texture || image.texture->tex_id == 0)
                     {
                         image.texture = pResourcesManager->GetTexture(image.textureName);

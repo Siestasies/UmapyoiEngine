@@ -20,14 +20,14 @@ namespace Uma_UI
         Uma_ECS::Entity background = static_cast<Uma_ECS::Entity>(-1);
         Uma_ECS::Entity checkmark = static_cast<Uma_ECS::Entity>(-1);
 
-        // Colors
+        // Colours
         Uma_UI::Colour normalColour = Uma_UI::Colour::White();
-        Uma_UI::Colour hoveredColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Colour hoverColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
         Uma_UI::Colour pressedColour = Uma_UI::Colour(0.7f, 0.7f, 0.7f, 1.0f);
         Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
         Uma_UI::Colour checkedColour = Uma_UI::Colour(0.2f, 0.6f, 1.0f, 1.0f);
 
-        // Checkmark colors
+        // Checkmark colours
         Uma_UI::Colour checkmarkNormalColour = Uma_UI::Colour::Black();
         Uma_UI::Colour checkmarkDisabledColour = Uma_UI::Colour::Gray();
 
@@ -44,6 +44,9 @@ namespace Uma_UI
             jsonValue.AddMember("isChecked", isChecked, allocator);
             jsonValue.AddMember("interactable", interactable, allocator);
 
+            jsonValue.AddMember("backgroundEntity", static_cast<int>(background), allocator);
+            jsonValue.AddMember("checkmarkEntity", static_cast<int>(checkmark), allocator);
+
             jsonValue.AddMember("scriptName",
                 rapidjson::Value(scriptName.c_str(), allocator), allocator);
 
@@ -55,11 +58,11 @@ namespace Uma_UI
             jsonValue.AddMember("normalColour", nCol, allocator);
 
             rapidjson::Value hCol(rapidjson::kObjectType);
-            hCol.AddMember("r", hoveredColour.r, allocator);
-            hCol.AddMember("g", hoveredColour.g, allocator);
-            hCol.AddMember("b", hoveredColour.b, allocator);
-            hCol.AddMember("a", hoveredColour.a, allocator);
-            jsonValue.AddMember("hoveredColour", hCol, allocator);
+            hCol.AddMember("r", hoverColour.r, allocator);
+            hCol.AddMember("g", hoverColour.g, allocator);
+            hCol.AddMember("b", hoverColour.b, allocator);
+            hCol.AddMember("a", hoverColour.a, allocator);
+            jsonValue.AddMember("hoverColour", hCol, allocator);
 
             rapidjson::Value pCol(rapidjson::kObjectType);
             pCol.AddMember("r", pressedColour.r, allocator);
@@ -102,6 +105,11 @@ namespace Uma_UI
             isChecked = jsonValue["isChecked"].GetBool();
             interactable = jsonValue["interactable"].GetBool();
 
+            if (jsonValue.HasMember("backgroundEntity"))
+                background = static_cast<Uma_ECS::Entity>(jsonValue["backgroundEntity"].GetInt());
+            if (jsonValue.HasMember("checkmarkEntity"))
+                checkmark = static_cast<Uma_ECS::Entity>(jsonValue["checkmarkEntity"].GetInt());
+
             if (jsonValue.HasMember("scriptName"))
             {
                 scriptName = jsonValue["scriptName"].GetString();
@@ -113,11 +121,11 @@ namespace Uma_UI
             normalColour.b = nCol["b"].GetFloat();
             normalColour.a = nCol["a"].GetFloat();
 
-            const auto& hCol = jsonValue["hoveredColour"];
-            hoveredColour.r = hCol["r"].GetFloat();
-            hoveredColour.g = hCol["g"].GetFloat();
-            hoveredColour.b = hCol["b"].GetFloat();
-            hoveredColour.a = hCol["a"].GetFloat();
+            const auto& hCol = jsonValue["hoverColour"];
+            hoverColour.r = hCol["r"].GetFloat();
+            hoverColour.g = hCol["g"].GetFloat();
+            hoverColour.b = hCol["b"].GetFloat();
+            hoverColour.a = hCol["a"].GetFloat();
 
             const auto& pCol = jsonValue["pressedColour"];
             pressedColour.r = pCol["r"].GetFloat();

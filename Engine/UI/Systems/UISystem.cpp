@@ -682,7 +682,7 @@ namespace Uma_UI
 
         Uma_UI::Colour background = (!checkbox.interactable) ? checkbox.disabledColour : (checkbox.isChecked) ? checkbox.checkedColour :
             ((checkbox.currentState == CheckboxState::Normal) ? checkbox.normalColour :
-             (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoveredColour :
+             (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoverColour :
              (checkbox.currentState == CheckboxState::Pressed) ? checkbox.pressedColour :
              (checkbox.currentState == CheckboxState::Disabled) ? checkbox.disabledColour : 
               checkbox.normalColour);
