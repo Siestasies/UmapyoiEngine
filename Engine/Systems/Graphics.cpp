@@ -1330,7 +1330,7 @@ namespace Uma_Engine
         glUniform1f(alphaLoc, alpha);
 
         // Calculate current aspect ratio
-        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        //float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));

@@ -57,6 +57,7 @@ namespace Uma_Engine
             RenderTextures();
             RenderFonts();
             RenderSounds();
+            RenderPrefabs();
             RenderShaders();  // Read-only display for automated management
 
             ImGui::End();
@@ -125,42 +126,24 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    if (ImGui::BeginTable("FontsTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    if (ImGui::BeginTable("FontsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
                     {
-                        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 150.0f);
                         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
                         ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 60.0f);
-                        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                         ImGui::TableHeadersRow();
 
-                        std::string toDelete;
-                        for (const auto& [name, fontData] : fonts)
+                        for (const auto& [path, fontData] : fonts)
                         {
                             ImGui::TableNextRow();
+
                             ImGui::TableSetColumnIndex(0);
-                            ImGui::Text("%s", name.c_str());
+                            ImGui::TextWrapped("%s", path.c_str());
 
                             ImGui::TableSetColumnIndex(1);
-                            ImGui::TextWrapped("%s", fontData.filePath.c_str());
-
-                            ImGui::TableSetColumnIndex(2);
                             ImGui::Text("%u", fontData.fontSize);
-
-                            ImGui::TableSetColumnIndex(3);
-                            ImGui::PushID(name.c_str());
-                            if (ImGui::SmallButton("X"))
-                            {
-                                toDelete = name;
-                            }
-                            ImGui::PopID();
                         }
 
                         ImGui::EndTable();
-
-                        if (!toDelete.empty())
-                        {
-                            m_ResourcesManager->UnloadFont(toDelete);
-                        }
                     }
                 }
 
@@ -283,6 +266,45 @@ namespace Uma_Engine
                     // Display total count
                     ImGui::Spacing();
                     ImGui::TextDisabled("Total: %zu shader(s)", shaders.size());
+                }
+
+                ImGui::Unindent();
+            }
+        }
+
+        void RenderPrefabs()
+        {
+            if (ImGui::CollapsingHeader("Prefabs"))
+            {
+                ImGui::Indent();
+
+                const auto& prefabs = m_ResourcesManager->GetLoadedPrefabs();
+
+                if (prefabs.empty())
+                {
+                    ImGui::TextDisabled("No prefabs loaded");
+                }
+                else
+                {
+                    if (ImGui::BeginTable("PrefabsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    {
+                        ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
+                        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                        ImGui::TableHeadersRow();
+
+                        for (const auto& [path, doc] : prefabs)
+                        {
+                            ImGui::TableNextRow();
+
+                            ImGui::TableSetColumnIndex(0);
+                            ImGui::TextWrapped("%s", path.c_str());
+
+                            ImGui::TableSetColumnIndex(1);
+                            ImGui::Text("%s", (doc && !doc->HasParseError()) ? "Valid" : "Error");
+                        }
+
+                        ImGui::EndTable();
+                    }
                 }
 
                 ImGui::Unindent();

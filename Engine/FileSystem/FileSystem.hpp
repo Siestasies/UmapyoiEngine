@@ -768,7 +768,7 @@ namespace Uma_Engine
         {
             // Grid layout settings
             const float itemWidth = mIconSize + 20.0f;
-            const float itemHeight = mIconSize + 50.0f;
+            //const float itemHeight = mIconSize + 50.0f;
             const float itemSpacing = 15.0f;
 
             // Calculate items per row

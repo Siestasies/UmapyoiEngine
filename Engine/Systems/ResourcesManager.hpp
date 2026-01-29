@@ -209,6 +209,14 @@ namespace Uma_Engine
         bool HasShader(const std::string& shaderName) const;
         void UnloadAllShaders();
         const std::unordered_map<std::string, std::shared_ptr<Shader>>& GetLoadedShaders() const;
+
+        // Prefab
+        bool LoadPrefab(const std::string& filePath);
+        void UnloadPrefab(const std::string& filePath);
+        std::shared_ptr<rapidjson::Document> GetPrefab(const std::string& filePath);
+        void UnloadAllPrefabs();
+        bool HasPrefab(const std::string& filePath) const;
+        const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& GetLoadedPrefabs() const;
         
         // serializer
         /*!
@@ -281,5 +289,7 @@ namespace Uma_Engine
         std::unordered_map<std::string, FontData> mFonts{};
 
         std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders{};
+
+        std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>> mPrefabs;
     };
 }

@@ -67,6 +67,7 @@ namespace Uma_Engine
         UnloadAllFonts();
         UnloadAllSound();
         UnloadAllShaders();
+        UnloadAllPrefabs();
 
         mSound->release();
     }
@@ -659,5 +660,76 @@ namespace Uma_Engine
         // Convert to lowercase for case-insensitive comparison
         std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return std::tolower(c); });
         return normalized;
+    }
+
+    bool ResourcesManager::LoadPrefab(const std::string& filePath)
+    {
+        if (filePath.empty()) return false;
+        std::string normalized = NormalizePath(filePath);
+
+        // Check cache
+        if (mPrefabs.find(normalized) != mPrefabs.end()) return true;
+
+        // Load file
+        std::ifstream file(filePath);
+        if (!file.is_open())
+        {
+            std::cerr << "Error: Failed to open prefab file: " << filePath << std::endl;
+            return false;
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string content = buffer.str();
+        file.close();
+
+        // Parse JSON
+        std::shared_ptr<rapidjson::Document> doc = std::make_shared<rapidjson::Document>();
+        if (doc->Parse(content.c_str()).HasParseError())
+        {
+            std::cerr << "Error: Failed to parse prefab JSON: " << filePath << std::endl;
+            return false;
+        }
+
+        // Store in Cache
+        mPrefabs[normalized] = doc;
+        std::cout << "Prefab cached: " << normalized << std::endl;
+        return true;
+    }
+
+    std::shared_ptr<rapidjson::Document> ResourcesManager::GetPrefab(const std::string& filePath)
+    {
+        std::string normalized = NormalizePath(filePath);
+
+        // If not in cache, try to load it now
+        if (mPrefabs.find(normalized) == mPrefabs.end())
+        {
+            if (!LoadPrefab(filePath)) return nullptr;
+        }
+
+        return mPrefabs[normalized];
+    }
+
+    void ResourcesManager::UnloadPrefab(const std::string& filePath)
+    {
+        std::string normalized = NormalizePath(filePath);
+        mPrefabs.erase(normalized);
+    }
+
+    bool ResourcesManager::HasPrefab(const std::string& filePath) const
+    {
+        return mPrefabs.find(NormalizePath(filePath)) != mPrefabs.end();
+    }
+
+    void ResourcesManager::UnloadAllPrefabs()
+    {
+        // shared_ptr handles the deletion automatically
+        mPrefabs.clear();
+        std::cout << "All prefabs unloaded" << std::endl;
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& ResourcesManager::GetLoadedPrefabs() const
+    {
+        return mPrefabs;
     }
 }
