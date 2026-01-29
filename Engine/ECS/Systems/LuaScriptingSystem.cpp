@@ -48,12 +48,13 @@ All rights reserved.
 namespace Uma_ECS
 {
     
-    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i)
+    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i, Uma_Engine::ResourcesManager* r)
     {
         // linking the Engine systems 
         pCoordinator = c;
         pEventSystem = e;
         pInputSystem = i;
+        pResourcesManager = r;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -491,55 +492,54 @@ namespace Uma_ECS
         // to provide a better way to handle serializing and deserializing
         // WIP
         // prefab name must include file extention
-        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName, Vec2 pos) -> Entity 
+        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName, Vec2 pos) -> Entity
             {
+                // Safety check
+                if (!pResourcesManager) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "SpawnPrefab Failed: ResourcesManager is null");
+                    return static_cast<Entity>(-1);
+                }
+
+                // Load/Get cached Prefab JSON via ResourcesManager
                 std::string prefabPath = Uma_FilePath::PREFAB_DIR + prefabName;
-            try {
+                auto docPtr = pResourcesManager->GetPrefab(prefabPath);
 
-
-                // Load JSON file
-                std::ifstream ifs(prefabPath);
-                if (!ifs.is_open()) {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "Failed to open prefab file: " + prefabPath);
+                if (!docPtr) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Failed to load prefab: " + prefabPath);
                     return static_cast<Entity>(-1);
                 }
 
-                rapidjson::IStreamWrapper isw(ifs);
-                rapidjson::Document doc;
-                doc.ParseStream(isw);
-                ifs.close();
+                const rapidjson::Document& doc = *docPtr;
 
+                if (doc.HasMember("resources")) {
+                    pResourcesManager->Deserialize(doc["resources"]);
+                }
+
+                // Instantiate Entity
                 if (!doc.HasMember("Prefab")) {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "Invalid prefab format: missing 'Prefab' key in " + prefabPath);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Invalid prefab format: " + prefabPath);
                     return static_cast<Entity>(-1);
                 }
 
-                // Deserialize prefab and get root entity
-                Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
+                try {
+                    Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
 
-                auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
-                tf.position = pos;
+                    // Apply override position
+                    if (rootEntity != static_cast<Entity>(-1)) {
+                        if (pCoordinator->HasComponent<Transform>(rootEntity)) {
+                            auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
+                            tf.position = pos;
+                        }
 
-                if (rootEntity != static_cast<Entity>(-1)) {
-                    std::string debug = "Loaded prefab from " + prefabPath + " as entity " +
-                        std::to_string(rootEntity);
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                        // Log success
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Spawned prefab: " + prefabName);
+                    }
+                    return rootEntity;
                 }
-
-                return rootEntity;
-            }
-            catch (const std::exception& e) {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Exception loading prefab from " + prefabPath + ": " + e.what());
-                return static_cast<Entity>(-1);
-            }
-            catch (...) {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Unknown error loading prefab from " + prefabPath);
-                return static_cast<Entity>(-1);
-            }
+                catch (const std::exception& e) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Exception spawning prefab: " + std::string(e.what()));
+                    return static_cast<Entity>(-1);
+                }
             });
     }
 
