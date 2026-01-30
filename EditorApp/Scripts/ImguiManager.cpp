@@ -3919,11 +3919,101 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                // Prefab Path (read-only display)
-                ImGui::Text("Prefab Path:");
-                ImGui::TextWrapped("%s", prefab.prefabPath.empty() ? "(None)" : prefab.prefabPath.c_str());
+                // Drag and Drop
+                ImGui::Text("Prefab Path: %s", prefab.prefabPath.empty() ? "(None)" : prefab.prefabPath.c_str());
 
-                // Make it editable if needed
+                // Create a visible drop zone with visual feedback
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                // Draw a border box
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Prefab Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Prefab Here");
+
+                // Supported formats text
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.prefab)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.prefab)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##PrefabDropZone", dropZoneSize);
+
+                bool isHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop Target
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Highlight the drop zone when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".prefab")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            prefab.prefabPath = relativePath;
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Prefab!\nExpected: .prefab";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                else if (isHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
+
+                // Manual Text Entry (Fallback)
                 static char prefabPathBuffer[512];
                 strncpy(prefabPathBuffer, prefab.prefabPath.c_str(), 511);
                 prefabPathBuffer[511] = '\0';
@@ -3932,6 +4022,7 @@ namespace Uma_Engine
                     prefab.prefabPath = prefabPathBuffer;
                     m_hasUnsavedEdit = true;
                 }
+                // --- CHANGED END ---
 
                 ImGui::Separator();
 
