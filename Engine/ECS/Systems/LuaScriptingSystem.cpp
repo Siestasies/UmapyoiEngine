@@ -600,12 +600,26 @@ namespace Uma_ECS
             "mDefense"        ,&Enemy::mDefense
         );
 
-        // Register projectile component
+        // ProjectileType
+        sharedLua->new_enum<ProjectileType>("ProjectileType",
+            {
+                {"AOE", P_AOE},
+                {"SINGLE", P_SINGLE}
+            }
+        );
+
+        // ProjectileStats
+        sharedLua->new_usertype<ProjectileStats>("ProjectileStats",
+            "type", &ProjectileStats::type,
+            "damage", &ProjectileStats::damage,
+            "speed", &ProjectileStats::speed,
+            "fadeOVerTime", &ProjectileStats::fadeOVerTime,
+            "lifeTime", &ProjectileStats::lifeTime
+        );
+
+        // Projectile
         sharedLua->new_usertype<Projectile>("Projectile",
-            "mDamage",          &Projectile::mDamage,
-            "mSpeed",           &Projectile::mSpeed,
-            "mFadeOVerTime",    &Projectile::mFadeOVerTime,
-            "mLifeTime",        &Projectile::mLifeTime
+            "mStats", &Projectile::mStats
         );
 
         // Register SpriteAnimator first (the engine class)

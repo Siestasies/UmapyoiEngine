@@ -93,10 +93,13 @@
                         "isRoot": true
                     },
                     "struct Uma_ECS::Projectile": {
-                        "mDamage": 10,
-                        "mSpeed": 40.0,
-                        "mFadeOVerTime": true,
-                        "mLifeTime": 2.0
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 40.0,
+                            "fadeOVerTime": true,
+                            "lifeTime": 2.0
+                        }
                     }
                 }
             }

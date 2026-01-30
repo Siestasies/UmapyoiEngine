@@ -3514,13 +3514,13 @@ namespace Uma_Engine
                 BeginComponentEdit(entity, coordinator);
 
                 // Damage
-                if (ImGui::DragInt("Damage", &projectile.mDamage, 1.0F, 0, 1000))
+                if (ImGui::DragInt("Damage", &projectile.mStats.damage, 1.0F, 0, 1000))
                 {
                     m_hasUnsavedEdit = true;
                 }
 
                 // Damage
-                if (ImGui::DragFloat("Speed", &projectile.mSpeed, 1.0f, 0, 300.f))
+                if (ImGui::DragFloat("Speed", &projectile.mStats.speed, 1.0f, 0, 300.f))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -3528,7 +3528,7 @@ namespace Uma_Engine
                 ImGui::Separator();
 
                 // Fade Over Time
-                if (ImGui::Checkbox("Fade Over Time", &projectile.mFadeOVerTime))
+                if (ImGui::Checkbox("Fade Over Time", &projectile.mStats.fadeOVerTime))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -3539,7 +3539,7 @@ namespace Uma_Engine
                 }
 
                 // Life Time
-                if (ImGui::DragFloat("Life Time", &projectile.mLifeTime, 0.1f, 0.0f, 60.0f))
+                if (ImGui::DragFloat("Life Time", &projectile.mStats.lifeTime, 0.1f, 0.0f, 60.0f))
                 {
                     m_hasUnsavedEdit = true;
                 }

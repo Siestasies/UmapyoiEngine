@@ -81,11 +81,11 @@ namespace Uma_ECS
         {
             auto& projectile = pCoordinator->GetComponent<Projectile>(entity);
 
-            if (projectile.mFadeOVerTime)
+            if (projectile.mStats.fadeOVerTime)
             {
-                projectile.mLifeTime -= dt;
+                projectile.mStats.lifeTime -= dt;
 
-                if (projectile.mLifeTime <= 0)
+                if (projectile.mStats.lifeTime <= 0)
                 {
                     entityToDestroy.push_back(entity);
                 }

@@ -249,8 +249,6 @@ namespace Uma_ECS
             default:
                 break;
             }
-
-           
         }
     }
 
@@ -261,7 +259,7 @@ namespace Uma_ECS
             // its a projectile 
             auto& projectile = pCoordinator->GetComponent<Projectile>(attacker);
 
-            OnHurt(deffender, projectile.mDamage);
+            OnHurt(deffender, projectile.mStats.damage);
 
             pCoordinator->DestroyEntityAndChildren(attacker);
         }

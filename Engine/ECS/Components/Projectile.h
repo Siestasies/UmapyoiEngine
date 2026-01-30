@@ -25,12 +25,25 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    enum ProjectileType
+    {
+        P_AOE,
+        P_SINGLE
+    };
+
+    struct ProjectileStats
+    {
+        ProjectileType type;
+        int damage = 10;
+        float speed = 70.f;
+        bool fadeOVerTime = false;
+        float lifeTime = 2.f;
+
+    };
+
     struct Projectile
     {
-        int mDamage = 10;
-        float mSpeed = 70.f;
-        bool mFadeOVerTime = false;
-        float mLifeTime = 2.f;
+        ProjectileStats mStats;
 
 
         // currently empty, just to let coordinator to 
@@ -40,36 +53,39 @@ namespace Uma_ECS
         {
             value.SetObject();
 
-            value.AddMember("mDamage", mDamage, allocator);
-            value.AddMember("mSpeed", mSpeed, allocator);
-            value.AddMember("mFadeOVerTime", mFadeOVerTime, allocator);
-            value.AddMember("mLifeTime", mLifeTime, allocator);
+            rapidjson::Value stats(rapidjson::kObjectType);
+
+            stats.AddMember("type", mStats.type, allocator);
+            stats.AddMember("damage", mStats.damage, allocator);
+            stats.AddMember("speed", mStats.speed, allocator);
+            stats.AddMember("fadeOVerTime", mStats.fadeOVerTime, allocator);
+            stats.AddMember("lifeTime", mStats.lifeTime, allocator);
+
+            value.AddMember("mStats", stats, allocator);
         }
 
         // Deserialize from JSON
         void Deserialize(const rapidjson::Value& value) //override
         {
-            if (value.HasMember("mDamage"))
-                mDamage = value["mDamage"].GetInt();
+            if (value.HasMember("mStats") && value["mStats"].IsObject())
+            {
+                const rapidjson::Value& stats = value["mStats"];
 
-            if (value.HasMember("mSpeed"))
-                mSpeed = value["mSpeed"].GetFloat();
+                if (stats.HasMember("type") && stats["type"].IsInt())
+                    mStats.type = static_cast<ProjectileType>(stats["type"].GetInt());
 
-            if (value.HasMember("mFadeOVerTime"))
-                mFadeOVerTime = value["mFadeOVerTime"].GetBool();
+                if (stats.HasMember("damage") && stats["damage"].IsInt())
+                    mStats.damage = stats["damage"].GetInt();
 
-            if (value.HasMember("mLifeTime"))
-                mLifeTime = value["mLifeTime"].GetFloat();
+                if (stats.HasMember("speed") && stats["speed"].IsNumber())
+                    mStats.speed = stats["speed"].GetFloat();
+
+                if (stats.HasMember("fadeOVerTime") && stats["fadeOVerTime"].IsBool())
+                    mStats.fadeOVerTime = stats["fadeOVerTime"].GetBool();
+
+                if (stats.HasMember("lifeTime") && stats["lifeTime"].IsNumber())
+                    mStats.lifeTime = stats["lifeTime"].GetFloat();
+            }
         }
     };
 }
-
-// player continuous movement mouse input - states
-
-// player skill (one time off) - event system handles -> check logic if ok -> send off event
-
-// player hurt -> check validity -> sent off event
-
-// ui skill icon -> subcribe to player skill -> catch the event and process -> (action updating cd visuals)
-
-// player health bar -> subcribe to player health changes -> catch n update the health bar
