@@ -71,7 +71,7 @@ namespace Uma_ECS
         Uma_Engine::FontData* font;
         float fontSize;
         Uma_UI::TextAlignment alignment;
-        Uma_UI::Color textColor;
+        Uma_UI::Colour textColor;
     };
 
     class RenderingSystem : public ECSSystem

@@ -20,7 +20,7 @@ All rights reserved.
 */
 
 #include "Editor/Core/EditorSystem.h"
-#include "UI/Helpers/InputFilter.h"
+#include "UI/Core/InputFilter.h"
 
 #include "InputSystem.h"
 #include "Editor/Cmds/EntityDeleteCmd.h"

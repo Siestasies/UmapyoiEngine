@@ -41,30 +41,6 @@ All rights reserved.
 #include <algorithm>
 #include <map>
 
-namespace
-{
-    struct SpriteWithColor
-    {
-        Uma_Engine::Sprite_Info sprite;
-        Uma_UI::Color color;
-    };
-
-    struct BatchKey
-    {
-        unsigned int texId;
-        Uma_UI::Color color;
-
-        bool operator<(const BatchKey& other) const
-        {
-            if (texId != other.texId) return texId < other.texId;
-            if (color.r != other.color.r) return color.r < other.color.r;
-            if (color.g != other.color.g) return color.g < other.color.g;
-            if (color.b != other.color.b) return color.b < other.color.b;
-            return color.a < other.color.a;
-        }
-    };
-}
-
 namespace Uma_UI
 {
     /*!
@@ -77,28 +53,13 @@ namespace Uma_UI
         if (!pGraphics) { std::cerr << "UISystem::Init - Warning: Graphics not set!" << std::endl; }
         if (!pResourcesManager) { std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl; }
 
-        if (pGraphics)
-        {
-            mScreenSize = pGraphics->GetSceneViewport();
-        }
-        else
-        {
-            mScreenSize = { 1280.f, 720.f };
-        }
-
-        // Subscribe to window resize events and mark all UI dirty
-        //pEventSystem->Subscribe<Uma_Engine::WindowResizeEvent, UISystem>([this](const Uma_Engine::WindowResizeEvent& e)
-        //    {
-        //        mScreenSize.x = static_cast<float>(e.width);
-        //        mScreenSize.y = static_cast<float>(e.height);
-        //        MarkAllDirty(); // CRITICAL: Recalculate layout on resize
-        //    });
+        mScreenSize = pGraphics->GetSceneViewport();
 
         mHitTestCache.clear();
     }
 
     /*!
-     * \brief Updates the UI system through three explicit passes: Layout, Input, and BuildDrawList.
+     * \brief Updates the UI system through explicit passes: Layout and Input.
      * \param dt Delta time in seconds.
      */
     void UISystem::Update(float dt)
@@ -110,11 +71,9 @@ namespace Uma_UI
             return;
         }
 
-        mScreenSize = pGraphics->GetSceneViewport();
-
+        Vec2 screenSize = pGraphics->GetSceneViewport();
+        if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
         LayoutPass();
-        //InputPass();
-        //BuildDrawListPass();
     }
 
     /*!
@@ -140,25 +99,25 @@ namespace Uma_UI
     void UISystem::LayoutPass()
     {
         auto& canvasArray = pCoordinator->GetComponentArray<Canvas>();
-        std::vector<std::pair<Uma_ECS::Entity, int>> canvasEntities;
+        std::vector<std::pair<Uma_ECS::Entity, int>> canvases;
 
         // Gather all canvases
         for (size_t i = 0; i < canvasArray.Size(); ++i)
         {
             Uma_ECS::Entity entity = canvasArray.GetEntity(i);
             auto& canvas = canvasArray.GetComponentAt(i);
-            canvasEntities.push_back({ entity, canvas.sortingOrder });
+            canvases.push_back({ entity, canvas.sortingOrder });
         }
 
         // Sort canvases by sorting order
-        std::sort(canvasEntities.begin(), canvasEntities.end(),
+        std::sort(canvases.begin(), canvases.end(),
             [](const auto& a, const auto& b) { return a.second < b.second; });
 
         // Process each canvas and its hierarchy
-        for (const auto& [canvasEntity, sortOrder] : canvasEntities)
+        for (const auto& [canvasEntity, sortOrder] : canvases)
         {
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
-            canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y);
+            canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y); // Need to fix this.
 
             // Recursively compute layout for this canvas's children
             ComputeLayoutRecursive(canvasEntity, GetScreenRect(), canvas.scaleFactor);
@@ -219,8 +178,6 @@ namespace Uma_UI
         mMouseConsumedThisFrame = false;
         mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
 
-        //mScreenSize = pGraphics->GetSceneViewport();
-
         mMousePositionNDC = Uma_UI::ScreenToNDC(
             mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
         mMouseButtonDownLastFrame = mMouseButtonDown;
@@ -246,14 +203,15 @@ namespace Uma_UI
             if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
                 continue;
 
-            bool hasButton = pCoordinator->GetComponentArray<Button>().Has(entity);
-            if (!hasButton)
-                continue;
+            auto& buttonArray = pCoordinator->GetComponentArray<Button>();
+            auto& sliderArray = pCoordinator->GetComponentArray<Slider>();
+            auto& checkboxArray = pCoordinator->GetComponentArray<Checkbox>();
+
+            if (!(buttonArray.Has(entity) || sliderArray.Has(entity) || checkboxArray.Has(entity))) continue;
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            // Use computed rect directly - it's already in correct NDC space
             mHitTestCache.push_back({ entity, rectTransform.computedRect });
-        }
+        }   
 
         // Raycast using NDC coordinates
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
@@ -305,7 +263,6 @@ namespace Uma_UI
                     {
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
-
                         ButtonOnClicked(entity);
                     }
                 }
@@ -322,142 +279,188 @@ namespace Uma_UI
             button.wasHoveredLastFrame = isHovered;
             UpdateButtonVisual(entity);
         }
-    }
 
-    /*!
-     * \brief Third pass: Generates draw lists for rendering images and text.
-     */
-    void UISystem::BuildDrawListPass()
-    {
-        std::vector<SpriteWithColor> spritesWithColours;
+        auto& sliderArray = pCoordinator->GetComponentArray<Slider>();
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
 
-        if (!pResourcesManager)
+        if (mDraggingSlider != static_cast<Uma_ECS::Entity>(-1))
         {
-            return;
-        }
-
-        auto sortedEntities = GetSortedUIEntities();
-
-        // Render images
-        for (Uma_ECS::Entity entity : sortedEntities)
-        {
-            if (!pCoordinator->IsActiveInHierarchy(entity))
-                continue;
-
-            auto& imageArray = pCoordinator->GetComponentArray<Image>();
-            if (!imageArray.Has(entity))
+            if (mMouseButtonDown && sliderArray.Has(mDraggingSlider))
             {
-                continue;
-            }
+                auto& slider = sliderArray.GetData(mDraggingSlider);
+                auto& rectTransform = rectTransformArray.GetData(mDraggingSlider);
 
-            auto& image = pCoordinator->GetComponent<Image>(entity);
-            if (!image.visible || image.texturePath.empty())
-            {
-                continue;
-            }
+                float normalizedValue = 0.f;
 
-            if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-            {
-                continue;
-            }
+                if (slider.direction == SliderDirection::LeftToRight || slider.direction == SliderDirection::RightToLeft)
+                {
+                    float sliderLeft = rectTransform.computedRect.Left();
+                    float sliderRight = rectTransform.computedRect.Right();
+                    float sliderWidth = sliderRight - sliderLeft;
 
-            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            unsigned int texId = GetOrLoadTexture(image.texturePath);
-            if (texId == 0)
-            {
-                continue;
-            }
+                    if (sliderWidth > 0.f)
+                    {
+                        normalizedValue = (mMousePositionNDC.x - sliderLeft) / sliderWidth;
+                        if (slider.direction == SliderDirection::RightToLeft)
+                        {
+                            normalizedValue = 1.f - normalizedValue;
+                        }
+                    }
+                }
+                else
+                {
+                    float sliderBottom = rectTransform.computedRect.Bottom();
+                    float sliderTop = rectTransform.computedRect.Top();
+                    float sliderHeight = sliderTop - sliderBottom;
 
-            Uma_Engine::Sprite_Info sprite;
-            sprite.pos = rectTransform.computedRect.Center();
-            sprite.scale = rectTransform.computedRect.Size();
-            sprite.rot = 0.0f;
-            sprite.rot_speed = 0.0f;
-            sprite.uvOffset = Vec2(0.0f, 0.0f);
-            sprite.uvSize = Vec2(1.0f, 1.0f);
-            sprite.tintColor = image.color.ToVec3();
-            sprite.alpha = image.color.a;
-            sprite.tex_id = texId;
-            spritesWithColours.push_back({ sprite, image.color });
-        }
+                    if (sliderHeight > 0.f)
+                    {
+                        normalizedValue = (mMousePositionNDC.y - sliderBottom) / sliderHeight;
+                        if (slider.direction == SliderDirection::TopToBottom) normalizedValue = 1.f - normalizedValue;
+                    }
+                }
 
-        // Batch and draw images
-        std::map<BatchKey, std::vector<Uma_Engine::Sprite_Info>> batches;
-        for (const auto& swc : spritesWithColours)
-        {
-            BatchKey key{ swc.sprite.tex_id, swc.color };
-            batches[key].push_back(swc.sprite);
-        }
+                float oldValue = slider.value;
+                slider.value = Uma_Engine::Clamp(normalizedValue, slider.minValue, slider.maxValue);
 
-        for (const auto& [key, sprites] : batches)
-        {
-            pGraphics->DrawSpritesScreenInstanced(key.texId, sprites);
-        }
+                if (oldValue != slider.value)
+                {
+                    UpdateSliderVisual(mDraggingSlider);
 
-        // Render text - alignment computed every frame based on current rect
-        for (Uma_ECS::Entity entity : sortedEntities)
-        {
-
-            if (!pCoordinator->IsActiveInHierarchy(entity))
-                continue;
-
-            auto& textArray = pCoordinator->GetComponentArray<Text>();
-            if (!textArray.Has(entity))
-            {
-                continue;
-            }
-
-            auto& text = pCoordinator->GetComponent<Text>(entity);
-            if (!text.visible || text.text.empty())
-            {
-                continue;
-            }
-
-            if (!text.fontPath.empty() && EnsureFontLoaded(text.fontPath))
-            {
-                /* Empty by design */
+                    if (!slider.scriptName.empty())
+                    {
+                        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnDrag");
+                    }
+                }
             }
             else
             {
-                continue;
+                if (sliderArray.Has(mDraggingSlider))
+                {
+                    auto& slider = sliderArray.GetData(mDraggingSlider);
+                    slider.isDragging = false;
+
+                    if (!slider.scriptName.empty())
+                    {
+                        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnRelease");
+                    }
+                }
+
+                mDraggingSlider = static_cast<Uma_ECS::Entity>(-1);
             }
-
-            if (!pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-            {
-                continue;
-            }
-
-            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontPath);
-
-            // Measure text width in NDC space
-            float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
-            float alignX = 0.0f;
-
-            // Calculate horizontal alignment based on rect bounds
-            switch (text.alignment)
-            {
-            case TextAlignment::Left:
-                alignX = rectTransform.computedRect.Left();
-                break;
-            case TextAlignment::Center:
-                alignX = rectTransform.computedRect.Center().x - textWidthNDC * 0.5f;
-                break;
-            case TextAlignment::Right:
-                alignX = rectTransform.computedRect.Right() - textWidthNDC;
-                break;
-            }
-
-            // Calculate vertical center
-            float fontHeightNDC = (text.fontSize * 48.f) / static_cast<float>(mScreenSize.y) * 2.0f;
-            float alignY = rectTransform.computedRect.Center().y - fontHeightNDC * 0.15f;
-
-            pGraphics->DrawTextScreen(*uiFont, text.text, alignX, alignY,
-                text.fontSize, text.color.r, text.color.g, text.color.b);
         }
 
-        batches.clear();
-        spritesWithColours.clear();
+        for (size_t i = 0; i < sliderArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = sliderArray.GetEntity(i);
+            auto& slider = sliderArray.GetComponentAt(i);
+
+            if (!slider.interactable)
+            {
+                slider.isHovered = false;
+                slider.isDragging = false;
+                UpdateSliderVisual(entity);
+                continue;
+            }
+
+            slider.isHovered = (entity == hitEntity);
+
+            if (slider.isHovered && mMouseButtonDown && !mMouseButtonDownLastFrame)
+            {
+                slider.isDragging = true;
+                mDraggingSlider = entity;
+
+                if (rectTransformArray.Has(entity))
+                {
+                    auto& rectTransform = rectTransformArray.GetData(entity);
+                    float normalizedValue = 0.f;
+
+                    if (slider.direction == SliderDirection::LeftToRight || slider.direction == SliderDirection::RightToLeft)
+                    {
+                        float sliderLeft = rectTransform.computedRect.Left();
+                        float sliderRight = rectTransform.computedRect.Right();
+                        float sliderWidth = sliderRight - sliderLeft;
+
+                        if (sliderWidth > 0.f)
+                        {
+                            normalizedValue = (mMousePositionNDC.x - sliderLeft) / sliderWidth;
+                            if (slider.direction == SliderDirection::RightToLeft) normalizedValue = 1.f - normalizedValue;
+                        }
+                    }
+                    else
+                    {
+                        float sliderBottom = rectTransform.computedRect.Bottom();
+                        float sliderTop = rectTransform.computedRect.Top();
+                        float sliderHeight = sliderTop - sliderBottom;
+
+                        if (sliderHeight > 0.f)
+                        {
+                            normalizedValue = (mMousePositionNDC.y - sliderBottom) / sliderHeight;
+                            if (slider.direction == SliderDirection::TopToBottom) normalizedValue = 1.f - normalizedValue;
+                        }
+                    }
+
+                    slider.value = normalizedValue;
+                }
+            }
+        }
+
+        auto& checkboxArray = pCoordinator->GetComponentArray<Checkbox>();
+
+        for (size_t i = 0; i < checkboxArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = checkboxArray.GetEntity(i);
+            auto& checkbox = checkboxArray.GetComponentAt(i);
+
+            if (!checkbox.interactable)
+            {
+                checkbox.currentState = CheckboxState::Disabled;
+                UpdateCheckboxVisual(entity);
+                continue;
+            }
+
+            bool isHovered = (entity == hitEntity);
+
+            if (mMouseButtonDown)
+            {
+                if (isHovered)
+                {
+                    checkbox.currentState = CheckboxState::Pressed;
+                }
+                else
+                {
+                    checkbox.currentState = CheckboxState::Normal;
+                }
+            }
+            else
+            {
+                if (isHovered)
+                {
+                    checkbox.currentState = CheckboxState::Hovered;
+
+                    if (mMouseButtonDownLastFrame)
+                    {
+                        checkbox.isChecked = (checkbox.isChecked) ? false : true;
+                        UpdateCheckboxVisual(entity);
+
+                        if (!checkbox.scriptName.empty())
+                        {
+                            auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+                            system->CallScriptFunction(entity, checkbox.scriptName, "OnToggle");
+                        }
+                    }
+                }
+                else
+                {
+                    checkbox.currentState = CheckboxState::Normal;
+                }
+            }
+
+            checkbox.wasHoveredLastFrame = isHovered;
+            UpdateCheckboxVisual(entity);
+        }
     }
 
     /*!
@@ -466,14 +469,9 @@ namespace Uma_UI
      */
     Vec2 UISystem::GetMousePosition() const
     {
-        if (!pGraphics)
-        {
-            return Vec2(0.0f, 0.0f);
-        }
-
-        double xpos, ypos;
-        glfwGetCursorPos(static_cast<GLFWwindow*>(pGraphics->GetWindow()), &xpos, &ypos);
-        return Vec2(static_cast<float>(xpos), static_cast<float>(ypos));
+        double x = 0.0, y = 0.0;
+        glfwGetCursorPos(static_cast<GLFWwindow*>(pGraphics->GetWindow()), &x, &y);
+        return Vec2(static_cast<float>(x), static_cast<float>(y));
     }
 
     /*!
@@ -586,10 +584,122 @@ namespace Uma_UI
 
         switch (button.currentState)
         {
-        case ButtonState::Normal: image.color = button.normalColour; break;
-        case ButtonState::Hovered: image.color = button.hoverColour; break;
-        case ButtonState::Pressed: image.color = button.pressedColour; break;
-        case ButtonState::Disabled: image.color = button.disabledColour; break;
+        case ButtonState::Normal: image.colour = button.normalColour; break;
+        case ButtonState::Hovered: image.colour = button.hoverColour; break;
+        case ButtonState::Pressed: image.colour = button.pressedColour; break;
+        case ButtonState::Disabled: image.colour = button.disabledColour; break;
+        }
+    }
+
+    void UISystem::UpdateSliderVisual(Uma_ECS::Entity entity)
+    {
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& imageArray = pCoordinator->GetComponentArray<Image>();
+
+        const auto& slider = pCoordinator->GetComponent<Slider>(entity);
+
+        float normalizedValue = slider.value;
+        Uma_UI::Colour currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
+
+        if (slider.handle != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.handle))
+        {
+            auto& handleRT = rectTransformArray.GetData(slider.handle);
+
+            if (slider.direction == SliderDirection::LeftToRight || slider.direction == SliderDirection::RightToLeft)
+            {
+                auto& sliderRT = rectTransformArray.GetData(entity);
+                float sliderWidth = sliderRT.sizeDelta.x;
+                float handleOffset = (normalizedValue - 0.5f) * sliderWidth;
+
+                if (slider.direction == SliderDirection::RightToLeft) handleOffset = -handleOffset;
+
+                handleRT.anchoredPosition.x = handleOffset;
+            }
+            else
+            {
+                auto& sliderRT = rectTransformArray.GetData(entity);
+                float sliderHeight = sliderRT.sizeDelta.y;
+                float handleOffset = (normalizedValue - 0.5f) * sliderHeight;
+
+                if (slider.direction == SliderDirection::TopToBottom) handleOffset = -handleOffset;
+
+                handleRT.anchoredPosition.y = handleOffset;
+            }
+
+            handleRT.isDirty = true;
+
+            if (imageArray.Has(slider.handle))
+            {
+                auto& handleImage = imageArray.GetData(slider.handle);
+                handleImage.colour = currentColour;
+            }
+        }
+
+        if (slider.fill != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.fill))
+        {
+            auto& bgRT = rectTransformArray.GetData(slider.background);
+            auto& fillRT = rectTransformArray.GetData(slider.fill);
+
+            switch (slider.direction)
+            {
+            case SliderDirection::LeftToRight:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x - (1.f - normalizedValue);
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            case SliderDirection::RightToLeft:
+                fillRT.anchorMin.x = bgRT.anchorMin.x + (1.f - normalizedValue);
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            case SliderDirection::BottomToTop:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y - (1.f - normalizedValue);
+                break;
+            case SliderDirection::TopToBottom:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y + (1.f - normalizedValue);
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            default:
+                break;
+            }
+
+            fillRT.isDirty = true;
+        }
+    }
+
+    void UISystem::UpdateCheckboxVisual(Uma_ECS::Entity entity)
+    {
+        auto& imageArray = pCoordinator->GetComponentArray<Image>();
+
+        const auto& checkbox = pCoordinator->GetComponent<Checkbox>(entity);
+
+        Uma_UI::Colour background = (!checkbox.interactable) ? checkbox.disabledColour : (checkbox.isChecked) ? checkbox.checkedColour :
+            ((checkbox.currentState == CheckboxState::Normal) ? checkbox.normalColour :
+             (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoverColour :
+             (checkbox.currentState == CheckboxState::Pressed) ? checkbox.pressedColour :
+             (checkbox.currentState == CheckboxState::Disabled) ? checkbox.disabledColour : 
+              checkbox.normalColour);
+
+        Uma_UI::Colour checkmark = (!checkbox.interactable) ? checkbox.checkmarkDisabledColour : checkbox.checkmarkNormalColour;
+
+        if (checkbox.background != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(checkbox.background))
+        {
+            auto& bg = imageArray.GetData(checkbox.background);
+            bg.colour = background;
+        }
+
+        if (checkbox.checkmark != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(checkbox.checkmark))
+        {
+            auto& cm = imageArray.GetData(checkbox.checkmark);
+            cm.visible = checkbox.isChecked;
+            cm.colour = checkmark;
         }
     }
 

@@ -38,6 +38,8 @@ All rights reserved.
 #include "../Components/Image.h"
 #include "../Components/Text.h"
 #include "../Components/Button.h"
+#include "../Components/Slider.h"
+#include "../Components/Checkbox.h"
 #include <vector>
 #include <map>
 
@@ -84,11 +86,6 @@ namespace Uma_UI
          * \brief Second pass: Processes input and updates interaction states.
          */
         void InputPass();
-
-        /*!
-         * \brief Third pass: Builds draw lists for rendering.
-         */
-        void BuildDrawListPass();
 
         /*!
          * \brief Injects the ECS coordinator dependency.
@@ -165,6 +162,7 @@ namespace Uma_UI
         bool mMouseButtonDown = false;
         bool mMouseButtonDownLastFrame = false;
         bool mMouseConsumedThisFrame = false;
+        Uma_ECS::Entity mDraggingSlider = static_cast<Uma_ECS::Entity>(-1);
 
         std::vector<std::pair<Uma_ECS::Entity, Rect>> mHitTestCache;
 
@@ -200,6 +198,10 @@ namespace Uma_UI
          * \param entity The button entity to update.
          */
         void UpdateButtonVisual(Uma_ECS::Entity entity);
+
+        void UpdateSliderVisual(Uma_ECS::Entity entity);
+
+        void UpdateCheckboxVisual(Uma_ECS::Entity entity);
 
         /*!
          * \brief Returns all UI entities sorted by canvas sorting order.
