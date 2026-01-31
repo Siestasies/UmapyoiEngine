@@ -38,6 +38,8 @@ using GLuint = unsigned int;
 
 namespace Uma_Engine
 {
+    class ResourcesManager;
+
     enum class RenderTarget
     {
         Window,      // GLFW window
@@ -167,6 +169,16 @@ namespace Uma_Engine
         // Viewport size
         int mViewportWidth, mViewportHeight;
 
+        ResourcesManager* mResourcesManager;
+
+        // Shader names for system shaders
+        const std::string SHADER_SPRITE = "system_sprite";
+        const std::string SHADER_INSTANCED = "system_instanced";
+        const std::string SHADER_DEBUG = "system_debug";
+        const std::string SHADER_TEXT = "system_text";
+        const std::string SHADER_SHAPE = "system_shape";
+
+
         // Helper functions
 
         /**
@@ -201,12 +213,6 @@ namespace Uma_Engine
          * \brief Shuts down the solid shape renderer and releases its resources
          */
         void ShutdownShapeRenderer();
-
-        /**
-         * \brief Compiles and links the text rendering shader
-         * \return OpenGL shader program ID, 0 if failed
-         */
-        GLuint CreateTextShader();
 
         /**
          * \brief Initializes the basic 2D sprite renderer
@@ -712,5 +718,8 @@ namespace Uma_Engine
          * \return Framebuffer height in pixels
          */
         int GetSceneFBHeight() const { return mSceneFBHeight; }
+
+        Shader LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath);
+        void UnloadShader(unsigned int shaderID);
     };
 }

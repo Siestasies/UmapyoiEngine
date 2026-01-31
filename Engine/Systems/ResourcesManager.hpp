@@ -37,6 +37,10 @@ All rights reserved.
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
+namespace Uma_ECS
+{
+    class Coordinator;
+}
 
 namespace Uma_Engine
 {
@@ -63,6 +67,8 @@ namespace Uma_Engine
         \brief Shuts down the system, unloading all managed resources
         */
         void Shutdown() override;
+
+        void SetCoordinator(Uma_ECS::Coordinator* coordinator);
         
         // Textures
         /*!
@@ -71,27 +77,27 @@ namespace Uma_Engine
         \param filePath The relative path to the image file
         \return True if loaded successfully or if the texture already exists; false otherwise
         */
-        bool LoadTexture(const std::string& textureName, const std::string& filePath);
+        bool LoadTexture(const std::string& filePath);
 
         /*!
         \brief Unloads a specific texture from memory
         \param textureName The unique identifier of the texture to unload
         */
-        void UnloadTexture(const std::string& textureName);
+        void UnloadTexture(const std::string& filePath);
 
         /*!
         \brief Retrieves a shared pointer to a loaded texture
         \param textureName The unique identifier of the texture
         \return A shared pointer to the Texture, or nullptr if not found
         */
-        std::shared_ptr<Texture> GetTexture(const std::string& textureName);
+        std::shared_ptr<Texture> GetTexture(const std::string& filePath);
 
         /*!
         \brief Checks if a specific texture is currently loaded
         \param textureName The unique identifier to check
         \return True if the texture exists in the cache, false otherwise
         */
-        bool HasTexture(const std::string& textureName) const;
+        bool HasTexture(const std::string& filePath) const;
 
         /*!
         \brief Prints the names and IDs of all currently loaded textures to the console
@@ -158,27 +164,27 @@ namespace Uma_Engine
         \param fontSize The size of the font to generate (default is 48).
         \return True if loaded successfully, false on failure.
         */
-        bool LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize = 48);
+        bool LoadFont(const std::string& filePath, unsigned int fontSize = 48);
 
         /*!
         \brief Unloads a specific font and frees its graphics resources.
         \param fontName The unique identifier of the font to unload.
         */
-        void UnloadFont(const std::string& fontName);
+        void UnloadFont(const std::string& filePath);
 
         /*!
         \brief Retrieves a pointer to the FontData structure.
         \param fontName The unique identifier of the font.
         \return A pointer to FontData, or nullptr if not found.
         */
-        FontData* GetFont(const std::string& fontName);
+        FontData* GetFont(const std::string& filePath);
 
         /*!
         \brief Checks if a specific font is currently loaded.
         \param fontName The unique identifier to check.
         \return True if the font exists in the cache, false otherwise.
         */
-        bool HasFont(const std::string& fontName) const;
+        bool HasFont(const std::string& filePath) const;
 
         /*!
         \brief Prints the names and sizes of all currently loaded fonts to the console for debugging.
@@ -195,6 +201,22 @@ namespace Uma_Engine
         \return A constant reference to the underlying unordered map of FontData.
         */
         const std::unordered_map<std::string, FontData>& GetLoadedFonts() const;
+
+        // Shaders
+        bool LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
+        void UnloadShader(const std::string& shaderName);
+        std::shared_ptr<Shader> GetShader(const std::string& shaderName);
+        bool HasShader(const std::string& shaderName) const;
+        void UnloadAllShaders();
+        const std::unordered_map<std::string, std::shared_ptr<Shader>>& GetLoadedShaders() const;
+
+        // Prefab
+        bool LoadPrefab(const std::string& filePath);
+        void UnloadPrefab(const std::string& filePath);
+        std::shared_ptr<rapidjson::Document> GetPrefab(const std::string& filePath);
+        void UnloadAllPrefabs();
+        bool HasPrefab(const std::string& filePath) const;
+        const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& GetLoadedPrefabs() const;
         
         // serializer
         /*!
@@ -247,14 +269,17 @@ namespace Uma_Engine
         \param allocator The JSON allocator.
         */
         void SerializeSpecificResources(
-            const std::unordered_set<std::string>& textureNames,
+            const std::unordered_set<std::string>& texturePaths,
             const std::unordered_set<std::string>& soundNames,
             const std::unordered_set<std::string>& fontNames,
             rapidjson::Value& out,
             rapidjson::Document::AllocatorType& allocator);
 
     private:
-        // the key is the path cus user wont call name to laod texture 
+        Uma_ECS::Coordinator* mCoordinator = nullptr;
+
+        static std::string NormalizePath(const std::string& path);
+
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};
         Graphics* mGraphics = nullptr;
 
@@ -263,5 +288,9 @@ namespace Uma_Engine
         SoundManager* mSound = nullptr;
 
         std::unordered_map<std::string, FontData> mFonts{};
+
+        std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders{};
+
+        std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>> mPrefabs;
     };
 }

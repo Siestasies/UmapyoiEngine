@@ -49,6 +49,11 @@ namespace Uma_Engine
         std::cout << "ResourcesManager initialized" << std::endl;
     }
 
+    void ResourcesManager::SetCoordinator(Uma_ECS::Coordinator* coordinator)
+    {
+        mCoordinator = coordinator;
+    }
+
     void ResourcesManager::Update(float dt)
     {
         (void)dt;
@@ -61,38 +66,77 @@ namespace Uma_Engine
         UnloadAllTextures();
         UnloadAllFonts();
         UnloadAllSound();
+        UnloadAllShaders();
+        UnloadAllPrefabs();
 
         mSound->release();
     }
 
-    bool ResourcesManager::LoadTexture(const std::string& textureName, const std::string& filePath)
+    bool ResourcesManager::LoadTexture(const std::string& filePath)
     {
-        assert(mGraphics != nullptr && "Error: Graphics system is not initialized properly.");
+        assert(mGraphics != nullptr && "Graphics system not initialized");
 
-        // Check if texture is already loaded
-        if (HasTexture(textureName))
+        if (filePath.empty())
         {
-            std::cout << "Warning: Texture '" << textureName << "' is already loaded!" << std::endl;
+            std::cout << "Warning: Empty file path" << std::endl;
+            return false;
+        }
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        // Check if already loaded
+        if (mTextures.find(normalizedPath) != mTextures.end())
+        {
+            std::cout << "Texture already loaded: " << normalizedPath << std::endl;
             return true;
         }
 
-        // Use Graphics class to load file texture
-        std::shared_ptr<Texture> texture = std::make_shared<Texture>(mGraphics->LoadTextureFromFile(filePath));
+        // Load texture
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>(
+            mGraphics->LoadTextureFromFile(filePath)
+        );
 
-        // Store in map
-        mTextures[textureName] = texture;
+        if (texture->tex_id == 0)
+        {
+            std::cerr << "Failed to load texture: " << filePath << std::endl;
+            return false;
+        }
+
+        // Store with path as key
+        mTextures[normalizedPath] = texture;
+
         return true;
     }
 
-    std::shared_ptr<Texture> ResourcesManager::GetTexture(const std::string& textureName)
+    std::shared_ptr<Texture> ResourcesManager::GetTexture(const std::string& filePath)
     {
-        auto it = mTextures.find(textureName);
-        return (it != mTextures.end()) ? it->second : nullptr;
+        if (filePath.empty())
+            return nullptr;
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mTextures.find(normalizedPath);
+        if (it != mTextures.end())
+        {
+            return it->second;
+        }
+
+        // Not found
+        if (LoadTexture(filePath))
+        {
+            return mTextures[normalizedPath];
+        }
+
+        return nullptr;
     }
 
-    bool ResourcesManager::HasTexture(const std::string& textureName) const
+    bool ResourcesManager::HasTexture(const std::string& filePath) const
     {
-        return mTextures.find(textureName) != mTextures.end();
+        if (filePath.empty())
+            return false;
+
+        std::string normalizedPath = NormalizePath(filePath);
+        return mTextures.find(normalizedPath) != mTextures.end();
     }
 
     void ResourcesManager::PrintLoadedTextureNames() const
@@ -104,25 +148,21 @@ namespace Uma_Engine
         }
     }
 
-    void ResourcesManager::UnloadTexture(const std::string& textureName)
+    void ResourcesManager::UnloadTexture(const std::string& filePath)
     {
-        auto it = mTextures.find(textureName);
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mTextures.find(normalizedPath);
         if (it != mTextures.end())
         {
-            // Unload texture
-            mGraphics->UnloadTexture((*it->second).tex_id);
-
-            // tex_id become invalid so set to 0
-            (*it->second).tex_id = 0;
-
-            // Remove from our map
+            mGraphics->UnloadTexture(it->second->tex_id);
+            it->second->tex_id = 0;
             mTextures.erase(it);
-
-            std::cout << "Texture '" << textureName << "' unloaded" << std::endl;
+            std::cout << "Texture unloaded: " << normalizedPath << std::endl;
         }
         else
         {
-            std::cout << "Warning: Texture does not exist: '" << textureName << "'" << std::endl;
+            std::cout << "Warning: Texture not found: " << normalizedPath << std::endl;
         }
     }
 
@@ -147,20 +187,14 @@ namespace Uma_Engine
         out.SetObject();
 
         rapidjson::Value texturesArr(rapidjson::kArrayType);
-        for (const auto& tex : mTextures)
+        for (const auto& [path, texture] : mTextures)
         {
             rapidjson::Value textureObj(rapidjson::kObjectType);
 
-            // Name
-            rapidjson::Value nameVal;
-            nameVal.SetString(tex.first.c_str(), static_cast<rapidjson::SizeType>(tex.first.size()), allocator);
-            textureObj.AddMember("name", nameVal, allocator);
-
-            // Path
+            // Save path
             rapidjson::Value pathVal;
-            pathVal.SetString(tex.second->filePath.c_str(),
-                static_cast<rapidjson::SizeType>(tex.second->filePath.size()),
-                allocator);
+            pathVal.SetString(path.c_str(),
+                static_cast<rapidjson::SizeType>(path.size()), allocator);
             textureObj.AddMember("path", pathVal, allocator);
 
             texturesArr.PushBack(textureObj, allocator);
@@ -219,6 +253,28 @@ namespace Uma_Engine
             audioArr.PushBack(soundObj, allocator);
         }
         out.AddMember("sounds", audioArr, allocator);
+
+        // Shaders
+        rapidjson::Value shadersArr(rapidjson::kArrayType);
+        for (const auto& pair : mShaders)
+        {
+            rapidjson::Value obj(rapidjson::kObjectType);
+
+            rapidjson::Value nameVal;
+            nameVal.SetString(pair.first.c_str(), allocator);
+            obj.AddMember("name", nameVal, allocator);
+
+            rapidjson::Value vPath;
+            vPath.SetString(pair.second->vertexPath.c_str(), allocator);
+            obj.AddMember("vertexPath", vPath, allocator);
+
+            rapidjson::Value fPath;
+            fPath.SetString(pair.second->fragmentPath.c_str(), allocator);
+            obj.AddMember("fragmentPath", fPath, allocator);
+
+            shadersArr.PushBack(obj, allocator);
+        }
+        out.AddMember("shaders", shadersArr, allocator);
     }
 
     void ResourcesManager::Deserialize(const rapidjson::Value& in)
@@ -229,12 +285,16 @@ namespace Uma_Engine
         {
             for (const auto& texVal : in["textures"].GetArray())
             {
-                if (texVal.HasMember("name") && texVal.HasMember("path"))
+                if (texVal.HasMember("path"))
                 {
-                    std::string name = texVal["name"].GetString();
                     std::string path = texVal["path"].GetString();
-
-                    LoadTexture(name, path); // reuse your existing loader
+                    LoadTexture(path);
+                }
+                // Backward compatibility
+                else if (texVal.HasMember("name") && texVal.HasMember("path"))
+                {
+                    std::string path = texVal["path"].GetString();
+                    LoadTexture(path);
                 }
             }
         }
@@ -245,11 +305,10 @@ namespace Uma_Engine
             {
                 if (fontVal.HasMember("name") && fontVal.HasMember("path") && fontVal.HasMember("size"))
                 {
-                    std::string name = fontVal["name"].GetString();
                     std::string path = fontVal["path"].GetString();
                     unsigned int size = fontVal["size"].GetUint();
 
-                    LoadFont(name, path, size);
+                    LoadFont(path, size);
                 }
             }
         }
@@ -265,6 +324,21 @@ namespace Uma_Engine
                     SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
 
                     LoadSound(name, path, type);
+                }
+            }
+        }
+
+        if (in.HasMember("shaders") && in["shaders"].IsArray())
+        {
+            for (const auto& val : in["shaders"].GetArray())
+            {
+                if (val.HasMember("name") && val.HasMember("vertexPath") && val.HasMember("fragmentPath"))
+                {
+                    LoadShader(
+                        val["name"].GetString(),
+                        val["vertexPath"].GetString(),
+                        val["fragmentPath"].GetString()
+                    );
                 }
             }
         }
@@ -317,6 +391,53 @@ namespace Uma_Engine
         return (it != mSoundList.end()) ? &it->second : nullptr;
     }
 
+    bool ResourcesManager::LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        if (HasShader(shaderName)) {
+            std::cout << "Warning: Shader '" << shaderName << "' already loaded." << std::endl;
+            return true;
+        }
+
+        Shader shaderData = mGraphics->LoadShaderFromFile(vertexPath, fragmentPath);
+        if (shaderData.shaderProgramID == 0) return false;
+
+        mShaders[shaderName] = std::make_shared<Shader>(shaderData);
+        return true;
+    }
+
+    void ResourcesManager::UnloadShader(const std::string& shaderName)
+    {
+        auto it = mShaders.find(shaderName);
+        if (it != mShaders.end()) {
+            mGraphics->UnloadShader(it->second->shaderProgramID);
+            mShaders.erase(it);
+        }
+    }
+
+    std::shared_ptr<Shader> ResourcesManager::GetShader(const std::string& shaderName)
+    {
+        auto it = mShaders.find(shaderName);
+        return (it != mShaders.end()) ? it->second : nullptr;
+    }
+
+    bool ResourcesManager::HasShader(const std::string& shaderName) const
+    {
+        return mShaders.find(shaderName) != mShaders.end();
+    }
+
+    void ResourcesManager::UnloadAllShaders()
+    {
+        for (auto& pair : mShaders) {
+            mGraphics->UnloadShader(pair.second->shaderProgramID);
+        }
+        mShaders.clear();
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<Shader>>& ResourcesManager::GetLoadedShaders() const
+    {
+        return mShaders;
+    }
+
     void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)
     {
         // Note: This is called by GameSerializer, which should handle resource collection
@@ -334,7 +455,7 @@ namespace Uma_Engine
     }
 
     void ResourcesManager::SerializeSpecificResources(
-        const std::unordered_set<std::string>& textureNames,
+        const std::unordered_set<std::string>& texturePaths,
         const std::unordered_set<std::string>& soundNames,
         const std::unordered_set<std::string>& fontNames,
         rapidjson::Value& out,
@@ -344,24 +465,17 @@ namespace Uma_Engine
 
         // Serialize textures
         rapidjson::Value texturesArr(rapidjson::kArrayType);
-        for (const std::string& textureName : textureNames)
+        for (const std::string& texturePath : texturePaths)
         {
-            auto it = mTextures.find(textureName);
+            std::string normalized = NormalizePath(texturePath);
+            auto it = mTextures.find(normalized);
             if (it != mTextures.end())
             {
                 rapidjson::Value textureObj(rapidjson::kObjectType);
 
-                // Name
-                rapidjson::Value nameVal;
-                nameVal.SetString(textureName.c_str(),
-                    static_cast<rapidjson::SizeType>(textureName.size()), allocator);
-                textureObj.AddMember("name", nameVal, allocator);
-
-                // Path
                 rapidjson::Value pathVal;
-                pathVal.SetString(it->second->filePath.c_str(),
-                    static_cast<rapidjson::SizeType>(it->second->filePath.size()),
-                    allocator);
+                pathVal.SetString(it->first.c_str(),
+                    static_cast<rapidjson::SizeType>(it->first.size()), allocator);
                 textureObj.AddMember("path", pathVal, allocator);
 
                 texturesArr.PushBack(textureObj, allocator);
@@ -430,14 +544,22 @@ namespace Uma_Engine
         out.AddMember("sounds", audioArr, allocator);
     }
 
-    bool ResourcesManager::LoadFont(const std::string& fontName, const std::string& filePath, unsigned int fontSize)
+    bool ResourcesManager::LoadFont(const std::string& filePath, unsigned int fontSize)
     {
         assert(mGraphics != nullptr && "Error: Graphics system is not initialized.");
 
-        // Check if font is already loaded
-        if (HasFont(fontName))
+        if (filePath.empty())
         {
-            std::cout << "Warning: Font '" << fontName << "' is already loaded!" << std::endl;
+            std::cout << "Warning: Empty font path" << std::endl;
+            return false;
+        }
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        // Check if already loaded
+        if (mFonts.find(normalizedPath) != mFonts.end())
+        {
+            std::cout << "Font already loaded: " << normalizedPath << std::endl;
             return true;
         }
 
@@ -451,21 +573,41 @@ namespace Uma_Engine
             return false;
         }
 
-        // Store in map
-        mFonts[fontName] = fontData;
-        std::cout << "Font '" << fontName << "' loaded and managed." << std::endl;
+        // Store in map with path as key
+        mFonts[normalizedPath] = fontData;
+        std::cout << "Font '" << normalizedPath << "' loaded and managed." << std::endl;
         return true;
     }
 
-    FontData* ResourcesManager::GetFont(const std::string& fontName)
+    FontData* ResourcesManager::GetFont(const std::string& filePath)
     {
-        auto it = mFonts.find(fontName);
-        return (it != mFonts.end()) ? &it->second : nullptr;
+        if (filePath.empty())
+            return nullptr;
+
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mFonts.find(normalizedPath);
+        if (it != mFonts.end())
+        {
+            return &it->second;
+        }
+
+        // Not found - try to load it
+        if (LoadFont(filePath))
+        {
+            return &mFonts[normalizedPath];
+        }
+
+        return nullptr;
     }
 
-    bool ResourcesManager::HasFont(const std::string& fontName) const
+    bool ResourcesManager::HasFont(const std::string& filePath) const
     {
-        return mFonts.find(fontName) != mFonts.end();
+        if (filePath.empty())
+            return false;
+
+        std::string normalizedPath = NormalizePath(filePath);
+        return mFonts.find(normalizedPath) != mFonts.end();
     }
 
     void ResourcesManager::PrintLoadedFontNames() const
@@ -477,9 +619,11 @@ namespace Uma_Engine
         }
     }
 
-    void ResourcesManager::UnloadFont(const std::string& fontName)
+    void ResourcesManager::UnloadFont(const std::string& filePath)
     {
-        auto it = mFonts.find(fontName);
+        std::string normalizedPath = NormalizePath(filePath);
+
+        auto it = mFonts.find(normalizedPath);
         if (it != mFonts.end())
         {
             // Unload font data
@@ -487,11 +631,11 @@ namespace Uma_Engine
 
             // Remove from map
             mFonts.erase(it);
-            std::cout << "Font '" << fontName << "' unloaded" << std::endl;
+            std::cout << "Font '" << normalizedPath << "' unloaded" << std::endl;
         }
         else
         {
-            std::cout << "Warning: Font does not exist: '" << fontName << "'" << std::endl;
+            std::cout << "Warning: Font does not exist: '" << normalizedPath << "'" << std::endl;
         }
     }
 
@@ -507,5 +651,85 @@ namespace Uma_Engine
     const std::unordered_map<std::string, FontData>& ResourcesManager::GetLoadedFonts() const
     {
         return mFonts;
+    }
+
+    std::string ResourcesManager::NormalizePath(const std::string& path)
+    {
+        std::string normalized = path;
+        std::replace(normalized.begin(), normalized.end(), '\\', '/');
+        // Convert to lowercase for case-insensitive comparison
+        std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return std::tolower(c); });
+        return normalized;
+    }
+
+    bool ResourcesManager::LoadPrefab(const std::string& filePath)
+    {
+        if (filePath.empty()) return false;
+        std::string normalized = NormalizePath(filePath);
+
+        // Check cache
+        if (mPrefabs.find(normalized) != mPrefabs.end()) return true;
+
+        // Load file
+        std::ifstream file(filePath);
+        if (!file.is_open())
+        {
+            std::cerr << "Error: Failed to open prefab file: " << filePath << std::endl;
+            return false;
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string content = buffer.str();
+        file.close();
+
+        // Parse JSON
+        std::shared_ptr<rapidjson::Document> doc = std::make_shared<rapidjson::Document>();
+        if (doc->Parse(content.c_str()).HasParseError())
+        {
+            std::cerr << "Error: Failed to parse prefab JSON: " << filePath << std::endl;
+            return false;
+        }
+
+        // Store in Cache
+        mPrefabs[normalized] = doc;
+        std::cout << "Prefab cached: " << normalized << std::endl;
+        return true;
+    }
+
+    std::shared_ptr<rapidjson::Document> ResourcesManager::GetPrefab(const std::string& filePath)
+    {
+        std::string normalized = NormalizePath(filePath);
+
+        // If not in cache, try to load it now
+        if (mPrefabs.find(normalized) == mPrefabs.end())
+        {
+            if (!LoadPrefab(filePath)) return nullptr;
+        }
+
+        return mPrefabs[normalized];
+    }
+
+    void ResourcesManager::UnloadPrefab(const std::string& filePath)
+    {
+        std::string normalized = NormalizePath(filePath);
+        mPrefabs.erase(normalized);
+    }
+
+    bool ResourcesManager::HasPrefab(const std::string& filePath) const
+    {
+        return mPrefabs.find(NormalizePath(filePath)) != mPrefabs.end();
+    }
+
+    void ResourcesManager::UnloadAllPrefabs()
+    {
+        // shared_ptr handles the deletion automatically
+        mPrefabs.clear();
+        std::cout << "All prefabs unloaded" << std::endl;
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& ResourcesManager::GetLoadedPrefabs() const
+    {
+        return mPrefabs;
     }
 }

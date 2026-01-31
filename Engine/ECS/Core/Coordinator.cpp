@@ -827,9 +827,9 @@ namespace Uma_ECS
             if (HasComponent<Sprite>(entity))
             {
                 auto& sprite = GetComponent<Sprite>(entity);
-                if (!sprite.textureName.empty())
+                if (!sprite.texturePath.empty())
                 {
-                    outResources.textures.insert(sprite.textureName);
+                    outResources.textures.insert(sprite.texturePath);
                 }
             }
 

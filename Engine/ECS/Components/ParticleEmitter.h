@@ -357,8 +357,11 @@ namespace Uma_ECS
         // Core settings
         EmitterMode mode = EmitterMode::Continuous;
         int maxParticles = 100;
-        std::string textureName = "whitePixel";
+        std::string texturePath = "Assets/whitePixel.png";
         bool isActive = true; // Enable/disable emitter
+
+        LayerMask renderLayer = RL_NONE;
+        int renderOrder = 0;
 
         ParticleAppearance appearance;
         FadeSettings fade;
@@ -444,9 +447,12 @@ namespace Uma_ECS
             out.AddMember("maxParticles", maxParticles, allocator);
             out.AddMember("isActive", isActive, allocator);
 
+            out.AddMember("renderLayer", renderLayer, allocator);
+            out.AddMember("renderOrder", renderOrder, allocator);
+
             rapidjson::Value textureVal;
-            textureVal.SetString(textureName.c_str(), static_cast<rapidjson::SizeType>(textureName.size()), allocator);
-            out.AddMember("textureName", textureVal, allocator);
+            textureVal.SetString(texturePath.c_str(), static_cast<rapidjson::SizeType>(texturePath.size()), allocator);
+            out.AddMember("texturePath", textureVal, allocator);
 
             rapidjson::Value appearanceVal;
             appearance.Serialize(appearanceVal, allocator);
@@ -478,7 +484,11 @@ namespace Uma_ECS
             if (in.HasMember("mode")) mode = static_cast<EmitterMode>(in["mode"].GetInt());
             if (in.HasMember("maxParticles")) maxParticles = in["maxParticles"].GetInt();
             if (in.HasMember("isActive")) isActive = in["isActive"].GetBool();
-            if (in.HasMember("textureName")) textureName = in["textureName"].GetString();
+
+            if (in.HasMember("renderLayer")) renderLayer = in["renderLayer"].GetUint();
+            if (in.HasMember("renderOrder")) renderOrder = in["renderOrder"].GetInt();
+
+            if (in.HasMember("texturePath")) texturePath = in["texturePath"].GetString();
 
             if (in.HasMember("appearance")) appearance.Deserialize(in["appearance"]);
             if (in.HasMember("fade")) fade.Deserialize(in["fade"]);

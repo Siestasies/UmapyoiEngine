@@ -55,6 +55,11 @@ namespace Uma_ECS
         pCoordinator = c;
         pGraphics = g;
         pResourcesManager = rm;
+
+        if (pResourcesManager)
+        {
+            pResourcesManager->SetCoordinator(c);
+        }
     }
 
     void RenderingSystem::Update(float dt, bool enableCullMode)
@@ -85,6 +90,7 @@ namespace Uma_ECS
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
         auto& tmArray = pCoordinator->GetComponentArray<Tilemap>();
+        auto& particleArray = pCoordinator->GetComponentArray<ParticleEmitter>();
         auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
         size_t estimatedSpriteCount = aEntities.size();
@@ -162,7 +168,7 @@ namespace Uma_ECS
             }
         }
 
-        allSprites.reserve(aEntities.size());
+        allSprites.reserve(aEntities.size() + particleArray.Size());
 
         // caching the hierarchy order
         std::unordered_map<Entity, int> hierarchyCache;
@@ -187,18 +193,15 @@ namespace Uma_ECS
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            // Load texture if not loaded
-            // or texture became invalid (tex_id == 0)
             if (!sr.texture || sr.texture->tex_id == 0)
             {
-                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                sr.texture = pResourcesManager->GetTexture(sr.texturePath);
             }
 
-            // Verify texture is valid before using it
             if (!sr.texture || sr.texture->tex_id == 0)
             {
                 std::stringstream log;
-                log << "Entity(" << entity << ") texture is not valid.";
+                log << "Failed to load texture: " << sr.texturePath;
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
@@ -238,6 +241,9 @@ namespace Uma_ECS
             {
                 spriteScale.y = -spriteScale.y;
             }
+
+            // Add offset
+            Vec2 spritePos = tf.worldPosition + sr.spriteOffset;
 
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
@@ -403,6 +409,61 @@ namespace Uma_ECS
                 }
             }
         }
+
+        // Gather ALL particle entities
+        std::vector<Entity> particleEntities = particleArray.GetAllEntities();
+
+        for (const auto& entity : particleEntities)
+        {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
+            auto& component = particleArray.GetData(entity);
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
+            // Loop through each emitter in this component
+            for (int emitterIdx = 0; emitterIdx < component.GetEmitterCount(); ++emitterIdx)
+            {
+                auto* emitter = component.GetEmitter(emitterIdx);
+                if (!emitter || !emitter->isActive) continue;
+
+                // Get texture
+                auto texture = pResourcesManager->GetTexture(emitter->texturePath);
+                if (!texture || texture->tex_id == 0)
+                {
+                    std::stringstream log;
+                    log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->texturePath << "'";
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                    continue;
+                }
+
+                // Add each active particle as a LayeredSprite
+                for (const auto& particle : emitter->particles)
+                {
+                    if (!particle.active) continue;
+
+                    allSprites.push_back(LayeredSprite{
+                        .info = Uma_Engine::Sprite_Info{
+                            .tex_id = texture->tex_id,
+                            .pos = particle.position,
+                            .scale = Vec2(particle.scale, particle.scale),
+                            .rot = particle.rotation,
+                            .rot_speed = 0.0f,
+                            .uvOffset = Vec2(0.0f, 0.0f),
+                            .uvSize = Vec2(1.0f, 1.0f),
+                            .tintColor = particle.color,
+                            .alpha = particle.opacity
+                        },
+                        .layer = emitter->renderLayer,
+                        .order = emitter->renderOrder,
+                        .hierarchyOrder = hierarchyOrder,
+                        .texId = texture->tex_id,
+                        .entityId = entity
+                        });
+                }
+            }
+        }
     }
 
     bool RenderingSystem::IsSpriteVisible(const Vec2& spritePos, const Vec2& spriteScale,
@@ -547,7 +608,9 @@ namespace Uma_ECS
                         continue;
                     }
 
-                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
+                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontPath);
+
+                    // Get font, if null add to load container
                     if (uiFont == nullptr)
                     {
                         std::stringstream log;
@@ -581,14 +644,13 @@ namespace Uma_ECS
 
                     if (!image.texture || image.texture->tex_id == 0)
                     {
-                        image.texture = pResourcesManager->GetTexture(image.textureName);
+                        image.texture = pResourcesManager->GetTexture(image.texturePath);
                     }
 
-                    // Verify texture is valid before using it
                     if (!image.texture || image.texture->tex_id == 0)
                     {
                         std::stringstream log;
-                        log << "Entity(" << childUI << ") texture is not valid.";
+                        log << "Entity(" << childUI << ") failed to load texture: " << image.texturePath;
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                         continue;
                     }

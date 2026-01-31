@@ -31,11 +31,14 @@ All rights reserved.
 
 #include <iostream>
 #include <cassert>
+#include <fstream>
+#include <sstream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #include <ft2build.h>
+#include <ResourcesManager.hpp>
 #include FT_FREETYPE_H
 
 namespace
@@ -45,147 +48,6 @@ namespace
 
 namespace Uma_Engine
 {
-    // Vertex shader for 2D sprite rendering
-    // Transforms vertex positions from model space to clip space using model and projection matrices
-    // Passes texture coordinates to fragment shader
-    const std::string vertexShaderSource = R"(
-#version 450 core
-layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
-
-out vec2 TexCoords;
-
-uniform mat4 model;
-uniform mat4 projection;
-
-void main()
-{
-    TexCoords = vertex.zw;
-    gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
-}
-)";
-
-    // Fragment shader for 2D sprite rendering
-    // Samples texture or uses debug color based on uniform flag
-    const std::string fragmentShaderSource = R"(
-#version 450 core
-in vec2 TexCoords;
-out vec4 color;
-
-uniform sampler2D image;
-uniform vec3 debugColor;
-uniform int useDebugColor;
-uniform vec3 tintColor;
-uniform float alpha;
-
-void main()
-{
-    if (useDebugColor == 1) {
-        color = vec4(debugColor, 1.0);
-    } else {
-        vec4 texColor = texture(image, TexCoords);
-        color = vec4(texColor.rgb * tintColor, texColor.a * alpha);
-    }
-}
-)";
-
-    // Vertex shader for 2D sprite instanced rendering
-    // Uses per-instance model matrices for batch rendering multiple sprites
-    const std::string instancedVertexShaderSource = R"(
-#version 450 core
-layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
-layout (location = 1) in mat4 instanceModel; // Takes locations 1-4
-layout (location = 5) in vec4 instanceUV; // <vec2 uvOffset, vec2 uvSize>
-layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
-
-out vec2 TexCoords;
-out vec4 Tint;
-
-uniform mat4 projection;
-
-void main()
-{
-    // Apply UV transformation
-    vec2 uv = vertex.zw;
-    TexCoords = instanceUV.xy + uv * instanceUV.zw;
-    
-    // Pass tint to fragment shader
-    Tint = instanceTint;
-    
-    gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
-}
-)";
-
-    // Fragment shader for 2D sprite instanced rendering
-    // Texture sampling for instanced sprites
-    const std::string instancedFragmentShaderSource = R"(
-#version 450 core
-in vec2 TexCoords;
-in vec4 Tint;
-out vec4 color;
-
-uniform sampler2D image;
-
-void main()
-{
-    vec4 texColor = texture(image, TexCoords);
-    // Apply tint to RGB and alpha separately
-    color = vec4(texColor.rgb * Tint.rgb, texColor.a * Tint.a);
-}
-)";
-
-    const std::string debugLineVertexShaderSource = R"(
-#version 450 core
-layout (location = 0) in vec2 vertex;
-layout (location = 1) in mat4 instanceModel;
-layout (location = 5) in vec3 instanceColor;
-
-out vec3 Color;
-
-uniform mat4 projection;
-
-void main()
-{
-    Color = instanceColor;
-    gl_Position = projection * instanceModel * vec4(vertex, 0.0, 1.0);
-}
-)";
-
-    const std::string debugLineFragmentShaderSource = R"(
-#version 450 core
-in vec3 Color;
-out vec4 FragColor;
-
-void main()
-{
-    FragColor = vec4(Color, 1.0);
-}
-)";
-
-    const std::string shapeVertexShaderSource = R"(
-#version 450 core
-layout (location = 0) in vec2 position;
-
-uniform mat4 model;
-uniform mat4 projection;
-
-void main()
-{
-    gl_Position = projection * model * vec4(position, 0.0, 1.0);
-}
-)";
-
-    const std::string shapeFragmentShaderSource = R"(
-#version 450 core
-out vec4 FragColor;
-
-uniform vec4 color;
-
-void main()
-{
-    FragColor = color;
-}
-)";
-
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
         mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
         mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
@@ -212,6 +74,10 @@ void main()
             return;
         }
 
+        // Get ResourcesManager reference
+        mResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
+        assert(mResourcesManager != nullptr && "Error: ResourcesManager not initialized");
+
         // Enable blending for transparency
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -226,13 +92,7 @@ void main()
         }
         glViewport(0, 0, mViewportWidth, mViewportHeight);
 
-        // Set camera
-        //mCamera = Camera2D(Vec2(mViewportWidth * 0.5f, mViewportHeight * 0.5f), 1.0f);
-
-        // V sync 
-        //SetVSync(true);
-
-        // Initialize 2D renderer
+        // Initialize renderers
         if (!InitializeRenderer())
         {
             std::cerr << "Failed to initialize 2D renderer!" << std::endl;
@@ -263,14 +123,13 @@ void main()
         }
 
         // init cam info
-        cam = 
+        cam =
         {
             .pos = {0,0},
             .zoom = 1.f
         };
 
         UpdateProjectionMatrix();
-
         InitSceneFramebuffer(1280, 720);
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
@@ -510,9 +369,23 @@ void main()
 
     bool Graphics::InitializeRenderer()
     {
-        // Create shader program
-        mShaderProgram = CreateShader(vertexShaderSource, fragmentShaderSource);
-        if (mShaderProgram == 0) return false;
+        // Load shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_SPRITE,
+            "Assets/Shaders/sprite.vert",
+            "Assets/Shaders/sprite.frag"))
+        {
+            std::cerr << "Failed to load sprite shader!" << std::endl;
+            return false;
+        }
+
+        auto shader = mResourcesManager->GetShader(SHADER_SPRITE);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve sprite shader!" << std::endl;
+            return false;
+        }
+
+        mShaderProgram = shader->shaderProgramID;
 
         // Set up quad vertices
         float vertices[] = {
@@ -561,9 +434,9 @@ void main()
         // Clean up OpenGL resources
         if (mVAO != 0) glDeleteVertexArrays(1, &mVAO);
         if (mVBO != 0) glDeleteBuffers(1, &mVBO);
-        if (mShaderProgram != 0) glDeleteProgram(mShaderProgram);
 
-        mVAO = mVBO = mShaderProgram = 0;
+        mVAO = mVBO = 0;
+        mShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     GLuint Graphics::CreateShader(const std::string& vertexSource, const std::string& fragmentSource)
@@ -851,13 +724,23 @@ void main()
 
     bool Graphics::InitializeInstancedRenderer()
     {
-        // Create instanced shader program
-        mInstanceShaderProgram = CreateShader(instancedVertexShaderSource, instancedFragmentShaderSource);
-        if (mInstanceShaderProgram == 0) 
+        // Load instanced shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_INSTANCED,
+            "Assets/Shaders/instanced.vert",
+            "Assets/Shaders/instanced.frag"))
         {
-            std::cerr << "Failed to create instanced shader program!" << std::endl;
+            std::cerr << "Failed to load instanced shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_INSTANCED);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve instanced shader!" << std::endl;
+            return false;
+        }
+
+        mInstanceShaderProgram = shader->shaderProgramID;
 
         // Create instance VAO
         glGenVertexArrays(1, &mInstanceVAO);
@@ -871,12 +754,10 @@ void main()
         // Create instance VBO for model matrices
         glGenBuffers(1, &mInstanceVBO);
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceVBO);
-
-        // Allocate space for up to MAX_INSTANCES
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
         // Set up instance attributes
-        for (int i = 0; i < 4; ++i) 
+        for (int i = 0; i < 4; ++i)
         {
             glEnableVertexAttribArray(1 + i);
             glVertexAttribPointer(1 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4) * i));
@@ -888,7 +769,6 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceUVVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
-        // Set up UV attribute
         glEnableVertexAttribArray(5);
         glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(5, 1);
@@ -898,7 +778,6 @@ void main()
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec4) * MAX_INSTANCES, nullptr, GL_DYNAMIC_DRAW);
 
-        // Set up Tint attribute
         glEnableVertexAttribArray(6);
         glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::vec4), (void*)0);
         glVertexAttribDivisor(6, 1);
@@ -916,15 +795,25 @@ void main()
 
     bool Graphics::InitializeDebugRenderer()
     {
-        // Create shader
-        mDebugLineShaderProgram = CreateShader(debugLineVertexShaderSource, debugLineFragmentShaderSource);
-        if (mDebugLineShaderProgram == 0)
+        // Load debug shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_DEBUG,
+            "Assets/Shaders/debug.vert",
+            "Assets/Shaders/debug.frag"))
         {
-            std::cerr << "Failed to create debug line shader!" << std::endl;
+            std::cerr << "Failed to load debug shader!" << std::endl;
             return false;
         }
 
-        float lineVertices[] = 
+        auto shader = mResourcesManager->GetShader(SHADER_DEBUG);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve debug shader!" << std::endl;
+            return false;
+        }
+
+        mDebugLineShaderProgram = shader->shaderProgramID;
+
+        float lineVertices[] =
         {
             -0.5f, 0.0f,
              0.5f, 0.0f
@@ -972,17 +861,23 @@ void main()
 
     bool Graphics::InitializeShapeRenderer()
     {
-        // Create shader
-        mShapeShaderProgram = CreateShader(
-            shapeVertexShaderSource,
-            shapeFragmentShaderSource
-        );
-
-        if (mShapeShaderProgram == 0)
+        // Load shape shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_SHAPE,
+            "Assets/Shaders/shape.vert",
+            "Assets/Shaders/shape.frag"))
         {
-            std::cerr << "Failed to create shape shader!" << std::endl;
+            std::cerr << "Failed to load shape shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_SHAPE);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve shape shader!" << std::endl;
+            return false;
+        }
+
+        mShapeShaderProgram = shader->shaderProgramID;
 
         // Create VAO and VBO
         glGenVertexArrays(1, &mShapeVAO);
@@ -1097,71 +992,75 @@ void main()
 
     void Graphics::ShutdownInstancedRenderer()
     {
-        if (mInstanceVAO != 0) 
+        if (mInstanceVAO != 0)
         {
             glDeleteVertexArrays(1, &mInstanceVAO);
             mInstanceVAO = 0;
         }
-        if (mInstanceVBO != 0) 
+        if (mInstanceVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceVBO);
             mInstanceVBO = 0;
         }
-        if (mInstanceUVVBO != 0) 
+        if (mInstanceUVVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceUVVBO);
             mInstanceUVVBO = 0;
         }
-        if (mInstanceTintVBO != 0) 
+        if (mInstanceTintVBO != 0)
         {
             glDeleteBuffers(1, &mInstanceTintVBO);
             mInstanceTintVBO = 0;
         }
-        if (mInstanceShaderProgram != 0) 
-        {
-            glDeleteProgram(mInstanceShaderProgram);
-            mInstanceShaderProgram = 0;
-        }
+
+        mInstanceShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::ShutdownDebugRenderer()
     {
-        if (mDebugLineVAO != 0) 
+        if (mDebugLineVAO != 0)
         {
             glDeleteVertexArrays(1, &mDebugLineVAO);
             mDebugLineVAO = 0;
         }
-        if (mDebugLineVBO != 0) 
+        if (mDebugLineVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineVBO);
             mDebugLineVBO = 0;
         }
-        if (mDebugLineInstanceVBO != 0) 
+        if (mDebugLineInstanceVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineInstanceVBO);
             mDebugLineInstanceVBO = 0;
         }
-        if (mDebugLineColorVBO != 0) 
+        if (mDebugLineColorVBO != 0)
         {
             glDeleteBuffers(1, &mDebugLineColorVBO);
             mDebugLineColorVBO = 0;
         }
-        if (mDebugLineShaderProgram != 0) 
-        {
-            glDeleteProgram(mDebugLineShaderProgram);
-            mDebugLineShaderProgram = 0;
-        }
+
+        mDebugLineShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     bool Graphics::InitializeTextRenderer()
     {
-        // Create text shader
-        mTextShaderProgram = CreateTextShader();
-        if (!mTextShaderProgram) 
+        // Load text shader through ResourcesManager
+        if (!mResourcesManager->LoadShader(SHADER_TEXT,
+            "Assets/Shaders/text.vert",
+            "Assets/Shaders/text.frag"))
         {
-            std::cerr << "Failed to create text shader" << std::endl;
+            std::cerr << "Failed to load text shader!" << std::endl;
             return false;
         }
+
+        auto shader = mResourcesManager->GetShader(SHADER_TEXT);
+        if (!shader || shader->shaderProgramID == 0)
+        {
+            std::cerr << "Failed to retrieve text shader!" << std::endl;
+            return false;
+        }
+
+        mTextShaderProgram = shader->shaderProgramID;
 
         std::cout << "Text renderer initialized successfully" << std::endl;
         return true;
@@ -1169,11 +1068,7 @@ void main()
 
     void Graphics::ShutdownTextRenderer()
     {
-        if (mTextShaderProgram)
-        {
-            glDeleteProgram(mTextShaderProgram);
-            mTextShaderProgram = 0;
-        }
+        mTextShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::UnloadFontData(FontData& fontData)
@@ -1418,36 +1313,6 @@ void main()
         glBindTextureUnit(0, 0);
     }
 
-    GLuint Graphics::CreateTextShader()
-    {
-        const char* textVertexShaderSource = R"(
-        #version 450 core
-        layout (location = 0) in vec4 vertex;
-        out vec2 TexCoords;
-        uniform mat4 projection;
-        
-        void main() {
-            gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
-            TexCoords = vertex.zw;
-        }
-    )";
-
-        const char* textFragmentShaderSource = R"(
-        #version 450 core
-        in vec2 TexCoords;
-        out vec4 FragColor;
-        layout (binding = 0) uniform sampler2D text;
-        uniform vec3 textColor;
-        
-        void main() {
-            float alpha = texture(text, TexCoords).r;
-            FragColor = vec4(textColor, 1.0) * vec4(1.0, 1.0, 1.0, alpha);
-        }
-    )";
-
-        return CreateShader(textVertexShaderSource, textFragmentShaderSource);
-    }
-
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
         const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha)
     {
@@ -1465,7 +1330,7 @@ void main()
         glUniform1f(alphaLoc, alpha);
 
         // Calculate current aspect ratio
-        float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
+        //float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
@@ -1862,21 +1727,18 @@ void main()
 
     void Graphics::ShutdownShapeRenderer()
     {
-        if (mShapeVAO != 0) 
+        if (mShapeVAO != 0)
         {
             glDeleteVertexArrays(1, &mShapeVAO);
             mShapeVAO = 0;
         }
-        if (mShapeVBO != 0) 
+        if (mShapeVBO != 0)
         {
             glDeleteBuffers(1, &mShapeVBO);
             mShapeVBO = 0;
         }
-        if (mShapeShaderProgram != 0) 
-        {
-            glDeleteProgram(mShapeShaderProgram);
-            mShapeShaderProgram = 0;
-        }
+
+        mShapeShaderProgram = 0; // Don't delete, ResourcesManager owns it
     }
 
     void Graphics::InitSceneFramebuffer(int width, int height)
@@ -1952,5 +1814,44 @@ void main()
             width = mViewportWidth;
             height = mViewportHeight;
         }
+    }
+
+    void Graphics::UnloadShader(unsigned int shaderID)
+    {
+        if (shaderID != 0)
+        {
+            glDeleteProgram(shaderID);
+        }
+    }
+
+    Shader Graphics::LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath)
+    {
+        Shader shader = { 0, vertexPath, fragmentPath };
+
+        auto ReadFile = [](const std::string& path) -> std::string {
+            std::ifstream file(path);
+            if (!file.is_open()) {
+                std::cerr << "Failed to open shader file: " << path << std::endl;
+                return "";
+            }
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            return buffer.str();
+            };
+
+        std::string vertexCode = ReadFile(vertexPath);
+        std::string fragmentCode = ReadFile(fragmentPath);
+
+        if (vertexCode.empty() || fragmentCode.empty()) {
+            return shader;
+        }
+
+        shader.shaderProgramID = CreateShader(vertexCode, fragmentCode);
+
+        if (shader.shaderProgramID != 0) {
+            std::cout << "Shader loaded: " << vertexPath << std::endl;
+        }
+
+        return shader;
     }
 }
