@@ -445,7 +445,7 @@ namespace Uma_Engine
                     dropSource = entry.name.c_str();
                 }
 
-                if (entry.isFolder && ImGui::BeginDragDropTarget() && !dropSource.empty()) {
+                if (entry.isFolder && !dropSource.empty() && ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
                         FilePayload plData = *(FilePayload*)pl->Data;
                         try

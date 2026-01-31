@@ -254,9 +254,11 @@ namespace Uma_Engine
             rapidjson::Document::AllocatorType& allocator);
 
     private:
+        // the key is the path cus user wont call name to laod texture 
         std::unordered_map<std::string, std::shared_ptr<Texture>> mTextures{};
         Graphics* mGraphics = nullptr;
 
+        // key is the name
         std::unordered_map<std::string, SoundInfo> mSoundList{};
         SoundManager* mSound = nullptr;
 

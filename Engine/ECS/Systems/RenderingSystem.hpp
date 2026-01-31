@@ -122,7 +122,7 @@ namespace Uma_ECS
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
 
-        bool mUpdateCamera = true;
+        bool mUpdateCamera = false;
 
         bool isCullMode = false;
     };

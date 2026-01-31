@@ -868,6 +868,33 @@ namespace Uma_Engine
             m_HierarchyScrollToBottomFrames--;
         }
 
+        // Right-click on empty space in hierarchy window
+        if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+        {
+            if (ImGui::MenuItem("Create New"))
+            {
+                //pEventSystem->Emit<SpawnEntityRequestEvent>();
+
+                auto cmd = std::make_unique<Uma_Editor::EntityCreateCmd>(
+                    &coordinator,
+                    std::nullopt,
+                    "Create New Entity"
+                );
+
+                // Get raw pointer before moving
+                Uma_Editor::EntityCreateCmd* rawCmd = cmd.get();
+
+                // Execute command through history
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                // Access through raw pointer (still valid, owned by command history now)
+                m_selectedEntity = rawCmd->GetCreatedEntity();
+
+                m_HierarchyScrollToBottomFrames = 2;
+            }
+            ImGui::EndPopup();
+        }
+
         ImGui::EndChild();
         ImGui::End();
     }
@@ -3626,6 +3653,10 @@ namespace Uma_Engine
                     }
 
                     ImGui::Separator();
+                    ImGui::Text("Tilemap Size: %dx%d units",
+                        tilemap.mapWidth,
+                        tilemap.mapHeight);
+
                     ImGui::Text("World Size: %dx%d units",
                         tilemap.mapWidth * tilemap.tileSize,
                         tilemap.mapHeight * tilemap.tileSize);

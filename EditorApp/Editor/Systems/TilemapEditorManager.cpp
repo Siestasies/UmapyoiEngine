@@ -218,42 +218,48 @@ namespace Uma_Engine
     {
         ImGui::Begin("Layers", &showLayers);
 
-        // Grid toggle
+        // Header section
         if (currTilemap->activeLayerIndex < currTilemap->layerNames.size())
         {
-            ImGui::Text("Curr layer: %s", currTilemap->layerNames[currTilemap->activeLayerIndex].c_str());
+            ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "Active: %s",
+                currTilemap->layerNames[currTilemap->activeLayerIndex].c_str());
         }
         ImGui::Checkbox("Show Grid", &showGrid);
-
         ImGui::Separator();
 
-        // Layer controls
-        if (ImGui::Button("+ Add Layer")) {
+        // Layer controls - centered buttons
+        float buttonWidth = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x) * 0.5f;
+
+        if (ImGui::Button("+ Add Layer", ImVec2(buttonWidth, 0))) {
             std::string name = "Layer " + std::to_string(currTilemap->layers.size() + 1);
             currTilemap->CreateLayer(name, currTilemap->mapWidth, currTilemap->mapHeight, 0);
         }
         ImGui::SameLine();
-        if (ImGui::Button("- Remove")) {
+
+        ImGui::BeginDisabled(currTilemap->activeLayerIndex < 0 || currTilemap->layers.size() <= 1);
+        if (ImGui::Button("- Remove", ImVec2(buttonWidth, 0))) {
             if (currTilemap->activeLayerIndex >= 0 && currTilemap->layers.size() > 1) {
                 currTilemap->RemoveLayer(currTilemap->activeLayerIndex);
-
-                if (currTilemap->activeLayerIndex - 1 >= 0)
-                {
+                if (currTilemap->activeLayerIndex > 0) {
                     --currTilemap->activeLayerIndex;
                 }
             }
         }
+        ImGui::EndDisabled();
 
         ImGui::Separator();
+        ImGui::Text("Layers (Top to Bottom)");
+        ImGui::Separator();
 
-        // List layers (reverse order, top layers first)
+        // Layer list with proper layout
         for (int i = static_cast<int>(currTilemap->layers.size()) - 1; i >= 0; i--)
         {
             ImGui::PushID(i);
-
             bool isActive = (i == currTilemap->activeLayerIndex);
 
-            // Visibility toggle FIRST
+            // Row layout: [Visibility] [Expand] [Layer Name + Order]
+
+            // Column 1: Visibility checkbox (fixed width)
             bool visible = currTilemap->layerVisibility[i];
             if (ImGui::Checkbox("##vis", &visible)) {
                 currTilemap->layerVisibility[i] = visible;
@@ -262,50 +268,65 @@ namespace Uma_Engine
                 ImGui::SetTooltip("Toggle visibility");
             }
 
-            //ImGui::SameLine();
-
-            //// Lock toggle SECOND
-            //bool locked = currTilemap->layers[i].locked;
-            //if (ImGui::Checkbox("##lock", &locked)) 
-            //{
-            //    currTilemap->layers[i].locked = locked;
-            //}
-            //if (ImGui::IsItemHovered()) 
-            //{
-            //    ImGui::SetTooltip("Toggle lock");
-            //}
-
             ImGui::SameLine();
 
-            // Layer button LAST - takes remaining width
-            if (isActive) 
-            {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.2f, 0.65f, 0.2f, 0.5f));
+            // Column 2: Expand arrow + Layer button
+            ImGui::SetNextItemWidth(-1); // Take remaining width
+
+            // Collapsing header styling
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
+            if (isActive) {
+                ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0.2f, 0.65f, 0.2f, 0.5f));
+                ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0.25f, 0.75f, 0.25f, 0.6f));
+                ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(0.3f, 0.85f, 0.3f, 0.7f));
             }
 
-            ImGui::SameLine();
-            // Calculate button width manually to leave space for the input and text
-            float buttonWidth = ImGui::GetContentRegionAvail().x * 0.5f; // Adjust 150 based on your needs
+            // Combined collapsing header with layer name
+            bool expanded = ImGui::CollapsingHeader(currTilemap->layerNames[i].c_str(), flags);
 
-            if (ImGui::Button(currTilemap->layerNames[i].c_str(), ImVec2(buttonWidth, 0)))
-            {
+            // Set active on click
+            if (ImGui::IsItemClicked()) {
                 currTilemap->activeLayerIndex = i;
             }
 
-            if (isActive)
-            {
-                ImGui::PopStyleColor();
+            if (isActive) {
+                ImGui::PopStyleColor(3);
             }
 
-            ImGui::SameLine();
-            ImGui::SetNextItemWidth(100.0f); // Set explicit width for InputInt
-            ImGui::InputInt(
-                "##sorting order",
-                &currTilemap->layers[i].renderOrder
-            );
+            // Expanded content - indented
+            if (expanded)
+            {
+                ImGui::Indent();
 
-            ImGui::SameLine();
-            ImGui::Text("Render Order");
+                // Render Layer dropdown
+                const char* renderLayerNames[] = {
+                    "RL_NONE",
+                    "RL_WALL_TOP",
+                    "RL_FLOOR",
+                    "RL_ENV",
+                    "RL_ENEMY",
+                    "RL_PLAYER",
+                    "RL_WALL_BTM",
+                    "RL_UI"
+                };
+
+                int currentRenderLayer = 0;
+                unsigned int rl = static_cast<unsigned int>(currTilemap->layers[i].renderLayer);
+                while (rl >>= 1) ++currentRenderLayer;
+
+                ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
+                if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                {
+                    currTilemap->layers[i].renderLayer = (1u << currentRenderLayer);
+                }
+
+                // Render Order input
+                ImGui::SetNextItemWidth(90.f);
+                ImGui::InputInt("Render Order", &currTilemap->layers[i].renderOrder);
+
+                ImGui::Unindent();
+                ImGui::Spacing();
+            }
 
             ImGui::PopID();
         }
