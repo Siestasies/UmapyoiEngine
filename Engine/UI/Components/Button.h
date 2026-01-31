@@ -41,10 +41,10 @@ namespace Uma_UI
 
         Uma_UI::ButtonState currentState = Uma_UI::ButtonState::Normal;
 
-        Uma_UI::Colour normalColour = Uma_UI::Colour::White();
-        Uma_UI::Colour hoverColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
-        Uma_UI::Colour pressedColour = Uma_UI::Colour(0.7f, 0.7f, 0.7f, 1.0f);
-        Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
+        Uma_UI::Color normalColour = Uma_UI::Color::White();
+        Uma_UI::Color hoverColour = Uma_UI::Color(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Color pressedColour = Uma_UI::Color(0.7f, 0.7f, 0.7f, 1.0f);
+        Uma_UI::Color disabledColour = Uma_UI::Color(0.5f, 0.5f, 0.5f, 0.5f);
 
         //std::string functionName = {};
 

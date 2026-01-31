@@ -35,9 +35,9 @@ namespace Uma_UI
         Uma_ECS::Entity handle = static_cast<Uma_ECS::Entity>(-1);
 
         // Colors
-        Uma_UI::Colour normalColour = Uma_UI::Colour::White();
-        Uma_UI::Colour highlightColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
-        Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
+        Uma_UI::Color normalColour = Uma_UI::Color::White();
+        Uma_UI::Color highlightColour = Uma_UI::Color(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Color disabledColour = Uma_UI::Color(0.5f, 0.5f, 0.5f, 0.5f);
 
         // Callback
         std::string scriptName = "";  // Script to call on value change

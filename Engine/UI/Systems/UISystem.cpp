@@ -584,10 +584,10 @@ namespace Uma_UI
 
         switch (button.currentState)
         {
-        case ButtonState::Normal: image.colour = button.normalColour; break;
-        case ButtonState::Hovered: image.colour = button.hoverColour; break;
-        case ButtonState::Pressed: image.colour = button.pressedColour; break;
-        case ButtonState::Disabled: image.colour = button.disabledColour; break;
+        case ButtonState::Normal: image.color = button.normalColour; break;
+        case ButtonState::Hovered: image.color = button.hoverColour; break;
+        case ButtonState::Pressed: image.color = button.pressedColour; break;
+        case ButtonState::Disabled: image.color = button.disabledColour; break;
         }
     }
 
@@ -599,7 +599,7 @@ namespace Uma_UI
         const auto& slider = pCoordinator->GetComponent<Slider>(entity);
 
         float normalizedValue = slider.value;
-        Uma_UI::Colour currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
+        Uma_UI::Color currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
 
         if (slider.handle != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.handle))
         {
@@ -631,7 +631,7 @@ namespace Uma_UI
             if (imageArray.Has(slider.handle))
             {
                 auto& handleImage = imageArray.GetData(slider.handle);
-                handleImage.colour = currentColour;
+                handleImage.color = currentColour;
             }
         }
 
@@ -680,26 +680,26 @@ namespace Uma_UI
 
         const auto& checkbox = pCoordinator->GetComponent<Checkbox>(entity);
 
-        Uma_UI::Colour background = (!checkbox.interactable) ? checkbox.disabledColour : (checkbox.isChecked) ? checkbox.checkedColour :
+        Uma_UI::Color background = (!checkbox.interactable) ? checkbox.disabledColour : (checkbox.isChecked) ? checkbox.checkedColour :
             ((checkbox.currentState == CheckboxState::Normal) ? checkbox.normalColour :
              (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoverColour :
              (checkbox.currentState == CheckboxState::Pressed) ? checkbox.pressedColour :
              (checkbox.currentState == CheckboxState::Disabled) ? checkbox.disabledColour : 
               checkbox.normalColour);
 
-        Uma_UI::Colour checkmark = (!checkbox.interactable) ? checkbox.checkmarkDisabledColour : checkbox.checkmarkNormalColour;
+        Uma_UI::Color checkmark = (!checkbox.interactable) ? checkbox.checkmarkDisabledColour : checkbox.checkmarkNormalColour;
 
         if (checkbox.background != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(checkbox.background))
         {
             auto& bg = imageArray.GetData(checkbox.background);
-            bg.colour = background;
+            bg.color = background;
         }
 
         if (checkbox.checkmark != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(checkbox.checkmark))
         {
             auto& cm = imageArray.GetData(checkbox.checkmark);
             cm.visible = checkbox.isChecked;
-            cm.colour = checkmark;
+            cm.color = checkmark;
         }
     }
 

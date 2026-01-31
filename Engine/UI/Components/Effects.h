@@ -52,8 +52,8 @@ namespace Uma_UI
         Vec2 startVec2 = Vec2(0.0f, 0.0f);
         Vec2 endVec2 = Vec2(0.0f, 0.0f);
 
-        Colour startColor = Colour::White();
-        Colour endColor = Colour::White();
+        Color startColor = Color::White();
+        Color endColor = Color::White();
 
         float startFloat = 0.0f;
         float endFloat = 1.0f;
@@ -360,9 +360,9 @@ namespace Uma_UI
         );
     }
 
-    inline Colour LerpColor(const Colour& a, const Colour& b, float t)
+    inline Color LerpColor(const Color& a, const Color& b, float t)
     {
-        return Colour(
+        return Color(
             a.r + (b.r - a.r) * t,
             a.g + (b.g - a.g) * t,
             a.b + (b.b - a.b) * t,

@@ -4117,7 +4117,7 @@ namespace Uma_Engine
 
                 ImGui::Text("Current Color:");
                 ImGui::SameLine();
-                Uma_UI::Colour currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
+                Uma_UI::Color currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
                 ImGui::ColorButton("##currentcolor",
                     ImVec4(currentColour.r, currentColour.g, currentColour.b, currentColour.a),
                     ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoPicker);

@@ -21,15 +21,15 @@ namespace Uma_UI
         Uma_ECS::Entity checkmark = static_cast<Uma_ECS::Entity>(-1);
 
         // Colours
-        Uma_UI::Colour normalColour = Uma_UI::Colour::White();
-        Uma_UI::Colour hoverColour = Uma_UI::Colour(0.9f, 0.9f, 0.9f, 1.0f);
-        Uma_UI::Colour pressedColour = Uma_UI::Colour(0.7f, 0.7f, 0.7f, 1.0f);
-        Uma_UI::Colour disabledColour = Uma_UI::Colour(0.5f, 0.5f, 0.5f, 0.5f);
-        Uma_UI::Colour checkedColour = Uma_UI::Colour(0.2f, 0.6f, 1.0f, 1.0f);
+        Uma_UI::Color normalColour = Uma_UI::Color::White();
+        Uma_UI::Color hoverColour = Uma_UI::Color(0.9f, 0.9f, 0.9f, 1.0f);
+        Uma_UI::Color pressedColour = Uma_UI::Color(0.7f, 0.7f, 0.7f, 1.0f);
+        Uma_UI::Color disabledColour = Uma_UI::Color(0.5f, 0.5f, 0.5f, 0.5f);
+        Uma_UI::Color checkedColour = Uma_UI::Color(0.2f, 0.6f, 1.0f, 1.0f);
 
         // Checkmark colours
-        Uma_UI::Colour checkmarkNormalColour = Uma_UI::Colour::Black();
-        Uma_UI::Colour checkmarkDisabledColour = Uma_UI::Colour::Gray();
+        Uma_UI::Color checkmarkNormalColour = Uma_UI::Color::Black();
+        Uma_UI::Color checkmarkDisabledColour = Uma_UI::Color::Gray();
 
         // Callback
         std::string scriptName = "";  // Script to call on toggle

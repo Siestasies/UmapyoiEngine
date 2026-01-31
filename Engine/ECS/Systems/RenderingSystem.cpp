@@ -158,12 +158,12 @@ namespace Uma_ECS
 
                 Vec2 tileWorldSize = { tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y };
 
-                float minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
-                float maxCol = min(layer.width, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
-                float minRow = max(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
-                float maxRow = min(layer.height, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+                int minCol = (std::max)(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                int maxCol = (std::min)(int(layer.width), int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                int minRow = (std::max)(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+                int maxRow = (std::min)(int(layer.height), int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
 
-                int visibleTiles = max(0, (maxCol - minCol) * (maxRow - minRow));
+                int visibleTiles = (std::max)(0, int((maxCol - minCol) * (maxRow - minRow)));
                 estimatedSpriteCount += visibleTiles;
             }
         }
@@ -348,10 +348,10 @@ namespace Uma_ECS
                 float tileWorldSizeX = tilemap.tileSize * tf.scale.x;
                 float tileWorldSizeY = tilemap.tileSize * tf.scale.y;
 
-                int minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSizeX));
-                int maxCol = min(layer.width, int((camMax.x - tf.worldPosition.x) / tileWorldSizeX) + 1);
-                int minRow = max(0, int((tf.worldPosition.y - camMax.y) / tileWorldSizeY));
-                int maxRow = min(layer.height, int((tf.worldPosition.y - camMin.y) / tileWorldSizeY) + 1);
+                int minCol = (std::max)(0, int((camMin.x - tf.worldPosition.x) / tileWorldSizeX));
+                int maxCol = (std::min)(int(layer.width), int((camMax.x - tf.worldPosition.x) / tileWorldSizeX) + 1);
+                int minRow = (std::max)(0, int((tf.worldPosition.y - camMax.y) / tileWorldSizeY));
+                int maxRow = (std::min)(int(layer.height), int((tf.worldPosition.y - camMin.y) / tileWorldSizeY) + 1);
 
                 // Only iterate visible tiles
 
@@ -668,8 +668,8 @@ namespace Uma_ECS
                         .uvOffset = Vec2(0.0f, 0.0f),
                         .uvSize = Vec2(1.0f, 1.0f),
 
-                        .tintColor = image.colour.ToVec3(),
-                        .alpha = image.colour.a
+                        .tintColor = image.color.ToVec3(),
+                        .alpha = image.color.a
                     };
 
                     // image
