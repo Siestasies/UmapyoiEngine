@@ -25,6 +25,7 @@ All rights reserved.
 */
 
 #include "LuaScriptingSystem.hpp"
+#include "AudioSystem.hpp"
 
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
@@ -930,28 +931,6 @@ namespace Uma_ECS
         sharedLua->set_function("StopMusic", [this](const std::string& audioName) {
             pEventSystem->Emit<Uma_Engine::StopMusicEvent>(audioName);
             });
-
-        //new audio event
-        sharedLua->set_function("PlayEntitySound", [this](Uma_ECS::Entity entity, const std::string& audioName, bool loop, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayEntitySoundEvent>(entity, audioName, loop, vol);
-            });
-
-        sharedLua->set_function("StopEntitySound", [this](Uma_ECS::Entity entity) {
-            pEventSystem->Emit<Uma_Engine::StopEntitySoundEvent>(entity);
-            });
-
-        sharedLua->set_function("StopEntitySoundByName", [this](Uma_ECS::Entity entity, const std::string& soundName) {
-            pEventSystem->Emit<Uma_Engine::StopEntitySoundByNameEvent>(entity, soundName);
-            });
-
-        sharedLua->set_function("PlayOneShotAtEntity", [this](Uma_ECS::Entity entity, const std::string& audioName, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayOneShotAtEntityEvent>(entity, audioName, vol);
-            });
-
-        sharedLua->set_function("PlayOneShotAtPosition", [this](float x, float y, const std::string& audioName, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
-            });
-
 
         // scene management
         sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
