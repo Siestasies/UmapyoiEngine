@@ -2,22 +2,22 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/statue.png"
+                "path": "assets/wall_top.png"
             },
             {
-                "path": "assets/wall_top.png"
+                "path": "assets/statue.png"
             },
             {
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/fire bird.png"
+                "path": "assets/wall_top_right.png"
             },
             {
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/wall_top_right.png"
+                "path": "assets/fire bird.png"
             },
             {
                 "path": "assets/whitepixel.png"
@@ -26,10 +26,10 @@
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/environment/floor 2 horizontal.png"
+                "path": "assets/wall_left.png"
             },
             {
-                "path": "assets/wall_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
                 "path": "assets/wall_top_left.png"
@@ -64,30 +64,20 @@
         ],
         "fonts": [
             {
-                "name": "default",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "Fujimaru-Regular",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             }
         ],
         "sounds": [
             {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -101,8 +91,18 @@
                 "type": 1
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
                 "type": 0
             },
             {
@@ -9538,7 +9538,7 @@
                             "isActive": true,
                             "renderLayer": 8,
                             "renderOrder": 1,
-                            "textureName": "Assets/whitePixel.png",
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.5,
@@ -9704,7 +9704,7 @@
                             "isActive": true,
                             "renderLayer": 8,
                             "renderOrder": 1,
-                            "textureName": "Assets/whitePixel.png",
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.5,
@@ -16375,7 +16375,7 @@
                             "isActive": true,
                             "renderLayer": 8,
                             "renderOrder": 1,
-                            "textureName": "Assets/statue.png",
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     2.0,
@@ -16971,7 +16971,7 @@
                             "isActive": true,
                             "renderLayer": 8,
                             "renderOrder": 1,
-                            "textureName": "Assets/whitePixel.png",
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.2,
@@ -17432,8 +17432,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Resume",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -17491,8 +17490,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Resume",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -17550,8 +17548,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back to main",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
@@ -17609,8 +17606,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back to main",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -17763,7 +17759,6 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "",
-                    "fontName": "Fujimaru-Regular",
                     "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.0,
@@ -17780,7 +17775,7 @@
         },
         {
             "id": 284,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "HowToPlay btn",
@@ -17904,8 +17899,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "How to Play",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
@@ -17963,8 +17957,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "How to Play",
-                    "fontName": "Fujimaru-Regular",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -18104,7 +18097,6 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontName": "Fujimaru-Regular",
                     "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
@@ -18163,7 +18155,6 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontName": "Fujimaru-Regular",
                     "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
@@ -18261,7 +18252,7 @@
                             "isActive": true,
                             "renderLayer": 1,
                             "renderOrder": 0,
-                            "textureName": "whitePixel",
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.4,
