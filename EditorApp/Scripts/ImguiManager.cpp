@@ -4835,6 +4835,8 @@ namespace Uma_Engine
 
                 if (ImGui::TreeNode("Tileset Properties"))
                 {
+                    ImGui::Text("Texture Path: %s", tilemap.tileset.texturePath.c_str());
+
                     // Create a visible drop zone with visual feedback
                     ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
                     ImVec2 cursorPos = ImGui::GetCursorScreenPos();

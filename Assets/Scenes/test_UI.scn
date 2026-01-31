@@ -2,23 +2,49 @@
     "resources": {
         "textures": [
             {
-                "name": "whitePixel",
-                "path": "Assets/whitePixel.png"
+                "path": "assets/whitepixel.png"
             }
         ],
         "fonts": [
             {
-                "name": "default",
+                "name": "assets/fonts/neucha.ttf",
                 "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "default2",
+                "name": "assets/fonts/urbanist-regular.ttf",
                 "path": "Assets/fonts/Urbanist-Regular.ttf",
                 "size": 48
             }
         ],
-        "sounds": []
+        "sounds": [],
+        "shaders": [
+            {
+                "name": "system_sprite",
+                "vertexPath": "Assets/Shaders/sprite.vert",
+                "fragmentPath": "Assets/Shaders/sprite.frag"
+            },
+            {
+                "name": "system_instanced",
+                "vertexPath": "Assets/Shaders/instanced.vert",
+                "fragmentPath": "Assets/Shaders/instanced.frag"
+            },
+            {
+                "name": "system_text",
+                "vertexPath": "Assets/Shaders/text.vert",
+                "fragmentPath": "Assets/Shaders/text.frag"
+            },
+            {
+                "name": "system_shape",
+                "vertexPath": "Assets/Shaders/shape.vert",
+                "fragmentPath": "Assets/Shaders/shape.frag"
+            },
+            {
+                "name": "system_debug",
+                "vertexPath": "Assets/Shaders/debug.vert",
+                "fragmentPath": "Assets/Shaders/debug.frag"
+            }
+        ]
     },
     "entities": [
         {
@@ -169,7 +195,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "whitePixel",
+                    "texturePath": "Assets/whitePixel.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 0.497,
@@ -224,7 +250,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "whitePixel",
+                    "texturePath": "Assets/whitePixel.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -279,7 +305,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "whitePixel",
+                    "texturePath": "Assets/whitePixel.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -346,9 +372,9 @@
                         "a": 1.0
                     },
                     "hoverColour": {
-                        "r": 0.899,
-                        "g": 0.899,
-                        "b": 0.899,
+                        "r": 0.898,
+                        "g": 0.898,
+                        "b": 0.898,
                         "a": 1.0
                     },
                     "pressedColour": {
@@ -427,7 +453,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "whitePixel",
+                    "texturePath": "Assets/whitePixel.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -482,7 +508,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "whitePixel",
+                    "texturePath": "Assets/whitePixel.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 0.0,
