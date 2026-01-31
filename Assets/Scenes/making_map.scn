@@ -1440,7 +1440,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Camera": {
-                    "zoom": 10.0,
+                    "zoom": 0.5,
                     "followPlayer": true
                 }
             }

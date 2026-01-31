@@ -559,9 +559,6 @@ namespace Uma_Engine
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);
 
-        if (m_PathFindingSystem)
-            m_PathFindingSystem->Update(dt);
-
         if (m_FSMSystem)
             m_FSMSystem->Update(dt);
     }
@@ -572,6 +569,9 @@ namespace Uma_Engine
 
         if (m_PlayerController)
             m_PlayerController->Update(m_FixedTimeStep);
+
+        if (m_PathFindingSystem)
+            m_PathFindingSystem->Update(m_FixedTimeStep);
 
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
