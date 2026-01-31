@@ -92,7 +92,7 @@ namespace Uma_ECS
         Collects sprite data, applies culling/checks, sorts by layer/texture, and issues draw calls.
         \param dt Delta time (unused for rendering, but required by ISystem interface).
         */
-        void Update(float dt);
+        void Update(float dt, bool enableCullMode = false);
 
         /*!
         \brief Toggles whether this system should update the internal Graphics camera.
@@ -115,10 +115,15 @@ namespace Uma_ECS
 
         void GetAllChildren(Entity parent, std::vector<Entity>& childrenList);
 
+        bool IsSpriteVisible(const Vec2& spritePos, const Vec2& spriteScale,
+                             const Vec2& camMin, const Vec2& camMax);
+
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
 
         bool mUpdateCamera = true;
+
+        bool isCullMode = false;
     };
 }

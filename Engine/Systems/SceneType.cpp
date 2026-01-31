@@ -157,7 +157,7 @@ namespace Uma_Engine
             m_TransformSystem->UpdateWorldTransform();
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt);
+            m_RenderingSystem->Update(dt, false);
 
         if (m_ParticleSystem)
             m_ParticleSystem->Update(dt);
@@ -531,7 +531,7 @@ namespace Uma_Engine
             m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt);
+            m_RenderingSystem->Update(dt, true);
 
         if (m_TilemapSystem)
             m_TilemapSystem->Update(dt);
