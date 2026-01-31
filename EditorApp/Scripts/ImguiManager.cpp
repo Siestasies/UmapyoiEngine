@@ -2770,41 +2770,182 @@ namespace Uma_Engine
             
                 ImGui::Separator();
                 ImGui::Text("Active Sounds: %zu", audio.activeSounds.size());
-            
+
                 if (!audio.activeSounds.empty())
                 {
                     for (auto& [soundName, soundInstance] : audio.activeSounds)
                     {
                         ImGui::PushID(soundName.c_str());
-            
+
                         if (ImGui::TreeNode(soundName.c_str()))
                         {
                             ImGui::Text("Sound: %s", soundName.c_str());
+                            ImGui::Text("Path: %s", soundInstance.path.c_str());
                             ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
                             ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
                             ImGui::Checkbox("Is 3D", &soundInstance.is3D);
-            
+
                             ImGui::Separator();
                             ImGui::Text("Sound Properties");
-            
+
                             ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
                             ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
-            
+
                             if (soundInstance.is3D)
                             {
                                 ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
                                 ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
                             }
-            
+
+                            // Remove button for individual sounds
+                            ImGui::Separator();
+                            if (ImGui::Button("Remove Sound"))
+                            {
+                                audio.RemoveSound(soundName);
+                                m_hasUnsavedEdit = true;
+                                ImGui::TreePop();
+                                ImGui::PopID();
+                                break; // Exit loop after removal
+                            }
+
                             ImGui::TreePop();
                         }
-            
+
                         ImGui::PopID();
                     }
                 }
                 else
                 {
                     ImGui::TextDisabled("No active sounds");
+                }
+
+                // Drag and Drop Zone for Adding Sounds
+                ImGui::Separator();
+                ImGui::Text("Add Sound");
+
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+                // Background box
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Centered help text
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Audio File Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Audio File Here");
+
+                // Supported formats hint
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.wav, .mp3, .ogg, .flac)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.wav, .mp3, .ogg, .flac)");
+
+                // Invisible button for hit detection
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##AudioDropZone", dropZoneSize);
+
+                // Hover effect
+                if (ImGui::IsItemHovered())
+                {
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Accept drag and drop payload
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Visual feedback when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Glow effect
+                    drawList->AddRect(
+                        ImVec2(cursorPos.x - 3, cursorPos.y - 3),
+                        ImVec2(cursorPos.x + dropZoneSize.x + 3, cursorPos.y + dropZoneSize.y + 3),
+                        IM_COL32(100, 150, 255, 50), 4.0f, 0, 6.0f
+                    );
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+
+                        // Normalize path
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        // Extract extension
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        // Validate audio file format
+                        if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".flac")
+                        {
+                            // Convert to relative path (Assets-relative)
+                            std::string relativePath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+                            else
+                            {
+                                relativePath = fullPath; // Fallback to full path
+                            }
+
+                            // Extract sound name (filename without extension)
+                            std::string soundName = p.stem().string();
+
+                            // Check if sound with this name already exists
+                            if (audio.HasSound(soundName))
+                            {
+                                m_popupErrorMessage = "Sound with name '" + soundName + "' already exists!\nPlease remove it first or rename the file.";
+                                ImGui::OpenPopup("Sound Already Exists");
+                            }
+                            else
+                            {
+                                // Create new sound instance
+                                Uma_ECS::SoundInstance newSound;
+                                newSound.soundName = soundName;
+                                newSound.path = relativePath;
+                                newSound.volume = audio.defaultVolume;
+                                newSound.is3D = audio.default3D;
+
+                                // Add to active sounds map
+                                audio.activeSounds[soundName] = newSound;
+                                m_hasUnsavedEdit = true;
+                            }
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for AudioComponent!\nExpected: .wav, .mp3, .ogg, .flac";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                // Error popup for duplicate sounds
+                if (ImGui::BeginPopupModal("Sound Already Exists", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text("%s", m_popupErrorMessage.c_str());
+                    ImGui::Separator();
+                    if (ImGui::Button("OK", ImVec2(120, 0)))
+                    {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
                 }
         
                 ImGui::Separator();
