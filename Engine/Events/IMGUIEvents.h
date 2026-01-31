@@ -190,10 +190,11 @@ namespace Uma_Engine
         LoadSceneRequestEvent(const std::string& name, bool load_n_play = false) : name(name), load_n_play(load_n_play){ priority = Priority::High; }
     };
 
-    class IMGUIStopRequest : public Event
+    class UpdateImguiPlayModeEvent : public Event
     {
     public:
-        IMGUIStopRequest() { priority = Priority::High; }
+        bool isPlayMode;
+        UpdateImguiPlayModeEvent(bool isPlay) : isPlayMode(isPlay) { priority = Priority::High; }
     };
 
     class ReLoadSceneRequestEvent : public Event

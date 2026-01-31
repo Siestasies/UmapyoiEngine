@@ -313,6 +313,9 @@ namespace Uma_Engine
             //m_LuaScriptingSystem->CallStart();
         }
 
+        // cache the scene before starting the scene
+        m_Coordinator.CacheState();
+
         m_FixedTimeStep = g_EngineConfig.fixedTimeStep;
 
         m_LoadProgress = 1.0f;

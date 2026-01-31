@@ -26,10 +26,10 @@
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/wall_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
-                "path": "assets/environment/floor 2 horizontal.png"
+                "path": "assets/wall_left.png"
             },
             {
                 "path": "assets/wall_top_left.png"
@@ -64,13 +64,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             }
         ],
@@ -81,14 +81,14 @@
                 "type": 0
             },
             {
-                "name": "hurt",
-                "path": "Assets/sounds/hurt.mp3",
-                "type": 0
-            },
-            {
                 "name": "cave",
                 "path": "Assets/sounds/cave.mp3",
                 "type": 1
+            },
+            {
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
+                "type": 0
             },
             {
                 "name": "explosion",
@@ -96,14 +96,14 @@
                 "type": 0
             },
             {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
                 "name": "player_hurt",
                 "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
                 "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
             },
             {
                 "name": "enemy_hurt",
@@ -17775,7 +17775,7 @@
         },
         {
             "id": 284,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "HowToPlay btn",
@@ -18097,7 +18097,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -18155,7 +18155,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {

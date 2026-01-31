@@ -105,10 +105,9 @@ namespace Uma_Engine
         pEventSystem->Subscribe<EntityDestroyedEvent, ImguiManager>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<SceneInfoRequest, ImguiManager>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
-        pEventSystem->Subscribe<IMGUIStopRequest, ImguiManager>([this](const IMGUIStopRequest& e)
+        pEventSystem->Subscribe<UpdateImguiPlayModeEvent, ImguiManager>([this](const UpdateImguiPlayModeEvent& e)
              { 
-                (void)e;
-                m_playState = PlayState::Stopped; 
+                m_playState = e.isPlayMode ? PlayState::Playing : PlayState::Stopped;
             });
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent, ImguiManager>([this](const ReturnDuplicatedRequestEvent& e)
             { 
