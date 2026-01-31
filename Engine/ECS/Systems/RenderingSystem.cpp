@@ -138,7 +138,7 @@ namespace Uma_ECS
             // loading of the texture
             if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
             {
-                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.textureName);
+                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.texturePath);
             }
 
             // Verify texture is valid before using it
@@ -326,7 +326,7 @@ namespace Uma_ECS
 
             if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
             {
-                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.textureName);
+                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.texturePath);
             }
 
             // Verify texture is valid before using it

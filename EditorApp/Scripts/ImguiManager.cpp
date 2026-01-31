@@ -4201,13 +4201,92 @@ namespace Uma_Engine
 
                 if (ImGui::TreeNode("Tileset Properties"))
                 {
-                    static char tilsetTextureNameBuffer[512];
-                    strncpy(tilsetTextureNameBuffer, tilemap.tileset.textureName.c_str(), 511);
-                    tilsetTextureNameBuffer[511] = '\0';
-                    if (ImGui::InputText("Texture Name", tilsetTextureNameBuffer, 512))
+                    // Create a visible drop zone with visual feedback
+                    ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                    ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                    ImDrawList* drawList = ImGui::GetWindowDrawList();
+                    ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                    // Background
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        bgColor, 4.0f);
+
+                    // Center text in the drop zone
+                    ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                    ImVec2 textPos = ImVec2(
+                        cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                        cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                    );
+                    drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                    // Supported formats text
+                    ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                    ImVec2 formatTextPos = ImVec2(
+                        cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                        cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                    );
+                    drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                    // Invisible button for the drop zone
+                    ImGui::SetCursorScreenPos(cursorPos);
+                    ImGui::InvisibleButton("##TextureDropZone", dropZoneSize);
+
+                    bool isHovered = ImGui::IsItemHovered();
+
+                    // Drag and Drop Target
+                    if (ImGui::BeginDragDropTarget())
                     {
-                        tilemap.tileset.textureName = tilsetTextureNameBuffer;
-                        m_hasUnsavedEdit = true;
+                        // Highlight the drop zone when dragging over
+                        drawList->AddRect(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                        // Show glow effect
+                        drawList->AddRectFilled(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 150, 255, 50), 4.0f);
+
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                        {
+                            const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                            std::string fullPath = data->filepath;
+                            std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                            std::filesystem::path p(fullPath);
+                            std::string ext = p.extension().string();
+
+                            // Convert to lowercase for comparison
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                            {
+                                std::string relativePath = fullPath;
+                                size_t assetsPos = fullPath.find("Assets/");
+                                if (assetsPos != std::string::npos)
+                                {
+                                    relativePath = fullPath.substr(assetsPos);
+                                }
+
+                                tilemap.tileset.texturePath = relativePath;
+                                tilemap.tileset.texture = nullptr;
+                                m_hasUnsavedEdit = true;
+                            }
+                            else
+                            {
+                                m_popupErrorMessage = "Invalid file type for Sprite!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                ImGui::OpenPopup("Invalid File Format");
+                            }
+                        }
+                        ImGui::EndDragDropTarget();
+                    }
+                    else if (isHovered)
+                    {
+                        // Subtle hover effect when not dragging
+                        drawList->AddRect(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
                     }
 
                     float gridArray[2] = { tilemap.tileset.columns, tilemap.tileset.rows };
