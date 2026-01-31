@@ -55,10 +55,17 @@ namespace Uma_ECS
         pCoordinator = c;
         pGraphics = g;
         pResourcesManager = rm;
+
+        if (pResourcesManager)
+        {
+            pResourcesManager->SetCoordinator(c);
+        }
     }
 
-    void RenderingSystem::Update(float dt)
+    void RenderingSystem::Update(float dt, bool enableCullMode)
     {
+        isCullMode = enableCullMode;
+
         RenderWorldPass(dt);
 
         RenderUIPass(dt);
@@ -83,23 +90,99 @@ namespace Uma_ECS
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
         auto& animatorArray = pCoordinator->GetComponentArray<Animator>();
         auto& tmArray = pCoordinator->GetComponentArray<Tilemap>();
+        auto& particleArray = pCoordinator->GetComponentArray<ParticleEmitter>();
         auto& rbArray = pCoordinator->GetComponentArray<RigidBody>();
 
-        // one camera for now
+        size_t estimatedSpriteCount = aEntities.size();
+
+        Vec2 cameraPos(0, 0);
+        float cameraZoom = 1.0f;
+        int viewportWidth = pGraphics->GetSceneViewport().x;
+        int viewportHeight = pGraphics->GetSceneViewport().y;
+
         if (camArray.Size() > 0)
         {
             Entity camera = camArray.GetEntity(0);
             auto& cam_tf = tfArray.GetData(camera);
             auto& cam_c = camArray.GetData(camera);
 
+            cameraPos = cam_tf.position;
+            cameraZoom = cam_c.mZoom * 10.f;
+
             // Only update graphics camera if not using editor camera
             if (mUpdateCamera)
             {
-                pGraphics->SetCamInfo(cam_tf.position, cam_c.mZoom * 10.f);
+                pGraphics->SetCamInfo(cameraPos, cameraZoom);
             }
         }
 
-        allSprites.reserve(aEntities.size());
+        float halfWidth = (viewportWidth * 0.5f) / cameraZoom;
+        float halfHeight = (viewportHeight * 0.5f) / cameraZoom;
+        Vec2 camMin = cameraPos - Vec2(halfWidth, halfHeight);
+        Vec2 camMax = cameraPos + Vec2(halfWidth, halfHeight);
+
+        float cullingBuffer = 100.0f;
+        camMin.x -= cullingBuffer;
+        camMin.y -= cullingBuffer;
+        camMax.x += cullingBuffer;
+        camMax.y += cullingBuffer;
+
+        for (const auto& entity : tmArray.GetAllEntities())
+        {
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
+            auto& tilemap = tmArray.GetData(entity);
+            auto& tf = tfArray.GetData(entity);
+
+            // loading of the texture
+            if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
+            {
+                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.texturePath);
+            }
+
+            // Verify texture is valid before using it
+            if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
+            {
+                std::stringstream log;
+                log << "Entity(" << entity << ") tileset's texture is not valid.";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                continue;
+            }
+
+            for (int layerIdx = 0; layerIdx < tilemap.layers.size(); layerIdx++)
+            {
+                if (!tilemap.layerVisibility[layerIdx]) continue;
+
+                TileLayer& layer = tilemap.layers[layerIdx];
+
+                Vec2 tileWorldSize = { tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y };
+
+                float minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                float maxCol = min(layer.width, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                float minRow = max(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+                float maxRow = min(layer.height, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+
+                int visibleTiles = max(0, (maxCol - minCol) * (maxRow - minRow));
+                estimatedSpriteCount += visibleTiles;
+            }
+        }
+
+        allSprites.reserve(aEntities.size() + particleArray.Size());
+
+        // caching the hierarchy order
+        std::unordered_map<Entity, int> hierarchyCache;
+        hierarchyCache.reserve(tmArray.Size() + aEntities.size());
+
+        for (const auto& entity : aEntities)
+        {
+            hierarchyCache[entity] = pCoordinator->GetHierarchyIndex(entity);
+        }
+
+        for (const auto& entity : tmArray.GetAllEntities())
+        {
+            hierarchyCache[entity] = pCoordinator->GetHierarchyIndex(entity);
+        }
 
         // Gather all sprite info with layer data
         for (const auto& entity : aEntities)
@@ -107,22 +190,18 @@ namespace Uma_ECS
             if (!pCoordinator->IsActiveInHierarchy(entity))
                 continue;
 
-
             auto& sr = srArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            // Load texture if not loaded
-            // or texture became invalid (tex_id == 0)
             if (!sr.texture || sr.texture->tex_id == 0)
             {
-                sr.texture = pResourcesManager->GetTexture(sr.textureName);
+                sr.texture = pResourcesManager->GetTexture(sr.texturePath);
             }
 
-            // Verify texture is valid before using it
             if (!sr.texture || sr.texture->tex_id == 0)
             {
                 std::stringstream log;
-                log << "Entity(" << entity << ") texture is not valid.";
+                log << "Failed to load texture: " << sr.texturePath;
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
@@ -142,6 +221,11 @@ namespace Uma_ECS
                 spriteScale = tf.worldScale;
             }
 
+            if (isCullMode && !IsSpriteVisible(tf.worldPosition, spriteScale, camMin, camMax))
+            {
+                continue;
+            }
+
             if (rbArray.Has(entity) && sr.autoFlip)
             {
                 auto& rb = rbArray.GetData(entity);
@@ -157,6 +241,9 @@ namespace Uma_ECS
             {
                 spriteScale.y = -spriteScale.y;
             }
+
+            // Add offset
+            Vec2 spritePos = tf.worldPosition + sr.spriteOffset;
 
             // Get UV coordinates from animator if present
             Vec2 uvOffset(0.0f, 0.0f);
@@ -204,51 +291,52 @@ namespace Uma_ECS
             else
             {
                 sr.GetUVs(uvOffset, uvSize);
-
-                allSprites.push_back(LayeredSprite
-                    {
-                        .info = Uma_Engine::Sprite_Info{
-                            .tex_id = sr.texture->tex_id,
-                            .pos = tf.worldPosition,
-                            .scale = spriteScale,
-                            .rot = tf.worldRotation,
-                            .rot_speed = tf.rotation.y,
-                            .uvOffset = uvOffset,
-                            .uvSize = uvSize,
-                            .tintColor = sr.tintColor,
-                            .alpha = sr.alpha
-                        },
-                        .layer = sr.renderLayer,
-                        .order = sr.renderOrder,
-                        .hierarchyOrder = hierarchyOrder,
-                        .texId = sr.texture->tex_id,
-                        .entityId = entity
-                    });
             }
+
+            allSprites.push_back(LayeredSprite
+                {
+                    .info = Uma_Engine::Sprite_Info{
+                        .tex_id = sr.texture->tex_id,
+                        .pos = tf.worldPosition,
+                        .scale = spriteScale,
+                        .rot = tf.worldRotation,
+                        .rot_speed = tf.rotation.y,
+                        .uvOffset = uvOffset,
+                        .uvSize = uvSize,
+                        .tintColor = sr.tintColor,
+                        .alpha = sr.alpha
+                    },
+                    .layer = sr.renderLayer,
+                    .order = sr.renderOrder,
+                    .hierarchyOrder = hierarchyOrder,
+                    .texId = sr.texture->tex_id,
+                    .entityId = entity
+                });
         }
 
         for (const auto& entity : tmArray.GetAllEntities())
         {
+            if (!pCoordinator->IsActiveInHierarchy(entity)) continue;
+
             auto& tilemap = tmArray.GetData(entity);
             auto& tf = tfArray.GetData(entity);
 
-            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            int hierarchyOrder = hierarchyCache[entity];
             if (hierarchyOrder == -1) continue;
 
             if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
             {
-                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.textureName);
+                tilemap.tileset.texture = pResourcesManager->GetTexture(tilemap.tileset.texturePath);
             }
 
             // Verify texture is valid before using it
             if (!tilemap.tileset.texture || tilemap.tileset.texture->tex_id == 0)
             {
                 std::stringstream log;
-                log << "Entity(" << entity << ") tileset's texture is not valid.";
+                log << "tilemap(" << entity << ") has no valid texture";
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                 continue;
             }
-
 
             for (int layerIdx = 0; layerIdx < tilemap.layers.size(); layerIdx++)
             {
@@ -256,51 +344,150 @@ namespace Uma_ECS
 
                 if (!tilemap.layerVisibility[layerIdx]) continue;
 
-                for (int i = 0; i < layer.tiles.size(); i++)
+                // Calculate the the visible tile range
+                float tileWorldSizeX = tilemap.tileSize * tf.scale.x;
+                float tileWorldSizeY = tilemap.tileSize * tf.scale.y;
+
+                int minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSizeX));
+                int maxCol = min(layer.width, int((camMax.x - tf.worldPosition.x) / tileWorldSizeX) + 1);
+                int minRow = max(0, int((tf.worldPosition.y - camMax.y) / tileWorldSizeY));
+                int maxRow = min(layer.height, int((tf.worldPosition.y - camMin.y) / tileWorldSizeY) + 1);
+
+                // Only iterate visible tiles
+
+                if (!isCullMode)
                 {
-                    int row = i / layer.width;
-                    int col = i % layer.width;
+                    minCol = 0;
+                    maxCol = tilemap.mapWidth;
+                    minRow = 0;
+                    maxRow = tilemap.mapHeight;
+                }
 
-                    // Grid position for placement
-                    Vec2 tilePos = tf.worldPosition + Vec2(col * tilemap.tileSize * tf.scale.x, -(row * tilemap.tileSize * tf.scale.y));
+                for (int row = minRow; row < maxRow; row++)
+                {
+                    for (int col = minCol; col < maxCol; col++)
+                    {
+                        int i = row * layer.width + col;
 
-                    // Tileset indices for UVs
-                    int tileset_row = layer.tiles[i] / int(tilemap.tileset.columns);
-                    int tileset_col = layer.tiles[i] % int(tilemap.tileset.columns);
+                        // Skip empty tiles (tile ID 0 or -1)
+                        if (layer.tiles[i] < 0) continue;
 
-                    // Get UV coordinates from animator if present
-                    Vec2 uvOffset(0.0f, 0.0f);
-                    Vec2 uvSize(1.0f, 1.0f);
+                        // Grid position
+                        Vec2 tilePos = tf.worldPosition + Vec2(
+                            col * tileWorldSizeX,
+                            -(row * tileWorldSizeY)
+                        );
 
-                    tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(tileset_col, tileset_row));
+                        // Tileset indices for UVs
+                        int tileset_row = layer.tiles[i] / int(tilemap.tileset.columns);
+                        int tileset_col = layer.tiles[i] % int(tilemap.tileset.columns);
 
-                    allSprites.push_back(LayeredSprite
-                        {
-                            .info = Uma_Engine::Sprite_Info{
-                                .tex_id = tilemap.tileset.texture->tex_id,
-                                .pos = tilePos,
-                                .scale = Vec2(tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y),
-                                .rot = tf.worldRotation,
-                                .rot_speed = tf.rotation.y,
-                                .uvOffset = uvOffset,
-                                .uvSize = uvSize,
-                                .tintColor = layer.tintColor,
-                                .alpha = layer.alpha
-                            },
-                            .layer = layer.renderLayer,
-                            .order = layer.renderOrder,
-                            .hierarchyOrder = hierarchyOrder,
-                            .texId = tilemap.tileset.texture->tex_id,
-                            .entityId = entity
+                        Vec2 uvOffset(0.0f, 0.0f);
+                        Vec2 uvSize(1.0f, 1.0f);
+                        tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(tileset_col, tileset_row));
+
+                        allSprites.push_back(LayeredSprite
+                            {
+                                .info = Uma_Engine::Sprite_Info{
+                                    .tex_id = tilemap.tileset.texture->tex_id,
+                                    .pos = tilePos,
+                                    .scale = Vec2(tileWorldSizeX, tileWorldSizeY),
+                                    .rot = tf.worldRotation,
+                                    .rot_speed = tf.rotation.y,
+                                    .uvOffset = uvOffset,
+                                    .uvSize = uvSize,
+                                    .tintColor = layer.tintColor,
+                                    .alpha = layer.alpha
+                                },
+                                .layer = layer.renderLayer,
+                                .order = layer.renderOrder,
+                                .hierarchyOrder = hierarchyOrder,
+                                .texId = tilemap.tileset.texture->tex_id,
+                                .entityId = entity
+                            });
+                    }
+                }
+            }
+        }
+
+        // Gather ALL particle entities
+        std::vector<Entity> particleEntities = particleArray.GetAllEntities();
+
+        for (const auto& entity : particleEntities)
+        {
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+                continue;
+
+            auto& component = particleArray.GetData(entity);
+            int hierarchyOrder = pCoordinator->GetHierarchyIndex(entity);
+            if (hierarchyOrder == -1) continue;
+
+            // Loop through each emitter in this component
+            for (int emitterIdx = 0; emitterIdx < component.GetEmitterCount(); ++emitterIdx)
+            {
+                auto* emitter = component.GetEmitter(emitterIdx);
+                if (!emitter || !emitter->isActive) continue;
+
+                // Get texture
+                auto texture = pResourcesManager->GetTexture(emitter->texturePath);
+                if (!texture || texture->tex_id == 0)
+                {
+                    std::stringstream log;
+                    log << "ParticleEmitter '" << emitter->name << "': Invalid texture '" << emitter->texturePath << "'";
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+                    continue;
+                }
+
+                // Add each active particle as a LayeredSprite
+                for (const auto& particle : emitter->particles)
+                {
+                    if (!particle.active) continue;
+
+                    allSprites.push_back(LayeredSprite{
+                        .info = Uma_Engine::Sprite_Info{
+                            .tex_id = texture->tex_id,
+                            .pos = particle.position,
+                            .scale = Vec2(particle.scale, particle.scale),
+                            .rot = particle.rotation,
+                            .rot_speed = 0.0f,
+                            .uvOffset = Vec2(0.0f, 0.0f),
+                            .uvSize = Vec2(1.0f, 1.0f),
+                            .tintColor = particle.color,
+                            .alpha = particle.opacity
+                        },
+                        .layer = emitter->renderLayer,
+                        .order = emitter->renderOrder,
+                        .hierarchyOrder = hierarchyOrder,
+                        .texId = texture->tex_id,
+                        .entityId = entity
                         });
                 }
             }
         }
     }
 
+    bool RenderingSystem::IsSpriteVisible(const Vec2& spritePos, const Vec2& spriteScale,
+                         const Vec2& camMin, const Vec2& camMax)
+    {
+        float halfSpriteWidth = spriteScale.x * 0.5f;
+        float halfSpriteHeight = spriteScale.y * 0.5f;
+
+        float spriteLeft = spritePos.x - halfSpriteWidth;
+        float spriteRight = spritePos.x + halfSpriteWidth;
+        float spriteTop = spritePos.y + halfSpriteHeight;
+        float spriteBottom = spritePos.y - halfSpriteHeight;
+
+        if (spriteRight < camMin.x) return false;   // Too far left
+        if (spriteLeft > camMax.x) return false;    // Too far right
+        if (spriteBottom > camMax.y) return false;  // Too far up
+        if (spriteTop < camMin.y) return false;     // Too far down
+
+        return true;  // Sprite is visible
+    }
+
     void RenderingSystem::RenderWorldSprites(std::vector<LayeredSprite>& allSprites)
     {
-        std::sort(allSprites.begin(), allSprites.end(),
+        std::stable_sort(allSprites.begin(), allSprites.end(),
             [](const LayeredSprite& a, const LayeredSprite& b)
             {
                 if (a.layer != b.layer)
@@ -363,14 +550,23 @@ namespace Uma_ECS
 
         std::vector<Entity> sortedCanvasIds = canvasArray.GetAllEntities();
 
+        // cache hierarchy order
+        std::unordered_map<Entity, int> hierarchyCache;
+        hierarchyCache.reserve(sortedCanvasIds.size());
+
+        for (const auto& canvasId : sortedCanvasIds)
+        {
+            hierarchyCache[canvasId] = pCoordinator->GetHierarchyIndex(canvasId);
+        }
+
         std::sort(sortedCanvasIds.begin(), sortedCanvasIds.end(),
             [&](const Entity& lhs, const Entity& rhs)
             {
                 int lhs_sorting_order = canvasArray.GetData(lhs).sortingOrder;
                 int rhs_sorting_order = canvasArray.GetData(rhs).sortingOrder;
 
-                int lhs_hierarchyOrder = pCoordinator->GetHierarchyIndex(lhs);
-                int rhs_hierarchyOrder = pCoordinator->GetHierarchyIndex(rhs);
+                int lhs_hierarchyOrder = hierarchyCache[lhs];
+                int rhs_hierarchyOrder = hierarchyCache[rhs];
 
                 if (lhs_sorting_order != rhs_sorting_order)
                 {
@@ -381,6 +577,8 @@ namespace Uma_ECS
                 {
                     return lhs_hierarchyOrder < rhs_hierarchyOrder;
                 }
+
+                return false;
             });
 
         for (const auto& canvasId : sortedCanvasIds)
@@ -410,7 +608,9 @@ namespace Uma_ECS
                         continue;
                     }
 
-                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontName);
+                    Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(textComp.fontPath);
+
+                    // Get font, if null add to load container
                     if (uiFont == nullptr)
                     {
                         std::stringstream log;
@@ -444,14 +644,13 @@ namespace Uma_ECS
 
                     if (!image.texture || image.texture->tex_id == 0)
                     {
-                        image.texture = pResourcesManager->GetTexture(image.textureName);
+                        image.texture = pResourcesManager->GetTexture(image.texturePath);
                     }
 
-                    // Verify texture is valid before using it
                     if (!image.texture || image.texture->tex_id == 0)
                     {
                         std::stringstream log;
-                        log << "Entity(" << childUI << ") texture is not valid.";
+                        log << "Entity(" << childUI << ") failed to load texture: " << image.texturePath;
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
                         continue;
                     }
@@ -487,7 +686,7 @@ namespace Uma_ECS
                 }
 
                 // sort based on children's sorting order
-                std::sort(uiDrawCommands.begin(), uiDrawCommands.end(),
+                std::stable_sort(uiDrawCommands.begin(), uiDrawCommands.end(),
                     [&](const UIDrawCommand& lhs, const UIDrawCommand& rhs)
                     {
                         if (lhs.order != rhs.order)

@@ -25,6 +25,7 @@ All rights reserved.
 */
 
 #include "LuaScriptingSystem.hpp"
+#include "AudioSystem.hpp"
 
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
@@ -48,12 +49,13 @@ All rights reserved.
 namespace Uma_ECS
 {
     
-    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i)
+    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i, Uma_Engine::ResourcesManager* r)
     {
         // linking the Engine systems 
         pCoordinator = c;
         pEventSystem = e;
         pInputSystem = i;
+        pResourcesManager = r;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -491,55 +493,54 @@ namespace Uma_ECS
         // to provide a better way to handle serializing and deserializing
         // WIP
         // prefab name must include file extention
-        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName, Vec2 pos) -> Entity 
+        sharedLua->set_function("SpawnPrefab", [&](const std::string& prefabName, Vec2 pos) -> Entity
             {
+                // Safety check
+                if (!pResourcesManager) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "SpawnPrefab Failed: ResourcesManager is null");
+                    return static_cast<Entity>(-1);
+                }
+
+                // Load/Get cached Prefab JSON via ResourcesManager
                 std::string prefabPath = Uma_FilePath::PREFAB_DIR + prefabName;
-            try {
+                auto docPtr = pResourcesManager->GetPrefab(prefabPath);
 
-
-                // Load JSON file
-                std::ifstream ifs(prefabPath);
-                if (!ifs.is_open()) {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "Failed to open prefab file: " + prefabPath);
+                if (!docPtr) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Failed to load prefab: " + prefabPath);
                     return static_cast<Entity>(-1);
                 }
 
-                rapidjson::IStreamWrapper isw(ifs);
-                rapidjson::Document doc;
-                doc.ParseStream(isw);
-                ifs.close();
+                const rapidjson::Document& doc = *docPtr;
 
+                if (doc.HasMember("resources")) {
+                    pResourcesManager->Deserialize(doc["resources"]);
+                }
+
+                // Instantiate Entity
                 if (!doc.HasMember("Prefab")) {
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "Invalid prefab format: missing 'Prefab' key in " + prefabPath);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Invalid prefab format: " + prefabPath);
                     return static_cast<Entity>(-1);
                 }
 
-                // Deserialize prefab and get root entity
-                Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
+                try {
+                    Entity rootEntity = pCoordinator->DeserializePrefab(doc["Prefab"]);
 
-                auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
-                tf.position = pos;
+                    // Apply override position
+                    if (rootEntity != static_cast<Entity>(-1)) {
+                        if (pCoordinator->HasComponent<Transform>(rootEntity)) {
+                            auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
+                            tf.position = pos;
+                        }
 
-                if (rootEntity != static_cast<Entity>(-1)) {
-                    std::string debug = "Loaded prefab from " + prefabPath + " as entity " +
-                        std::to_string(rootEntity);
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                        // Log success
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Spawned prefab: " + prefabName);
+                    }
+                    return rootEntity;
                 }
-
-                return rootEntity;
-            }
-            catch (const std::exception& e) {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Exception loading prefab from " + prefabPath + ": " + e.what());
-                return static_cast<Entity>(-1);
-            }
-            catch (...) {
-                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                    "Unknown error loading prefab from " + prefabPath);
-                return static_cast<Entity>(-1);
-            }
+                catch (const std::exception& e) {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Exception spawning prefab: " + std::string(e.what()));
+                    return static_cast<Entity>(-1);
+                }
             });
     }
 
@@ -563,7 +564,7 @@ namespace Uma_ECS
 
         // Register Sprite
         sharedLua->new_usertype<Sprite>("Sprite",
-            "textureName", &Sprite::textureName,
+            "texturePath", &Sprite::texturePath,
             "renderLayer", &Sprite::renderLayer,
             "flipX", &Sprite::flipX,
             "flipY", &Sprite::flipY,
@@ -600,12 +601,83 @@ namespace Uma_ECS
             "mDefense"        ,&Enemy::mDefense
         );
 
-        // Register projectile component
+        // ProjectileType
+        sharedLua->new_enum<ProjectileType>("ProjectileType",
+            {
+                {"AOE", P_AOE},
+                {"SINGLE", P_SINGLE}
+            }
+        );
+
+        // ProjectileStats
+        sharedLua->new_usertype<ProjectileStats>("ProjectileStats",
+            "type", &ProjectileStats::type,
+            "damage", &ProjectileStats::damage,
+            "speed", &ProjectileStats::speed,
+            "fadeOVerTime", &ProjectileStats::fadeOVerTime,
+            "lifeTime", &ProjectileStats::lifeTime
+        );
+
+        // Projectile
         sharedLua->new_usertype<Projectile>("Projectile",
-            "mDamage",          &Projectile::mDamage,
-            "mSpeed",           &Projectile::mSpeed,
-            "mFadeOVerTime",    &Projectile::mFadeOVerTime,
-            "mLifeTime",        &Projectile::mLifeTime
+            "mStats", &Projectile::mStats
+        );
+
+        // Register SpriteAnimator first (the engine class)
+        sharedLua->new_usertype<Uma_Engine::SpriteAnimator>("SpriteAnimator",
+            // Methods that take the animator instance as first parameter
+            "Play", [](Uma_Engine::SpriteAnimator& animator, const std::string& name, bool restart) {
+                animator.Play(name, restart);
+            },
+
+            "IsPlaying", [](Uma_Engine::SpriteAnimator& animator) -> bool {
+                return animator.IsPlaying();
+            },
+
+            "HasFinished", [](Uma_Engine::SpriteAnimator& animator) -> bool {
+                return animator.HasFinished();
+            },
+
+            "GetCurrentClip", [](const Uma_Engine::SpriteAnimator& animator) -> std::string {
+                return animator.GetCurrentClip();
+            },
+
+            "Reset", [](Uma_Engine::SpriteAnimator& animator) {
+                animator.Reset();
+            },
+
+            "AddClip", sol::overload(
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount,
+                    float fps, bool loop) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps, loop);
+                },
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount, float fps) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps);
+                },
+                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
+                    int framesX, int framesY, int startFrame, int frameCount) {
+                        animator.AddClip(name, framesX, framesY, startFrame, frameCount);
+                }
+            ),
+
+            "RemoveClip", [](Uma_Engine::SpriteAnimator& animator, const std::string& name) -> bool {
+                return animator.RemoveClip(name);
+            }
+        );
+
+        // Register Animator component (the ECS component wrapper)
+        sharedLua->new_usertype<Animator>("Animator",
+            // Direct member access
+            "autoPlay", &Animator::autoPlay,
+            "initialClip", &Animator::initialClip,
+            "isInitialized", &Animator::isInitialized,
+            "uvOffset", &Animator::uvOffset,
+            "uvSize", &Animator::uvSize,
+
+            // Access to the SpriteAnimator instance
+            "animator", &Animator::animator
         );
 
         //Register Text component
@@ -759,7 +831,9 @@ namespace Uma_ECS
         X(Camera)      \
         X(PathFinding) \
         X(Projectile)  \
+        X(Animator)    \
         X(Text)        \
+
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -878,7 +952,6 @@ namespace Uma_ECS
         sharedLua->set_function("PlayOneShotAtPosition", [this](float x, float y, const std::string& audioName, float vol) {
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
             });
-
 
         // scene management
         sharedLua->set_function("LoadScene", [this](const std::string& sceneName)
@@ -1191,7 +1264,8 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Camera)      \
         BIND_COMPONENT_GETTER(Text)        \
         BIND_COMPONENT_GETTER(PathFinding) \
-        //BIND_COMPONENT_GETTER(Projectile)  \
+        BIND_COMPONENT_GETTER(Animator)    \
+        //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \

@@ -8,7 +8,6 @@ void Uma_ECS::FSMSystem::Init(Coordinator* c)
 
 void Uma_ECS::FSMSystem::Update(float dt)
 {
-	(void)dt;
 	//add event call to lua update
 	auto& FSMArray = pCoordinator->GetComponentArray<FSM>();
 

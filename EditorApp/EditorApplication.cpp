@@ -207,14 +207,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
         // Create the editor scene and configure it
-        auto editorScene = sceneManager->CreateScene("test_tilemap.scn", "test_tilemap.scn");
+        auto editorScene = sceneManager->CreateScene("test_Combat.scn", "test_Combat.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        sceneManager->AttachScriptToScene("test_tilemap.scn", "GameBehaviour");
-        sceneManager->AttachScriptToScene("test_tilemap.scn", "EditorBehaviour");
+        sceneManager->AttachScriptToScene("test_Combat.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("test_Combat.scn", "EditorBehaviour");
 
         // Load the default scene
-        sceneManager->LoadScene("test_tilemap.scn");
+        sceneManager->LoadScene("test_Combat.scn");
     }
 
     bool EditorApplication::HandleInterruptions(float deltaTime)

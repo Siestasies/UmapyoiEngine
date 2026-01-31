@@ -157,7 +157,7 @@ namespace Uma_Engine
             m_TransformSystem->UpdateWorldTransform();
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt);
+            m_RenderingSystem->Update(dt, false);
 
         if (m_ParticleSystem)
             m_ParticleSystem->Update(dt);
@@ -344,6 +344,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
         m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
         m_Coordinator.RegisterComponent<Uma_ECS::Tilemap>();
+        m_Coordinator.RegisterComponent<Uma_ECS::FSM>();
         
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -433,7 +434,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
             m_Coordinator.SetSystemSignature<Uma_ECS::LuaScriptingSystem>(sign);
         }
-        m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem);
+        m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem, m_ResourcesManager);
 
         //Audio system
         m_AudioSystem = m_Coordinator.RegisterSystem<Uma_ECS::AudioSystem>();
@@ -448,7 +449,8 @@ namespace Uma_Engine
         m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
 
         //path finding system
-        m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); {
+        m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); 
+        {
             Uma_ECS::Signature sign;
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::RigidBody>());
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
@@ -477,6 +479,17 @@ namespace Uma_Engine
             m_Coordinator.SetSystemSignature<Uma_ECS::TilemapSystem>(sign);
         }
         m_TilemapSystem->Init(&m_Coordinator, m_Graphics, m_ResourcesManager);
+        
+        //FSM
+        m_FSMSystem = m_Coordinator.RegisterSystem<Uma_ECS::FSMSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::FSM>());
+
+            m_Coordinator.SetSystemSignature<Uma_ECS::FSMSystem>(sign);
+        }
+        m_FSMSystem->Init(&m_Coordinator);
 
         InitializeUISystem();
 
@@ -518,7 +531,7 @@ namespace Uma_Engine
             m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt);
+            m_RenderingSystem->Update(dt, true);
 
         if (m_TilemapSystem)
             m_TilemapSystem->Update(dt);
@@ -543,6 +556,9 @@ namespace Uma_Engine
 
         if (m_PathFindingSystem)
             m_PathFindingSystem->Update(dt);
+
+        if (m_FSMSystem)
+            m_FSMSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()

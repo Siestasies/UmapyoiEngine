@@ -67,6 +67,7 @@ namespace Uma_Engine
         , m_showPerformanceWindow(true)
         , m_showEditorCameraWindow(true)
         , m_showSystemsWindow(true)
+        , m_showEditorControlBar(true)
         , m_historyOffset(0)
         , pEventSystem(nullptr)
         , pResourcesManager(nullptr)
@@ -137,6 +138,11 @@ namespace Uma_Engine
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
         fileBrowser.setEventSystem(pEventSystem);
+        auto pGraphics = pSystemManager->GetSystem<Graphics>();
+        if (pGraphics)
+        {
+            fileBrowser.setGraphicsSystem(pGraphics);
+        }
 
         m_initialized = true;
     }
@@ -216,13 +222,12 @@ namespace Uma_Engine
             {
                 SceneManagerWindow();
 
+                resourcesWindow.Render();
                 // call for windows to be shown
                 float currentFps = deltaTime > 0.0f ? (1.0f / deltaTime) : 0.0f;
                 CreateDebugWindows(currentFps, deltaTime);
 
                 fileBrowser.Render();
-
-                resourcesWindow.Render();
             }
         }
 
@@ -867,6 +872,33 @@ namespace Uma_Engine
         {
             ImGui::SetScrollHereY(1.0f);
             m_HierarchyScrollToBottomFrames--;
+        }
+
+        // Right-click on empty space in hierarchy window
+        if (ImGui::BeginPopupContextWindow("HierarchyContextMenu", ImGuiPopupFlags_NoOpenOverItems | ImGuiPopupFlags_MouseButtonRight))
+        {
+            if (ImGui::MenuItem("Create New"))
+            {
+                //pEventSystem->Emit<SpawnEntityRequestEvent>();
+
+                auto cmd = std::make_unique<Uma_Editor::EntityCreateCmd>(
+                    &coordinator,
+                    std::nullopt,
+                    "Create New Entity"
+                );
+
+                // Get raw pointer before moving
+                Uma_Editor::EntityCreateCmd* rawCmd = cmd.get();
+
+                // Execute command through history
+                commandHistory.ExecuteCommand(std::move(cmd));
+
+                // Access through raw pointer (still valid, owned by command history now)
+                m_selectedEntity = rawCmd->GetCreatedEntity();
+
+                m_HierarchyScrollToBottomFrames = 2;
+            }
+            ImGui::EndPopup();
         }
 
         ImGui::EndChild();
@@ -1701,23 +1733,116 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                // Texture name input
-                ImGui::Text("Texture: %s", sprite.textureName.c_str());
-                static char textureBuffer[256];
-                strncpy(textureBuffer, sprite.textureName.c_str(), 255);
-                textureBuffer[255] = '\0';
-                if (ImGui::InputText("Texture Name", textureBuffer, 256))
+                // In the Sprite component section, replace the current drag and drop code with this:
+
+                ImGui::Text("Texture Path: %s", sprite.texturePath.c_str());
+
+                // Create a visible drop zone with visual feedback
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                // Draw a border box
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                // Supported formats text
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##TextureDropZone", dropZoneSize);
+
+                bool isHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop Target
+                if (ImGui::BeginDragDropTarget())
                 {
-                    sprite.textureName = textureBuffer;
-                    sprite.texture = nullptr; // Will reload
-                    m_hasUnsavedEdit = true;
+                    // Highlight the drop zone when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            sprite.texturePath = relativePath;
+                            sprite.texture = nullptr;
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Sprite!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
                 }
+                else if (isHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
 
                 // Flip flags
                 if (ImGui::Checkbox("Flip X", &sprite.flipX))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Flip Y", &sprite.flipY))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("auto flip", &sprite.autoFlip))  m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Use Native Size", &sprite.UseNativeSize)) m_hasUnsavedEdit = true;
+
+                // Sprite offset slider
+                float offsetArray[2] = { sprite.spriteOffset.x, sprite.spriteOffset.y };
+                if (ImGui::DragFloat2("Sprite Offset", offsetArray, 1.0f))
+                {
+                    sprite.spriteOffset.x = offsetArray[0];
+                    sprite.spriteOffset.y = offsetArray[1];
+                    m_hasUnsavedEdit = true;
+                }
 
                 // Render layer dropdown
                 const char* renderLayerNames[] = {
@@ -2602,41 +2727,182 @@ namespace Uma_Engine
             
                 ImGui::Separator();
                 ImGui::Text("Active Sounds: %zu", audio.activeSounds.size());
-            
+
                 if (!audio.activeSounds.empty())
                 {
                     for (auto& [soundName, soundInstance] : audio.activeSounds)
                     {
                         ImGui::PushID(soundName.c_str());
-            
+
                         if (ImGui::TreeNode(soundName.c_str()))
                         {
                             ImGui::Text("Sound: %s", soundName.c_str());
+                            ImGui::Text("Path: %s", soundInstance.path.c_str());
                             ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
                             ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
                             ImGui::Checkbox("Is 3D", &soundInstance.is3D);
-            
+
                             ImGui::Separator();
                             ImGui::Text("Sound Properties");
-            
+
                             ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
                             ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
-            
+
                             if (soundInstance.is3D)
                             {
                                 ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
                                 ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
                             }
-            
+
+                            // Remove button for individual sounds
+                            ImGui::Separator();
+                            if (ImGui::Button("Remove Sound"))
+                            {
+                                audio.RemoveSound(soundName);
+                                m_hasUnsavedEdit = true;
+                                ImGui::TreePop();
+                                ImGui::PopID();
+                                break; // Exit loop after removal
+                            }
+
                             ImGui::TreePop();
                         }
-            
+
                         ImGui::PopID();
                     }
                 }
                 else
                 {
                     ImGui::TextDisabled("No active sounds");
+                }
+
+                // Drag and Drop Zone for Adding Sounds
+                ImGui::Separator();
+                ImGui::Text("Add Sound");
+
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+                // Background box
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Centered help text
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Audio File Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Audio File Here");
+
+                // Supported formats hint
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.wav, .mp3, .ogg, .flac)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.wav, .mp3, .ogg, .flac)");
+
+                // Invisible button for hit detection
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##AudioDropZone", dropZoneSize);
+
+                // Hover effect
+                if (ImGui::IsItemHovered())
+                {
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Accept drag and drop payload
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Visual feedback when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Glow effect
+                    drawList->AddRect(
+                        ImVec2(cursorPos.x - 3, cursorPos.y - 3),
+                        ImVec2(cursorPos.x + dropZoneSize.x + 3, cursorPos.y + dropZoneSize.y + 3),
+                        IM_COL32(100, 150, 255, 50), 4.0f, 0, 6.0f
+                    );
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+
+                        // Normalize path
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        // Extract extension
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        // Validate audio file format
+                        if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".flac")
+                        {
+                            // Convert to relative path (Assets-relative)
+                            std::string relativePath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+                            else
+                            {
+                                relativePath = fullPath; // Fallback to full path
+                            }
+
+                            // Extract sound name (filename without extension)
+                            std::string soundName = p.stem().string();
+
+                            // Check if sound with this name already exists
+                            if (audio.HasSound(soundName))
+                            {
+                                m_popupErrorMessage = "Sound with name '" + soundName + "' already exists!\nPlease remove it first or rename the file.";
+                                ImGui::OpenPopup("Sound Already Exists");
+                            }
+                            else
+                            {
+                                // Create new sound instance
+                                Uma_ECS::SoundInstance newSound;
+                                newSound.soundName = soundName;
+                                newSound.path = relativePath;
+                                newSound.volume = audio.defaultVolume;
+                                newSound.is3D = audio.default3D;
+
+                                // Add to active sounds map
+                                audio.activeSounds[soundName] = newSound;
+                                m_hasUnsavedEdit = true;
+                            }
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for AudioComponent!\nExpected: .wav, .mp3, .ogg, .flac";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                // Error popup for duplicate sounds
+                if (ImGui::BeginPopupModal("Sound Already Exists", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+                {
+                    ImGui::Text("%s", m_popupErrorMessage.c_str());
+                    ImGui::Separator();
+                    if (ImGui::Button("OK", ImVec2(120, 0)))
+                    {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
                 }
         
                 ImGui::Separator();
@@ -2837,14 +3103,124 @@ namespace Uma_Engine
                         // Max Particles
                         ImGui::DragInt("Max Particles", &emitter->maxParticles, 1.0f, 1, 10000);
 
-                        // Texture Name
-                        char texBuffer[128];
-                        strncpy(texBuffer, emitter->textureName.c_str(), sizeof(texBuffer) - 1);
-                        texBuffer[sizeof(texBuffer) - 1] = '\0';
-                        if (ImGui::InputText("Texture Name", texBuffer, sizeof(texBuffer)))
+                        ImGui::Text("Texture Path: %s", emitter->texturePath.c_str());
+
+                        // Create a visible drop zone with visual feedback
+                        ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                        ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                        // Draw a border box
+                        ImDrawList* drawList = ImGui::GetWindowDrawList();
+                        ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                        // Background
+                        drawList->AddRectFilled(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            bgColor, 4.0f);
+
+                        // Center text in the drop zone
+                        ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                        ImVec2 textPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                        );
+                        drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                        // Supported formats text
+                        ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                        ImVec2 formatTextPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                        );
+                        drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                        // Invisible button for the drop zone
+                        ImGui::SetCursorScreenPos(cursorPos);
+                        ImGui::InvisibleButton("##ParticleTextureDropZone", dropZoneSize);
+
+                        bool isHovered = ImGui::IsItemHovered();
+
+                        // Drag and Drop Target
+                        if (ImGui::BeginDragDropTarget())
                         {
-                            emitter->textureName = texBuffer;
+                            // Highlight the drop zone when dragging over
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                            // Show glow effect
+                            drawList->AddRectFilled(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 255, 50), 4.0f);
+
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                            {
+                                const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                std::string fullPath = data->filepath;
+                                std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                std::filesystem::path p(fullPath);
+                                std::string ext = p.extension().string();
+
+                                // Convert to lowercase for comparison
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                {
+                                    std::string relativePath = fullPath;
+                                    size_t assetsPos = fullPath.find("Assets/");
+                                    if (assetsPos != std::string::npos)
+                                    {
+                                        relativePath = fullPath.substr(assetsPos);
+                                    }
+
+                                    emitter->texturePath = relativePath;
+                                    m_hasUnsavedEdit = true;
+                                }
+                                else
+                                {
+                                    m_popupErrorMessage = "Invalid file type for Particle Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                    ImGui::OpenPopup("Invalid File Format");
+                                }
+                            }
+                            ImGui::EndDragDropTarget();
                         }
+                        else if (isHovered)
+                        {
+                            // Subtle hover effect when not dragging
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                        }
+
+                        // Move cursor past the drop zone
+                        ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
+
+                        ImGui::Separator();
+
+                        ImGui::Text("Rendering");
+
+                        // Render layer dropdown
+                        const char* renderLayerNames[] = {
+                            "RL_NONE",
+                            "RL_WALL_TOP",
+                            "RL_FLOOR",
+                            "RL_ENV",
+                            "RL_ENEMY",
+                            "RL_PLAYER",
+                            "RL_WALL_BTM",
+                            "RL_UI"
+                        };
+                        int currentRenderLayer = 0;
+                        unsigned int rl = static_cast<unsigned int>(emitter->renderLayer);
+                        while (rl >>= 1) ++currentRenderLayer;
+                        if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
+                        {
+                            emitter->renderLayer = (1u << currentRenderLayer);
+                        }
+
+                        ImGui::Text("Render Order");
+                        ImGui::InputInt("##Particle Render Order", &emitter->renderOrder, 1, 0, 0);
 
                         ImGui::Separator();
 
@@ -3125,63 +3501,161 @@ namespace Uma_Engine
         }
         else if (type == coordinator.GetComponentType<Uma_UI::Image>())
         {
-           if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
-           {
-               if (ImGui::Button("Remove Component##Image"))
-               {
-                   auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Image>>(
-                       &coordinator,
-                       entity,
-                       "Remove Image"
-                   );
-                   commandHistory.ExecuteCommand(std::move(cmd));
+            if (ImGui::CollapsingHeader("Image", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Image"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Image>>(
+                        &coordinator,
+                        entity,
+                        "Remove Image"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
 
-                   return true;
-               }
+                auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
+                ImGui::Indent();
 
-               auto& image = coordinator.GetComponent<Uma_UI::Image>(entity);
-               ImGui::Indent();
-           
-               // Begin tracking
-               BeginComponentEdit(entity, coordinator);
-           
-               ImGui::Text("Texture: %s", image.textureName.c_str());
-               static char imageTextureBuffer[256];
-               strncpy(imageTextureBuffer, image.textureName.c_str(), 255);
-               imageTextureBuffer[255] = '\0';
-               if (ImGui::InputText("Texture Name", imageTextureBuffer, 256))
-               {
-                   image.textureName = imageTextureBuffer;
-                   m_hasUnsavedEdit = true;
-               }
-               ImGui::Separator();
-               ImGui::Text("Sorting Order");
-               if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
-           
-               ImGui::Separator();
-               ImGui::Text("Color & Visibility");
-           
-               float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
-               if (ImGui::ColorEdit4("Image Color", imageColor))
-               {
-                   image.color.r = imageColor[0];
-                   image.color.g = imageColor[1];
-                   image.color.b = imageColor[2];
-                   image.color.a = imageColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               if (ImGui::Checkbox("Image Visible", &image.visible))
-               {
-                   m_hasUnsavedEdit = true;
-               }
-           
-               // End tracking
-               EndComponentEdit(entity, coordinator, "Image");
-           
-               ImGui::Unindent();
-           }
-        }
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                ImGui::Text("Texture Path: %s", image.texturePath.c_str());
+
+                // Create a visible drop zone with visual feedback
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                // Draw a border box
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                // Supported formats text
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##TextureDropZone", dropZoneSize);
+
+                bool isHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop Target
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Highlight the drop zone when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            image.texturePath = relativePath;
+                            image.texture = nullptr;
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Image!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                else if (isHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
+
+                ImGui::Separator();
+                ImGui::Text("Sorting Order");
+                if (ImGui::InputInt("##Image Sorting Order", &image.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                ImGui::Text("Color & Visibility");
+
+                float imageColor[4] = { image.color.r, image.color.g, image.color.b, image.color.a };
+                if (ImGui::ColorEdit4("Image Color", imageColor))
+                {
+                    image.color.r = imageColor[0];
+                    image.color.g = imageColor[1];
+                    image.color.b = imageColor[2];
+                    image.color.a = imageColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::Checkbox("Image Visible", &image.visible))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Texture info
+                ImGui::Separator();
+                if (image.texture)
+                {
+                    ImGui::Text("Texture ID: %u", image.texture->tex_id);
+                    ImGui::Text("Size: %.0f x %.0f",
+                        image.texture->GetNativeSize().x,
+                        image.texture->GetNativeSize().y);
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1, 0.5f, 0, 1), "Texture not loaded");
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Image");
+
+                ImGui::Unindent();
+            }
+            }
         else if (type == coordinator.GetComponentType<Uma_UI::Button>())
         {
            if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
@@ -3388,14 +3862,101 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Font Settings");
             
-                static char fontNameBuffer[256];
-                strncpy(fontNameBuffer, text.fontName.c_str(), 255);
-                fontNameBuffer[255] = '\0';
-                if (ImGui::InputText("Font Name", fontNameBuffer, 256))
+                ImGui::Separator();
+                ImGui::Text("Font Settings");
+
+                ImGui::Text("Font Path: %s", text.fontPath.empty() ? "(None)" : text.fontPath.c_str());
+
+                // Create a visible drop zone with visual feedback
+                ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                // Draw a border box
+                ImDrawList* drawList = ImGui::GetWindowDrawList();
+                ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                drawList->AddRectFilled(cursorPos,
+                    ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                    bgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Font Here");
+                ImVec2 textPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                );
+                drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Font Here");
+
+                // Supported formats text
+                ImVec2 formatTextSize = ImGui::CalcTextSize("(.ttf, .otf)");
+                ImVec2 formatTextPos = ImVec2(
+                    cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                    cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                );
+                drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.ttf, .otf)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(cursorPos);
+                ImGui::InvisibleButton("##FontDropZone", dropZoneSize);
+
+                bool isHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop for Fonts
+                if (ImGui::BeginDragDropTarget())
                 {
-                    text.fontName = fontNameBuffer;
-                    m_hasUnsavedEdit = true;
+                    // Highlight the drop zone when dragging over
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".ttf" || ext == ".otf")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            text.fontPath = relativePath;
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Font!\nExpected: .ttf, .otf";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
                 }
+                else if (isHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    drawList->AddRect(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
             
                 if (ImGui::DragFloat("Font Size", &text.fontSize, 1.0f, 1.0f, 200.0f, "%.1f"))
                 {
@@ -3515,13 +4076,13 @@ namespace Uma_Engine
                 BeginComponentEdit(entity, coordinator);
 
                 // Damage
-                if (ImGui::DragInt("Damage", &projectile.mDamage, 1.0F, 0, 1000))
+                if (ImGui::DragInt("Damage", &projectile.mStats.damage, 1.0F, 0, 1000))
                 {
                     m_hasUnsavedEdit = true;
                 }
 
                 // Damage
-                if (ImGui::DragFloat("Speed", &projectile.mSpeed, 1.0f, 0, 300.f))
+                if (ImGui::DragFloat("Speed", &projectile.mStats.speed, 1.0f, 0, 300.f))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -3529,7 +4090,7 @@ namespace Uma_Engine
                 ImGui::Separator();
 
                 // Fade Over Time
-                if (ImGui::Checkbox("Fade Over Time", &projectile.mFadeOVerTime))
+                if (ImGui::Checkbox("Fade Over Time", &projectile.mStats.fadeOVerTime))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -3540,7 +4101,7 @@ namespace Uma_Engine
                 }
 
                 // Life Time
-                if (ImGui::DragFloat("Life Time", &projectile.mLifeTime, 0.1f, 0.0f, 60.0f))
+                if (ImGui::DragFloat("Life Time", &projectile.mStats.lifeTime, 0.1f, 0.0f, 60.0f))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -3627,6 +4188,10 @@ namespace Uma_Engine
                     }
 
                     ImGui::Separator();
+                    ImGui::Text("Tilemap Size: %dx%d units",
+                        tilemap.mapWidth,
+                        tilemap.mapHeight);
+
                     ImGui::Text("World Size: %dx%d units",
                         tilemap.mapWidth * tilemap.tileSize,
                         tilemap.mapHeight * tilemap.tileSize);
@@ -3636,13 +4201,92 @@ namespace Uma_Engine
 
                 if (ImGui::TreeNode("Tileset Properties"))
                 {
-                    static char tilsetTextureNameBuffer[512];
-                    strncpy(tilsetTextureNameBuffer, tilemap.tileset.textureName.c_str(), 511);
-                    tilsetTextureNameBuffer[511] = '\0';
-                    if (ImGui::InputText("Texture Name", tilsetTextureNameBuffer, 512))
+                    // Create a visible drop zone with visual feedback
+                    ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                    ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                    ImDrawList* drawList = ImGui::GetWindowDrawList();
+                    ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                    // Background
+                    drawList->AddRectFilled(cursorPos,
+                        ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                        bgColor, 4.0f);
+
+                    // Center text in the drop zone
+                    ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                    ImVec2 textPos = ImVec2(
+                        cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                        cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                    );
+                    drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                    // Supported formats text
+                    ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                    ImVec2 formatTextPos = ImVec2(
+                        cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                        cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                    );
+                    drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                    // Invisible button for the drop zone
+                    ImGui::SetCursorScreenPos(cursorPos);
+                    ImGui::InvisibleButton("##TextureDropZone", dropZoneSize);
+
+                    bool isHovered = ImGui::IsItemHovered();
+
+                    // Drag and Drop Target
+                    if (ImGui::BeginDragDropTarget())
                     {
-                        tilemap.tileset.textureName = tilsetTextureNameBuffer;
-                        m_hasUnsavedEdit = true;
+                        // Highlight the drop zone when dragging over
+                        drawList->AddRect(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                        // Show glow effect
+                        drawList->AddRectFilled(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 150, 255, 50), 4.0f);
+
+                        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                        {
+                            const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                            std::string fullPath = data->filepath;
+                            std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                            std::filesystem::path p(fullPath);
+                            std::string ext = p.extension().string();
+
+                            // Convert to lowercase for comparison
+                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                            {
+                                std::string relativePath = fullPath;
+                                size_t assetsPos = fullPath.find("Assets/");
+                                if (assetsPos != std::string::npos)
+                                {
+                                    relativePath = fullPath.substr(assetsPos);
+                                }
+
+                                tilemap.tileset.texturePath = relativePath;
+                                tilemap.tileset.texture = nullptr;
+                                m_hasUnsavedEdit = true;
+                            }
+                            else
+                            {
+                                m_popupErrorMessage = "Invalid file type for Sprite!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                ImGui::OpenPopup("Invalid File Format");
+                            }
+                        }
+                        ImGui::EndDragDropTarget();
+                    }
+                    else if (isHovered)
+                    {
+                        // Subtle hover effect when not dragging
+                        drawList->AddRect(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
                     }
 
                     float gridArray[2] = { tilemap.tileset.columns, tilemap.tileset.rows };
@@ -3859,6 +4503,96 @@ namespace Uma_Engine
                 }
 
                 EndComponentEdit(entity, coordinator, "Tilemap");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::FSM>())
+        {
+            if (ImGui::CollapsingHeader("FSM"))
+            {
+                if (ImGui::Button("Remove Component##FSM"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::FSM>>(
+                        &coordinator,
+                        entity,
+                        "Remove FSM"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& fsm = coordinator.GetComponent<Uma_ECS::FSM>(entity);
+                auto& luaScripts = coordinator.GetComponent<Uma_ECS::LuaScript>(entity);  // Assuming component type is LuaScripts
+
+                ImGui::Indent();
+                BeginComponentEdit(entity, coordinator);
+
+                static int selectedScriptIndex = -1;
+
+                // Build list of script names
+                std::vector<std::string> scriptNames;
+                for (const auto& script : luaScripts.scripts) {
+                    scriptNames.push_back(script.scriptName);
+                }
+
+                const char* previewText = scriptNames.empty() ? "No scripts" : "Select script";
+                if (selectedScriptIndex >= 0 && selectedScriptIndex < (int)scriptNames.size()) {
+                    previewText = scriptNames[selectedScriptIndex].c_str();
+                }
+
+                if (ImGui::BeginCombo("Script Name##FSM", previewText)) {
+                    for (int i = 0; i < (int)scriptNames.size(); ++i) {
+                        bool isSelected = (i == selectedScriptIndex);
+                        if (ImGui::Selectable(scriptNames[i].c_str(), isSelected)) {
+                            selectedScriptIndex = i;
+                        }
+                        if (isSelected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+                    ImGui::EndCombo();
+                }
+
+                if (ImGui::Button("Add State from Script", ImVec2(ImGui::GetContentRegionAvail().x, 0))
+                    && selectedScriptIndex >= 0
+                    && selectedScriptIndex < (int)scriptNames.size())
+                {
+                    std::string stateName = scriptNames[selectedScriptIndex];
+                    fsm.AddStates(stateName, true);
+                    // Optional: reset selection
+                    selectedScriptIndex = -1;
+                }
+
+                ImGui::Separator();
+
+                std::vector<std::string> stateKeys;
+                for (const auto& p : fsm.states) stateKeys.push_back(p.first);
+
+                for (size_t i = 0; i < stateKeys.size(); ++i)
+                {
+                    const std::string& key = stateKeys[i];
+                    auto it = fsm.states.find(key);
+                    if (it == fsm.states.end()) continue;
+
+                    ImGui::PushID((int)i);
+
+                    if (ImGui::TreeNode(key.c_str()))
+                    {
+                        ImGui::PushStyleColor(ImGuiCol_Button, IM_COL32(200, 50, 50, 255));
+                        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, IM_COL32(255, 75, 75, 255));
+                        if (ImGui::Button("Remove"))
+                        {
+                            fsm.states.erase(key);
+                        }
+                        ImGui::PopStyleColor(2);
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                EndComponentEdit(entity, coordinator, "FSM");
 
                 ImGui::Unindent();
             }
@@ -4091,8 +4825,7 @@ namespace Uma_Engine
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Sprite>()) && ImGui::MenuItem("Sprite"))
             {
                 Uma_ECS::Sprite defaultSprite;
-                defaultSprite.textureName = "whitePixel.png";
-
+                defaultSprite.texturePath = "Assets/whitePixel.png";
                 auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Sprite>>(
                     &coordinator,
                     m_selectedEntity,
@@ -4280,12 +5013,43 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_ECS::Tilemap{},
                     "Add Tilemap"
+                    );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::FSM>()) && ImGui::MenuItem("FSM"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::FSM>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::FSM{},
+                    "Add StateMachine"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }
 
             ImGui::EndPopup();
         }
+
+        // Error popup
+        if (ImGui::BeginPopupModal("Invalid File Format", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Error:");
+            ImGui::TextWrapped("%s", m_popupErrorMessage.c_str());
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            // Center the OK button
+            float buttonWidth = 120.0f;
+            ImGui::SetCursorPosX((ImGui::GetWindowSize().x - buttonWidth) * 0.5f);
+
+            if (ImGui::Button("OK", ImVec2(buttonWidth, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
         ImGui::End();
     }
 

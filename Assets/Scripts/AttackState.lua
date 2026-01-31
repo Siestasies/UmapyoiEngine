@@ -46,7 +46,9 @@ function AttackState:update(dt)
         -- SetActiveEntity(entity, false)
         -- SetActiveEntity(entity, true)
 
-        GetProjectileFrom(entity).mDamage = self.parent:GetEnemy().mAttackDamage
+        local projectile = GetProjectileFrom(entity)
+
+        projectile.mStats.damage = self.parent:GetEnemy().mAttackDamage
         PlayEntitySound(self.parent.id, "fire_enemy_attack", false, 0.3);
 
         
@@ -54,7 +56,7 @@ function AttackState:update(dt)
             angle = angle + 360
         end
 
-        AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, GetProjectileFrom(entity).mSpeed, angle - 180)
+        AddForce(entity, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, projectile.mStats.speed, angle - 180)
 
         AttackCD = 1 / self.parent:GetEnemy().mAttackSpeed
     end

@@ -33,7 +33,7 @@ namespace Uma_ECS
     struct Sprite
     {
         // pointer pointing to the texture in resources manager
-        std::string textureName{};
+        std::string texturePath{};
         LayerMask renderLayer = RL_NONE;
         int renderOrder = 0;
         bool flipX{ false };
@@ -46,6 +46,7 @@ namespace Uma_ECS
         float alpha = 1.0f;                         // Opacity
         Vec2 spriteSheetGrid{ 1.0f, 1.0f };         // Total columns and rows (default = full texture)
         Vec2 spriteCell{ 0.0f, 0.0f };              // Which cell to render (col, row)
+        Vec2 spriteOffset{ 0.0f, 0.0f };            // Offset of sprite (x, y)
 
         /*!
         \brief Calculates the UV coordinates for the current sprite cell.
@@ -76,10 +77,7 @@ namespace Uma_ECS
         {
             value.SetObject();
 
-            // Save texture name (not the pointer)
-            value.AddMember("textureName",
-                rapidjson::Value(textureName.c_str(), allocator),
-                allocator);
+            value.AddMember("texturePath", rapidjson::Value(texturePath.c_str(), allocator), allocator);
 
             value.AddMember("layer", renderLayer, allocator);
             value.AddMember("order", renderOrder, allocator);
@@ -93,6 +91,8 @@ namespace Uma_ECS
             value.AddMember("gridY", spriteSheetGrid.y, allocator);
             value.AddMember("cellX", spriteCell.x, allocator);
             value.AddMember("cellY", spriteCell.y, allocator);
+            value.AddMember("offsetX", spriteOffset.x, allocator);
+            value.AddMember("offsetY", spriteOffset.y, allocator);
 
             rapidjson::Value tintArray(rapidjson::kArrayType);
             tintArray.PushBack(tintColor.x, allocator);
@@ -108,7 +108,10 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
-            textureName = value["textureName"].GetString();
+            if (value.HasMember("texturePath"))
+            {
+                texturePath = value["texturePath"].GetString();
+            }
 
             if (value.HasMember("layer"))
             {
@@ -129,6 +132,8 @@ namespace Uma_ECS
             spriteSheetGrid.y = value.HasMember("gridY") ? value["gridY"].GetFloat() : 1.0f;
             spriteCell.x = value.HasMember("cellX") ? value["cellX"].GetFloat() : 0.0f;
             spriteCell.y = value.HasMember("cellY") ? value["cellY"].GetFloat() : 0.0f;
+            spriteOffset.x = value.HasMember("offsetX") ? value["offsetX"].GetFloat() : 0.0f;
+            spriteOffset.y = value.HasMember("offsetY") ? value["offsetY"].GetFloat() : 0.0f;
 
             if (value.HasMember("tintColor") && value["tintColor"].IsArray())
             {

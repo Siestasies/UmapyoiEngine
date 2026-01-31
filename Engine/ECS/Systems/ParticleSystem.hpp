@@ -63,7 +63,7 @@ namespace Uma_ECS
 
         // Particle functions
         void SpawnParticle(EmitterInstance& emitter, const Vec2& emitterPos);
-        void SpawnScreenFillParticle(EmitterInstance& emitter);
+        void SpawnScreenFillParticle(EmitterInstance& emitter, bool initialSpawn = false);
         void UpdateParticle(Particle& p, EmitterInstance& emitter, float dt);
         float Random(float min, float max);
     };

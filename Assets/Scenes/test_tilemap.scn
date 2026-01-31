@@ -2,117 +2,85 @@
     "resources": {
         "textures": [
             {
-                "name": "HTP_Image",
-                "path": "Assets/HowToPlay.png"
+                "path": "assets/statue.png"
             },
             {
-                "name": "wall_top",
-                "path": "Assets/wall_top.png"
+                "path": "assets/wall_top.png"
             },
             {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
+                "path": "assets/howtoplay.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
+                "path": "assets/fire bird.png"
             },
             {
-                "name": "floor_tatami",
-                "path": "Assets/floor_tatami.png"
+                "path": "assets/floor_tatami.png"
             },
             {
-                "name": "fire bird",
-                "path": "Assets/fire bird.png"
+                "path": "assets/wall_top_right.png"
             },
             {
-                "name": "whitePixel",
-                "path": "Assets/whitePixel.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "name": "player_ss",
-                "path": "Assets/player_ss.png"
+                "path": "assets/player_ss.png"
             },
             {
-                "name": "wall_left",
-                "path": "Assets/wall_left.png"
+                "path": "assets/wall_left.png"
             },
             {
-                "name": "wall_top_left",
-                "path": "Assets/wall_top_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
-                "name": "wall_right",
-                "path": "Assets/wall_right.png"
+                "path": "assets/wall_top_left.png"
             },
             {
-                "name": "WoodF_3",
-                "path": "Assets/Environment/m3 floor 1.png"
+                "path": "assets/wall_right.png"
             },
             {
-                "name": "wall_btm",
-                "path": "Assets/wall_btm.png"
+                "path": "assets/environment/m3 floor 1.png"
             },
             {
-                "name": "WoodF_2",
-                "path": "Assets/Environment/floor 2 horizontal.png"
+                "path": "assets/wall_btm.png"
             },
             {
-                "name": "EnvSprite1",
-                "path": "Assets/Environment/spritesheet (9).png"
+                "path": "assets/environment/spritesheet (9).png"
             },
             {
-                "name": "pause",
-                "path": "Assets/pause menu.png"
+                "path": "assets/pause menu.png"
             },
             {
-                "name": "HallWay_Hori1",
-                "path": "Assets/Environment/horizontal hallway.png"
+                "path": "assets/environment/horizontal hallway.png"
             },
             {
-                "name": "Kappa_1",
-                "path": "Assets/Environment/kappa gem forming_0023.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
-                "name": "fire_ball",
-                "path": "Assets/256px VFX.png"
+                "path": "assets/256px vfx.png"
             },
             {
-                "name": "hp",
-                "path": "Assets/hp point.png"
+                "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/tilemap.png"
             }
         ],
         "fonts": [
             {
-                "name": "default",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "Fujimaru-Regular",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             }
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
-                "type": 0
-            },
-            {
-                "name": "hurt",
-                "path": "Assets/sounds/hurt.mp3",
-                "type": 0
-            },
-            {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
                 "type": 0
             },
             {
@@ -121,8 +89,23 @@
                 "type": 1
             },
             {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
+                "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
+            },
+            {
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
+                "type": 0
+            },
+            {
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -160,6 +143,33 @@
                 "path": "Assets/sounds/GameStart.wav",
                 "type": 0
             }
+        ],
+        "shaders": [
+            {
+                "name": "system_sprite",
+                "vertexPath": "Assets/Shaders/sprite.vert",
+                "fragmentPath": "Assets/Shaders/sprite.frag"
+            },
+            {
+                "name": "system_instanced",
+                "vertexPath": "Assets/Shaders/instanced.vert",
+                "fragmentPath": "Assets/Shaders/instanced.frag"
+            },
+            {
+                "name": "system_text",
+                "vertexPath": "Assets/Shaders/text.vert",
+                "fragmentPath": "Assets/Shaders/text.frag"
+            },
+            {
+                "name": "system_shape",
+                "vertexPath": "Assets/Shaders/shape.vert",
+                "fragmentPath": "Assets/Shaders/shape.frag"
+            },
+            {
+                "name": "system_debug",
+                "vertexPath": "Assets/Shaders/debug.vert",
+                "fragmentPath": "Assets/Shaders/debug.frag"
+            }
         ]
     },
     "entities": [
@@ -170,16 +180,16 @@
                 "struct Uma_ECS::Transform": {
                     "name": "kappa statue",
                     "position": {
-                        "x": 60.484,
-                        "y": -31.075
+                        "x": -55.882,
+                        "y": 54.411
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.379,
-                        "y": 0.379
+                        "x": 0.449,
+                        "y": 0.449
                     },
                     "parent": -1
                 },
@@ -204,8 +214,7 @@
                     "mapHeight": 20,
                     "tileSize": 16,
                     "tileset": {
-                        "textureName": "EnvSprite1",
-                        "texturePath": "",
+                        "texturePath": "Assets/tilemap.png",
                         "tilesetWidth": 0,
                         "tilesetHeight": 0,
                         "columns": 16,
@@ -1909,7 +1918,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
+                    "texturePath": "Assets/wall_btm.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -1920,6 +1929,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -1984,7 +1995,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
+                    "texturePath": "Assets/wall_btm.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -1995,6 +2006,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2059,7 +2072,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
+                    "texturePath": "Assets/wall_btm.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -2070,6 +2083,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2134,7 +2149,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
+                    "texturePath": "Assets/wall_btm.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -2145,6 +2160,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2209,7 +2226,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_btm",
+                    "texturePath": "Assets/wall_btm.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -2220,6 +2237,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2284,7 +2303,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2295,6 +2314,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2359,7 +2380,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2370,6 +2391,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2434,7 +2457,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2445,6 +2468,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2509,7 +2534,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2520,6 +2545,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2584,7 +2611,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2595,6 +2622,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2659,7 +2688,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2670,6 +2699,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2734,7 +2765,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2745,6 +2776,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2809,7 +2842,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_right",
+                    "texturePath": "Assets/wall_right.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2820,6 +2853,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2884,7 +2919,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "texturePath": "Assets/wall_top.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2895,6 +2930,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -2959,7 +2996,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "texturePath": "Assets/wall_top.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -2970,6 +3007,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3034,7 +3073,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "texturePath": "Assets/wall_top.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -3045,6 +3084,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3109,7 +3150,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "texturePath": "Assets/wall_top.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -3120,6 +3161,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3184,7 +3227,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "wall_top",
+                    "texturePath": "Assets/wall_top.png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -3195,6 +3238,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3259,7 +3304,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3270,6 +3315,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3312,7 +3359,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3323,6 +3370,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3365,7 +3414,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3376,6 +3425,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3418,7 +3469,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3429,6 +3480,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3471,7 +3524,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3482,6 +3535,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3524,7 +3579,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3535,6 +3590,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3577,7 +3634,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3588,6 +3645,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3630,7 +3689,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3641,6 +3700,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3683,7 +3744,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3694,6 +3755,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3736,7 +3799,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3747,6 +3810,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3789,7 +3854,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3800,6 +3865,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3842,7 +3909,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3853,6 +3920,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3895,7 +3964,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3906,6 +3975,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -3948,7 +4019,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -3959,6 +4030,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4001,7 +4074,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "floor_tatami",
+                    "texturePath": "Assets/floor_tatami.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4012,6 +4085,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4106,7 +4181,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -4117,6 +4192,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4159,7 +4236,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4170,6 +4247,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4212,7 +4291,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4223,6 +4302,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4265,7 +4346,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4276,6 +4357,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4318,7 +4401,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -4329,6 +4412,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4371,7 +4456,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4382,6 +4467,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4424,7 +4511,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -4435,6 +4522,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4477,7 +4566,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -4488,6 +4577,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4530,7 +4621,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4541,6 +4632,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4583,7 +4676,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4594,6 +4687,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4636,7 +4731,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4647,6 +4742,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4689,7 +4786,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -4700,6 +4797,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4764,7 +4863,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -4775,6 +4874,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4817,7 +4918,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4828,6 +4929,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4870,7 +4973,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4881,6 +4984,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4945,7 +5050,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -4956,6 +5061,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -4998,7 +5105,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -5009,6 +5116,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5051,7 +5160,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -5062,6 +5171,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5104,7 +5215,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -5115,6 +5226,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5194,7 +5307,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -5205,6 +5318,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5269,7 +5384,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -5280,6 +5395,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5344,7 +5461,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -5355,6 +5472,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5419,7 +5538,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -5430,6 +5549,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5494,7 +5615,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -5505,6 +5626,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5569,7 +5692,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -5580,6 +5703,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5644,7 +5769,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -5655,6 +5780,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5697,7 +5824,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -5708,6 +5835,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5772,7 +5901,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -5783,6 +5912,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5825,7 +5956,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -5836,6 +5967,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5878,7 +6011,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -5889,6 +6022,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5931,7 +6066,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -5942,6 +6077,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -5984,7 +6121,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -5995,6 +6132,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6037,7 +6176,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -6048,6 +6187,8 @@
                     "gridY": 4.0,
                     "cellX": 0.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6090,7 +6231,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -6101,6 +6242,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6143,7 +6286,7 @@
                     "parent": 71
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -6154,6 +6297,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6184,7 +6329,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -6195,6 +6340,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6237,7 +6384,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -6248,6 +6395,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6327,7 +6476,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6338,6 +6487,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6380,7 +6531,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -6391,6 +6542,8 @@
                     "gridY": 4.0,
                     "cellX": 9.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6455,7 +6608,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6466,6 +6619,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6508,7 +6663,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6519,6 +6674,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6561,7 +6718,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6572,6 +6729,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6636,7 +6795,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6647,6 +6806,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6689,7 +6850,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6700,6 +6861,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6742,7 +6905,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6753,6 +6916,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6795,7 +6960,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6806,6 +6971,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6848,7 +7015,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -6859,6 +7026,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6923,7 +7092,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -6934,6 +7103,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -6998,7 +7169,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -7009,6 +7180,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7073,7 +7246,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -7084,6 +7257,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7148,7 +7323,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7159,6 +7334,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7223,7 +7400,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7234,6 +7411,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7298,7 +7477,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7309,6 +7488,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7373,7 +7554,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7384,6 +7565,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7448,7 +7631,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -7459,6 +7642,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7523,7 +7708,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -7534,6 +7719,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7598,7 +7785,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -7609,6 +7796,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7673,7 +7862,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -7684,6 +7873,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7748,7 +7939,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7759,6 +7950,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7838,7 +8031,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7849,6 +8042,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7891,7 +8086,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -7902,6 +8097,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -7966,7 +8163,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -7977,6 +8174,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8041,7 +8240,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -8052,6 +8251,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8116,7 +8317,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -8127,6 +8328,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8191,7 +8394,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -8202,6 +8405,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8244,7 +8449,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -8255,6 +8460,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8319,7 +8526,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -8330,6 +8537,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8394,7 +8603,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "HallWay_Hori1",
+                    "texturePath": "Assets/Environment/horizontal hallway.png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -8405,6 +8614,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8469,7 +8680,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8480,6 +8691,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8522,7 +8735,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8533,6 +8746,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8575,7 +8790,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8586,6 +8801,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8628,7 +8845,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8639,6 +8856,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8681,7 +8900,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8692,6 +8911,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8734,7 +8955,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8745,6 +8966,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8787,7 +9010,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_2",
+                    "texturePath": "Assets/Environment/floor 2 horizontal.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -8798,6 +9021,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8840,7 +9065,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -8851,6 +9076,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8915,7 +9142,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -8926,6 +9153,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -8968,7 +9197,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -8979,6 +9208,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9043,7 +9274,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -9054,6 +9285,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9118,7 +9351,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -9129,6 +9362,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9193,7 +9428,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -9204,6 +9439,8 @@
                     "gridY": 4.0,
                     "cellX": 9.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9268,7 +9505,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -9279,6 +9516,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9343,7 +9582,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -9354,6 +9593,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9418,7 +9659,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -9429,6 +9670,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9493,7 +9736,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -9504,6 +9747,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9546,7 +9791,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -9557,6 +9802,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9599,7 +9846,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -9610,6 +9857,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9652,7 +9901,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "WoodF_3",
+                    "texturePath": "Assets/Environment/m3 floor 1.png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -9663,6 +9912,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9705,7 +9956,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -9716,6 +9967,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9758,7 +10011,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -9769,6 +10022,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9811,7 +10066,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -9822,6 +10077,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9886,7 +10143,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -9897,6 +10154,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -9961,7 +10220,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -9972,6 +10231,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10036,7 +10297,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10047,6 +10308,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10111,7 +10374,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10122,6 +10385,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10186,7 +10451,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10197,6 +10462,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10261,7 +10528,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10272,6 +10539,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10336,7 +10605,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10347,6 +10616,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10411,7 +10682,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10422,6 +10693,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10486,7 +10759,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10497,6 +10770,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10561,7 +10836,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10572,6 +10847,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10636,7 +10913,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -10647,6 +10924,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10711,7 +10990,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -10722,6 +11001,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10786,7 +11067,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -10797,6 +11078,8 @@
                     "gridY": 4.0,
                     "cellX": 9.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10861,7 +11144,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -10872,6 +11155,8 @@
                     "gridY": 4.0,
                     "cellX": 15.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -10919,7 +11204,9 @@
                             "mode": 1,
                             "maxParticles": 100,
                             "isActive": true,
-                            "textureName": "whitePixel",
+                            "renderLayer": 8,
+                            "renderOrder": 1,
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.5,
@@ -11023,7 +11310,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": true,
@@ -11034,6 +11321,8 @@
                     "gridY": 4.0,
                     "cellX": 14.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11081,7 +11370,9 @@
                             "mode": 1,
                             "maxParticles": 100,
                             "isActive": true,
-                            "textureName": "whitePixel",
+                            "renderLayer": 8,
+                            "renderOrder": 1,
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.5,
@@ -11185,7 +11476,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": true,
@@ -11196,6 +11487,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11275,7 +11568,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 2,
                     "order": 0,
                     "flipX": false,
@@ -11286,6 +11579,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11350,7 +11645,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -11361,6 +11656,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11425,7 +11722,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -11436,6 +11733,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11500,7 +11799,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -11511,6 +11810,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11575,7 +11876,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -11586,6 +11887,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 3.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11650,7 +11953,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11661,6 +11964,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11703,7 +12008,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11714,6 +12019,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11756,7 +12063,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11767,6 +12074,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11809,7 +12118,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11820,6 +12129,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11862,7 +12173,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11873,6 +12184,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11915,7 +12228,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11926,6 +12239,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -11968,7 +12283,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -11979,6 +12294,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12021,7 +12338,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12032,6 +12349,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12074,7 +12393,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12085,6 +12404,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12127,7 +12448,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12138,6 +12459,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12180,7 +12503,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12191,6 +12514,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12233,7 +12558,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12244,6 +12569,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12286,7 +12613,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12297,6 +12624,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12339,7 +12668,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12350,6 +12679,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12392,7 +12723,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12403,6 +12734,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12445,7 +12778,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12456,6 +12789,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12498,7 +12833,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12509,6 +12844,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12551,7 +12888,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12562,6 +12899,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12604,7 +12943,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12615,6 +12954,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12657,7 +12998,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12668,6 +13009,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12710,7 +13053,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12721,6 +13064,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12763,7 +13108,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12774,6 +13119,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12816,7 +13163,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12827,6 +13174,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12869,7 +13218,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12880,6 +13229,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12922,7 +13273,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12933,6 +13284,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -12975,7 +13328,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -12986,6 +13339,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13028,7 +13383,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13039,6 +13394,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13081,7 +13438,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13092,6 +13449,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13134,7 +13493,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13145,6 +13504,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13187,7 +13548,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13198,6 +13559,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13240,7 +13603,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13251,6 +13614,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13293,7 +13658,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13304,6 +13669,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13346,7 +13713,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13357,6 +13724,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13399,7 +13768,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13410,6 +13779,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13452,7 +13823,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13463,6 +13834,8 @@
                     "gridY": 4.0,
                     "cellX": 11.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13505,7 +13878,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13516,6 +13889,8 @@
                     "gridY": 4.0,
                     "cellX": 10.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13558,7 +13933,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13569,6 +13944,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13611,7 +13988,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -13622,6 +13999,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13664,7 +14043,7 @@
                     "parent": 69
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -13675,6 +14054,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13705,7 +14086,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -13716,6 +14097,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13758,7 +14141,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -13769,6 +14152,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13811,7 +14196,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -13822,6 +14207,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13864,7 +14251,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -13875,6 +14262,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13917,7 +14306,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -13928,6 +14317,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -13970,7 +14361,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -13981,6 +14372,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14023,7 +14416,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14034,6 +14427,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14076,7 +14471,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14087,6 +14482,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14129,7 +14526,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14140,6 +14537,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14182,7 +14581,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14193,6 +14592,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14235,7 +14636,7 @@
                     "parent": 196
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14246,6 +14647,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14276,7 +14679,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14287,6 +14690,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14329,7 +14734,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14340,6 +14745,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14382,7 +14789,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14393,6 +14800,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14435,7 +14844,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14446,6 +14855,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14488,7 +14899,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14499,6 +14910,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14541,7 +14954,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14552,6 +14965,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14594,7 +15009,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14605,6 +15020,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14647,7 +15064,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14658,6 +15075,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14700,7 +15119,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14711,6 +15130,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14753,7 +15174,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14764,6 +15185,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14806,7 +15229,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14817,6 +15240,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14859,7 +15284,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14870,6 +15295,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14912,7 +15339,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -14923,6 +15350,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -14965,7 +15394,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -14976,6 +15405,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15018,7 +15449,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15029,6 +15460,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15071,7 +15504,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15082,6 +15515,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15124,7 +15559,7 @@
                     "parent": 213
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15135,6 +15570,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15165,7 +15602,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15176,6 +15613,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15218,7 +15657,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15229,6 +15668,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15271,7 +15712,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15282,6 +15723,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15324,7 +15767,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15335,6 +15778,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15377,7 +15822,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -15388,6 +15833,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15430,7 +15877,7 @@
                     "parent": 219
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15441,6 +15888,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15471,7 +15920,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15482,6 +15931,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15524,7 +15975,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15535,6 +15986,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15577,7 +16030,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15588,6 +16041,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15630,7 +16085,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15641,6 +16096,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15683,7 +16140,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15694,6 +16151,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15736,7 +16195,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15747,6 +16206,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15789,7 +16250,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15800,6 +16261,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15842,7 +16305,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15853,6 +16316,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15895,7 +16360,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -15906,6 +16371,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -15948,7 +16415,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -15959,6 +16426,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16001,7 +16470,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16012,6 +16481,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16054,7 +16525,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16065,6 +16536,8 @@
                     "gridY": 4.0,
                     "cellX": 13.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16107,7 +16580,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16118,6 +16591,8 @@
                     "gridY": 4.0,
                     "cellX": 12.0,
                     "cellY": 2.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16160,7 +16635,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16171,6 +16646,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16213,7 +16690,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -16224,6 +16701,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16266,7 +16745,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": true,
@@ -16277,6 +16756,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16319,7 +16800,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16330,6 +16811,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16372,7 +16855,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16383,6 +16866,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16425,7 +16910,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -16436,6 +16921,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16478,7 +16965,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16489,6 +16976,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16531,7 +17020,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16542,6 +17031,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16584,7 +17075,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16595,6 +17086,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16637,7 +17130,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -16648,6 +17141,8 @@
                     "gridY": 4.0,
                     "cellX": 3.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16712,7 +17207,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16723,6 +17218,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16765,7 +17262,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -16776,6 +17273,8 @@
                     "gridY": 4.0,
                     "cellX": 1.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16818,7 +17317,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -16829,6 +17328,8 @@
                     "gridY": 4.0,
                     "cellX": 3.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16893,7 +17394,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -16904,6 +17405,8 @@
                     "gridY": 4.0,
                     "cellX": 3.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -16968,7 +17471,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -16979,6 +17482,8 @@
                     "gridY": 4.0,
                     "cellX": 6.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17043,7 +17548,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -17054,6 +17559,8 @@
                     "gridY": 4.0,
                     "cellX": 5.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17096,7 +17603,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -17107,6 +17614,8 @@
                     "gridY": 4.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17149,7 +17658,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17160,6 +17669,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17202,7 +17713,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 4,
                     "order": 0,
                     "flipX": false,
@@ -17213,6 +17724,8 @@
                     "gridY": 4.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17255,7 +17768,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17266,6 +17779,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17330,7 +17845,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17341,6 +17856,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17405,7 +17922,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17416,6 +17933,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17462,7 +17981,7 @@
                     "default3D": true
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "Kappa_1",
+                    "texturePath": "Assets/Environment/kappa gem forming_0023.png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17473,6 +17992,8 @@
                     "gridY": 1.0,
                     "cellX": 0.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17520,7 +18041,9 @@
                             "mode": 1,
                             "maxParticles": 20,
                             "isActive": true,
-                            "textureName": "kappa_statue",
+                            "renderLayer": 8,
+                            "renderOrder": 1,
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     2.0,
@@ -17624,7 +18147,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -17635,6 +18158,8 @@
                     "gridY": 4.0,
                     "cellX": 7.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17687,7 +18212,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 128,
                     "order": 0,
                     "flipX": false,
@@ -17698,6 +18223,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17740,7 +18267,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 128,
                     "order": 0,
                     "flipX": true,
@@ -17751,6 +18278,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17793,7 +18322,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 128,
                     "order": 0,
                     "flipX": false,
@@ -17804,6 +18333,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17834,7 +18365,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 128,
                     "order": 0,
                     "flipX": false,
@@ -17845,6 +18376,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17875,7 +18408,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -17886,6 +18419,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17928,7 +18463,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": true,
@@ -17939,6 +18474,8 @@
                     "gridY": 4.0,
                     "cellX": 2.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17981,7 +18518,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 64,
                     "order": 0,
                     "flipX": false,
@@ -17992,6 +18529,8 @@
                     "gridY": 4.0,
                     "cellX": 4.0,
                     "cellY": 1.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -18038,7 +18577,7 @@
                     "default3D": true
                 },
                 "struct Uma_ECS::Sprite": {
-                    "textureName": "EnvSprite1",
+                    "texturePath": "Assets/Environment/spritesheet (9).png",
                     "layer": 8,
                     "order": 0,
                     "flipX": false,
@@ -18049,6 +18588,8 @@
                     "gridY": 4.0,
                     "cellX": 8.0,
                     "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -18096,7 +18637,9 @@
                             "mode": 1,
                             "maxParticles": 100,
                             "isActive": true,
-                            "textureName": "whitePixel",
+                            "renderLayer": 8,
+                            "renderOrder": 1,
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.2,
@@ -18337,7 +18880,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "pause",
+                    "texturePath": "Assets/pause menu.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -18557,7 +19100,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Resume",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -18615,7 +19158,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Resume",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -18673,7 +19216,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back to main",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
@@ -18731,7 +19274,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back to main",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -18884,7 +19427,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.0,
                     "colour": {
@@ -19024,7 +19567,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "How to Play",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
@@ -19082,7 +19625,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "How to Play",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -19222,7 +19765,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -19280,7 +19823,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -19337,7 +19880,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "HTP_Image",
+                    "texturePath": "Assets/HowToPlay.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -19375,7 +19918,9 @@
                             "mode": 2,
                             "maxParticles": 100,
                             "isActive": true,
-                            "textureName": "whitePixel",
+                            "renderLayer": 1,
+                            "renderOrder": 0,
+                            "texturePath": "Assets/whitePixel.png",
                             "appearance": {
                                 "scaleRange": [
                                     0.4,

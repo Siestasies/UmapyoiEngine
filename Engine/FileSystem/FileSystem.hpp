@@ -34,8 +34,14 @@ All rights reserved.
 #include "Events/IMGUIEvents.h"
 #include "Events/ECSEvents.h"
 #include "Events/EditorEvents.h"
+#include "Systems/Graphics.hpp"
 
 #include "Core/FilePaths.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#include <commdlg.h>
+#endif
 
 namespace Uma_Engine
 {
@@ -77,7 +83,7 @@ namespace Uma_Engine
     class FileBrowser
     {
     public:
-        FileBrowser(const std::string& root_path = ".")
+        FileBrowser(const std::string& root_path = Uma_FilePath::ASSET_ROOT)
             : mCurrPath(fs::absolute(root_path))
             , eSortMode(SortMode::Name)
             , bSortAscending(true)
@@ -88,6 +94,19 @@ namespace Uma_Engine
         {
             mFilter[0] = '\0';
             RefreshDirectory();
+        }
+
+        ~FileBrowser()
+        {
+            UnloadAllTextures();
+
+            if (pGraphics)
+            {
+                if (mDefaultFileIcon != 0)
+                    pGraphics->UnloadTexture(mDefaultFileIcon);
+                if (mDefaultFolderIcon != 0)
+                    pGraphics->UnloadTexture(mDefaultFolderIcon);
+            }
         }
 
         void Render() {
@@ -102,33 +121,78 @@ namespace Uma_Engine
             RenderFilterBar();
             ImGui::Separator();
 
+            // Process texture loading queue
+            ProcessTextureQueue();
+
             RenderFileList();
 
-            if (!FileDropHandler::aDroppedFiles.empty() && ImGui::IsWindowHovered()) {
-                for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles) {
+            if (!FileDropHandler::aDroppedFiles.empty() &&
+                ImGui::IsWindowHovered(ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
+            {
+                SetFeedback("Uploading file(s)...");
+
+                for (const auto& droppedfilepath : FileDropHandler::aDroppedFiles)
+                {
                     try
                     {
-                        fs::copy(droppedfilepath, mCurrPath, std::filesystem::copy_options::recursive);
-                        RefreshDirectory();
+                        fs::path source = droppedfilepath;
+                        fs::path target = mCurrPath / source.filename();
+
+                        if (fs::exists(target))
+                        {
+                            SetFeedback("Error: File already exists - " + source.filename().string());
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                            SetFeedback("Uploaded: " + source.filename().string());
+                        }
                     }
                     catch (const std::exception& e)
                     {
-                        feedback = e.what();
+                        SetFeedback(std::string("Error: ") + e.what());
                     }
                 }
+
+                RefreshDirectory();
                 FileDropHandler::aDroppedFiles.clear();
             }
+            else if (!FileDropHandler::aDroppedFiles.empty())
+            {
+                FileDropHandler::aDroppedFiles.clear();
+            }
+
             //Paste
             if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_V) && !copySource.empty())
             {
                 try
                 {
-                    fs::copy(copySource, mCurrPath, std::filesystem::copy_options::recursive);
-                    RefreshDirectory();
+                    SetFeedback("Pasting...");
+
+                    fs::path source = copySource;
+                    fs::path target = mCurrPath / source.filename();
+
+                    if (fs::exists(target))
+                    {
+                        SetFeedback("Error: File already exists in this folder.");
+                    }
+                    else
+                    {
+                        if (fs::is_directory(source))
+                        {
+                            fs::copy(source, target, std::filesystem::copy_options::recursive);
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                        }
+                        RefreshDirectory();
+                        SetFeedback("Pasted: " + source.filename().string());
+                    }
                 }
                 catch (const std::exception& e)
                 {
-                    feedback = e.what();
+                    SetFeedback(std::string("Paste Error: ") + e.what());
                 }
             }
 
@@ -195,6 +259,14 @@ namespace Uma_Engine
             return mPrevSceneName;
         }
 
+        void setGraphicsSystem(Graphics* graphics)
+        {
+            pGraphics = graphics;
+
+            // Load default icons
+            LoadDefaultIcons();
+        }
+
     private:
         // Files
         fs::path mCurrPath;
@@ -212,7 +284,9 @@ namespace Uma_Engine
         // Copy
         std::string copySource;
         // Log
-        std::string feedback = ":P";
+        std::string feedback = "";
+        float mFeedbackTimer = 0.0f;
+        const float mFeedbackDuration = 5.0f;
         // Mutex
         std::mutex mFileSysMutex;
         // Events
@@ -222,18 +296,174 @@ namespace Uma_Engine
         std::string mPrefabSceneName;
         std::string mPrevSceneName;
         std::string mPrefabName;
+        // View Mode
+        enum class ViewMode
+        {
+            Icons,
+            List
+        };
+        ViewMode mViewMode = ViewMode::Icons;
+
+        // Texture
+        Graphics* pGraphics = nullptr;
+        GLuint mDefaultFileIcon = 0;
+        GLuint mDefaultFolderIcon = 0;
+        std::unordered_map<std::string, Texture> mLoadedTextures;
+        std::queue<std::string> mLoadQueue;
+        size_t mMaxLoadsPerFrame = 2;
+        float mIconSize = 64.0f;
+
+        void SetFeedback(const std::string& msg)
+        {
+            feedback = msg;
+            mFeedbackTimer = mFeedbackDuration;
+        }
+
+        void LoadDefaultIcons()
+        {
+            if (!pGraphics) return;
+
+            // Load default icons
+            Texture fileIcon = pGraphics->LoadTextureFromFile("Assets/Icons/file_icon.png");
+            mDefaultFileIcon = fileIcon.tex_id;
+
+            Texture folderIcon = pGraphics->LoadTextureFromFile("Assets/Icons/folder_icon.png");
+            mDefaultFolderIcon = folderIcon.tex_id;
+        }
+
+        void UnloadAllTextures()
+        {
+            if (!pGraphics) return;
+
+            for (auto& [path, tex] : mLoadedTextures)
+            {
+                pGraphics->UnloadTexture(tex.tex_id);
+            }
+            mLoadedTextures.clear();
+
+            // Clear the load queue
+            while (!mLoadQueue.empty()) mLoadQueue.pop();
+        }
+
+        bool IsImageFile(const std::string& ext)
+        {
+            static const std::unordered_set<std::string> imageExts =
+            {
+                ".png", ".jpg", ".jpeg", ".bmp"
+            };
+
+            std::string lowerExt = ext;
+            std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
+            return imageExts.count(lowerExt) > 0;
+        }
+
+        std::string FormatFileSize(uintmax_t bytes)
+        {
+            const char* units[] = { "B", "KB", "MB", "GB", "TB" };
+            int unitIndex = 0;
+            double size = static_cast<double>(bytes);
+
+            while (size >= 1024.0 && unitIndex < 4)
+            {
+                size /= 1024.0;
+                unitIndex++;
+            }
+
+            char buffer[64];
+            if (unitIndex == 0)
+            {
+                // Bytes=
+                snprintf(buffer, sizeof(buffer), "%d %s", static_cast<int>(size), units[unitIndex]);
+            }
+            else
+            {
+                // KB, MB, GB, TB
+                snprintf(buffer, sizeof(buffer), "%.2f %s", size, units[unitIndex]);
+            }
+
+            return std::string(buffer);
+        }
+
+        void QueueTextureLoad(const std::string& filepath)
+        {
+            // Skip if already loaded
+            if (mLoadedTextures.count(filepath)) return;
+
+            // Skip if already in queue
+            std::queue<std::string> temp = mLoadQueue;
+            while (!temp.empty())
+            {
+                if (temp.front() == filepath) return;
+                temp.pop();
+            }
+
+            mLoadQueue.push(filepath);
+        }
+
+        void ProcessTextureQueue()
+        {
+            if (!pGraphics) return;
+
+            size_t loadsThisFrame = 0;
+
+            while (!mLoadQueue.empty() && loadsThisFrame < mMaxLoadsPerFrame)
+            {
+                std::string filepath = mLoadQueue.front();
+                mLoadQueue.pop();
+
+                // Skip if already loaded
+                if (mLoadedTextures.count(filepath)) continue;
+
+                // Load the texture
+                Texture tex = pGraphics->LoadTextureFromFile(filepath);
+                if (tex.tex_id != 0)
+                {
+                    mLoadedTextures[filepath] = tex;
+                    loadsThisFrame++;
+                }
+            }
+        }
+
+        GLuint GetFileTexture(const File& file)
+        {
+            // Folders use folder icon
+            if (file.isFolder)
+                return mDefaultFolderIcon;
+
+            // Check if image file
+            if (!IsImageFile(file.ext))
+                return mDefaultFileIcon;
+
+            // Check if texture is already loaded
+            auto it = mLoadedTextures.find(file.path);
+            if (it != mLoadedTextures.end())
+                return it->second.tex_id;
+
+            // Not loaded yet, so queue and return default icon
+            QueueTextureLoad(file.path);
+            return mDefaultFileIcon;
+        }
 
         void RefreshDirectory() {
+            // Unload old directory textures
+            UnloadAllTextures();
+
             aFiles.clear();
 
             try {
                 for (const auto& entry : fs::directory_iterator(mCurrPath)) {
                     aFiles.emplace_back(entry);
+
+                    // Queue image files for loading
+                    if (!entry.is_directory() && IsImageFile(entry.path().extension().string()))
+                    {
+                        QueueTextureLoad(entry.path().string());
+                    }
                 }
                 SortFiles();
             }
             catch (const fs::filesystem_error& e) {
-                feedback = e.what();
+                SetFeedback(e.what());
             }
         }
 
@@ -273,17 +503,34 @@ namespace Uma_Engine
                 RefreshDirectory();
             }
 
+            //if (!dropSource.empty() && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path() && ImGui::BeginDragDropTarget()) {
+                //if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
             if (!dropSource.empty() && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path() && ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
+                if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
                     FilePayload plData = *(FilePayload*)pl->Data;
                     try
                     {
-                        fs::copy(plData.filepath, mCurrPath.parent_path(), std::filesystem::copy_options::recursive);
-                        fs::remove(plData.filepath);
+                        fs::path source = plData.filepath;
+                        fs::path target = mCurrPath.parent_path() / source.filename();
+
+                        // Copy
+                        if (plData.isFolder)
+                        {
+                            fs::copy(source, target, std::filesystem::copy_options::recursive);
+                        }
+                        else
+                        {
+                            fs::copy(source, target);
+                        }
+
+                        // Remove original
+                        fs::remove_all(source);
+
+                        SetFeedback("Moved: " + source.filename().string());
                     }
                     catch (const std::exception& e)
                     {
-                        feedback = e.what();
+                        SetFeedback(std::string("Move Error: ") + e.what());
                     }
                     bDropStart = false;
                     dropSource.clear();
@@ -303,12 +550,37 @@ namespace Uma_Engine
             if (ImGui::Button("Refresh")) {
                 RefreshDirectory();
             }
+
+            ImGui::SameLine();
+            if (ImGui::Button("Upload File")) {
+                std::string path = OpenFileDialog();
+                if (!path.empty()) {
+                    try {
+                        fs::path source = path;
+                        fs::path target = mCurrPath / source.filename();
+
+                        if (fs::exists(target)) {
+                            SetFeedback("Error: File already exists in this folder.");
+                        }
+                        else {
+                            fs::copy(source, target);
+                            RefreshDirectory();
+                            SetFeedback("Uploaded: " + source.filename().string());
+                        }
+                    }
+                    catch (const std::exception& e) {
+                        SetFeedback(std::string("Upload Error: ") + e.what());
+                    }
+                }
+            }
         }
 
         void RenderFilterBar() {
             ImGui::SetNextItemWidth(200);
             ImGui::InputText("Filter", mFilter, IM_ARRAYSIZE(mFilter));
 
+            ImGui::SameLine();
+            ImGui::Spacing();
             ImGui::SameLine();
 
             // Sort mode selector
@@ -321,9 +593,24 @@ namespace Uma_Engine
             }
 
             ImGui::SameLine();
+            ImGui::Spacing();
+            ImGui::SameLine();
+
             if (ImGui::Button(bSortAscending ? "Asc" : "Desc")) {
                 bSortAscending = !bSortAscending;
                 SortFiles();
+            }
+
+            ImGui::SameLine();
+            ImGui::Spacing();
+            ImGui::SameLine();
+
+            // View mode toggle
+            ImGui::Text("View Mode:");
+            ImGui::SameLine();
+            if (ImGui::Button(mViewMode == ViewMode::Icons ? "Icons" : "List"))
+            {
+                mViewMode = (mViewMode == ViewMode::Icons) ? ViewMode::List : ViewMode::Icons;
             }
         }
 
@@ -331,171 +618,64 @@ namespace Uma_Engine
             bDoubleClick = false;
 
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
-            ImGui::CalcTextSize(feedback.c_str());
             ImGui::BeginChild("FileList", ImVec2(parentSize.x, parentSize.y - ImGui::GetTextLineHeight() - 15.f), true);
-            for (const auto& entry : aFiles) {
-                // Apply filter
-                if (mFilter[0] != '\0' &&
-                    entry.name.find(mFilter) == std::string::npos) {
-                    continue;
-                }
 
-                std::string fileName = entry.isFolder ? "[FOLDER] " : "[FILE] ";
-                fileName += entry.name;
-
-                bool is_selected = (mSelectedPath == entry.path);
-
-                if (ImGui::Selectable(fileName.c_str(), is_selected, ImGuiSelectableFlags_AllowDoubleClick)) {
-                    mSelectedPath = entry.path;
-
-                    // Double-click
-                    if (ImGui::IsMouseDoubleClicked(0)) {
-                        if (FileDoubleClickHandler(entry))
-                            break;
-                    }
-                }
-
-                if (is_selected)
-                {
-                    if (ImGui::IsKeyPressed(ImGuiKey_Delete)) // Delete
-                    {
-                        fs::remove(mSelectedPath);
-                        RefreshDirectory();
-                        mSelectedPath.clear();
-                        break;
-                    }
-                    else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C)) // Copy
-                    {
-                        copySource = entry.path;
-                    }
-                }
-
-                if (ImGui::BeginPopupContextItem())
-                {
-                    if (ImGui::MenuItem("Copy"))
-                    {
-                        copySource = entry.path;
-                    }
-                    if (ImGui::MenuItem("Delete"))
-                    {
-                        fs::remove(mSelectedPath);
-                        RefreshDirectory();
-                        mSelectedPath.clear();
-                    }
-                    static char renameText[256];
-                    renameText[255] = '\0';
-                    if (ImGui::InputText("##name", renameText, 256)) {}
-                    ImGui::SameLine();
-                    float inputHeight = ImGui::GetFrameHeight();
-                    float textHeight = ImGui::GetTextLineHeight();
-                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (inputHeight - textHeight) * 0.5f);
-                    if (ImGui::MenuItem("Rename"))
-                    {
-                        std::string newName(renameText);
-                        if (!newName.empty())
-                        {
-                            newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
-                                if (fs::exists(newName))
-                                    feedback = "rename: file already exists";
-                                else
-                                {
-                                    try
-                                    {
-                                        fs::rename(entry.path, newName);
-                                        RefreshDirectory();
-                                        mSelectedPath.clear();
-                                    }
-                                    catch (const std::exception& e)
-                                    {
-                                        feedback = e.what();
-                                    }
-                                }
-                        }
-                    }
-                    if (entry.ext == ".prefab" && !mPrefabEdit)
-                    {
-                        if (ImGui::MenuItem("Open in Inspector"))
-                        {
-                            pEventSystem->Emit<StopSceneRequest>();
-                            pEventSystem->Emit<SaveCurrSceneRequest>();
-                            pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
-                            pEventSystem->Emit<ClearSceneRequestEvent>();
-                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
-                            mPrefabName = entry.stem;
-                            mPrefabEdit = true;
-                        }
-                        if (ImGui::MenuItem("Add to Scene"))
-                        {
-                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name);
-                        }
-                    }
-
-
-                    ImGui::EndPopup();
-                }
-
-                // Drag and drop source
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                    // Store the full path in the payload
-                    ImGui::SetDragDropPayload(entry.name.c_str(), entry.path.c_str(), entry.path.size() + 1);
-                    ImGui::Text("%s", entry.name.c_str());
-                    ImGui::EndDragDropSource();
-
-                    bDropStart = true;
-                    dropSource = entry.name.c_str();
-                }
-
-                if (entry.isFolder && ImGui::BeginDragDropTarget() && !dropSource.empty()) {
-                    if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
-                        FilePayload plData = *(FilePayload*)pl->Data;
-                        try
-                        {
-                            fs::copy(plData.filepath, entry.path, std::filesystem::copy_options::recursive);
-                            fs::remove(plData.filepath);
-                        }
-                        catch (const std::exception& e)
-                        {
-                            feedback = e.what();
-                        }
-                        bDropStart = false;
-                        dropSource.clear();
-                        RefreshDirectory();
-                        break;
-                    }
-                    ImGui::EndDragDropTarget();
-                }
-
-                // Tooltip with details
-                if (ImGui::IsItemHovered()) {
-                    ImGui::BeginTooltip();
-                    ImGui::Text("Path: %s", entry.path.c_str());
-                    if (!entry.isFolder) {
-                        ImGui::Text("Size: %llu bytes", entry.size);
-                    }
-                    ImGui::EndTooltip();
-
-                }
-
+            if (mViewMode == ViewMode::Icons)
+            {
+                RenderIconView();
+            }
+            else
+            {
+                RenderListView();
             }
 
             ImGui::EndChild();
 
-            if (ImGui::IsMouseClicked(0) && !ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow)) {
+            // Clear selection when clicking empty space
+            if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered())
+            {
                 mSelectedPath.clear();
             }
         }
 
         void RenderFeedback()
         {
+            // Update timer
+            if (mFeedbackTimer > 0.0f)
+            {
+                mFeedbackTimer -= ImGui::GetIO().DeltaTime;
+
+                if (mFeedbackTimer <= 0.0f)
+                {
+                    feedback.clear();
+                }
+            }
+
             if (feedback.empty())
                 return;
+
             ImGuiWindowFlags flags = 0;
-            flags |= ImGuiWindowFlags_NoScrollbar;          // No scrollbars at all
-            flags |= ImGuiWindowFlags_NoScrollWithMouse;    // Can't scroll with mouse wheel
+            flags |= ImGuiWindowFlags_NoScrollbar;
+            flags |= ImGuiWindowFlags_NoScrollWithMouse;
+
             ImVec2 parentSize = ImGui::GetContentRegionAvail();
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.f, 5.f));
             ImGui::BeginChild("Feedback", ImVec2(parentSize.x, 0), true, flags);
-            ImGui::Text("%s", feedback.c_str());
+
+            // Color-code feedback
+            if (feedback.find("Error") != std::string::npos)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "%s", feedback.c_str());
+            }
+            else if (feedback.find("Uploading") != std::string::npos || feedback.find("Pasting") != std::string::npos)
+            {
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", feedback.c_str());
+            }
+            else
+            {
+                ImGui::TextColored(ImVec4(0.3f, 1.0f, 0.3f, 1.0f), "%s", feedback.c_str());
+            }
+
             ImGui::EndChild();
             ImGui::PopStyleVar();
         }
@@ -550,14 +730,620 @@ namespace Uma_Engine
             else if (ext == ".lua")
             {
                 OpenScriptInExternalEditor(file.path);
-                feedback = "opened script " + file.path;
+                SetFeedback("opened script " + file.path);
             }
             else
             {
-                feedback = "Unknown file type";
+                SetFeedback("Unknown file type");
             }
             return false;
         }
 
+        std::string OpenFileDialog()
+        {
+#ifdef _WIN32
+            OPENFILENAMEA ofn;
+            CHAR szFile[260] = { 0 };
+            ZeroMemory(&ofn, sizeof(ofn));
+            ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = GetActiveWindow();
+            ofn.lpstrFile = szFile;
+            ofn.nMaxFile = sizeof(szFile);
+            ofn.lpstrFilter = "All Files\0*.*\0";
+            ofn.nFilterIndex = 1;
+            ofn.lpstrFileTitle = NULL;
+            ofn.nMaxFileTitle = 0;
+            ofn.lpstrInitialDir = NULL;
+            ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+            if (GetOpenFileNameA(&ofn) == TRUE)
+            {
+                return std::string(ofn.lpstrFile);
+            }
+#endif
+            return std::string();
+        }
+
+        void RenderIconView()
+        {
+            // Grid layout settings
+            const float itemWidth = mIconSize + 20.0f;
+            //const float itemHeight = mIconSize + 50.0f;
+            const float itemSpacing = 15.0f;
+
+            // Calculate items per row
+            float availableWidth = ImGui::GetContentRegionAvail().x;
+            int itemsPerRow = max(1, static_cast<int>((availableWidth + itemSpacing) / (itemWidth + itemSpacing)));
+
+            int currentColumn = 0;
+            ImVec2 startPos = ImGui::GetCursorPos();
+
+            for (const auto& entry : aFiles)
+            {
+                // Apply filter
+                if (mFilter[0] != '\0' && entry.name.find(mFilter) == std::string::npos) {
+                    continue;
+                }
+
+                // Get texture for this file
+                GLuint texID = GetFileTexture(entry);
+                bool is_selected = (mSelectedPath == entry.path);
+
+                // Push unique ID for this item
+                ImGui::PushID(entry.path.c_str());
+
+                // Calculate grid position
+                float xPos = startPos.x + (currentColumn * (itemWidth + itemSpacing));
+
+                // Set cursor to grid position
+                if (currentColumn > 0) {
+                    ImGui::SameLine(xPos);
+                }
+
+                // Begin item group
+                ImGui::BeginGroup();
+
+                // Icon
+                float iconPosX = (itemWidth - mIconSize) * 0.5f;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + iconPosX);
+
+                if (texID != 0)
+                {
+                    ImGui::Image((void*)(intptr_t)texID, ImVec2(mIconSize, mIconSize));
+                }
+                else
+                {
+                    ImGui::Dummy(ImVec2(mIconSize, mIconSize));
+                }
+
+                // Small spacing between icon and text
+                ImGui::Spacing();
+
+                // File name
+                std::string displayName = entry.name;
+                const size_t maxNameLength = 18;
+                if (displayName.length() > maxNameLength)
+                {
+                    displayName = displayName.substr(0, maxNameLength - 3) + "...";
+                }
+
+                // Push text wrapping
+                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + itemWidth);
+
+                float textWidth = ImGui::CalcTextSize(displayName.c_str(), nullptr, false, itemWidth).x;
+                float textPosX = (itemWidth - textWidth) * 0.5f;
+                if (textPosX > 0) {
+                    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + textPosX);
+                }
+
+                ImGui::Text("%s", displayName.c_str());
+                ImGui::PopTextWrapPos();
+
+                // Dummy to ensure consistent height
+                ImGui::Dummy(ImVec2(itemWidth, 0));
+
+                ImGui::EndGroup();
+
+                // Store item rect for interaction
+                ImVec2 itemMin = ImGui::GetItemRectMin();
+                ImVec2 itemMax = ImGui::GetItemRectMax();
+
+                // Make item selectable (invisible button over the group)
+                ImGui::SetCursorScreenPos(itemMin);
+                ImGui::InvisibleButton("##fileitem", ImVec2(itemMax.x - itemMin.x, itemMax.y - itemMin.y));
+
+                // Selection handling
+                if (ImGui::IsItemClicked())
+                {
+                    mSelectedPath = entry.path;
+                }
+
+                // Double-click detection
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0))
+                {
+                    mSelectedPath = entry.path;
+                    if (FileDoubleClickHandler(entry))
+                    {
+                        ImGui::PopID();
+                        break;
+                    }
+                }
+
+                // Highlight selection
+                if (is_selected)
+                {
+                    ImDrawList* draw_list = ImGui::GetWindowDrawList();
+                    ImVec2 p_min = itemMin;
+                    ImVec2 p_max = itemMax;
+
+                    // Add padding to selection rect
+                    p_min.x -= 5.0f;
+                    p_min.y -= 5.0f;
+                    p_max.x += 5.0f;
+                    p_max.y += 5.0f;
+
+                    draw_list->AddRectFilled(p_min, p_max, IM_COL32(64, 128, 255, 80));
+                    draw_list->AddRect(p_min, p_max, IM_COL32(64, 128, 255, 255), 4.0f, 0, 2.0f);
+
+                    // Keyboard shortcuts
+                    if (ImGui::IsKeyPressed(ImGuiKey_Delete))
+                    {
+                        try
+                        {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e)
+                        {
+                            SetFeedback(e.what());
+                        }
+                        ImGui::PopID();
+                        break;
+                    }
+                    else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C))
+                    {
+                        copySource = entry.path;
+                    }
+                }
+
+                // Context menu
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+                {
+                    mSelectedPath = entry.path;
+                }
+                if (ImGui::BeginPopupContextItem("##contextmenu"))
+                {
+                    if (ImGui::MenuItem("Copy"))
+                    {
+                        copySource = entry.path;
+                    }
+
+                    if (ImGui::MenuItem("Delete"))
+                    {
+                        try
+                        {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e)
+                        {
+                            SetFeedback(e.what());
+                        }
+                    }
+
+                    static char renameText[256];
+                    renameText[255] = '\0';
+
+                    if (ImGui::InputText("##name", renameText, 256)) {}
+                    ImGui::SameLine();
+                    float inputHeight = ImGui::GetFrameHeight();
+                    float textHeight = ImGui::GetTextLineHeight();
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (inputHeight - textHeight) * 0.5f);
+
+                    if (ImGui::MenuItem("Rename"))
+                    {
+                        std::string newName(renameText);
+                        if (!newName.empty())
+                        {
+                            newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
+                            if (fs::exists(newName))
+                                SetFeedback("rename: file already exists");
+                            else
+                            {
+                                try
+                                {
+                                    fs::rename(entry.path, newName);
+                                    RefreshDirectory();
+                                    mSelectedPath.clear();
+                                }
+                                catch (const std::exception& e)
+                                {
+                                    SetFeedback(e.what());
+                                }
+                            }
+                        }
+                    }
+
+                    if (entry.ext == ".prefab" && !mPrefabEdit)
+                    {
+                        if (ImGui::MenuItem("Open in Inspector"))
+                        {
+                            pEventSystem->Emit<StopSceneRequest>();
+                            pEventSystem->Emit<SaveCurrSceneRequest>();
+                            pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
+                            pEventSystem->Emit<ClearSceneRequestEvent>();
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
+                            mPrefabName = entry.stem;
+                            mPrefabEdit = true;
+                        }
+
+                        if (ImGui::MenuItem("Add to Scene"))
+                        {
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name);
+                        }
+                    }
+
+                    ImGui::EndPopup();
+                }
+
+                // Drag and drop source
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
+                {
+                    FilePayload payload;
+                    strncpy_s(payload.filepath, entry.path.c_str(), sizeof(payload.filepath) - 1);
+                    payload.filepath[sizeof(payload.filepath) - 1] = '\0';
+                    payload.isFolder = entry.isFolder;
+
+                    ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", &payload, sizeof(FilePayload));
+                    ImGui::Text("%s", entry.name.c_str());
+                    ImGui::EndDragDropSource();
+
+                    bDropStart = true;
+                    dropSource = "CONTENT_BROWSER_ITEM";
+                }
+
+                // Drag and drop target (only for folders)
+                if (entry.isFolder && ImGui::BeginDragDropTarget())
+                {
+                    if (!dropSource.empty())
+                    {
+                        if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str()))
+                        {
+                            FilePayload* plData = (FilePayload*)pl->Data;
+                            try
+                            {
+                                fs::path source = plData->filepath;
+                                fs::path target = entry.path / source.filename();
+
+                                // Copy
+                                if (plData->isFolder)
+                                {
+                                    fs::copy(source, target, std::filesystem::copy_options::recursive);
+                                }
+                                else
+                                {
+                                    fs::copy(source, target);
+                                }
+
+                                // Remove original
+                                fs::remove_all(source);
+
+                                RefreshDirectory();
+                                SetFeedback("Moved to: " + entry.name);
+                            }
+                            catch (const std::exception& e)
+                            {
+                                SetFeedback(std::string("Move Error: ") + e.what());
+                            }
+                            bDropStart = false;
+                            dropSource.clear();
+                            ImGui::EndDragDropTarget();
+                            ImGui::PopID();
+                            break;
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                // Hover preview
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::BeginTooltip();
+
+                    // Show large preview for images with proper aspect ratio
+                    if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0)
+                    {
+                        const Texture& tex = mLoadedTextures[entry.path];
+                        GLuint previewTexID = tex.tex_id;
+
+                        // Maximum preview size (constrain to fit in tooltip)
+                        const float maxPreviewSize = 256.0f;
+
+                        // Calculate aspect-ratio-preserving size
+                        float texWidth = tex.tex_size.x;
+                        float texHeight = tex.tex_size.y;
+
+                        ImVec2 previewSize;
+                        if (texWidth > texHeight)
+                        {
+                            // Width is limiting factor
+                            previewSize.x = maxPreviewSize;
+                            previewSize.y = (texHeight / texWidth) * maxPreviewSize;
+                        }
+                        else
+                        {
+                            // Height is limiting factor
+                            previewSize.y = maxPreviewSize;
+                            previewSize.x = (texWidth / texHeight) * maxPreviewSize;
+                        }
+
+                        ImGui::Image((void*)(intptr_t)previewTexID, previewSize);
+                        ImGui::Separator();
+                    }
+
+                    // File details
+                    ImGui::Text("Name: %s", entry.name.c_str());
+                    ImGui::Text("Path: %s", entry.path.c_str());
+
+                    if (!entry.isFolder)
+                    {
+                        ImGui::Text("Size: %s", FormatFileSize(entry.size).c_str());
+                        ImGui::Text("Type: %s", entry.ext.c_str());
+
+                        // Show dimensions for images
+                        if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0)
+                        {
+                            const Texture& tex = mLoadedTextures[entry.path];
+                            ImGui::Text("Dimensions: %.0f x %.0f", tex.tex_size.x, tex.tex_size.y);
+                        }
+                        else if (IsImageFile(entry.ext))
+                        {
+                            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Loading preview...");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::Text("Type: Folder");
+                    }
+
+                    ImGui::EndTooltip();
+                }
+
+                ImGui::PopID();
+
+                // Update column counter and handle wrapping
+                currentColumn++;
+                if (currentColumn >= itemsPerRow)
+                {
+                    currentColumn = 0;
+                    // Add vertical spacing between rows
+                    ImGui::Dummy(ImVec2(0, itemSpacing));
+                }
+            }
+        }
+
+        void RenderListView() {
+            for (const auto& entry : aFiles) {
+                // Apply filter
+                if (mFilter[0] != '\0' && entry.name.find(mFilter) == std::string::npos) {
+                    continue;
+                }
+
+                bool is_selected = (mSelectedPath == entry.path);
+
+                // Push unique ID for this item
+                ImGui::PushID(entry.path.c_str());
+
+                // Create display name with prefix
+                std::string displayName = entry.isFolder ? "[FOLDER] " : "[FILE] ";
+                displayName += entry.name;
+
+                // Selectable for the file name
+                ImGuiSelectableFlags flags = ImGuiSelectableFlags_AllowDoubleClick;
+                if (ImGui::Selectable(displayName.c_str(), is_selected, flags)) {
+                    mSelectedPath = entry.path;
+
+                    // Double-click detection
+                    if (ImGui::IsMouseDoubleClicked(0)) {
+                        if (FileDoubleClickHandler(entry)) {
+                            ImGui::PopID();
+                            break;
+                        }
+                    }
+                }
+
+                // Keyboard shortcuts (only for selected item)
+                if (is_selected) {
+                    if (ImGui::IsKeyPressed(ImGuiKey_Delete)) {
+                        try {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e) {
+                            SetFeedback(e.what());
+                        }
+                        ImGui::PopID();
+                        break;
+                    }
+                    else if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && ImGui::IsKeyPressed(ImGuiKey_C)) {
+                        copySource = entry.path;
+                    }
+                }
+
+                // Context menu
+                if (ImGui::BeginPopupContextItem("##contextmenu")) {
+                    if (ImGui::MenuItem("Copy")) {
+                        copySource = entry.path;
+                    }
+
+                    if (ImGui::MenuItem("Delete")) {
+                        try {
+                            fs::remove(mSelectedPath);
+                            RefreshDirectory();
+                            mSelectedPath.clear();
+                        }
+                        catch (const std::exception& e) {
+                            SetFeedback(e.what());
+                        }
+                    }
+
+                    static char renameText[256];
+                    renameText[255] = '\0';
+
+                    if (ImGui::InputText("##name", renameText, 256)) {}
+                    ImGui::SameLine();
+                    float inputHeight = ImGui::GetFrameHeight();
+                    float textHeight = ImGui::GetTextLineHeight();
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (inputHeight - textHeight) * 0.5f);
+
+                    if (ImGui::MenuItem("Rename")) {
+                        std::string newName(renameText);
+                        if (!newName.empty()) {
+                            newName = fs::path(entry.path).parent_path().string() + "\\" + newName + entry.ext;
+                            if (fs::exists(newName))
+                                SetFeedback("rename: file already exists");
+                            else {
+                                try {
+                                    fs::rename(entry.path, newName);
+                                    RefreshDirectory();
+                                    mSelectedPath.clear();
+                                }
+                                catch (const std::exception& e) {
+                                    SetFeedback(e.what());
+                                }
+                            }
+                        }
+                    }
+
+                    if (entry.ext == ".prefab" && !mPrefabEdit) {
+                        if (ImGui::MenuItem("Open in Inspector")) {
+                            pEventSystem->Emit<StopSceneRequest>();
+                            pEventSystem->Emit<SaveCurrSceneRequest>();
+                            pEventSystem->Emit<PrefabSceneRequestEvent>(mPrefabSceneName);
+                            pEventSystem->Emit<ClearSceneRequestEvent>();
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name, false);
+                            mPrefabName = entry.stem;
+                            mPrefabEdit = true;
+                        }
+
+                        if (ImGui::MenuItem("Add to Scene")) {
+                            pEventSystem->Emit<LoadPrefabRequestEvent>(entry.name);
+                        }
+                    }
+
+                    ImGui::EndPopup();
+                }
+
+                // Drag and drop source
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+                    FilePayload payload;
+                    strncpy_s(payload.filepath, entry.path.c_str(), sizeof(payload.filepath) - 1);
+                    payload.filepath[sizeof(payload.filepath) - 1] = '\0';
+                    payload.isFolder = entry.isFolder;
+
+                    ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", &payload, sizeof(FilePayload));
+                    ImGui::Text("%s", entry.name.c_str());
+                    ImGui::EndDragDropSource();
+
+                    bDropStart = true;
+                    dropSource = "CONTENT_BROWSER_ITEM";
+                }
+
+                // Drag and drop target (only for folders)
+                if (entry.isFolder && ImGui::BeginDragDropTarget()) {
+                    if (!dropSource.empty()) {
+                        if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload(dropSource.c_str())) {
+                            FilePayload* plData = (FilePayload*)pl->Data;
+                            try {
+                                fs::path source = plData->filepath;
+                                fs::path target = entry.path / source.filename();
+
+                                // Copy
+                                if (plData->isFolder) {
+                                    fs::copy(source, target, std::filesystem::copy_options::recursive);
+                                }
+                                else {
+                                    fs::copy(source, target);
+                                }
+
+                                // Remove original
+                                fs::remove_all(source);
+
+                                RefreshDirectory();
+                                SetFeedback("Moved to: " + entry.name);
+                            }
+                            catch (const std::exception& e) {
+                                SetFeedback(std::string("Move Error: ") + e.what());
+                            }
+                            bDropStart = false;
+                            dropSource.clear();
+                            ImGui::EndDragDropTarget();
+                            ImGui::PopID();
+                            break;
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+
+                // Hover tooltip
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+
+                    // Show large preview for images with proper aspect ratio
+                    if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0) {
+                        const Texture& tex = mLoadedTextures[entry.path];
+                        GLuint previewTexID = tex.tex_id;
+
+                        // Maximum preview size (constrain to fit in tooltip)
+                        const float maxPreviewSize = 256.0f;
+
+                        // Calculate aspect-ratio-preserving size
+                        float texWidth = tex.tex_size.x;
+                        float texHeight = tex.tex_size.y;
+
+                        ImVec2 previewSize;
+                        if (texWidth > texHeight) {
+                            previewSize.x = maxPreviewSize;
+                            previewSize.y = (texHeight / texWidth) * maxPreviewSize;
+                        }
+                        else {
+                            previewSize.y = maxPreviewSize;
+                            previewSize.x = (texWidth / texHeight) * maxPreviewSize;
+                        }
+
+                        ImGui::Image((void*)(intptr_t)previewTexID, previewSize);
+                        ImGui::Separator();
+                    }
+
+                    // File details
+                    ImGui::Text("Name: %s", entry.name.c_str());
+                    ImGui::Text("Path: %s", entry.path.c_str());
+
+                    if (!entry.isFolder) {
+                        ImGui::Text("Size: %s", FormatFileSize(entry.size).c_str());
+                        ImGui::Text("Type: %s", entry.ext.c_str());
+
+                        // Show dimensions for images
+                        if (IsImageFile(entry.ext) && mLoadedTextures.count(entry.path) > 0) {
+                            const Texture& tex = mLoadedTextures[entry.path];
+                            ImGui::Text("Dimensions: %.0f x %.0f", tex.tex_size.x, tex.tex_size.y);
+                        }
+                        else if (IsImageFile(entry.ext)) {
+                            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Loading preview...");
+                        }
+                    }
+                    else {
+                        ImGui::Text("Type: Folder");
+                    }
+
+                    ImGui::EndTooltip();
+                }
+
+                ImGui::PopID();
+            }
+        }
     };
 } // namespace Uma_Engine

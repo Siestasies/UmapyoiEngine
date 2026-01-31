@@ -23,6 +23,7 @@ namespace Uma_ECS
     {
         FMOD_CHANNEL* channel = nullptr;
         std::string soundName;
+        std::string path;
         float volume = 1.0f;
         bool isPlaying = false;
         bool shouldLoop = false;

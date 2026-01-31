@@ -17,7 +17,6 @@ namespace Uma_ECS
     {
         // Tileset reference
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
-        std::string textureName{}; // will be depriciated later on
         std::string texturePath{};
 
         // currently not in use
@@ -68,10 +67,6 @@ namespace Uma_ECS
         {
             // use the path from the parameter if its not empty
             texturePath = (!texture_path.empty()) ? texture_path : texturePath;
-            
-            // texture name is depriciated need to chane this later on
-            // WIP
-            texture = pResourcesManager->GetTexture(textureName);
 
             // Verify texture is valid before using it
             if (!texture || texture->tex_id == 0)
@@ -157,14 +152,12 @@ namespace Uma_ECS
             value.AddMember("tileSize", tileSize, allocator);
 
             // Serialize tileset info
-            if (!tileset.textureName.empty())
+            if (!tileset.texturePath.empty())
             {
                 rapidjson::Value tilesetObj(rapidjson::kObjectType);
 
-                rapidjson::Value tilesetName(tileset.textureName.c_str(), allocator);
                 rapidjson::Value tilesetPath(tileset.texturePath.c_str(), allocator);
 
-                tilesetObj.AddMember("textureName", tilesetName, allocator);
                 tilesetObj.AddMember("texturePath", tilesetPath, allocator);
 
                 tilesetObj.AddMember("tilesetWidth", tileset.tilesetWidth, allocator);
@@ -248,9 +241,6 @@ namespace Uma_ECS
             if (value.HasMember("tileset") && value["tileset"].IsObject())  // Fixed: check for tileset object
             {
                 const rapidjson::Value& tilesetObj = value["tileset"];
-
-                if (tilesetObj.HasMember("textureName") && tilesetObj["textureName"].IsString())
-                    tileset.textureName = tilesetObj["textureName"].GetString();
 
                 if (tilesetObj.HasMember("texturePath") && tilesetObj["texturePath"].IsString())
                 {

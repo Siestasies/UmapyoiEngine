@@ -22,7 +22,6 @@
                         "parent": -1
                     },
                     "struct Uma_ECS::Sprite": {
-                        "textureName": "fire_ball",
                         "layer": 128,
                         "flipX": true,
                         "flipY": false,
@@ -37,7 +36,8 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 1.0,
+                        "texturePath": "Assets/256px VFX.png"
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -93,10 +93,13 @@
                         "isRoot": true
                     },
                     "struct Uma_ECS::Projectile": {
-                        "mDamage": 10,
-                        "mSpeed": 40.0,
-                        "mFadeOVerTime": true,
-                        "mLifeTime": 2.0
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 40.0,
+                            "fadeOVerTime": true,
+                            "lifeTime": 2.0
+                        }
                     }
                 }
             }

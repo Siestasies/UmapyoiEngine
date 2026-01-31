@@ -138,17 +138,28 @@ namespace Uma_ECS
                     }
                     else if (emitter.mode == EmitterMode::ScreenFill)
                     {
-                        // Initial spawn
+                        // Gradual initial spawn
                         if (!emitter.initialized)
                         {
-                            for (int i = 0; i < emitter.maxParticles; ++i)
-                            {
-                                SpawnScreenFillParticle(emitter);
-                            }
+                            emitter.emissionTimer = 0.0f;
                             emitter.initialized = true;
                         }
 
-                        // Continuous respawning
+                        // Spawn particles gradually over first second
+                        if (emitter.particles.size() < static_cast<size_t>(emitter.maxParticles))
+                        {
+                            emitter.emissionTimer += dt;
+                            float spawnInterval = 1.0f / (emitter.maxParticles * 2.0f); // Spawn over 0.5 seconds
+
+                            while (emitter.emissionTimer >= spawnInterval &&
+                                emitter.particles.size() < static_cast<size_t>(emitter.maxParticles))
+                            {
+                                SpawnScreenFillParticle(emitter, true); // true = initial spawn
+                                emitter.emissionTimer -= spawnInterval;
+                            }
+                        }
+
+                        // Continuous respawning for off-screen particles
                         int inactiveCount = 0;
                         for (const auto& p : emitter.particles)
                         {
@@ -157,7 +168,7 @@ namespace Uma_ECS
 
                         for (int i = 0; i < inactiveCount; ++i)
                         {
-                            SpawnScreenFillParticle(emitter);
+                            SpawnScreenFillParticle(emitter, false); // false = respawn at top
                         }
                     }
                 }
@@ -170,7 +181,7 @@ namespace Uma_ECS
                 }
 
                 // Render particles
-                auto texture = pResourcesManager->GetTexture(emitter.textureName);
+                /*auto texture = pResourcesManager->GetTexture(emitter.textureName);
                 if (!texture || texture->tex_id == 0)
                 {
                     std::stringstream log;
@@ -201,7 +212,7 @@ namespace Uma_ECS
                 if (!instanceData.empty())
                 {
                     pGraphics->DrawSpritesInstanced(texture->tex_id, instanceData);
-                }
+                }*/
             }
         }
     }
@@ -292,85 +303,6 @@ namespace Uma_ECS
         }
     }
 
-    void ParticleSystem::SpawnScreenFillParticle(EmitterInstance& emitter)
-    {
-        for (auto& p : emitter.particles)
-        {
-            if (!p.active)
-            {
-                p.active = true;
-                p.age = 0.0f;
-                p.lifetime = 999.0f;
-                p.maxLifetime = p.lifetime;
-
-                // Spawn position
-                if (emitter.screenFill.spawnAtTop)
-                {
-                    // Spawn above screen
-                    p.position.x = Random(emitter.screenMin.x, emitter.screenMax.x);
-                    p.position.y = emitter.screenMax.y + Random(0, emitter.screenFill.spawnMargin);
-                }
-                else
-                {
-                    // Spawn anywhere in viewport
-                    p.position.x = Random(emitter.screenMin.x, emitter.screenMax.x);
-                    p.position.y = Random(emitter.screenMin.y, emitter.screenMax.y);
-                }
-
-                // Velocity
-                p.velocity.x = Random(emitter.screenFill.velocityXRange.x, emitter.screenFill.velocityXRange.y);
-                p.velocity.y = Random(emitter.screenFill.velocityYRange.x, emitter.screenFill.velocityYRange.y);
-
-                // Scale
-                p.scale = Random(emitter.appearance.scaleRange.x, emitter.appearance.scaleRange.y);
-
-                // Color
-                p.color = emitter.appearance.startColor;
-
-                // Rotation
-                p.rotation = Random(0, 360);
-                if (emitter.appearance.rotateParticles)
-                {
-                    p.rotationSpeed = Random(emitter.appearance.rotationSpeedRange.x,
-                        emitter.appearance.rotationSpeedRange.y);
-                }
-                else
-                {
-                    p.rotationSpeed = 0.0f;
-                }
-
-                // Opacity
-                if (emitter.appearance.randomOpacity)
-                {
-                    p.baseOpacity = Random(emitter.appearance.opacityRange.x, emitter.appearance.opacityRange.y);
-                }
-                else
-                {
-                    p.baseOpacity = 1.0f;
-                }
-
-                // Start with fade in if enabled
-                if (emitter.fade.fadeIn)
-                {
-                    p.opacity = 0.0f;
-                }
-                else
-                {
-                    p.opacity = p.baseOpacity;
-                }
-
-                return;
-            }
-        }
-
-        // No inactive particle found, create new one if under limit
-        if (emitter.particles.size() < static_cast<size_t>(emitter.maxParticles))
-        {
-            emitter.particles.emplace_back();
-            SpawnScreenFillParticle(emitter);
-        }
-    }
-
     void ParticleSystem::UpdateParticle(Particle& p, EmitterInstance& emitter, float dt)
     {
         // Update age
@@ -434,18 +366,23 @@ namespace Uma_ECS
                 float distFromTop = emitter.screenMax.y - p.position.y;
                 float distFromBottom = p.position.y - emitter.screenMin.y;
 
-                // Find closest edge
-                float minDist = distFromLeft;
-                if (distFromRight < minDist) minDist = distFromRight;
-                if (distFromTop < minDist) minDist = distFromTop;
-                if (distFromBottom < minDist) minDist = distFromBottom;
+                // Only apply edge fade if particle is within screen bounds
+                bool withinBounds = distFromLeft >= 0 && distFromRight >= 0 &&
+                    distFromTop >= 0 && distFromBottom >= 0;
 
-                if (minDist < fadeDistance)
+                if (withinBounds)
                 {
-                    float edgeFade = minDist / fadeDistance;
-                    if (edgeFade < 0.0f) edgeFade = 0.0f;
-                    if (edgeFade > 1.0f) edgeFade = 1.0f;
-                    finalOpacity *= edgeFade;
+                    // Find closest edge
+                    float minDist = distFromLeft;
+                    if (distFromRight < minDist) minDist = distFromRight;
+                    if (distFromTop < minDist) minDist = distFromTop;
+                    if (distFromBottom < minDist) minDist = distFromBottom;
+
+                    if (minDist < fadeDistance)
+                    {
+                        float edgeFade = minDist / fadeDistance;
+                        finalOpacity *= edgeFade;
+                    }
                 }
             }
 
@@ -493,5 +430,99 @@ namespace Uma_ECS
     float ParticleSystem::Random(float min, float max)
     {
         return min + distribution(generator) * (max - min);
+    }
+
+    void ParticleSystem::SpawnScreenFillParticle(EmitterInstance& emitter, bool initialSpawn)
+    {
+        for (auto& p : emitter.particles)
+        {
+            if (!p.active)
+            {
+                p.active = true;
+                p.age = 0.0f;
+                p.lifetime = 999.0f;
+                p.maxLifetime = p.lifetime;
+
+                // Spawn position
+                if (initialSpawn)
+                {
+                    // Initial spawn: distribute across entire viewport
+                    p.position.x = Random(emitter.screenMin.x, emitter.screenMax.x);
+                    p.position.y = Random(emitter.screenMin.y, emitter.screenMax.y);
+                }
+                else if (emitter.screenFill.spawnAtTop)
+                {
+                    // Respawn: spawn above screen
+                    p.position.x = Random(emitter.screenMin.x, emitter.screenMax.x);
+                    p.position.y = emitter.screenMax.y + Random(0, emitter.screenFill.spawnMargin);
+                }
+                else
+                {
+                    // Respawn: anywhere in viewport
+                    p.position.x = Random(emitter.screenMin.x, emitter.screenMax.x);
+                    p.position.y = Random(emitter.screenMin.y, emitter.screenMax.y);
+                }
+
+                // Depth factor for layering (0.0 = far, 1.0 = near)
+                float depth = Random(0.3f, 1.0f);
+
+                // Velocity scaled by depth (farther = slower)
+                float depthScale = 0.5f + (depth * 0.5f); // 0.5 to 1.0 range
+                p.velocity.x = Random(emitter.screenFill.velocityXRange.x,
+                    emitter.screenFill.velocityXRange.y) * depthScale;
+                p.velocity.y = Random(emitter.screenFill.velocityYRange.x,
+                    emitter.screenFill.velocityYRange.y) * depthScale;
+
+                // Scale based on depth (farther = smaller)
+                float baseScale = Random(emitter.appearance.scaleRange.x, emitter.appearance.scaleRange.y);
+                p.scale = baseScale * depthScale;
+
+                // Color
+                p.color = emitter.appearance.startColor;
+
+                // Rotation
+                p.rotation = Random(0, 360);
+                if (emitter.appearance.rotateParticles)
+                {
+                    p.rotationSpeed = Random(emitter.appearance.rotationSpeedRange.x,
+                        emitter.appearance.rotationSpeedRange.y) * depthScale;
+                }
+                else
+                {
+                    p.rotationSpeed = 0.0f;
+                }
+
+                // Opacity based on depth (farther = more transparent)
+                float baseOpacity;
+                if (emitter.appearance.randomOpacity)
+                {
+                    baseOpacity = Random(emitter.appearance.opacityRange.x, emitter.appearance.opacityRange.y);
+                }
+                else
+                {
+                    baseOpacity = 1.0f;
+                }
+                p.baseOpacity = baseOpacity * (0.4f + depth * 0.6f); // 0.4 to 1.0 range
+
+                // Start with fade in if enabled (only on respawn, not initial)
+                if (emitter.fade.fadeIn && !initialSpawn)
+                {
+                    p.opacity = 0.0f;
+                }
+                else
+                {
+                    p.opacity = p.baseOpacity;
+                }
+
+                return;
+            }
+        }
+
+        // No inactive particle found, create new one if under limit
+        if (emitter.particles.size() < static_cast<size_t>(emitter.maxParticles))
+        {
+            emitter.particles.emplace_back();
+            SpawnScreenFillParticle(emitter, initialSpawn);
+        }
     }
 }

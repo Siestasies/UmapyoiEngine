@@ -351,7 +351,7 @@ namespace Uma_UI
             }
 
             auto& image = pCoordinator->GetComponent<Image>(entity);
-            if (!image.visible || image.textureName.empty())
+            if (!image.visible || image.texturePath.empty())
             {
                 continue;
             }
@@ -362,7 +362,7 @@ namespace Uma_UI
             }
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            unsigned int texId = GetOrLoadTexture(image.textureName);
+            unsigned int texId = GetOrLoadTexture(image.texturePath);
             if (texId == 0)
             {
                 continue;
@@ -413,7 +413,7 @@ namespace Uma_UI
                 continue;
             }
 
-            if (!text.fontName.empty() && EnsureFontLoaded(text.fontName))
+            if (!text.fontPath.empty() && EnsureFontLoaded(text.fontPath))
             {
                 /* Empty by design */
             }
@@ -428,7 +428,7 @@ namespace Uma_UI
             }
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
-            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontName);
+            Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(text.fontPath);
 
             // Measure text width in NDC space
             float textWidthNDC = pGraphics->MeasureText(*uiFont, text.text, text.fontSize);
@@ -691,7 +691,7 @@ namespace Uma_UI
 
         if (!fallbackPath.empty())
         {
-            if (pResourcesManager->LoadTexture(textureName, fallbackPath))
+            if (pResourcesManager->LoadTexture(textureName))
             {
                 texture = pResourcesManager->GetTexture(textureName);
                 if (texture)

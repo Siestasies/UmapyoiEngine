@@ -19,8 +19,6 @@ This class handles:
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
-
-
 #include "Application.h"
 
 #include <iostream>
@@ -224,9 +222,9 @@ namespace Uma_Engine
 
         // Register core engine systems
         mSystemManager->RegisterSystem<Debugger>();
+        mSystemManager->RegisterSystem<ResourcesManager>();
         mGraphics = mSystemManager->RegisterSystem<Graphics>();
         mSoundManager = mSystemManager->RegisterSystem<SoundManager>();
-        mSystemManager->RegisterSystem<ResourcesManager>();
 
         // Register scene manager
         mSceneManager = mSystemManager->RegisterSystem<SceneManager>();

@@ -35,6 +35,7 @@ All rights reserved.
 #include "ECS/Systems/ParticleSystem.hpp"
 #include "ECS/Systems/ProjectileSystem.hpp"
 #include "ECS/Systems/TilemapSystem.hpp"
+#include "ECS/Systems/FSMSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -52,6 +53,7 @@ All rights reserved.
 #include "ECS/Components/PathFinding.h"
 #include "ECS/Components/ParticleEmitter.h"
 #include "ECS/Components/Tilemap.h"
+#include "ECS/Components/FSM.h"
 
 
 // UI Components
@@ -236,6 +238,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::ParticleSystem> m_ParticleSystem;
             std::shared_ptr<Uma_ECS::ProjectileSystem> m_ProjectileSystem;
             std::shared_ptr<Uma_ECS::TilemapSystem> m_TilemapSystem;
+            std::shared_ptr<Uma_ECS::FSMSystem> m_FSMSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;
