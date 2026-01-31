@@ -63,6 +63,8 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
         auto& c = cArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
+        if (c.shapes.empty()) continue;
+
         if (c.bounds.size() != c.shapes.size())
         {
             c.bounds.resize(c.shapes.size());
@@ -164,8 +166,17 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     previousTriggers = std::move(currentTriggers);
     currentTriggers.clear();
 
-    // Build spatial grid for broad phase
-    std::unordered_map<Cell, std::vector<Entity>, CellHash> grid;
+    if (persistentGrid.empty())
+    {
+        // reserve at least 512 grids
+        persistentGrid.reserve(512);
+    }
+
+    // clean up the persistentGrid
+    for (auto& [cell, entities] : persistentGrid)
+    {
+        entities.clear();
+    }
 
     for (const auto& entity : aEntities)
     {
@@ -174,21 +185,24 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 
         auto& collider = cArray.GetData(entity);
 
+        if (collider.shapes.empty()) continue;
+
         // Insert entity into grid based on ALL active shapes, not just shape[0]
         for (size_t i = 0; i < collider.shapes.size(); ++i)
         {
             if (collider.shapes[i].isActive)
             {
-                InsertIntoGrid(grid, entity, collider.bounds[i]);
+                InsertIntoGrid(persistentGrid, entity, collider.bounds[i]);
             }
         }
     }
 
     // Track which entity pairs have been checked this frame to avoid duplicates
     std::unordered_set<EntityPair, EntityPairHash> checkedPairs;
+    checkedPairs.reserve(aEntities.size() * 2);
 
     // Check collisions within each cell
-    for (auto const& [cell, entities] : grid)
+    for (auto const& [cell, entities] : persistentGrid)
     {
         for (size_t i = 0; i < entities.size(); ++i)
         {
@@ -749,11 +763,23 @@ void Uma_ECS::CollisionSystem::InsertIntoGrid(
     int minY = WorldToCell(box.min.y);
     int maxY = WorldToCell(box.max.y);
 
+    minX = std::clamp(minX, -MAX_CELL_COORD, MAX_CELL_COORD);
+    maxX = std::clamp(maxX, -MAX_CELL_COORD, MAX_CELL_COORD);
+    minY = std::clamp(minY, -MAX_CELL_COORD, MAX_CELL_COORD);
+    maxY = std::clamp(maxY, -MAX_CELL_COORD, MAX_CELL_COORD);
+
     for (int x = minX; x <= maxX; ++x)
     {
         for (int y = minY; y <= maxY; ++y)
         {
-            grid[Cell{ x, y }].push_back(entity);
+            auto& cellEntities = grid[Cell{ x, y }];
+
+            if (cellEntities.capacity() == 0)
+            {
+                cellEntities.reserve(16);
+            }
+
+            cellEntities.push_back(entity);
         }
     }
 }

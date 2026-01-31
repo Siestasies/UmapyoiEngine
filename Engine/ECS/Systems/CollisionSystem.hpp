@@ -14,7 +14,7 @@ Defines collision detection and resolution system using spatial hashing with AAB
 
 Unity-inspired approach with contact normals, velocity projection, and purpose-based resolution.
 Provides layer-based collision filtering through bitmask operations on Collider components.
-Cell struct and CellHash functor enable grid-based spatial partitioning with configurable CELL_SIZE constant.
+Cell struct and CellHash functor enable grid-based spatial partitioning with configurable cellSize constant.
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -30,7 +30,7 @@ All rights reserved.
 
 #include <unordered_set>
 
-const float CELL_SIZE = 300.f; // Tune based on your game world
+const int MAX_CELL_COORD = 1000;    // so 1 axis is -1000 to 1000
 
 namespace Uma_ECS
 {
@@ -212,7 +212,7 @@ namespace Uma_ECS
          */
         inline int WorldToCell(float coord)
         {
-            return static_cast<int>(std::floor(coord / CELL_SIZE));
+            return static_cast<int>(std::floor(coord * invCellSize));
         }
 
         /**
@@ -236,10 +236,15 @@ namespace Uma_ECS
             const BoundingBox& lhs,
             const BoundingBox& rhs);
 
+        float cellSize = 300.f;      // Tune based on your game world
+        float invCellSize = 1.f / cellSize;
+
         // Member variables
         Coordinator* pCoordinator = nullptr;             ///< Pointer to ECS coordinator
         Uma_Engine::Graphics* pGraphics = nullptr;       ///< Pointer to graphics system (for debug)
         Uma_Engine::EventSystem* pEventSystem = nullptr; ///< Pointer to event system
+
+        std::unordered_map<Cell, std::vector<Entity>, CellHash> persistentGrid;
 
         std::unordered_set<EntityPair, EntityPairHash> currentCollisions;  ///< Collisions detected this frame
         std::unordered_set<EntityPair, EntityPairHash> previousCollisions; ///< Collisions detected last frame
