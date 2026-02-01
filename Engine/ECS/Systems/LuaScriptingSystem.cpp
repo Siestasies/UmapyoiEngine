@@ -571,22 +571,52 @@ namespace Uma_ECS
             "autoFlip", &Sprite::autoFlip
         );
 
+        sharedLua->new_enum<ElementType>("ElementType",
+            {
+                { "None", ElementType::None },
+                { "Fire", ElementType::Fire },
+                { "Water", ElementType::Water },
+                { "Steam", ElementType::Steam }
+            }
+        );
+
+        sharedLua->new_usertype<AttackStats>("AttackStats",
+            "attackName", &AttackStats::AttackName,
+            "animationClipName", &AttackStats::animationClipName,
+            "mDamageMultiplier", &AttackStats::mDamageMultiplier,
+            "mAttackSpeedMultiplier", &AttackStats::mAttackSpeedMultiplier,
+            "triggerColliderIndex", &AttackStats::triggerColliderIndex,
+            "manaCost", &AttackStats::manaCost,
+            "attackRange", &AttackStats::attackRange,
+            "attackArc", &AttackStats::attackArc,
+            "applyBurn", &AttackStats::applyBurn,
+            "applyStun", &AttackStats::applyStun,
+            "effectDuration", &AttackStats::effectDuration,
+            "attackCd", &AttackStats::attackCd,
+            "attackCdCurr", &AttackStats::attackCdCurr,
+            "attackIsInCoolDown", &AttackStats::attackIsInCoolDown,
+            "elementType", &AttackStats::elementType
+            );
+
         // Register Player component
         sharedLua->new_usertype<Player>("Player",
-            "mHealth"         ,&Player::mHealth,
-            "mMaxHealth"      ,&Player::mMaxHealth,
-            "mHealthRegenRate",&Player::mHealthRegenRate,
-            "mSpeed"          ,&Player::mSpeed,
-            "mDashSpeed"      ,&Player::mDashSpeed,
-            "mDashCD"         ,&Player::mDashCD,
-            "mAttackDamage"   ,&Player::mAttackDamage,
-            "mAttackSpeed"    ,&Player::mAttackSpeed,
-            "mAttackRange"    ,&Player::mAttackRange,
-            "mDefense"        ,&Player::mDefense,
-            "mMana"           ,&Player::mMana,
-            "mMaxMana"        ,&Player::mMaxMana,
-            "mManaRegenRate"  ,&Player::mManaRegenRate
-        );
+            "mHealth", &Player::mHealth,
+            "mMaxHealth", &Player::mMaxHealth,
+            "mHealthRegenRate", &Player::mHealthRegenRate,
+            "mSpeed", &Player::mSpeed,
+            "mDashSpeed", &Player::mDashSpeed,
+            "mDashCD", &Player::mDashCD,
+            "mAttackDamage", &Player::mAttackDamage,
+            "mAttackSpeed", &Player::mAttackSpeed,
+            "mAttackRange", &Player::mAttackRange,
+            "mDefense", &Player::mDefense,
+            "mMana", &Player::mMana,
+            "mMaxMana", &Player::mMaxMana,
+            "mManaRegenRate", &Player::mManaRegenRate,
+            "attackStats", sol::property(
+                [](Player& c) -> std::vector<AttackStats>&{ return c.attackStats; }
+                )
+            );
 
 
         // Register Enemy component

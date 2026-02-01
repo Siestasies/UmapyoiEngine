@@ -70,8 +70,8 @@ namespace Uma_ECS
         if (!player.combatState.isAlive) return;
 
         // by right shd only have 1 player
-        HandleMovementInput(dt);
-        HandleActionInput(dt);
+        //HandleMovementInput(dt);
+        //HandleActionInput(dt);
         HandlePlayerAnimation();
     }
 
