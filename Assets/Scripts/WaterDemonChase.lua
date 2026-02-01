@@ -18,7 +18,7 @@ function state_update(entity, dt)
 
     --get player and entity transform
     local playerTransform = GetTransformFrom(playerId)
-    local myTransform = GetTransformFrom(entity) or GetTransform()
+    local myTransform = GetTransform()
     if not playerTransform or not myTransform then
         return
     end
@@ -27,7 +27,17 @@ function state_update(entity, dt)
     local dy = playerTransform.position.y - myTransform.position.y
     local distSq = dx * dx + dy * dy
 
-    if distSq < ChaseRange * ChaseRange then
+    local enemy
+    if HasEnemy() then
+        enemy = GetEnemy()
+    else
+        Log("not enemy")
+        return
+    end
+
+    if distSq > enemy.mAttackRange * enemy.mAttackRange and 
+       distSq <= ExposedVars.ChaseRange * ExposedVars.ChaseRange then
+
         if HasPathFinding() then 
             local pf = GetPathFinding()
             if pf then
@@ -41,7 +51,7 @@ function state_update(entity, dt)
     if HasEnemy() then
         local enemy = GetEnemy()
         if enemy then
-            if ChaseRange <= enemy.mAttackRange then
+            if distSq <= enemy.mAttackRange * enemy.mAttackRange then
                 ChangeState(entity, "AttackState")
             end
         end

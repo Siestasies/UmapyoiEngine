@@ -4,7 +4,7 @@ ExposedVars = {
 local enemy
 
 function Start()
-    if HasEnenmy() then
+    if HasEnemy() then
         enemy = GetEnemy()
     end
 end
