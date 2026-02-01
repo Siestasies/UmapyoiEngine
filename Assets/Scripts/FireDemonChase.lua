@@ -10,15 +10,18 @@ function state_enter(entity)
 end
 
 function state_update(entity, dt)
+    --look for player entity
     local playerId = FindEntityWithComponent("Player")
     if playerId == -1 or not IsEntityValid(playerId) then
-        ChangeState(entity, "WaterDemonIdle")
         return
     end
 
+    --get player and entity transform
     local playerTransform = GetTransformFrom(playerId)
     local myTransform = GetTransform()
-    if not playerTransform or not myTransform then return end
+    if not playerTransform or not myTransform then
+        return
+    end
 
     local dx = playerTransform.position.x - myTransform.position.x
     local dy = playerTransform.position.y - myTransform.position.y
@@ -40,16 +43,15 @@ function state_update(entity, dt)
         end
     end 
 
+    --if enemy is within attack range
     if enemy and distSq <= enemy.mAttackRange * enemy.mAttackRange then
-        ChangeState(entity, "WaterDemonAttack")
-        return
+        ChangeState(entity, "FireDemonAttack")
     end
-    
+
     if distSq > ExposedVars.ChaseRange * ExposedVars.ChaseRange then
-        ChangeState(entity, "WaterDemonIdle")
+        ChangeState(entity, "FireDemonIdle")
     end
 end
-
 
 function state_exit(entity)
     Log("Chase exit")
