@@ -280,16 +280,12 @@ namespace Uma_ECS
                                 << "' failed to load texture: " << clipData.texturePath;
                             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
 
-                            // Texture failed to load, use cached UVs
-                            uvOffset = animator.uvOffset;
-                            uvSize = animator.uvSize;
+                            animator.animator.GetUVs(uvOffset, uvSize);
                         }
                     }
                     else
                     {
-                        // No clip-specific texture, use Sprite texture with cached UVs
-                        uvOffset = animator.uvOffset;
-                        uvSize = animator.uvSize;
+                        animator.animator.GetUVs(uvOffset, uvSize);
                     }
                 }
             }

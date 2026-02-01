@@ -649,11 +649,6 @@ namespace Uma_ECS
             "AddClip", sol::overload(
                 [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
                     int framesX, int framesY, int startFrame, int frameCount,
-                    float fps, bool loop, std::string& texturePath) {
-                        animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps, loop, texturePath);
-                },
-                [](Uma_Engine::SpriteAnimator& animator, const std::string& name,
-                    int framesX, int framesY, int startFrame, int frameCount,
                     float fps, bool loop) {
                         animator.AddClip(name, framesX, framesY, startFrame, frameCount, fps, loop);
                 },
