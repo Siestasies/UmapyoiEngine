@@ -37,6 +37,7 @@ namespace Uma_Engine
         int frameCount;     // Number of frames in this animation
         float speed;        // Frames per second
         bool loop;          // Loop?
+        std::string texturePath;  // empty = use Sprite texture
 
         AnimationClip()
             : framesX(1), framesY(1), startFrame(0), frameCount(1),

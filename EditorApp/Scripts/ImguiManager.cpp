@@ -2292,12 +2292,29 @@ namespace Uma_Engine
 
                     if (ImGui::TreeNode(name.c_str()))
                     {
-                        ImGui::Text("Frames X: %d", clip.framesX);
-                        ImGui::Text("Frames Y: %d", clip.framesY);
-                        ImGui::Text("Start Frame: %d", clip.startFrame);
-                        ImGui::Text("Frame Count: %d", clip.frameCount);
-                        ImGui::Text("Speed: %.2f fps", clip.speed);
-                        ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
+                        // Create local copies to edit
+                        int framesX = clip.framesX;
+                        int framesY = clip.framesY;
+                        int startFrame = clip.startFrame;
+                        int frameCount = clip.frameCount;
+                        float speed = clip.speed;
+                        bool loop = clip.loop;
+
+                        bool modified = false;
+                        modified |= ImGui::DragInt("Frames X", &framesX, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Frames Y", &framesY, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Start Frame", &startFrame, 1.0f, 0, 1000);
+                        modified |= ImGui::DragInt("Frame Count", &frameCount, 1.0f, 1, 1000);
+                        modified |= ImGui::DragFloat("Speed (fps)", &speed, 0.1f, 0.1f, 60.0f);
+                        modified |= ImGui::Checkbox("Loop", &loop);
+
+                        // Update the clip if any value changed
+                        // addclip function replaces key of same name
+                        if (modified)
+                        {
+                            animator.animator.AddClip(name, framesX, framesY, startFrame, frameCount, speed, loop);
+                            m_hasUnsavedEdit = true;
+                        }
 
                         ImGui::Spacing();
                         ImGui::Separator();
