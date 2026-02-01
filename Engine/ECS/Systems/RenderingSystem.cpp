@@ -254,39 +254,12 @@ namespace Uma_ECS
             if (animatorArray.Has(entity))
             {
                 auto& animator = animatorArray.GetData(entity);
+                uvOffset = animator.uvOffset;
+                uvSize = animator.uvSize;
 
-                const auto& clips = animator.animator.GetClips();
-                const std::string& currentClip = animator.animator.GetCurrentClip();
-
-                if (!clips.empty() && clips.find(currentClip) != clips.end())
+                if (animator.activeTexture)
                 {
-                    const auto& clipData = clips.at(currentClip);
-
-                    // Check if current clip has a specific texture path
-                    if (!clipData.texturePath.empty())
-                    {
-                        // Load clip-specific texture
-                        auto clipTexture = pResourcesManager->GetTexture(clipData.texturePath);
-                        if (clipTexture && clipTexture->tex_id != 0)
-                        {
-                            // Use clip-specific texture
-                            activeTexture = clipTexture;
-                            animator.animator.GetUVs(uvOffset, uvSize);
-                        }
-                        else
-                        {
-                            std::stringstream log;
-                            log << "Entity(" << entity << ") Animator clip '" << currentClip
-                                << "' failed to load texture: " << clipData.texturePath;
-                            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
-
-                            animator.animator.GetUVs(uvOffset, uvSize);
-                        }
-                    }
-                    else
-                    {
-                        animator.animator.GetUVs(uvOffset, uvSize);
-                    }
+                    activeTexture = animator.activeTexture;
                 }
             }
             else

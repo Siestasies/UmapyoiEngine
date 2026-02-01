@@ -426,7 +426,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Animator>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AnimatorSystem>(sign);
         }
-        m_AnimatorSystem->Init(&m_Coordinator);
+        m_AnimatorSystem->Init(&m_Coordinator, m_ResourcesManager);
 
         m_LuaScriptingSystem = m_Coordinator.RegisterSystem<Uma_ECS::LuaScriptingSystem>();
         {

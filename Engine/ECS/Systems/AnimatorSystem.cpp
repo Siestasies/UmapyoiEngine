@@ -22,9 +22,10 @@ All rights reserved.
 
 namespace Uma_ECS
 {
-    void AnimatorSystem::Init(Coordinator* c)
+    void AnimatorSystem::Init(Coordinator* c, Uma_Engine::ResourcesManager* rm)
     {
         pCoordinator = c;
+        pResourcesManager = rm;
     }
 
     void AnimatorSystem::Update(float dt)
@@ -55,6 +56,24 @@ namespace Uma_ECS
 
             // Calculate and store current frame UVs
             animator.animator.GetUVs(animator.uvOffset, animator.uvSize);
+
+            // Resolve active texture for current clip
+            animator.activeTexture = nullptr;
+            const auto& clips = animator.animator.GetClips();
+            const std::string& currentClip = animator.animator.GetCurrentClip();
+
+            if (!clips.empty() && clips.find(currentClip) != clips.end())
+            {
+                const auto& clipData = clips.at(currentClip);
+                if (!clipData.texturePath.empty() && pResourcesManager)
+                {
+                    auto clipTexture = pResourcesManager->GetTexture(clipData.texturePath);
+                    if (clipTexture && clipTexture->tex_id != 0)
+                    {
+                        animator.activeTexture = clipTexture;
+                    }
+                }
+            }
         }
     }
 }

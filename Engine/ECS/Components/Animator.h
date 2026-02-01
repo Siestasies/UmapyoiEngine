@@ -22,8 +22,10 @@ All rights reserved.
 
 #pragma once
 #include "../../Math/Math.h"
+#include "../../Systems/ResourcesTypes.hpp"
 #include "../Systems/SpriteAnimator.h"
 #include <string>
+#include <memory>
 
 namespace Uma_ECS
 {
@@ -43,9 +45,12 @@ namespace Uma_ECS
         std::string initialClip = "";
         bool isInitialized = false;
 
-        // Current frame UVs
+        // Current frame UVs (cached by AnimatorSystem)
         Vec2 uvOffset = Vec2(0.0f, 0.0f);
         Vec2 uvSize = Vec2(1.0f, 1.0f);
+
+        // Active texture resolved by AnimatorSystem (nullptr = use Sprite's texture)
+        std::shared_ptr<Uma_Engine::Texture> activeTexture = nullptr;
 
         /**
          * \brief Serializes the Animator component data to a rapidjson::Value

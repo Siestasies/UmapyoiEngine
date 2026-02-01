@@ -21,6 +21,7 @@ All rights reserved.
 
 #include "../Core/System.hpp"
 #include "../Core/Coordinator.hpp"
+#include "../../Systems/ResourcesManager.hpp"
 
 namespace Uma_ECS
 {
@@ -40,7 +41,7 @@ namespace Uma_ECS
          * \brief Initializes the system with a pointer to the ECS coordinator
          * \param c Pointer to the main Coordinator
          */
-        void Init(Coordinator* c);
+        void Init(Coordinator* c, Uma_Engine::ResourcesManager* rm);
         /**
          * \brief Updates all registered Animator components
          * \param dt Delta time
@@ -49,5 +50,6 @@ namespace Uma_ECS
 
     private:
         Coordinator* pCoordinator = nullptr;
+        Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
     };
 }
