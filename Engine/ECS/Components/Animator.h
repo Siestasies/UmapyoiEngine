@@ -82,6 +82,9 @@ namespace Uma_ECS
                 clipObj.AddMember("frameCount", clip.frameCount, allocator);
                 clipObj.AddMember("speed", clip.speed, allocator);
                 clipObj.AddMember("loop", clip.loop, allocator);
+                clipObj.AddMember("texturePath",
+                    rapidjson::Value(clip.texturePath.c_str(), allocator),
+                    allocator);
 
                 clipsArray.PushBack(clipObj, allocator);
             }
@@ -122,10 +125,15 @@ namespace Uma_ECS
                     int frameCount = clipObj["frameCount"].GetInt();
                     float speed = clipObj["speed"].GetFloat();
                     bool loop = clipObj["loop"].GetBool();
+                    std::string texturePath = "";
+                    if (clipObj.HasMember("texturePath"))
+                    {
+                        texturePath = clipObj["texturePath"].GetString();
+                    }
 
                     // Add the clip back to the animator
                     animator.AddClip(name, framesX, framesY, startFrame,
-                        frameCount, speed, loop);
+                        frameCount, speed, loop, texturePath);
                 }
 
                 //std::cout << "Deserialized " << clipsArray.Size() << " animation clips" << std::endl;

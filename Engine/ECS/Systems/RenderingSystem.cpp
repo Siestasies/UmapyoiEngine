@@ -249,44 +249,49 @@ namespace Uma_ECS
             Vec2 uvOffset(0.0f, 0.0f);
             Vec2 uvSize(1.0f, 1.0f);
 
+            std::shared_ptr<Uma_Engine::Texture> activeTexture = sr.texture;
+
             if (animatorArray.Has(entity))
             {
                 auto& animator = animatorArray.GetData(entity);
 
-                // Use animator UVs only if it has clips and current clip is valid
                 const auto& clips = animator.animator.GetClips();
                 const std::string& currentClip = animator.animator.GetCurrentClip();
 
                 if (!clips.empty() && clips.find(currentClip) != clips.end())
                 {
-                    uvOffset = animator.uvOffset;
-                    uvSize = animator.uvSize;
-                }
-                else
-                {
-                    // Animator not active, use sprite's cell selection
-                    sr.GetUVs(uvOffset, uvSize);
-                }
+                    const auto& clipData = clips.at(currentClip);
 
-                allSprites.push_back(LayeredSprite
+                    // Check if current clip has a specific texture path
+                    if (!clipData.texturePath.empty())
                     {
-                        .info = Uma_Engine::Sprite_Info{
-                            .tex_id = sr.texture->tex_id,
-                            .pos = tf.worldPosition,
-                            .scale = spriteScale,
-                            .rot = tf.worldRotation,
-                            .rot_speed = tf.rotation.y,
-                            .uvOffset = uvOffset,
-                            .uvSize = uvSize,
-                            .tintColor = sr.tintColor,
-                            .alpha = sr.alpha
-                        },
-                        .layer = sr.renderLayer,
-                        .order = sr.renderOrder,
-                        .hierarchyOrder = hierarchyOrder,
-                        .texId = sr.texture->tex_id,
-                        .entityId = entity
-                    });
+                        // Load clip-specific texture
+                        auto clipTexture = pResourcesManager->GetTexture(clipData.texturePath);
+                        if (clipTexture && clipTexture->tex_id != 0)
+                        {
+                            // Use clip-specific texture
+                            activeTexture = clipTexture;
+                            animator.animator.GetUVs(uvOffset, uvSize);
+                        }
+                        else
+                        {
+                            std::stringstream log;
+                            log << "Entity(" << entity << ") Animator clip '" << currentClip
+                                << "' failed to load texture: " << clipData.texturePath;
+                            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, log.str());
+
+                            // Texture failed to load, use cached UVs
+                            uvOffset = animator.uvOffset;
+                            uvSize = animator.uvSize;
+                        }
+                    }
+                    else
+                    {
+                        // No clip-specific texture, use Sprite texture with cached UVs
+                        uvOffset = animator.uvOffset;
+                        uvSize = animator.uvSize;
+                    }
+                }
             }
             else
             {
@@ -296,7 +301,7 @@ namespace Uma_ECS
             allSprites.push_back(LayeredSprite
                 {
                     .info = Uma_Engine::Sprite_Info{
-                        .tex_id = sr.texture->tex_id,
+                        .tex_id = activeTexture->tex_id,
                         .pos = tf.worldPosition,
                         .scale = spriteScale,
                         .rot = tf.worldRotation,
@@ -309,7 +314,7 @@ namespace Uma_ECS
                     .layer = sr.renderLayer,
                     .order = sr.renderOrder,
                     .hierarchyOrder = hierarchyOrder,
-                    .texId = sr.texture->tex_id,
+                    .texId = activeTexture->tex_id,
                     .entityId = entity
                 });
         }
