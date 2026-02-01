@@ -2,6 +2,10 @@
     "resources": {
         "textures": [
             {
+                "name": "HTP_Image",
+                "path": "Assets/HowToPlay.png"
+            },
+            {
                 "name": "kappa_statue",
                 "path": "Assets/statue.png"
             },
@@ -10,8 +14,8 @@
                 "path": "Assets/wall_top.png"
             },
             {
-                "name": "HTP_Image",
-                "path": "Assets/HowToPlay.png"
+                "name": "wall_top_right",
+                "path": "Assets/wall_top_right.png"
             },
             {
                 "name": "fire bird",
@@ -22,32 +26,28 @@
                 "path": "Assets/floor_tatami.png"
             },
             {
-                "name": "wall_top_right",
-                "path": "Assets/wall_top_right.png"
-            },
-            {
                 "name": "whitePixel",
                 "path": "Assets/whitePixel.png"
-            },
-            {
-                "name": "player_ss",
-                "path": "Assets/player_ss.png"
             },
             {
                 "name": "wall_left",
                 "path": "Assets/wall_left.png"
             },
             {
+                "name": "player_ss",
+                "path": "Assets/player_ss.png"
+            },
+            {
                 "name": "wall_top_left",
                 "path": "Assets/wall_top_left.png"
             },
             {
-                "name": "wall_right",
-                "path": "Assets/wall_right.png"
-            },
-            {
                 "name": "WoodF_3",
                 "path": "Assets/Environment/m3 floor 1.png"
+            },
+            {
+                "name": "wall_right",
+                "path": "Assets/wall_right.png"
             },
             {
                 "name": "wall_btm",
@@ -62,12 +62,12 @@
                 "path": "Assets/Environment/spritesheet (9).png"
             },
             {
-                "name": "pause",
-                "path": "Assets/pause menu.png"
-            },
-            {
                 "name": "HallWay_Hori1",
                 "path": "Assets/Environment/horizontal hallway.png"
+            },
+            {
+                "name": "pause",
+                "path": "Assets/pause menu.png"
             },
             {
                 "name": "Kappa_1",
@@ -96,18 +96,8 @@
         ],
         "sounds": [
             {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -121,9 +111,19 @@
                 "type": 0
             },
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
             },
             {
                 "name": "enemy_hurt",
@@ -2372,8 +2372,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player",
                     "position": {
-                        "x": -167.983,
-                        "y": 77.024
+                        "x": -176.483,
+                        "y": 108.919
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2398,8 +2398,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": -167.983,
-                        "y": 77.024
+                        "x": -176.483,
+                        "y": 108.919
                     },
                     "rotation": {
                         "x": 0.0,
@@ -9245,6 +9245,33 @@
                         }
                     ]
                 },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/levelEnd_door.lua",
+                            "scriptName": "levelEnd_door.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 2.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "moveBy",
+                                    "type": 0,
+                                    "value": -5.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
                 "struct Uma_ECS::ParticleEmitter": {
                     "emitters": [
                         {
@@ -9404,6 +9431,33 @@
                             "colliderMask": 54,
                             "isActive": true,
                             "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/levelEnd_door.lua",
+                            "scriptName": "levelEnd_door.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "speed",
+                                    "type": 0,
+                                    "value": 2.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "moveBy",
+                                    "type": 0,
+                                    "value": 5.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
                         }
                     ]
                 },
@@ -15850,7 +15904,7 @@
                     "emitters": [
                         {
                             "mode": 1,
-                            "maxParticles": 20,
+                            "maxParticles": 50,
                             "isActive": true,
                             "textureName": "kappa_statue",
                             "appearance": {
@@ -15859,25 +15913,25 @@
                                     3.0
                                 ],
                                 "startColor": [
-                                    1.0,
-                                    1.0,
-                                    1.0
+                                    0.34,
+                                    0.81,
+                                    0.238
                                 ],
                                 "endColor": [
-                                    1.0,
-                                    1.0,
-                                    1.0
+                                    0.439,
+                                    0.683,
+                                    0.303
                                 ],
                                 "colorLerp": false,
                                 "randomOpacity": true,
                                 "opacityRange": [
                                     0.158,
-                                    0.43
+                                    0.3
                                 ],
-                                "rotateParticles": false,
+                                "rotateParticles": true,
                                 "rotationSpeedRange": [
-                                    -90.0,
-                                    90.0
+                                    -45.0,
+                                    45.0
                                 ]
                             },
                             "fade": {
@@ -15899,7 +15953,7 @@
                                 ],
                                 "gravity": [
                                     0.0,
-                                    0.0
+                                    10.0
                                 ],
                                 "drag": 0.0
                             },
@@ -15908,13 +15962,13 @@
                                     0.0,
                                     0.0
                                 ],
-                                "spawnRadius": 10.0,
+                                "spawnRadius": 4.0,
                                 "useEmissionCone": false,
                                 "emissionAngle": 0.0,
                                 "emissionSpread": 360.0
                             },
                             "emission": {
-                                "emissionRate": 20.0,
+                                "emissionRate": 50.0,
                                 "loop": false,
                                 "loopDelay": 1.0
                             },
@@ -17785,6 +17839,206 @@
                                 "spawnAtTop": false,
                                 "spawnMargin": 50.0
                             }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 292,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Fade Screen",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 293,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "new entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1500.0,
+                        "y": 1500.0
+                    },
+                    "parent": 292
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/fade.lua",
+                            "scriptName": "fade.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 2000.0,
+                        "y": 2000.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "textureName": "whitePixel",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 0.99
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 294,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level End Check",
+                    "position": {
+                        "x": -159.81,
+                        "y": 121.3
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1200.0,
+                        "y": 1000.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Sprite": {
+                    "textureName": "whitePixel",
+                    "layer": 16,
+                    "order": 0,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": true,
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "tintColor": [
+                        0.58,
+                        1.0,
+                        0.663
+                    ],
+                    "alpha": 0.588
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": true,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "purpose": 2,
+                            "layer": 2,
+                            "colliderMask": 0,
+                            "isActive": true,
+                            "autoFitToSprite": true
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/levelEnd_enemy.lua",
+                            "scriptName": "levelEnd_enemy.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "nextSceneName",
+                                    "type": 3,
+                                    "value": "test_combat",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
                         }
                     ]
                 }
