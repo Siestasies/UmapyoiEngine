@@ -151,6 +151,7 @@ namespace Uma_Engine
 
 				SoundInfo* GetSoundInfo(const std::string& soundName);
 
+				bool IsSoundPlaying(const std::string& soundName);
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;

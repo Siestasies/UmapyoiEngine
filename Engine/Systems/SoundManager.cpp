@@ -481,4 +481,17 @@ namespace Uma_Engine {
         }
         return pResourcesManager->GetSound(soundName);
     }
+
+    bool SoundManager::IsSoundPlaying(const std::string& soundName)
+    {
+        SoundInfo* info = pResourcesManager->GetSound(soundName);
+        if (!info || !info->channel) {
+            return false;
+        }
+
+        FMOD_BOOL isPlaying = false;
+        FMOD_Channel_IsPlaying(info->channel, &isPlaying);
+        return isPlaying != 0;
+    }
+
 }
