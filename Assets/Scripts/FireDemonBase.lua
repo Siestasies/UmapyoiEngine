@@ -12,7 +12,7 @@ end
 function Update(dt)
     if enemy then
         if enemy.mHealth < 0 then
-            ChangeState(EntityID, "WaterDemonSuicide")
+            ChangeState(EntityID, "FireDemonDead")
         end
     end
 end

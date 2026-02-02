@@ -38,6 +38,9 @@ namespace Uma_ECS
         float mAttackRange = 20.f;
         int mDefense = 5;
 
+        Vec2 dir = 180;     //what direction it is looking at
+        float mFoV = 40;    //the field of view of enemy
+
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the enemy
 

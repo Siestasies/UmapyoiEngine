@@ -2,56 +2,45 @@
 --exposed vars for variable you want that can be editied in editor
 ExposedVars = {
     explosionTimer = 2.0,
-    damageRange = 5.0
+    damageLinger = 0.5
 }
+
 local exploded = false
+local explosionTimer = 0
+local damageTimer = 0.0
 
---takes in entity id from C++ to use in case needed
 function state_enter(entity)
-
+    explosionTimer = ExposedVars.explosionTimer
+    exploded = false
+    damageTimer = 0.0
+    
+    if HasAnimator() then
+        local animator = GetAnimator()
+        animator.animator:Play("explosion", true)
+    end
 end
 
---takes in entity id from C++ to use in case needed
---uses dt for time updates etc
 function state_update(entity, dt)
     explosionTimer = explosionTimer - dt
-    --play death animation under the assumption that it takes the same as animation time
-    if explosionTimer < 0 then
-        --do AoE dmg
-        DoAoE(entity, damageRange)
-        exploded = true
-    end
-
-    if exploded == true then
-        DestroyEntityWithChildren(entity)
-    end
-end
-
---takes in entity id from C++ to use in case needed
-function state_exit(entity)
     
-end
-
-function DoAoE(entity, range)
-    local playerId = FindEntityWithComponent("Player")
-    if playerId ~= -1 then
-        local player = GetEntity(playerId)
-        if player then
-            if HasEnemy() then
-                local enemy = GetEnemy()
-                if enemy then
-                    local dist = GetPlayerDistance(entity)
-                    if dist ~= math.huge and dist <= range  then
-                        player.mHealth = player.mHealth - enemy.mAttackDamage
-                    end
-                end
+    if HasAnimator() then
+        local animator = GetAnimator()
+        local spriteAnimator = animator.animator
+        
+        if explosionTimer < 0 and not spriteAnimator:IsPlaying() then
+            -- toggle the collider
+            local collider = GetCollider(entity)
+            if collider and #collider.shapes >= 3 then
+                collider.shapes[2].enabled = true
             end
+            exploded = true
+            damageTimer = ExposedVars.damageLinger
         end
     end
-end
-
-function GetPlayerDistance(entity)
-    playerEntity = FindEntityWithComponent("Player")
-    if not playerEntity then return math.huge end
-    return Distance(GetTransform(entity).position, GetTransform(playerEntity).position)
+    
+    if exploded and damageTimer > 0 then
+        damageTimer = damageTimer - dt
+    elseif exploded and damageTimer <= 0 then
+        DestroyEntityWithChildren(entity)
+    end
 end
