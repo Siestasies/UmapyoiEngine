@@ -2,22 +2,25 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/wall_top.png"
+                "path": "assets/statue.png"
             },
             {
-                "path": "assets/statue.png"
+                "path": "assets/wall_top.png"
             },
             {
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/wall_top_right.png"
+                "path": "assets/fire bird.png"
             },
             {
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/fire bird.png"
+                "path": "assets/wall_top_right.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/whitepixel.png"
@@ -26,10 +29,10 @@
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/wall_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
-                "path": "assets/environment/floor 2 horizontal.png"
+                "path": "assets/wall_left.png"
             },
             {
                 "path": "assets/wall_top_left.png"
@@ -60,24 +63,37 @@
             },
             {
                 "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 2.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             }
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -91,18 +107,8 @@
                 "type": 1
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
-                "type": 0
-            },
-            {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
             },
             {
@@ -17056,7 +17062,7 @@
         },
         {
             "id": 266,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
@@ -17627,8 +17633,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "BGM Object",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -96.5,
+                        "y": -24.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17775,7 +17781,7 @@
         },
         {
             "id": 284,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "HowToPlay btn",
@@ -18097,7 +18103,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -18155,7 +18161,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Close",
-                    "fontPath": "",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -18231,8 +18237,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "weather_effect",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -57.999,
+                        "y": -32.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -18332,6 +18338,32 @@
                             }
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 292,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": -148.166,
+                        "y": 78.583
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 15.0,
+                        "y": 15.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
                 }
             }
         }

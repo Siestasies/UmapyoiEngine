@@ -24,6 +24,7 @@ All rights reserved.
 
 #include "../Core/UITypes.h"
 #include "rapidjson/document.h"
+#include <string>
 
 namespace Uma_UI
 {

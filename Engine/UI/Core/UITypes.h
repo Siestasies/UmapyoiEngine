@@ -141,6 +141,14 @@ namespace Uma_UI
         Disabled = 3
     };
 
+    enum class CheckboxState
+    {
+        Normal = 0,
+        Hovered = 1,
+        Pressed = 2,
+        Disabled = 3
+    };
+
     /*!
      * \enum TextAlignment
      * \brief Horizontal text alignment within a rect.

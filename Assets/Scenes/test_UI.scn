@@ -1,0 +1,524 @@
+{
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/whitepixel.png"
+            }
+        ],
+        "fonts": [
+            {
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
+                "size": 48
+            },
+            {
+                "name": "assets/fonts/urbanist-regular.ttf",
+                "path": "Assets/fonts/Urbanist-Regular.ttf",
+                "size": 48
+            }
+        ],
+        "sounds": [],
+        "shaders": [
+            {
+                "name": "system_sprite",
+                "vertexPath": "Assets/Shaders/sprite.vert",
+                "fragmentPath": "Assets/Shaders/sprite.frag"
+            },
+            {
+                "name": "system_instanced",
+                "vertexPath": "Assets/Shaders/instanced.vert",
+                "fragmentPath": "Assets/Shaders/instanced.frag"
+            },
+            {
+                "name": "system_text",
+                "vertexPath": "Assets/Shaders/text.vert",
+                "fragmentPath": "Assets/Shaders/text.frag"
+            },
+            {
+                "name": "system_shape",
+                "vertexPath": "Assets/Shaders/shape.vert",
+                "fragmentPath": "Assets/Shaders/shape.frag"
+            },
+            {
+                "name": "system_debug",
+                "vertexPath": "Assets/Shaders/debug.vert",
+                "fragmentPath": "Assets/Shaders/debug.frag"
+            }
+        ]
+    },
+    "entities": [
+        {
+            "id": 0,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "canvas",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 1,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "slider",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 0
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 500.0,
+                        "y": 20.0
+                    }
+                },
+                "class Uma_UI::Slider": {
+                    "minValue": 0.0,
+                    "maxValue": 1.0,
+                    "value": 1.0,
+                    "wholeNumbers": false,
+                    "direction": 0,
+                    "interactable": true,
+                    "backgroundEntity": 2,
+                    "fillEntity": 3,
+                    "handleEntity": 4,
+                    "scriptName": "",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "highlightColour": {
+                        "r": 0.898,
+                        "g": 0.898,
+                        "b": 0.898,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 2,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bg",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 1
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 500.0,
+                        "y": 20.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 0.497,
+                        "g": 0.497,
+                        "b": 0.497,
+                        "a": 0.497
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 3,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "fill",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 1
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 500.0,
+                        "y": 20.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 4,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "handle",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 1
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 250.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 40.0,
+                        "y": 40.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 5,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "checkbox",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 0
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 50.0,
+                        "y": 50.0
+                    }
+                },
+                "class Uma_UI::Checkbox": {
+                    "isChecked": false,
+                    "interactable": true,
+                    "backgroundEntity": 6,
+                    "checkmarkEntity": 7,
+                    "scriptName": "",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.898,
+                        "g": 0.898,
+                        "b": 0.898,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.699,
+                        "g": 0.699,
+                        "b": 0.699,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    },
+                    "checkedColour": {
+                        "r": 0.2,
+                        "g": 0.6,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "checkmarkNormalColour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "checkmarkDisabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 1.0
+                    }
+                }
+            }
+        },
+        {
+            "id": 6,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bg",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 5
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 50.0,
+                        "y": 50.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 7,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "checkmark",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 5
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 45.0,
+                        "y": 45.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "visible": true
+                }
+            }
+        }
+    ]
+}

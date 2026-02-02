@@ -115,11 +115,11 @@ namespace Uma_ECS
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
                 if (!pCoordinator || aEntities.empty()) return;
-                if (e.entity != aEntities[0] && e.trigger != aEntities[0]) return;
+                if (e.entityA != aEntities[0] && e.entityB != aEntities[0]) return;
 
                 // proccess trigger
 
-                Entity trigger = (e.entity != aEntities[0]) ? e.entity : e.trigger;
+                Entity trigger = (e.entityA != aEntities[0]) ? e.entityA : e.entityB;
 
                 HandleCollision(aEntities[0], trigger);
             });

@@ -2,17 +2,15 @@
     "resources": {
         "textures": [
             {
-                "name": "white",
-                "path": "Assets/whitePixel.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "name": "main",
-                "path": "Assets/main menu.png"
+                "path": "assets/main menu.png"
             }
         ],
         "fonts": [
             {
-                "name": "Fujimaru-Regular",
+                "name": "assets/fonts/fujimaru-regular.ttf",
                 "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             }
@@ -37,6 +35,33 @@
                 "name": "quitbtn_sound",
                 "path": "Assets/sounds/MenuClick.wav",
                 "type": 0
+            }
+        ],
+        "shaders": [
+            {
+                "name": "system_sprite",
+                "vertexPath": "Assets/Shaders/sprite.vert",
+                "fragmentPath": "Assets/Shaders/sprite.frag"
+            },
+            {
+                "name": "system_instanced",
+                "vertexPath": "Assets/Shaders/instanced.vert",
+                "fragmentPath": "Assets/Shaders/instanced.frag"
+            },
+            {
+                "name": "system_text",
+                "vertexPath": "Assets/Shaders/text.vert",
+                "fragmentPath": "Assets/Shaders/text.frag"
+            },
+            {
+                "name": "system_shape",
+                "vertexPath": "Assets/Shaders/shape.vert",
+                "fragmentPath": "Assets/Shaders/shape.frag"
+            },
+            {
+                "name": "system_debug",
+                "vertexPath": "Assets/Shaders/debug.vert",
+                "fragmentPath": "Assets/Shaders/debug.frag"
             }
         ]
     },
@@ -137,7 +162,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "main",
+                    "texturePath": "Assets/main menu.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -275,7 +300,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Play",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -333,7 +358,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Play",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -473,7 +498,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Settings",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.598,
                     "colour": {
@@ -531,7 +556,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Settings",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -671,7 +696,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Quit",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -729,7 +754,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Quit",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
@@ -839,7 +864,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "main",
+                    "texturePath": "",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -948,7 +973,7 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "textureName": "white",
+                    "texturePath": "",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -988,7 +1013,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "100",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 1.5,
                     "colour": {
@@ -1046,7 +1071,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Volume",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 2.598,
                     "colour": {
@@ -1104,7 +1129,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Volume",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 2.5,
                     "colour": {
@@ -1244,7 +1269,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.7,
                     "colour": {
@@ -1302,7 +1327,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back",
-                    "fontName": "Fujimaru-Regular",
+                    "fontPath": "",
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {

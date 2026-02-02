@@ -278,7 +278,7 @@ namespace Uma_Engine
             lastFrame = currentFrame;
 
             // Cap delta time to prevent large jumps
-            deltaTime = min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
+            deltaTime = std::min(deltaTime, 1.0f / 30.0f); // cap to 30 FPS worst-case
 
             ++frameCount;
 

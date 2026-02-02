@@ -158,12 +158,12 @@ namespace Uma_ECS
 
                 Vec2 tileWorldSize = { tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y };
 
-                float minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
-                float maxCol = min(layer.width, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
-                float minRow = max(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
-                float maxRow = min(layer.height, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+                int minCol = (std::max)(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                int maxCol = (std::min)(int(layer.width), int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                int minRow = (std::max)(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
+                int maxRow = (std::min)(int(layer.height), int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
 
-                int visibleTiles = max(0, (maxCol - minCol) * (maxRow - minRow));
+                int visibleTiles = (std::max)(0, int((maxCol - minCol) * (maxRow - minRow)));
                 estimatedSpriteCount += visibleTiles;
             }
         }
@@ -249,44 +249,18 @@ namespace Uma_ECS
             Vec2 uvOffset(0.0f, 0.0f);
             Vec2 uvSize(1.0f, 1.0f);
 
+            std::shared_ptr<Uma_Engine::Texture> activeTexture = sr.texture;
+
             if (animatorArray.Has(entity))
             {
                 auto& animator = animatorArray.GetData(entity);
+                uvOffset = animator.uvOffset;
+                uvSize = animator.uvSize;
 
-                // Use animator UVs only if it has clips and current clip is valid
-                const auto& clips = animator.animator.GetClips();
-                const std::string& currentClip = animator.animator.GetCurrentClip();
-
-                if (!clips.empty() && clips.find(currentClip) != clips.end())
+                if (animator.activeTexture)
                 {
-                    uvOffset = animator.uvOffset;
-                    uvSize = animator.uvSize;
+                    activeTexture = animator.activeTexture;
                 }
-                else
-                {
-                    // Animator not active, use sprite's cell selection
-                    sr.GetUVs(uvOffset, uvSize);
-                }
-
-                allSprites.push_back(LayeredSprite
-                    {
-                        .info = Uma_Engine::Sprite_Info{
-                            .tex_id = sr.texture->tex_id,
-                            .pos = tf.worldPosition,
-                            .scale = spriteScale,
-                            .rot = tf.worldRotation,
-                            .rot_speed = tf.rotation.y,
-                            .uvOffset = uvOffset,
-                            .uvSize = uvSize,
-                            .tintColor = sr.tintColor,
-                            .alpha = sr.alpha
-                        },
-                        .layer = sr.renderLayer,
-                        .order = sr.renderOrder,
-                        .hierarchyOrder = hierarchyOrder,
-                        .texId = sr.texture->tex_id,
-                        .entityId = entity
-                    });
             }
             else
             {
@@ -296,7 +270,7 @@ namespace Uma_ECS
             allSprites.push_back(LayeredSprite
                 {
                     .info = Uma_Engine::Sprite_Info{
-                        .tex_id = sr.texture->tex_id,
+                        .tex_id = activeTexture->tex_id,
                         .pos = tf.worldPosition,
                         .scale = spriteScale,
                         .rot = tf.worldRotation,
@@ -309,7 +283,7 @@ namespace Uma_ECS
                     .layer = sr.renderLayer,
                     .order = sr.renderOrder,
                     .hierarchyOrder = hierarchyOrder,
-                    .texId = sr.texture->tex_id,
+                    .texId = activeTexture->tex_id,
                     .entityId = entity
                 });
         }
@@ -348,10 +322,10 @@ namespace Uma_ECS
                 float tileWorldSizeX = tilemap.tileSize * tf.scale.x;
                 float tileWorldSizeY = tilemap.tileSize * tf.scale.y;
 
-                int minCol = max(0, int((camMin.x - tf.worldPosition.x) / tileWorldSizeX));
-                int maxCol = min(layer.width, int((camMax.x - tf.worldPosition.x) / tileWorldSizeX) + 1);
-                int minRow = max(0, int((tf.worldPosition.y - camMax.y) / tileWorldSizeY));
-                int maxRow = min(layer.height, int((tf.worldPosition.y - camMin.y) / tileWorldSizeY) + 1);
+                int minCol = (std::max)(0, int((camMin.x - tf.worldPosition.x) / tileWorldSizeX));
+                int maxCol = (std::min)(int(layer.width), int((camMax.x - tf.worldPosition.x) / tileWorldSizeX) + 1);
+                int minRow = (std::max)(0, int((tf.worldPosition.y - camMax.y) / tileWorldSizeY));
+                int maxRow = (std::min)(int(layer.height), int((tf.worldPosition.y - camMin.y) / tileWorldSizeY) + 1);
 
                 // Only iterate visible tiles
 
@@ -593,10 +567,9 @@ namespace Uma_ECS
             {
                 Entity childUI = childrenList[i];
 
-                if (!pCoordinator->IsActiveInHierarchy(childUI)) continue;
+                if (!pCoordinator->IsActiveInHierarchy(childUI) || !rtfArray.Has(childUI)) continue;
 
-                auto& rectTransform = rtfArray.GetData(childUI);
-                
+                auto& rectTransform = rtfArray.GetData(childUI);                
 
                 if (pCoordinator->HasComponent<Uma_UI::Text>(childUI))
                 {
@@ -641,6 +614,8 @@ namespace Uma_ECS
                     UIDrawCommand::Type uiType = UIDrawCommand::UI_IMAGE;
 
                     auto& image = pCoordinator->GetComponent<Uma_UI::Image>(childUI);
+
+                    if (!image.visible) continue;
 
                     if (!image.texture || image.texture->tex_id == 0)
                     {

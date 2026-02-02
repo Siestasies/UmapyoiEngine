@@ -57,6 +57,8 @@ All rights reserved.
 #include "UI/Components/RectTransform.h"
 #include "UI/Components/Image.h"
 #include "UI/Components/Button.h"
+#include "UI/Components/Slider.h"
+#include "UI/Components/Checkbox.h"
 #include "UI/Components/Canvas.h"
 #include "UI/Components/Text.h"
 #include "../Components/FSM.h"
@@ -72,6 +74,7 @@ namespace Uma_ECS
     {
         std::unique_ptr<EntityManager> cachedEntityManager;
         std::unique_ptr<ComponentManager> cachedComponentManager;
+        std::vector<Entity> cachedHierarchyOrder;
     };
 
     // this whole Corrdinator context is about combining:
@@ -277,6 +280,8 @@ namespace Uma_ECS
             CHECK_COMPONENT(Uma_UI::RectTransform)
             CHECK_COMPONENT(Uma_UI::Image)
             CHECK_COMPONENT(Uma_UI::Button)
+            CHECK_COMPONENT(Uma_UI::Slider)
+            CHECK_COMPONENT(Uma_UI::Checkbox)
             CHECK_COMPONENT(Uma_UI::Canvas)
             CHECK_COMPONENT(Uma_UI::Text)
 

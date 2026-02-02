@@ -111,10 +111,12 @@ namespace Uma_ECS
          */
         void DebugRender();
 
+        std::unordered_set<Entity> GetEntitiesInArea(Vec2 min, Vec2 max);
+
     private:
 
         /**
-         * \brief Updates all entities’ bounding boxes based on their transforms
+         * \brief Updates all entitiesï¿½ bounding boxes based on their transforms
          */
         void UpdateBoundingBoxes();
 
@@ -161,20 +163,21 @@ namespace Uma_ECS
         bool ShouldPurposesCollide(ColliderPurpose p1, ColliderPurpose p2);
 
         /**
-         * \brief Handles collision logic between two entities’ collider shapes
+         * \brief Handles collision logic between two entitiesï¿½ collider shapes
          * \param e1 First entity
          * \param e2 Second entity
          * \param tf1 Transform of the first entity
          * \param tf2 Transform of the second entity
-         * \param rb1 Pointer to the first entity’s rigid body (nullable)
-         * \param rb2 Pointer to the second entity’s rigid body (nullable)
+         * \param rb1 Pointer to the first entityï¿½s rigid body (nullable)
+         * \param rb2 Pointer to the second entityï¿½s rigid body (nullable)
          * \param box1 Bounding box of the first entity
          * \param box2 Bounding box of the second entity
          * \param purpose1 Collision purpose of the first collider
          * \param purpose2 Collision purpose of the second collider
          */
         void HandleShapeCollision(
-            Entity e1, Entity e2,
+            Entity colliderEntity1, Entity colliderEntity2,
+            Entity physicsEntity1, Entity physicsEntity2,
             Transform& tf1, Transform& tf2,
             RigidBody* rb1, RigidBody* rb2,
             const BoundingBox& box1, const BoundingBox& box2,
@@ -188,8 +191,8 @@ namespace Uma_ECS
          * \param box2 Bounding box of the second entity
          * \param e1CanMove Whether the first entity is movable
          * \param e2CanMove Whether the second entity is movable
-         * \param rb1 Pointer to the first entity’s rigid body (nullable)
-         * \param rb2 Pointer to the second entity’s rigid body (nullable)
+         * \param rb1 Pointer to the first entityï¿½s rigid body (nullable)
+         * \param rb2 Pointer to the second entityï¿½s rigid body (nullable)
          */
         void ResolveAABBCollision(
             Transform& tf1, Transform& tf2,
@@ -235,6 +238,8 @@ namespace Uma_ECS
         bool CollisionIntersection_RectRect_Static(
             const BoundingBox& lhs,
             const BoundingBox& rhs);
+
+        BoundingBox ComputeCurrentBounds(Entity entity, size_t shapeIndex);
 
         float cellSize = 300.f;      // Tune based on your game world
         float invCellSize = 1.f / cellSize;

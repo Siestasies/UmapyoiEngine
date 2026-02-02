@@ -19,7 +19,7 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
-#include "../Helpers/InputFilter.h"
+#include "../Core/InputFilter.h"
 #include "../Systems/UISystem.h"
 
 namespace Uma_UI

@@ -37,6 +37,7 @@ namespace Uma_Engine
         int frameCount;     // Number of frames in this animation
         float speed;        // Frames per second
         bool loop;          // Loop?
+        std::string texturePath;  // empty = use Sprite texture
 
         AnimationClip()
             : framesX(1), framesY(1), startFrame(0), frameCount(1),
@@ -82,10 +83,26 @@ namespace Uma_Engine
          * \param loop Whether the animation should loop
          */
         void AddClip(const std::string& name, int framesX, int framesY,
-            int startFrame, int frameCount, float fps = 10.0f, bool loop = true)
+            int startFrame, int frameCount, float speed = 10.f, bool loop = true,
+            const std::string& texturePath = "")
         {
-            AnimationClip clip(framesX, framesY, startFrame, frameCount, fps, loop);
-            AddClip(name, clip);
+            AnimationClip clip;
+            clip.framesX = framesX;
+            clip.framesY = framesY;
+            clip.startFrame = startFrame;
+            clip.frameCount = frameCount;
+            clip.speed = speed;
+            clip.loop = loop;
+            clip.texturePath = texturePath;  // Store the texture path
+
+            clips[name] = clip;
+
+            // If this is the first clip or no clip is playing, set it as current
+            if (currentClip.empty() || clips.size() == 1)
+            {
+                currentClip = name;
+                currentFrame = startFrame;
+            }
         }
 
         /**

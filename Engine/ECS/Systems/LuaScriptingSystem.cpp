@@ -1092,14 +1092,14 @@ namespace Uma_ECS
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
-                OnTriggerEnterEvent(e.trigger, e.entity);
+                OnTriggerEnterEvent(e.entityA, e.entityB, e.triggerOwner);
             }
         );
 
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, LuaScriptingSystem>(
             [this](const Uma_Engine::OnTriggerEvent& e)
             {
-                OnTriggerEvent(e.trigger, e.entity);
+                OnTriggerEvent(e.entityA, e.entityB, e.triggerOwner);
             }
         );
 
@@ -1198,22 +1198,22 @@ namespace Uma_ECS
         NotifyScripts(scriptArray, entityB, entityA, "OnCollisionExit");
     }
 
-    void LuaScriptingSystem::OnTriggerEvent(Entity entityA, Entity entityB)
+    void LuaScriptingSystem::OnTriggerEvent(Entity entityA, Entity entityB, Entity triggerOwner)
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
-        // Notify both entities
-        NotifyScripts(scriptArray, entityA, entityB, "OnTrigger");
-        NotifyScripts(scriptArray, entityB, entityA, "OnTrigger");
+        // Notify both entities, passing other entity and trigger owner
+        NotifyTriggerScripts(scriptArray, entityA, entityB, triggerOwner, "OnTrigger");
+        NotifyTriggerScripts(scriptArray, entityB, entityA, triggerOwner, "OnTrigger");
     }
 
-    void LuaScriptingSystem::OnTriggerEnterEvent(Entity entityA, Entity entityB)
+    void LuaScriptingSystem::OnTriggerEnterEvent(Entity entityA, Entity entityB, Entity triggerOwner)
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
 
-        // Notify both entities
-        NotifyScripts(scriptArray, entityA, entityB, "OnTriggerEnter");
-        NotifyScripts(scriptArray, entityB, entityA, "OnTriggerEnter");
+        // Notify both entities, passing other entity and trigger owner
+        NotifyTriggerScripts(scriptArray, entityA, entityB, triggerOwner, "OnTriggerEnter");
+        NotifyTriggerScripts(scriptArray, entityB, entityA, triggerOwner, "OnTriggerEnter");
     }
 
     void LuaScriptingSystem::OnTriggerExitEvent(Entity entityA, Entity entityB)
@@ -1240,6 +1240,25 @@ namespace Uma_ECS
             if (!script.isEnabled || script.hasError) continue;
 
             CallLuaFunction(script, callbackName, other);
+        }
+    }
+
+    void LuaScriptingSystem::NotifyTriggerScripts(
+        ComponentArray<LuaScript>& scriptArray,
+        Entity owner,
+        Entity other,
+        Entity triggerOwner,
+        const char* callbackName)
+    {
+        if (!scriptArray.Has(owner)) return;
+
+        auto& scriptComponent = scriptArray.GetData(owner);
+
+        for (auto& script : scriptComponent.scripts)
+        {
+            if (!script.isEnabled || script.hasError) continue;
+
+            CallLuaFunction(script, callbackName, other, triggerOwner);
         }
     }
      

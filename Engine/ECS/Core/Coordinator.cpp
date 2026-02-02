@@ -988,6 +988,7 @@ namespace Uma_ECS
     {
         mStateCache.cachedEntityManager = std::make_unique<EntityManager>(*aEntityManager);
         mStateCache.cachedComponentManager = std::make_unique<ComponentManager>(*aComponentManager);
+        mStateCache.cachedHierarchyOrder = aHierarchyOrder;
     }
 
     void Coordinator::RestoreState()
@@ -1029,6 +1030,9 @@ namespace Uma_ECS
                 aSystemManager->EntitySignatureChanged(entity, signature);
             }
         }
+
+        // Step 5: Restore hierarchy order
+        aHierarchyOrder = std::move(mStateCache.cachedHierarchyOrder);
 
         mStateCache.cachedComponentManager.release();
         mStateCache.cachedEntityManager.release();

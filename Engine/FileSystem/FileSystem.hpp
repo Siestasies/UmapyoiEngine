@@ -773,7 +773,7 @@ namespace Uma_Engine
 
             // Calculate items per row
             float availableWidth = ImGui::GetContentRegionAvail().x;
-            int itemsPerRow = max(1, static_cast<int>((availableWidth + itemSpacing) / (itemWidth + itemSpacing)));
+            int itemsPerRow = (std::max)(1, static_cast<int>((availableWidth + itemSpacing) / (itemWidth + itemSpacing)));
 
             int currentColumn = 0;
             ImVec2 startPos = ImGui::GetCursorPos();

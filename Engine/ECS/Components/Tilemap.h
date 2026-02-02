@@ -87,8 +87,8 @@ namespace Uma_ECS
     {
         std::vector<int> tiles;
         std::string name;
-        unsigned int width;
-        unsigned int height;
+        unsigned int width = 10;
+        unsigned int height = 10;
 
         int renderOrder = 0;
         LayerMask renderLayer = RL_NONE;
@@ -102,8 +102,8 @@ namespace Uma_ECS
     struct Tilemap
     {
         std::vector<TileLayer> layers;
-        int mapWidth = 0;
-        int mapHeight = 0;
+        int mapWidth = 10;
+        int mapHeight = 10;
         int tileSize = 16;
 
         // Tileset reference

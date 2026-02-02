@@ -105,10 +105,9 @@ namespace Uma_Engine
         pEventSystem->Subscribe<EntityDestroyedEvent, ImguiManager>([this](const EntityDestroyedEvent& e) { mEntityCount = e.entityCnt; });
         pEventSystem->Subscribe<SceneInfoRequest, ImguiManager>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
-        pEventSystem->Subscribe<IMGUIStopRequest, ImguiManager>([this](const IMGUIStopRequest& e)
+        pEventSystem->Subscribe<UpdateImguiPlayModeEvent, ImguiManager>([this](const UpdateImguiPlayModeEvent& e)
              { 
-                (void)e;
-                m_playState = PlayState::Stopped; 
+                m_playState = e.isPlayMode ? PlayState::Playing : PlayState::Stopped;
             });
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent, ImguiManager>([this](const ReturnDuplicatedRequestEvent& e)
             { 
@@ -1899,7 +1898,7 @@ namespace Uma_Engine
                 // Sprite cell (which cell to render)
                 float cellArray[2] = { sprite.spriteCell.x, sprite.spriteCell.y };
                 if (ImGui::DragFloat2("Cell (Col, Row)", cellArray, 1.0f, 0.0f,
-                    max(sprite.spriteSheetGrid.x - 1.0f, 0.0f), "%.0f"))
+                    std::max(sprite.spriteSheetGrid.x - 1.0f, 0.0f), "%.0f"))
                 {
                     sprite.spriteCell.x = cellArray[0];
                     sprite.spriteCell.y = cellArray[1];
@@ -2292,12 +2291,136 @@ namespace Uma_Engine
 
                     if (ImGui::TreeNode(name.c_str()))
                     {
-                        ImGui::Text("Frames X: %d", clip.framesX);
-                        ImGui::Text("Frames Y: %d", clip.framesY);
-                        ImGui::Text("Start Frame: %d", clip.startFrame);
-                        ImGui::Text("Frame Count: %d", clip.frameCount);
-                        ImGui::Text("Speed: %.2f fps", clip.speed);
-                        ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
+                        // Create local copies to edit
+                        int framesX = clip.framesX;
+                        int framesY = clip.framesY;
+                        int startFrame = clip.startFrame;
+                        int frameCount = clip.frameCount;
+                        float speed = clip.speed;
+                        bool loop = clip.loop;
+
+                        static char texturePathBuffer[512];
+                        strncpy(texturePathBuffer, clip.texturePath.c_str(), 511);
+                        texturePathBuffer[511] = '\0';
+
+                        bool modified = false;
+                        modified |= ImGui::DragInt("Frames X", &framesX, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Frames Y", &framesY, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Start Frame", &startFrame, 1.0f, 0, 1000);
+                        modified |= ImGui::DragInt("Frame Count", &frameCount, 1.0f, 1, 1000);
+                        modified |= ImGui::DragFloat("Speed (fps)", &speed, 0.1f, 0.1f, 60.0f);
+                        modified |= ImGui::Checkbox("Loop", &loop);
+
+                        ImGui::Text("Texture Path: %s", texturePathBuffer[0] ? texturePathBuffer : "(Use Sprite texture)");
+
+                        // Create drag & drop zone
+                        ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                        ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                        ImDrawList* drawList = ImGui::GetWindowDrawList();
+                        ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                        // Background
+                        drawList->AddRectFilled(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            bgColor, 4.0f);
+
+                        // Center text in the drop zone
+                        ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                        ImVec2 textPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                        );
+                        drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                        // Supported formats text
+                        ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                        ImVec2 formatTextPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                        );
+                        drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                        // Invisible button for the drop zone
+                        ImGui::SetCursorScreenPos(cursorPos);
+                        std::string dropZoneID = "##ClipTextureDropZone_" + name;
+                        ImGui::InvisibleButton(dropZoneID.c_str(), dropZoneSize);
+
+                        bool isHovered = ImGui::IsItemHovered();
+
+                        // Drag and Drop Target
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            // Highlight the drop zone when dragging over
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                            // Show glow effect
+                            drawList->AddRectFilled(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 255, 50), 4.0f);
+
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                            {
+                                const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                std::string fullPath = data->filepath;
+                                std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                std::filesystem::path p(fullPath);
+                                std::string ext = p.extension().string();
+
+                                // Convert to lowercase for comparison
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                {
+                                    std::string relativePath = fullPath;
+                                    size_t assetsPos = fullPath.find("Assets/");
+                                    if (assetsPos != std::string::npos)
+                                    {
+                                        relativePath = fullPath.substr(assetsPos);
+                                    }
+
+                                    strncpy(texturePathBuffer, relativePath.c_str(), 511);
+                                    texturePathBuffer[511] = '\0';
+                                    modified = true;
+                                }
+                                else
+                                {
+                                    m_popupErrorMessage = "Invalid file type for Animation Clip Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                    ImGui::OpenPopup("Invalid File Format");
+                                }
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
+                        else if (isHovered)
+                        {
+                            // Subtle hover effect when not dragging
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                        }
+
+                        // Move cursor past the drop zone
+                        ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
+
+                        // Clear button
+                        if (ImGui::Button("Clear Texture Path", ImVec2(-1, 0)))
+                        {
+                            texturePathBuffer[0] = '\0';
+                            modified = true;
+                        }
+                        ImGui::TextWrapped("Leave empty to use Sprite component texture");
+
+                        // Update the clip if any value changed
+                        // addclip function replaces key of same name
+                        if (modified)
+                        {
+                            animator.animator.AddClip(name, framesX, framesY, startFrame,
+                                frameCount, speed, loop, std::string(texturePathBuffer));
+                            m_hasUnsavedEdit = true;
+                        }
 
                         ImGui::Spacing();
                         ImGui::Separator();
@@ -2369,6 +2492,7 @@ namespace Uma_Engine
                 static int newFrameCount = 1;
                 static float newSpeed = 10.0f;
                 static bool newLoop = true;
+                static char newTexturePath[512] = "";
 
                 if (ImGui::InputText("Clip Name", newClipName, 256)) m_hasUnsavedEdit = true;
                 if (ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100)) m_hasUnsavedEdit = true;
@@ -2377,6 +2501,108 @@ namespace Uma_Engine
                 if (ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Loop", &newLoop)) m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                ImGui::Text("Texture Path: %s", newTexturePath[0] ? newTexturePath : "(Use Sprite texture)");
+
+                // Create drag & drop zone for new clip
+                ImVec2 newClipDropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 newClipCursorPos = ImGui::GetCursorScreenPos();
+
+                ImDrawList* newClipDrawList = ImGui::GetWindowDrawList();
+                ImU32 newClipBgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                newClipDrawList->AddRectFilled(newClipCursorPos,
+                    ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                    newClipBgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 newClipTextSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                ImVec2 newClipTextPos = ImVec2(
+                    newClipCursorPos.x + (newClipDropZoneSize.x - newClipTextSize.x) * 0.5f,
+                    newClipCursorPos.y + (newClipDropZoneSize.y - newClipTextSize.y) * 0.5f - 10.0f
+                );
+                newClipDrawList->AddText(newClipTextPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                // Supported formats text
+                ImVec2 newClipFormatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                ImVec2 newClipFormatTextPos = ImVec2(
+                    newClipCursorPos.x + (newClipDropZoneSize.x - newClipFormatTextSize.x) * 0.5f,
+                    newClipCursorPos.y + (newClipDropZoneSize.y - newClipFormatTextSize.y) * 0.5f + 10.0f
+                );
+                newClipDrawList->AddText(newClipFormatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(newClipCursorPos);
+                ImGui::InvisibleButton("##NewClipTextureDropZone", newClipDropZoneSize);
+
+                bool newClipIsHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop Target
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Highlight the drop zone when dragging over
+                    newClipDrawList->AddRect(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    newClipDrawList->AddRectFilled(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            strncpy(newTexturePath, relativePath.c_str(), 511);
+                            newTexturePath[511] = '\0';
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Animation Clip Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                else if (newClipIsHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    newClipDrawList->AddRect(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(newClipCursorPos.x, newClipCursorPos.y + newClipDropZoneSize.y + 5.0f));
+
+                // Clear button
+                if (ImGui::Button("Clear Texture Path##NewClip", ImVec2(-1, 0)))
+                {
+                    newTexturePath[0] = '\0';
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::TextWrapped("Leave empty to use Sprite component texture");
 
                 if (ImGui::Button("Add Clip"))
                 {
@@ -2389,7 +2615,8 @@ namespace Uma_Engine
                             newStartFrame,
                             newFrameCount,
                             newSpeed,
-                            newLoop
+                            newLoop,
+                            std::string(newTexturePath)
                         );
 
                         // Reset input fields
@@ -3750,6 +3977,630 @@ namespace Uma_Engine
                ImGui::Unindent();
            }
         }
+        else if (type == coordinator.GetComponentType<Uma_UI::Slider>())
+        {
+            if (ImGui::CollapsingHeader("Slider", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Slider"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Slider>>(
+                        &coordinator,
+                        entity,
+                        "Remove Slider"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& slider = coordinator.GetComponent<Uma_UI::Slider>(entity);
+                ImGui::Indent();
+
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                ImGui::SeparatorText("Settings");
+
+                if (ImGui::Checkbox("Interactable", &slider.interactable))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Can the user drag this slider?");
+                }
+
+                // Direction
+                const char* directions[] = { "Left To Right", "Right To Left", "Bottom To Top", "Top To Bottom" };
+                int direction = static_cast<int>(slider.direction);
+                if (ImGui::Combo("Direction", &direction, directions, IM_ARRAYSIZE(directions)))
+                {
+                    slider.direction = static_cast<Uma_UI::SliderDirection>(direction);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Value");
+
+                if (ImGui::DragFloat("Min Value", &slider.minValue, 1.0f))
+                {
+                    if (slider.minValue > slider.maxValue) slider.minValue = slider.maxValue;
+                    Uma_Engine::Clamp(slider.value, slider.minValue, slider.maxValue);
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::DragFloat("Max Value", &slider.maxValue, 1.0f))
+                {
+                    if (slider.maxValue < slider.minValue) slider.maxValue = slider.minValue;
+                    Uma_Engine::Clamp(slider.value, slider.minValue, slider.maxValue);
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::DragFloat("Current Value", &slider.value, 1.0f, slider.minValue, slider.maxValue))
+                {
+                    Uma_Engine::Clamp(slider.value, slider.minValue, slider.maxValue);
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::Checkbox("Whole Numbers", &slider.wholeNumbers))
+                {
+                    Uma_Engine::Clamp(slider.value, slider.minValue, slider.maxValue);
+                    if (slider.wholeNumbers)
+                    {
+                        slider.value = std::round(slider.value);
+                    }
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Round to integers (for discrete values)");
+                }
+
+                float normalizedValue = (slider.maxValue - slider.minValue == 0.f) ? 0.f : (slider.value - slider.minValue) / (slider.maxValue - slider.minValue);
+                ImGui::Text("Normalized: %.2f (%.0f%%)", normalizedValue, normalizedValue * 100.0f);
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Visual References");
+
+                ImGui::TextWrapped("These are the child entities that make up the slider visuals:");
+                ImGui::Spacing();
+
+                // Background Entity
+                ImGui::Text("Background:");
+                ImGui::SameLine(120);
+
+                int bgEntityID = static_cast<int>(slider.background);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Background Entity", &bgEntityID))
+                {
+                    if (bgEntityID < 0)
+                        slider.background = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        slider.background = static_cast<Uma_ECS::Entity>(bgEntityID);
+                    std::cout << "Set to: " << slider.background << std::endl;
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Text("Current: %d", static_cast<int>(slider.background));
+
+                ImGui::SameLine();
+                if (slider.background != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    // Check if entity exists and has Image component
+                    if (coordinator.HasActiveEntity(slider.background))
+                    {
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+                        if (!imageArray.Has(slider.background))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##bg"))
+                    {
+                        slider.background = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "None");
+                }
+
+                // Fill Entity
+                ImGui::Text("Fill:");
+                ImGui::SameLine(120);
+
+                int fillEntityID = static_cast<int>(slider.fill);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Fill Entity", &fillEntityID))
+                {
+                    if (fillEntityID < 0)
+                        slider.fill = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        slider.fill = static_cast<Uma_ECS::Entity>(fillEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (slider.fill != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(slider.fill))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        if (!rectTransformArray.Has(slider.fill))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##fill"))
+                    {
+                        slider.fill = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "None");
+                }
+
+                // Handle Entity (Required)
+                ImGui::Text("Handle:");
+                ImGui::SameLine(120);
+
+                int handleEntityID = static_cast<int>(slider.handle);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Handle Entity", &handleEntityID))
+                {
+                    if (handleEntityID < 0)
+                        slider.handle = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        slider.handle = static_cast<Uma_ECS::Entity>(handleEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (slider.handle != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(slider.handle))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+
+                        if (!rectTransformArray.Has(slider.handle))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                        if (!imageArray.Has(slider.handle))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##handle"))
+                    {
+                        slider.handle = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "None (Required!)");
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                // Helper buttons
+                if (ImGui::Button("Auto-Assign from Children", ImVec2(-1, 0)))
+                {
+                    auto& transformArray = coordinator.GetComponentArray<Uma_ECS::Transform>();
+                    if (transformArray.Has(entity))
+                    {
+                        auto& transform = transformArray.GetData(entity);
+
+                        if (transform.children.size() >= 1)
+                            slider.background = transform.children[0];
+                        if (transform.children.size() >= 2)
+                            slider.fill = transform.children[1];
+                        if (transform.children.size() >= 3)
+                            slider.handle = transform.children[2]; // Handle is most important
+
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Assigns first children as:\n"
+                        "1st child ? Background\n"
+                        "2nd child ? Fill\n"
+                        "3rd child ? Handle (required)");
+                }
+
+                if (ImGui::Button("Clear All References", ImVec2(-1, 0)))
+                {
+                    slider.background = static_cast<Uma_ECS::Entity>(-1);
+                    slider.fill = static_cast<Uma_ECS::Entity>(-1);
+                    slider.handle = static_cast<Uma_ECS::Entity>(-1);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Colors");
+
+                float normalColor[4] = {
+                    slider.normalColour.r, slider.normalColour.g,
+                    slider.normalColour.b, slider.normalColour.a
+                };
+                if (ImGui::ColorEdit4("Normal Color", normalColor))
+                {
+                    slider.normalColour.r = normalColor[0];
+                    slider.normalColour.g = normalColor[1];
+                    slider.normalColour.b = normalColor[2];
+                    slider.normalColour.a = normalColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float highlightColor[4] = {
+                    slider.highlightColour.r, slider.highlightColour.g,
+                    slider.highlightColour.b, slider.highlightColour.a
+                };
+                if (ImGui::ColorEdit4("Highlight Color", highlightColor))
+                {
+                    slider.highlightColour.r = highlightColor[0];
+                    slider.highlightColour.g = highlightColor[1];
+                    slider.highlightColour.b = highlightColor[2];
+                    slider.highlightColour.a = highlightColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float disabledColor[4] = {
+                    slider.disabledColour.r, slider.disabledColour.g,
+                    slider.disabledColour.b, slider.disabledColour.a
+                };
+                if (ImGui::ColorEdit4("Disabled Color", disabledColor))
+                {
+                    slider.disabledColour.r = disabledColor[0];
+                    slider.disabledColour.g = disabledColor[1];
+                    slider.disabledColour.b = disabledColor[2];
+                    slider.disabledColour.a = disabledColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Callback");
+
+                static char scriptBuffer[256];
+                strncpy(scriptBuffer, slider.scriptName.c_str(), 255);
+                scriptBuffer[255] = '\0';
+                if (ImGui::InputText("Script Name", scriptBuffer, 256))
+                {
+                    slider.scriptName = scriptBuffer;
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Lua script with OnDrag function");
+                }
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Runtime State");
+
+                ImGui::BeginDisabled();
+
+                ImGui::Text("Is Dragging:");
+                ImGui::SameLine();
+                ImGui::TextColored(
+                    slider.isDragging ? ImVec4(0.2f, 1.0f, 0.2f, 1.0f) : ImVec4(0.5f, 0.5f, 0.5f, 1.0f),
+                    "%s", slider.isDragging ? "Yes" : "No"
+                );
+
+                ImGui::Text("Is Hovered:");
+                ImGui::SameLine();
+                ImGui::TextColored(
+                    slider.isHovered ? ImVec4(0.2f, 1.0f, 0.2f, 1.0f) : ImVec4(0.5f, 0.5f, 0.5f, 1.0f),
+                    "%s", slider.isHovered ? "Yes" : "No"
+                );
+
+                ImGui::Text("Current Color:");
+                ImGui::SameLine();
+                Uma_UI::Color currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
+                ImGui::ColorButton("##currentcolor",
+                    ImVec4(currentColour.r, currentColour.g, currentColour.b, currentColour.a),
+                    ImGuiColorEditFlags_NoTooltip | ImGuiColorEditFlags_NoPicker);
+
+                ImGui::EndDisabled();
+
+                ImGui::Spacing();
+
+                ImGui::SeparatorText("Quick Actions");
+
+                if (ImGui::Button("Reset to Min", ImVec2(-1, 0)))
+                {
+                    slider.value = slider.minValue;
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::Button("Reset to Max", ImVec2(-1, 0)))
+                {
+                    slider.value = slider.maxValue;
+                    m_hasUnsavedEdit = true;
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Slider");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_UI::Checkbox>())
+        {
+            if (ImGui::CollapsingHeader("Checkbox", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Checkbox"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Checkbox>>(
+                        &coordinator,
+                        entity,
+                        "Remove Checkbox"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
+                }
+
+                auto& checkbox = coordinator.GetComponent<Uma_UI::Checkbox>(entity);
+                ImGui::Indent();
+
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                if (ImGui::Checkbox("Interactable", &checkbox.interactable))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+                ImGui::Text("Current State: %s",
+                    checkbox.currentState == Uma_UI::CheckboxState::Normal ? "Normal" :
+                    checkbox.currentState == Uma_UI::CheckboxState::Hovered ? "Hovered" :
+                    checkbox.currentState == Uma_UI::CheckboxState::Pressed ? "Pressed" : "Disabled");
+
+                
+                // Checkmark Entity (Required)
+                ImGui::Text("Checkmark:");
+                ImGui::SameLine(120);
+
+                int checkmarkEntityID = static_cast<int>(checkbox.checkmark);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Checkmark Entity", &checkmarkEntityID))
+                {
+                    if (checkmarkEntityID < 0)
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(checkmarkEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (checkbox.checkmark != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(checkbox.checkmark))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+
+                        if (!rectTransformArray.Has(checkbox.checkmark))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                        if (!imageArray.Has(checkbox.checkmark))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##checkmark"))
+                    {
+                        checkbox.checkmark = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "None (Required!)");
+                }
+
+                ImGui::Spacing();
+
+                // Background Entity
+                ImGui::Text("Background:");
+                ImGui::SameLine(120);
+
+                int bgEntityID = static_cast<int>(checkbox.background);
+                ImGui::SetNextItemWidth(80);
+                if (ImGui::InputInt("##Background Entity", &bgEntityID))
+                {
+                    if (bgEntityID < 0)
+                        checkbox.background = static_cast<Uma_ECS::Entity>(-1);
+                    else
+                        checkbox.background = static_cast<Uma_ECS::Entity>(bgEntityID);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (checkbox.background != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "Set");
+
+                    if (coordinator.HasActiveEntity(checkbox.background))
+                    {
+                        auto& rectTransformArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+                        auto& imageArray = coordinator.GetComponentArray<Uma_UI::Image>();
+
+                        if (!rectTransformArray.Has(checkbox.background))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No RectTransform");
+                        }
+                        if (!imageArray.Has(checkbox.background))
+                        {
+                            ImGui::SameLine();
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "No Image");
+                        }
+                    }
+                    else
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Invalid");
+                    }
+
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Clear##bg"))
+                    {
+                        checkbox.background = static_cast<Uma_ECS::Entity>(-1);
+                        m_hasUnsavedEdit = true;
+                    }
+                }
+                else
+                {
+                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "None");
+                }
+
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                static char buffer[256];
+                strncpy(buffer, checkbox.scriptName.c_str(), 255);
+                buffer[255] = '\0';
+                if (ImGui::InputText("Script Name", buffer, 256))
+                {
+                    checkbox.scriptName = buffer;
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::Separator();
+
+                ImGui::Text("Checkbox Colors");
+
+                float normalColour[4] = { checkbox.normalColour.r, checkbox.normalColour.g, checkbox.normalColour.b, checkbox.normalColour.a };
+                if (ImGui::ColorEdit4("Normal Colour", normalColour))
+                {
+                    checkbox.normalColour.r = normalColour[0];
+                    checkbox.normalColour.g = normalColour[1];
+                    checkbox.normalColour.b = normalColour[2];
+                    checkbox.normalColour.a = normalColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float hoverColour[4] = { checkbox.hoverColour.r, checkbox.hoverColour.g, checkbox.hoverColour.b, checkbox.hoverColour.a };
+                if (ImGui::ColorEdit4("Hover Colour", hoverColour))
+                {
+                    checkbox.hoverColour.r = hoverColour[0];
+                    checkbox.hoverColour.g = hoverColour[1];
+                    checkbox.hoverColour.b = hoverColour[2];
+                    checkbox.hoverColour.a = hoverColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float pressedColour[4] = { checkbox.pressedColour.r, checkbox.pressedColour.g, checkbox.pressedColour.b, checkbox.pressedColour.a };
+                if (ImGui::ColorEdit4("Pressed Colour", pressedColour))
+                {
+                    checkbox.pressedColour.r = pressedColour[0];
+                    checkbox.pressedColour.g = pressedColour[1];
+                    checkbox.pressedColour.b = pressedColour[2];
+                    checkbox.pressedColour.a = pressedColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float disabledColour[4] = { checkbox.disabledColour.r, checkbox.disabledColour.g, checkbox.disabledColour.b, checkbox.disabledColour.a };
+                if (ImGui::ColorEdit4("Disabled Colour", disabledColour))
+                {
+                    checkbox.disabledColour.r = disabledColour[0];
+                    checkbox.disabledColour.g = disabledColour[1];
+                    checkbox.disabledColour.b = disabledColour[2];
+                    checkbox.disabledColour.a = disabledColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                ImGui::Text("Checkmark Colors");
+                float checkmarkNormalColour[4] = { checkbox.checkmarkNormalColour.r, checkbox.checkmarkNormalColour.g, checkbox.checkmarkNormalColour.b, checkbox.checkmarkNormalColour.a };
+                if (ImGui::ColorEdit4("Checkmark Colour", checkmarkNormalColour))
+                {
+                    checkbox.checkmarkNormalColour.r = checkmarkNormalColour[0];
+                    checkbox.checkmarkNormalColour.g = checkmarkNormalColour[1];
+                    checkbox.checkmarkNormalColour.b = checkmarkNormalColour[2];
+                    checkbox.checkmarkNormalColour.a = checkmarkNormalColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+                float checkmarkDisabledColour[4] = { checkbox.checkmarkDisabledColour.r, checkbox.checkmarkDisabledColour.g, checkbox.checkmarkDisabledColour.b, checkbox.checkmarkDisabledColour.a };
+                if (ImGui::ColorEdit4("Checkmark Disabled Colour", checkmarkDisabledColour))
+                {
+                    checkbox.checkmarkDisabledColour.r = checkmarkDisabledColour[0];
+                    checkbox.checkmarkDisabledColour.g = checkmarkDisabledColour[1];
+                    checkbox.checkmarkDisabledColour.b = checkmarkDisabledColour[2];
+                    checkbox.checkmarkDisabledColour.a = checkmarkDisabledColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Checkbox");
+
+                ImGui::Unindent();
+            }
+        }
         else if (type == coordinator.GetComponentType<Uma_UI::Canvas>())
         {
             if (ImGui::CollapsingHeader("Canvas", ImGuiTreeNodeFlags_DefaultOpen))
@@ -3766,7 +4617,6 @@ namespace Uma_Engine
                     return true;
                 }
 
-                auto& rectTransform = coordinator.GetComponent<Uma_UI::RectTransform>(entity);
                 auto& canvas = coordinator.GetComponent<Uma_UI::Canvas>(entity);
                 ImGui::Indent();
             
@@ -3775,7 +4625,10 @@ namespace Uma_Engine
             
                 if (ImGui::DragInt("Sorting Order", &canvas.sortingOrder, 1.0f, -100, 100))
                 {
-                    rectTransform.isDirty = true;
+                    if (coordinator.HasComponent<Uma_UI::RectTransform>(entity))
+                    {
+                        coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty;
+                    }
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3786,7 +4639,10 @@ namespace Uma_Engine
                 if (ImGui::DragFloat2("Resolution", refResolution, 1.0f, 1.0f, 10000.0f, "%.0f"))
                 {
                     canvas.referenceResolution = Vec2(refResolution[0], refResolution[1]);
-                    rectTransform.isDirty = true;
+                    if (coordinator.HasComponent<Uma_UI::RectTransform>(entity))
+                    {
+                        coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty;
+                    }
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3798,7 +4654,10 @@ namespace Uma_Engine
                 if (ImGui::Combo("Scale Mode", &currentScaleMode, scaleModes, IM_ARRAYSIZE(scaleModes)))
                 {
                     canvas.scaleMode = static_cast<Uma_UI::CanvasScaleMode>(currentScaleMode);
-                    rectTransform.isDirty = true;
+                    if (coordinator.HasComponent<Uma_UI::RectTransform>(entity))
+                    {
+                        coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty;
+                    }
                     m_hasUnsavedEdit = true;
                 }
             
@@ -3806,7 +4665,10 @@ namespace Uma_Engine
                 {
                     if (ImGui::SliderFloat("Match Width/Height", &canvas.matchWidthOrHeight, 0.0f, 1.0f, "%.2f"))
                     {
-                        rectTransform.isDirty = true;
+                        if (coordinator.HasComponent<Uma_UI::RectTransform>(entity))
+                        {
+                            coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty;
+                        }
                         m_hasUnsavedEdit = true;
                     }
                     ImGui::TextDisabled("0 = Match Width, 1 = Match Height");
@@ -4201,6 +5063,8 @@ namespace Uma_Engine
 
                 if (ImGui::TreeNode("Tileset Properties"))
                 {
+                    ImGui::Text("Texture Path: %s", tilemap.tileset.texturePath.c_str());
+
                     // Create a visible drop zone with visual feedback
                     ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
                     ImVec2 cursorPos = ImGui::GetCursorScreenPos();
@@ -4983,6 +5847,26 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Button{},
                     "Add Button"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Slider>()) && ImGui::MenuItem("Slider"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Slider>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Slider{},
+                    "Add Slider"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Checkbox>()) && ImGui::MenuItem("Checkbox"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Checkbox>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Checkbox{},
+                    "Add Checkbox"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

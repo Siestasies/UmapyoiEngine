@@ -313,6 +313,9 @@ namespace Uma_Engine
             //m_LuaScriptingSystem->CallStart();
         }
 
+        // cache the scene before starting the scene
+        m_Coordinator.CacheState();
+
         m_FixedTimeStep = g_EngineConfig.fixedTimeStep;
 
         m_LoadProgress = 1.0f;
@@ -341,6 +344,8 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Canvas>();
         m_Coordinator.RegisterComponent<Uma_UI::Image>();
         m_Coordinator.RegisterComponent<Uma_UI::Button>();
+        m_Coordinator.RegisterComponent<Uma_UI::Slider>();
+        m_Coordinator.RegisterComponent<Uma_UI::Checkbox>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
         m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
         m_Coordinator.RegisterComponent<Uma_ECS::Tilemap>();
@@ -426,7 +431,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::Animator>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AnimatorSystem>(sign);
         }
-        m_AnimatorSystem->Init(&m_Coordinator);
+        m_AnimatorSystem->Init(&m_Coordinator, m_ResourcesManager);
 
         m_LuaScriptingSystem = m_Coordinator.RegisterSystem<Uma_ECS::LuaScriptingSystem>();
         {
@@ -554,9 +559,6 @@ namespace Uma_Engine
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);
 
-        if (m_PathFindingSystem)
-            m_PathFindingSystem->Update(dt);
-
         if (m_FSMSystem)
             m_FSMSystem->Update(dt);
     }
@@ -567,6 +569,9 @@ namespace Uma_Engine
 
         if (m_PlayerController)
             m_PlayerController->Update(m_FixedTimeStep);
+
+        if (m_PathFindingSystem)
+            m_PathFindingSystem->Update(m_FixedTimeStep);
 
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
