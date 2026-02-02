@@ -74,6 +74,7 @@ namespace Uma_UI
         Vec2 screenSize = pGraphics->GetSceneViewport();
         if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
         LayoutPass();
+        EffectsPass(dt);
     }
 
     /*!
@@ -460,6 +461,105 @@ namespace Uma_UI
 
             checkbox.wasHoveredLastFrame = isHovered;
             UpdateCheckboxVisual(entity);
+        }
+    }
+
+    void UISystem::EffectsPass(float dt)
+    {
+        auto& effectsArray = pCoordinator->GetComponentArray<Effects>();
+
+        for (size_t i = 0; i < effectsArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = effectsArray.GetEntity(i);
+            auto& effects = effectsArray.GetComponentAt(i);
+
+            for (auto& clip : effects.clips)
+            {
+                if (!clip.isPlaying)
+                    continue;
+
+                clip.currentTime += dt;
+
+                if (clip.currentTime < clip.delay)
+                    continue;
+
+                clip.hasStarted = true;
+
+                float progress = clip.GetProgress();
+                float easedT = Easing::Apply(clip.easing, progress);
+
+                ApplyEffect(entity, clip, easedT);
+
+                if (clip.IsComplete())
+                {
+                    if (clip.loop)
+                    {
+                        clip.currentTime = 0.0f;
+                        clip.hasStarted = false;
+                    }
+                    else
+                    {
+                        clip.isPlaying = false;
+                    }
+                }
+            }
+        }
+    }
+
+    void UISystem::ApplyEffect(Uma_ECS::Entity entity, EffectClip& clip, float easedT)
+    {
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& imageArray = pCoordinator->GetComponentArray<Image>();
+        auto& textArray = pCoordinator->GetComponentArray<Text>();
+
+        switch (clip.property)
+        {
+        case EffectProperty::Position:
+            if (rectTransformArray.Has(entity))
+            {
+                auto& rt = rectTransformArray.GetData(entity);
+                rt.anchoredPosition = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+                rt.isDirty = true;
+            }
+            break;
+
+        case EffectProperty::Scale:
+            if (rectTransformArray.Has(entity))
+            {
+                auto& rt = rectTransformArray.GetData(entity);
+                rt.sizeDelta = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+                rt.isDirty = true;
+            }
+            break;
+
+        case EffectProperty::ColorTint:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.color = LerpColor(clip.startColor, clip.endColor, easedT);
+            }
+            else if (textArray.Has(entity))
+            {
+                auto& text = textArray.GetData(entity);
+                text.color = LerpColor(clip.startColor, clip.endColor, easedT);
+            }
+            break;
+
+        case EffectProperty::Alpha:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
+            else if (textArray.Has(entity))
+            {
+                auto& text = textArray.GetData(entity);
+                text.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
+            break;
+
+        default:
+            break;
         }
     }
 

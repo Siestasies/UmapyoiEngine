@@ -29,6 +29,7 @@ All rights reserved.
 // Forward declaration instead of include to avoid circular dependency
 // #include "SceneManager.h"
 
+// Game Object Components
 #include "ECS/Core/Types.hpp"
 #include "ECS/Core/Coordinator.hpp"
 #include "ECS/Components/Transform.h"
@@ -42,6 +43,16 @@ All rights reserved.
 #include "ECS/Components/Prefab.h"
 #include "ECS/Components/Projectile.h"
 #include "ECS/Components/Tilemap.h"
+
+// UI Components
+#include "UI/Components/Canvas.h"
+#include "UI/Components/RectTransform.h"
+#include "UI/Components/Image.h"
+#include "UI/Components/Text.h"
+#include "UI/Components/Button.h"
+#include "UI/Components/Slider.h"
+#include "UI/Components/Checkbox.h"
+#include "UI/Components/Effects.h"
 
 #include "Systems/ResourcesManager.hpp"
 

@@ -4857,6 +4857,238 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_UI::Effects>())
+        {
+            if (ImGui::CollapsingHeader("Effects", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Effects"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Effects>>(
+                        &coordinator,
+                        entity,
+                        "Remove Effects"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& effects = coordinator.GetComponent<Uma_UI::Effects>(entity);
+                ImGui::Indent();
+
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // Play on Enable
+                if (ImGui::Checkbox("Play On Enable", &effects.playOnEnable))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+
+                // Effect Clips List
+                ImGui::Text("Effect Clips (%zu)", effects.clips.size());
+
+                // Add new clip button
+                if (ImGui::Button("Add Effect Clip"))
+                {
+                    Uma_UI::EffectClip newClip;
+                    effects.clips.push_back(newClip);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                auto& rtArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+
+                // Display each clip
+                for (size_t i = 0; i < effects.clips.size(); ++i)
+                {
+                    ImGui::PushID(static_cast<int>(i));
+                    auto& clip = effects.clips[i];
+
+                    std::string headerLabel = "Clip " + std::to_string(i);
+                    if (ImGui::TreeNode(headerLabel.c_str()))
+                    {
+                        // Property Type
+                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha"/*, "FillAmount"*/ };
+                        int currentProperty = static_cast<int>(clip.property);
+                        if (ImGui::Combo("Property", &currentProperty, properties, IM_ARRAYSIZE(properties)))
+                        {
+                            clip.property = static_cast<Uma_UI::EffectProperty>(currentProperty);
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        // Easing Type
+                        const char* easingTypes[] = {
+                            "Linear", "EaseInQuad", "EaseOutQuad", "EaseInOutQuad",
+                            "EaseInCubic", "EaseOutCubic", "EaseInOutCubic",
+                            "EaseInQuart", "EaseOutQuart", "EaseInOutQuart",
+                            "EaseInElastic", "EaseOutElastic", "EaseInOutElastic",
+                            "EaseInBounce", "EaseOutBounce", "EaseInOutBounce"
+                        };
+                        int currentEasing = static_cast<int>(clip.easing);
+                        if (ImGui::Combo("Easing", &currentEasing, easingTypes, IM_ARRAYSIZE(easingTypes)))
+                        {
+                            clip.easing = static_cast<Uma_UI::EasingType>(currentEasing);
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        // Timing
+                        if (ImGui::DragFloat("Duration", &clip.duration, 0.01f, 0.0f, 100.0f))
+                        {
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        if (ImGui::DragFloat("Delay", &clip.delay, 0.01f, 0.0f, 100.0f))
+                        {
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        if (ImGui::Checkbox("Loop", &clip.loop))
+                        {
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        ImGui::Separator();
+                                                auto& rtArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
+
+                        // Property-specific values
+                        switch (clip.property)
+                        {
+                        case Uma_UI::EffectProperty::Position:
+                        case Uma_UI::EffectProperty::Scale:
+                        {
+                            float startVec[2] = { clip.startVec2.x, clip.startVec2.y };
+                            if (ImGui::DragFloat2("Start", startVec, 0.1f))
+                            {
+                                clip.startVec2.x = startVec[0];
+                                clip.startVec2.y = startVec[1];
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            float endVec[2] = { clip.endVec2.x, clip.endVec2.y };
+                            if (ImGui::DragFloat2("End", endVec, 0.1f))
+                            {
+                                clip.endVec2.x = endVec[0];
+                                clip.endVec2.y = endVec[1];
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_UI::EffectProperty::ColorTint:
+                        {
+                            float startColor[4] = { clip.startColor.r, clip.startColor.g, clip.startColor.b, clip.startColor.a };
+                            if (ImGui::ColorEdit4("Start Color", startColor))
+                            {
+                                clip.startColor.r = startColor[0];
+                                clip.startColor.g = startColor[1];
+                                clip.startColor.b = startColor[2];
+                                clip.startColor.a = startColor[3];
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            float endColor[4] = { clip.endColor.r, clip.endColor.g, clip.endColor.b, clip.endColor.a };
+                            if (ImGui::ColorEdit4("End Color", endColor))
+                            {
+                                clip.endColor.r = endColor[0];
+                                clip.endColor.g = endColor[1];
+                                clip.endColor.b = endColor[2];
+                                clip.endColor.a = endColor[3];
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_UI::EffectProperty::Alpha:
+                        {
+                            if (ImGui::DragFloat("Start", &clip.startFloat, 0.01f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            if (ImGui::DragFloat("End", &clip.endFloat, 0.01f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        }
+
+                        ImGui::Separator();
+
+                        // Runtime state (read-only)
+                        ImGui::Text("Runtime State:");
+                        ImGui::BulletText("Playing: %s", clip.isPlaying ? "Yes" : "No");
+                        ImGui::BulletText("Current Time: %.2f", clip.currentTime);
+                        ImGui::BulletText("Progress: %.1f%%", clip.GetProgress() * 100.0f);
+                        ImGui::BulletText("Complete: %s", clip.IsComplete() ? "Yes" : "No");
+
+                        ImGui::Separator();
+
+                        // Playback controls
+                        if (ImGui::Button("Play"))
+                        {
+                            clip.Play();
+                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Pause"))
+                        {
+                            clip.Pause();
+                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                        }
+                        ImGui::SameLine();
+                        if (ImGui::Button("Stop"))
+                        {
+                            clip.Stop();
+                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                        }
+
+                        ImGui::Separator();
+
+                        // Remove clip button
+                        if (ImGui::Button("Remove Clip"))
+                        {
+                            effects.clips.erase(effects.clips.begin() + i);
+                            m_hasUnsavedEdit = true;
+                            ImGui::TreePop();
+                            ImGui::PopID();
+                            break;
+                        }
+
+                        ImGui::TreePop();
+                    }
+
+                    ImGui::PopID();
+                }
+
+                ImGui::Separator();
+
+                // Global playback controls
+                ImGui::Text("Global Controls:");
+                if (ImGui::Button("Play All"))
+                {
+                    effects.PlayAll();
+                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Stop All"))
+                {
+                    effects.StopAll();
+                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Reset All"))
+                {
+                    effects.ResetAll();
+                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Effects");
+
+                ImGui::Unindent();
+            }
+        }
         else if (type == coordinator.GetComponentType<Uma_ECS::Prefab>())
         {
             if (ImGui::CollapsingHeader("Prefab"))
@@ -5887,6 +6119,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Text{},
                     "Add Text"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Effects>()) && ImGui::MenuItem("Effects"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Effects>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Effects{},
+                    "Add Effects"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

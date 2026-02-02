@@ -61,6 +61,7 @@ All rights reserved.
 #include "UI/Components/Checkbox.h"
 #include "UI/Components/Canvas.h"
 #include "UI/Components/Text.h"
+#include "UI/Components/Effects.h"
 #include "../Components/FSM.h"
 
 #include <unordered_set>
@@ -283,7 +284,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(Uma_UI::Checkbox)
             CHECK_COMPONENT(Uma_UI::Canvas)
             CHECK_COMPONENT(Uma_UI::Text)
-
+            CHECK_COMPONENT(Uma_UI::Effects)
 #undef CHECK_COMPONENT
         }
 

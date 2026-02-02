@@ -40,6 +40,7 @@ All rights reserved.
 #include "../Components/Button.h"
 #include "../Components/Slider.h"
 #include "../Components/Checkbox.h"
+#include "../Components/Effects.h"
 #include <vector>
 #include <map>
 
@@ -86,6 +87,8 @@ namespace Uma_UI
          * \brief Second pass: Processes input and updates interaction states.
          */
         void InputPass();
+
+        void EffectsPass(float dt);
 
         /*!
          * \brief Injects the ECS coordinator dependency.
@@ -202,6 +205,8 @@ namespace Uma_UI
         void UpdateSliderVisual(Uma_ECS::Entity entity);
 
         void UpdateCheckboxVisual(Uma_ECS::Entity entity);
+
+        void ApplyEffect(Uma_ECS::Entity entity, EffectClip& clip, float easedT);
 
         /*!
          * \brief Returns all UI entities sorted by canvas sorting order.
