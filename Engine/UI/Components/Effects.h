@@ -17,6 +17,7 @@ namespace Uma_UI
         float duration = 1.0f;
         float delay = 0.0f;
         bool loop = false;
+        bool applyToChildren = false;
 
         // Start/end values (interpretation depends on property)
         Vec2 startVec2 = Vec2(0.0f, 0.0f);
@@ -120,6 +121,7 @@ namespace Uma_UI
                 clipObj.AddMember("duration", clip.duration, allocator);
                 clipObj.AddMember("delay", clip.delay, allocator);
                 clipObj.AddMember("loop", clip.loop, allocator);
+                clipObj.AddMember("applyToChildren", clip.applyToChildren, allocator);
 
                 rapidjson::Value startVec(rapidjson::kObjectType);
                 startVec.AddMember("x", clip.startVec2.x, allocator);
@@ -169,6 +171,7 @@ namespace Uma_UI
                 clip.duration = clipObj["duration"].GetFloat();
                 clip.delay = clipObj["delay"].GetFloat();
                 clip.loop = clipObj["loop"].GetBool();
+                clip.applyToChildren = clipObj.HasMember("applyToChildren") ? clipObj["applyToChildren"].GetBool() : false;
 
                 const auto& startVec = clipObj["startVec2"];
                 clip.startVec2.x = startVec["x"].GetFloat();

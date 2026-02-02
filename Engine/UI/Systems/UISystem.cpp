@@ -511,6 +511,7 @@ namespace Uma_UI
         auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
         auto& imageArray = pCoordinator->GetComponentArray<Image>();
         auto& textArray = pCoordinator->GetComponentArray<Text>();
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
 
         switch (clip.property)
         {
@@ -527,8 +528,42 @@ namespace Uma_UI
             if (rectTransformArray.Has(entity))
             {
                 auto& rt = rectTransformArray.GetData(entity);
-                rt.sizeDelta = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+
+                Vec2 currentScale = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+
+                static std::map<Uma_ECS::Entity, Vec2> originalSizes;
+                if (!clip.hasStarted || clip.currentTime <= clip.delay)
+                {
+                    originalSizes[entity] = rt.sizeDelta;
+                }
+
+                if (originalSizes.find(entity) != originalSizes.end())
+                {
+                    rt.sizeDelta = Vec2(
+                        originalSizes[entity].x * currentScale.x,
+                        originalSizes[entity].y * currentScale.y
+                    );
+                }
+                else
+                {
+                    originalSizes[entity] = rt.sizeDelta;
+                    rt.sizeDelta = Vec2(
+                        rt.sizeDelta.x * currentScale.x,
+                        rt.sizeDelta.y * currentScale.y
+                    );
+                }
+
                 rt.isDirty = true;
+
+                if (clip.applyToChildren && transformArray.Has(entity))
+                {
+                    ApplyScaleToChildren(entity, currentScale, originalSizes);
+                }
+
+                if (!clip.loop && clip.IsComplete())
+                {
+                    originalSizes.erase(entity);
+                }
             }
             break;
 
@@ -560,6 +595,39 @@ namespace Uma_UI
 
         default:
             break;
+        }
+    }
+
+    void UISystem::ApplyScaleToChildren(Uma_ECS::Entity entity, const Vec2& scaleMultiplier, std::map<Uma_ECS::Entity, Vec2>& originalSizes)
+    {
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+
+        if (!transformArray.Has(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+
+        for (Uma_ECS::Entity child : transform.children)
+        {
+            if (rectTransformArray.Has(child))
+            {
+                auto& childRT = rectTransformArray.GetData(child);
+
+                // Store child's original size on first application
+                if (originalSizes.find(child) == originalSizes.end())
+                {
+                    originalSizes[child] = childRT.sizeDelta;
+                }
+
+                childRT.sizeDelta = Vec2(
+                    originalSizes[child].x * scaleMultiplier.x,
+                    originalSizes[child].y * scaleMultiplier.y
+                );
+                childRT.isDirty = true;
+            }
+
+            ApplyScaleToChildren(child, scaleMultiplier, originalSizes);
         }
     }
 
@@ -726,7 +794,7 @@ namespace Uma_UI
                 handleRT.anchoredPosition.y = handleOffset;
             }
 
-            handleRT.isDirty = true;
+            MarkEntityAndChildrenDirty(entity);
 
             if (imageArray.Has(slider.handle))
             {
@@ -770,7 +838,7 @@ namespace Uma_UI
                 break;
             }
 
-            fillRT.isDirty = true;
+            MarkEntityAndChildrenDirty(slider.fill);
         }
     }
 

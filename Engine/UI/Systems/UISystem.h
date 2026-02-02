@@ -208,6 +208,8 @@ namespace Uma_UI
 
         void ApplyEffect(Uma_ECS::Entity entity, EffectClip& clip, float easedT);
 
+        void ApplyScaleToChildren(Uma_ECS::Entity entity, const Vec2& scaleMultiplier, std::map<Uma_ECS::Entity, Vec2>& originalSizes);
+
         /*!
          * \brief Returns all UI entities sorted by canvas sorting order.
          * \return Vector of entity IDs in render order.

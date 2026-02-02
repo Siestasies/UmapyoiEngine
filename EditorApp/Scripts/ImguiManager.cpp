@@ -4897,8 +4897,83 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
+                ImGui::SameLine();
+
+                // Breathing loop preset button
+                if (ImGui::Button("Add Breathing Loop"))
+                {
+                    // Create first clip: scale up (normal scale -> larger)
+                    Uma_UI::EffectClip breathingUp;
+                    breathingUp.property = Uma_UI::EffectProperty::Scale;
+                    breathingUp.easing = Uma_UI::EasingType::EaseInOutQuad;
+                    breathingUp.duration = 1.0f;
+                    breathingUp.delay = 0.0f;
+                    breathingUp.loop = true;
+                    breathingUp.startVec2 = Vec2(1.0f, 1.0f);
+                    breathingUp.endVec2 = Vec2(1.1f, 1.1f);
+
+                    // Create second clip: scale down (larger -> normal scale)
+                    Uma_UI::EffectClip breathingDown;
+                    breathingDown.property = Uma_UI::EffectProperty::Scale;
+                    breathingDown.easing = Uma_UI::EasingType::EaseInOutQuad;
+                    breathingDown.duration = 1.0f;
+                    breathingDown.delay = 1.0f;  // Start after first clip
+                    breathingDown.loop = true;
+                    breathingDown.startVec2 = Vec2(1.1f, 1.1f);
+                    breathingDown.endVec2 = Vec2(1.0f, 1.0f);
+
+                    effects.clips.push_back(breathingUp);
+                    effects.clips.push_back(breathingDown);
+                    m_hasUnsavedEdit = true;
+                }
+
+                // More preset buttons
+                ImGui::SameLine();
+                if (ImGui::Button("Fade In"))
+                {
+                    Uma_UI::EffectClip fadeIn;
+                    fadeIn.property = Uma_UI::EffectProperty::Alpha;
+                    fadeIn.easing = Uma_UI::EasingType::EaseOutQuad;
+                    fadeIn.duration = 0.5f;
+                    fadeIn.delay = 0.0f;
+                    fadeIn.loop = false;
+                    fadeIn.startFloat = 0.0f;
+                    fadeIn.endFloat = 1.0f;
+                    effects.clips.push_back(fadeIn);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Pulse"))
+                {
+                    Uma_UI::EffectClip pulse;
+                    pulse.property = Uma_UI::EffectProperty::Scale;
+                    pulse.easing = Uma_UI::EasingType::EaseOutElastic;
+                    pulse.duration = 0.6f;
+                    pulse.delay = 0.0f;
+                    pulse.loop = false;
+                    pulse.startVec2 = Vec2(0.5f, 0.5f);
+                    pulse.endVec2 = Vec2(1.0f, 1.0f);
+                    effects.clips.push_back(pulse);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Bounce In"))
+                {
+                    Uma_UI::EffectClip bounceIn;
+                    bounceIn.property = Uma_UI::EffectProperty::Scale;
+                    bounceIn.easing = Uma_UI::EasingType::EaseOutBounce;
+                    bounceIn.duration = 0.8f;
+                    bounceIn.delay = 0.0f;
+                    bounceIn.loop = false;
+                    bounceIn.startVec2 = Vec2(0.0f, 0.0f);
+                    bounceIn.endVec2 = Vec2(1.0f, 1.0f);
+                    effects.clips.push_back(bounceIn);
+                    m_hasUnsavedEdit = true;
+                }
+
                 ImGui::Separator();
-                auto& rtArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
 
                 // Display each clip
                 for (size_t i = 0; i < effects.clips.size(); ++i)
@@ -4910,7 +4985,7 @@ namespace Uma_Engine
                     if (ImGui::TreeNode(headerLabel.c_str()))
                     {
                         // Property Type
-                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha"/*, "FillAmount"*/ };
+                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha" };
                         int currentProperty = static_cast<int>(clip.property);
                         if (ImGui::Combo("Property", &currentProperty, properties, IM_ARRAYSIZE(properties)))
                         {
@@ -4950,13 +5025,11 @@ namespace Uma_Engine
                         }
 
                         ImGui::Separator();
-                                                auto& rtArray = coordinator.GetComponentArray<Uma_UI::RectTransform>();
 
                         // Property-specific values
                         switch (clip.property)
                         {
                         case Uma_UI::EffectProperty::Position:
-                        case Uma_UI::EffectProperty::Scale:
                         {
                             float startVec[2] = { clip.startVec2.x, clip.startVec2.y };
                             if (ImGui::DragFloat2("Start", startVec, 0.1f))
@@ -4972,6 +5045,36 @@ namespace Uma_Engine
                                 clip.endVec2.x = endVec[0];
                                 clip.endVec2.y = endVec[1];
                                 m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_UI::EffectProperty::Scale:
+                        {
+                            // Display as percentage (multiply by 100)
+                            float startPercent[2] = { clip.startVec2.x * 100.0f, clip.startVec2.y * 100.0f };
+                            if (ImGui::DragFloat2("Start (%)", startPercent, 1.0f, 0.0f, 500.0f))
+                            {
+                                clip.startVec2.x = startPercent[0] / 100.0f;
+                                clip.startVec2.y = startPercent[1] / 100.0f;
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            float endPercent[2] = { clip.endVec2.x * 100.0f, clip.endVec2.y * 100.0f };
+                            if (ImGui::DragFloat2("End (%)", endPercent, 1.0f, 0.0f, 500.0f))
+                            {
+                                clip.endVec2.x = endPercent[0] / 100.0f;
+                                clip.endVec2.y = endPercent[1] / 100.0f;
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // Apply to children checkbox
+                            if (ImGui::Checkbox("Apply to Children", &clip.applyToChildren))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                            {
+                                ImGui::SetTooltip("When enabled, scale will also affect all child UI elements recursively");
                             }
                             break;
                         }
@@ -5028,19 +5131,16 @@ namespace Uma_Engine
                         if (ImGui::Button("Play"))
                         {
                             clip.Play();
-                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                         }
                         ImGui::SameLine();
                         if (ImGui::Button("Pause"))
                         {
                             clip.Pause();
-                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                         }
                         ImGui::SameLine();
                         if (ImGui::Button("Stop"))
                         {
                             clip.Stop();
-                            if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                         }
 
                         ImGui::Separator();
@@ -5068,19 +5168,16 @@ namespace Uma_Engine
                 if (ImGui::Button("Play All"))
                 {
                     effects.PlayAll();
-                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("Stop All"))
                 {
                     effects.StopAll();
-                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("Reset All"))
                 {
                     effects.ResetAll();
-                    if (rtArray.Has(entity)) coordinator.GetComponent<Uma_UI::RectTransform>(entity).isDirty = true;
                 }
 
                 // End tracking
