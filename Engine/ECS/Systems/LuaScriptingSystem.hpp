@@ -214,6 +214,13 @@ namespace Uma_ECS
             Entity other,
             const char* callbackName);
 
+        void NotifyTriggerScripts(
+            ComponentArray<LuaScript>& scriptArray,
+            Entity owner,
+            Entity other,
+            Entity triggerOwner,
+            const char* callbackName);
+
         /**
          * \brief Collision enter event callback
          * \param entityA First entity in collision
@@ -240,7 +247,7 @@ namespace Uma_ECS
          * \param entityA First entity in trigger
          * \param entityB Second entity in trigger
          */
-        void OnTriggerEnterEvent(Entity entityA, Entity entityB);
+        void OnTriggerEnterEvent(Entity entityA, Entity entityB, Entity triggerOwner);
 
         /**
          * \brief Trigger exit event callback
@@ -254,7 +261,7 @@ namespace Uma_ECS
          * \param entityA First entity in trigger
          * \param entityB Second entity in trigger
          */
-        void OnTriggerEvent(Entity entityA, Entity entityB);
+        void OnTriggerEvent(Entity entityA, Entity entityB, Entity triggerOwner);
 
         /**
          * \brief Binds input system function to Lua API

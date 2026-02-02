@@ -1,9 +1,18 @@
 ExposedVars = {
-    ChaseRange = 8.0
+    chaseEnterRange = 20.0
 }
+
+local animator
 
 function state_enter(entity)
     Log("idle entered")
+
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
+
+    animator.animator:Play("idle", true)
+
 end
 
 function state_update(entity, dt)
@@ -12,8 +21,8 @@ function state_update(entity, dt)
         return
     end
     
-    local playerTransform = GetTransform(playerId)
-    local myTransform = GetTransform(entity)
+    local playerTransform = GetTransformFrom(playerId)
+    local myTransform = GetTransform()
     if not playerTransform or not myTransform then
         return
     end
@@ -21,9 +30,12 @@ function state_update(entity, dt)
     local dx = playerTransform.position.x - myTransform.position.x
     local dy = playerTransform.position.y - myTransform.position.y
     local distSq = dx * dx + dy * dy
+
+    --Log("Update Attack player world pos" .. playerTransform.worldPosition.x .. ", " .. playerTransform.worldPosition.y)
+    Log("Update Idle " .. distSq .. " " .. "attackrange " .. ExposedVars.chaseEnterRange * ExposedVars.chaseEnterRange)
     
     -- Transition to Chase if player within range
-    if distSq < ExposedVars.ChaseRange * ExposedVars.ChaseRange then
+    if distSq < ExposedVars.chaseEnterRange * ExposedVars.chaseEnterRange then
         ChangeState(entity, "WaterDemonChase")
         return
     end

@@ -279,7 +279,6 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
 
     // Validate shapes exist
     if (c1.shapes.empty() || c2.shapes.empty()) return;
-    if (!c1.shapes[0].isActive || !c2.shapes[0].isActive) return;
 
     // Get physics entities FIRST
     Entity physicsEntity1 = GetPhysicsEntity(e1, tfArray, rbArray);
@@ -374,6 +373,9 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     // Handle triggers (no physics resolution)
     if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
     {
+        // Determine which entity owns the trigger
+        Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? e1 : e2;
+
         // Check if this is a new trigger interaction
         bool wasColliding = previousTriggers.find(pair) != previousTriggers.end();
 
@@ -386,12 +388,12 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
             if (!wasColliding)
             {
                 // New trigger - emit enter event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(e1, e2);
+                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(e1, e2, triggerOwner);
             }
             else
             {
                 // Ongoing trigger - emit stay event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(e1, e2);
+                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(e1, e2, triggerOwner);
             }
         }
 

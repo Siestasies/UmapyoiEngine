@@ -84,15 +84,17 @@ namespace Uma_Engine
     class OnTriggerEnterEvent : public Event
     {
     public:
-        OnTriggerEnterEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity)
-            : trigger(trigger)
-            , entity(entity)
+        OnTriggerEnterEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB, Uma_ECS::Entity triggerOwner)
+            : entityA(entityA)
+            , entityB(entityB)
+            , triggerOwner(triggerOwner)
         {
             priority = Priority::Normal;
         }
 
-        Uma_ECS::Entity trigger;
-        Uma_ECS::Entity entity;
+        Uma_ECS::Entity entityA;
+        Uma_ECS::Entity entityB;
+        Uma_ECS::Entity triggerOwner;
     };
 
     /**
@@ -101,15 +103,17 @@ namespace Uma_Engine
     class OnTriggerEvent : public Event
     {
     public:
-        OnTriggerEvent(Uma_ECS::Entity trigger, Uma_ECS::Entity entity)
-            : trigger(trigger)
-            , entity(entity)
+        OnTriggerEvent(Uma_ECS::Entity entityA, Uma_ECS::Entity entityB, Uma_ECS::Entity triggerOwner)
+            : entityA(entityA)
+            , entityB(entityB)
+            , triggerOwner(triggerOwner)
         {
             priority = Priority::Normal;
         }
 
-        Uma_ECS::Entity trigger;
-        Uma_ECS::Entity entity;
+        Uma_ECS::Entity entityA;
+        Uma_ECS::Entity entityB;
+        Uma_ECS::Entity triggerOwner;
     };
 
     /**

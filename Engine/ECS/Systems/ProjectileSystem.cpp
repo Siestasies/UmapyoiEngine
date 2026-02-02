@@ -39,10 +39,10 @@ namespace Uma_ECS
             {
                 if (!pCoordinator || aEntities.empty()) return;
 
-                if (!pCoordinator->HasComponent<Projectile>(e.trigger) && !pCoordinator->HasComponent<Projectile>(e.entity)) return;
+                if (!pCoordinator->HasComponent<Projectile>(e.entityA) && !pCoordinator->HasComponent<Projectile>(e.entityB)) return;
 
-                Entity self = (pCoordinator->HasComponent<Projectile>(e.trigger)) ? e.trigger : e.entity;
-                Entity trigger = (self == e.entity) ? e.trigger : e.entity;
+                Entity self = (pCoordinator->HasComponent<Projectile>(e.entityB)) ? e.entityB : e.entityA;
+                Entity trigger = (self == e.entityA) ? e.entityB : e.entityA;
 
                 HandleCollision(self, trigger);
             });

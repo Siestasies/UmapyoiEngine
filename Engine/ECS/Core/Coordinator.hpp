@@ -74,6 +74,7 @@ namespace Uma_ECS
     {
         std::unique_ptr<EntityManager> cachedEntityManager;
         std::unique_ptr<ComponentManager> cachedComponentManager;
+        std::vector<Entity> cachedHierarchyOrder;
     };
 
     // this whole Corrdinator context is about combining:

@@ -11,7 +11,7 @@ function state_enter(entity)
     
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("WaterDemonStun", true)
+        animator.animator:Play("idle", false)
     end
 end
 

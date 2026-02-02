@@ -2,22 +2,25 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/wall_top.png"
+                "path": "assets/statue.png"
             },
             {
-                "path": "assets/statue.png"
+                "path": "assets/wall_top.png"
             },
             {
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/wall_top_right.png"
+                "path": "assets/fire bird.png"
             },
             {
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/fire bird.png"
+                "path": "assets/wall_top_right.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/whitepixel.png"
@@ -60,6 +63,9 @@
             },
             {
                 "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 2.png"
             }
         ],
         "fonts": [
@@ -76,18 +82,13 @@
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
-                "type": 0
-            },
-            {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
             },
             {
-                "name": "hurt",
-                "path": "Assets/sounds/hurt.mp3",
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
                 "type": 0
             },
             {
@@ -96,14 +97,19 @@
                 "type": 0
             },
             {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "name": "hurt",
+                "path": "Assets/sounds/hurt.mp3",
                 "type": 0
             },
             {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
                 "type": 1
+            },
+            {
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 0
             },
             {
                 "name": "enemy_hurt",
@@ -17056,7 +17062,7 @@
         },
         {
             "id": 266,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
@@ -17627,8 +17633,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "BGM Object",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -96.5,
+                        "y": -24.5
                     },
                     "rotation": {
                         "x": 0.0,
@@ -18231,8 +18237,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "weather_effect",
                     "position": {
-                        "x": 0.0,
-                        "y": 0.0
+                        "x": -57.999,
+                        "y": -32.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -18332,6 +18338,32 @@
                             }
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 292,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": -148.166,
+                        "y": 78.583
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 15.0,
+                        "y": 15.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
                 }
             }
         }
