@@ -794,7 +794,7 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Static(
         lhs.min.y > rhs.max.y);  // lhs is above rhs
 }
 
-std::vector<Uma_ECS::Entity> Uma_ECS::CollisionSystem::GetEntitiesInArea(Vec2 min, Vec2 max)
+std::unordered_set<Uma_ECS::Entity> Uma_ECS::CollisionSystem::GetEntitiesInArea(Vec2 min, Vec2 max)
 {
     int minX = WorldToCell(min.x);
     int maxX = WorldToCell(max.x);
