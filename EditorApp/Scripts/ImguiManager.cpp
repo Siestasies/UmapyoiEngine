@@ -2291,12 +2291,136 @@ namespace Uma_Engine
 
                     if (ImGui::TreeNode(name.c_str()))
                     {
-                        ImGui::Text("Frames X: %d", clip.framesX);
-                        ImGui::Text("Frames Y: %d", clip.framesY);
-                        ImGui::Text("Start Frame: %d", clip.startFrame);
-                        ImGui::Text("Frame Count: %d", clip.frameCount);
-                        ImGui::Text("Speed: %.2f fps", clip.speed);
-                        ImGui::Text("Loop: %s", clip.loop ? "Yes" : "No");
+                        // Create local copies to edit
+                        int framesX = clip.framesX;
+                        int framesY = clip.framesY;
+                        int startFrame = clip.startFrame;
+                        int frameCount = clip.frameCount;
+                        float speed = clip.speed;
+                        bool loop = clip.loop;
+
+                        static char texturePathBuffer[512];
+                        strncpy(texturePathBuffer, clip.texturePath.c_str(), 511);
+                        texturePathBuffer[511] = '\0';
+
+                        bool modified = false;
+                        modified |= ImGui::DragInt("Frames X", &framesX, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Frames Y", &framesY, 1.0f, 1, 100);
+                        modified |= ImGui::DragInt("Start Frame", &startFrame, 1.0f, 0, 1000);
+                        modified |= ImGui::DragInt("Frame Count", &frameCount, 1.0f, 1, 1000);
+                        modified |= ImGui::DragFloat("Speed (fps)", &speed, 0.1f, 0.1f, 60.0f);
+                        modified |= ImGui::Checkbox("Loop", &loop);
+
+                        ImGui::Text("Texture Path: %s", texturePathBuffer[0] ? texturePathBuffer : "(Use Sprite texture)");
+
+                        // Create drag & drop zone
+                        ImVec2 dropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                        ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+
+                        ImDrawList* drawList = ImGui::GetWindowDrawList();
+                        ImU32 bgColor = IM_COL32(40, 40, 60, 100);
+
+                        // Background
+                        drawList->AddRectFilled(cursorPos,
+                            ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                            bgColor, 4.0f);
+
+                        // Center text in the drop zone
+                        ImVec2 textSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                        ImVec2 textPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - textSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - textSize.y) * 0.5f - 10.0f
+                        );
+                        drawList->AddText(textPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                        // Supported formats text
+                        ImVec2 formatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                        ImVec2 formatTextPos = ImVec2(
+                            cursorPos.x + (dropZoneSize.x - formatTextSize.x) * 0.5f,
+                            cursorPos.y + (dropZoneSize.y - formatTextSize.y) * 0.5f + 10.0f
+                        );
+                        drawList->AddText(formatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                        // Invisible button for the drop zone
+                        ImGui::SetCursorScreenPos(cursorPos);
+                        std::string dropZoneID = "##ClipTextureDropZone_" + name;
+                        ImGui::InvisibleButton(dropZoneID.c_str(), dropZoneSize);
+
+                        bool isHovered = ImGui::IsItemHovered();
+
+                        // Drag and Drop Target
+                        if (ImGui::BeginDragDropTarget())
+                        {
+                            // Highlight the drop zone when dragging over
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                            // Show glow effect
+                            drawList->AddRectFilled(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 255, 50), 4.0f);
+
+                            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                            {
+                                const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                std::string fullPath = data->filepath;
+                                std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                std::filesystem::path p(fullPath);
+                                std::string ext = p.extension().string();
+
+                                // Convert to lowercase for comparison
+                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                                if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                {
+                                    std::string relativePath = fullPath;
+                                    size_t assetsPos = fullPath.find("Assets/");
+                                    if (assetsPos != std::string::npos)
+                                    {
+                                        relativePath = fullPath.substr(assetsPos);
+                                    }
+
+                                    strncpy(texturePathBuffer, relativePath.c_str(), 511);
+                                    texturePathBuffer[511] = '\0';
+                                    modified = true;
+                                }
+                                else
+                                {
+                                    m_popupErrorMessage = "Invalid file type for Animation Clip Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                    ImGui::OpenPopup("Invalid File Format");
+                                }
+                            }
+                            ImGui::EndDragDropTarget();
+                        }
+                        else if (isHovered)
+                        {
+                            // Subtle hover effect when not dragging
+                            drawList->AddRect(cursorPos,
+                                ImVec2(cursorPos.x + dropZoneSize.x, cursorPos.y + dropZoneSize.y),
+                                IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                        }
+
+                        // Move cursor past the drop zone
+                        ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
+
+                        // Clear button
+                        if (ImGui::Button("Clear Texture Path", ImVec2(-1, 0)))
+                        {
+                            texturePathBuffer[0] = '\0';
+                            modified = true;
+                        }
+                        ImGui::TextWrapped("Leave empty to use Sprite component texture");
+
+                        // Update the clip if any value changed
+                        // addclip function replaces key of same name
+                        if (modified)
+                        {
+                            animator.animator.AddClip(name, framesX, framesY, startFrame,
+                                frameCount, speed, loop, std::string(texturePathBuffer));
+                            m_hasUnsavedEdit = true;
+                        }
 
                         ImGui::Spacing();
                         ImGui::Separator();
@@ -2368,6 +2492,7 @@ namespace Uma_Engine
                 static int newFrameCount = 1;
                 static float newSpeed = 10.0f;
                 static bool newLoop = true;
+                static char newTexturePath[512] = "";
 
                 if (ImGui::InputText("Clip Name", newClipName, 256)) m_hasUnsavedEdit = true;
                 if (ImGui::DragInt("Frames X", &newFramesX, 1.0f, 1, 100)) m_hasUnsavedEdit = true;
@@ -2376,6 +2501,108 @@ namespace Uma_Engine
                 if (ImGui::DragInt("Frame Count", &newFrameCount, 1.0f, 1, 1000)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Speed (fps)", &newSpeed, 0.1f, 0.1f, 60.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Loop", &newLoop)) m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                ImGui::Text("Texture Path: %s", newTexturePath[0] ? newTexturePath : "(Use Sprite texture)");
+
+                // Create drag & drop zone for new clip
+                ImVec2 newClipDropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 60.0f);
+                ImVec2 newClipCursorPos = ImGui::GetCursorScreenPos();
+
+                ImDrawList* newClipDrawList = ImGui::GetWindowDrawList();
+                ImU32 newClipBgColor = IM_COL32(40, 40, 60, 100);
+
+                // Background
+                newClipDrawList->AddRectFilled(newClipCursorPos,
+                    ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                    newClipBgColor, 4.0f);
+
+                // Center text in the drop zone
+                ImVec2 newClipTextSize = ImGui::CalcTextSize("Drag & Drop Texture Here");
+                ImVec2 newClipTextPos = ImVec2(
+                    newClipCursorPos.x + (newClipDropZoneSize.x - newClipTextSize.x) * 0.5f,
+                    newClipCursorPos.y + (newClipDropZoneSize.y - newClipTextSize.y) * 0.5f - 10.0f
+                );
+                newClipDrawList->AddText(newClipTextPos, IM_COL32(150, 150, 150, 255), "Drag & Drop Texture Here");
+
+                // Supported formats text
+                ImVec2 newClipFormatTextSize = ImGui::CalcTextSize("(.png, .jpg, .jpeg, .bmp)");
+                ImVec2 newClipFormatTextPos = ImVec2(
+                    newClipCursorPos.x + (newClipDropZoneSize.x - newClipFormatTextSize.x) * 0.5f,
+                    newClipCursorPos.y + (newClipDropZoneSize.y - newClipFormatTextSize.y) * 0.5f + 10.0f
+                );
+                newClipDrawList->AddText(newClipFormatTextPos, IM_COL32(100, 100, 100, 255), "(.png, .jpg, .jpeg, .bmp)");
+
+                // Invisible button for the drop zone
+                ImGui::SetCursorScreenPos(newClipCursorPos);
+                ImGui::InvisibleButton("##NewClipTextureDropZone", newClipDropZoneSize);
+
+                bool newClipIsHovered = ImGui::IsItemHovered();
+
+                // Drag and Drop Target
+                if (ImGui::BeginDragDropTarget())
+                {
+                    // Highlight the drop zone when dragging over
+                    newClipDrawList->AddRect(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+
+                    // Show glow effect
+                    newClipDrawList->AddRectFilled(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                    {
+                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                        std::string fullPath = data->filepath;
+                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                        std::filesystem::path p(fullPath);
+                        std::string ext = p.extension().string();
+
+                        // Convert to lowercase for comparison
+                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                        {
+                            std::string relativePath = fullPath;
+                            size_t assetsPos = fullPath.find("Assets/");
+                            if (assetsPos != std::string::npos)
+                            {
+                                relativePath = fullPath.substr(assetsPos);
+                            }
+
+                            strncpy(newTexturePath, relativePath.c_str(), 511);
+                            newTexturePath[511] = '\0';
+                            m_hasUnsavedEdit = true;
+                        }
+                        else
+                        {
+                            m_popupErrorMessage = "Invalid file type for Animation Clip Texture!\nExpected: .png, .jpg, .jpeg, .bmp";
+                            ImGui::OpenPopup("Invalid File Format");
+                        }
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+                else if (newClipIsHovered)
+                {
+                    // Subtle hover effect when not dragging
+                    newClipDrawList->AddRect(newClipCursorPos,
+                        ImVec2(newClipCursorPos.x + newClipDropZoneSize.x, newClipCursorPos.y + newClipDropZoneSize.y),
+                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                }
+
+                // Move cursor past the drop zone
+                ImGui::SetCursorScreenPos(ImVec2(newClipCursorPos.x, newClipCursorPos.y + newClipDropZoneSize.y + 5.0f));
+
+                // Clear button
+                if (ImGui::Button("Clear Texture Path##NewClip", ImVec2(-1, 0)))
+                {
+                    newTexturePath[0] = '\0';
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::TextWrapped("Leave empty to use Sprite component texture");
 
                 if (ImGui::Button("Add Clip"))
                 {
@@ -2388,7 +2615,8 @@ namespace Uma_Engine
                             newStartFrame,
                             newFrameCount,
                             newSpeed,
-                            newLoop
+                            newLoop,
+                            std::string(newTexturePath)
                         );
 
                         // Reset input fields

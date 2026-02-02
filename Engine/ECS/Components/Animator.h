@@ -22,8 +22,10 @@ All rights reserved.
 
 #pragma once
 #include "../../Math/Math.h"
+#include "../../Systems/ResourcesTypes.hpp"
 #include "../Systems/SpriteAnimator.h"
 #include <string>
+#include <memory>
 
 namespace Uma_ECS
 {
@@ -43,9 +45,12 @@ namespace Uma_ECS
         std::string initialClip = "";
         bool isInitialized = false;
 
-        // Current frame UVs
+        // Current frame UVs (cached by AnimatorSystem)
         Vec2 uvOffset = Vec2(0.0f, 0.0f);
         Vec2 uvSize = Vec2(1.0f, 1.0f);
+
+        // Active texture resolved by AnimatorSystem (nullptr = use Sprite's texture)
+        std::shared_ptr<Uma_Engine::Texture> activeTexture = nullptr;
 
         /**
          * \brief Serializes the Animator component data to a rapidjson::Value
@@ -82,6 +87,9 @@ namespace Uma_ECS
                 clipObj.AddMember("frameCount", clip.frameCount, allocator);
                 clipObj.AddMember("speed", clip.speed, allocator);
                 clipObj.AddMember("loop", clip.loop, allocator);
+                clipObj.AddMember("texturePath",
+                    rapidjson::Value(clip.texturePath.c_str(), allocator),
+                    allocator);
 
                 clipsArray.PushBack(clipObj, allocator);
             }
@@ -122,10 +130,15 @@ namespace Uma_ECS
                     int frameCount = clipObj["frameCount"].GetInt();
                     float speed = clipObj["speed"].GetFloat();
                     bool loop = clipObj["loop"].GetBool();
+                    std::string texturePath = "";
+                    if (clipObj.HasMember("texturePath"))
+                    {
+                        texturePath = clipObj["texturePath"].GetString();
+                    }
 
                     // Add the clip back to the animator
                     animator.AddClip(name, framesX, framesY, startFrame,
-                        frameCount, speed, loop);
+                        frameCount, speed, loop, texturePath);
                 }
 
                 //std::cout << "Deserialized " << clipsArray.Size() << " animation clips" << std::endl;
