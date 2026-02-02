@@ -284,6 +284,11 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     Entity physicsEntity1 = GetPhysicsEntity(e1, tfArray, rbArray);
     Entity physicsEntity2 = GetPhysicsEntity(e2, tfArray, rbArray);
 
+    // Skip self-collision (e.g. parent Physics + child Trigger resolve to same root)
+    if (physicsEntity1 == physicsEntity2 &&
+        physicsEntity1 != static_cast<Entity>(-1))
+        return;
+
     // Check if PHYSICS entities have RigidBody
     bool e1HasRb = (physicsEntity1 != static_cast<Entity>(-1));
     bool e2HasRb = (physicsEntity2 != static_cast<Entity>(-1));
@@ -326,15 +331,22 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
             if (!ShouldPurposesCollide(shape1.purpose, shape2.purpose))
                 continue;
 
-            // Collision test
+            // Broadphase: test with swept bounds (prevents tunneling)
             if (CollisionIntersection_RectRect_Static(c1.bounds[i], c2.bounds[j]))
             {
-                // Pass physics entities and their transforms
+                // Compute tight current-position bounds for resolution
+                BoundingBox currentBox1 = (shape1.purpose != ColliderPurpose::Trigger)
+                    ? ComputeCurrentBounds(e1, i) : c1.bounds[i];
+                BoundingBox currentBox2 = (shape2.purpose != ColliderPurpose::Trigger)
+                    ? ComputeCurrentBounds(e2, j) : c2.bounds[j];
+
+                // Pass both original collider entities (for events) and physics entities (for resolution)
                 HandleShapeCollision(
+                    e1, e2,
                     physicsEntity1, physicsEntity2,
                     *tf1, *tf2,
                     rb1, rb2,
-                    c1.bounds[i], c2.bounds[j],
+                    currentBox1, currentBox2,
                     shape1.purpose, shape2.purpose
                 );
             }
@@ -362,19 +374,21 @@ bool Uma_ECS::CollisionSystem::ShouldPurposesCollide(
 }
 
 void Uma_ECS::CollisionSystem::HandleShapeCollision(
-    Entity e1, Entity e2,
+    Entity colliderEntity1, Entity colliderEntity2,
+    Entity physEntity1, Entity physEntity2,
     Transform& tf1, Transform& tf2,
     RigidBody* rb1, RigidBody* rb2,
     const BoundingBox& box1, const BoundingBox& box2,
     ColliderPurpose purpose1, ColliderPurpose purpose2)
 {
-    EntityPair pair(e1, e2);
+    // Use original collider entities for event tracking and emission
+    EntityPair pair(colliderEntity1, colliderEntity2);
 
     // Handle triggers (no physics resolution)
     if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
     {
         // Determine which entity owns the trigger
-        Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? e1 : e2;
+        Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? colliderEntity1 : colliderEntity2;
 
         // Check if this is a new trigger interaction
         bool wasColliding = previousTriggers.find(pair) != previousTriggers.end();
@@ -388,12 +402,12 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
             if (!wasColliding)
             {
                 // New trigger - emit enter event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(e1, e2, triggerOwner);
+                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(colliderEntity1, colliderEntity2, triggerOwner);
             }
             else
             {
                 // Ongoing trigger - emit stay event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(e1, e2, triggerOwner);
+                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(colliderEntity1, colliderEntity2, triggerOwner);
             }
         }
 
@@ -413,12 +427,12 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
         if (!wasColliding)
         {
             // New collision - emit enter event
-            pEventSystem->Emit<Uma_Engine::OnCollisionEnterEvent>(e1, e2);
+            pEventSystem->Emit<Uma_Engine::OnCollisionEnterEvent>(colliderEntity1, colliderEntity2);
         }
         else
         {
             // Ongoing collision - emit stay event
-            pEventSystem->Emit<Uma_Engine::OnCollisionEvent>(e1, e2);
+            pEventSystem->Emit<Uma_Engine::OnCollisionEvent>(colliderEntity1, colliderEntity2);
         }
     }
 
@@ -794,6 +808,46 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Static(
         lhs.min.x > rhs.max.x || // lhs is right of rhs
         lhs.max.y < rhs.min.y || // lhs is below rhs
         lhs.min.y > rhs.max.y);  // lhs is above rhs
+}
+
+Uma_ECS::BoundingBox Uma_ECS::CollisionSystem::ComputeCurrentBounds(Entity entity, size_t shapeIndex)
+{
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    auto& cArray = pCoordinator->GetComponentArray<Collider>();
+    auto& sArray = pCoordinator->GetComponentArray<Sprite>();
+
+    auto& tf = tfArray.GetData(entity);
+    auto& c = cArray.GetData(entity);
+    const auto& shape = c.shapes[shapeIndex];
+
+    Vec2 spriteSize{ 1.0f, 1.0f };
+    if (sArray.Has(entity))
+    {
+        auto& s = sArray.GetData(entity);
+        if (s.texture)
+        {
+            spriteSize = s.texture->GetNativeSize();
+        }
+    }
+
+    Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
+    Vec2 scaledSize = Vec2{
+        effectiveSize.x * tf.worldScale.x,
+        effectiveSize.y * tf.worldScale.y
+    };
+
+    Vec2 worldOffset = Vec2{
+        shape.offset.x * tf.worldScale.x,
+        shape.offset.y * tf.worldScale.y
+    };
+
+    Vec2 halfSize = scaledSize * 0.5f;
+    Vec2 currentWorldPos = tf.worldPosition + worldOffset;
+
+    BoundingBox bounds;
+    bounds.min = Vec2{ currentWorldPos.x - halfSize.x, currentWorldPos.y - halfSize.y };
+    bounds.max = Vec2{ currentWorldPos.x + halfSize.x, currentWorldPos.y + halfSize.y };
+    return bounds;
 }
 
 std::unordered_set<Uma_ECS::Entity> Uma_ECS::CollisionSystem::GetEntitiesInArea(Vec2 min, Vec2 max)
