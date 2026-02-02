@@ -72,7 +72,7 @@ namespace Uma_ECS
         // by right shd only have 1 player
         //HandleMovementInput(dt);
         //HandleActionInput(dt);
-        HandlePlayerAnimation();
+        //HandlePlayerAnimation();
     }
 
     void PlayerControllerSystem::SubscribeToEvents()
@@ -338,64 +338,64 @@ namespace Uma_ECS
         }
     }
 
-    void PlayerControllerSystem::HandleActionInput(float dt)
-    {
-        if (aEntities.empty()) return;
+    //void PlayerControllerSystem::HandleActionInput(float dt)
+    //{
+    //    if (aEntities.empty()) return;
 
-        static bool lastInteractState = false;
-        static bool lastDashState = false;
+    //    static bool lastInteractState = false;
+    //    static bool lastDashState = false;
 
-        auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
+    //    auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
 
-        if (player.combatState.attack_1_cd_curr > 0.f)
-        {
-            player.combatState.attack_1_cd_curr -= dt;
+    //    if (player.combatState.attack_1_cd_curr > 0.f)
+    //    {
+    //        player.combatState.attack_1_cd_curr -= dt;
 
-            if (player.combatState.attack_1_cd_curr <= 0)
-            {
-                player.combatState.attack_1_cd_curr = 0.f;
-                player.combatState.attack_1_is_in_cd = false;
-            }
-        }
+    //        if (player.combatState.attack_1_cd_curr <= 0)
+    //        {
+    //            player.combatState.attack_1_cd_curr = 0.f;
+    //            player.combatState.attack_1_is_in_cd = false;
+    //        }
+    //    }
 
-        if (player.combatState.attack_2_cd_curr > 0.f)
-        {
-            player.combatState.attack_2_cd_curr -= dt;
-            if (player.combatState.attack_2_cd_curr <= 0)
-            {
-                player.combatState.attack_2_cd_curr = 0.f;
-                player.combatState.attack_2_is_in_cd = false;
-            }
-        }
+    //    if (player.combatState.attack_2_cd_curr > 0.f)
+    //    {
+    //        player.combatState.attack_2_cd_curr -= dt;
+    //        if (player.combatState.attack_2_cd_curr <= 0)
+    //        {
+    //            player.combatState.attack_2_cd_curr = 0.f;
+    //            player.combatState.attack_2_is_in_cd = false;
+    //        }
+    //    }
 
-        // Use event-based input instead of state polling for fixed timestep compatibility
-        static bool lastAttack1State = false;
-        static bool lastAttack2State = false;
+    //    // Use event-based input instead of state polling for fixed timestep compatibility
+    //    static bool lastAttack1State = false;
+    //    static bool lastAttack2State = false;
 
-        // Detect rising edge (just pressed) to avoid repeated triggers
-        if (inputState.attack_1 && !lastAttack1State && !player.combatState.attack_1_is_in_cd)
-        {
-            //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
-            //animator.animator.Play("atk_1", true);
-            player.animatorState = PS_Atk_1;
+    //    // Detect rising edge (just pressed) to avoid repeated triggers
+    //    if (inputState.attack_1 && !lastAttack1State && !player.combatState.attack_1_is_in_cd)
+    //    {
+    //        //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+    //        //animator.animator.Play("atk_1", true);
+    //        player.animatorState = PS_Atk_1;
 
-            player.combatState.attack_1_cd_curr = player.combatState.attack_1_cd;
-            player.combatState.attack_1_is_in_cd = true;
-        }
+    //        player.combatState.attack_1_cd_curr = player.combatState.attack_1_cd;
+    //        player.combatState.attack_1_is_in_cd = true;
+    //    }
 
-        // Attack 2 support (W key)
-        if (inputState.attack_2 && !lastAttack2State && !player.combatState.attack_2_is_in_cd)
-        {
-            // Implement attack_2 logic here if needed
-            //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
-            //animator.animator.Play("atk_2", true);
-            player.animatorState = PS_Atk_2;
+    //    // Attack 2 support (W key)
+    //    if (inputState.attack_2 && !lastAttack2State && !player.combatState.attack_2_is_in_cd)
+    //    {
+    //        // Implement attack_2 logic here if needed
+    //        //auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+    //        //animator.animator.Play("atk_2", true);
+    //        player.animatorState = PS_Atk_2;
 
-            player.combatState.attack_2_cd_curr = player.combatState.attack_2_cd;
-            player.combatState.attack_2_is_in_cd = true;
-        }
+    //        player.combatState.attack_2_cd_curr = player.combatState.attack_2_cd;
+    //        player.combatState.attack_2_is_in_cd = true;
+    //    }
 
-        lastAttack1State = inputState.attack_1;
-        lastAttack2State = inputState.attack_2;
-    }
+    //    lastAttack1State = inputState.attack_1;
+    //    lastAttack2State = inputState.attack_2;
+    //}
 }

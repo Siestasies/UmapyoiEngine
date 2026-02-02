@@ -26,10 +26,10 @@
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/environment/floor 2 horizontal.png"
+                "path": "assets/wall_left.png"
             },
             {
-                "path": "assets/wall_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
                 "path": "assets/wall_top_left.png"
@@ -64,13 +64,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             }
         ],
@@ -81,14 +81,14 @@
                 "type": 0
             },
             {
-                "name": "cave",
-                "path": "Assets/sounds/cave.mp3",
-                "type": 1
-            },
-            {
                 "name": "hurt",
                 "path": "Assets/sounds/hurt.mp3",
                 "type": 0
+            },
+            {
+                "name": "cave",
+                "path": "Assets/sounds/cave.mp3",
+                "type": 1
             },
             {
                 "name": "explosion",
@@ -96,14 +96,14 @@
                 "type": 0
             },
             {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
                 "name": "combat_bgm",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
+            },
+            {
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
             },
             {
                 "name": "enemy_hurt",
@@ -2445,7 +2445,7 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "player",
+                    "name": "player_new",
                     "position": {
                         "x": -167.983,
                         "y": 77.024
@@ -2461,7 +2461,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/player.prefab",
+                    "prefabPath": "Assets/Prefabs/player_new.prefab",
                     "isRoot": true
                 }
             }

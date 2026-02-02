@@ -581,6 +581,7 @@ namespace Uma_ECS
         );
 
         sharedLua->new_usertype<AttackStats>("AttackStats",
+            sol::constructors<AttackStats()>(),
             "attackName", &AttackStats::AttackName,
             "animationClipName", &AttackStats::animationClipName,
             "mDamageMultiplier", &AttackStats::mDamageMultiplier,
@@ -598,24 +599,76 @@ namespace Uma_ECS
             "elementType", &AttackStats::elementType
             );
 
-        // Register Player component
+        sharedLua->set_function("CreateAttackStats", []() -> AttackStats* {
+            return new AttackStats();
+            });
+
+        // Helper function to add AttackStats to a Player's attackStats vector
+        sharedLua->set_function("AddAttackStats", [](Player& player, AttackStats* attack) {
+            if (attack) {
+                player.attackStats.push_back(*attack);
+                delete attack;  // Clean up the temporary object after copying
+            }
+            });
+
+        // Helper function to clear all attack stats
+        sharedLua->set_function("ClearAttackStats", [](Player& player) {
+            player.attackStats.clear();
+            });
+
+        // Helper function to get attack stats count
+        sharedLua->set_function("GetAttackStatsCount", [](Player& player) -> int {
+            return static_cast<int>(player.attackStats.size());
+            });
+
+        sharedLua->new_usertype<CheckpointData>("CheckpointData",
+            "checkpointX", &CheckpointData::checkpointX,
+            "checkpointY", &CheckpointData::checkpointY,
+            "hasCheckpoint", &CheckpointData::hasCheckpoint
+            );
+
         sharedLua->new_usertype<Player>("Player",
             "mHealth", &Player::mHealth,
             "mMaxHealth", &Player::mMaxHealth,
             "mHealthRegenRate", &Player::mHealthRegenRate,
+            "mHealthRegenDelay", &Player::mHealthRegenDelay,
+            "mHealthRegenDelayTimer", &Player::mHealthRegenDelayTimer,
+            "mCanRegenHealth", &Player::mCanRegenHealth,
+
             "mSpeed", &Player::mSpeed,
             "mDashSpeed", &Player::mDashSpeed,
+            "mDashDuration", &Player::mDashDuration,  // NEW - needed for dash state
             "mDashCD", &Player::mDashCD,
+
             "mAttackDamage", &Player::mAttackDamage,
             "mAttackSpeed", &Player::mAttackSpeed,
             "mAttackRange", &Player::mAttackRange,
             "mDefense", &Player::mDefense,
+
             "mMana", &Player::mMana,
             "mMaxMana", &Player::mMaxMana,
             "mManaRegenRate", &Player::mManaRegenRate,
+            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,  // NEW - needed for attack mana gain
+
+            "isStunned", &Player::isStunned,
+            "stunedTimer", &Player::stunedTimer,
+            "isInvulnerable", &Player::isInvulnerable,
+
+            "mInvulnerabilityDuration", &Player::mInvulnerabilityDuration,
+            "mHitStunDuration", &Player::mHitStunDuration,
+
+            "lastElementUsed", &Player::lastElementUsed,
+            "elementComboTimer", &Player::elementComboTimer,
+            "elementComboWindow", &Player::elementComboWindow,
+
+            "currAttackIndex", &Player::currAttackIndex,
+            // "animatorState", &Player::animatorState,  // Optional - enum would need registration
+
             "attackStats", sol::property(
                 [](Player& c) -> std::vector<AttackStats>&{ return c.attackStats; }
-                )
+                ),
+
+            "checkpointData", &Player::checkpointData
             );
 
 

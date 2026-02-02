@@ -49,45 +49,45 @@ namespace Uma_ECS
         Steam  // Fusion element
     };
 
-    //struct CombatState
-    //{
-    //    // Attack cooldowns
-    //    bool attack_1_is_in_cd = false;
-    //    bool attack_2_is_in_cd = false;
-    //    float attack_1_cd = 0.f;
-    //    float attack_2_cd = 0.f;
-    //    float attack_1_cd_curr = 0.f;
-    //    float attack_2_cd_curr = 0.f;
+    struct CombatState
+    {
+        //// Attack cooldowns
+        //bool attack_1_is_in_cd = false;
+        //bool attack_2_is_in_cd = false;
+        //float attack_1_cd = 0.f;
+        //float attack_2_cd = 0.f;
+        //float attack_1_cd_curr = 0.f;
+        //float attack_2_cd_curr = 0.f;
 
-    //    // Ability cooldowns
-    //    bool dash_is_in_cd = false;
-    //    float dash_cd = 2.f;
-    //    float dash_cd_curr = 0.f;
+        //// Ability cooldowns
+        //bool dash_is_in_cd = false;
+        //float dash_cd = 2.f;
+        //float dash_cd_curr = 0.f;
 
-    //    bool fire_slash_is_in_cd = false;
-    //    float fire_slash_cd = 1.5f;
-    //    float fire_slash_cd_curr = 0.f;
+        //bool fire_slash_is_in_cd = false;
+        //float fire_slash_cd = 1.5f;
+        //float fire_slash_cd_curr = 0.f;
 
-    //    bool water_slash_is_in_cd = false;
-    //    float water_slash_cd = 1.5f;
-    //    float water_slash_cd_curr = 0.f;
+        //bool water_slash_is_in_cd = false;
+        //float water_slash_cd = 1.5f;
+        //float water_slash_cd_curr = 0.f;
 
-    //    // State flags
-    //    bool isAlive = true;
-    //    bool isStunned = false;
-    //    bool isInvulnerable = false;
+        // State flags
+        bool isAlive = true;
+        //bool isStunned = false;
+        //bool isInvulnerable = false;
 
-    //    // Timers
-    //    float stunedDuration = 0.f;
-    //    float stunedTimer = 0.f;
-    //    float invulnerabilityDuration = 1.f;
-    //    float invulnerabilityTimer = 0.f;
+        //// Timers
+        //float stunedDuration = 0.f;
+        //float stunedTimer = 0.f;
+        //float invulnerabilityDuration = 1.f;
+        //float invulnerabilityTimer = 0.f;
 
-    //    // Elemental combo system
-    //    ElementType lastElementUsed = ElementType::None;
-    //    float elementComboTimer = 0.f;
-    //    float elementComboWindow = 2.f;  // Time window to trigger fusion
-    //};
+        //// Elemental combo system
+        //ElementType lastElementUsed = ElementType::None;
+        //float elementComboTimer = 0.f;
+        //float elementComboWindow = 2.f;  // Time window to trigger fusion
+    };
 
     struct AttackStats
     {
@@ -159,8 +159,8 @@ namespace Uma_ECS
         int     mDefense = 5;
 
         // ===== MANA SYSTEM =====
-        int     mMana = 100;
-        int     mMaxMana = 100;
+        float   mMana = 100.f;
+        float   mMaxMana = 100.f;
         float   mManaRegenRate = 5.f;           // Passive regen per second
         int     mNeutralAttackManaGain = 5;     // 50/50 chance to gain on hit
 
@@ -182,8 +182,10 @@ namespace Uma_ECS
         int currAttackIndex = 0;
         AnimatorState animatorState = PS_Idle;
         std::vector<AttackStats> attackStats;
+        CombatState combatState;
         //ThrowableInventory throwableInventory;
         CheckpointData checkpointData;
+        Vec2 lookDir;
 
         // ===== SERIALIZATION =====
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
@@ -300,9 +302,9 @@ namespace Uma_ECS
 
             // Mana
             if (value.HasMember("mMana"))
-                mMana = value["mMana"].GetInt();
+                mMana = value["mMana"].GetFloat();
             if (value.HasMember("mMaxMana"))
-                mMaxMana = value["mMaxMana"].GetInt();
+                mMaxMana = value["mMaxMana"].GetFloat();
             if (value.HasMember("mManaRegenRate"))
                 mManaRegenRate = value["mManaRegenRate"].GetFloat();
             if (value.HasMember("mNeutralAttackManaGain"))
