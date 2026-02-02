@@ -30,6 +30,15 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    struct RaycastHit {
+        bool hit;
+        Entity entity;
+        Vec2 point;      // collision point
+        Vec2 normal;     // surface normal
+        float distance;
+        LayerMask colliderLayer;
+    };
+
     class PhysicsSystem : public ECSSystem
     {
     public:
@@ -45,6 +54,11 @@ namespace Uma_ECS
         void PrintLog();
 
         void AddForce(Entity entity, Vec2 pos, Vec2 dir, float force, float rotation);
+
+        // Ray Casting
+        std::unordered_set<Entity> OverlapCircle(Vec2 center, float radius);
+        bool LineOfSight(Entity lhs, Entity rhs);
+        RaycastHit RayCast(Vec2 origin, Vec2 dir, float maxDist);
 
     private:
 

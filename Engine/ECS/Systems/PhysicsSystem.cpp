@@ -27,8 +27,12 @@ All rights reserved.
 #include "../Components/RigidBody.h"
 #include "../Components/Transform.h"
 
+#include "CollisionSystem.hpp"
+
 #include <iostream>
 #include <iomanip>
+#include <cmath>
+#include <algorithm>
 
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
@@ -152,4 +156,150 @@ void Uma_ECS::PhysicsSystem::AddForce(Entity entity, Vec2 pos, Vec2 dir, float f
     tf.rotation = rotation;
 
     rb.velocity = dir * force;
+}
+
+std::unordered_set<Uma_ECS::Entity> Uma_ECS::PhysicsSystem::OverlapCircle(Vec2 center, float radius)
+{
+    CollisionSystem* collisionSystem = gCoordinator->GetSystem<CollisionSystem>().get();
+
+    Vec2 boundMin = { center.x - radius, center.y - radius };
+    Vec2 boundMax = { center.x + radius, center.y + radius };
+
+    return collisionSystem->GetEntitiesInArea(boundMin, boundMax);
+}
+
+bool Uma_ECS::PhysicsSystem::LineOfSight(Entity lhs, Entity rhs)
+{
+    auto& lhs_tf = gCoordinator->GetComponent<Transform>(lhs);
+    auto& rhs_tf = gCoordinator->GetComponent<Transform>(rhs);
+
+    Vec2 origin = lhs_tf.worldPosition;
+    Vec2 toTarget = rhs_tf.worldPosition - origin;
+    float maxDist = Uma_Math::magnitude(toTarget);
+
+    if (maxDist < 0.001f)
+        return true;
+
+    toTarget.normalize();
+
+    Vec2 dir = toTarget;
+
+    Uma_ECS::RaycastHit hit = RayCast(origin, dir, maxDist);
+
+    if (!hit.hit)   // nothing blocking the ray
+        return true;
+
+    if (hit.entity == lhs || hit.entity == rhs) // hit lhs or rhs
+        return true;
+
+    if (hit.colliderLayer & CL_WALL)    // hit a wall return false
+        return false;
+
+    return true;
+}
+
+Uma_ECS::RaycastHit Uma_ECS::PhysicsSystem::RayCast(Vec2 origin, Vec2 dir, float maxDist)
+{
+    RaycastHit result{};
+    result.hit = false;
+    result.distance = maxDist;
+
+    // Compute the ray's bounding box for spatial grid query
+    Vec2 endPoint = { origin.x + dir.x * maxDist, origin.y + dir.y * maxDist };
+    Vec2 areaMin = { std::min(origin.x, endPoint.x), std::min(origin.y, endPoint.y) };
+    Vec2 areaMax = { std::max(origin.x, endPoint.x), std::max(origin.y, endPoint.y) };
+
+    // Get candidate entities from spatial grid
+    CollisionSystem* collisionSystem = gCoordinator->GetSystem<CollisionSystem>().get();
+    auto candidates = collisionSystem->GetEntitiesInArea(areaMin, areaMax);
+
+    auto& cArray = gCoordinator->GetComponentArray<Collider>();
+
+    for (auto entity : candidates)
+    {
+        if (!gCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
+        auto& collider = cArray.GetData(entity);
+
+        for (size_t i = 0; i < collider.shapes.size(); ++i)
+        {
+            if (!collider.shapes[i].isActive)
+                continue;
+
+            const BoundingBox& box = collider.bounds[i];
+
+            // Slab method: ray vs AABB
+            float tMin = 0.0f;
+            float tMax = maxDist;
+
+            // X axis slab
+            if (std::abs(dir.x) > 0.0001f)
+            {
+                float invDirX = 1.0f / dir.x;                   // optimise if not have to div by dir
+                float t1 = (box.min.x - origin.x) * invDirX;    // time needed for origin to reach box.min.x
+                float t2 = (box.max.x - origin.x) * invDirX;    //  time needed for origin to reach box.max.x
+
+                if (t1 > t2) std::swap(t1, t2);                 // t1 = earliest, t2 = later
+
+                tMin = std::max(tMin, t1);
+                tMax = std::min(tMax, t2);
+
+                if (tMin > tMax)                                // skip cus t is more then max dist
+                    continue;
+            }
+            else
+            {
+                // Ray parallel to Y axis — check if origin.x is inside the box
+                if (origin.x < box.min.x || origin.x > box.max.x)
+                    continue;
+            }
+
+            // Y axis slab
+            if (std::abs(dir.y) > 0.0001f)
+            {
+                float invDirY = 1.0f / dir.y;
+                float t1 = (box.min.y - origin.y) * invDirY;
+                float t2 = (box.max.y - origin.y) * invDirY;
+
+                if (t1 > t2) std::swap(t1, t2);
+
+                tMin = std::max(tMin, t1);
+                tMax = std::min(tMax, t2);
+
+                if (tMin > tMax)
+                    continue;
+            }
+            else
+            {
+                if (origin.y < box.min.y || origin.y > box.max.y)
+                    continue;
+            }
+
+            // Hit confirmed — check if it's the closest
+            if (tMin < result.distance)
+            {
+                result.hit = true;
+                result.distance = tMin;
+                result.entity = entity;
+                result.point = { origin.x + dir.x * tMin, origin.y + dir.y * tMin };
+                result.colliderLayer = collider.GetEffectiveLayer(i);
+
+                // Normal: determined by which slab the ray entered
+                float tX = (std::abs(dir.x) > 0.0001f)
+                    ? (std::max(0.0f, ((dir.x > 0 ? box.min.x : box.max.x) - origin.x) / dir.x))
+                    : -1.0f;
+                float tY = (std::abs(dir.y) > 0.0001f)
+                    ? (std::max(0.0f, ((dir.y > 0 ? box.min.y : box.max.y) - origin.y) / dir.y))
+                    : -1.0f;
+
+                if (tX > tY)
+                    result.normal = { (dir.x > 0) ? -1.0f : 1.0f, 0.0f };
+                else
+                    result.normal = { 0.0f, (dir.y > 0) ? -1.0f : 1.0f };
+            }
+        }
+    }
+
+    return result;
 }

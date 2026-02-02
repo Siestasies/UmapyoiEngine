@@ -111,6 +111,8 @@ namespace Uma_ECS
          */
         void DebugRender();
 
+        std::unordered_set<Entity> GetEntitiesInArea(Vec2 min, Vec2 max);
+
     private:
 
         /**

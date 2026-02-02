@@ -793,3 +793,34 @@ bool Uma_ECS::CollisionSystem::CollisionIntersection_RectRect_Static(
         lhs.max.y < rhs.min.y || // lhs is below rhs
         lhs.min.y > rhs.max.y);  // lhs is above rhs
 }
+
+std::vector<Uma_ECS::Entity> Uma_ECS::CollisionSystem::GetEntitiesInArea(Vec2 min, Vec2 max)
+{
+    int minX = WorldToCell(min.x);
+    int maxX = WorldToCell(max.x);
+    int minY = WorldToCell(min.y);
+    int maxY = WorldToCell(max.y);
+
+    minX = std::clamp(minX, -MAX_CELL_COORD, MAX_CELL_COORD);
+    maxX = std::clamp(maxX, -MAX_CELL_COORD, MAX_CELL_COORD);
+    minY = std::clamp(minY, -MAX_CELL_COORD, MAX_CELL_COORD);
+    maxY = std::clamp(maxY, -MAX_CELL_COORD, MAX_CELL_COORD);
+
+    std::unordered_set<Entity> listOfEntities;
+    listOfEntities.reserve(16); // preallocate min 16 collider
+
+    for (int i = minX; i <= maxX; i++)
+    {
+        for (int j = minY; j <= maxY; j++)
+        {
+            auto& cellEntities = persistentGrid[Cell{ i, j }];
+
+            for (auto entity : cellEntities)
+            {
+                listOfEntities.insert(entity);
+            }
+        }
+    }
+
+    return listOfEntities;
+}
