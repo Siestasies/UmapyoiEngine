@@ -87,8 +87,8 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.worldScale.x,
-                effectiveSize.y * tf.worldScale.y
+                effectiveSize.x * std::abs(tf.worldScale.x),
+                effectiveSize.y * std::abs(tf.worldScale.y)
             };
 
             Vec2 worldOffset = Vec2{
@@ -838,8 +838,8 @@ Uma_ECS::BoundingBox Uma_ECS::CollisionSystem::ComputeCurrentBounds(Entity entit
 
     Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
     Vec2 scaledSize = Vec2{
-        effectiveSize.x * tf.worldScale.x,
-        effectiveSize.y * tf.worldScale.y
+        effectiveSize.x * std::abs(tf.worldScale.x),
+        effectiveSize.y * std::abs(tf.worldScale.y)
     };
 
     Vec2 worldOffset = Vec2{
