@@ -64,8 +64,8 @@ function state_exit(entity)
 
     if HasPathFinding() then 
         local pf = GetPathFinding()
-        pf.goal.x = GetTransform().worldPosition.x
-        pf.goal.y = GetTransform().worldPosition.y
+        -- pf.goal.x = GetTransform().worldPosition.x
+        -- pf.goal.y = GetTransform().worldPosition.y
 
         pf.reachedGoal = true
     end 

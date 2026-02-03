@@ -233,7 +233,7 @@
                                 "startFrame": 11,
                                 "frameCount": 8,
                                 "speed": 24.0,
-                                "loop": true,
+                                "loop": false,
                                 "texturePath": ""
                             },
                             {
@@ -263,7 +263,7 @@
                                 "startFrame": 22,
                                 "frameCount": 8,
                                 "speed": 24.0,
-                                "loop": true,
+                                "loop": false,
                                 "texturePath": ""
                             }
                         ]
