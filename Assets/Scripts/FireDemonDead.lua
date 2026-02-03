@@ -8,12 +8,12 @@ local deathTimer = 0.0
 
 function state_enter(entity)
     
-    deathTimer = ExposedVars.deathAnimDuration
+    deathTimer = ExposedVars.deathDuration
 
     -- Play death animation
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("FireDemonDead", true)
+        animator.animator:Play("die", true)
     end
 end
 
@@ -25,6 +25,6 @@ function state_update(entity, dt)
     end
     
     if dead or deathTimer <= 0 then
-        DestroyEntityWithChildren(entity)
+        DestroyWithChildren(entity)
     end
 end
