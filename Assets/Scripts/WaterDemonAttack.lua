@@ -14,6 +14,7 @@ local HoverTime = 0.0
 local enemy = nil
 local baseX = 0.0
 local animator = nil
+local vfxAnimator = nil;
 
 --takes in entity id from C++ to use in case needed
 function state_enter(entity)
@@ -38,6 +39,15 @@ function state_enter(entity)
 
     if HasAnimator() then
         animator = GetAnimator()
+    end
+
+    if HasChildren(EntityID, 0) then
+        local vfxID = GetChildren(EntityID, 0)
+
+        if HasAnimatorOn(vfxID) then
+            vfxAnimator = GetAnimatorFrom(vfxID)
+        end
+
     end
 end
 
@@ -64,7 +74,7 @@ function state_update(entity, dt)
         return
     end
     --Log("Update Attack player world pos" .. playerTransform.worldPosition.x .. ", " .. playerTransform.worldPosition.y)
-    Log("Update Attack " .. distSq .. " " .. "attackrange " .. enemy.mAttackRange * enemy.mAttackRange)
+    --Log("Update Attack " .. distSq .. " " .. "attackrange " .. enemy.mAttackRange * enemy.mAttackRange)
 
     if damageTimer > 0 then
         damageTimer = damageTimer - dt
@@ -91,6 +101,11 @@ function state_update(entity, dt)
                 local collider = GetCollider(entity)
                 if collider and collider.shapes:size() >= 3 then
                     animator.animator:Play("atk", false)
+
+                    if vfxAnimator ~= nil then
+                        vfxAnimator.animator:Play("splash", true)
+                    end
+
                     collider.shapes[3].isActive = true
                     damageTimer = ExposedVars.damageDuration
                 end

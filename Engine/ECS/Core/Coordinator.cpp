@@ -307,7 +307,7 @@ namespace Uma_ECS
         return tfArray.GetData(entity).parent;
     }
 
-    std::vector<Entity> Coordinator::GetChildren(Entity entity)
+    std::vector<Entity> Coordinator::GetChildrenList(Entity entity)
     {
         if (!aEntityManager->IsEntityActive(entity))
             return {};
@@ -317,6 +317,19 @@ namespace Uma_ECS
             return {};
 
         return tfArray.GetData(entity).children;
+    }
+
+    Entity Coordinator::GetChildren(Entity entity, int index)
+    {
+        if (!aEntityManager->IsEntityActive(entity))
+            return static_cast<Entity>(-1);
+
+        std::vector<Entity> list = GetChildrenList(entity);
+
+        if (index >= list.size())
+            return static_cast<Entity>(-1);
+
+        return list[index];
     }
 
     void Coordinator::DestroyEntityAndChildren(Entity entity)

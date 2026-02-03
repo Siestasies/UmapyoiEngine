@@ -30,9 +30,6 @@ function state_update(entity, dt)
     local dx = playerTransform.position.x - myTransform.position.x
     local dy = playerTransform.position.y - myTransform.position.y
     local distSq = dx * dx + dy * dy
-
-    --Log("Update Attack player world pos" .. playerTransform.worldPosition.x .. ", " .. playerTransform.worldPosition.y)
-    Log("Update Idle " .. distSq .. " " .. "attackrange " .. ExposedVars.chaseEnterRange * ExposedVars.chaseEnterRange)
     
     -- Transition to Chase if player within range
     if distSq < ExposedVars.chaseEnterRange * ExposedVars.chaseEnterRange then
