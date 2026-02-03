@@ -387,6 +387,12 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     // Handle triggers (no physics resolution)
     if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
     {
+        // Verify actual current-position overlap
+        // The broadphase may have matched using swept bounds from the physics collider,
+        // which can cause false positives when only the previous position overlapped.
+        if (!CollisionIntersection_RectRect_Static(box1, box2))
+            return;
+
         // Determine which entity owns the trigger
         Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? colliderEntity1 : colliderEntity2;
 
