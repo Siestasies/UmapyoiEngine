@@ -34,8 +34,8 @@ function state_update(entity, dt)
     local myTransform = GetTransform()
     if not playerTransform or not myTransform then return end
     
-    local dx = playerTransform.position.x - myTransform.position.x
-    local dy = playerTransform.position.y - myTransform.position.y
+    local dx = playerTransform.worldPosition.x - myTransform.worldPosition.x
+    local dy = playerTransform.worldPosition.y - myTransform.worldPosition.y
     local distSq = dx * dx + dy * dy
     
     local enemy
@@ -49,8 +49,8 @@ function state_update(entity, dt)
     if HasPathFinding() then 
         local pf = GetPathFinding()
         if pf then
-            pf.goal.x = playerTransform.position.x
-            pf.goal.y = playerTransform.position.y
+            pf.goal.x = playerTransform.worldPosition.x
+            pf.goal.y = playerTransform.worldPosition.y
         end
     end 
     Log("Update Chase " .. distSq .. " " .. "attackrange " .. ExposedVars.chaseExitRange * ExposedVars.chaseExitRange)

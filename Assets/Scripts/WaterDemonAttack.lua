@@ -99,7 +99,7 @@ function state_update(entity, dt)
         end
     elseif AttackCD > 0 then
         --hover while attack is on cooldown
-        hover(dt)
+        --hover(dt)
 
         if animator.animator:HasFinished() then
             animator.animator:Play("idle", false)
@@ -125,13 +125,13 @@ function state_exit(entity)
 end
 
 function hover(dt)
-    --if HasTransform() then
-    --    local transform = GetTransform()
-    --    if transform then
-    --        HoverTime = HoverTime + dt
-    --        
-    --        local hoverOffset = math.sin(HoverTime * 2.0) * ExposedVars.HoverSpd
-    --        transform.position.x = baseX + hoverOffset
-    --    end
-    --end
+    if HasTransform() then
+       local transform = GetTransform()
+       if transform then
+           HoverTime = HoverTime + dt
+           
+           local hoverOffset = math.sin(HoverTime * 2.0) * ExposedVars.HoverSpd
+           transform.worldPosition.x = baseX + hoverOffset
+       end
+    end
 end

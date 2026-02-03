@@ -1,30 +1,35 @@
 ExposedVars = {
-    ChaseRange = 30.0
+    chaseExitRange = 25.0,
+    attackEnterRange = 8.0
 }
 
+local animator
+
 function state_enter(entity)
-    --add enter logic
-    --entity is to reference code to this entity like
-    --which transform to update 
     Log("Chase entered")
+
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
+
+    animator.animator:Play("walking", false)
 end
 
 function state_update(entity, dt)
     --look for player entity
     local playerId = FindEntityWithComponent("Player")
-    if playerId == -1 or not IsEntityValid(playerId) then
+    if not IsEntityValid(playerId) then
+        ChangeState(entity, "FireDemonIdle")
         return
     end
 
     --get player and entity transform
     local playerTransform = GetTransformFrom(playerId)
     local myTransform = GetTransform()
-    if not playerTransform or not myTransform then
-        return
-    end
+    if not playerTransform or not myTransform then return end
 
-    local dx = playerTransform.position.x - myTransform.position.x
-    local dy = playerTransform.position.y - myTransform.position.y
+    local dx = playerTransform.worldPosition.x - myTransform.worldPosition.x
+    local dy = playerTransform.worldPosition.y - myTransform.worldPosition.y
     local distSq = dx * dx + dy * dy
 
     local enemy
@@ -38,21 +43,30 @@ function state_update(entity, dt)
     if HasPathFinding() then 
         local pf = GetPathFinding()
         if pf then
-            pf.goal.x = playerTransform.position.x
-            pf.goal.y = playerTransform.position.y
+            pf.goal.x = playerTransform.worldPosition.x
+            pf.goal.y = playerTransform.worldPosition.y
         end
     end 
 
     --if enemy is within attack range
-    if enemy and distSq <= enemy.mAttackRange * enemy.mAttackRange then
+    if enemy and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
         ChangeState(entity, "FireDemonAttack")
+        return
     end
 
-    if distSq > ExposedVars.ChaseRange * ExposedVars.ChaseRange then
+    if distSq > ExposedVars.chaseExitRange * ExposedVars.chaseExitRange then
         ChangeState(entity, "FireDemonIdle")
     end
 end
 
 function state_exit(entity)
     Log("Chase exit")
+
+    if HasPathFinding() then 
+        local pf = GetPathFinding()
+        pf.goal.x = GetTransform().worldPosition.x
+        pf.goal.y = GetTransform().worldPosition.y
+
+        pf.reachedGoal = true
+    end 
 end

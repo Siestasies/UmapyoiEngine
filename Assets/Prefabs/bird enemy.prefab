@@ -26,6 +26,7 @@
                         "default3D": true
                     },
                     "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/fire bird.png",
                         "layer": 16,
                         "order": 0,
                         "flipX": true,
@@ -36,13 +37,14 @@
                         "gridY": 4.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
                         "tintColor": [
                             1.0,
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0,
-                        "texturePath": "Assets/fire bird.png"
+                        "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -96,22 +98,104 @@
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
-                                "scriptPath": "Assets/Scripts/NewEnemy.lua",
-                                "scriptName": "NewEnemy.lua",
+                                "scriptPath": "Assets/Scripts/FireDemonBase.lua",
+                                "scriptName": "FireDemonBase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
+                                "scriptName": "FireDemonIdle.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "isActive",
-                                        "type": 2,
-                                        "value": true,
+                                        "name": "chaseEnterRange",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/FireDemonChase.lua",
+                                "scriptName": "FireDemonChase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "attackEnterRange",
+                                        "type": 0,
+                                        "value": 8.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "name",
-                                        "type": 3,
-                                        "value": "unknown",
+                                        "name": "chaseExitRange",
+                                        "type": 0,
+                                        "value": 25.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
+                                "scriptName": "FireDemonAttack.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "chargeTime",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackRange",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "HoverSpd",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
+                                "scriptName": "FireDemonStunned.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "StunnedDuration",
+                                        "type": 0,
+                                        "value": 10.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/FireDemonDead.lua",
+                                "scriptName": "FireDemonDead.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "deathDuration",
+                                        "type": 0,
+                                        "value": 2.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -141,7 +225,8 @@
                                 "startFrame": 0,
                                 "frameCount": 10,
                                 "speed": 10.0,
-                                "loop": true
+                                "loop": true,
+                                "texturePath": ""
                             },
                             {
                                 "name": "die",
@@ -150,7 +235,8 @@
                                 "startFrame": 33,
                                 "frameCount": 11,
                                 "speed": 24.0,
-                                "loop": false
+                                "loop": false,
+                                "texturePath": ""
                             }
                         ]
                     },
@@ -161,6 +247,38 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/bird enemy.prefab",
                         "isRoot": true
+                    },
+                    "struct Uma_ECS::FSM": {
+                        "states": [
+                            {
+                                "name": "FireDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
+                            },
+                            {
+                                "name": "FireDemonDead.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
+                            },
+                            {
+                                "name": "FireDemonChase.lua",
+                                "isActive": true,
+                                "scriptIndex": 1
+                            },
+                            {
+                                "name": "FireDemonAttack.lua",
+                                "isActive": true,
+                                "scriptIndex": 2
+                            },
+                            {
+                                "name": "FireDemonStunned.lua",
+                                "isActive": true,
+                                "scriptIndex": 3
+                            }
+                        ],
+                        "nextId": 5,
+                        "current": "",
+                        "next": ""
                     }
                 }
             },
@@ -185,6 +303,7 @@
                         "parent": 0
                     },
                     "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/statue.png",
                         "layer": 16,
                         "order": 0,
                         "flipX": false,
@@ -195,13 +314,14 @@
                         "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
                         "tintColor": [
                             1.0,
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0,
-                        "texturePath": "Assets/statue.png"
+                        "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -249,12 +369,10 @@
     "resources": {
         "textures": [
             {
-                "name": "fire bird",
-                "path": "Assets/fire bird.png"
+                "path": "assets/fire bird.png"
             },
             {
-                "name": "kappa_statue",
-                "path": "Assets/statue.png"
+                "path": "assets/statue.png"
             }
         ],
         "fonts": [],
