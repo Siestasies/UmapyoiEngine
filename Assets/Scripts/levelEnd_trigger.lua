@@ -37,10 +37,16 @@ function Update(dt)
     -- timer for when want to load next scene
     -- after player step on trigger
     if loadNextScene then
-        time = time - dt
-        if time <= 0 then
-            time = 1
-            LoadScene(nextSceneName .. ".scn")
+        if nextSceneName ~= "" then
+            time = time - dt
+            if time <= 0 then
+                time = 1
+                LoadScene(nextSceneName .. ".scn")
+            end
+        end
+
+        if nextSceneName == "" then
+            -- show end screen menu
         end
     end
 end
