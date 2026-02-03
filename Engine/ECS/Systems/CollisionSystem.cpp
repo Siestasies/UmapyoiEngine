@@ -699,13 +699,13 @@ void Uma_ECS::CollisionSystem::DebugRender()
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
 
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.scale.x,
-                effectiveSize.y * tf.scale.y
+                effectiveSize.x * tf.worldScale.x,
+                effectiveSize.y * tf.worldScale.y
             };
 
             Vec2 worldOffset = Vec2{
-                shape.offset.x * tf.scale.x,
-                shape.offset.y * tf.scale.y
+                shape.offset.x * tf.worldScale.x,
+                shape.offset.y * tf.worldScale.y
             };
 
             Vec2 halfSize = scaledSize * 0.5f;
