@@ -1,5 +1,5 @@
-local levelEndTrigger
-local rb
+local levelEndState
+local col
 local tf
 local targetPosX
 local diff
@@ -10,19 +10,21 @@ ExposedVars = {
 }
 
 function Start()
-    local bruh = require("fadeState")
-    levelEndTrigger = require("levelEndTrigger")
-    rb = GetRigidBody()
+    levelEndState = require("levelEndState")
+    col = GetCollider()
     tf = GetTransform()
     targetPosX = tf.position.x + moveBy
     diff = tf.position.x - targetPosX
 end
 
 function Update(dt)
-    if levelEndTrigger.getLevelEnd() then
+    -- if level end (aka no enemies anymore), open te doors (suppose to animate)
+    -- allow for player to walk on trigger for next scene
+    if levelEndState.getLevelEnd() then
 
-        -- disable rigidbody/sprite
-        --rb.isActive = false
+        -- disable collider for player to walk thru
+        local shape = col:GetPrimaryShape()
+        shape.isActive = false
         
         -- animate -5
         if (diff < 0) then

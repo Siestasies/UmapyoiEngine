@@ -2373,7 +2373,7 @@
                     "name": "player",
                     "position": {
                         "x": -176.483,
-                        "y": 108.919
+                        "y": 108.916
                     },
                     "rotation": {
                         "x": 0.0,
@@ -2399,7 +2399,7 @@
                     "name": "cam",
                     "position": {
                         "x": -176.483,
-                        "y": 108.919
+                        "y": 108.916
                     },
                     "rotation": {
                         "x": 0.0,
@@ -9226,7 +9226,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 8,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -9415,7 +9415,7 @@
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 8,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -9452,7 +9452,7 @@
                                 {
                                     "name": "moveBy",
                                     "type": 0,
-                                    "value": 5.0,
+                                    "value": 4.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -14424,10 +14424,10 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Door_Roof",
+                    "name": "EnviSprite_FloorC1_dup_dup_dup_dup_dup_dup_dup_dup",
                     "position": {
-                        "x": -164.774,
-                        "y": 123.208
+                        "x": -159.875,
+                        "y": 126.91
                     },
                     "rotation": {
                         "x": 0.0,
@@ -14435,13 +14435,13 @@
                     },
                     "scale": {
                         "x": 0.25,
-                        "y": 1.0
+                        "y": 2.059
                     },
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
-                    "layer": 64,
+                    "layer": 4,
                     "order": 0,
                     "flipX": false,
                     "flipY": false,
@@ -14449,7 +14449,7 @@
                     "Native": true,
                     "gridX": 16.0,
                     "gridY": 4.0,
-                    "cellX": 13.0,
+                    "cellX": 7.0,
                     "cellY": 2.0,
                     "tintColor": [
                         1.0,
@@ -14477,10 +14477,10 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Door_Roof_dup",
+                    "name": "EnviSprite_FloorC1_dup_dup_dup_dup_dup_dup_dup",
                     "position": {
-                        "x": -154.473,
-                        "y": 123.208
+                        "x": -159.875,
+                        "y": 137.21
                     },
                     "rotation": {
                         "x": 0.0,
@@ -14494,7 +14494,7 @@
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
-                    "layer": 64,
+                    "layer": 4,
                     "order": 0,
                     "flipX": false,
                     "flipY": false,
@@ -14502,7 +14502,7 @@
                     "Native": true,
                     "gridX": 16.0,
                     "gridY": 4.0,
-                    "cellX": 12.0,
+                    "cellX": 7.0,
                     "cellY": 2.0,
                     "tintColor": [
                         1.0,
@@ -14530,33 +14530,33 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Roof_Top_dup_dup_dup",
+                    "name": "EnviSprite_FloorC1_dup_dup_dup_dup_dup_dup",
                     "position": {
-                        "x": -159.835,
-                        "y": 133.384
+                        "x": -159.875,
+                        "y": 147.009
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.275,
+                        "x": 0.25,
                         "y": 1.0
                     },
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
                     "textureName": "EnvSprite1",
-                    "layer": 64,
+                    "layer": 4,
                     "order": 0,
                     "flipX": false,
-                    "flipY": true,
+                    "flipY": false,
                     "autoFlip": true,
                     "Native": true,
                     "gridX": 16.0,
                     "gridY": 4.0,
-                    "cellX": 2.0,
-                    "cellY": 1.0,
+                    "cellX": 7.0,
+                    "cellY": 2.0,
                     "tintColor": [
                         1.0,
                         1.0,
@@ -17951,7 +17951,7 @@
                 },
                 "class Uma_UI::Image": {
                     "textureName": "whitePixel",
-                    "sortingOrder": 0,
+                    "sortingOrder": 2,
                     "color": {
                         "r": 0.0,
                         "g": 0.0,
@@ -17969,37 +17969,30 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Level End Check",
                     "position": {
-                        "x": -159.81,
-                        "y": 121.3
+                        "x": -148.738,
+                        "y": 115.194
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 1200.0,
-                        "y": 1000.0
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "parent": -1
                 },
-                "struct Uma_ECS::Sprite": {
-                    "textureName": "whitePixel",
-                    "layer": 16,
-                    "order": 0,
-                    "flipX": false,
-                    "flipY": false,
-                    "autoFlip": true,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "tintColor": [
-                        0.58,
-                        1.0,
-                        0.663
-                    ],
-                    "alpha": 0.588
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
                 },
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
@@ -18012,14 +18005,14 @@
                                 "y": 0.0
                             },
                             "size": {
-                                "x": 1.0,
-                                "y": 1.0
+                                "x": 12.1,
+                                "y": 7.3
                             },
                             "purpose": 2,
-                            "layer": 2,
-                            "colliderMask": 0,
+                            "layer": 32,
+                            "colliderMask": 2,
                             "isActive": true,
-                            "autoFitToSprite": true
+                            "autoFitToSprite": false
                         }
                     ]
                 },
@@ -18033,7 +18026,7 @@
                                 {
                                     "name": "nextSceneName",
                                     "type": 3,
-                                    "value": "test_combat",
+                                    "value": "test_default2",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
