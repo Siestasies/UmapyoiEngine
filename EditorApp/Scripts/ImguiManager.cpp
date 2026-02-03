@@ -1260,7 +1260,7 @@ namespace Uma_Engine
         ImGui::PushID(insertIndex);
 
         // Create a small invisible drop target area
-        float availWidth = ImGui::GetContentRegionAvail().x;
+        float availWidth = (ImGui::GetContentRegionAvail().x == 0.f) ? 1.f : ImGui::GetContentRegionAvail().x;
         ImVec2 cursorPos = ImGui::GetCursorScreenPos();
 
         // Invisible button to create the drop zone (thin horizontal area)
