@@ -92,6 +92,9 @@ function state_update(entity, dt)
         ChargeCD = ExposedVars.chargeTime
         if HasAnimator() then
             --GetAnimator().animator:Play("FireCharge", true)
+            if animator.animator:GetCurrentClip() ~= "attack" then 
+            animator.animator:Play("attack", false)
+        end
         end
     end
 
