@@ -11,7 +11,6 @@ namespace Uma_UI
     class EffectClip
     {
     public:
-        std::string name;
         EffectProperty property = EffectProperty::Position;
         EasingType easing = EasingType::Linear;
 
@@ -107,124 +106,6 @@ namespace Uma_UI
             }
         }
 
-        void PlayClip(size_t index)
-        {
-            if (index < clips.size())
-            {
-                clips[index].Play();
-            }
-        }
-
-        void PauseClip(size_t index)
-        {
-            if (index < clips.size())
-            {
-                clips[index].Pause();
-            }
-        }
-
-        void StopClip(size_t index)
-        {
-            if (index < clips.size())
-            {
-                clips[index].Stop();
-            }
-        }
-
-        void ResetClip(size_t index)
-        {
-            if (index < clips.size())
-            {
-                clips[index].Reset();
-            }
-        }
-
-        // Query clip state
-        bool IsClipPlaying(size_t index) const
-        {
-            if (index < clips.size())
-            {
-                return clips[index].isPlaying;
-            }
-            return false;
-        }
-
-        bool IsClipComplete(size_t index) const
-        {
-            if (index < clips.size())
-            {
-                return clips[index].IsComplete();
-            }
-            return false;
-        }
-
-        size_t GetClipCount() const
-        {
-            return clips.size();
-        }
-
-        // Control clips by name
-        void PlayClipByName(const std::string& name)
-        {
-            for (auto& clip : clips)
-            {
-                if (clip.name == name)
-                {
-                    clip.Play();
-                    return;
-                }
-            }
-        }
-
-        void PauseClipByName(const std::string& name)
-        {
-            for (auto& clip : clips)
-            {
-                if (clip.name == name)
-                {
-                    clip.Pause();
-                    return;
-                }
-            }
-        }
-
-        void StopClipByName(const std::string& name)
-        {
-            for (auto& clip : clips)
-            {
-                if (clip.name == name)
-                {
-                    clip.Stop();
-                    return;
-                }
-            }
-        }
-
-        void ResetClipByName(const std::string& name)
-        {
-            for (auto& clip : clips)
-            {
-                if (clip.name == name)
-                {
-                    clip.Reset();
-                    return;
-                }
-            }
-        }
-
-        // Find clip index by name
-        int FindClipIndexByName(const std::string& name) const
-        {
-            for (size_t i = 0; i < clips.size(); ++i)
-            {
-                if (clips[i].name == name)
-                {
-                    return static_cast<int>(i);
-                }
-            }
-            return -1;  // Not found
-        }
-
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
             jsonValue.SetObject();
@@ -234,11 +115,6 @@ namespace Uma_UI
             for (const auto& clip : clips)
             {
                 rapidjson::Value clipObj(rapidjson::kObjectType);
-
-                // Serialize name
-                rapidjson::Value nameValue;
-                nameValue.SetString(clip.name.c_str(), clip.name.length(), allocator);
-                clipObj.AddMember("name", nameValue, allocator);
 
                 clipObj.AddMember("property", static_cast<int>(clip.property), allocator);
                 clipObj.AddMember("easing", static_cast<int>(clip.easing), allocator);
@@ -290,7 +166,6 @@ namespace Uma_UI
                 const auto& clipObj = clipsArray[i];
 
                 EffectClip clip;
-                clip.name = clipObj.HasMember("name") ? clipObj["name"].GetString() : "";
                 clip.property = static_cast<EffectProperty>(clipObj["property"].GetInt());
                 clip.easing = static_cast<EasingType>(clipObj["easing"].GetInt());
                 clip.duration = clipObj["duration"].GetFloat();

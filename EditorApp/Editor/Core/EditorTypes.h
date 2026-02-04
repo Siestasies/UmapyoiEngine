@@ -64,9 +64,9 @@ namespace Uma_Engine
         bool pickUIEntities = false;
         bool pickGameEntities = true;
 
-        float gizmoSize = 10.0f;
-        float gizmoLineWidth = 20.0f;
-        float gizmoHandleSize = 5.0f;
+        float gizmoSize = 50.0f;
+        float gizmoLineWidth = 3.0f;
+        float gizmoHandleSize = 8.0f;
 
         Vec3 colorXAxis = Vec3(1.0f, 0.0f, 0.0f);
         Vec3 colorYAxis = Vec3(0.0f, 1.0f, 0.0f);
@@ -90,7 +90,6 @@ namespace Uma_Engine
         GizmoAxis activeAxis = GizmoAxis::None;
         Vec2 dragStartMouse{};
         Vec2 dragStartPosition{};
-        float dragInitialAngle = 0.0f;
         float dragStartRotation = 0.0f;
         Vec2 dragStartScale{};
         Vec2 dragPrevMouse{};
