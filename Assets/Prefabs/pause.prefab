@@ -850,6 +850,67 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
+                        "name": "HTP Img",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 11
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/pause.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 259.0
+                        },
+                        "sizeDelta": {
+                            "x": 2020.0,
+                            "y": 1160.0
+                        }
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/HowToPlay.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
+                    }
+                }
+            },
+            {
+                "id": 13,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
                         "name": "HTPClose shd",
                         "position": {
                             "x": 0.0,
@@ -908,7 +969,7 @@
                 }
             },
             {
-                "id": 13,
+                "id": 14,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -966,67 +1027,6 @@
                         },
                         "alignment": 1,
                         "visible": true
-                    }
-                }
-            },
-            {
-                "id": 14,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "HTP Img",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 11
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/pause.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 259.0
-                        },
-                        "sizeDelta": {
-                            "x": 2020.0,
-                            "y": 1160.0
-                        }
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/HowToPlay.png",
-                        "sortingOrder": 0,
-                        "color": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0
                     }
                 }
             }
