@@ -23,8 +23,11 @@ function state_enter(entity)
         AttackCD = enemy.mAttackSpeed
     end
 
-    ChargeCD = 0.0
+    ChargeCD = ExposedVars.chargeTime
     HoverTime = 0.0
+
+    GetRigidBody().velocity = Vec2(0.0, 0.0)
+    GetPathFinding().enabled = false;
 
     if HasTransform() then
         transform = GetTransform()
@@ -40,7 +43,7 @@ function state_enter(entity)
     if HasSprite() then
         spriteComp = GetSprite()
     end
-    
+
 end
 
 --takes in entity id from C++ to use in case needed
@@ -149,7 +152,7 @@ end
 
 --takes in entity id from C++ to use in case needed
 function state_exit(entity)
-    
+    GetPathFinding().enabled = true;
 end
 
 function hover(dt)

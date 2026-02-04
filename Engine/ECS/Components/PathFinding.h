@@ -40,6 +40,7 @@ namespace Uma_ECS{
 		bool  haveLastGoal = false;
 
 		Vec2 goal{ 0.f,0.f };
+		bool enabled = true;
 
 		void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
 		{

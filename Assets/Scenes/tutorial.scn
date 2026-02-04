@@ -27,6 +27,18 @@
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/256px vfx.png"
+            },
+            {
+                "path": "assets/wind vfx spritesheet.png"
+            },
+            {
+                "path": "assets/fire bird.png"
+            },
+            {
+                "path": "assets/fire enemy shadow.png"
             }
         ],
         "fonts": [
@@ -101897,6 +101909,84 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 13,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "wind projectile",
+                    "position": {
+                        "x": 1023.505,
+                        "y": -1644.8
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.43,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/wind projectile.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "fireball",
+                    "position": {
+                        "x": 1023.505,
+                        "y": -1644.8
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 4.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/fireball.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 15,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 1007.2,
+                        "y": -1661.964
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.699,
+                        "y": 1.6
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/bird enemy.prefab",
                     "isRoot": true
                 }
             }
