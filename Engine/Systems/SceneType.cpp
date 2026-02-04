@@ -440,7 +440,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
             m_Coordinator.SetSystemSignature<Uma_ECS::LuaScriptingSystem>(sign);
         }
-        m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem, m_ResourcesManager);
+        m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem, m_ResourcesManager, m_Graphics);
 
         //Audio system
         m_AudioSystem = m_Coordinator.RegisterSystem<Uma_ECS::AudioSystem>();

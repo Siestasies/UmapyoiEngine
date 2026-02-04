@@ -1,0 +1,123 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "drum",
+                        "position": {
+                            "x": 1093.718,
+                            "y": -1356.001
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS ANIMATION.png",
+                        "layer": 8,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 8,
+                        "defaultMask": 22,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -5.5
+                                },
+                                "size": {
+                                    "x": 14.8,
+                                    "y": 9.5
+                                },
+                                "purpose": 1,
+                                "layer": 8,
+                                "colliderMask": 22,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "break",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 0,
+                                "frameCount": 10,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": ""
+                            },
+                            {
+                                "name": "idle",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 0,
+                                "frameCount": 1,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": ""
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/drum.prefab",
+                        "isRoot": true
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/props animation.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

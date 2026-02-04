@@ -49,13 +49,18 @@ All rights reserved.
 namespace Uma_ECS
 {
     
-    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i, Uma_Engine::ResourcesManager* r)
+    void LuaScriptingSystem::Init(Coordinator* c, 
+        Uma_Engine::EventSystem* e, 
+        Uma_Engine::HybridInputSystem* i, 
+        Uma_Engine::ResourcesManager* r, 
+        Uma_Engine::Graphics* g)
     {
         // linking the Engine systems 
         pCoordinator = c;
         pEventSystem = e;
         pInputSystem = i;
         pResourcesManager = r;
+        pGraphics = g;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -1606,6 +1611,11 @@ namespace Uma_ECS
         // Mouse position (special case)
         sharedLua->set_function("GetMousePosition", [this]() -> Vec2 {
             return pInputSystem ? pInputSystem->GetSceneMousePosition() : Vec2{ 0, 0 };
+            });
+
+        sharedLua->set_function("GetMouseWorldPosition", [this]() -> Vec2 {
+
+            return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{0, 0};
             });
     }
 

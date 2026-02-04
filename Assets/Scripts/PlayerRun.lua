@@ -2,14 +2,22 @@
 -- Run/Movement state - handles WASD movement
 
 ExposedVars = {
-    runAnimationName = "run"
+    runAnimationName = "walk"
 }
+
+local animator = nil
 
 function state_enter(entity)
     Log("Player entered Run state")
     
     -- Play run animation
-    PlayAnimation(entity, runAnimationName)
+    if HasAnimator() then
+        animator = GetAnimator()
+        Log("IM RUNNNNNNING")
+    end
+
+    animator.animator:Play("walk", false)
+    
 end
 
 function state_update(entity, dt)

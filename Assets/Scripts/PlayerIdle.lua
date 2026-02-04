@@ -5,13 +5,18 @@ ExposedVars = {
     idleAnimationName = "idle"
 }
 
+local animator = nil
+
 function state_enter(entity)
     Log("Player entered Idle state")
     
     -- Play idle animation
-    PlayAnimation(entity, idleAnimationName)
     
-    
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
+
+    animator.animator:Play(idleAnimationName, false)
 end
 
 function state_update(entity, dt)

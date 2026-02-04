@@ -281,39 +281,39 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
     {
-        switch (event.key)
-        {
-        case GLFW_KEY_Q:
-            inputState.attack_1 = true;
-            break;
-        case GLFW_KEY_W:
-            inputState.attack_2 = true;
-            break;
-        case GLFW_KEY_E:
-            inputState.interactPressed = true;
-            break;
-        case GLFW_KEY_LEFT_SHIFT:
-            inputState.dashPressed = true;
-            break;
-        }
+        //switch (event.key)
+        //{
+        //case GLFW_KEY_Q:
+        //    inputState.attack_1 = true;
+        //    break;
+        //case GLFW_KEY_W:
+        //    inputState.attack_2 = true;
+        //    break;
+        //case GLFW_KEY_E:
+        //    inputState.interactPressed = true;
+        //    break;
+        //case GLFW_KEY_LEFT_SHIFT:
+        //    inputState.dashPressed = true;
+        //    break;
+        //}
     }
     void PlayerControllerSystem::OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event)
     {
-        switch (event.key)
-        {
-        case GLFW_KEY_Q:
-            inputState.attack_1 = false;
-            break;
-        case GLFW_KEY_W:
-            inputState.attack_2 = false;
-            break;
-        case GLFW_KEY_E:
-            inputState.interactPressed = false;
-            break;
-        case GLFW_KEY_LEFT_SHIFT:
-            inputState.dashPressed = false;
-            break;
-        }
+        //switch (event.key)
+        //{
+        //case GLFW_KEY_Q:
+        //    inputState.attack_1 = false;
+        //    break;
+        //case GLFW_KEY_W:
+        //    inputState.attack_2 = false;
+        //    break;
+        //case GLFW_KEY_E:
+        //    inputState.interactPressed = false;
+        //    break;
+        //case GLFW_KEY_LEFT_SHIFT:
+        //    inputState.dashPressed = false;
+        //    break;
+        //}
     }
 
     void PlayerControllerSystem::OnKeyRepeat(const Uma_Engine::KeyRepeatEvent& event)

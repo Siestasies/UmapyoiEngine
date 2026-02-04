@@ -247,9 +247,9 @@ namespace Uma_Engine
             // if (GetInput()->KeyPressed(GLFW_KEY_5)) {
             //     SpawnDefaultEntities();
             // }
-            if (GetInput()->KeyPressed(GLFW_KEY_6)) {
-                GetPathFindingSystem().showDebug = !GetPathFindingSystem().showDebug;
-            }
+            //if (GetInput()->KeyPressed(GLFW_KEY_6)) {
+            //    GetPathFindingSystem().showDebug = !GetPathFindingSystem().showDebug;
+            //}
         }
 
         void SaveScene()

@@ -2,8 +2,8 @@
 -- Basic attack state - handles neutral attack combos (Attack 1, Attack 2)
 
 ExposedVars = {
-    attack1AnimationName = "atk_1",
-    attack2AnimationName = "atk_2",
+    attack1AnimationName = "normal_atk",
+    attack2AnimationName = "normal_atk",
     attackDuration = 0.4,
     comboWindowDuration = 0.3
 }
@@ -14,6 +14,8 @@ local comboTimer = 0
 local currentCombo = 1  -- 1 = first attack, 2 = second attack
 local attackPerformed = false
 local canCombo = false
+local animator = nil
+
 
 function state_enter(entity)
     Log("Player entered Attack state")
@@ -46,14 +48,18 @@ function state_enter(entity)
     if currentCombo > 2 then
         currentCombo = 1
     end
+
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
     
     -- Play appropriate animation
     if currentCombo == 1 then
         Log("atk1")
-        PlayAnimation(entity, attack1AnimationName)
+        animator.animator:Play(attack1AnimationName, false)
         --PlaySound("attack_1", 0.8, 0)
     else
-        PlayAnimation(entity, attack2AnimationName)
+        animator.animator:Play(attack2AnimationName, false)
         --PlaySound("attack_2", 0.8, 0)
     end
     
