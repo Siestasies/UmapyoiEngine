@@ -1,6 +1,19 @@
 local time = 0
 local clicked = false
 
+function OnPointerEnter()
+    local effects = GetEffects()
+    effects:Play(0)
+    effects:Play(1)
+end
+
+function OnPointerExit()
+    local effects = GetEffects()
+    effects:StopAll()
+    effects:Play(2)
+end
+
+
 function OnClick()
     PlaySound("startbtn_sound", 0.8, 0)
     clicked = true

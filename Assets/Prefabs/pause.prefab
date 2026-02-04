@@ -187,7 +187,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "resume_btn.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -397,7 +397,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "back_btn.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -607,7 +607,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "HTP.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -817,7 +817,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "CloseHTP.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -893,7 +893,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "Close",
-                        "fontPath": "",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 0,
                         "fontSize": 3.7,
                         "colour": {
@@ -955,7 +955,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "Close",
-                        "fontPath": "",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 0,
                         "fontSize": 3.5,
                         "colour": {
