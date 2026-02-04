@@ -50,6 +50,7 @@ namespace Uma_UI
 
         // Runtime state tracking
         bool wasHoveredLastFrame = false;
+        bool wasPressedWhileHovered = false;
 
         /*!
          * \brief Serializes button properties to a JSON value.

@@ -687,40 +687,35 @@ namespace Uma_ECS
         );
 
         // Register EffectProperty enum
-        sharedLua->new_enum<Uma_UI::EffectProperty>("EffectProperty",
-            {
-                {"Position", Uma_UI::EffectProperty::Position},
-                {"Scale", Uma_UI::EffectProperty::Scale},
-                {"ColorTint", Uma_UI::EffectProperty::ColorTint},
-                {"Alpha", Uma_UI::EffectProperty::Alpha}
-            }
-        );
+        sharedLua->new_enum<Uma_UI::EffectProperty>("EffectProperty", {
+            {"Position", Uma_UI::EffectProperty::Position},
+            {"Scale", Uma_UI::EffectProperty::Scale},
+            {"ColorTint", Uma_UI::EffectProperty::ColorTint},
+            {"Alpha", Uma_UI::EffectProperty::Alpha}
+            });
 
         // Register EasingType enum
-        sharedLua->new_enum<Uma_UI::EasingType>("EasingType",
-            {
-                {"Linear", Uma_UI::EasingType::Linear},
-                {"EaseInQuad", Uma_UI::EasingType::EaseInQuad},
-                {"EaseOutQuad", Uma_UI::EasingType::EaseOutQuad},
-                {"EaseInOutQuad", Uma_UI::EasingType::EaseInOutQuad},
-                {"EaseInCubic", Uma_UI::EasingType::EaseInCubic},
-                {"EaseOutCubic", Uma_UI::EasingType::EaseOutCubic},
-                {"EaseInOutCubic", Uma_UI::EasingType::EaseInOutCubic},
-                {"EaseInQuart", Uma_UI::EasingType::EaseInQuart},
-                {"EaseOutQuart", Uma_UI::EasingType::EaseOutQuart},
-                {"EaseInOutQuart", Uma_UI::EasingType::EaseInOutQuart},
-                {"EaseInElastic", Uma_UI::EasingType::EaseInElastic},
-                {"EaseOutElastic", Uma_UI::EasingType::EaseOutElastic},
-                {"EaseInOutElastic", Uma_UI::EasingType::EaseInOutElastic},
-                {"EaseInBounce", Uma_UI::EasingType::EaseInBounce},
-                {"EaseOutBounce", Uma_UI::EasingType::EaseOutBounce},
-                {"EaseInOutBounce", Uma_UI::EasingType::EaseInOutBounce}
-            }
-        );
+        sharedLua->new_enum<Uma_UI::EasingType>("EasingType", {
+            {"Linear", Uma_UI::EasingType::Linear},
+            {"EaseInQuad", Uma_UI::EasingType::EaseInQuad},
+            {"EaseOutQuad", Uma_UI::EasingType::EaseOutQuad},
+            {"EaseInOutQuad", Uma_UI::EasingType::EaseInOutQuad},
+            {"EaseInCubic", Uma_UI::EasingType::EaseInCubic},
+            {"EaseOutCubic", Uma_UI::EasingType::EaseOutCubic},
+            {"EaseInOutCubic", Uma_UI::EasingType::EaseInOutCubic},
+            {"EaseInQuart", Uma_UI::EasingType::EaseInQuart},
+            {"EaseOutQuart", Uma_UI::EasingType::EaseOutQuart},
+            {"EaseInOutQuart", Uma_UI::EasingType::EaseInOutQuart},
+            {"EaseInElastic", Uma_UI::EasingType::EaseInElastic},
+            {"EaseOutElastic", Uma_UI::EasingType::EaseOutElastic},
+            {"EaseInOutElastic", Uma_UI::EasingType::EaseInOutElastic},
+            {"EaseInBounce", Uma_UI::EasingType::EaseInBounce},
+            {"EaseOutBounce", Uma_UI::EasingType::EaseOutBounce},
+            {"EaseInOutBounce", Uma_UI::EasingType::EaseInOutBounce}
+            });
 
-        // Register EffectClip first (before Effects)
+        // Register EffectClip
         sharedLua->new_usertype<Uma_UI::EffectClip>("EffectClip",
-            // Properties
             "name", &Uma_UI::EffectClip::name,
             "property", &Uma_UI::EffectClip::property,
             "easing", &Uma_UI::EffectClip::easing,
@@ -737,64 +732,31 @@ namespace Uma_ECS
             "currentTime", &Uma_UI::EffectClip::currentTime,
             "isPlaying", &Uma_UI::EffectClip::isPlaying,
             "hasStarted", &Uma_UI::EffectClip::hasStarted,
-
-            // Methods
-            "Play", & Uma_UI::EffectClip::Play,
-            "Pause", & Uma_UI::EffectClip::Pause,
-            "Stop", & Uma_UI::EffectClip::Stop,
-            "Reset", & Uma_UI::EffectClip::Reset,
-            "GetProgress", & Uma_UI::EffectClip::GetProgress,
-            "IsComplete", & Uma_UI::EffectClip::IsComplete
+            "Play", &Uma_UI::EffectClip::Play,
+            "Pause", &Uma_UI::EffectClip::Pause,
+            "Stop", &Uma_UI::EffectClip::Stop,
+            "Reset", &Uma_UI::EffectClip::Reset,
+            "GetProgress", &Uma_UI::EffectClip::GetProgress,
+            "IsComplete", &Uma_UI::EffectClip::IsComplete
         );
 
-        // Register vector<EffectClip> for proper Lua table-like behavior
-        sharedLua->new_usertype<std::vector<Uma_UI::EffectClip>>("EffectClipVector",
-            sol::meta_function::length, &std::vector<Uma_UI::EffectClip>::size,
-            sol::meta_function::index, [](std::vector<Uma_UI::EffectClip>& vec, int index) -> Uma_UI::EffectClip* {
-                if (index < 1 || index > static_cast<int>(vec.size())) {
-                    return nullptr;
-                }
-                return &vec[index - 1];
-            }
-        );
-
-        // Register Effects component
+        // Register Effects - sol2 auto-handles std::vector<EffectClip>
         sharedLua->new_usertype<Uma_UI::Effects>("Effects",
-            // Member variables
-            "clips", sol::property([](Uma_UI::Effects& e) -> std::vector<Uma_UI::EffectClip>& { return e.clips; }),
+            "clips", &Uma_UI::Effects::clips,  // Direct member access
             "playOnEnable", &Uma_UI::Effects::playOnEnable,
-
-            // Playback control methods
             "Play", sol::overload(
-                [](Uma_UI::Effects& effects, const std::string& name) {
-                    effects.PlayClipByName(name);
-                },
-                [](Uma_UI::Effects& effects, int index) {
-                    if (index >= 0) effects.PlayClip(static_cast<size_t>(index));
-                }
+                [](Uma_UI::Effects& effects, const std::string& name) { effects.PlayClipByName(name); },
+                [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.PlayClip(static_cast<size_t>(index)); }
             ),
-
-            "PlayAll", & Uma_UI::Effects::PlayAll,
-            "StopAll", & Uma_UI::Effects::StopAll,
-            "ResetAll", & Uma_UI::Effects::ResetAll,
-
-            // Individual clip control by index
-            "PauseClip", [](Uma_UI::Effects& effects, int index) {
-                if (index >= 0) effects.PauseClip(static_cast<size_t>(index));
-            },
-            "StopClip", [](Uma_UI::Effects& effects, int index) {
-                if (index >= 0) effects.StopClip(static_cast<size_t>(index));
-            },
-            "ResetClip", [](Uma_UI::Effects& effects, int index) {
-                if (index >= 0) effects.ResetClip(static_cast<size_t>(index));
-            },
-
-            // Individual clip control by name
+            "PlayAll", &Uma_UI::Effects::PlayAll,
+            "StopAll", &Uma_UI::Effects::StopAll,
+            "ResetAll", &Uma_UI::Effects::ResetAll,
+            "PauseClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.PauseClip(static_cast<size_t>(index)); },
+            "StopClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.StopClip(static_cast<size_t>(index)); },
+            "ResetClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.ResetClip(static_cast<size_t>(index)); },
             "PauseClipByName", & Uma_UI::Effects::PauseClipByName,
             "StopClipByName", & Uma_UI::Effects::StopClipByName,
             "ResetClipByName", & Uma_UI::Effects::ResetClipByName,
-
-            // Query methods
             "IsClipPlaying", sol::overload(
                 [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                     int index = effects.FindClipIndexByName(name);
@@ -804,7 +766,6 @@ namespace Uma_ECS
                     return index >= 0 && effects.IsClipPlaying(static_cast<size_t>(index));
                 }
             ),
-
             "IsClipComplete", sol::overload(
                 [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                     int index = effects.FindClipIndexByName(name);
@@ -814,20 +775,14 @@ namespace Uma_ECS
                     return index >= 0 && effects.IsClipComplete(static_cast<size_t>(index));
                 }
             ),
-
             "GetCurrentClip", [](Uma_UI::Effects& effects) -> std::string {
-                for (size_t i = 0; i < effects.clips.size(); ++i)
-                {
-                    if (effects.IsClipPlaying(i))
-                        return effects.clips[i].name;
+                for (size_t i = 0; i < effects.clips.size(); ++i) {
+                    if (effects.IsClipPlaying(i)) return effects.clips[i].name;
                 }
                 return "";
             },
-
             "GetClipCount", & Uma_UI::Effects::GetClipCount,
             "FindClipIndexByName", & Uma_UI::Effects::FindClipIndexByName,
-
-            // Add/Remove clips
             "AddClip", & Uma_UI::Effects::AddClip,
             "RemoveClip", [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                 int index = effects.FindClipIndexByName(name);
@@ -1272,18 +1227,6 @@ namespace Uma_ECS
                     auto& lua = lArray.GetData(e.en);
                     InitializeEntityScripts(e.en, lua);
                     //CallStart();
-                }
-            }
-        );
-
-        pEventSystem->Subscribe<Uma_Engine::ButtonOnClickedEvent, LuaScriptingSystem>(
-            [this](const Uma_Engine::ButtonOnClickedEvent& e)
-            {
-                if (pCoordinator->HasComponent<LuaScript>(e.entity))
-                {
-                    auto& luaComp = pCoordinator->GetComponent<LuaScript>(e.entity);
-                    auto& script = *luaComp.GetScript(e.scriptIndex);
-                    CallLuaFunction(script, "OnClicked");
                 }
             }
         );

@@ -179,6 +179,8 @@ namespace Uma_UI
 
         mMousePositionNDC = Uma_UI::ScreenToNDC(
             mMousePositionScreen.x, mMousePositionScreen.y, mScreenSize.x, mScreenSize.y);
+
+        bool wasMouseButtonDownLastFrame = mMouseButtonDownLastFrame;
         mMouseButtonDownLastFrame = mMouseButtonDown;
 
         if (pGraphics)
@@ -189,6 +191,9 @@ namespace Uma_UI
         {
             mMouseButtonDown = false;
         }
+
+        bool mouseJustPressed = mMouseButtonDown && !wasMouseButtonDownLastFrame;
+        bool mouseJustReleased = !mMouseButtonDown && wasMouseButtonDownLastFrame;
 
         mHitTestCache.clear();
         auto sortedEntities = GetSortedUIEntities();
@@ -225,7 +230,6 @@ namespace Uma_UI
             }
         }
 
-        // Raycast using NDC coordinates
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
 
         if (hitEntity != static_cast<Uma_ECS::Entity>(-1))
@@ -244,54 +248,90 @@ namespace Uma_UI
             if (!button.interactable)
             {
                 button.currentState = Uma_UI::ButtonState::Disabled;
+                UpdateButtonVisual(entity);
                 continue;
             }
 
             bool isHovered = (entity == hitEntity);
 
-            if (mMouseButtonDown)
+            if (isHovered)
             {
-                if (isHovered)
+                if (!button.wasHoveredLastFrame)
                 {
-                    button.currentState = Uma_UI::ButtonState::Pressed;
-                    if (!mMouseButtonDownLastFrame)
+                    button.currentState = Uma_UI::ButtonState::Hovered;
+                    if (!button.scriptName.empty())
                     {
-                        pEventSystem->Emit<Uma_Engine::PointerDownEvent>(entity, mMousePositionScreen);
+                        system->CallScriptFunction(entity, button.scriptName, "OnPointerEnter");
                     }
                 }
-                else
+                else if (button.currentState == Uma_UI::ButtonState::Hovered)
                 {
-                    button.currentState = Uma_UI::ButtonState::Normal;
+                    button.currentState = Uma_UI::ButtonState::Hovered;
+                }
+
+                if (mouseJustPressed)
+                {
+                    button.currentState = Uma_UI::ButtonState::Pressed;
+                    button.wasPressedWhileHovered = true;
+                    if (!button.scriptName.empty())
+                    {
+                        system->CallScriptFunction(entity, button.scriptName, "OnPointerDown");
+                    }
+                }
+                else if (mouseJustReleased && button.wasPressedWhileHovered)
+                {
+                    button.currentState = Uma_UI::ButtonState::Hovered;
+                    if (!button.scriptName.empty())
+                    {
+                        system->CallScriptFunction(entity, button.scriptName, "OnClick");
+                        system->CallScriptFunction(entity, button.scriptName, "OnPointerClick");
+                        system->CallScriptFunction(entity, button.scriptName, "OnPointerUp");
+                    }
+                    button.wasPressedWhileHovered = false;
+                }
+                else if (mMouseButtonDown && button.wasPressedWhileHovered)
+                {
+                    button.currentState = Uma_UI::ButtonState::Pressed;
                 }
             }
             else
             {
-                if (isHovered)
+                if (button.wasHoveredLastFrame)
                 {
-                    button.currentState = Uma_UI::ButtonState::Hovered;
-                    if (!button.wasHoveredLastFrame)
+                    if (!button.scriptName.empty())
                     {
-                        pEventSystem->Emit<Uma_Engine::PointerEnterEvent>(entity, mMousePositionScreen);
+                        system->CallScriptFunction(entity, button.scriptName, "OnPointerExit");
                     }
-                    if (mMouseButtonDownLastFrame && !mMouseButtonDown)
+
+                    if (button.wasPressedWhileHovered && mouseJustReleased)
                     {
-                        pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
-                        pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
-                        system->CallScriptFunction(entity, button.scriptName, "OnClicked");
+                        if (!button.scriptName.empty())
+                        {
+                            system->CallScriptFunction(entity, button.scriptName, "OnPointerUp");
+                        }
+                        button.wasPressedWhileHovered = false;
                     }
                 }
-                else
+
+                if (!mMouseButtonDown)
                 {
-                    button.currentState = Uma_UI::ButtonState::Normal;
-                    if (button.wasHoveredLastFrame)
-                    {
-                        pEventSystem->Emit<Uma_Engine::PointerExitEvent>(entity, mMousePositionScreen);
-                    }
+                    button.wasPressedWhileHovered = false;
                 }
+
+                button.currentState = Uma_UI::ButtonState::Normal;
             }
 
             button.wasHoveredLastFrame = isHovered;
             UpdateButtonVisual(entity);
+        }
+
+        if (mouseJustReleased)
+        {
+            for (size_t i = 0; i < buttonArray.Size(); ++i)
+            {
+                auto& button = buttonArray.GetComponentAt(i);
+                button.wasPressedWhileHovered = false;
+            }
         }
 
         auto& sliderArray = pCoordinator->GetComponentArray<Slider>();
@@ -343,7 +383,7 @@ namespace Uma_UI
 
                     if (!slider.scriptName.empty())
                     {
-                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnDrag");
+                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnValueChanged");
                     }
                 }
             }
@@ -356,7 +396,7 @@ namespace Uma_UI
 
                     if (!slider.scriptName.empty())
                     {
-                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnRelease");
+                        system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnPointerUp");
                     }
                 }
 
@@ -377,12 +417,34 @@ namespace Uma_UI
                 continue;
             }
 
-            slider.isHovered = (entity == hitEntity);
+            bool isHovered = (entity == hitEntity);
+            bool wasHovered = slider.isHovered;
+            slider.isHovered = isHovered;
 
-            if (slider.isHovered && mMouseButtonDown && !mMouseButtonDownLastFrame)
+            if (isHovered && !wasHovered)
+            {
+                if (!slider.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, slider.scriptName, "OnPointerEnter");
+                }
+            }
+            else if (!isHovered && wasHovered && !slider.isDragging)
+            {
+                if (!slider.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, slider.scriptName, "OnPointerExit");
+                }
+            }
+
+            if (isHovered && mouseJustPressed)
             {
                 slider.isDragging = true;
                 mDraggingSlider = entity;
+
+                if (!slider.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, slider.scriptName, "OnPointerDown");
+                }
 
                 if (rectTransformArray.Has(entity))
                 {
@@ -423,7 +485,7 @@ namespace Uma_UI
 
                         if (!slider.scriptName.empty())
                         {
-                            system->CallScriptFunction(entity, slider.scriptName, "OnPress");
+                            system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnValueChanged");
                         }
                     }
                 }
@@ -446,42 +508,76 @@ namespace Uma_UI
 
             bool isHovered = (entity == hitEntity);
 
-            if (mMouseButtonDown)
+            if (isHovered && !checkbox.wasHoveredLastFrame)
             {
-                if (isHovered)
+                checkbox.currentState = CheckboxState::Hovered;
+                if (!checkbox.scriptName.empty())
                 {
-                    checkbox.currentState = CheckboxState::Pressed;
-                }
-                else
-                {
-                    checkbox.currentState = CheckboxState::Normal;
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnPointerEnter");
                 }
             }
-            else
+            else if (!isHovered && checkbox.wasHoveredLastFrame)
             {
-                if (isHovered)
+                checkbox.currentState = CheckboxState::Normal;
+                if (!checkbox.scriptName.empty())
                 {
-                    checkbox.currentState = CheckboxState::Hovered;
-
-                    if (mMouseButtonDownLastFrame)
-                    {
-                        checkbox.isChecked = (checkbox.isChecked) ? false : true;
-                        UpdateCheckboxVisual(entity);
-
-                        if (!checkbox.scriptName.empty())
-                        {
-                            system->CallScriptFunction(entity, checkbox.scriptName, "OnToggle");
-                        }
-                    }
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnPointerExit");
                 }
-                else
+
+                if (checkbox.wasPressedWhileHovered && !mMouseButtonDown)
                 {
-                    checkbox.currentState = CheckboxState::Normal;
+                    checkbox.wasPressedWhileHovered = false;
                 }
+            }
+            else if (isHovered && checkbox.wasHoveredLastFrame && checkbox.currentState != CheckboxState::Pressed)
+            {
+                checkbox.currentState = CheckboxState::Hovered;
+            }
+
+            if (isHovered && mouseJustPressed)
+            {
+                checkbox.currentState = CheckboxState::Pressed;
+                checkbox.wasPressedWhileHovered = true;
+                if (!checkbox.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnPointerDown");
+                }
+            }
+
+            if (mouseJustReleased && checkbox.wasPressedWhileHovered && isHovered)
+            {
+                checkbox.isChecked = !checkbox.isChecked;
+                UpdateCheckboxVisual(entity);
+
+                if (!checkbox.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnToggle");
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnPointerUp");
+                }
+
+                checkbox.wasPressedWhileHovered = false;
+                checkbox.currentState = CheckboxState::Hovered;
+            }
+            else if (mouseJustReleased && checkbox.wasPressedWhileHovered && !isHovered)
+            {
+                if (!checkbox.scriptName.empty())
+                {
+                    system->CallScriptFunction(entity, checkbox.scriptName, "OnPointerUp");
+                }
+                checkbox.wasPressedWhileHovered = false;
             }
 
             checkbox.wasHoveredLastFrame = isHovered;
             UpdateCheckboxVisual(entity);
+        }
+
+        if (mouseJustReleased)
+        {
+            for (size_t i = 0; i < checkboxArray.Size(); ++i)
+            {
+                auto& checkbox = checkboxArray.GetComponentAt(i);
+                checkbox.wasPressedWhileHovered = false;
+            }
         }
     }
 
