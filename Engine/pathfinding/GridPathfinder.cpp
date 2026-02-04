@@ -107,27 +107,25 @@ namespace Uma_Navigation {
 
         // Find nearest traversable cells for A* search
         GridCell validStart = FindNearestClearCell(start, agentRadius, /*maxSearchDist=*/50);
-        /*if (!IsTraversable(validStart, agentRadius)) {
-            std::cout << "[GridPathfinder] No clear cell near start!\n";
+        if (!IsTraversable(validStart, agentRadius)) {
             return {};
-        }*/
+        }
         GridCell validGoal = FindNearestClearCell(goal, agentRadius, /*maxSearchDist=*/50);
-        /*if (!IsTraversable(validGoal, agentRadius)) {
-            std::cout << "[GridPathfinder] No clear cell near goal!\n";
+        if (!IsTraversable(validGoal, agentRadius)) {
             return {};
-        }*/
+        }
 
         std::priority_queue<PathNode, std::vector<PathNode>, std::greater<PathNode>> openSet;
         std::unordered_map<GridCell, float, GridCellHash> gScore;
         std::unordered_map<GridCell, GridCell, GridCellHash> cameFrom;
         std::unordered_set<GridCell, GridCellHash> closedSet;
 
-        // Use validStart and validGoal here — not startCell/goalCell!
+        // Use validStart and validGoal here ï¿½ not startCell/goalCell!
         gScore[validStart] = 0;
         openSet.push({ validStart, 0, Heuristic(validStart, validGoal) });
 
         int iterations = 0;
-        const int maxIterations = 10000;
+        const int maxIterations = 2000;
 
         while (!openSet.empty() && iterations++ < maxIterations) {
             PathNode current = openSet.top();

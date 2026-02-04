@@ -53,7 +53,7 @@ namespace Uma_ECS
         * @brief Update pathfinding for all relevant entities.
         *
         * Called once per frame. May recompute navigation data when needed
-        * and update agents’ paths/movement based on the current grid/navmesh.
+        * and update agentsï¿½ paths/movement based on the current grid/navmesh.
         *
         * @param dt Delta time in seconds since last frame.
         */
@@ -113,5 +113,8 @@ namespace Uma_ECS
         // Flag indicating that navigation data needs to be rebuilt (e.g. new entities).
         bool isDirty = false;
         bool initGoal = false;
+
+        // Track which entities have had their pathUpdateTimer staggered
+        std::unordered_set<Entity> staggeredEntities;
     };
 }

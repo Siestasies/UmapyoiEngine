@@ -29,6 +29,7 @@ All rights reserved.
 #include "Events/InputEvents.h"
 #include "Events/IMGUIEvents.h"
 #include <GLFW/glfw3.h>
+#include <random>
 
 void Uma_ECS::PathFindingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* es, Uma_Engine::Graphics* graphics)
 {
@@ -129,9 +130,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         initGoal = false;
     }
 
-    /*std::cout << "[PathFinding] Max agent radius: " << maxAgentRadius
-        << " world units" << std::endl;*/
-
     // Find player and rebuild pathfinder around them
     if (playerArray.Size() > 0) 
     {
@@ -178,6 +176,14 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
         if (!pf.enabled)
             continue;
+
+        // Stagger pathUpdateTimer for new entities so they don't all repath on the same frame
+        if (staggeredEntities.find(entity) == staggeredEntities.end()) {
+            static std::mt19937 rng(42);
+            std::uniform_real_distribution<float> dist(0.0f, pf.pathUpdateInterval);
+            pf.pathUpdateTimer = dist(rng);
+            staggeredEntities.insert(entity);
+        }
 
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
@@ -255,12 +261,14 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             bool goalChanged = !pf.haveLastGoal || (pf.goal != pf.lastGoal);
             bool needRepath = (!pf.hasValidPath || pf.reachedGoal || goalChanged);
 
+            // Subtract interval instead of resetting to 0 to preserve stagger offset
+            pf.pathUpdateTimer -= pf.pathUpdateInterval;
+
             if (needRepath) {
                 pf.path = gridPathfinder->FindPath(currentPos, pf.goal, agentRad);
                 pf.path = gridPathfinder->SmoothPath(pf.path);
                 pf.pathIndex = 0;
                 pf.hasValidPath = !pf.path.empty();
-                pf.pathUpdateTimer = 0.0f;
 
                 pf.lastGoal = pf.goal;
                 pf.haveLastGoal = true;
@@ -269,16 +277,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                     pf.reachedGoal = false;   // starting a fresh path to a goal
                 }
             }
-
-            /*pf.path = gridPathfinder->FindPath(currentPos, pf.goal, agentRad);
-            pf.path = gridPathfinder->SmoothPath(pf.path);
-            pf.pathIndex = 0;
-            pf.hasValidPath = !pf.path.empty();
-            pf.pathUpdateTimer = 0.0f;
-
-            if (isPlayer) {
-                pf.reachedGoal = false;
-            }*/
         }
 
         // Follow the path
@@ -346,6 +344,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             }
         }
     }
+
 }
 
 
@@ -439,6 +438,7 @@ void Uma_ECS::PathFindingSystem::Shutdown()
 {
     delete gridPathfinder;
     gridPathfinder = nullptr;
+    staggeredEntities.clear();
 
     //to be removed later
     pEventSystem->UnsubscribeSystem<PathFindingSystem>();
