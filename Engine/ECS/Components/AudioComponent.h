@@ -61,7 +61,6 @@ namespace Uma_ECS
             value.AddMember("defaultVolume", defaultVolume, allocator);
             value.AddMember("default3D", default3D, allocator);
 
-            // Serialize loadedSounds manually - no SoundInstance::Serialize needed
             rapidjson::Value soundsObj(rapidjson::kObjectType);
             for (const auto& [name, instance] : loadedSounds) {
                 rapidjson::Value soundVal(rapidjson::kObjectType);
@@ -85,29 +84,40 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
-            defaultVolume = value["defaultVolume"].GetFloat();
-            default3D = value["default3D"].GetBool();
-
-            // Deserialize loadedSounds manually
+            // Full reset
             loadedSounds.clear();
+
+            // Restore loadedSounds (reconstructs from saved data)
             if (value.HasMember("loadedSounds") && value["loadedSounds"].IsObject()) {
-                for (auto& member : value["loadedSounds"].GetObject()) {
-                    std::string name(member.name.GetString(), member.name.GetStringLength());
+                for (rapidjson::SizeType i = 0; i < value["loadedSounds"].MemberCount(); i++) {
+                    auto& member = value["loadedSounds"].MemberBegin()[i];
 
-                    SoundInstance instance;
-                    const auto& soundVal = member.value;
-                    instance.path = soundVal["path"].GetString();
-                    instance.isPlaying = soundVal["isPlaying"].GetBool();
-                    instance.shouldLoop = soundVal["shouldLoop"].GetBool();
-                    instance.is3D = soundVal["is3D"].GetBool();
-                    instance.volume = soundVal["volume"].GetFloat();
-                    instance.pitch = soundVal["pitch"].GetFloat();
-                    instance.minDistance = soundVal["minDistance"].GetFloat();
-                    instance.maxDistance = soundVal["maxDistance"].GetFloat();
+                    if (member.value.IsObject() &&
+                        member.value.HasMember("path") && member.value["path"].IsString() &&
+                        member.value.HasMember("isPlaying") && member.value["isPlaying"].IsBool() &&
+                        member.value.HasMember("shouldLoop") && member.value["shouldLoop"].IsBool() &&
+                        member.value.HasMember("is3D") && member.value["is3D"].IsBool()) {
 
-                    loadedSounds.emplace(std::move(name), std::move(instance));
+                        std::string name(member.name.GetString(), member.name.GetStringLength());
+
+                        SoundInstance instance;
+                        instance.path = member.value["path"].GetString();
+                        instance.isPlaying = member.value["isPlaying"].GetBool();
+                        instance.shouldLoop = member.value["shouldLoop"].GetBool();
+                        instance.is3D = member.value["is3D"].GetBool();
+                        instance.volume = member.value["volume"].GetFloat();
+                        instance.pitch = member.value["pitch"].GetFloat();
+                        instance.minDistance = member.value["minDistance"].GetFloat();
+                        instance.maxDistance = member.value["maxDistance"].GetFloat();
+
+                        loadedSounds.emplace(std::move(name), std::move(instance));
+                    }
                 }
             }
+
+            // Restore defaults
+            defaultVolume = value["defaultVolume"].GetFloat();
+            default3D = value["default3D"].GetBool();
         }
 
         // Helper methods
