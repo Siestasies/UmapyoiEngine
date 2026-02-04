@@ -18,6 +18,12 @@ function Update(dt)
             local child = children[3]
             SetActiveEntity(child, true)
         end
+
+        if #children >= 4 then
+            local child = children[4]
+            SetActiveEntity(child, true)
+        end
+
     else
         if #children > 0 then
             local child = children[1]
@@ -31,6 +37,11 @@ function Update(dt)
 
         if #children >= 3 then
             local child = children[3]
+            SetActiveEntity(child, false)
+        end
+
+        if #children >= 4 then
+            local child = children[4]
             SetActiveEntity(child, false)
         end
     end

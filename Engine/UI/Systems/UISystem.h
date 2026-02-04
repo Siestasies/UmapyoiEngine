@@ -210,6 +210,8 @@ namespace Uma_UI
 
         void ApplyScaleToChildren(Uma_ECS::Entity entity, const Vec2& scaleMultiplier, std::map<Uma_ECS::Entity, Vec2>& originalSizes);
 
+        void ApplyScaleToChildren(Uma_ECS::Entity entity, const float& scaleMultiplier, std::map<Uma_ECS::Entity, float>& originalSizes);
+
         /*!
          * \brief Returns all UI entities sorted by canvas sorting order.
          * \return Vector of entity IDs in render order.
@@ -237,7 +239,5 @@ namespace Uma_UI
          * \return True if font is loaded and valid.
          */
         bool EnsureFontLoaded(const std::string& fontName);
-
-        void ButtonOnClicked(Uma_ECS::Entity entity);
     };
 }

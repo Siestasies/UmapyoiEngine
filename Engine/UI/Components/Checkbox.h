@@ -36,6 +36,7 @@ namespace Uma_UI
 
         // Runtime state
         bool wasHoveredLastFrame = false;
+        bool wasPressedWhileHovered = false;
 
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
