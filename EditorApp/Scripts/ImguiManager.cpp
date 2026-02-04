@@ -3829,25 +3829,6 @@ namespace Uma_Engine
                         }
                     }
                     ImGui::EndDragDropTarget();
-
-                    ImGui::Separator();
-                    ImGui::Text("Fill Settings");
-
-                    const char* fillDirectionItems[] = { "None", "Left to Right", "Right to Left", "Top to Bottom", "Bottom to Top" };
-                    int currentFillDirection = static_cast<int>(image.fillDirection);
-                    if (ImGui::Combo("Fill Direction", &currentFillDirection, fillDirectionItems, IM_ARRAYSIZE(fillDirectionItems)))
-                    {
-                        image.fillDirection = static_cast<Uma_UI::FillDirection>(currentFillDirection);
-                        m_hasUnsavedEdit = true;
-                    }
-
-                    if (image.fillDirection != Uma_UI::FillDirection::None)
-                    {
-                        if (ImGui::SliderFloat("Fill Amount", &image.fillAmount, 0.0f, 1.0f, "%.2f"))
-                        {
-                            m_hasUnsavedEdit = true;
-                        }
-                    }
                 }
                 else if (isHovered)
                 {
@@ -3880,6 +3861,25 @@ namespace Uma_Engine
                 if (ImGui::Checkbox("Image Visible", &image.visible))
                 {
                     m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Fill Settings");
+
+                const char* fillDirectionItems[] = { "None", "Left to Right", "Right to Left", "Top to Bottom", "Bottom to Top" };
+                int currentFillDirection = static_cast<int>(image.fillDirection);
+                if (ImGui::Combo("Fill Direction", &currentFillDirection, fillDirectionItems, IM_ARRAYSIZE(fillDirectionItems)))
+                {
+                    image.fillDirection = static_cast<Uma_UI::FillDirection>(currentFillDirection);
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (image.fillDirection != Uma_UI::FillDirection::None)
+                {
+                    if (ImGui::SliderFloat("Fill Amount", &image.fillAmount, 0.0f, 1.0f, "%.2f"))
+                    {
+                        m_hasUnsavedEdit = true;
+                    }
                 }
 
                 // Texture info

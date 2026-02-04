@@ -706,7 +706,9 @@ namespace Uma_ECS
                     command.spriteInfo.uvOffset,
                     command.spriteInfo.uvSize,
                     command.spriteInfo.tintColor,
-                    command.spriteInfo.alpha);
+                    command.spriteInfo.alpha,
+                    command.spriteInfo.fillDirection,
+                    command.spriteInfo.fillAmount);
 
                 break;
             }
