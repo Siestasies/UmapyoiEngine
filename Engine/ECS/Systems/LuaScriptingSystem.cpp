@@ -576,7 +576,10 @@ namespace Uma_ECS
                 { "None", ElementType::None },
                 { "Fire", ElementType::Fire },
                 { "Water", ElementType::Water },
-                { "Steam", ElementType::Steam }
+                { "Wind", ElementType::Wind },
+                { "Steam", ElementType::Steam },
+                { "Pyronado", ElementType::Pyronado },
+                { "Whirlpool", ElementType::Whirlpool }
             }
         );
 
