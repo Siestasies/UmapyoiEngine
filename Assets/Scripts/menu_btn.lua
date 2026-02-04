@@ -20,7 +20,7 @@ function Update(dt)
         if time >= 1 then
             time = 0
             clicked = false
-            LoadScene("test_combat.scn")
+            LoadScene("main_menu.scn")
         end
     end
 end
