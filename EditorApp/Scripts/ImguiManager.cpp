@@ -2925,6 +2925,10 @@ namespace Uma_Engine
         {
             if (ImGui::CollapsingHeader("AudioComponent"))
             {
+                std::vector<std::string> pendingRemoves;
+                std::vector<std::string> removeLoaded;
+                bool hasPendingEdit = false;
+
                 if (ImGui::Button("Remove Component##AudioComponent"))
                 {
                     auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::AudioComponent>>(
@@ -2953,12 +2957,20 @@ namespace Uma_Engine
                 ImGui::Checkbox("Default 3D", &audio.default3D);
             
                 ImGui::Separator();
-                ImGui::Text("Active Sounds: %zu", audio.activeSounds.size());
+                ImGui::Text("Loaded Sounds: %zu", audio.loadedSounds.size());
 
-                if (!audio.activeSounds.empty())
+                if (!audio.loadedSounds.empty())
                 {
-                    for (auto& [soundName, soundInstance] : audio.activeSounds)
+                    std::vector<std::string> soundNames;
+                    for (const auto& [name, _] : audio.loadedSounds)
+                        soundNames.push_back(name);
+
+                    for (const std::string& soundName : soundNames)
                     {
+                        auto it = audio.loadedSounds.find(soundName);
+                        if (it == audio.loadedSounds.end()) continue;  // Removed during frame
+
+                        auto& soundInstance = it->second;
                         ImGui::PushID(soundName.c_str());
 
                         if (ImGui::TreeNode(soundName.c_str()))
@@ -2981,20 +2993,71 @@ namespace Uma_Engine
                                 ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
                             }
 
-                            // Remove button for individual sounds
                             ImGui::Separator();
                             if (ImGui::Button("Remove Sound"))
                             {
-                                audio.RemoveSound(soundName);
-                                m_hasUnsavedEdit = true;
-                                ImGui::TreePop();
-                                ImGui::PopID();
-                                break; // Exit loop after removal
+                                removeLoaded.push_back(soundName);
+                                hasPendingEdit = true;
                             }
-
                             ImGui::TreePop();
                         }
+                        ImGui::PopID();
+                    }
+                }
+                else
+                {
+                    ImGui::TextDisabled("No loaded sounds");
+                }
 
+
+                ImGui::Separator();
+                ImGui::Text("Active Sounds: %zu", audio.activeSounds.size());
+
+                if (!audio.activeSounds.empty())
+                {
+                    std::vector<std::string> soundNames;
+                    for (const auto& [name, _] : audio.activeSounds)
+                        soundNames.push_back(name);
+
+                    for (const std::string& soundName : soundNames)
+                    {
+                        auto it = audio.activeSounds.find(soundName);
+                        if (it == audio.activeSounds.end()) continue;
+
+                        auto& soundInstance = it->second;
+                        ImGui::PushID(soundName.c_str());
+
+                        if (ImGui::TreeNode(soundName.c_str()))
+                        {
+                            ImGui::Text("Sound: %s", soundName.c_str());
+                            ImGui::Text("Path: %s", soundInstance.path.c_str());
+                            ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
+                            ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
+                            ImGui::Checkbox("Is 3D", &soundInstance.is3D);
+
+                            ImGui::Separator();
+                            ImGui::Text("Sound Properties");
+
+                            ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
+                            ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
+
+                            if (soundInstance.is3D)
+                            {
+                                ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
+                                ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
+                            }
+
+                            ImGui::Separator();
+                            if (ImGui::Button("Remove Sound"))
+                            {
+                                /*audio.RemoveSound(soundName);
+                                m_hasUnsavedEdit = true;*/
+
+                                pendingRemoves.push_back(soundName);
+                                hasPendingEdit = true;
+                            }
+                            ImGui::TreePop();
+                        }
                         ImGui::PopID();
                     }
                 }
@@ -3002,6 +3065,7 @@ namespace Uma_Engine
                 {
                     ImGui::TextDisabled("No active sounds");
                 }
+
 
                 // Drag and Drop Zone for Adding Sounds
                 ImGui::Separator();
@@ -3107,8 +3171,8 @@ namespace Uma_Engine
                                 newSound.is3D = audio.default3D;
 
                                 // Add to active sounds map
-                                audio.activeSounds[soundName] = newSound;
-                                m_hasUnsavedEdit = true;
+                                audio.loadedSounds.emplace(soundName, newSound);
+                                hasPendingEdit = true;
                             }
                         }
                         else
@@ -3140,6 +3204,20 @@ namespace Uma_Engine
                 else
                 {
                     ImGui::TextDisabled("No looping sound");
+                }
+
+                if (hasPendingEdit) {
+                    for (const auto& name : pendingRemoves) {
+                        audio.RemoveSound(name);
+                    }
+                    for (const auto& name : removeLoaded) {
+                        audio.RemoveLoadedSound(name);
+                    }
+                    pendingRemoves.clear();
+                    removeLoaded.clear();
+                    //m_hasUnsavedEdit = true;
+                    ImGui::GetCurrentWindow()->Flags &= ~ImGuiWindowFlags_UnsavedDocument;
+                    hasPendingEdit = false;
                 }
         
                 ImGui::Unindent();
