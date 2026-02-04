@@ -51,7 +51,7 @@ function state_enter(entity)
     end
 
     -- AttackIndex
-    player.currAttackIndex = 6
+    player.currAttackIndex = 5
     
     -- Consume mana
     player.mMana = player.mMana - attackStat.manaCost

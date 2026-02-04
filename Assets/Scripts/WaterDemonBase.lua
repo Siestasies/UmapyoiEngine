@@ -8,6 +8,7 @@ local playerId
 local isDead
 local enemyHurtEffectTimer
 local isHurt = false
+local isEffective = false;
 
 
 function Start()
@@ -37,7 +38,12 @@ function Update(dt)
 
             if HasSprite() then
                 local spriteComp = GetSprite()
-                spriteComp.tintColor = Vec3(1.0, 0.5, 0.5)
+
+                if isEffective then
+                    spriteComp.tintColor = Vec3(1.0, 0.5, 0.5)
+                else
+                    spriteComp.tintColor = Vec3(1.0, 1.0, 0.0)
+                end
             end
 
             if enemyHurtEffectTimer <= 0.0 then
@@ -68,18 +74,34 @@ function OnCollisionExit(other)
 end
 
 function HandleCollision(trigger)
+
+   
     if playerId == trigger then
         local playerComp = GetPlayerFrom(playerId)
         if playerComp then
 
-            local elem = playerComp.attackStats[playerComp.currAttackIndex].elementType
+            --Log("OI KNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN " .. playerComp.currAttackIndex)
+            local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
 
-            Log("elem is " .. elem)
-
-            if elem == ElementType.Wind then
-                OnHurt(playerId, playerComp.mAttackDamage)
+            --Log("=== ATTACK DEBUG ===")
+            --Log("Attack Index: " .. tostring(playerComp.currAttackIndex))
+            --Log("Attack Name: " .. tostring(attack.attackName))
+            --Log("Element Type (raw): " .. tostring(attack.elementType))
+            --Log("ElementType.None: " .. tostring(ElementType.None))
+            --Log("ElementType.Fire: " .. tostring(ElementType.Fire))
+            --Log("ElementType.Water: " .. tostring(ElementType.Water))
+            --Log("ElementType.Wind: " .. tostring(ElementType.Wind))
+            --Log("ElementType.Steam: " .. tostring(ElementType.Steam))
+            --Log("===================")
+--
+            if attack.elementType == ElementType.Wind or 
+            attack.elementType == ElementType.Whirlpool or  
+            attack.elementType == ElementType.Pyronado then
+                isEffective = true
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
             else
-                OnHurt(playerId, playerComp.mAttackDamage * 0.3)
+                isEffective = false
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
             end
 
             local transform = GetTransform()

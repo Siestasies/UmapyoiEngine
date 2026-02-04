@@ -53,7 +53,7 @@ function state_enter(entity)
     end
 
     -- AttackIndex
-    player.currAttackIndex = 5
+    player.currAttackIndex = 4
     
     -- Consume mana
     player.mMana = math.floor(player.mMana - attackStat.manaCost)

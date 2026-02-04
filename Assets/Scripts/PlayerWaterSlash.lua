@@ -43,7 +43,7 @@ function state_enter(entity)
     end
 
     -- AttackIndex
-    player.currAttackIndex = 4
+    player.currAttackIndex = 3
     
     -- Check mana cost
     attackStat = GetWaterSlashAttackStat(player)

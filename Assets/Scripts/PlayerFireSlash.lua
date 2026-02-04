@@ -43,7 +43,7 @@ function state_enter(entity)
     end
 
     -- AttackIndex
-    player.currAttackIndex = 3
+    player.currAttackIndex = 2
     
     -- Check mana cost
     attackStat = GetFireSlashAttackStat(player)
