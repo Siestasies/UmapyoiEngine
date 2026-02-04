@@ -84,7 +84,13 @@ function state_enter(entity)
         if HasSprite() then
             local sprite = GetSprite()
             if sprite then
-                moveX = sprite.flipX and -1 or 1
+                --moveX = sprite.flipX and -1 or 1
+                local playerTransform = GetTransformFrom(EntityID)
+                if playerTransform.scale.x <= 0 then
+                    moveX = -1
+                else
+                    moveX = 1
+                end
             else
                 moveX = 1
             end
