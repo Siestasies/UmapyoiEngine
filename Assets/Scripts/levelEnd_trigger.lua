@@ -9,16 +9,11 @@ ExposedVars = {
 
 -- when player step on trigger
 function OnTriggerEnter(other)
-    Log("[LOG] PLAYER HIT PLAYER HIT")
     -- trigger fading
     if HasPlayerOn(other) then
         loadNextScene = true
         fadeState.setFading(true)
     end
-end
-
-function OnCollision(other)
-    Log("[LOG] WHAT HIT")
 end
 
 function Start()
@@ -30,7 +25,8 @@ end
 function Update(dt)
     -- if no enemies, set level end flag
     local enemies = FindEntitiesWithComponent("Enemy")
-    if enemies then
+    -- set to 1 for debugging
+    if enemies == 0 then
         levelEndState.setLevelEnd(true)
     end
 
@@ -47,6 +43,7 @@ function Update(dt)
 
         if nextSceneName == "" then
             -- show end screen menu
+            levelEndState.setLevelEndMenu(true)
         end
     end
 end
