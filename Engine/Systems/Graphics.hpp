@@ -120,6 +120,8 @@ namespace Uma_Engine
         Vec2 uvSize{ 1.0f, 1.0f };    // UV size (default = full texture)
         Vec3 tintColor{ 1.0f, 1.0f, 1.0f };  // RGB multiplier
         float alpha{ 1.0f };                 // Opacity
+        int fillDirection{ 0 };  // 0=None, 1=LeftToRight, 2=RightToLeft, 3=TopToBottom, 4=BottomToTop
+        float fillAmount{ 1.0f };  // 0.0 to 1.0
     };
 
     class Graphics : public ISystem, public IWindowSystem
@@ -625,7 +627,7 @@ namespace Uma_Engine
          * \param alpha Opacity
          */
         void DrawSpriteScreen(unsigned int textureID, const Vec2& position, const Vec2& size, float rotation = 0.0f, const Vec2& uvOffset = Vec2(0.0f, 0.0f),
-            const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f);
+            const Vec2& uvSize = Vec2(1.0f, 1.0f), const Vec3& tint = Vec3(1.0f, 1.0f, 1.0f), float alpha = 1.0f, int fillDirection = 0, float fillAmount = 1.0f);
 
         /**
          * \brief Draws a batch of sprites in screen space using instanced rendering

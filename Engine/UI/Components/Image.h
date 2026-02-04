@@ -27,6 +27,15 @@ All rights reserved.
 
 namespace Uma_UI
 {
+    enum class FillDirection
+    {
+        None = 0,
+        LeftToRight,
+        RightToLeft,
+        TopToBottom,
+        BottomToTop
+    };
+
     /*!
      * \class Image
      * \brief Renders a textured sprite within a RectTransform bounds.
@@ -39,6 +48,9 @@ namespace Uma_UI
         Uma_UI::Color color = Uma_UI::Color::White();
         bool visible = true;
         std::shared_ptr<Uma_Engine::Texture> texture = nullptr;
+
+        FillDirection fillDirection = FillDirection::None;
+        float fillAmount = 1.0f;  // 0.0 to 1.0 (0 = empty, 1 = full)
 
         /*!
          * \brief Serializes image properties to a JSON value.
@@ -60,6 +72,8 @@ namespace Uma_UI
             value.AddMember("color", col, allocator);
 
             value.AddMember("visible", visible, allocator);
+            value.AddMember("fillDirection", static_cast<int>(fillDirection), allocator);
+            value.AddMember("fillAmount", fillAmount, allocator);
         }
 
         /*!
@@ -85,6 +99,16 @@ namespace Uma_UI
             color.a = col["a"].GetFloat();
 
             visible = value["visible"].GetBool();
+
+            if (value.HasMember("fillDirection"))
+            {
+                fillDirection = static_cast<FillDirection>(value["fillDirection"].GetInt());
+            }
+
+            if (value.HasMember("fillAmount"))
+            {
+                fillAmount = value["fillAmount"].GetFloat();
+            }
         }
     };
 }

@@ -1314,13 +1314,20 @@ namespace Uma_Engine
     }
 
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
-        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha)
+        const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha, int fillDirection, float fillAmount)
     {
         (void)uvSize;
         (void)uvOffset;
         if (!mInitialized || textureID == 0) return;
 
         glUseProgram(mShaderProgram);
+
+        // Set fill uniforms
+        GLint fillDirLoc = glGetUniformLocation(mShaderProgram, "fillDirection");
+        glUniform1i(fillDirLoc, fillDirection);
+
+        GLint fillAmtLoc = glGetUniformLocation(mShaderProgram, "fillAmount");
+        glUniform1f(fillAmtLoc, fillAmount);
 
         // Set tint uniform
         GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");

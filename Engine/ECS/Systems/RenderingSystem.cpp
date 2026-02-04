@@ -37,6 +37,7 @@ All rights reserved.
 #include "Components/Player.h"
 #include "Components/Animator.h"
 #include "Components/Tilemap.h"
+#include "UI/Components/Image.h"
 
 #include "UI/Components/Canvas.h"
 
@@ -633,17 +634,16 @@ namespace Uma_ECS
                     Uma_Engine::Sprite_Info spriteInfo = Uma_Engine::Sprite_Info
                     {
                         .tex_id = image.texture->tex_id,
-
                         .pos = rectTransform.computedRect.Center(),
                         .scale = rectTransform.computedRect.Size(),
                         .rot = 0.0f,
                         .rot_speed = 0.0f,
-
                         .uvOffset = Vec2(0.0f, 0.0f),
                         .uvSize = Vec2(1.0f, 1.0f),
-
                         .tintColor = image.color.ToVec3(),
-                        .alpha = image.color.a
+                        .alpha = image.color.a,
+                        .fillDirection = static_cast<int>(image.fillDirection),
+                        .fillAmount = image.fillAmount
                     };
 
                     // image
@@ -659,6 +659,7 @@ namespace Uma_ECS
                         }
                         );
                 }
+
 
                 // sort based on children's sorting order
                 std::stable_sort(uiDrawCommands.begin(), uiDrawCommands.end(),
