@@ -101,7 +101,7 @@ namespace Uma_Engine
             if (currentClip.empty() || clips.size() == 1)
             {
                 currentClip = name;
-                currentFrame = startFrame;
+                currentFrame = 0;
             }
         }
 

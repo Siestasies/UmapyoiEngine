@@ -8,16 +8,16 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": -26.215,
-                            "y": 7.464
+                            "x": 1012.7,
+                            "y": -1659.8
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.384,
-                            "y": 1.046
+                            "x": 0.689,
+                            "y": 1.519
                         },
                         "parent": -1
                     },
@@ -33,8 +33,8 @@
                         "flipY": false,
                         "autoFlip": true,
                         "Native": true,
-                        "gridX": 12.0,
-                        "gridY": 4.0,
+                        "gridX": 0.0,
+                        "gridY": 0.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,

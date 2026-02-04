@@ -49,13 +49,18 @@ All rights reserved.
 namespace Uma_ECS
 {
     
-    void LuaScriptingSystem::Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i, Uma_Engine::ResourcesManager* r)
+    void LuaScriptingSystem::Init(Coordinator* c, 
+        Uma_Engine::EventSystem* e, 
+        Uma_Engine::HybridInputSystem* i, 
+        Uma_Engine::ResourcesManager* r, 
+        Uma_Engine::Graphics* g)
     {
         // linking the Engine systems 
         pCoordinator = c;
         pEventSystem = e;
         pInputSystem = i;
         pResourcesManager = r;
+        pGraphics = g;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -633,22 +638,106 @@ namespace Uma_ECS
             }
         );
 
-        // Register Player component
-        sharedLua->new_usertype<Player>("Player",
-            "mHealth"         ,&Player::mHealth,
-            "mMaxHealth"      ,&Player::mMaxHealth,
-            "mHealthRegenRate",&Player::mHealthRegenRate,
-            "mSpeed"          ,&Player::mSpeed,
-            "mDashSpeed"      ,&Player::mDashSpeed,
-            "mDashCD"         ,&Player::mDashCD,
-            "mAttackDamage"   ,&Player::mAttackDamage,
-            "mAttackSpeed"    ,&Player::mAttackSpeed,
-            "mAttackRange"    ,&Player::mAttackRange,
-            "mDefense"        ,&Player::mDefense,
-            "mMana"           ,&Player::mMana,
-            "mMaxMana"        ,&Player::mMaxMana,
-            "mManaRegenRate"  ,&Player::mManaRegenRate
+        sharedLua->new_enum<ElementType>("ElementType",
+            {
+                { "None", ElementType::None },
+                { "Fire", ElementType::Fire },
+                { "Water", ElementType::Water },
+                { "Steam", ElementType::Steam }
+            }
         );
+
+        sharedLua->new_usertype<AttackStats>("AttackStats",
+            sol::constructors<AttackStats()>(),
+            "attackName", &AttackStats::AttackName,
+            "animationClipName", &AttackStats::animationClipName,
+            "mDamageMultiplier", &AttackStats::mDamageMultiplier,
+            "mAttackSpeedMultiplier", &AttackStats::mAttackSpeedMultiplier,
+            "triggerColliderIndex", &AttackStats::triggerColliderIndex,
+            "manaCost", &AttackStats::manaCost,
+            "attackRange", &AttackStats::attackRange,
+            "attackArc", &AttackStats::attackArc,
+            "applyBurn", &AttackStats::applyBurn,
+            "applyStun", &AttackStats::applyStun,
+            "effectDuration", &AttackStats::effectDuration,
+            "attackCd", &AttackStats::attackCd,
+            "attackCdCurr", &AttackStats::attackCdCurr,
+            "attackIsInCoolDown", &AttackStats::attackIsInCoolDown,
+            "elementType", &AttackStats::elementType
+            );
+
+        sharedLua->set_function("CreateAttackStats", []() -> AttackStats* {
+            return new AttackStats();
+            });
+
+        // Helper function to add AttackStats to a Player's attackStats vector
+        sharedLua->set_function("AddAttackStats", [](Player& player, AttackStats* attack) {
+            if (attack) {
+                player.attackStats.push_back(*attack);
+                delete attack;  // Clean up the temporary object after copying
+            }
+            });
+
+        // Helper function to clear all attack stats
+        sharedLua->set_function("ClearAttackStats", [](Player& player) {
+            player.attackStats.clear();
+            });
+
+        // Helper function to get attack stats count
+        sharedLua->set_function("GetAttackStatsCount", [](Player& player) -> int {
+            return static_cast<int>(player.attackStats.size());
+            });
+
+        sharedLua->new_usertype<CheckpointData>("CheckpointData",
+            "checkpointID", &CheckpointData::checkpointID,
+            "checkpointX", &CheckpointData::checkpointX,
+            "checkpointY", &CheckpointData::checkpointY,
+            "hasCheckpoint", &CheckpointData::hasCheckpoint
+            );
+
+        sharedLua->new_usertype<Player>("Player",
+            "mHealth", &Player::mHealth,
+            "mMaxHealth", &Player::mMaxHealth,
+            "mHealthRegenRate", &Player::mHealthRegenRate,
+            "mHealthRegenDelay", &Player::mHealthRegenDelay,
+            "mHealthRegenDelayTimer", &Player::mHealthRegenDelayTimer,
+            "mCanRegenHealth", &Player::mCanRegenHealth,
+
+            "mSpeed", &Player::mSpeed,
+            "mDashSpeed", &Player::mDashSpeed,
+            "mDashDuration", &Player::mDashDuration,  // NEW - needed for dash state
+            "mDashCD", &Player::mDashCD,
+
+            "mAttackDamage", &Player::mAttackDamage,
+            "mAttackSpeed", &Player::mAttackSpeed,
+            "mAttackRange", &Player::mAttackRange,
+            "mDefense", &Player::mDefense,
+
+            "mMana", &Player::mMana,
+            "mMaxMana", &Player::mMaxMana,
+            "mManaRegenRate", &Player::mManaRegenRate,
+            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,  // NEW - needed for attack mana gain
+
+            "isStunned", &Player::isStunned,
+            "stunedTimer", &Player::stunedTimer,
+            "isInvulnerable", &Player::isInvulnerable,
+
+            "mInvulnerabilityDuration", &Player::mInvulnerabilityDuration,
+            "mHitStunDuration", &Player::mHitStunDuration,
+
+            "lastElementUsed", &Player::lastElementUsed,
+            "elementComboTimer", &Player::elementComboTimer,
+            "elementComboWindow", &Player::elementComboWindow,
+
+            "currAttackIndex", &Player::currAttackIndex,
+            // "animatorState", &Player::animatorState,  // Optional - enum would need registration
+
+            "attackStats", sol::property(
+                [](Player& c) -> std::vector<AttackStats>&{ return c.attackStats; }
+                ),
+
+            "checkpointData", &Player::checkpointData
+            );
 
 
         // Register Enemy component
@@ -1522,6 +1611,11 @@ namespace Uma_ECS
         // Mouse position (special case)
         sharedLua->set_function("GetMousePosition", [this]() -> Vec2 {
             return pInputSystem ? pInputSystem->GetSceneMousePosition() : Vec2{ 0, 0 };
+            });
+
+        sharedLua->set_function("GetMouseWorldPosition", [this]() -> Vec2 {
+
+            return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{0, 0};
             });
     }
 

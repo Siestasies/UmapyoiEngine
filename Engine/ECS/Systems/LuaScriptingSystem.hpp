@@ -35,6 +35,7 @@ All rights reserved.
 #include "Debugging/Debugger.hpp"
 #include "../Core/Coordinator.hpp"
 #include "Systems/ResourcesManager.hpp"
+#include "Systems/Graphics.hpp"
 
 // Events
 #include "Events/CollisionEvent.h"
@@ -62,7 +63,11 @@ namespace Uma_ECS
          * \param e Pointer to event system
          * \param i Pointer to input system
          */
-        void Init(Coordinator* c, Uma_Engine::EventSystem* e, Uma_Engine::HybridInputSystem* i, Uma_Engine::ResourcesManager* r);
+        void Init(Coordinator* c, 
+            Uma_Engine::EventSystem* e, 
+            Uma_Engine::HybridInputSystem* i, 
+            Uma_Engine::ResourcesManager* r,
+            Uma_Engine::Graphics* g);
 
         /**
          * \brief Updates all active Lua scripts with delta time
@@ -332,6 +337,7 @@ namespace Uma_ECS
         Uma_Engine::HybridInputSystem* pInputSystem = nullptr;
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
+        Uma_Engine::Graphics* pGraphics = nullptr;
 
         // runtime variables
         float lastDeltaTime{};
