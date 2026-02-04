@@ -62,11 +62,10 @@ function state_update(entity, dt)
 rb.velocity = targetVel
     
     -- Flip sprite based on direction
-    if HasSprite() then
-        local sprite = GetSprite()
-        if sprite and rb.velocity.x ~= 0 then
-            sprite.flipX = (rb.velocity.x < 0)
-        end
+    if rb.velocity.x < 0 and transform.scale.x > 0 then
+       transform.scale.x = -1.0 * transform.scale.x
+    elseif rb.velocity.x > 0 and transform.scale.x < 0 then
+        transform.scale.x = -1.0 * transform.scale.x
     end
     
     -- Check for dash input (Shift key)

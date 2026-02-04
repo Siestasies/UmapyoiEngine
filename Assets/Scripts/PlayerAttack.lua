@@ -15,7 +15,7 @@ local currentCombo = 1  -- 1 = first attack, 2 = second attack
 local attackPerformed = false
 local canCombo = false
 local animator = nil
-
+local collider = nil
 
 function state_enter(entity)
     Log("Player entered Attack state")
@@ -53,16 +53,22 @@ function state_enter(entity)
         animator = GetAnimator()
     end
     
+    if HasCollider() then
+        collider = GetCollider()
+    end
+
     -- Play appropriate animation
     if currentCombo == 1 then
         Log("atk1")
-        animator.animator:Play(attack1AnimationName, false)
+        animator.animator:Play(attack1AnimationName, true)
         --PlaySound("attack_1", 0.8, 0)
     else
-        animator.animator:Play(attack2AnimationName, false)
+        animator.animator:Play(attack2AnimationName, true)
         --PlaySound("attack_2", 0.8, 0)
     end
-    
+
+    collider.shapes[3].isActive = true
+
     -- Stop movement during attack
     if HasRigidBody() then
         local rb = GetRigidBody()
@@ -115,6 +121,10 @@ function state_update(entity, dt)
         
         -- Reset combo
         player.currAttackIndex = 0
+        if collider == nil and HasCollider() then
+            collider = GetCollider()
+        end
+        collider.shapes[3].isActive = false
         
         -- Check for movement input to transition smoothly
         local moveX = 0
@@ -135,6 +145,8 @@ end
 
 function state_exit(entity)
     Log("Player exited Attack state")
+
+    collider.shapes[3].isActive = false
     
     -- Reset state-local variables
     attackTimer = 0
@@ -167,43 +179,45 @@ function PerformAttackDamage(entity, player)
             attackRange = attack.attackRange
         end
     end
+
+
     
     -- Check each enemy
-    for i = 1, #enemies do
-        local enemyId = enemies[i]
-        if IsEntityValid(enemyId) then
-            local enemyTransform = GetTransformFrom(enemyId)
-            if enemyTransform then
-                local enemyPos = enemyTransform.position
-                
-                -- Calculate distance
-                local dx = enemyPos.x - myPos.x
-                local dy = enemyPos.y - myPos.y
-                local distance = math.sqrt(dx * dx + dy * dy)
-                
-                -- Check if in range
-                if distance <= attackRange then
-                    -- Deal damage to enemy
-                    if HasEnemyOn(enemyId) then
-                        local enemy = GetEnemyFrom(enemyId)
-                        if enemy then
-                            enemy.mHealth = enemy.mHealth - attackDamage
-                            Log("Hit enemy for " .. tostring(attackDamage) .. " damage!")
-                            
-                            -- Play hit sound
-                            PlaySound("hit", 0.7, 0)
-                            
-                            -- Chance to gain mana on neutral attack hit
-                            if math.random(1, 2) == 1 then
-                                player.mMana = math.min(player.mMana + player.mNeutralAttackManaGain, player.mMaxMana)
-                                Log("Gained " .. tostring(player.mNeutralAttackManaGain) .. " mana!")
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
+    --for i = 1, #enemies do
+    --    local enemyId = enemies[i]
+    --    if IsEntityValid(enemyId) then
+    --        local enemyTransform = GetTransformFrom(enemyId)
+    --        if enemyTransform then
+    --            local enemyPos = enemyTransform.position
+    --            
+    --            -- Calculate distance
+    --            local dx = enemyPos.x - myPos.x
+    --            local dy = enemyPos.y - myPos.y
+    --            local distance = math.sqrt(dx * dx + dy * dy)
+    --            
+    --            -- Check if in range
+    --            if distance <= attackRange then
+    --                -- Deal damage to enemy
+    --                if HasEnemyOn(enemyId) then
+    --                    local enemy = GetEnemyFrom(enemyId)
+    --                    if enemy then
+    --                        enemy.mHealth = enemy.mHealth - attackDamage
+    --                        Log("Hit enemy for " .. tostring(attackDamage) .. " damage!")
+    --                        
+    --                        -- Play hit sound
+    --                        PlaySound("hit", 0.7, 0)
+    --                        
+    --                        -- Chance to gain mana on neutral attack hit
+    --                        if math.random(1, 2) == 1 then
+    --                            player.mMana = math.min(player.mMana + player.mNeutralAttackManaGain, player.mMaxMana)
+    --                            Log("Gained " .. tostring(player.mNeutralAttackManaGain) .. " mana!")
+    --                        end
+    --                    end
+    --                end
+    --            end
+    --        end
+    --    end
+    --end
 end
 
 -- Helper function to face towards mouse
@@ -212,17 +226,20 @@ function FaceTowardsMouse(entity)
     if not HasSprite() then return end
     
     local transform = GetTransform()
-    local sprite = GetSprite()
+    --local sprite = GetSprite()
     
-    if not transform or not sprite then return end
+    if not transform then return end
     
-    local mousePos = GetMousePosition()
+    local mousePos = GetMouseWorldPosition()
     local myPos = transform.position
     
     -- Determine facing direction based on mouse position
-    if mousePos.x < myPos.x then
-        sprite.flipX = true
-    else
-        sprite.flipX = false
+    if mousePos.x < myPos.x and transform.scale.x > 0 then
+        --sprite.flipX = true
+       transform.scale.x = -1.0 * transform.scale.x
+    elseif mousePos.x > myPos.x and transform.scale.x < 0 then
+        --sprite.flipX = false
+        --myScale.x = 1.0 * myScale.x
+        transform.scale.x = -1.0 * transform.scale.x
     end
 end
