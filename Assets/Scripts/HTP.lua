@@ -2,9 +2,9 @@ local bool = true
 
 function OnClick()
     local parent = GetParent(EntityID)
-    local children = GetChildren(EntityID)
+    local children = GetChildrenList(EntityID)
     
-    local parentChildren = GetChildren(parent)
+    local parentChildren = GetChildrenList(parent)
     if #children >= 3 then
         local child = children[3]
         SetActiveEntity(child, true)
@@ -13,7 +13,7 @@ function OnClick()
 end
 
 function Update(dt)
-    local children = GetChildren(EntityID)
+    local children = GetChildrenList(EntityID)
 
     local paused = IsGamePause()
 

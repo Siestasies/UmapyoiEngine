@@ -1,5 +1,5 @@
 function Update(dt)
-    local children = GetChildren(EntityID)
+    local children = GetChildrenList(EntityID)
 
     local paused = IsGamePause()
 

@@ -13,7 +13,7 @@ end
 function Update(dt)
     local health = GetPlayerFrom(playerEntity).mHealth
     local mana = GetPlayerFrom(playerEntity).mMana
-    local children = GetChildren(EntityID)
+    local children = GetChildrenList(EntityID)
     local paused = IsGamePause()
 
     if paused == true then
