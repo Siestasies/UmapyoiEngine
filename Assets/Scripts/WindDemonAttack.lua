@@ -75,7 +75,7 @@ function state_update(entity, dt)
 
             if distSq > ExposedVars.meleeRange * ExposedVars.meleeRange then
                 --ranged attack
-                local prefab = SpawnPrefab("fireball.prefab", Vec2(10000, 10000))
+                local prefab = SpawnPrefab("wind.prefab", Vec2(10000, 10000))
                 local projectile = GetProjectileFrom(prefab)
 
                 projectile.mStats.damage = enemy.mAttackDamage
@@ -86,7 +86,7 @@ function state_update(entity, dt)
                 end
 
                 AddForce(prefab, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, projectile.mStats.speed, angle - 180)
-                --AttackCD = enemy and enemy.mAttackSpeed or 2.0
+                AttackCD = enemy and enemy.mAttackSpeed or 2.0
 
                 --ranged attack animation
                 animator.animator:Play("attack", false)
@@ -97,12 +97,16 @@ function state_update(entity, dt)
                     collider.shapes[3].isActive = true  --Enable damage collider
                 end
 
-                --add dash
-                AddForce(enemy, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, ExposedVars.dashSpeed, angle - 180)
+                --get normalised vector
+                local length = math.sqrt(distSq)
+                if length > 0 then
+                    local normalisedDir = Vec2(dir.x/length, dir.y/length)
+                    GetRigidBody().velocity = Vec2(normalisedDir.x * ExposedVars.dashSpeed, normalisedDir.y * ExposedVars.dashSpeed)
+                end
+
                 --melee animation
                 animator.animator:Play("dash",false)
             end
-            AttackCD = enemy and enemy.mAttackSpeed or 2.0
         end
         isAttacking = false
     else
@@ -118,6 +122,11 @@ function state_update(entity, dt)
         if collider and collider.shapes:size() >= 3 then
             collider.shapes[3].isActive = false  --Enable damage collider
         end
+
+        GetRigidBody().velocity = Vec2(0,0)
+        animator.animator:Play("idle", false)
+
+        AttackCD = enemy and enemy.mAttackSpeed or 2.0
     end
 end
 
