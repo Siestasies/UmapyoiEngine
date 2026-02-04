@@ -110,6 +110,12 @@ end
 
 function OnTriggerEnter(other)
     -- Can be extended for health pickups, mana pickups, checkpoints, etc.
+    if HasProjectileOn(other) then
+        local proj = GetProjectileFrom(other)
+        if proj then
+            TakeDamage(proj.mStats.damage)
+        end
+    end
 end
 
 -- Helper function to handle damage
