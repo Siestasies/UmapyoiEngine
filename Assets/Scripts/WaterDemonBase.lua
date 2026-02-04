@@ -71,7 +71,16 @@ function HandleCollision(trigger)
     if playerId == trigger then
         local playerComp = GetPlayerFrom(playerId)
         if playerComp then
-            OnHurt(playerId, playerComp.mAttackDamage)
+
+            local elem = playerComp.attackStats[playerComp.currAttackIndex].elementType
+
+            Log("elem is " .. elem)
+
+            if elem == ElementType.Wind then
+                OnHurt(playerId, playerComp.mAttackDamage)
+            else
+                OnHurt(playerId, playerComp.mAttackDamage * 0.3)
+            end
 
             local transform = GetTransform()
             if transform then

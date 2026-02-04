@@ -235,14 +235,14 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     }
 
     // update the Trigger pair that has exited
-    for (const auto& pair : previousTriggers)
+    for (const auto& trigPair : previousTriggers)
     {
         // means has ended
-        if (currentTriggers.find(pair) == currentTriggers.end())
+        if (currentTriggers.find(trigPair) == currentTriggers.end())
         {
             // Trigger ended - emit exit event
             pEventSystem->Emit<Uma_Engine::OnTriggerExitEvent>(
-                pair.entityA, pair.entityB);
+                trigPair.entityA, trigPair.entityB);
         }
     }
 
@@ -393,29 +393,35 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
         if (!CollisionIntersection_RectRect_Static(box1, box2))
             return;
 
-        // Determine which entity owns the trigger
-        Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? colliderEntity1 : colliderEntity2;
+        // When both shapes are triggers, process each direction separately
+        // When only one is a trigger, process that direction only
+        bool trigger1 = (purpose1 == ColliderPurpose::Trigger);
+        bool trigger2 = (purpose2 == ColliderPurpose::Trigger);
 
-        // Check if this is a new trigger interaction
-        bool wasColliding = previousTriggers.find(pair) != previousTriggers.end();
-
-        // Only emit events if this is the first shape collision for this pair this frame
-        auto insertResult = currentTriggers.insert(pair);
-        bool isFirstCollisionThisFrame = insertResult.second;
-
-        if (isFirstCollisionThisFrame)
+        auto processTrigger = [&](Entity owner)
         {
-            if (!wasColliding)
+            TriggerPair trigPair(colliderEntity1, colliderEntity2, owner);
+            bool wasColliding = previousTriggers.find(trigPair) != previousTriggers.end();
+            auto insertResult = currentTriggers.insert(trigPair);
+            bool isFirstCollisionThisFrame = insertResult.second;
+
+            if (isFirstCollisionThisFrame)
             {
-                // New trigger - emit enter event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(colliderEntity1, colliderEntity2, triggerOwner);
+                if (!wasColliding)
+                {
+                    pEventSystem->Emit<Uma_Engine::OnTriggerEnterEvent>(colliderEntity1, colliderEntity2, owner);
+                }
+                else
+                {
+                    pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(colliderEntity1, colliderEntity2, owner);
+                }
             }
-            else
-            {
-                // Ongoing trigger - emit stay event
-                pEventSystem->Emit<Uma_Engine::OnTriggerEvent>(colliderEntity1, colliderEntity2, triggerOwner);
-            }
-        }
+        };
+
+        if (trigger1)
+            processTrigger(colliderEntity1);
+        if (trigger2)
+            processTrigger(colliderEntity2);
 
         return;
     }

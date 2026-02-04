@@ -120,12 +120,19 @@ function OnCollisionEnter(other)
     end
 end
 
-function OnTriggerEnter(other)
+function OnTriggerEnter(other, triggerOwner)
     -- Can be extended for health pickups, mana pickups, checkpoints, etc.
-    if HasProjectileOn(other) then
-        local proj = GetProjectileFrom(other)
+    if HasProjectileOn(triggerOwner) then
+        local proj = GetProjectileFrom(triggerOwner)
         if proj then
             TakeDamage(proj.mStats.damage)
+        end
+    end
+
+    if HasEnemyOn(triggerOwner) then
+        local enemy = GetEnemyFrom(triggerOwner)
+        if enemy then
+            TakeDamage(enemy.mAttackDamage)
         end
     end
 end
