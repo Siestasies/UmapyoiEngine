@@ -13,7 +13,7 @@ function state_enter(entity)
     -- Play death animation
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("dead", true)
+        animator.animator:Play("die", true)
     end
 end
 

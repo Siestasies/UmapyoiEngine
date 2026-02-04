@@ -1,5 +1,5 @@
 ExposedVars = {
-    chaseEnterRange = 70.0
+    chaseEnterRange = 40.0  -- Same as water demon
 }
 local animator
 
@@ -19,7 +19,7 @@ function state_update(entity, dt)
     end
     
     local playerTransform = GetTransformFrom(playerId)
-    local myTransform = GetTransform()
+    local myTransform = GetTransformFrom(entity)
     if not playerTransform or not myTransform then
         return
     end
