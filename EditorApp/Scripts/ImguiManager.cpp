@@ -4982,8 +4982,31 @@ namespace Uma_Engine
                     auto& clip = effects.clips[i];
 
                     std::string headerLabel = "Clip " + std::to_string(i);
+                    if (!clip.name.empty())
+                    {
+                        headerLabel += " (" + clip.name + ")";
+                    }
+
+                    headerLabel += "###Clip";
+
                     if (ImGui::TreeNode(headerLabel.c_str()))
                     {
+                        // Clip name field
+                        static char nameBuffer[64];
+                        strncpy(nameBuffer, clip.name.c_str(), 63);
+                        nameBuffer[63] = '\0';
+                        if (ImGui::InputText("Name", nameBuffer, 64))
+                        {
+                            clip.name = nameBuffer;
+                            m_hasUnsavedEdit = true;
+                        }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Optional name for referencing this clip from code");
+                        }
+
+                        ImGui::Separator();
+
                         // Property Type
                         const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha" };
                         int currentProperty = static_cast<int>(clip.property);
