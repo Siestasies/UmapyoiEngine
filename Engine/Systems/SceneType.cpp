@@ -347,6 +347,7 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_UI::Slider>();
         m_Coordinator.RegisterComponent<Uma_UI::Checkbox>();
         m_Coordinator.RegisterComponent<Uma_UI::Text>();
+        m_Coordinator.RegisterComponent<Uma_UI::Effects>();
         m_Coordinator.RegisterComponent<Uma_ECS::ParticleEmitter>();
         m_Coordinator.RegisterComponent<Uma_ECS::Tilemap>();
         m_Coordinator.RegisterComponent<Uma_ECS::FSM>();

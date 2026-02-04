@@ -24,7 +24,7 @@
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
                         "layer": 16,
-                        "order": 0,
+                        "order": 1,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -382,6 +382,69 @@
                         "next": ""
                     }
                 }
+            },
+            {
+                "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "vfx",
+                        "position": {
+                            "x": 0.0,
+                            "y": -0.3
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.5,
+                            "y": 1.5
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "splash",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                        "isRoot": false
+                    }
+                }
             }
         ],
         "rootEntity": 0
@@ -390,6 +453,9 @@
         "textures": [
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
             }
         ],
         "fonts": [],

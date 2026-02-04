@@ -87,8 +87,8 @@ void Uma_ECS::CollisionSystem::UpdateBoundingBoxes()
 
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.worldScale.x,
-                effectiveSize.y * tf.worldScale.y
+                effectiveSize.x * std::abs(tf.worldScale.x),
+                effectiveSize.y * std::abs(tf.worldScale.y)
             };
 
             Vec2 worldOffset = Vec2{
@@ -387,6 +387,12 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     // Handle triggers (no physics resolution)
     if (purpose1 == ColliderPurpose::Trigger || purpose2 == ColliderPurpose::Trigger)
     {
+        // Verify actual current-position overlap
+        // The broadphase may have matched using swept bounds from the physics collider,
+        // which can cause false positives when only the previous position overlapped.
+        if (!CollisionIntersection_RectRect_Static(box1, box2))
+            return;
+
         // Determine which entity owns the trigger
         Entity triggerOwner = (purpose1 == ColliderPurpose::Trigger) ? colliderEntity1 : colliderEntity2;
 
@@ -693,13 +699,13 @@ void Uma_ECS::CollisionSystem::DebugRender()
             Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
 
             Vec2 scaledSize = Vec2{
-                effectiveSize.x * tf.scale.x,
-                effectiveSize.y * tf.scale.y
+                effectiveSize.x * tf.worldScale.x,
+                effectiveSize.y * tf.worldScale.y
             };
 
             Vec2 worldOffset = Vec2{
-                shape.offset.x * tf.scale.x,
-                shape.offset.y * tf.scale.y
+                shape.offset.x * tf.worldScale.x,
+                shape.offset.y * tf.worldScale.y
             };
 
             Vec2 halfSize = scaledSize * 0.5f;
@@ -832,8 +838,8 @@ Uma_ECS::BoundingBox Uma_ECS::CollisionSystem::ComputeCurrentBounds(Entity entit
 
     Vec2 effectiveSize = shape.autoFitToSprite ? spriteSize : shape.size;
     Vec2 scaledSize = Vec2{
-        effectiveSize.x * tf.worldScale.x,
-        effectiveSize.y * tf.worldScale.y
+        effectiveSize.x * std::abs(tf.worldScale.x),
+        effectiveSize.y * std::abs(tf.worldScale.y)
     };
 
     Vec2 worldOffset = Vec2{

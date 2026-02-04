@@ -1,7 +1,7 @@
 --copy and paste template for the states
 --exposed vars for variable you want that can be editied in editor
 ExposedVars = {
-    attackExitRange = 12.0,
+    attackExitRange = 50.0,
     HoverSpd = 1.5,
     chargeTime = 2.0
 }
@@ -14,6 +14,7 @@ local baseX = 0.0
 local animator = nil
 local transform = nil
 local isAttacking = false
+local spriteComp = nil
 
 --takes in entity id from C++ to use in case needed
 function state_enter(entity)
@@ -34,6 +35,10 @@ function state_enter(entity)
 
     if HasAnimator() then
         animator = GetAnimator()
+    end
+
+    if HasSprite() then
+        spriteComp = GetSprite()
     end
     
 end
@@ -111,12 +116,21 @@ function state_update(entity, dt)
             local prefab = SpawnPrefab("fireball.prefab", Vec2(10000, 10000))
             local projectile = GetProjectileFrom(prefab)
 
+
             projectile.mStats.damage = enemy.mAttackDamage
             PlayEntitySound(entity, "fire_enemy_attack", false, 0.3);
 
             if angle < 0 then
                 angle = angle + 360
             end
+
+            if angle >= 90.0 and angle <= 270 then
+                spriteComp.flipX = true
+            else
+                spriteComp.flipX = false
+            end
+
+            Log("attack dir " .. angle)
 
             AddForce(prefab, Vec2(transform.worldPosition.x,transform.worldPosition.y), dir, projectile.mStats.speed, angle - 180)
             AttackCD = enemy and enemy.mAttackSpeed or 2.0

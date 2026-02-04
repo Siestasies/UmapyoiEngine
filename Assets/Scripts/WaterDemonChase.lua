@@ -53,7 +53,6 @@ function state_update(entity, dt)
             pf.goal.y = playerTransform.worldPosition.y
         end
     end 
-    Log("Update Chase " .. distSq .. " " .. "attackrange " .. ExposedVars.chaseExitRange * ExposedVars.chaseExitRange)
     
     if enemy and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
         ChangeState(entity, "WaterDemonAttack")

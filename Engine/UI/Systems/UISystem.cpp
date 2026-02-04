@@ -74,6 +74,7 @@ namespace Uma_UI
         Vec2 screenSize = pGraphics->GetSceneViewport();
         if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
         LayoutPass();
+        EffectsPass(dt);
     }
 
     /*!
@@ -463,6 +464,173 @@ namespace Uma_UI
         }
     }
 
+    void UISystem::EffectsPass(float dt)
+    {
+        auto& effectsArray = pCoordinator->GetComponentArray<Effects>();
+
+        for (size_t i = 0; i < effectsArray.Size(); ++i)
+        {
+            Uma_ECS::Entity entity = effectsArray.GetEntity(i);
+            auto& effects = effectsArray.GetComponentAt(i);
+
+            for (auto& clip : effects.clips)
+            {
+                if (!clip.isPlaying)
+                    continue;
+
+                clip.currentTime += dt;
+
+                if (clip.currentTime < clip.delay)
+                    continue;
+
+                clip.hasStarted = true;
+
+                float progress = clip.GetProgress();
+                float easedT = Easing::Apply(clip.easing, progress);
+
+                ApplyEffect(entity, clip, easedT);
+
+                if (clip.IsComplete())
+                {
+                    if (clip.loop)
+                    {
+                        clip.currentTime = 0.0f;
+                        clip.hasStarted = false;
+                    }
+                    else
+                    {
+                        clip.isPlaying = false;
+                    }
+                }
+            }
+        }
+    }
+
+    void UISystem::ApplyEffect(Uma_ECS::Entity entity, EffectClip& clip, float easedT)
+    {
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& imageArray = pCoordinator->GetComponentArray<Image>();
+        auto& textArray = pCoordinator->GetComponentArray<Text>();
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+
+        switch (clip.property)
+        {
+        case EffectProperty::Position:
+            if (rectTransformArray.Has(entity))
+            {
+                auto& rt = rectTransformArray.GetData(entity);
+                rt.anchoredPosition = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+                rt.isDirty = true;
+            }
+            break;
+
+        case EffectProperty::Scale:
+            if (rectTransformArray.Has(entity))
+            {
+                auto& rt = rectTransformArray.GetData(entity);
+
+                Vec2 currentScale = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+
+                static std::map<Uma_ECS::Entity, Vec2> originalSizes;
+                if (!clip.hasStarted || clip.currentTime <= clip.delay)
+                {
+                    originalSizes[entity] = rt.sizeDelta;
+                }
+
+                if (originalSizes.find(entity) != originalSizes.end())
+                {
+                    rt.sizeDelta = Vec2(
+                        originalSizes[entity].x * currentScale.x,
+                        originalSizes[entity].y * currentScale.y
+                    );
+                }
+                else
+                {
+                    originalSizes[entity] = rt.sizeDelta;
+                    rt.sizeDelta = Vec2(
+                        rt.sizeDelta.x * currentScale.x,
+                        rt.sizeDelta.y * currentScale.y
+                    );
+                }
+
+                rt.isDirty = true;
+
+                if (clip.applyToChildren && transformArray.Has(entity))
+                {
+                    ApplyScaleToChildren(entity, currentScale, originalSizes);
+                }
+
+                if (!clip.loop && clip.IsComplete())
+                {
+                    originalSizes.erase(entity);
+                }
+            }
+            break;
+
+        case EffectProperty::ColorTint:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.color = LerpColor(clip.startColor, clip.endColor, easedT);
+            }
+            else if (textArray.Has(entity))
+            {
+                auto& text = textArray.GetData(entity);
+                text.color = LerpColor(clip.startColor, clip.endColor, easedT);
+            }
+            break;
+
+        case EffectProperty::Alpha:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
+            else if (textArray.Has(entity))
+            {
+                auto& text = textArray.GetData(entity);
+                text.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    void UISystem::ApplyScaleToChildren(Uma_ECS::Entity entity, const Vec2& scaleMultiplier, std::map<Uma_ECS::Entity, Vec2>& originalSizes)
+    {
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+
+        if (!transformArray.Has(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+
+        for (Uma_ECS::Entity child : transform.children)
+        {
+            if (rectTransformArray.Has(child))
+            {
+                auto& childRT = rectTransformArray.GetData(child);
+
+                // Store child's original size on first application
+                if (originalSizes.find(child) == originalSizes.end())
+                {
+                    originalSizes[child] = childRT.sizeDelta;
+                }
+
+                childRT.sizeDelta = Vec2(
+                    originalSizes[child].x * scaleMultiplier.x,
+                    originalSizes[child].y * scaleMultiplier.y
+                );
+                childRT.isDirty = true;
+            }
+
+            ApplyScaleToChildren(child, scaleMultiplier, originalSizes);
+        }
+    }
+
     /*!
      * \brief Gets the current mouse position in screen pixel coordinates.
      * \return Mouse position as Vec2.
@@ -626,7 +794,7 @@ namespace Uma_UI
                 handleRT.anchoredPosition.y = handleOffset;
             }
 
-            handleRT.isDirty = true;
+            MarkEntityAndChildrenDirty(entity);
 
             if (imageArray.Has(slider.handle))
             {
@@ -670,7 +838,7 @@ namespace Uma_UI
                 break;
             }
 
-            fillRT.isDirty = true;
+            MarkEntityAndChildrenDirty(slider.fill);
         }
     }
 

@@ -291,6 +291,32 @@ namespace Uma_ECS
 
         // u need to register any class struct yall need 
 
+        // Register Vec3
+        sharedLua->new_usertype<Vec3>("Vec3",
+            sol::constructors<Vec3(), Vec3(float), Vec3(float, float, float)>(),
+
+            // Fields
+            "x", &Vec3::x,
+            "y", &Vec3::y,
+            "z", &Vec3::z,
+
+            // Operators (if you want them)
+            sol::meta_function::addition, [](const Vec3& a, const Vec3& b) { return a + b; },
+            sol::meta_function::subtraction, [](const Vec3& a, const Vec3& b) { return a - b; },
+            sol::meta_function::multiplication, sol::overload(
+                [](const Vec3& v, float s) { return v * s; },
+                [](float s, const Vec3& v) { return s * v; }
+            ),
+            sol::meta_function::to_string, [](const Vec3& v) {
+                return "Vec3(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+            }
+        );
+
+        sharedLua->set_function("Vec3", sol::overload(
+            []() { return Vec3(); },
+            [](float x, float y, float z) { return Vec3(x, y, z); }
+        ));
+
         // Register Vec2
         sharedLua->new_usertype<Vec2>("Vec2",
             // Constructors
@@ -416,8 +442,20 @@ namespace Uma_ECS
             return pCoordinator->GetParent(entity).has_value();
             });
 
-        sharedLua->set_function("GetChildren", [&](Entity entity) -> std::vector<Entity> {
-            return pCoordinator->GetChildren(entity);
+        sharedLua->set_function("GetChildrenList", [&](Entity entity) -> std::vector<Entity> {
+            return pCoordinator->GetChildrenList(entity);
+            });
+
+        sharedLua->set_function("GetChildren", [&](Entity entity, int index) -> Entity {
+            return pCoordinator->GetChildren(entity, index);
+            });
+
+        sharedLua->set_function("HasChildren", [&](Entity entity, int index) -> Entity {
+
+            if (pCoordinator->GetChildren(entity, index) == static_cast<Entity>(-1))
+                return false;
+
+            return true;
             });
 
         sharedLua->set_function("DestroyWithChildren", [&](Entity entity) {
@@ -563,12 +601,36 @@ namespace Uma_ECS
         );
 
         // Register Sprite
+        // Register Sprite
         sharedLua->new_usertype<Sprite>("Sprite",
+            // Texture and rendering
             "texturePath", &Sprite::texturePath,
             "renderLayer", &Sprite::renderLayer,
+            "renderOrder", &Sprite::renderOrder,
+
+            // Flip flags
             "flipX", &Sprite::flipX,
             "flipY", &Sprite::flipY,
-            "autoFlip", &Sprite::autoFlip
+            "autoFlip", &Sprite::autoFlip,
+
+            // Size behavior
+            "UseNativeSize", &Sprite::UseNativeSize,
+
+            // Color and transparency
+            "tintColor", &Sprite::tintColor,
+            "alpha", &Sprite::alpha,
+
+            // Sprite sheet properties
+            "spriteSheetGrid", &Sprite::spriteSheetGrid,
+            "spriteCell", &Sprite::spriteCell,
+            "spriteOffset", &Sprite::spriteOffset,
+
+            // Methods
+            "GetUVs", [](const Sprite& sprite) -> std::tuple<Vec2, Vec2> {
+                Vec2 uvOffset, uvSize;
+                sprite.GetUVs(uvOffset, uvSize);
+                return std::make_tuple(uvOffset, uvSize);
+            }
         );
 
         // Register Player component

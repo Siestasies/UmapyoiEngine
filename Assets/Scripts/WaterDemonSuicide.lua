@@ -8,6 +8,7 @@ local explosionTimer = 0
 local damageTimer = 0.0
 local isCharging = false
 local shieldBroken = false  -- Track shield break phase
+local vfxAnimator = nil;
 
 function state_enter(entity)
     explosionTimer = ExposedVars.explosionTimer
@@ -27,6 +28,16 @@ function state_enter(entity)
     if HasAnimator() then
         local animator = GetAnimator()
         animator.animator:Play("shield_broken", false)
+    end
+
+    if HasChildren(EntityID, 0) then
+
+        local vfxID = GetChildren(EntityID, 0)
+
+        if HasAnimatorOn(vfxID) then
+            vfxAnimator = GetAnimatorFrom(vfxID)
+        end
+
     end
 
 end
@@ -64,6 +75,10 @@ function state_update(entity, dt)
                 
                 -- Play explosion animation
                 animator.animator:Play("explode", false)
+
+                if vfxAnimator ~= nil then
+                    vfxAnimator.animator:Play("splash", true)
+                end
                 
                 exploded = true
                 damageTimer = ExposedVars.damageLinger

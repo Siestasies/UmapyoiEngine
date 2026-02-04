@@ -58,11 +58,11 @@ namespace Uma_Engine
         if (tileX == -1 || tileY == -1) return;
 
         // Handle mouse input
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left)) 
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Left) || ImGui::IsMouseDown(ImGuiMouseButton_Left)) 
         {
             PlaceTile(tileX, tileY, selectedTileIndex);
         }
-        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right)) 
+        if (ImGui::IsMouseClicked(ImGuiMouseButton_Right) || ImGui::IsMouseDown(ImGuiMouseButton_Right))
         {
             EraseTile(tileX, tileY);
         }
