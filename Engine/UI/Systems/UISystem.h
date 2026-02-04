@@ -237,7 +237,5 @@ namespace Uma_UI
          * \return True if font is loaded and valid.
          */
         bool EnsureFontLoaded(const std::string& fontName);
-
-        void ButtonOnClicked(Uma_ECS::Entity entity);
     };
 }

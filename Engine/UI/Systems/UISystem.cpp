@@ -53,8 +53,6 @@ namespace Uma_UI
         if (!pGraphics) { std::cerr << "UISystem::Init - Warning: Graphics not set!" << std::endl; }
         if (!pResourcesManager) { std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl; }
 
-        mScreenSize = pGraphics->GetSceneViewport();
-
         mHitTestCache.clear();
     }
 
@@ -195,7 +193,6 @@ namespace Uma_UI
         mHitTestCache.clear();
         auto sortedEntities = GetSortedUIEntities();
 
-        // Build hit test cache with proper NDC rectangles
         for (Uma_ECS::Entity entity : sortedEntities)
         {
             if (!pCoordinator->IsActiveInHierarchy(entity))
@@ -213,7 +210,6 @@ namespace Uma_UI
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
             mHitTestCache.push_back({ entity, rectTransform.computedRect });
 
-            // Also add slider handle to hit test cache (mapped to parent slider entity)
             if (sliderArray.Has(entity))
             {
                 auto& slider = sliderArray.GetData(entity);
@@ -223,7 +219,6 @@ namespace Uma_UI
                     if (handleRTArray.Has(slider.handle))
                     {
                         auto& handleRT = handleRTArray.GetData(slider.handle);
-                        // Add handle's rect but map it to the slider entity
                         mHitTestCache.push_back({ entity, handleRT.computedRect });
                     }
                 }
@@ -237,6 +232,8 @@ namespace Uma_UI
         {
             mMouseConsumedThisFrame = true;
         }
+
+        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
 
         auto& buttonArray = pCoordinator->GetComponentArray<Button>();
         for (size_t i = 0; i < buttonArray.Size(); ++i)
@@ -280,7 +277,7 @@ namespace Uma_UI
                     {
                         pEventSystem->Emit<Uma_Engine::PointerClickEvent>(entity, mMousePositionScreen);
                         pEventSystem->Emit<Uma_Engine::PointerUpEvent>(entity, mMousePositionScreen);
-                        ButtonOnClicked(entity);
+                        system->CallScriptFunction(entity, button.scriptName, "OnClicked");
                     }
                 }
                 else
@@ -346,7 +343,6 @@ namespace Uma_UI
 
                     if (!slider.scriptName.empty())
                     {
-                        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
                         system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnDrag");
                     }
                 }
@@ -360,7 +356,6 @@ namespace Uma_UI
 
                     if (!slider.scriptName.empty())
                     {
-                        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
                         system->CallScriptFunction(mDraggingSlider, slider.scriptName, "OnRelease");
                     }
                 }
@@ -428,7 +423,6 @@ namespace Uma_UI
 
                         if (!slider.scriptName.empty())
                         {
-                            auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
                             system->CallScriptFunction(entity, slider.scriptName, "OnPress");
                         }
                     }
@@ -476,7 +470,6 @@ namespace Uma_UI
 
                         if (!checkbox.scriptName.empty())
                         {
-                            auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
                             system->CallScriptFunction(entity, checkbox.scriptName, "OnToggle");
                         }
                     }
@@ -642,7 +635,6 @@ namespace Uma_UI
             {
                 auto& childRT = rectTransformArray.GetData(child);
 
-                // Store child's original size on first application
                 if (originalSizes.find(child) == originalSizes.end())
                 {
                     originalSizes[child] = childRT.sizeDelta;
@@ -737,7 +729,6 @@ namespace Uma_UI
      */
     Rect UISystem::GetParentRect(Uma_ECS::Entity entity)
     {
-        // Get parent from Transform component (organizational hierarchy)
         if (!pCoordinator->GetComponentArray<Uma_ECS::Transform>().Has(entity))
         {
             return GetScreenRect();
@@ -760,7 +751,6 @@ namespace Uma_UI
             return parentRect.computedRect;
         }
 
-        // Parent doesn't have RectTransform, keep looking up the hierarchy
         return GetParentRect(parentEntity);
     }
 
@@ -1025,15 +1015,5 @@ namespace Uma_UI
         Uma_Engine::FontData* uiFont = pResourcesManager->GetFont(fontName);
         float testWidth = pGraphics->MeasureText(*uiFont, "test", 24.0f);
         return testWidth > 0.0f;
-    }
-
-    void UISystem::ButtonOnClicked(Uma_ECS::Entity entity)
-    {
-        //pEventSystem->Emit<Uma_Engine::ButtonOnClickedEvent>(entity, 0);
-
-        auto& button = pCoordinator->GetComponent<Button>(entity);
-
-        auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
-        system->CallScriptFunction(entity, button.scriptName, "OnClicked");
     }
 }
