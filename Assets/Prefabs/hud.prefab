@@ -24,15 +24,15 @@
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
-                                "scriptPath": "Assets/Scripts/health.lua",
-                                "scriptName": "health.lua",
+                                "scriptPath": "Assets/Scripts/hud.lua",
+                                "scriptName": "hud.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
                             }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": true
                     },
                     "class Uma_UI::RectTransform": {
@@ -123,7 +123,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -182,7 +184,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -241,7 +245,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -300,7 +306,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -359,7 +367,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -418,7 +428,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -477,7 +489,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -536,7 +550,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -595,7 +611,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -650,7 +668,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -821,7 +841,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
@@ -992,7 +1014,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
