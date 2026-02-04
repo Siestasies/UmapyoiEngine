@@ -46,7 +46,10 @@ namespace Uma_ECS
         None,
         Fire,
         Water,
-        Steam  // Fusion element
+        Wind,
+        Steam,
+        Pyronado,
+        Whirlpool
     };
 
     struct CombatState
