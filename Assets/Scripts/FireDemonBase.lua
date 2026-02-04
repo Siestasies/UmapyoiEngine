@@ -2,16 +2,26 @@ ExposedVars = {
     --empty for now
 }
 local enemy
+local playerId
+local isDead
 
 function Start()
     if HasEnemy() then
         enemy = GetEnemy()
     end
+
+    playerId = FindEntityWithComponent("Player")
+    if playerId == -1 or not IsEntityValid(playerId) then
+        return
+    end
+
+    ChangeState(EntityID, "FireDemonIdle")
 end
 
 function Update(dt)
     if enemy then
-        if enemy.mHealth < 0 then
+        if enemy.mHealth < 0 and not isDead then
+            isDead = true
             ChangeState(EntityID, "FireDemonDead")
         end
     end
@@ -30,8 +40,31 @@ function OnCollisionExit(other)
 
 end
 
-function OnTriggerEnter(other)
-    
+function HandleCollision(trigger)
+    if playerId == trigger then
+        local playerComp = GetPlayerFrom(playerId)
+        if playerComp then
+            OnHurt(playerId, playerComp.mAttackDamage)
+
+            local transform = GetTransform()
+            if transform then
+                --PlayOneShotAtEntity(EntityID, "hurt", 0.5)
+            end
+        end
+    end
+end
+
+function OnHurt(player, damage)
+    -- damage handling logic here
+
+    enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
+
+    PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
+    PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
+end
+
+function OnTriggerEnter(other, triggerOwner)
+    HandleCollision(triggerOwner)
 end
 
 function OnTriggerExit(other)

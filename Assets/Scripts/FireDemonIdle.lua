@@ -1,9 +1,15 @@
 ExposedVars = {
-    ChaseRange = 8.0
+    chaseEnterRange = 20.0
 }
+local animator
 
 function state_enter(entity)
     Log("idle entered")
+
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
+    animator.animator:Play("idle", true)
 end
 
 function state_update(entity, dt)
@@ -13,7 +19,7 @@ function state_update(entity, dt)
     end
     
     local playerTransform = GetTransform(playerId)
-    local myTransform = GetTransform(entity)
+    local myTransform = GetTransform()
     if not playerTransform or not myTransform then
         return
     end
@@ -23,7 +29,7 @@ function state_update(entity, dt)
     local distSq = dx * dx + dy * dy
     
     -- Transition to Chase if player within range
-    if distSq < ExposedVars.ChaseRange * ExposedVars.ChaseRange then
+    if distSq < ExposedVars.chaseEnterRange * ExposedVars.chaseEnterRange then
         ChangeState(entity, "FireDemonChase")
         return
     end
