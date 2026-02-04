@@ -380,7 +380,7 @@
             },
             {
                 "id": 6,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "restart",

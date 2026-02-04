@@ -21,7 +21,7 @@ function Update(dt)
     -- if no enemies, set level end flag
     local enemies = FindEntitiesWithComponent("Enemy")
     -- set to 1 for debugging
-    if enemies <= 0 then
+    if enemies == 0 then
         levelEndState.setLevelEnd(true)
     end
 
@@ -32,7 +32,7 @@ function Update(dt)
         time = time - dt
         if time <= 0 then
             time = 1
-            LoadScene("tutorial.scn")
+            LoadScene("level_1.scn")
         end
     end
 end
