@@ -260,7 +260,7 @@
                     "playOnEnable": false,
                     "clips": [
                         {
-                            "name": "",
+                            "name": "HoverEnter",
                             "property": 1,
                             "easing": 3,
                             "duration": 1.0,
@@ -291,7 +291,7 @@
                             "endFloat": 1.0
                         },
                         {
-                            "name": "",
+                            "name": "HoverEnter",
                             "property": 1,
                             "easing": 3,
                             "duration": 1.0,
@@ -322,7 +322,7 @@
                             "endFloat": 1.0
                         },
                         {
-                            "name": "",
+                            "name": "HoverExit",
                             "property": 1,
                             "easing": 3,
                             "duration": 0.0,
@@ -754,7 +754,7 @@
                     "playOnEnable": false,
                     "clips": [
                         {
-                            "name": "",
+                            "name": "HoverEnter",
                             "property": 1,
                             "easing": 3,
                             "duration": 1.0,
@@ -785,7 +785,7 @@
                             "endFloat": 1.0
                         },
                         {
-                            "name": "",
+                            "name": "HoverEnter",
                             "property": 1,
                             "easing": 3,
                             "duration": 1.0,
@@ -816,7 +816,7 @@
                             "endFloat": 1.0
                         },
                         {
-                            "name": "",
+                            "name": "HoverExit",
                             "property": 1,
                             "easing": 3,
                             "duration": 0.0,

@@ -3,14 +3,13 @@ local clicked = false
 
 function OnPointerEnter()
     local effects = GetEffects()
-    effects:Play(0)
-    effects:Play(1)
+    effects:Play("HoverEnter")
 end
 
 function OnPointerExit()
     local effects = GetEffects()
     effects:StopAll()
-    effects:Play(2)
+    effects:Play("HoverExit")
 end
 
 

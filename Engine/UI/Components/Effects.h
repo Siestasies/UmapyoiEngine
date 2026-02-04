@@ -171,7 +171,6 @@ namespace Uma_UI
                 if (clip.name == name)
                 {
                     clip.Play();
-                    return;
                 }
             }
         }
@@ -183,7 +182,6 @@ namespace Uma_UI
                 if (clip.name == name)
                 {
                     clip.Pause();
-                    return;
                 }
             }
         }
@@ -195,7 +193,6 @@ namespace Uma_UI
                 if (clip.name == name)
                 {
                     clip.Stop();
-                    return;
                 }
             }
         }
@@ -207,7 +204,6 @@ namespace Uma_UI
                 if (clip.name == name)
                 {
                     clip.Reset();
-                    return;
                 }
             }
         }
