@@ -251,14 +251,14 @@
                     },
                     "hoverColour": {
                         "r": 0.745,
-                        "g": 0.352,
-                        "b": 0.058,
+                        "g": 0.351,
+                        "b": 0.057,
                         "a": 1.0
                     },
                     "pressedColour": {
-                        "r": 0.352,
+                        "r": 0.351,
                         "g": 0.156,
-                        "b": 0.058,
+                        "b": 0.057,
                         "a": 1.0
                     },
                     "disabledColour": {
@@ -376,9 +376,9 @@
                     "sortingOrder": 0,
                     "fontSize": 3.5,
                     "colour": {
-                        "r": 0.904,
-                        "g": 0.904,
-                        "b": 0.904,
+                        "r": 0.903,
+                        "g": 0.903,
+                        "b": 0.903,
                         "a": 1.0
                     },
                     "alignment": 1,
@@ -658,14 +658,14 @@
                     },
                     "hoverColour": {
                         "r": 0.745,
-                        "g": 0.352,
-                        "b": 0.058,
+                        "g": 0.351,
+                        "b": 0.057,
                         "a": 1.0
                     },
                     "pressedColour": {
-                        "r": 0.352,
+                        "r": 0.351,
                         "g": 0.156,
-                        "b": 0.058,
+                        "b": 0.057,
                         "a": 1.0
                     },
                     "disabledColour": {
@@ -1418,6 +1418,16 @@
                     },
                     "parent": 0
                 },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/uitext_splashtext.lua",
+                            "scriptName": "uitext_splashtext.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
                         "x": 0.5,
@@ -1455,9 +1465,10 @@
                     "visible": true
                 },
                 "class Uma_UI::Effects": {
-                    "playOnEnable": true,
+                    "playOnEnable": false,
                     "clips": [
                         {
+                            "name": "Smaller",
                             "property": 1,
                             "easing": 1,
                             "duration": 1.0,
@@ -1488,6 +1499,7 @@
                             "endFloat": 1.0
                         },
                         {
+                            "name": "Bigger",
                             "property": 1,
                             "easing": 2,
                             "duration": 1.0,
