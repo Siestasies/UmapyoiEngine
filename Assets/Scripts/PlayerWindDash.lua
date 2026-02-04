@@ -1,21 +1,22 @@
--- PlayerWaterSlash.lua
--- Water Slash elemental attack - can stun certain enemies, sets up elemental combo
+-- PlayerWindDash.lua
+-- Fire Slash elemental attack - applies burn and sets up elemental combo
 
 ExposedVars = {
-    waterSlashAnimationName = "water_slash",
-    waterSlashSoundName = "water_slash",
-    attackDuration = 0.5
+    WindDashAnimationName = "atk_3",
+    WindDashSoundName = "atk_3",
 }
 
 -- State-local variables
 local attackTimer = 0
 local attackPerformed = false
+local dashDirection = Vec2(0, 0)
+local originalInvulnerable = false
 local attackStat = nil
 local animator = nil
 local collider = nil
 
 function state_enter(entity)
-    Log("Player entered Water Slash state")
+    Log("Player entered Wind Dash state")
     
     if not HasPlayer() then
         ChangeState(entity, "PlayerIdle")
@@ -42,42 +43,69 @@ function state_enter(entity)
         collider = GetCollider()
     end
 
-    -- AttackIndex
-    player.currAttackIndex = 4
+    attackStat = GetWindDashAttackStat(player)
     
     -- Check mana cost
-    attackStat = GetWaterSlashAttackStat(player)
     if player.mMana < attackStat.manaCost then
-        Log("Not enough mana for Water Slash!")
+        Log("Not enough mana for Wind Dash!")
         ChangeState(entity, "PlayerIdle")
         return
     end
+
+    -- AttackIndex
+    player.currAttackIndex = 5
     
     -- Consume mana
     player.mMana = math.floor(player.mMana - attackStat.manaCost)
     
     -- Set elemental combo state
-    --player.lastElementUsed = ElementType.Water
+    --player.lastElementUsed = ElementType.Wind
     --player.elementComboTimer = player.elementComboWindow
     
-    -- Initialize attack
-    attackTimer = attackDuration
+    -- Initialize attack/dash timer
+    attackTimer = player.mDashDuration
     attackPerformed = false
     
-    -- Play animation and sound
-    animator.animator:Play(waterSlashAnimationName, true)
-    PlaySound(waterSlashSoundName, 0.8, 0)
+    -- Store original invulnerability state and make player invulnerable
+    originalInvulnerable = player.isInvulnerable
+    player.isInvulnerable = true
     
-    -- Stop movement
-    if HasRigidBody() then
-        local rb = GetRigidBody()
-        if rb then
-            rb.velocity = Vec2(0, 0)
+    -- Calculate dash direction based on input or facing direction
+    local moveX = 0
+    local moveY = 0
+    
+    if KeyDown(KEY_W) then moveY = moveY + 1 end
+    if KeyDown(KEY_S) then moveY = moveY - 1 end
+    if KeyDown(KEY_A) then moveX = moveX - 1 end
+    if KeyDown(KEY_D) then moveX = moveX + 1 end
+    
+    -- If no input, dash in facing direction
+    if moveX == 0 and moveY == 0 then
+        if HasSprite() then
+            local sprite = GetSprite()
+            if sprite then
+                moveX = sprite.flipX and -1 or 1
+            else
+                moveX = 1
+            end
+        else
+            moveX = 1
         end
     end
     
-    -- Face towards mouse
-    FaceTowardsMouse(entity)
+    -- Normalize direction
+    local length = math.sqrt(moveX * moveX + moveY * moveY)
+    if length > 0 then
+        dashDirection = Vec2(moveX / length, moveY / length)
+    else
+        dashDirection = Vec2(1, 0)
+    end
+    
+    -- Play animation and sound
+    animator.animator:Play(WindDashAnimationName, true)
+    PlaySound(WindDashSoundName, 0.8, 0)
+    
+    player.mDashCD = attackStat.attackCd
 end
 
 function state_update(entity, dt)
@@ -85,19 +113,30 @@ function state_update(entity, dt)
         ChangeState(entity, "PlayerIdle")
         return
     end
-    
-    local player = GetPlayer()
-    if not player then
+    if not HasRigidBody() then
         ChangeState(entity, "PlayerIdle")
         return
     end
     
+    local player = GetPlayer()
+    local rb = GetRigidBody()
+    
     -- Update timer
     attackTimer = attackTimer - dt
 
-    if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.5) then
-        -- Check if player has enough mana for wind dash
-        if CanUseElementalAttack(player, "wind") then
+    -- Check for Fire Slash (Q key)
+    if KeyPressed(KEY_Q) and attackTimer > (player.mDashDuration * 0.5) then
+        if CanUseElementalAttack(player, "fire") then
+            ChangeState(entity, "PlayerPyronado")
+            return
+        else
+            Log("Not enough mana for Pyronado!")
+        end
+    end
+
+    -- Check for Water Slash (E key)
+    if KeyPressed(KEY_E) and attackTimer > (player.mDashDuration * 0.5) then
+        if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWhirlpool")
             return
         else
@@ -105,23 +144,17 @@ function state_update(entity, dt)
         end
     end
 
-    -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and attackTimer > (attackDuration * 0.5) then
-        if CanUseElementalAttack(player, "fire") then
-            ChangeState(entity, "PlayerSteamBurst")
-            return
-        else
-            Log("Not enough mana for Steam Burst!")
-        end
-    end
-    
-    -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
-        Log("Water Slash Attack!")
+    -- Perform damage at attack midpoint
+    if not attackPerformed and attackTimer < (player.mDashDuration * 0.5) then
+        Log("Wind Dash Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
     end
+
+    -- Apply attack/dash velocity
+    local dashSpeed = player.mSpeed * player.mDashSpeed
+    rb.velocity = Vec2(dashDirection.x * dashSpeed, dashDirection.y * dashSpeed)
     
     -- Attack finished
     if attackTimer <= 0 then
@@ -143,21 +176,39 @@ function state_update(entity, dt)
 end
 
 function state_exit(entity)
-    Log("Player exited Water Slash state")
+    Log("Player exited Wind Dash state")
+    
+    if not HasPlayer() then return end
+    
+    local player = GetPlayer()
+    if not player then return end
+    
+    -- Restore invulnerability state (keep i-frames briefly after dash)
+    -- Player component will handle the invulnerability timer
+    player.isInvulnerable = originalInvulnerable
+    
+    -- Stop dash velocity
+    if HasRigidBody() then
+        local rb = GetRigidBody()
+        if rb then
+            rb.velocity = Vec2(0, 0)
+        end
+    end
+
     if attackStat then 
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
     end
-    StopSound(waterSlashSoundName);
+    StopSound(WindDashSoundName);
 end
 
-function GetWaterSlashAttackStat(player)
+function GetWindDashAttackStat(player)
     if not player then return nil end
     
     local attackStats = player.attackStats
     if attackStats then
         for i = 1, #attackStats do
             local attack = attackStats[i]
-            if attack and attack.elementType == ElementType.Water then
+            if attack and attack.elementType == ElementType.Wind then
                 return attack
             end
         end

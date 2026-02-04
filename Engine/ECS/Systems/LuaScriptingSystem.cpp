@@ -640,13 +640,13 @@ namespace Uma_ECS
 
         sharedLua->new_enum<ElementType>("ElementType",
             {
-                { "None", ElementType::None },
-                { "Fire", ElementType::Fire },
-                { "Water", ElementType::Water },
-                { "Wind", ElementType::Wind },
-                { "Steam", ElementType::Steam },
-                { "Pyronado", ElementType::Pyronado },
-                { "Whirlpool", ElementType::Whirlpool }
+                { "None", ElementType::None },          // 1,2
+                { "Fire", ElementType::Fire },          // 3
+                { "Water", ElementType::Water },        // 4
+                { "Wind", ElementType::Wind },          // 5
+                { "Steam", ElementType::Steam },        // 6
+                { "Pyronado", ElementType::Pyronado },  // 7
+                { "Whirlpool", ElementType::Whirlpool } // 8
             }
         );
 

@@ -36,7 +36,7 @@
                         "mDefense": 5,
                         "mMana": 100.0,
                         "mMaxMana": 100.0,
-                        "mManaRegenRate": 2.0,
+                        "mManaRegenRate": 100.0,
                         "mNeutralAttackManaGain": 5,
                         "mInvulnerabilityDuration": -0.001,
                         "mHitStunDuration": 0.3,
@@ -201,6 +201,111 @@
                                 "purpose": 2,
                                 "layer": 2,
                                 "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 9.897,
+                                    "y": -8.097
+                                },
+                                "size": {
+                                    "x": 17.697,
+                                    "y": 26.298
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 9.897,
+                                    "y": -8.097
+                                },
+                                "size": {
+                                    "x": 17.697,
+                                    "y": 26.298
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 9.897,
+                                    "y": -8.097
+                                },
+                                "size": {
+                                    "x": 17.697,
+                                    "y": 26.298
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -10.6
+                                },
+                                "size": {
+                                    "x": 28.6,
+                                    "y": 10.0
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 9.897,
+                                    "y": -8.097
+                                },
+                                "size": {
+                                    "x": 19.396,
+                                    "y": 26.497
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "purpose": 0,
+                                "layer": 0,
+                                "colliderMask": 0,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 1.0,
+                                    "y": 1.0
+                                },
+                                "purpose": 0,
+                                "layer": 0,
+                                "colliderMask": 0,
                                 "isActive": false,
                                 "autoFitToSprite": false
                             }
@@ -393,6 +498,78 @@
                                         "name": "waterSlash_stunDuration",
                                         "type": 0,
                                         "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "windDash_damage",
+                                        "type": 0,
+                                        "value": 1.299,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyronado_manaCost",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyronado_speed",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlpool_speed",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlpool_damage",
+                                        "type": 0,
+                                        "value": 2.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyronado_damage",
+                                        "type": 0,
+                                        "value": 2.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "windDash_manaCost",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlpool_manaCost",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "windDash_speed",
+                                        "type": 0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -653,6 +830,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackSoundnName",
+                                        "type": 3,
+                                        "value": "normal_atk",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -696,6 +881,14 @@
                                     {
                                         "name": "steamBurstAnimationName",
                                         "type": 3,
+                                        "value": "atk_fire_water",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurstSoundName",
+                                        "type": 3,
                                         "value": "steam_burst",
                                         "min": 0.0,
                                         "max": 100.0,
@@ -733,6 +926,107 @@
                                         "isSlider": false
                                     }
                                 ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerWindDash.lua",
+                                "scriptName": "PlayerWindDash.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "WindDashAnimationName",
+                                        "type": 3,
+                                        "value": "atk_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "WindDashSoundName",
+                                        "type": 3,
+                                        "value": "atk_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerPyronado.lua",
+                                "scriptName": "PlayerPyronado.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "pyronadoAnimationName",
+                                        "type": 3,
+                                        "value": "atk_fire_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.699,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyronadoSoundName",
+                                        "type": 3,
+                                        "value": "pyronado",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerWhirlpool.lua",
+                                "scriptName": "PlayerWhirlpool.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.699,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurstAnimationName",
+                                        "type": 3,
+                                        "value": "steam_burst",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurstSoundName",
+                                        "type": 3,
+                                        "value": "steam_burst",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlpoolSoundName",
+                                        "type": 3,
+                                        "value": "whirlpool",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlpoolAnimationName",
+                                        "type": 3,
+                                        "value": "atk_water_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -740,6 +1034,16 @@
                         "autoPlay": true,
                         "initialClip": "idle",
                         "clips": [
+                            {
+                                "name": "normal_atk",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 0,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
                             {
                                 "name": "idle",
                                 "framesX": 8,
@@ -751,11 +1055,21 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "normal_atk",
+                                "name": "atk_wind",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 0,
-                                "frameCount": 5,
+                                "startFrame": 24,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
+                                "name": "hurt",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 16,
+                                "frameCount": 3,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -771,21 +1085,11 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "hurt",
+                                "name": "atk_water",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 16,
-                                "frameCount": 3,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_wind",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 24,
-                                "frameCount": 8,
+                                "startFrame": 32,
+                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -796,16 +1100,6 @@
                                 "framesY": 5,
                                 "startFrame": 8,
                                 "frameCount": 5,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_water",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 32,
-                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -828,7 +1122,7 @@
                                 "frameCount": 9,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
+                                "texturePath": "Assets/player ss 1.png"
                             },
                             {
                                 "name": "atk_fire_water",
@@ -838,7 +1132,7 @@
                                 "frameCount": 9,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
+                                "texturePath": "Assets/player ss 1.png"
                             },
                             {
                                 "name": "atk_water_wind",
@@ -848,7 +1142,7 @@
                                 "frameCount": 9,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
+                                "texturePath": "Assets/player ss 3.png"
                             },
                             {
                                 "name": "atk_fire_wind",
@@ -858,7 +1152,7 @@
                                 "frameCount": 9,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
+                                "texturePath": "Assets/player ss 3.png"
                             }
                         ]
                     },
@@ -870,9 +1164,9 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "PlayerFireSlash.lua",
+                                "name": "PlayerBase.lua",
                                 "isActive": true,
-                                "scriptIndex": 5
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "PlayerRun.lua",
@@ -880,19 +1174,24 @@
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "PlayerBase.lua",
+                                "name": "PlayerFireSlash.lua",
                                 "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
-                                "name": "PlayerDeath.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
+                                "scriptIndex": 5
                             },
                             {
                                 "name": "PlayerIdle.lua",
                                 "isActive": true,
                                 "scriptIndex": 1
+                            },
+                            {
+                                "name": "PlayerWhirlpool.lua",
+                                "isActive": true,
+                                "scriptIndex": 12
+                            },
+                            {
+                                "name": "PlayerDeath.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
                             },
                             {
                                 "name": "PlayerHurt.lua",
@@ -918,9 +1217,19 @@
                                 "name": "PlayerDash.lua",
                                 "isActive": true,
                                 "scriptIndex": 9
+                            },
+                            {
+                                "name": "PlayerWindDash.lua",
+                                "isActive": true,
+                                "scriptIndex": 10
+                            },
+                            {
+                                "name": "PlayerPyronado.lua",
+                                "isActive": true,
+                                "scriptIndex": 11
                             }
                         ],
-                        "nextId": 10,
+                        "nextId": 13,
                         "current": "PlayerAttack",
                         "next": ""
                     }

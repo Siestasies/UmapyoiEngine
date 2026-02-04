@@ -114,14 +114,14 @@ namespace Uma_ECS
 
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
-                if (!pCoordinator || aEntities.empty()) return;
-                if (e.entityA != aEntities[0] && e.entityB != aEntities[0]) return;
+                //if (!pCoordinator || aEntities.empty()) return;
+                //if (e.entityA != aEntities[0] && e.entityB != aEntities[0]) return;
 
-                // proccess trigger
+                //// proccess trigger
 
-                Entity trigger = (e.entityA != aEntities[0]) ? e.entityA : e.entityB;
+                //Entity trigger = (e.entityA != aEntities[0]) ? e.entityA : e.entityB;
 
-                HandleCollision(aEntities[0], trigger);
+                //HandleCollision(aEntities[0], trigger);
             });
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEvent& e)
             {
@@ -137,119 +137,119 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::HandlePlayerAnimation()
     {
-        if (pCoordinator->HasComponent<Animator>(aEntities[0]))
-        {
-            auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
-            auto& tf = pCoordinator->GetComponent<Transform>(aEntities[0]);
-            auto& rb = pCoordinator->GetComponent<RigidBody>(aEntities[0]);
-            auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
-            auto& collider = pCoordinator->GetComponent<Collider>(aEntities[0]);
-            auto& pf = pCoordinator->GetComponent<PathFinding>(aEntities[0]);
+        //if (pCoordinator->HasComponent<Animator>(aEntities[0]))
+        //{
+        //    auto& animator = pCoordinator->GetComponent<Animator>(aEntities[0]);
+        //    auto& tf = pCoordinator->GetComponent<Transform>(aEntities[0]);
+        //    auto& rb = pCoordinator->GetComponent<RigidBody>(aEntities[0]);
+        //    auto& player = pCoordinator->GetComponent<Player>(aEntities[0]);
+        //    auto& collider = pCoordinator->GetComponent<Collider>(aEntities[0]);
+        //    auto& pf = pCoordinator->GetComponent<PathFinding>(aEntities[0]);
 
-            if (rb.velocity.x < 0) tf.scale.x = -abs(tf.scale.x);
-            if (rb.velocity.x > 0) tf.scale.x = abs(tf.scale.x);
+        //    if (rb.velocity.x < 0) tf.scale.x = -abs(tf.scale.x);
+        //    if (rb.velocity.x > 0) tf.scale.x = abs(tf.scale.x);
 
-            // State transition logic
-            float velocityMagnitude = Uma_Math::magnitude(rb.velocity);
+        //    // State transition logic
+        //    float velocityMagnitude = Uma_Math::magnitude(rb.velocity);
 
-            // If moving and in idle state, transition to run
-            if (velocityMagnitude > 0.1f && player.animatorState == PS_Idle)
-            {
-                player.animatorState = PS_Run;  // Assignment, not comparison
-            }
-            // If stopped and in run state, transition to idle
-            else if (velocityMagnitude < 0.1f && player.animatorState == PS_Run)
-            {
-                player.animatorState = PS_Idle;  // Assignment, not comparison
-            }
-            // If attack animation finished, return to appropriate state
-            else if ((player.animatorState == PS_Atk_1 || player.animatorState == PS_Atk_2)
-                && animator.animator.HasFinished())
-            {
-                // Return to run or idle based on current velocity
-                player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
-                collider.shapes[2].isActive = false;
-            }
-            else if (player.animatorState == PS_Hurt && animator.animator.HasFinished())
-            {
-                player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
-                collider.shapes[2].isActive = false;
-            }
+        //    // If moving and in idle state, transition to run
+        //    if (velocityMagnitude > 0.1f && player.animatorState == PS_Idle)
+        //    {
+        //        player.animatorState = PS_Run;  // Assignment, not comparison
+        //    }
+        //    // If stopped and in run state, transition to idle
+        //    else if (velocityMagnitude < 0.1f && player.animatorState == PS_Run)
+        //    {
+        //        player.animatorState = PS_Idle;  // Assignment, not comparison
+        //    }
+        //    // If attack animation finished, return to appropriate state
+        //    else if ((player.animatorState == PS_Atk_1 || player.animatorState == PS_Atk_2)
+        //        && animator.animator.HasFinished())
+        //    {
+        //        // Return to run or idle based on current velocity
+        //        player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
+        //        collider.shapes[2].isActive = false;
+        //    }
+        //    else if (player.animatorState == PS_Hurt && animator.animator.HasFinished())
+        //    {
+        //        player.animatorState = (velocityMagnitude > 0.1f) ? PS_Run : PS_Idle;
+        //        collider.shapes[2].isActive = false;
+        //    }
 
-            if (player.mHealth <= 0)
-            {
-                player.animatorState = PS_Die;
-            }
-            else if (player.mHealth > 0 && !player.combatState.isAlive)
-            {
-                player.combatState.isAlive = true;
-            }
+        //    if (player.mHealth <= 0)
+        //    {
+        //        player.animatorState = PS_Die;
+        //    }
+        //    else if (player.mHealth > 0 && !player.combatState.isAlive)
+        //    {
+        //        player.combatState.isAlive = true;
+        //    }
 
-            switch (player.animatorState)
-            {
-            case PS_Idle:
-            {
-                if (animator.animator.GetCurrentClip() != "idle")
-                {
-                    animator.animator.Play("idle", true);
-                }
-                break;
-            }
-            case PS_Run:
-            {
-                if (animator.animator.GetCurrentClip() != "run")
-                {
-                    animator.animator.Play("run", true);
-                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("footsteps", 0.8, 0);
-                }
-                break;
-            }
-            case PS_Atk_1:
-            {
-                if (animator.animator.GetCurrentClip() != "atk_1")
-                {
-                    animator.animator.Play("atk_1", true);
-                    collider.shapes[2].isActive = true;
-                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_n_attack", 0.8, 0);
-                }
-                break;
-            }
-            case PS_Atk_2:
-            {
-                if (animator.animator.GetCurrentClip() != "atk_2")
-                {
-                    animator.animator.Play("atk_2", true);
-                    collider.shapes[2].isActive = true;
-                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_fire_attack", 0.8, 0);
-                }
-                break;
-            }
-            case PS_Hurt:
-            {
-                if (animator.animator.GetCurrentClip() != "hurt")
-                {
-                    animator.animator.Play("hurt", true);
-                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_hurt", 1.0, 0);
-                }
-                break;
-            }
-            case PS_Die:
-            {
-                if (animator.animator.GetCurrentClip() != "die")
-                {
-                    animator.animator.Play("die", true);
-                    pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_death", 1.0, 0);
-                }
+        //    switch (player.animatorState)
+        //    {
+        //    case PS_Idle:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "idle")
+        //        {
+        //            animator.animator.Play("idle", true);
+        //        }
+        //        break;
+        //    }
+        //    case PS_Run:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "run")
+        //        {
+        //            animator.animator.Play("run", true);
+        //            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("footsteps", 0.8, 0);
+        //        }
+        //        break;
+        //    }
+        //    case PS_Atk_1:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "atk_1")
+        //        {
+        //            animator.animator.Play("atk_1", true);
+        //            collider.shapes[2].isActive = true;
+        //            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_n_attack", 0.8, 0);
+        //        }
+        //        break;
+        //    }
+        //    case PS_Atk_2:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "atk_2")
+        //        {
+        //            animator.animator.Play("atk_2", true);
+        //            collider.shapes[2].isActive = true;
+        //            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_fire_attack", 0.8, 0);
+        //        }
+        //        break;
+        //    }
+        //    case PS_Hurt:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "hurt")
+        //        {
+        //            animator.animator.Play("hurt", true);
+        //            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_hurt", 1.0, 0);
+        //        }
+        //        break;
+        //    }
+        //    case PS_Die:
+        //    {
+        //        if (animator.animator.GetCurrentClip() != "die")
+        //        {
+        //            animator.animator.Play("die", true);
+        //            pEventSystem->Emit<Uma_Engine::PlaySoundEvent>("player_death", 1.0, 0);
+        //        }
 
-                pf.reachedGoal = true;
-                player.combatState.isAlive = false;
+        //        pf.reachedGoal = true;
+        //        player.combatState.isAlive = false;
 
-                break;
-            }
-            default:
-                break;
-            }
-        }
+        //        break;
+        //    }
+        //    default:
+        //        break;
+        //    }
+        //}
     }
 
     void PlayerControllerSystem::HandleCollision(Entity deffender, Entity attacker)
