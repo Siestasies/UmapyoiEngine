@@ -831,34 +831,10 @@ namespace Uma_ECS
             "animator", &Animator::animator
         );
 
-        using Text = Uma_UI::Text;
-        using Image = Uma_UI::Image;
-
         //Register Text component
-        sharedLua->new_usertype<Text>("Text",
-            "text", &Text::text,
-            "visible", &Text::visible
-        );
-
-        // register ui color
-        sharedLua->new_usertype<Uma_UI::Color>("Color",
-            "r", &Uma_UI::Color::r,
-            "g", &Uma_UI::Color::g,
-            "b", &Uma_UI::Color::b,
-            "a", &Uma_UI::Color::a
-        );
-
-        // Register Image
-        sharedLua->new_usertype<Image>("Image",
-            "textureName", &Image::textureName,
-            "sortingOrder", &Image::sortingOrder, "color", sol::property(
-                [](Image& img) -> Uma_UI::Color& {
-                    return img.color;
-                },
-                [](Image& img, const Uma_UI::Color& c) {
-                    img.color = c;
-                }
-            )
+        sharedLua->new_usertype<Uma_UI::Text>("Text",
+            "text", &Uma_UI::Text::text,
+            "visible", &Uma_UI::Text::visible
         );
 
         // Register Effects component
@@ -1098,7 +1074,6 @@ namespace Uma_ECS
         // then the direct access method with the entity id
         using Text = Uma_UI::Text;
         using Effects = Uma_UI::Effects;
-        using Image = Uma_UI::Image;
        // Component list macro
 #define COMPONENT_LIST \
         X(Transform)   \
@@ -1113,7 +1088,6 @@ namespace Uma_ECS
         X(Animator)    \
         X(Text)        \
         X(Effects)     \
-        X(Image)       \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1553,7 +1527,6 @@ namespace Uma_ECS
 
         using Text = Uma_UI::Text;
         using Effects = Uma_UI::Effects;
-        using Image = Uma_UI::Image;
 
 #define COMPONENT_LIST \
         BIND_COMPONENT_GETTER(Transform)   \
@@ -1568,7 +1541,6 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Animator)    \
         BIND_COMPONENT_GETTER(Effects)     \
         //BIND_COMPONENT_GETTER(Projectile)\
-        BIND_COMPONENT_GETTER(Image)       \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
