@@ -3,9 +3,7 @@ local bool = true
 
 function OnClicked()
     local parent = GetParent(EntityID)
-    local children = GetChildren(EntityID)
-    
-    local parentChildren = GetChildren(parent)
+    local children = GetChildrenList(EntityID)
     
 
     
@@ -39,7 +37,7 @@ end
 function Update(dt)
 
 
-    local children = GetChildren(EntityID)
+    local children = GetChildrenList(EntityID)
 
     local paused = IsGamePause()
 

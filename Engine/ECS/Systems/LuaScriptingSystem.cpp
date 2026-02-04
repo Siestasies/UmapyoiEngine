@@ -850,7 +850,7 @@ namespace Uma_ECS
 
         // Register Image
         sharedLua->new_usertype<Image>("Image",
-            "textureName", &Image::textureName,
+            "textureName", &Image::texturePath,
             "sortingOrder", &Image::sortingOrder, "color", sol::property(
                 [](Image& img) -> Uma_UI::Color& {
                     return img.color;

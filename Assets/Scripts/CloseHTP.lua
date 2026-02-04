@@ -21,9 +21,9 @@ function Update(dt)
     local parent = GetParent(EntityID)
     local grandparent = GetParent(parent)
      
-    local children = GetChildren(EntityID)
-    local parentChildren = GetChildren(parent)
-    local grandChildren = GetChildren(grandparent)
+    local children = GetChildrenList(EntityID)
+    local parentChildren = GetChildrenList(parent)
+    local grandChildren = GetChildrenList(grandparent)
     
     local paused = IsGamePause()
     if paused == true then 

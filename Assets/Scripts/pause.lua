@@ -1,18 +1,19 @@
 local levelEndState
+local children
 
 function Start()
     levelEndState = require("levelEndState")
 end
 
 function Update(dt)
-    local children = GetChildren(EntityID)
+    children = GetChildrenList(EntityID)
 
     local paused = IsGamePause()
     local gameEnd = levelEndState.getLevelEnd()
 
-    if paused == true and gamEnd == false then
+    if paused == true and gameEnd == false then
         SetShowPauseMenu(true)
-    elseif paused == true and gamEnd == true then
+    elseif paused == true and gameEnd == true then
         -- do nothing
     else
         SetShowPauseMenu(false)

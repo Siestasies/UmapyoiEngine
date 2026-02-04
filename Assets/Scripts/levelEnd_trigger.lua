@@ -12,7 +12,6 @@ function OnTriggerEnter(other)
     -- trigger fading
     if HasPlayerOn(other) then
         loadNextScene = true
-        fadeState.setFading(true)
     end
 end
 
@@ -34,6 +33,7 @@ function Update(dt)
     -- after player step on trigger
     if loadNextScene then
         if nextSceneName ~= "" then
+            fadeState.setFading(true)
             time = time - dt
             if time <= 0 then
                 time = 1

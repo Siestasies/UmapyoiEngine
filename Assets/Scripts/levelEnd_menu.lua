@@ -7,8 +7,8 @@ end
 
 function Update()
     if levelEndState.getLevelEndMenu() then
-        PauseGame()
-        local children = GetChildren(EntityID)
+        --PauseGame(true)
+        local children = GetChildrenList(EntityID)
         local child = children[1]
         -- show end menu
         SetActiveEntity(child, true)
