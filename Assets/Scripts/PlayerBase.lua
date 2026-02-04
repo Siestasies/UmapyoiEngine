@@ -7,34 +7,42 @@ ExposedVars = {
     -- Basic Attack 1 settings
     attack1_damage = 1.0,
     attack1_speed = 1.0,
-    attack1_range = 50.0,
-    attack1_arc = 90.0,
     
     -- Basic Attack 2 settings
     attack2_damage = 1.2,
-    attack2_speed = 0.9,
-    attack2_range = 55.0,
-    attack2_arc = 90.0,
+    attack2_speed = 1.0,
     
     -- Fire Slash settings
     fireSlash_damage = 1.5,
-    fireSlash_speed = 0.8,
-    fireSlash_range = 60.0,
+    fireSlash_speed = 1.0,
     fireSlash_manaCost = 20,
     fireSlash_burnDuration = 3.0,
     
     -- Water Slash settings
     waterSlash_damage = 1.3,
-    waterSlash_speed = 0.85,
-    waterSlash_range = 55.0,
+    waterSlash_speed = 1.0,
     waterSlash_manaCost = 20,
     waterSlash_stunDuration = 1.5,
+
+    -- Wind Dash settings
+    windDash_damage = 1.3,
+    windDash_speed = 1.0,
+    windDash_manaCost = 5,
     
     -- Steam Burst settings
     steamBurst_damage = 2.5,
-    steamBurst_speed = 0.6,
-    steamBurst_range = 100.0,
-    steamBurst_manaCost = 30
+    steamBurst_speed = 1.0,
+    steamBurst_manaCost = 30,
+
+    -- Pyronado settings
+    pyronado_damage = 2.5,
+    pyronado_speed = 1.0,
+    pyronado_manaCost = 30,
+
+    -- Whirlpool settings
+    whirlpool_damage = 2.5,
+    whirlpool_speed = 1.0,
+    whirlpool_manaCost = 30
 }
 
 local isDead
@@ -44,8 +52,8 @@ function Start()
         local player = GetPlayer()
         if player then
             Log("PlayerBase initialized - Health: " .. tostring(player.mHealth) .. "/" .. tostring(player.mMaxHealth))
-            ChangeState(EntityID, "PlayerIdle")
             InitializeAttackStats(player)
+            ChangeState(EntityID, "PlayerIdle")
             isDead = false
         end
     else
@@ -112,12 +120,19 @@ function OnCollisionEnter(other)
     end
 end
 
-function OnTriggerEnter(other)
+function OnTriggerEnter(other, triggerOwner)
     -- Can be extended for health pickups, mana pickups, checkpoints, etc.
-    if HasProjectileOn(other) then
-        local proj = GetProjectileFrom(other)
+    if HasProjectileOn(triggerOwner) then
+        local proj = GetProjectileFrom(triggerOwner)
         if proj then
             TakeDamage(proj.mStats.damage)
+        end
+    end
+
+    if HasEnemyOn(triggerOwner) then
+        local enemy = GetEnemyFrom(triggerOwner)
+        if enemy then
+            TakeDamage(enemy.mAttackDamage)
         end
     end
 end
@@ -166,7 +181,7 @@ function InitializeAttackStats(player)
     Log("atkstats cnt:" .. GetAttackStatsCount(player))
     
     -- Clear existing attack stats
-    local attackStats = player.attackStats
+    ClearAttackStats(player)
     
     -- Only initialize if empty (don't override serialized data)
     if attackStats and #attackStats > 0 then
@@ -181,11 +196,11 @@ function InitializeAttackStats(player)
         attack1.animationClipName = "attack_1"
         attack1.mDamageMultiplier = attack1_damage
         attack1.mAttackSpeedMultiplier = attack1_speed
-        attack1.triggerColliderIndex = 0
+        attack1.triggerColliderIndex = 1
         attack1.elementType = ElementType.None
         attack1.manaCost = 0
-        attack1.attackRange = attack1_range
-        attack1.attackArc = attack1_arc
+        attack1.attackRange = 0.0
+        attack1.attackArc = 0.0
         attack1.applyBurn = false
         attack1.applyStun = false
         attack1.effectDuration = 0.0
@@ -204,11 +219,11 @@ function InitializeAttackStats(player)
         attack2.animationClipName = "attack_2"
         attack2.mDamageMultiplier = attack2_damage
         attack2.mAttackSpeedMultiplier = attack2_speed
-        attack2.triggerColliderIndex = 1
+        attack2.triggerColliderIndex = 2
         attack2.elementType = ElementType.None
         attack2.manaCost = 0
-        attack2.attackRange = attack2_range
-        attack2.attackArc = attack2_arc
+        attack2.attackRange = 0.0
+        attack2.attackArc = 0.0
         attack2.applyBurn = false
         attack2.applyStun = false
         attack2.effectDuration = 0.0
@@ -227,11 +242,11 @@ function InitializeAttackStats(player)
         fireSlash.animationClipName = "fire_slash"
         fireSlash.mDamageMultiplier = fireSlash_damage
         fireSlash.mAttackSpeedMultiplier = fireSlash_speed
-        fireSlash.triggerColliderIndex = 2
+        fireSlash.triggerColliderIndex = 3
         fireSlash.elementType = ElementType.Fire
         fireSlash.manaCost = math.floor(fireSlash_manaCost)
-        fireSlash.attackRange = fireSlash_range
-        fireSlash.attackArc = 120.0
+        fireSlash.attackRange = 0.0
+        fireSlash.attackArc = 0.0
         fireSlash.applyBurn = true
         fireSlash.applyStun = false
         fireSlash.effectDuration = fireSlash_burnDuration
@@ -250,11 +265,11 @@ function InitializeAttackStats(player)
         waterSlash.animationClipName = "water_slash"
         waterSlash.mDamageMultiplier = waterSlash_damage
         waterSlash.mAttackSpeedMultiplier = waterSlash_speed
-        waterSlash.triggerColliderIndex = 3
+        waterSlash.triggerColliderIndex = 4
         waterSlash.elementType = ElementType.Water
         waterSlash.manaCost = math.floor(waterSlash_manaCost)
         waterSlash.attackRange = waterSlash_range
-        waterSlash.attackArc = 100.0
+        waterSlash.attackArc = 0.0
         waterSlash.applyBurn = false
         waterSlash.applyStun = true
         waterSlash.effectDuration = waterSlash_stunDuration
@@ -265,6 +280,29 @@ function InitializeAttackStats(player)
         AddAttackStats(player, waterSlash)
         Log("Added Water_Slash stats")
     end
+
+    -- Create Wind Dash (Elemental - Wind)
+    local windDash = CreateAttackStats()
+    if windDash then
+        windDash.attackName = "Wind_Dash"
+        windDash.animationClipName = "wind_dash"
+        windDash.mDamageMultiplier = windDash_damage
+        windDash.mAttackSpeedMultiplier = windDash_speed
+        windDash.triggerColliderIndex = 5
+        windDash.elementType = ElementType.Wind
+        windDash.manaCost = math.floor(windDash_manaCost)
+        windDash.attackRange = 0.0
+        windDash.attackArc = 0.0
+        windDash.applyBurn = false
+        windDash.applyStun = true
+        windDash.effectDuration = 0.0
+        windDash.attackCd = 2.0
+        windDash.attackCdCurr = 0.0
+        windDash.attackIsInCoolDown = false
+        
+        AddAttackStats(player, windDash)
+        Log("Added Wind_Dash stats")
+    end
     
     -- Create Steam Burst (Fusion - Steam)
     local steamBurst = CreateAttackStats()
@@ -273,12 +311,12 @@ function InitializeAttackStats(player)
         steamBurst.animationClipName = "steam_burst"
         steamBurst.mDamageMultiplier = steamBurst_damage
         steamBurst.mAttackSpeedMultiplier = steamBurst_speed
-        steamBurst.triggerColliderIndex = 4
+        steamBurst.triggerColliderIndex = 6
         steamBurst.elementType = ElementType.Steam
         steamBurst.manaCost = math.floor(steamBurst_manaCost)
-        steamBurst.attackRange = steamBurst_range
-        steamBurst.attackArc = 360.0  -- Full AoE
-        steamBurst.applyBurn = true   -- Steam has both effects
+        steamBurst.attackRange = 0.0
+        steamBurst.attackArc = 0.0 
+        steamBurst.applyBurn = true  
         steamBurst.applyStun = true
         steamBurst.effectDuration = 1.0
         steamBurst.attackCd = 0.0
@@ -289,6 +327,52 @@ function InitializeAttackStats(player)
         Log("Added Steam_Burst stats")
     end
 
-    Log("2atkstats cnt:" .. GetAttackStatsCount(player))
+    -- Create Steam Burst (Fusion - Pyronado)
+    local pyronado = CreateAttackStats()
+    if pyronado then
+        pyronado.attackName = "Pyronado"
+        pyronado.animationClipName = "pyronado"
+        pyronado.mDamageMultiplier = pyronado_damage
+        pyronado.mAttackSpeedMultiplier = pyronado_speed
+        pyronado.triggerColliderIndex = 7
+        pyronado.elementType = ElementType.Pyronado
+        pyronado.manaCost = math.floor(pyronado_manaCost)
+        pyronado.attackRange = 0.0
+        pyronado.attackArc = 0.0  
+        pyronado.applyBurn = true   
+        pyronado.applyStun = true
+        pyronado.effectDuration = 1.0
+        pyronado.attackCd = 0.0
+        pyronado.attackCdCurr = 0.0
+        pyronado.attackIsInCoolDown = false
+        
+        AddAttackStats(player, pyronado)
+        Log("Added Pyronado stats")
+    end
+
+    -- Create Steam Burst (Fusion - Whirlpool)
+    local whirlpool = CreateAttackStats()
+    if whirlpool then
+        whirlpool.attackName = "Whirlpool"
+        whirlpool.animationClipName = "whirlpool"
+        whirlpool.mDamageMultiplier = whirlpool_damage
+        whirlpool.mAttackSpeedMultiplier = whirlpool_speed
+        whirlpool.triggerColliderIndex = 8
+        whirlpool.elementType = ElementType.Whirlpool
+        whirlpool.manaCost = math.floor(whirlpool_manaCost)
+        whirlpool.attackRange = 0.0
+        whirlpool.attackArc = 0.0  
+        whirlpool.applyBurn = true   
+        whirlpool.applyStun = true
+        whirlpool.effectDuration = 1.0
+        whirlpool.attackCd = 0.0
+        whirlpool.attackCdCurr = 0.0
+        whirlpool.attackIsInCoolDown = false
+        
+        AddAttackStats(player, whirlpool)
+        Log("Added Whirlpool stats")
+    end
+
+    Log("atkstats cnt:" .. GetAttackStatsCount(player))
 
 end

@@ -2,8 +2,8 @@
 -- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
 
 ExposedVars = {
-    steamBurstAnimationName = "steam_burst",
-    steamBurstSoundName = "steam_burst",
+    pyronadoAnimationName = "pyronado",
+    pyronadoSoundName = "pyronado",
     attackDuration = 0.7
 }
 
@@ -15,7 +15,7 @@ local animator = nil
 local collider = nil
 
 function state_enter(entity)
-    Log("Player entered Steam Burst state")
+    Log("Player entered Pyronado state")
     
     if not HasPlayer() then
         ChangeState(entity, "PlayerIdle")
@@ -43,15 +43,15 @@ function state_enter(entity)
     end
     
     -- Check mana cost
-    attackStat = GetSteamBurstAttackStat(player)
+    attackStat = GetPyronadoAttackStat(player)
     if player.mMana < attackStat.manaCost then
-        Log("Not enough mana for Steam Burst!")
+        Log("Not enough mana for Pyronado!")
         ChangeState(entity, "PlayerIdle")
         return
     end
 
     -- AttackIndex
-    player.currAttackIndex = 5
+    player.currAttackIndex = 6
     
     -- Consume mana
     player.mMana = player.mMana - attackStat.manaCost
@@ -65,8 +65,8 @@ function state_enter(entity)
     attackPerformed = false
     
     -- Play animation and sound
-    animator.animator:Play(steamBurstAnimationName, true)
-    PlaySound(steamBurstSoundName, 1.0, 0)
+    animator.animator:Play(pyronadoAnimationName, true)
+    PlaySound(pyronadoSoundName, 1.0, 0)
     
     -- Stop movement
     if HasRigidBody() then
@@ -96,12 +96,10 @@ function state_update(entity, dt)
     
     -- Perform attack at animation midpoint
     if not attackPerformed and attackTimer < (attackDuration * 0.4) then
-        Log("Steam Burst Attack!")
+        Log("Pyronado Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-        -- Play explosion sound
-        PlaySound(steamBurstSoundName, 0.9, 0)
     end
     
     -- Attack finished
@@ -124,21 +122,21 @@ function state_update(entity, dt)
 end
 
 function state_exit(entity)
-    Log("Player exited Steam Burst state")
+    Log("Player exited Pyronado state")
     if attackStat then 
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
     end
-    StopSound(steamBurstSoundName);
+    StopSound(pyronadoSoundName);
 end
 
-function GetSteamBurstAttackStat(player)
+function GetPyronadoAttackStat(player)
     if not player then return nil end
     
     local attackStats = player.attackStats
     if attackStats then
         for i = 1, #attackStats do
             local attack = attackStats[i]
-            if attack and attack.elementType == ElementType.Steam then
+            if attack and attack.elementType == ElementType.Pyronado then
                 return attack
             end
         end

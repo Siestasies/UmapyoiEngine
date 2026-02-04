@@ -80,6 +80,37 @@ namespace Uma_ECS
         }
     };
 
+    // Tracking trigger pairs with trigger owner to allow both directions
+    struct TriggerPair
+    {
+        Entity entityA;
+        Entity entityB;
+        Entity triggerOwner;
+
+        TriggerPair(Entity a, Entity b, Entity owner)
+            : entityA((a < b) ? a : b)
+            , entityB((a < b) ? b : a)
+            , triggerOwner(owner)
+        {
+        }
+
+        bool operator==(const TriggerPair& other) const
+        {
+            return entityA == other.entityA && entityB == other.entityB
+                && triggerOwner == other.triggerOwner;
+        }
+    };
+
+    struct TriggerPairHash
+    {
+        std::size_t operator()(const TriggerPair& p) const
+        {
+            return std::hash<Uma_ECS::Entity>()(p.entityA) ^
+                (std::hash<Uma_ECS::Entity>()(p.entityB) << 1) ^
+                (std::hash<Uma_ECS::Entity>()(p.triggerOwner) << 2);
+        }
+    };
+
     struct Transform;
     struct Collider;
     struct RigidBody;
@@ -254,7 +285,7 @@ namespace Uma_ECS
         std::unordered_set<EntityPair, EntityPairHash> currentCollisions;  ///< Collisions detected this frame
         std::unordered_set<EntityPair, EntityPairHash> previousCollisions; ///< Collisions detected last frame
 
-        std::unordered_set<EntityPair, EntityPairHash> currentTriggers;  ///< Collisions detected this frame
-        std::unordered_set<EntityPair, EntityPairHash> previousTriggers; ///< Collisions detected last frame
+        std::unordered_set<TriggerPair, TriggerPairHash> currentTriggers;  ///< Triggers detected this frame
+        std::unordered_set<TriggerPair, TriggerPairHash> previousTriggers; ///< Triggers detected last frame
     };
 }
