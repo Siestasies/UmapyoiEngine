@@ -8,16 +8,16 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 1000.0,
+                            "y": -1659.8
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 15.0
+                            "x": 30.0,
+                            "y": 30.0
                         },
                         "parent": -1
                     },
@@ -57,7 +57,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
@@ -92,11 +92,11 @@
                             {
                                 "offset": {
                                     "x": 0.0,
-                                    "y": -0.5
+                                    "y": -0.3
                                 },
                                 "size": {
                                     "x": 1.5,
-                                    "y": 0.799
+                                    "y": 1.5
                                 },
                                 "purpose": 2,
                                 "layer": 4,
@@ -124,7 +124,7 @@
                                     {
                                         "name": "chaseEnterRange",
                                         "type": 0,
-                                        "value": 20.0,
+                                        "value": 30.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -135,7 +135,16 @@
                                 "scriptPath": "Assets/Scripts/WaterDemonBase.lua",
                                 "scriptName": "WaterDemonBase.lua",
                                 "isEnabled": true,
-                                "exposedVariables": []
+                                "exposedVariables": [
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             },
                             {
                                 "scriptPath": "Assets/Scripts/WaterDemonAttack.lua",
@@ -145,7 +154,7 @@
                                     {
                                         "name": "attackRange",
                                         "type": 0,
-                                        "value": 5.0,
+                                        "value": 16.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -200,7 +209,7 @@
                                     {
                                         "name": "chaseExitRange",
                                         "type": 0,
-                                        "value": 25.0,
+                                        "value": 35.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -208,7 +217,7 @@
                                     {
                                         "name": "attackEnterRange",
                                         "type": 0,
-                                        "value": 8.0,
+                                        "value": 1000.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false

@@ -845,7 +845,8 @@ namespace Uma_ECS
 
         sharedLua->new_usertype<PathFinding>("PathFinding",
             "goal", &PathFinding::goal,
-            "reachedGoal", &PathFinding::reachedGoal
+            "reachedGoal", &PathFinding::reachedGoal,
+            "enabled", &PathFinding::enabled
         );
 
         // ===================================================================

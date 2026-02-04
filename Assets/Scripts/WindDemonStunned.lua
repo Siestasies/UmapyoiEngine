@@ -12,7 +12,7 @@ function state_enter(entity)
     -- Play stun animation
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("Stunned", true)
+        animator.animator:Play("idle", true)
     end
 end
 

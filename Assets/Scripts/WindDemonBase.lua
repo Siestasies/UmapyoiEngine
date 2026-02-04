@@ -1,9 +1,13 @@
 ExposedVars = {
     --empty for now
+    enemyHurtEffectDuration = 0.5;
 }
+
 local enemy
 local playerId
 local isDead
+local enemyHurtEffectTimer
+local isHurt = false
 
 function Start()
     if HasEnemy() then
@@ -15,6 +19,8 @@ function Start()
         return
     end
 
+    enemyHurtEffectTimer = enemyHurtEffectDuration
+
     ChangeState(EntityID, "WindDemonIdle")
 end
 
@@ -24,6 +30,17 @@ function Update(dt)
             isDead = true
             ChangeState(EntityID, "WindDemonDead")
         end
+    end
+
+    if enemyHurtEffectTimer <= 0.0 then
+        enemyHurtEffectTimer = enemyHurtEffectDuration
+        isHurt = false
+
+        if HasSprite() then
+            local spriteComp = GetSprite()
+            spriteComp.tintColor = Vec3(1.0, 1.0, 1.0)
+        end
+
     end
 end
 
@@ -58,6 +75,8 @@ function OnHurt(player, damage)
     -- damage handling logic here
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
+
+    isHurt = true
 
     PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
     PlayEntitySound(EntityID, "enemy_hit", false, 0.8);

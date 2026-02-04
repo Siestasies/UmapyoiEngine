@@ -1,7 +1,7 @@
 --copy and paste template for the states
 --exposed vars for variable you want that can be editied in editor
 ExposedVars = {
-    attackExitRange = 12.0,
+    attackExitRange = 30.0,
     HoverSpd = 1.5,
     damageDuration = 1.0,
     chargeTime = 0.54
@@ -23,12 +23,14 @@ function state_enter(entity)
         AttackCD = enemy.mAttackSpeed
     end
 
-    ChargeCD = 0.0
+    ChargeCD = ExposedVars.chargeTime
     HoverTime = 0.0
     damageTimer = 0.0
 
     local transform = GetTransform()
     baseX = transform.position.x
+    GetRigidBody().velocity = Vec2(0.0, 0.0)
+    GetPathFinding().enabled = false;
 
     if HasEnemy() then
         enemy = GetEnemy()
@@ -49,6 +51,8 @@ function state_enter(entity)
         end
 
     end
+
+    animator.animator:Play("charging_atk", false)
 end
 
 --takes in entity id from C++ to use in case needed
@@ -131,6 +135,9 @@ end
 
 --takes in entity id from C++ to use in case needed
 function state_exit(entity)
+
+    GetPathFinding().enabled = true;
+
     if HasCollider() then
         local collider = GetCollider(entity)
         if collider and collider.shapes:size() >= 3 then

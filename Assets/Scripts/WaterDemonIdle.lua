@@ -1,5 +1,5 @@
 ExposedVars = {
-    chaseEnterRange = 20.0
+    chaseEnterRange = 40.0
 }
 
 local animator

@@ -176,6 +176,9 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         auto& pf = pfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
+        if (!pf.enabled)
+            continue;
+
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
 

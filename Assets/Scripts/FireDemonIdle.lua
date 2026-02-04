@@ -18,7 +18,7 @@ function state_update(entity, dt)
         return
     end
     
-    local playerTransform = GetTransform(playerId)
+    local playerTransform = GetTransformFrom(playerId)
     local myTransform = GetTransform()
     if not playerTransform or not myTransform then
         return

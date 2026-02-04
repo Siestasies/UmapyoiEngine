@@ -6,23 +6,23 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "fireball",
+                        "name": "wind projectile",
                         "position": {
-                            "x": 996.604,
-                            "y": -1661.099
+                            "x": 1023.505,
+                            "y": -1644.8
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.649,
-                            "y": 2.529
+                            "x": 0.43,
+                            "y": 1.0
                         },
                         "parent": -1
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/256px VFX.png",
+                        "texturePath": "Assets/Wind VFX Spritesheet.png",
                         "layer": 128,
                         "order": 0,
                         "flipX": true,
@@ -61,12 +61,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -1.799,
+                                    "x": 0.0,
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 10.5,
-                                    "y": 1.399
+                                    "x": 13.3,
+                                    "y": 1.899
                                 },
                                 "purpose": 2,
                                 "layer": 16,
@@ -77,23 +77,23 @@
                         ]
                     },
                     "struct Uma_ECS::Animator": {
-                        "autoPlay": true,
-                        "initialClip": "",
+                        "autoPlay": false,
+                        "initialClip": "flying",
                         "clips": [
                             {
                                 "name": "flying",
-                                "framesX": 6,
-                                "framesY": 2,
-                                "startFrame": 6,
-                                "frameCount": 5,
-                                "speed": 10.0,
-                                "loop": true,
+                                "framesX": 11,
+                                "framesY": 3,
+                                "startFrame": 22,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false,
                                 "texturePath": ""
                             }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/fireball.prefab",
+                        "prefabPath": "Assets/Prefabs/wind projectile.prefab",
                         "isRoot": true
                     },
                     "struct Uma_ECS::Projectile": {
@@ -102,7 +102,7 @@
                             "damage": 10,
                             "speed": 40.0,
                             "fadeOVerTime": true,
-                            "lifeTime": 9999.0
+                            "lifeTime": 5.0
                         }
                     }
                 }
@@ -113,7 +113,7 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/256px vfx.png"
+                "path": "assets/wind vfx spritesheet.png"
             }
         ],
         "fonts": [],
