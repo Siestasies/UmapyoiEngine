@@ -1,0 +1,893 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "player_new",
+                        "position": {
+                            "x": -169.091,
+                            "y": 80.957
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.493,
+                            "y": 0.493
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::Player": {
+                        "mHealth": 100,
+                        "mMaxHealth": 100,
+                        "mHealthRegenRate": 1.0,
+                        "mHealthRegenDelay": 3.0,
+                        "mSpeed": 50.0,
+                        "mDashSpeed": 2.0,
+                        "mDashDuration": 0.2,
+                        "mDashCD": -0.006,
+                        "mAttackDamage": 40,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 10.0,
+                        "mDefense": 5,
+                        "mMana": 100.0,
+                        "mMaxMana": 100.0,
+                        "mManaRegenRate": 2.0,
+                        "mNeutralAttackManaGain": 5,
+                        "mInvulnerabilityDuration": -0.001,
+                        "mHitStunDuration": 0.3,
+                        "checkpointX": 0.0,
+                        "checkpointY": 0.0,
+                        "hasCheckpoint": false,
+                        "elementComboWindow": 2.0,
+                        "attackStats": [
+                            {
+                                "AttackName": "Attack_1",
+                                "mDamageMultiplier": 1.0,
+                                "mAttackSpeedMultiplier": 1.0,
+                                "animationClipName": "attack_1",
+                                "triggerColliderIndex": 0,
+                                "elementType": 0,
+                                "manaCost": 0,
+                                "attackRange": 50.0,
+                                "attackArc": 90.0,
+                                "applyBurn": false,
+                                "applyStun": false,
+                                "effectDuration": 0.0
+                            },
+                            {
+                                "AttackName": "Attack_2",
+                                "mDamageMultiplier": 1.2,
+                                "mAttackSpeedMultiplier": 0.898,
+                                "animationClipName": "attack_2",
+                                "triggerColliderIndex": 1,
+                                "elementType": 0,
+                                "manaCost": 0,
+                                "attackRange": 55.0,
+                                "attackArc": 90.0,
+                                "applyBurn": false,
+                                "applyStun": false,
+                                "effectDuration": 0.0
+                            },
+                            {
+                                "AttackName": "Fire_Slash",
+                                "mDamageMultiplier": 1.5,
+                                "mAttackSpeedMultiplier": 0.8,
+                                "animationClipName": "fire_slash",
+                                "triggerColliderIndex": 2,
+                                "elementType": 1,
+                                "manaCost": 20,
+                                "attackRange": 60.0,
+                                "attackArc": 120.0,
+                                "applyBurn": true,
+                                "applyStun": false,
+                                "effectDuration": 3.0
+                            },
+                            {
+                                "AttackName": "Water_Slash",
+                                "mDamageMultiplier": 1.299,
+                                "mAttackSpeedMultiplier": 0.85,
+                                "animationClipName": "water_slash",
+                                "triggerColliderIndex": 3,
+                                "elementType": 2,
+                                "manaCost": 20,
+                                "attackRange": 55.0,
+                                "attackArc": 100.0,
+                                "applyBurn": false,
+                                "applyStun": true,
+                                "effectDuration": 1.5
+                            },
+                            {
+                                "AttackName": "Steam_Burst",
+                                "mDamageMultiplier": 2.5,
+                                "mAttackSpeedMultiplier": 0.6,
+                                "animationClipName": "steam_burst",
+                                "triggerColliderIndex": 4,
+                                "elementType": 3,
+                                "manaCost": 30,
+                                "attackRange": 100.0,
+                                "attackArc": 360.0,
+                                "applyBurn": true,
+                                "applyStun": true,
+                                "effectDuration": 1.0
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/player_ss.png",
+                        "layer": 32,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 10.0,
+                        "gridY": 9.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 300.0,
+                        "fric_coeff": 5.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.6,
+                                    "y": -8.8
+                                },
+                                "size": {
+                                    "x": 8.8,
+                                    "y": 17.298
+                                },
+                                "purpose": 0,
+                                "layer": 2,
+                                "colliderMask": 20,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.5,
+                                    "y": -15.85
+                                },
+                                "size": {
+                                    "x": 14.399,
+                                    "y": 3.2
+                                },
+                                "purpose": 0,
+                                "layer": 2,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 2.096,
+                                    "y": -8.097
+                                },
+                                "size": {
+                                    "x": 18.197,
+                                    "y": 26.298
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerBase.lua",
+                                "scriptName": "PlayerBase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "steamBurst_manaCost",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack2_speed",
+                                        "type": 0,
+                                        "value": 0.898,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurst_damage",
+                                        "type": 0,
+                                        "value": 2.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack1_speed",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlash_manaCost",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurst_range",
+                                        "type": 0,
+                                        "value": 100.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlash_speed",
+                                        "type": 0,
+                                        "value": 0.85,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlash_damage",
+                                        "type": 0,
+                                        "value": 1.299,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlash_damage",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "debugMode",
+                                        "type": 2,
+                                        "value": false,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack1_damage",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack1_arc",
+                                        "type": 0,
+                                        "value": 90.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlash_speed",
+                                        "type": 0,
+                                        "value": 0.8,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack1_range",
+                                        "type": 0,
+                                        "value": 50.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlash_range",
+                                        "type": 0,
+                                        "value": 55.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlash_burnDuration",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlash_manaCost",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack2_arc",
+                                        "type": 0,
+                                        "value": 90.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlash_range",
+                                        "type": 0,
+                                        "value": 60.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurst_speed",
+                                        "type": 0,
+                                        "value": 0.6,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack2_damage",
+                                        "type": 0,
+                                        "value": 1.2,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack2_range",
+                                        "type": 0,
+                                        "value": 55.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlash_stunDuration",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerIdle.lua",
+                                "scriptName": "PlayerIdle.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "idleAnimationName",
+                                        "type": 3,
+                                        "value": "idle",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerRun.lua",
+                                "scriptName": "PlayerRun.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "runAnimationName",
+                                        "type": 3,
+                                        "value": "run",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerHurt.lua",
+                                "scriptName": "PlayerHurt.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "hurtDuration",
+                                        "type": 0,
+                                        "value": 0.3,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "hurtAnimationName",
+                                        "type": 3,
+                                        "value": "hurt",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "knockbackForce",
+                                        "type": 0,
+                                        "value": 200.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerDeath.lua",
+                                "scriptName": "PlayerDeath.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "gameOverSceneName",
+                                        "type": 3,
+                                        "value": "GameOver",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "respawnDelay",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "deathAnimationName",
+                                        "type": 3,
+                                        "value": "die",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "enableRespawn",
+                                        "type": 2,
+                                        "value": true,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "deathDuration",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerFireSlash.lua",
+                                "scriptName": "PlayerFireSlash.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "manaCost",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlashAnimationName",
+                                        "type": 3,
+                                        "value": "atk_3",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "burnDuration",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "damageMultiplier",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireSlashSoundName",
+                                        "type": 3,
+                                        "value": "atk_3",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerWaterSlash.lua",
+                                "scriptName": "PlayerWaterSlash.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "manaCost",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlashAnimationName",
+                                        "type": 3,
+                                        "value": "water_slash",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "stunDuration",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "damageMultiplier",
+                                        "type": 0,
+                                        "value": 1.299,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterSlashSoundName",
+                                        "type": 3,
+                                        "value": "water_slash",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerAttack.lua",
+                                "scriptName": "PlayerAttack.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "comboWindowDuration",
+                                        "type": 0,
+                                        "value": 0.3,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack2AnimationName",
+                                        "type": 3,
+                                        "value": "atk_2",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.4,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attack1AnimationName",
+                                        "type": 3,
+                                        "value": "atk_1",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerSteamBurst.lua",
+                                "scriptName": "PlayerSteamBurst.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "manaCost",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackDuration",
+                                        "type": 0,
+                                        "value": 0.699,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "aoeRadius",
+                                        "type": 0,
+                                        "value": 100.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "damageMultiplier",
+                                        "type": 0,
+                                        "value": 2.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "steamBurstAnimationName",
+                                        "type": 3,
+                                        "value": "steam_burst",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/PlayerDash.lua",
+                                "scriptName": "PlayerDash.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "dashAnimationName",
+                                        "type": 3,
+                                        "value": "dash_1",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "dashCooldown",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "dashDuration",
+                                        "type": 0,
+                                        "value": 0.2,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "atk_3",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 60,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "idle",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 0,
+                                "frameCount": 10,
+                                "speed": 12.0,
+                                "loop": true
+                            },
+                            {
+                                "name": "run",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 10,
+                                "frameCount": 10,
+                                "speed": 24.0,
+                                "loop": true
+                            },
+                            {
+                                "name": "die",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 40,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "atk_1",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 20,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "dash_1",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 30,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "hurt",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 40,
+                                "frameCount": 3,
+                                "speed": 24.0,
+                                "loop": false
+                            },
+                            {
+                                "name": "atk_2",
+                                "framesX": 10,
+                                "framesY": 9,
+                                "startFrame": 50,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::AudioListener": null,
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/player_new.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::FSM": {
+                        "states": [
+                            {
+                                "name": "PlayerBase.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
+                            },
+                            {
+                                "name": "PlayerRun.lua",
+                                "isActive": true,
+                                "scriptIndex": 2
+                            },
+                            {
+                                "name": "PlayerFireSlash.lua",
+                                "isActive": true,
+                                "scriptIndex": 5
+                            },
+                            {
+                                "name": "PlayerIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 1
+                            },
+                            {
+                                "name": "PlayerDeath.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
+                            },
+                            {
+                                "name": "PlayerHurt.lua",
+                                "isActive": true,
+                                "scriptIndex": 3
+                            },
+                            {
+                                "name": "PlayerWaterSlash.lua",
+                                "isActive": true,
+                                "scriptIndex": 6
+                            },
+                            {
+                                "name": "PlayerAttack.lua",
+                                "isActive": true,
+                                "scriptIndex": 7
+                            },
+                            {
+                                "name": "PlayerSteamBurst.lua",
+                                "isActive": true,
+                                "scriptIndex": 8
+                            },
+                            {
+                                "name": "PlayerDash.lua",
+                                "isActive": true,
+                                "scriptIndex": 9
+                            }
+                        ],
+                        "nextId": 10,
+                        "current": "PlayerAttack",
+                        "next": ""
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/player_ss.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

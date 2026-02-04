@@ -26,6 +26,10 @@ void Uma_ECS::FSMSystem::Update(float dt)
 			if (curr.current.empty()) {
 				auto it = curr.states.begin();
 				curr.current = it->first;
+				curr.current.pop_back();
+				curr.current.pop_back();
+				curr.current.pop_back();
+				curr.current.pop_back();
 			}
 
 			auto state_it = curr.states.find(curr.current + ".lua");

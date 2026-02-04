@@ -2181,8 +2181,8 @@ namespace Uma_Engine
                 if (ImGui::DragFloat("Atk Spd", &player.mAttackSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Atk Range", &player.mAttackRange, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragInt("Def", &player.mDefense, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
-                if (ImGui::DragInt("Mana", &player.mMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
-                if (ImGui::DragInt("Max Mana", &player.mMaxMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Mana", &player.mMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Max Mana", &player.mMaxMana, 0.1f, 0, 300)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Mana Regen", &player.mManaRegenRate, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
