@@ -586,8 +586,34 @@ namespace Uma_UI
                     originalSizes.erase(entity);
                 }
             }
-            break;
+            if (textArray.Has(entity))
+            {
+                auto& text = textArray.GetData(entity);
 
+                Vec2 currentScale = LerpVec2(clip.startVec2, clip.endVec2, easedT);
+
+                static std::map<Uma_ECS::Entity, float> originalFontSizes;
+                if (!clip.hasStarted || clip.currentTime <= clip.delay)
+                {
+                    originalFontSizes[entity] = text.fontSize;
+                }
+
+                if (originalFontSizes.find(entity) != originalFontSizes.end())
+                {
+                    text.fontSize = originalFontSizes[entity] * currentScale.x;
+                }
+                else
+                {
+                    originalFontSizes[entity] = text.fontSize;
+                    text.fontSize = text.fontSize * currentScale.x;
+                }
+
+                if (clip.applyToChildren && transformArray.Has(entity))
+                {
+                    ApplyScaleToChildren(entity, currentScale.x, originalFontSizes);
+                }
+            }
+            break;
         case EffectProperty::ColorTint:
             if (imageArray.Has(entity))
             {
@@ -623,6 +649,7 @@ namespace Uma_UI
     {
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rectTransformArray = pCoordinator->GetComponentArray<RectTransform>();
+        auto& textArray = pCoordinator->GetComponentArray<Text>();
 
         if (!transformArray.Has(entity))
             return;
@@ -645,6 +672,34 @@ namespace Uma_UI
                     originalSizes[child].y * scaleMultiplier.y
                 );
                 childRT.isDirty = true;
+            }
+
+            ApplyScaleToChildren(child, scaleMultiplier, originalSizes);
+        }
+    }
+
+    void UISystem::ApplyScaleToChildren(Uma_ECS::Entity entity, const float& scaleMultiplier, std::map < Uma_ECS::Entity, float>& originalSizes)
+    {
+        auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        auto& textArray = pCoordinator->GetComponentArray<Text>();
+
+        if (!transformArray.Has(entity))
+            return;
+
+        auto& transform = transformArray.GetData(entity);
+
+        for (Uma_ECS::Entity child : transform.children)
+        {
+            if (textArray.Has(child))
+            {
+                auto& text = textArray.GetData(child);
+
+                if (originalSizes.find(child) == originalSizes.end())
+                {
+                    originalSizes[child] = text.fontSize;
+                }
+
+                text.fontSize = originalSizes[child] * scaleMultiplier;
             }
 
             ApplyScaleToChildren(child, scaleMultiplier, originalSizes);
