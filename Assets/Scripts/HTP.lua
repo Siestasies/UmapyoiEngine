@@ -1,44 +1,18 @@
 local bool = true
 
-
-function OnClicked()
+function OnClick()
     local parent = GetParent(EntityID)
     local children = GetChildren(EntityID)
     
     local parentChildren = GetChildren(parent)
-    
-
-    
-        
-
-        
-            
-    
-        
-        
-    
-        if #children >= 3 then
-            local child = children[3]
-            SetActiveEntity(child, true)
-        end
-        
-    
-
-    
-    
-    PlaySound("btn_clicked", 1.0, 0)
-   
-    
-    
-
-    
-    
+    if #children >= 3 then
+        local child = children[3]
+        SetActiveEntity(child, true)
+    end
+    PlaySound("btn_clicked", 1.0, 0) 
 end
 
-
 function Update(dt)
-
-
     local children = GetChildren(EntityID)
 
     local paused = IsGamePause()
@@ -52,10 +26,7 @@ function Update(dt)
         if #children >= 2 then
             local child = children[2]
             SetActiveEntity(child, true)
-        end
-
-        
-        
+        end        
     else
         if #children > 0 then
             local child = children[1]
@@ -65,12 +36,7 @@ function Update(dt)
         if #children >= 2 then
             local child = children[2]
             SetActiveEntity(child, false)
-        end
-
-        
-        
+        end        
     end
-
-    
 end
 

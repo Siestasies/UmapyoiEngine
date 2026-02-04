@@ -1,7 +1,7 @@
 local time = 0
 local clicked = false
 
-function OnClicked()
+function OnClick()
     PlaySound("quitbtn_sound", 1.0, 0)
     clicked = true
 end
