@@ -686,10 +686,82 @@ namespace Uma_ECS
             "visible", &Uma_UI::Text::visible
         );
 
+        // Register EffectProperty enum
+        sharedLua->new_enum<Uma_UI::EffectProperty>("EffectProperty",
+            {
+                {"Position", Uma_UI::EffectProperty::Position},
+                {"Scale", Uma_UI::EffectProperty::Scale},
+                {"ColorTint", Uma_UI::EffectProperty::ColorTint},
+                {"Alpha", Uma_UI::EffectProperty::Alpha}
+            }
+        );
+
+        // Register EasingType enum
+        sharedLua->new_enum<Uma_UI::EasingType>("EasingType",
+            {
+                {"Linear", Uma_UI::EasingType::Linear},
+                {"EaseInQuad", Uma_UI::EasingType::EaseInQuad},
+                {"EaseOutQuad", Uma_UI::EasingType::EaseOutQuad},
+                {"EaseInOutQuad", Uma_UI::EasingType::EaseInOutQuad},
+                {"EaseInCubic", Uma_UI::EasingType::EaseInCubic},
+                {"EaseOutCubic", Uma_UI::EasingType::EaseOutCubic},
+                {"EaseInOutCubic", Uma_UI::EasingType::EaseInOutCubic},
+                {"EaseInQuart", Uma_UI::EasingType::EaseInQuart},
+                {"EaseOutQuart", Uma_UI::EasingType::EaseOutQuart},
+                {"EaseInOutQuart", Uma_UI::EasingType::EaseInOutQuart},
+                {"EaseInElastic", Uma_UI::EasingType::EaseInElastic},
+                {"EaseOutElastic", Uma_UI::EasingType::EaseOutElastic},
+                {"EaseInOutElastic", Uma_UI::EasingType::EaseInOutElastic},
+                {"EaseInBounce", Uma_UI::EasingType::EaseInBounce},
+                {"EaseOutBounce", Uma_UI::EasingType::EaseOutBounce},
+                {"EaseInOutBounce", Uma_UI::EasingType::EaseInOutBounce}
+            }
+        );
+
+        // Register EffectClip first (before Effects)
+        sharedLua->new_usertype<Uma_UI::EffectClip>("EffectClip",
+            // Properties
+            "name", &Uma_UI::EffectClip::name,
+            "property", &Uma_UI::EffectClip::property,
+            "easing", &Uma_UI::EffectClip::easing,
+            "duration", &Uma_UI::EffectClip::duration,
+            "delay", &Uma_UI::EffectClip::delay,
+            "loop", &Uma_UI::EffectClip::loop,
+            "applyToChildren", &Uma_UI::EffectClip::applyToChildren,
+            "startVec2", &Uma_UI::EffectClip::startVec2,
+            "endVec2", &Uma_UI::EffectClip::endVec2,
+            "startColor", &Uma_UI::EffectClip::startColor,
+            "endColor", &Uma_UI::EffectClip::endColor,
+            "startFloat", &Uma_UI::EffectClip::startFloat,
+            "endFloat", &Uma_UI::EffectClip::endFloat,
+            "currentTime", &Uma_UI::EffectClip::currentTime,
+            "isPlaying", &Uma_UI::EffectClip::isPlaying,
+            "hasStarted", &Uma_UI::EffectClip::hasStarted,
+
+            // Methods
+            "Play", & Uma_UI::EffectClip::Play,
+            "Pause", & Uma_UI::EffectClip::Pause,
+            "Stop", & Uma_UI::EffectClip::Stop,
+            "Reset", & Uma_UI::EffectClip::Reset,
+            "GetProgress", & Uma_UI::EffectClip::GetProgress,
+            "IsComplete", & Uma_UI::EffectClip::IsComplete
+        );
+
+        // Register vector<EffectClip> for proper Lua table-like behavior
+        sharedLua->new_usertype<std::vector<Uma_UI::EffectClip>>("EffectClipVector",
+            sol::meta_function::length, &std::vector<Uma_UI::EffectClip>::size,
+            sol::meta_function::index, [](std::vector<Uma_UI::EffectClip>& vec, int index) -> Uma_UI::EffectClip* {
+                if (index < 1 || index > static_cast<int>(vec.size())) {
+                    return nullptr;
+                }
+                return &vec[index - 1];
+            }
+        );
+
         // Register Effects component
         sharedLua->new_usertype<Uma_UI::Effects>("Effects",
             // Member variables
-            "clips", &Uma_UI::Effects::clips,
+            "clips", sol::property([](Uma_UI::Effects& e) -> std::vector<Uma_UI::EffectClip>& { return e.clips; }),
             "playOnEnable", &Uma_UI::Effects::playOnEnable,
 
             // Playback control methods
@@ -697,8 +769,8 @@ namespace Uma_ECS
                 [](Uma_UI::Effects& effects, const std::string& name) {
                     effects.PlayClipByName(name);
                 },
-                [](Uma_UI::Effects& effects, size_t index) {
-                    effects.PlayClip(index);
+                [](Uma_UI::Effects& effects, int index) {
+                    if (index >= 0) effects.PlayClip(static_cast<size_t>(index));
                 }
             ),
 
@@ -707,9 +779,15 @@ namespace Uma_ECS
             "ResetAll", & Uma_UI::Effects::ResetAll,
 
             // Individual clip control by index
-            "PauseClip", & Uma_UI::Effects::PauseClip,
-            "StopClip", & Uma_UI::Effects::StopClip,
-            "ResetClip", & Uma_UI::Effects::ResetClip,
+            "PauseClip", [](Uma_UI::Effects& effects, int index) {
+                if (index >= 0) effects.PauseClip(static_cast<size_t>(index));
+            },
+            "StopClip", [](Uma_UI::Effects& effects, int index) {
+                if (index >= 0) effects.StopClip(static_cast<size_t>(index));
+            },
+            "ResetClip", [](Uma_UI::Effects& effects, int index) {
+                if (index >= 0) effects.ResetClip(static_cast<size_t>(index));
+            },
 
             // Individual clip control by name
             "PauseClipByName", & Uma_UI::Effects::PauseClipByName,
@@ -722,8 +800,8 @@ namespace Uma_ECS
                     int index = effects.FindClipIndexByName(name);
                     return index >= 0 && effects.IsClipPlaying(static_cast<size_t>(index));
                 },
-                [](Uma_UI::Effects& effects, size_t index) -> bool {
-                    return effects.IsClipPlaying(index);
+                [](Uma_UI::Effects& effects, int index) -> bool {
+                    return index >= 0 && effects.IsClipPlaying(static_cast<size_t>(index));
                 }
             ),
 
@@ -732,8 +810,8 @@ namespace Uma_ECS
                     int index = effects.FindClipIndexByName(name);
                     return index >= 0 && effects.IsClipComplete(static_cast<size_t>(index));
                 },
-                [](Uma_UI::Effects& effects, size_t index) -> bool {
-                    return effects.IsClipComplete(index);
+                [](Uma_UI::Effects& effects, int index) -> bool {
+                    return index >= 0 && effects.IsClipComplete(static_cast<size_t>(index));
                 }
             ),
 
@@ -754,38 +832,11 @@ namespace Uma_ECS
             "RemoveClip", [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                 int index = effects.FindClipIndexByName(name);
                 if (index >= 0) {
-                    // Note: Effects.h doesn't have a RemoveClip method, so we implement manually
                     effects.clips.erase(effects.clips.begin() + index);
                     return true;
                 }
                 return false;
             }
-        );
-
-        // Also need to register EffectClip so Lua can access clip properties
-        sharedLua->new_usertype<Uma_UI::EffectClip>("EffectClip",
-            "name", &Uma_UI::EffectClip::name,
-            "property", &Uma_UI::EffectClip::property,
-            "easing", &Uma_UI::EffectClip::easing,
-            "duration", &Uma_UI::EffectClip::duration,
-            "delay", &Uma_UI::EffectClip::delay,
-            "loop", &Uma_UI::EffectClip::loop,
-            "applyToChildren", &Uma_UI::EffectClip::applyToChildren,
-            "startVec2", &Uma_UI::EffectClip::startVec2,
-            "endVec2", &Uma_UI::EffectClip::endVec2,
-            "startColor", &Uma_UI::EffectClip::startColor,
-            "endColor", &Uma_UI::EffectClip::endColor,
-            "startFloat", &Uma_UI::EffectClip::startFloat,
-            "endFloat", &Uma_UI::EffectClip::endFloat,
-            "currentTime", &Uma_UI::EffectClip::currentTime,
-            "isPlaying", &Uma_UI::EffectClip::isPlaying,
-            "hasStarted", &Uma_UI::EffectClip::hasStarted,
-            "Reset", &Uma_UI::EffectClip::Reset,
-            "Play", &Uma_UI::EffectClip::Play,
-            "Pause", &Uma_UI::EffectClip::Pause,
-            "Stop", &Uma_UI::EffectClip::Stop,
-            "GetProgress", &Uma_UI::EffectClip::GetProgress,
-            "IsComplete", &Uma_UI::EffectClip::IsComplete
         );
 
         // Register Camera

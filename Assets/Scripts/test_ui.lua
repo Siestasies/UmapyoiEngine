@@ -1,6 +1,6 @@
 function Start()
     local effects = GetEffects()
     if effects then
-        effects:PlayAll()
+        effects:Play(1)
     end
 end
