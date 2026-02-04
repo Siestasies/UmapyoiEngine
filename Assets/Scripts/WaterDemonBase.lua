@@ -8,7 +8,7 @@ local playerId
 local isDead
 local enemyHurtEffectTimer
 local isHurt = false
-local isEffective = false;
+local isEffective = false
 
 
 function Start()
@@ -80,7 +80,6 @@ function HandleCollision(trigger)
         local playerComp = GetPlayerFrom(playerId)
         if playerComp then
 
-            --Log("OI KNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN " .. playerComp.currAttackIndex)
             local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
 
             --Log("=== ATTACK DEBUG ===")
