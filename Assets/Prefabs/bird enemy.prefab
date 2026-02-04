@@ -101,7 +101,16 @@
                                 "scriptPath": "Assets/Scripts/FireDemonBase.lua",
                                 "scriptName": "FireDemonBase.lua",
                                 "isEnabled": true,
-                                "exposedVariables": []
+                                "exposedVariables": [
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             },
                             {
                                 "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
@@ -224,7 +233,7 @@
                     },
                     "struct Uma_ECS::Animator": {
                         "autoPlay": true,
-                        "initialClip": "",
+                        "initialClip": "idle",
                         "clips": [
                             {
                                 "name": "charging_atk",
@@ -317,26 +326,26 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy child",
                         "position": {
-                            "x": -2.4,
-                            "y": -0.101
+                            "x": 0.0,
+                            "y": 4.006
                         },
                         "rotation": {
-                            "x": -267.0,
+                            "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 2.0,
-                            "y": 1.0
+                            "x": 5.059,
+                            "y": 3.38
                         },
                         "parent": 0
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/statue.png",
+                        "texturePath": "Assets/fire enemy shadow.png",
                         "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
-                        "autoFlip": true,
+                        "autoFlip": false,
                         "Native": true,
                         "gridX": 1.0,
                         "gridY": 1.0,
@@ -350,40 +359,6 @@
                             1.0
                         ],
                         "alpha": 1.0
-                    },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 500.0,
-                        "fric_coeff": 5.0
-                    },
-                    "struct Uma_ECS::Collider": {
-                        "defaultLayer": 1,
-                        "defaultMask": 64,
-                        "showBBox": false,
-                        "shapes": [
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": 0.0
-                                },
-                                "size": {
-                                    "x": 2.0,
-                                    "y": 2.0
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 8,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            }
-                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/bird enemy.prefab",
@@ -400,7 +375,7 @@
                 "path": "assets/fire bird.png"
             },
             {
-                "path": "assets/statue.png"
+                "path": "assets/fire enemy shadow.png"
             }
         ],
         "fonts": [],

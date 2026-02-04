@@ -1,6 +1,6 @@
 ExposedVars = {
-    chaseExitRange = 25.0,
-    attackEnterRange = 8.0
+    chaseExitRange = 70.0,
+    attackEnterRange = 40.0
 }
 
 local animator
@@ -12,7 +12,7 @@ function state_enter(entity)
         animator = GetAnimator()
     end
 
-    animator.animator:Play("walking", false)
+    animator.animator:Play("idle", false)
 end
 
 function state_update(entity, dt)

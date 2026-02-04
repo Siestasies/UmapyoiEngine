@@ -1,9 +1,14 @@
 ExposedVars = {
     --empty for now
+    enemyHurtEffectDuration = 0.5;
 }
+
 local enemy
 local playerId
 local isDead
+local enemyHurtEffectTimer
+local isHurt = false
+
 
 function Start()
     if HasEnemy() then
@@ -15,14 +20,36 @@ function Start()
         return
     end
 
+    enemyHurtEffectTimer = enemyHurtEffectDuration
+
     ChangeState(EntityID, "FireDemonIdle")
 end
 
 function Update(dt)
     if enemy then
-        if enemy.mHealth < 0 and not isDead then
+        if enemy.mHealth <= 0  and not isDead then
             isDead = true
             ChangeState(EntityID, "FireDemonDead")
+        end
+
+        if isHurt then
+            enemyHurtEffectTimer = enemyHurtEffectTimer - dt
+
+            if HasSprite() then
+                local spriteComp = GetSprite()
+                spriteComp.tintColor = Vec3(1.0, 0.5, 0.5)
+            end
+
+            if enemyHurtEffectTimer <= 0.0 then
+                enemyHurtEffectTimer = enemyHurtEffectDuration
+                isHurt = false
+
+                if HasSprite() then
+                    local spriteComp = GetSprite()
+                    spriteComp.tintColor = Vec3(1.0, 1.0, 1.0)
+                end
+
+            end
         end
     end
 end
@@ -59,12 +86,16 @@ function OnHurt(player, damage)
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
 
+    isHurt = true
+
     PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
     PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
 end
 
 function OnTriggerEnter(other, triggerOwner)
     HandleCollision(triggerOwner)
+    --Log("enemy is hit")
+
 end
 
 function OnTriggerExit(other)
