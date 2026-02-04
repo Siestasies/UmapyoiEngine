@@ -131,6 +131,7 @@ namespace Uma_ECS
 
     struct CheckpointData
     {
+        int checkpointID = 0;
         float checkpointX = 0.f;
         float checkpointY = 0.f;
         bool hasCheckpoint = false;

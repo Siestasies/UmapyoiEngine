@@ -622,6 +622,7 @@ namespace Uma_ECS
             });
 
         sharedLua->new_usertype<CheckpointData>("CheckpointData",
+            "checkpointID", &CheckpointData::checkpointID,
             "checkpointX", &CheckpointData::checkpointX,
             "checkpointY", &CheckpointData::checkpointY,
             "hasCheckpoint", &CheckpointData::hasCheckpoint

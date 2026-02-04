@@ -37,6 +37,8 @@ ExposedVars = {
     steamBurst_manaCost = 30
 }
 
+local isDead
+
 function Start()
     if HasPlayer() then
         local player = GetPlayer()
@@ -44,6 +46,7 @@ function Start()
             Log("PlayerBase initialized - Health: " .. tostring(player.mHealth) .. "/" .. tostring(player.mMaxHealth))
             ChangeState(EntityID, "PlayerIdle")
             InitializeAttackStats(player)
+            isDead = false
         end
     else
         LogWarning("PlayerBase: No Player component found!")
@@ -57,7 +60,8 @@ function Update(dt)
     if not player then return end
     
     -- Check for death condition
-    if player.mHealth <= 0 then
+    if player.mHealth <= 0 and isDead == false then
+        isDead = true
         ChangeState(EntityID, "PlayerDeath")
         return
     end

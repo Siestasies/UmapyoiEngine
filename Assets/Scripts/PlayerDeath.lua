@@ -58,6 +58,7 @@ function state_update(entity, dt)
     -- Update death animation timer
     if deathTimer > 0 then
         deathTimer = deathTimer - dt
+        Log("dtht" ..  tostring(deathTimer))
         
         if deathTimer <= 0 then
             Log("Death animation complete")
@@ -65,6 +66,7 @@ function state_update(entity, dt)
     else
         -- After death animation, handle respawn or game over
         respawnTimer = respawnTimer - dt
+        Log("rt" ..  tostring(respawnTimer))
         
         if respawnTimer <= 0 and not respawnTriggered then
             respawnTriggered = true
