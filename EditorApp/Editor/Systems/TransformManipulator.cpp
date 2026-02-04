@@ -55,7 +55,10 @@ namespace Uma_Engine
             // Game entity
             const auto& transform = transformArray.GetData(entity);
             state.dragStartPosition = transform.position;
-            state.dragStartRotation = transform.rotation.x;
+            Vec2 gizmoScreen = GetEntityScreenPosition(entity);
+            Vec2 initialDir = startMouse - gizmoScreen;
+            state.dragInitialAngle = std::atan2(initialDir.y, initialDir.x);
+            state.dragStartRotation = 0.f;
             state.dragStartScale = transform.scale;
         }
         else if (rectTransformArray.Has(entity))
@@ -63,6 +66,7 @@ namespace Uma_Engine
             // UI entity
             const auto& rectTransform = rectTransformArray.GetData(entity);
             state.dragStartPosition = rectTransform.anchoredPosition;
+            state.dragInitialAngle = 0.f;
             state.dragStartRotation = 0.f;
             state.dragStartScale = rectTransform.sizeDelta;
         }
@@ -121,9 +125,9 @@ namespace Uma_Engine
 
             float startAngle = std::atan2(startDir.y, startDir.x);
             float currentAngle = std::atan2(currentDir.y, currentDir.x);
-            float deltaAngle = currentAngle - startAngle;
+            float deltaAngle = currentAngle - state.dragInitialAngle;
 
-            ApplyRotation(entity, deltaAngle);
+            ApplyRotation(entity, state.dragStartRotation + deltaAngle * -90.0f);
             break;
         }
 
