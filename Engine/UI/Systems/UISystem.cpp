@@ -212,7 +212,23 @@ namespace Uma_UI
 
             auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
             mHitTestCache.push_back({ entity, rectTransform.computedRect });
-        }   
+
+            // Also add slider handle to hit test cache (mapped to parent slider entity)
+            if (sliderArray.Has(entity))
+            {
+                auto& slider = sliderArray.GetData(entity);
+                if (slider.handle != static_cast<Uma_ECS::Entity>(-1))
+                {
+                    auto& handleRTArray = pCoordinator->GetComponentArray<RectTransform>();
+                    if (handleRTArray.Has(slider.handle))
+                    {
+                        auto& handleRT = handleRTArray.GetData(slider.handle);
+                        // Add handle's rect but map it to the slider entity
+                        mHitTestCache.push_back({ entity, handleRT.computedRect });
+                    }
+                }
+            }
+        }
 
         // Raycast using NDC coordinates
         Uma_ECS::Entity hitEntity = Uma_UI::RaycastUI(mMousePositionNDC, mHitTestCache);
@@ -403,7 +419,19 @@ namespace Uma_UI
                         }
                     }
 
-                    slider.value = normalizedValue;
+                    float oldValue = slider.value;
+                    slider.value = Uma_Engine::Clamp(normalizedValue, slider.minValue, slider.maxValue);
+
+                    if (oldValue != slider.value)
+                    {
+                        UpdateSliderVisual(entity);
+
+                        if (!slider.scriptName.empty())
+                        {
+                            auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+                            system->CallScriptFunction(entity, slider.scriptName, "OnPress");
+                        }
+                    }
                 }
             }
         }
