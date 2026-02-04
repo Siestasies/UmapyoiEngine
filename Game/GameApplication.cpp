@@ -152,6 +152,8 @@ namespace Uma_Engine
             }
 
             // Wait for events
+            glClear(GL_COLOR_BUFFER_BIT);
+            glfwSwapBuffers(GetGLFWWindow());
             glfwWaitEventsTimeout(0.1);
 
             // Skip system updates and buffer swap

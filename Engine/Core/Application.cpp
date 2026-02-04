@@ -306,6 +306,7 @@ namespace Uma_Engine
             // Handle focus/minimization interruptions
             if (!HandleInterruptions(deltaTime))
             {
+                lastFrame = static_cast<float>(glfwGetTime());
                 continue; // Skip frame update
             }
 
