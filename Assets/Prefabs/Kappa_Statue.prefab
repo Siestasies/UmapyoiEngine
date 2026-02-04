@@ -1,0 +1,224 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Kappa_Statue",
+                        "position": {
+                            "x": -135.125,
+                            "y": 128.384
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 3.0,
+                            "y": 3.0
+                        },
+                        "parent": -1
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 0.289,
+                        "default3D": true
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Environment/kappa gem forming_0023.png",
+                        "layer": 8,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": true,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 200.0,
+                        "fric_coeff": 100.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 8,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -1.0
+                                },
+                                "size": {
+                                    "x": 2.7,
+                                    "y": 2.296
+                                },
+                                "purpose": 1,
+                                "layer": 8,
+                                "colliderMask": 22,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 2.099,
+                                    "y": 3.0
+                                },
+                                "purpose": 2,
+                                "layer": 0,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/KappaStatue.lua",
+                                "scriptName": "KappaStatue.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "healAmount",
+                                        "type": 0,
+                                        "value": 100.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": [
+                            {
+                                "mode": 1,
+                                "maxParticles": 20,
+                                "isActive": true,
+                                "renderLayer": 8,
+                                "renderOrder": 1,
+                                "texturePath": "Assets/whitePixel.png",
+                                "appearance": {
+                                    "scaleRange": [
+                                        2.0,
+                                        3.0
+                                    ],
+                                    "startColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "endColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "colorLerp": false,
+                                    "randomOpacity": true,
+                                    "opacityRange": [
+                                        0.158,
+                                        0.43
+                                    ],
+                                    "rotateParticles": false,
+                                    "rotationSpeedRange": [
+                                        -90.0,
+                                        90.0
+                                    ]
+                                },
+                                "fade": {
+                                    "fadeIn": false,
+                                    "fadeInDuration": 0.3,
+                                    "fadeOut": true,
+                                    "fadeOutDuration": 0.5,
+                                    "fadeAtEdges": true,
+                                    "edgeFadeDistance": 150.0
+                                },
+                                "physics": {
+                                    "speedRange": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "lifetimeRange": [
+                                        1.0,
+                                        3.0
+                                    ],
+                                    "gravity": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "drag": 0.0
+                                },
+                                "spawn": {
+                                    "spawnOffset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "spawnRadius": 10.0,
+                                    "useEmissionCone": false,
+                                    "emissionAngle": 0.0,
+                                    "emissionSpread": 360.0
+                                },
+                                "emission": {
+                                    "emissionRate": 20.0,
+                                    "loop": false,
+                                    "loopDelay": 1.0
+                                },
+                                "screenFill": {
+                                    "velocityXRange": [
+                                        -20.0,
+                                        20.0
+                                    ],
+                                    "velocityYRange": [
+                                        -150.0,
+                                        -80.0
+                                    ],
+                                    "spawnAtTop": true,
+                                    "spawnMargin": 100.0
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/environment/kappa gem forming_0023.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

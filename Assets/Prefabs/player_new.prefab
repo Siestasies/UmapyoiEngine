@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": -167.983,
-                            "y": 77.024
+                            "x": -169.091,
+                            "y": 80.957
                         },
                         "rotation": {
                             "x": 0.0,
@@ -29,7 +29,7 @@
                         "mSpeed": 50.0,
                         "mDashSpeed": 2.0,
                         "mDashDuration": 0.2,
-                        "mDashCD": 2.0,
+                        "mDashCD": -0.006,
                         "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 10.0,
@@ -38,13 +38,84 @@
                         "mMaxMana": 100.0,
                         "mManaRegenRate": 2.0,
                         "mNeutralAttackManaGain": 5,
-                        "mInvulnerabilityDuration": 1.0,
+                        "mInvulnerabilityDuration": -0.001,
                         "mHitStunDuration": 0.3,
                         "checkpointX": 0.0,
                         "checkpointY": 0.0,
                         "hasCheckpoint": false,
                         "elementComboWindow": 2.0,
-                        "attackStats": []
+                        "attackStats": [
+                            {
+                                "AttackName": "Attack_1",
+                                "mDamageMultiplier": 1.0,
+                                "mAttackSpeedMultiplier": 1.0,
+                                "animationClipName": "attack_1",
+                                "triggerColliderIndex": 0,
+                                "elementType": 0,
+                                "manaCost": 0,
+                                "attackRange": 50.0,
+                                "attackArc": 90.0,
+                                "applyBurn": false,
+                                "applyStun": false,
+                                "effectDuration": 0.0
+                            },
+                            {
+                                "AttackName": "Attack_2",
+                                "mDamageMultiplier": 1.2,
+                                "mAttackSpeedMultiplier": 0.898,
+                                "animationClipName": "attack_2",
+                                "triggerColliderIndex": 1,
+                                "elementType": 0,
+                                "manaCost": 0,
+                                "attackRange": 55.0,
+                                "attackArc": 90.0,
+                                "applyBurn": false,
+                                "applyStun": false,
+                                "effectDuration": 0.0
+                            },
+                            {
+                                "AttackName": "Fire_Slash",
+                                "mDamageMultiplier": 1.5,
+                                "mAttackSpeedMultiplier": 0.8,
+                                "animationClipName": "fire_slash",
+                                "triggerColliderIndex": 2,
+                                "elementType": 1,
+                                "manaCost": 20,
+                                "attackRange": 60.0,
+                                "attackArc": 120.0,
+                                "applyBurn": true,
+                                "applyStun": false,
+                                "effectDuration": 3.0
+                            },
+                            {
+                                "AttackName": "Water_Slash",
+                                "mDamageMultiplier": 1.299,
+                                "mAttackSpeedMultiplier": 0.85,
+                                "animationClipName": "water_slash",
+                                "triggerColliderIndex": 3,
+                                "elementType": 2,
+                                "manaCost": 20,
+                                "attackRange": 55.0,
+                                "attackArc": 100.0,
+                                "applyBurn": false,
+                                "applyStun": true,
+                                "effectDuration": 1.5
+                            },
+                            {
+                                "AttackName": "Steam_Burst",
+                                "mDamageMultiplier": 2.5,
+                                "mAttackSpeedMultiplier": 0.6,
+                                "animationClipName": "steam_burst",
+                                "triggerColliderIndex": 4,
+                                "elementType": 3,
+                                "manaCost": 30,
+                                "attackRange": 100.0,
+                                "attackArc": 360.0,
+                                "applyBurn": true,
+                                "applyStun": true,
+                                "effectDuration": 1.0
+                            }
+                        ]
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
@@ -120,11 +191,11 @@
                             },
                             {
                                 "offset": {
-                                    "x": 9.897,
+                                    "x": 2.096,
                                     "y": -8.097
                                 },
                                 "size": {
-                                    "x": 17.697,
+                                    "x": 18.197,
                                     "y": 26.298
                                 },
                                 "purpose": 2,
@@ -802,7 +873,7 @@
                             }
                         ],
                         "nextId": 10,
-                        "current": "",
+                        "current": "PlayerAttack",
                         "next": ""
                     }
                 }
