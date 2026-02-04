@@ -1,10 +1,10 @@
--- PlayerWaterSlash.lua
--- Water Slash elemental attack - can stun certain enemies, sets up elemental combo
+-- PlayerSteamBurst.lua
+-- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
 
 ExposedVars = {
-    waterSlashAnimationName = "water_slash",
-    waterSlashSoundName = "water_slash",
-    attackDuration = 0.5
+    pyronadoAnimationName = "pyronado",
+    pyronadoSoundName = "pyronado",
+    attackDuration = 0.7
 }
 
 -- State-local variables
@@ -15,7 +15,7 @@ local animator = nil
 local collider = nil
 
 function state_enter(entity)
-    Log("Player entered Water Slash state")
+    Log("Player entered Pyronado state")
     
     if not HasPlayer() then
         ChangeState(entity, "PlayerIdle")
@@ -33,7 +33,7 @@ function state_enter(entity)
         ChangeState(entity, "PlayerIdle")
         return
     end
-
+    
     if HasAnimator() then
         animator = GetAnimator()
     end
@@ -41,23 +41,23 @@ function state_enter(entity)
     if HasCollider() then
         collider = GetCollider()
     end
-
-    -- AttackIndex
-    player.currAttackIndex = 4
     
     -- Check mana cost
-    attackStat = GetWaterSlashAttackStat(player)
+    attackStat = GetPyronadoAttackStat(player)
     if player.mMana < attackStat.manaCost then
-        Log("Not enough mana for Water Slash!")
+        Log("Not enough mana for Pyronado!")
         ChangeState(entity, "PlayerIdle")
         return
     end
+
+    -- AttackIndex
+    player.currAttackIndex = 6
     
     -- Consume mana
-    player.mMana = math.floor(player.mMana - attackStat.manaCost)
-    
+    player.mMana = player.mMana - attackStat.manaCost
+
     -- Set elemental combo state
-    --player.lastElementUsed = ElementType.Water
+    --player.lastElementUsed = ElementType.Steam
     --player.elementComboTimer = player.elementComboWindow
     
     -- Initialize attack
@@ -65,8 +65,8 @@ function state_enter(entity)
     attackPerformed = false
     
     -- Play animation and sound
-    animator.animator:Play(waterSlashAnimationName, true)
-    PlaySound(waterSlashSoundName, 0.8, 0)
+    animator.animator:Play(pyronadoAnimationName, true)
+    PlaySound(pyronadoSoundName, 1.0, 0)
     
     -- Stop movement
     if HasRigidBody() then
@@ -76,7 +76,6 @@ function state_enter(entity)
         end
     end
     
-    -- Face towards mouse
     FaceTowardsMouse(entity)
 end
 
@@ -94,30 +93,10 @@ function state_update(entity, dt)
     
     -- Update timer
     attackTimer = attackTimer - dt
-
-    if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.5) then
-        -- Check if player has enough mana for wind dash
-        if CanUseElementalAttack(player, "wind") then
-            ChangeState(entity, "PlayerWhirlpool")
-            return
-        else
-            Log("Not enough mana for Whirlpool!")
-        end
-    end
-
-    -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and attackTimer > (attackDuration * 0.5) then
-        if CanUseElementalAttack(player, "fire") then
-            ChangeState(entity, "PlayerSteamBurst")
-            return
-        else
-            Log("Not enough mana for Steam Burst!")
-        end
-    end
     
     -- Perform attack at animation midpoint
     if not attackPerformed and attackTimer < (attackDuration * 0.4) then
-        Log("Water Slash Attack!")
+        Log("Pyronado Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
@@ -143,47 +122,22 @@ function state_update(entity, dt)
 end
 
 function state_exit(entity)
-    Log("Player exited Water Slash state")
+    Log("Player exited Pyronado state")
     if attackStat then 
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
     end
-    StopSound(waterSlashSoundName);
+    StopSound(pyronadoSoundName);
 end
 
-function GetWaterSlashAttackStat(player)
+function GetPyronadoAttackStat(player)
     if not player then return nil end
     
     local attackStats = player.attackStats
     if attackStats then
         for i = 1, #attackStats do
             local attack = attackStats[i]
-            if attack and attack.elementType == ElementType.Water then
+            if attack and attack.elementType == ElementType.Pyronado then
                 return attack
-            end
-        end
-    end
-    
-    return nil
-end
-
--- Helper function to check if elemental attack can be used
-function CanUseElementalAttack(player, elementType)
-    if not player then return false end
-    
-    -- Find the attack stats for this element
-    local attackStats = player.attackStats
-    if not attackStats then return false end
-    
-    for i = 1, #attackStats do
-        local attack = attackStats[i]
-        if attack then
-            -- Check element type and mana cost
-            if elementType == "fire" and attack.elementType == ElementType.Fire then
-                return player.mMana >= attack.manaCost
-            elseif elementType == "water" and attack.elementType == ElementType.Water then
-                return player.mMana >= attack.manaCost
-            elseif elementType == "wind" and attack.elementType == ElementType.Wind then
-                return player.mMana >= attack.manaCost
             end
         end
     end

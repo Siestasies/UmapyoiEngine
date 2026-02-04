@@ -3,15 +3,16 @@
 
 ExposedVars = {
     steamBurstAnimationName = "steam_burst",
-    attackDuration = 0.7,
-    manaCost = 30,
-    damageMultiplier = 2.5,
-    aoeRadius = 100.0
+    steamBurstSoundName = "steam_burst",
+    attackDuration = 0.7
 }
 
 -- State-local variables
 local attackTimer = 0
 local attackPerformed = false
+local attackStat = nil
+local animator = nil
+local collider = nil
 
 function state_enter(entity)
     Log("Player entered Steam Burst state")
@@ -33,35 +34,39 @@ function state_enter(entity)
         return
     end
     
-    -- Check elemental combo requirement
-    if player.elementComboTimer <= 0 or player.lastElementUsed == ElementType.None then
-        Log("Cannot use Steam Burst - no elemental combo active!")
-        ChangeState(entity, "PlayerIdle")
-        return
+    if HasAnimator() then
+        animator = GetAnimator()
+    end
+    
+    if HasCollider() then
+        collider = GetCollider()
     end
     
     -- Check mana cost
-    local actualManaCost = GetSteamBurstManaCost(player)
-    if player.mMana < actualManaCost then
+    attackStat = GetSteamBurstAttackStat(player)
+    if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Steam Burst!")
         ChangeState(entity, "PlayerIdle")
         return
     end
+
+    -- AttackIndex
+    player.currAttackIndex = 6
     
     -- Consume mana
-    player.mMana = player.mMana - actualManaCost
-    
-    -- Clear elemental combo state (consumed by Steam Burst)
-    player.lastElementUsed = ElementType.None
-    player.elementComboTimer = 0
+    player.mMana = player.mMana - attackStat.manaCost
+
+    -- Set elemental combo state
+    --player.lastElementUsed = ElementType.Steam
+    --player.elementComboTimer = player.elementComboWindow
     
     -- Initialize attack
     attackTimer = attackDuration
     attackPerformed = false
     
     -- Play animation and sound
-    PlayAnimation(entity, steamBurstAnimationName)
-    PlaySound("steam_burst", 1.0, 0)
+    animator.animator:Play(steamBurstAnimationName, true)
+    PlaySound(steamBurstSoundName, 1.0, 0)
     
     -- Stop movement
     if HasRigidBody() then
@@ -71,7 +76,7 @@ function state_enter(entity)
         end
     end
     
-    Log("Steam Burst activated! AoE attack incoming!")
+    FaceTowardsMouse(entity)
 end
 
 function state_update(entity, dt)
@@ -89,10 +94,14 @@ function state_update(entity, dt)
     -- Update timer
     attackTimer = attackTimer - dt
     
-    -- Perform AoE damage at attack midpoint
+    -- Perform attack at animation midpoint
     if not attackPerformed and attackTimer < (attackDuration * 0.4) then
-        PerformSteamBurstDamage(entity, player)
+        Log("Steam Burst Attack!")
         attackPerformed = true
+        -- Activate Corresponding Collider
+        collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+        -- Play explosion sound
+        PlaySound(steamBurstSoundName, 0.9, 0)
     end
     
     -- Attack finished
@@ -116,95 +125,48 @@ end
 
 function state_exit(entity)
     Log("Player exited Steam Burst state")
-    
-    -- Reset state-local variables
-    attackTimer = 0
-    attackPerformed = false
+    if attackStat then 
+        collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
+    end
+    StopSound(steamBurstSoundName);
 end
 
--- Get mana cost from attack stats or use default
-function GetSteamBurstManaCost(player)
-    if not player then return manaCost end
+function GetSteamBurstAttackStat(player)
+    if not player then return nil end
     
     local attackStats = player.attackStats
     if attackStats then
         for i = 1, #attackStats do
             local attack = attackStats[i]
             if attack and attack.elementType == ElementType.Steam then
-                return attack.manaCost
+                return attack
             end
         end
     end
     
-    return manaCost
+    return nil
 end
 
--- Perform AoE steam burst damage
-function PerformSteamBurstDamage(entity, player)
-    if not player then return end
+-- Helper function to face towards mouse
+function FaceTowardsMouse(entity)
+    if not HasTransform() then return end
+    if not HasSprite() then return end
     
-    local enemies = FindEntitiesWithComponent("Enemy")
-    if not enemies then return end
+    local transform = GetTransform()
+    --local sprite = GetSprite()
     
-    local myTransform = GetTransform()
-    if not myTransform then return end
+    if not transform then return end
     
-    local myPos = myTransform.position
-    local baseDamage = player.mAttackDamage
+    local mousePos = GetMouseWorldPosition()
+    local myPos = transform.position
     
-    -- Get attack stats for steam burst
-    local attackStats = player.attackStats
-    local actualDamageMultiplier = damageMultiplier
-    local actualAoeRadius = aoeRadius
-    
-    if attackStats then
-        for i = 1, #attackStats do
-            local attack = attackStats[i]
-            if attack and attack.elementType == ElementType.Steam then
-                actualDamageMultiplier = attack.mDamageMultiplier
-                actualAoeRadius = attack.attackRange
-                break
-            end
-        end
+    -- Determine facing direction based on mouse position
+    if mousePos.x < myPos.x and transform.scale.x > 0 then
+        --sprite.flipX = true
+       transform.scale.x = -1.0 * transform.scale.x
+    elseif mousePos.x > myPos.x and transform.scale.x < 0 then
+        --sprite.flipX = false
+        --myScale.x = 1.0 * myScale.x
+        transform.scale.x = -1.0 * transform.scale.x
     end
-    
-    local totalDamage = math.floor(baseDamage * actualDamageMultiplier)
-    local enemiesHit = 0
-    
-    -- Check ALL enemies in AoE radius
-    for i = 1, #enemies do
-        local enemyId = enemies[i]
-        if IsEntityValid(enemyId) then
-            local enemyTransform = GetTransformFrom(enemyId)
-            if enemyTransform then
-                local enemyPos = enemyTransform.position
-                
-                local dx = enemyPos.x - myPos.x
-                local dy = enemyPos.y - myPos.y
-                local distance = math.sqrt(dx * dx + dy * dy)
-                
-                -- AoE hits all enemies in radius
-                if distance <= actualAoeRadius then
-                    if HasEnemyOn(enemyId) then
-                        local enemy = GetEnemyFrom(enemyId)
-                        if enemy then
-                            -- Apply steam damage (scales with distance - closer = more damage)
-                            local distanceMultiplier = 1.0 - (distance / actualAoeRadius) * 0.5
-                            local scaledDamage = math.floor(totalDamage * distanceMultiplier)
-                            
-                            enemy.mHealth = enemy.mHealth - scaledDamage
-                            enemiesHit = enemiesHit + 1
-                            
-                            Log("Steam Burst hit enemy for " .. tostring(scaledDamage) .. " damage!")
-                        end
-                    end
-                end
-            end
-        end
-    end
-    
-    -- Play explosion sound
-    PlaySound("steam_explosion", 0.9, 0)
-    
-    Log("Steam Burst hit " .. tostring(enemiesHit) .. " enemies!")
 end

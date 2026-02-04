@@ -59,6 +59,16 @@ function state_update(entity, dt)
         ChangeState(entity, "PlayerAttack")
         return
     end
+
+    if KeyPressed(KEY_R) then
+        -- Check if player has enough mana for wind dash
+        if CanUseElementalAttack(player, "wind") then
+            ChangeState(entity, "PlayerWindDash")
+            return
+        else
+            Log("Not enough mana for Wind Dash!")
+        end
+    end
     
     -- Check for Fire Slash (Q key or configurable)
     if KeyPressed(KEY_Q) then
@@ -102,11 +112,11 @@ function CanUseElementalAttack(player, elementType)
                 return player.mMana >= attack.manaCost
             elseif elementType == "water" and attack.elementType == ElementType.Water then
                 return player.mMana >= attack.manaCost
+            elseif elementType == "wind" and attack.elementType == ElementType.Wind then
+                return player.mMana >= attack.manaCost
             end
         end
     end
     
-    -- Default mana check if no specific attack found
-    local defaultManaCost = 20
-    return player.mMana >= defaultManaCost
+    return nil
 end
