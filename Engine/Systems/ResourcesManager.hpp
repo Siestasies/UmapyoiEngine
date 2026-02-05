@@ -143,7 +143,8 @@ namespace Uma_Engine
         \param name The unique identifier of the sound.
         \return A pointer to the SoundInfo, or nullptr if not found.
         */
-        SoundInfo* GetSound(const std::string& name);
+        SoundInfo* GetSound(const std::string& name, const std::string& path = "");
+
 
         /*!
         \brief Unloads all managed sounds and releases audio resources.

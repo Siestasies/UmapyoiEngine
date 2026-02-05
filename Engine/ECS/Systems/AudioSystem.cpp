@@ -210,6 +210,12 @@ void Uma_ECS::AudioSystem::PlayEntitySound(Entity entity, const std::string& sou
         pSoundManager->StopChannel(audio.GetSound(soundName)->channel);
         audio.RemoveSound(soundName);
     }
+    else
+    {
+        return;
+    }
+
+    // getting sound form resources here
 
     // Get entity position
     auto& tfArray = pCoordinator->GetComponentArray<Transform>();

@@ -385,10 +385,19 @@ namespace Uma_Engine
         return false;
     }
 
-    SoundInfo* ResourcesManager::GetSound(const std::string& name) 
+    SoundInfo* ResourcesManager::GetSound(const std::string& name, const std::string& path)
     {
         auto it = mSoundList.find(name);
-        return (it != mSoundList.end()) ? &it->second : nullptr;
+
+        // already loaded
+        if (it != mSoundList.end())
+            return &it->second;
+
+        // try load if path provided
+        if (!path.empty() && LoadSound(name, path, SoundType::SFX))
+            return &mSoundList.find(name)->second;
+
+        return nullptr;
     }
 
     bool ResourcesManager::LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath)
