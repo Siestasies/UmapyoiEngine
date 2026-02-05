@@ -22,8 +22,8 @@
                         "parent": -1
                     },
                     "struct Uma_ECS::Player": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
+                        "mHealth": 1000,
+                        "mMaxHealth": 1000,
                         "mHealthRegenRate": 1.0,
                         "mHealthRegenDelay": 3.0,
                         "mSpeed": 50.0,
@@ -157,7 +157,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {

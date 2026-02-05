@@ -6,7 +6,7 @@ ExposedVars = {
     deathDuration = 1.5,
     respawnDelay = 2.0,
     enableRespawn = true,
-    gameOverSceneName = "main_menu"
+    gameOverSceneName = "main_menu.scn"
 }
 
 -- State-local variables

@@ -44,9 +44,6 @@
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/stage_clear.png"
-            },
-            {
                 "path": "assets/pause menu.png"
             },
             {
@@ -101839,7 +101836,7 @@
         },
         {
             "id": 9,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "drum",
@@ -101865,7 +101862,7 @@
         },
         {
             "id": 10,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "drum",
@@ -101896,8 +101893,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": 712.111,
-                        "y": -1465.187
+                        "x": 973.091,
+                        "y": -1370.088
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101916,14 +101913,14 @@
             }
         },
         {
-            "id": 13,
+            "id": 15,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "water enemy",
                     "position": {
                         "x": 364.915,
-                        "y": -1370.317
+                        "y": -1120.317
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101942,7 +101939,7 @@
             }
         },
         {
-            "id": 15,
+            "id": 19,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101968,7 +101965,7 @@
             }
         },
         {
-            "id": 16,
+            "id": 20,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101994,11 +101991,11 @@
             }
         },
         {
-            "id": 18,
-            "isActive": true,
+            "id": 22,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Level End Trigger",
+                    "name": "Level End Trigger 2",
                     "position": {
                         "x": 382.174,
                         "y": -1091.612
@@ -102015,6 +102012,58 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/Level End Trigger 2.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 23,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": 364.915,
+                        "y": -1370.317
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 27,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 712.111,
+                        "y": -1465.187
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.689,
+                        "y": 1.519
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/bird enemy.prefab",
                     "isRoot": true
                 }
             }
