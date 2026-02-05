@@ -1073,6 +1073,15 @@ namespace Uma_ECS
                 return pCoordinator->FindEntitiesWithComponentByName(componentName);
             });
 
+        sharedLua->set_function("CountEntitiesWithComponent",
+            [this](const std::string& componentName) -> int {
+                if (!pCoordinator) {
+                    return 0;
+                }
+                return (int)pCoordinator
+                    ->FindEntitiesWithComponentByName(componentName).size();
+            });
+
         // Find first entity with a component (returns entity ID or -1 if not found)
         sharedLua->set_function("FindEntityWithComponent",
             [this](const std::string& componentName) -> Entity {

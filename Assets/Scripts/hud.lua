@@ -79,7 +79,7 @@ function Update(dt)
 
     else
         if #children > 0 then
-            local child = children[1]
+            local child = children[9]
             if health <= (maxHealth * 0) then
                 SetActiveEntity(child, false)
             else
@@ -88,7 +88,7 @@ function Update(dt)
         end
 
         if #children >= 2 then
-            local child = children[2]
+            local child = children[8]
             if health <= (maxHealth * 0.25) then
                 SetActiveEntity(child, false)
             else
@@ -97,7 +97,7 @@ function Update(dt)
         end
 
         if #children >= 3 then
-            local child = children[3]
+            local child = children[7]
             if health <= (maxHealth * 0.5) then
                 SetActiveEntity(child, false)
             else
@@ -106,7 +106,7 @@ function Update(dt)
         end
 
         if #children >= 4 then
-            local child = children[4]
+            local child = children[6]
             if health <= (maxHealth * 0.75) then
                 SetActiveEntity(child, false)
             else
@@ -124,7 +124,7 @@ function Update(dt)
         end
 
         if #children >= 6 then
-            local child = children[6]
+            local child = children[4]
             if mana <= (maxMana * 0.2) then
                 SetActiveEntity(child, false)
             else
@@ -133,7 +133,7 @@ function Update(dt)
         end
 
         if #children >= 7 then
-            local child = children[7]
+            local child = children[3]
             if mana <= (maxMana * 0.4) then
                 SetActiveEntity(child, false)
             else
@@ -142,7 +142,7 @@ function Update(dt)
         end
 
         if #children >= 8 then
-            local child = children[8]
+            local child = children[2]
             if mana <= (maxMana * 0.6) then
                 SetActiveEntity(child, false)
             else
@@ -151,7 +151,7 @@ function Update(dt)
         end        
 
         if #children >= 9 then
-            local child = children[9]
+            local child = children[1]
             if mana <= (maxMana * 0.8) then
                 SetActiveEntity(child, false)
             else
@@ -161,17 +161,17 @@ function Update(dt)
 
         if #children >= 10 then
             local child = children[10]
-            SetActiveEntity(child, true)
+            SetActiveEntity(child, false)
         end        
         
         if #children >= 11 then
             local child = children[11]
-            SetActiveEntity(child, true)
+            SetActiveEntity(child, false)
         end
 
         if #children >= 12 then
             local child = children[12]
-            SetActiveEntity(child, true)
+            SetActiveEntity(child, false)
         end
     end
 end

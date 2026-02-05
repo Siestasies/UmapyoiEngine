@@ -9,7 +9,7 @@
                         "name": "water enemy",
                         "position": {
                             "x": 1000.0,
-                            "y": -1659.8
+                            "y": 0.0
                         },
                         "rotation": {
                             "x": 0.0,
@@ -399,8 +399,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "vfx",
                         "position": {
-                            "x": 1000.0,
-                            "y": -1668.8
+                            "x": -0.1,
+                            "y": -0.2
                         },
                         "rotation": {
                             "x": 0.0,

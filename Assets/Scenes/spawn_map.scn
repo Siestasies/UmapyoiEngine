@@ -5,6 +5,9 @@
                 "path": "assets/whitepixel.png"
             },
             {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
                 "path": "assets/player_ss.png"
             },
             {
@@ -17,7 +20,7 @@
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/whole_castle.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/sprite_sheet_17.png"
@@ -35,7 +38,28 @@
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/stage_clear.png"
+                "path": "assets/whole castle.png"
+            },
+            {
+                "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/fire ability icon.png"
+            },
+            {
+                "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/wind ability icon.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 2.png"
+            },
+            {
+                "path": "assets/howtoplay.png"
             }
         ],
         "fonts": [
@@ -12966,8 +12990,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": 217.0,
-                        "y": -312.398
+                        "x": 252.768,
+                        "y": -290.729
                     },
                     "rotation": {
                         "x": 0.0,
@@ -12992,8 +13016,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 217.0,
-                        "y": -312.398
+                        "x": 252.768,
+                        "y": -290.729
                     },
                     "rotation": {
                         "x": 0.0,
@@ -13006,7 +13030,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Camera": {
-                    "zoom": 0.5,
+                    "zoom": 1.0,
                     "followPlayer": true
                 }
             }
@@ -32323,7 +32347,7 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Sprite": {
-                    "texturePath": "Assets/whole_castle.png",
+                    "texturePath": "Assets/whole castle.png",
                     "layer": 4,
                     "order": 4,
                     "flipX": false,
@@ -32460,7 +32484,7 @@
                     "name": "fence colliders",
                     "position": {
                         "x": 253.304,
-                        "y": -116.127
+                        "y": -116.125
                     },
                     "rotation": {
                         "x": 0.0,
@@ -32580,14 +32604,14 @@
             }
         },
         {
-            "id": 19,
+            "id": 9,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Level End Trigger",
                     "position": {
                         "x": 254.852,
-                        "y": -58.395
+                        "y": -60.694
                     },
                     "rotation": {
                         "x": 0.0,
@@ -32599,8 +32623,2177 @@
                     },
                     "parent": -1
                 },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 127,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 12.1,
+                                "y": 7.3
+                            },
+                            "purpose": 2,
+                            "layer": 4,
+                            "colliderMask": 62,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/levelEnd_trigger.lua",
+                            "scriptName": "levelEnd_trigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 10,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hud",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/hud.lua",
+                            "scriptName": "hud.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 45.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.0
+                }
+            }
+        },
+        {
+            "id": 11,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -900.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 12,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -825.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 13,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 3",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -750.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 4",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -675.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 15,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -937.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 16,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -862.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 17,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 3",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -787.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 18,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 4",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -712.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 19,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 5",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -637.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 20,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -900.0,
+                        "y": 150.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 200.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/fire ability icon.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 21,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 20
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 22,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 20
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 23,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -900.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 200.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/water ability icon.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 24,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 23
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 25,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 23
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 26,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd 3",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -900.0,
+                        "y": -150.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 200.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/wind ability icon.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 27,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 26
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 28,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cd txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 26
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 15.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "67",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 0,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 29,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "pause screen",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/pause.lua",
+                            "scriptName": "pause.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 1,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 30,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bg",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 29
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 2020.0,
+                        "y": 1160.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/pause menu.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.939
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 31,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "resume btn",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 29
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/resume_btn.lua",
+                            "scriptName": "resume_btn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": -200.0
+                    },
+                    "sizeDelta": {
+                        "x": 369.0,
+                        "y": 83.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/floor_tatami.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "resume_btn.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 32,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "resume shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 31
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 9.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Resume",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 33,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "resume txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 31
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Resume",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 34,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "back btn",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 29
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/back_btn.lua",
+                            "scriptName": "back_btn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 1.0
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": -363.0
+                    },
+                    "sizeDelta": {
+                        "x": 680.0,
+                        "y": 94.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/floor_tatami.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "back_btn.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 35,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "back shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 34
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 7.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Back to main",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 36,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "back txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 34
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 16.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Back to main",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 37,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HowToPlay btn",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 29
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/HTP.lua",
+                            "scriptName": "HTP.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": -301.0
+                    },
+                    "sizeDelta": {
+                        "x": 622.0,
+                        "y": 90.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/floor_tatami.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "HTP.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 38,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HowToPlay shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 37
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 10.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "How to Play",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 39,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HowToPlay txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 37
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "How to Play",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 40,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HTPClose",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 37
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/CloseHTP.lua",
+                            "scriptName": "CloseHTP.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 620.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "CloseHTP.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 41,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HTPClose shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 40
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Close",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.7,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 42,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HTPClose txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 40
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "Close",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 43,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "HTP Img",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 40
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 259.0
+                    },
+                    "sizeDelta": {
+                        "x": 2020.0,
+                        "y": 1160.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/HowToPlay.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 44,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": 211.427,
+                        "y": -150.966
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1
+                },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/Level End Trigger.prefab",
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
                     "isRoot": true
                 }
             }
