@@ -8,16 +8,16 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": 1012.7,
-                            "y": -1659.8
+                            "x": 1007.2,
+                            "y": -1661.963
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.689,
-                            "y": 1.519
+                            "x": 0.699,
+                            "y": 1.6
                         },
                         "parent": -1
                     },
@@ -365,6 +365,110 @@
                         "isRoot": false
                     }
                 }
+            },
+            {
+                "id": 2,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 4.8
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 15.0,
+                            "y": 0.699
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.442,
+                            0.442,
+                            0.442
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 4.8
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 15.0,
+                            "y": 0.699
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.33,
+                            0.045,
+                            0.045
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
+                                "scriptName": "EnemyHealthBar.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "isRoot": false
+                    }
+                }
             }
         ],
         "rootEntity": 0
@@ -376,6 +480,9 @@
             },
             {
                 "path": "assets/fire enemy shadow.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
             }
         ],
         "fonts": [],
