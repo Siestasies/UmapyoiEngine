@@ -2,10 +2,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -101914,7 +101914,7 @@
             }
         },
         {
-            "id": 13,
+            "id": 15,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101940,7 +101940,7 @@
             }
         },
         {
-            "id": 14,
+            "id": 16,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101966,7 +101966,7 @@
             }
         },
         {
-            "id": 15,
+            "id": 17,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101992,7 +101992,7 @@
             }
         },
         {
-            "id": 17,
+            "id": 21,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102045,7 +102045,7 @@
             }
         },
         {
-            "id": 19,
+            "id": 22,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
