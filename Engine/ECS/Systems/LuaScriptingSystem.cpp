@@ -36,6 +36,7 @@ All rights reserved.
 #include "../Components/Enemy.h"
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
+#include "../Components/AudioComponent.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -984,6 +985,33 @@ namespace Uma_ECS
             "enabled", &PathFinding::enabled
         );
 
+        sharedLua->new_usertype<AudioComponent>("AudioComponent",
+            "defaultVolume", &Uma_ECS::AudioComponent::defaultVolume, //to set the default volumes
+            "hasLoadedSound", &Uma_ECS::AudioComponent::HasLoadedSound,
+
+            "play", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                // We use the AudioSystem directly here for performance 
+                // because these happen every frame/frequently
+                pCoordinator->GetSystem<AudioSystem>()->PlayEntitySound(entity, name, self.default3D, self.defaultVolume);
+            },
+            "playOneShot", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtEntity(entity, name, self.defaultVolume, self.default3D);
+            },
+            "stop", sol::overload(
+                [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity) {
+                    pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
+                },
+                [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                    // This maps to your StopEntitySound(Entity, string) overload
+                    pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity, name);
+                }
+            ),
+            "playAtPos", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, float x, float y, const std::string& name) {
+                // Uses the entity's component defaults but plays at specific coordinates
+                pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtPosition(entity, x, y, name, self.defaultVolume, self.default3D);
+            }
+        );
+
         // ===================================================================
         // COLLISION SYSTEM TYPES
         // ===================================================================
@@ -1133,6 +1161,7 @@ namespace Uma_ECS
         X(Text)        \
         X(Image)       \
         X(Effects)     \
+        X(AudioComponent)\
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER

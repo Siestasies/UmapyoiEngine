@@ -129,13 +129,14 @@ namespace Uma_Engine
     class PlayOneShotAtPositionEvent : public Event
     {
     public:
-        PlayOneShotAtPositionEvent(float x, float y, const std::string& soundName,
+        PlayOneShotAtPositionEvent(Entity entity, float x, float y, const std::string& soundName,
             float volume = 1.0f, bool is3D = true)
-            : x(x), y(y), soundName(soundName), volume(volume), is3D(is3D) {
+            : entity(entity), x(x), y(y), soundName(soundName), volume(volume), is3D(is3D) {
             priority = Priority::Low;
         }
 
     public:
+        Entity entity;
         float x, y;
         std::string soundName;
         float volume;

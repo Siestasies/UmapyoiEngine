@@ -377,14 +377,12 @@ namespace Uma_Engine {
         listenerUp = up;
     }
 
-    void SoundManager::PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume, bool is3D)
+    void SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return;
         }
 
-        // Get sound from resource manager
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->sound) {
             return;
         }
@@ -413,16 +411,14 @@ namespace Uma_Engine {
         }
     }
 
-    FMOD_CHANNEL* SoundManager::PlaySoundInstance(const std::string& soundName, bool loop,float volume, const FMOD_VECTOR& pos, bool is3D)
+    FMOD_CHANNEL* SoundManager::PlaySoundInstance(SoundInfo* info, bool loop,float volume, const FMOD_VECTOR& pos, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return nullptr;
         }
 
         // Get sound from ResourcesManager
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->sound) {
-            std::cerr << "[SoundManager] Sound not found: " << soundName << std::endl;
             return nullptr;
         }
 
@@ -474,17 +470,8 @@ namespace Uma_Engine {
         FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
     }
 
-    SoundInfo* SoundManager::GetSoundInfo(const std::string& soundName)
+    bool SoundManager::IsSoundPlaying(SoundInfo* info)
     {
-        if (!pResourcesManager) {
-            return nullptr;
-        }
-        return pResourcesManager->GetSound(soundName);
-    }
-
-    bool SoundManager::IsSoundPlaying(const std::string& soundName)
-    {
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->channel) {
             return false;
         }
