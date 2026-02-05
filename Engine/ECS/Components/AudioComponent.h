@@ -44,6 +44,7 @@ namespace Uma_ECS
 
         //All active sounds playing on this entity
         std::unordered_map<std::string, SoundInstance> activeSounds;
+        std::unordered_map<std::string, SoundInstance> loadedSounds;
 
         //runtime
         std::string loopingSoundName;
@@ -59,6 +60,21 @@ namespace Uma_ECS
 
             value.AddMember("defaultVolume", defaultVolume, allocator);
             value.AddMember("default3D", default3D, allocator);
+
+            rapidjson::Value soundsObj(rapidjson::kObjectType);
+            for (const auto& [name, instance] : loadedSounds) {
+                rapidjson::Value soundVal(rapidjson::kObjectType);
+                soundVal.AddMember("path", rapidjson::Value(instance.path.c_str(), allocator).Move(), allocator);
+                soundVal.AddMember("isPlaying", instance.isPlaying, allocator);
+                soundVal.AddMember("shouldLoop", instance.shouldLoop, allocator);
+                soundVal.AddMember("is3D", instance.is3D, allocator);
+                soundVal.AddMember("volume", instance.volume, allocator);
+                soundVal.AddMember("pitch", instance.pitch, allocator);
+                soundVal.AddMember("minDistance", instance.minDistance, allocator);
+                soundVal.AddMember("maxDistance", instance.maxDistance, allocator);
+                soundsObj.AddMember(rapidjson::Value(name.c_str(), allocator).Move(), soundVal.Move(), allocator);
+            }
+            value.AddMember("loadedSounds", soundsObj, allocator);
         }
 
         /*!
@@ -68,6 +84,38 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
+            // Full reset
+            loadedSounds.clear();
+
+            // Restore loadedSounds (reconstructs from saved data)
+            if (value.HasMember("loadedSounds") && value["loadedSounds"].IsObject()) {
+                for (rapidjson::SizeType i = 0; i < value["loadedSounds"].MemberCount(); i++) {
+                    auto& member = value["loadedSounds"].MemberBegin()[i];
+
+                    if (member.value.IsObject() &&
+                        member.value.HasMember("path") && member.value["path"].IsString() &&
+                        member.value.HasMember("isPlaying") && member.value["isPlaying"].IsBool() &&
+                        member.value.HasMember("shouldLoop") && member.value["shouldLoop"].IsBool() &&
+                        member.value.HasMember("is3D") && member.value["is3D"].IsBool()) {
+
+                        std::string name(member.name.GetString(), member.name.GetStringLength());
+
+                        SoundInstance instance;
+                        instance.path = member.value["path"].GetString();
+                        instance.isPlaying = member.value["isPlaying"].GetBool();
+                        instance.shouldLoop = member.value["shouldLoop"].GetBool();
+                        instance.is3D = member.value["is3D"].GetBool();
+                        instance.volume = member.value["volume"].GetFloat();
+                        instance.pitch = member.value["pitch"].GetFloat();
+                        instance.minDistance = member.value["minDistance"].GetFloat();
+                        instance.maxDistance = member.value["maxDistance"].GetFloat();
+
+                        loadedSounds.emplace(std::move(name), std::move(instance));
+                    }
+                }
+            }
+
+            // Restore defaults
             defaultVolume = value["defaultVolume"].GetFloat();
             default3D = value["default3D"].GetBool();
         }
@@ -92,6 +140,23 @@ namespace Uma_ECS
         size_t GetActiveSoundCount() const
         {
             return activeSounds.size();
+        }
+
+        //for loaded sounds
+        SoundInstance* GetLoadedSound(const std::string& soundName)
+        {
+            auto it = loadedSounds.find(soundName);
+            return (it != loadedSounds.end()) ? &it->second : nullptr;
+        }
+
+        bool HasLoadedSound(const std::string& soundName) const
+        {
+            return loadedSounds.find(soundName) != loadedSounds.end();
+        }
+
+        void RemoveLoadedSound(const std::string& soundName)
+        {
+            loadedSounds.erase(soundName);
         }
 	};
 }

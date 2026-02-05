@@ -24,8 +24,8 @@ function state_update(entity, dt)
         return
     end
     
-    local dx = playerTransform.position.x - myTransform.position.x
-    local dy = playerTransform.position.y - myTransform.position.y
+    local dx = playerTransform.worldPosition.x - myTransform.worldPosition.x
+    local dy = playerTransform.worldPosition.y - myTransform.worldPosition.y
     local distSq = dx * dx + dy * dy
     
     -- Transition to Chase if player within range
