@@ -229,25 +229,26 @@ namespace Uma_Engine
             return;
 
         float size = config.gizmoSize;
+        float lineWidth = config.gizmoLineWidth;
         float handleSize = config.gizmoHandleSize;
 
         std::vector<DebugLineInfo> lines;
 
         Vec3 xColor = (state.activeAxis == GizmoAxis::X) ? config.colorHighlight : config.colorXAxis;
         Vec2 xStart = pGraphics->ScreenToWorld(screenPos);
-        Vec2 xEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x + size, screenPos.y));
+        Vec2 xEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x + size + lineWidth, screenPos.y));
         lines.push_back({ xStart, xEnd, xColor });
 
-        Vec2 xHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size, screenPos.y));
+        Vec2 xHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size + lineWidth, screenPos.y));
         Graphics::AddDebugRect(xHandleWorld, Vec2(handleSize * 0.02f, handleSize * 0.02f),
             xColor.x, xColor.y, xColor.z, lines);
 
         Vec3 yColor = (state.activeAxis == GizmoAxis::Y) ? config.colorHighlight : config.colorYAxis;
         Vec2 yStart = pGraphics->ScreenToWorld(screenPos);
-        Vec2 yEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size));
+        Vec2 yEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size + lineWidth));
         lines.push_back({ yStart, yEnd, yColor });
 
-        Vec2 yHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size));
+        Vec2 yHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size + lineWidth));
         Graphics::AddDebugRect(yHandleWorld, Vec2(handleSize * 0.02f, handleSize * 0.02f),
             yColor.x, yColor.y, yColor.z, lines);
 
@@ -292,30 +293,31 @@ namespace Uma_Engine
             return;
 
         float size = config.gizmoSize * 0.7f;
+        float lineWidth = config.gizmoLineWidth;
         float handleSize = config.gizmoHandleSize * 1.5f;
 
         std::vector<DebugLineInfo> lines;
 
         Vec3 xColor = (state.activeAxis == GizmoAxis::X) ? config.colorHighlight : config.colorXAxis;
         Vec2 xStart = pGraphics->ScreenToWorld(screenPos);
-        Vec2 xEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x + size, screenPos.y));
+        Vec2 xEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x + size + lineWidth, screenPos.y));
         lines.push_back({ xStart, xEnd, xColor });
 
-        Vec2 xHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size, screenPos.y));
+        Vec2 xHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size + lineWidth, screenPos.y));
         Graphics::AddDebugRect(xHandleWorld, Vec2(handleSize * 0.02f, handleSize * 0.02f),
             xColor.x, xColor.y, xColor.z, lines);
 
         Vec3 yColor = (state.activeAxis == GizmoAxis::Y) ? config.colorHighlight : config.colorYAxis;
         Vec2 yStart = pGraphics->ScreenToWorld(screenPos);
-        Vec2 yEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size));
+        Vec2 yEnd = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size + lineWidth));
         lines.push_back({ yStart, yEnd, yColor });
 
-        Vec2 yHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size));
+        Vec2 yHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x, screenPos.y + size + lineWidth));
         Graphics::AddDebugRect(yHandleWorld, Vec2(handleSize * 0.02f, handleSize * 0.02f),
             yColor.x, yColor.y, yColor.z, lines);
 
         Vec3 xyColor = (state.activeAxis == GizmoAxis::XY) ? config.colorHighlight : config.colorXYHandle;
-        Vec2 xyHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size * 0.7f, screenPos.y + size * 0.7f));
+        Vec2 xyHandleWorld = pGraphics->ScreenToWorld(Vec2(screenPos.x + size * 0.7f + lineWidth * 0.5f, screenPos.y + size * 0.7f + lineWidth * 0.5f));
         Graphics::AddDebugRect(xyHandleWorld, Vec2(handleSize * 0.025f, handleSize * 0.025f),
             xyColor.x, xyColor.y, xyColor.z, lines);
 
@@ -332,6 +334,7 @@ namespace Uma_Engine
     GizmoAxis GizmoRenderer::HitTestTranslateGizmo(const Vec2& mousePos, const Vec2& gizmoPos, const EditorConfig& config)
     {
         float size = config.gizmoSize;
+        float width = config.gizmoLineWidth;
         float handleSize = config.gizmoHandleSize * 2.0f;
 
         if (std::abs(mousePos.x - gizmoPos.x) < handleSize &&
@@ -340,14 +343,14 @@ namespace Uma_Engine
             return GizmoAxis::XY;
         }
 
-        Vec2 xHandle(gizmoPos.x + size, gizmoPos.y);
+        Vec2 xHandle(gizmoPos.x + size + width, gizmoPos.y);
         if (std::abs(mousePos.x - xHandle.x) < handleSize &&
             std::abs(mousePos.y - xHandle.y) < handleSize)
         {
             return GizmoAxis::X;
         }
 
-        Vec2 yHandle(gizmoPos.x, gizmoPos.y + size);
+        Vec2 yHandle(gizmoPos.x, gizmoPos.y + size + width);
         if (std::abs(mousePos.x - yHandle.x) < handleSize &&
             std::abs(mousePos.y - yHandle.y) < handleSize)
         {
@@ -355,14 +358,14 @@ namespace Uma_Engine
         }
 
         Vec2 xStart = gizmoPos;
-        Vec2 xEnd(gizmoPos.x + size, gizmoPos.y);
+        Vec2 xEnd(gizmoPos.x + size + width, gizmoPos.y);
         if (DistanceToLineSegment(mousePos, xStart, xEnd) < handleSize * 0.5f)
         {
             return GizmoAxis::X;
         }
 
         Vec2 yStart = gizmoPos;
-        Vec2 yEnd(gizmoPos.x, gizmoPos.y + size);
+        Vec2 yEnd(gizmoPos.x, gizmoPos.y + size + width);
         if (DistanceToLineSegment(mousePos, yStart, yEnd) < handleSize * 0.5f)
         {
             return GizmoAxis::Y;
@@ -381,7 +384,7 @@ namespace Uma_Engine
     GizmoAxis GizmoRenderer::HitTestRotateGizmo(const Vec2& mousePos, const Vec2& gizmoPos, const EditorConfig& config)
     {
         float radius = config.gizmoSize;
-        float thickness = config.gizmoHandleSize;
+        float thickness = config.gizmoSize;
 
         float dx = mousePos.x - gizmoPos.x;
         float dy = mousePos.y - gizmoPos.y;
@@ -405,23 +408,24 @@ namespace Uma_Engine
     GizmoAxis GizmoRenderer::HitTestScaleGizmo(const Vec2& mousePos, const Vec2& gizmoPos, const EditorConfig& config)
     {
         float size = config.gizmoSize * 0.7f;
+        float lineWidth = config.gizmoLineWidth;
         float handleSize = config.gizmoHandleSize * 2.0f;
 
-        Vec2 xyHandle(gizmoPos.x + size * 0.7f, gizmoPos.y + size * 0.7f);
+        Vec2 xyHandle(gizmoPos.x + size * 0.7f + lineWidth * 0.5f, gizmoPos.y + size * 0.7f + lineWidth * 0.5f);
         if (std::abs(mousePos.x - xyHandle.x) < handleSize &&
             std::abs(mousePos.y - xyHandle.y) < handleSize)
         {
             return GizmoAxis::XY;
         }
 
-        Vec2 xHandle(gizmoPos.x + size, gizmoPos.y);
+        Vec2 xHandle(gizmoPos.x + size + lineWidth, gizmoPos.y);
         if (std::abs(mousePos.x - xHandle.x) < handleSize &&
             std::abs(mousePos.y - xHandle.y) < handleSize)
         {
             return GizmoAxis::X;
         }
 
-        Vec2 yHandle(gizmoPos.x, gizmoPos.y + size);
+        Vec2 yHandle(gizmoPos.x, gizmoPos.y + size + lineWidth);
         if (std::abs(mousePos.x - yHandle.x) < handleSize &&
             std::abs(mousePos.y - yHandle.y) < handleSize)
         {

@@ -182,6 +182,10 @@ namespace Uma_UI
      */
     inline Vec2 NDCToScreen(float ndcX, float ndcY, float screenWidth, float screenHeight)
     {
-        return NDCToPixel(Vec2(ndcX, -ndcY), screenWidth, screenHeight);
+        float normX = (ndcX + 1.0f) * 0.5f;
+        float normY = (ndcY + 1.0f) * 0.5f;
+        float pixelX = normX * screenWidth;
+        float pixelY = screenHeight - (normY * screenHeight);
+        return Vec2(pixelX, pixelY);
     }
 }

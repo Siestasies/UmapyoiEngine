@@ -1,7 +1,18 @@
 local time = 0
 local clicked = false
 
-function OnClicked()
+function OnPointerEnter()
+    local effects = GetEffects()
+    effects:Play("HoverEnter")
+end
+
+function OnPointerExit()
+    local effects = GetEffects()
+    effects:StopAll()
+    effects:Play("HoverExit")
+end
+
+function OnClick()
     PlaySound("quitbtn_sound", 1.0, 0)
     clicked = true
 end

@@ -170,7 +170,9 @@
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
@@ -253,6 +255,104 @@
                         "b": 0.5,
                         "a": 0.5
                     }
+                },
+                "class Uma_UI::Effects": {
+                    "playOnEnable": false,
+                    "clips": [
+                        {
+                            "name": "HoverEnter",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 1.0,
+                            "delay": 0.0,
+                            "loop": true,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "endVec2": {
+                                "x": 1.25,
+                                "y": 1.25
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        },
+                        {
+                            "name": "HoverEnter",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 1.0,
+                            "delay": 1.0,
+                            "loop": true,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.25,
+                                "y": 1.25
+                            },
+                            "endVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        },
+                        {
+                            "name": "HoverExit",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 0.0,
+                            "delay": 0.0,
+                            "loop": false,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "endVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        }
+                    ]
                 }
             }
         },
@@ -649,6 +749,104 @@
                         "b": 0.5,
                         "a": 0.5
                     }
+                },
+                "class Uma_UI::Effects": {
+                    "playOnEnable": false,
+                    "clips": [
+                        {
+                            "name": "HoverEnter",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 1.0,
+                            "delay": 0.0,
+                            "loop": true,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "endVec2": {
+                                "x": 1.25,
+                                "y": 1.25
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        },
+                        {
+                            "name": "HoverEnter",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 1.0,
+                            "delay": 1.0,
+                            "loop": true,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.25,
+                                "y": 1.25
+                            },
+                            "endVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        },
+                        {
+                            "name": "HoverExit",
+                            "property": 1,
+                            "easing": 3,
+                            "duration": 0.0,
+                            "delay": 0.0,
+                            "loop": false,
+                            "applyToChildren": true,
+                            "startVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "endVec2": {
+                                "x": 1.0,
+                                "y": 1.0
+                            },
+                            "startColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "endColor": {
+                                "r": 1.0,
+                                "g": 1.0,
+                                "b": 1.0,
+                                "a": 1.0
+                            },
+                            "startFloat": 0.0,
+                            "endFloat": 1.0
+                        }
+                    ]
                 }
             }
         },
@@ -872,7 +1070,9 @@
                         "b": 1.0,
                         "a": 0.497
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
@@ -981,7 +1181,9 @@
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,

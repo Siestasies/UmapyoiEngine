@@ -1,6 +1,6 @@
 bool = true
 
-function OnClicked()
+function OnClick()
 
     PlaySound("btn_clicked", 1.0, 0)
     SetActiveEntity(EntityID, false)
