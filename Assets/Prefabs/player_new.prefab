@@ -8,15 +8,15 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 1030.375,
-                            "y": -1657.041
+                            "x": 1028.696,
+                            "y": -1656.734
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.75,
+                            "x": -0.75,
                             "y": 0.75
                         },
                         "parent": -1
@@ -119,7 +119,8 @@
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
-                        "default3D": true
+                        "default3D": true,
+                        "loadedSounds": {}
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/player ss 1.png",
@@ -1035,6 +1036,16 @@
                         "initialClip": "idle",
                         "clips": [
                             {
+                                "name": "normal_atk",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 0,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
                                 "name": "idle",
                                 "framesX": 8,
                                 "framesY": 8,
@@ -1045,11 +1056,21 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "normal_atk",
+                                "name": "atk_wind",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 0,
-                                "frameCount": 5,
+                                "startFrame": 24,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
+                                "name": "hurt",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 16,
+                                "frameCount": 3,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1065,21 +1086,11 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "hurt",
+                                "name": "atk_water",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 16,
-                                "frameCount": 3,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_wind",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 24,
-                                "frameCount": 8,
+                                "startFrame": 32,
+                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1090,16 +1101,6 @@
                                 "framesY": 5,
                                 "startFrame": 8,
                                 "frameCount": 5,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_water",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 32,
-                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1164,9 +1165,9 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "PlayerFireSlash.lua",
+                                "name": "PlayerBase.lua",
                                 "isActive": true,
-                                "scriptIndex": 5
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "PlayerRun.lua",
@@ -1174,14 +1175,14 @@
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "PlayerBase.lua",
+                                "name": "PlayerFireSlash.lua",
                                 "isActive": true,
-                                "scriptIndex": 0
+                                "scriptIndex": 5
                             },
                             {
-                                "name": "PlayerDeath.lua",
+                                "name": "PlayerIdle.lua",
                                 "isActive": true,
-                                "scriptIndex": 4
+                                "scriptIndex": 1
                             },
                             {
                                 "name": "PlayerWhirlpool.lua",
@@ -1189,9 +1190,9 @@
                                 "scriptIndex": 12
                             },
                             {
-                                "name": "PlayerIdle.lua",
+                                "name": "PlayerDeath.lua",
                                 "isActive": true,
-                                "scriptIndex": 1
+                                "scriptIndex": 4
                             },
                             {
                                 "name": "PlayerHurt.lua",
@@ -1242,6 +1243,9 @@
         "textures": [
             {
                 "path": "assets/player ss 1.png"
+            },
+            {
+                "path": "assets/vfx 512 ss 3.png"
             }
         ],
         "fonts": [],

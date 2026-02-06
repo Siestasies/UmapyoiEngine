@@ -63,6 +63,12 @@
             },
             {
                 "path": "assets/wind ability icon.png"
+            },
+            {
+                "path": "assets/player ss 3.png"
+            },
+            {
+                "path": "assets/star.png"
             }
         ],
         "fonts": [
@@ -102265,32 +102271,6 @@
         },
         {
             "id": 27,
-            "isActive": false,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "water enemy",
-                    "position": {
-                        "x": 364.915,
-                        "y": -1370.317
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 30.0,
-                        "y": 30.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 31,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102316,7 +102296,7 @@
             }
         },
         {
-            "id": 35,
+            "id": 31,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102333,7 +102313,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102373,7 +102353,7 @@
             }
         },
         {
-            "id": 36,
+            "id": 32,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102390,7 +102370,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102430,7 +102410,7 @@
             }
         },
         {
-            "id": 37,
+            "id": 33,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102447,7 +102427,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102487,7 +102467,7 @@
             }
         },
         {
-            "id": 38,
+            "id": 34,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102504,7 +102484,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102544,7 +102524,7 @@
             }
         },
         {
-            "id": 39,
+            "id": 35,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102561,7 +102541,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102601,7 +102581,7 @@
             }
         },
         {
-            "id": 40,
+            "id": 36,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102618,7 +102598,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102658,7 +102638,7 @@
             }
         },
         {
-            "id": 41,
+            "id": 37,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102675,7 +102655,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102715,7 +102695,7 @@
             }
         },
         {
-            "id": 42,
+            "id": 38,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102732,7 +102712,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102772,7 +102752,7 @@
             }
         },
         {
-            "id": 43,
+            "id": 39,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102789,7 +102769,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102829,7 +102809,7 @@
             }
         },
         {
-            "id": 44,
+            "id": 40,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102892,7 +102872,7 @@
             }
         },
         {
-            "id": 45,
+            "id": 41,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102955,7 +102935,7 @@
             }
         },
         {
-            "id": 46,
+            "id": 42,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102972,7 +102952,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 41
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103012,7 +102992,7 @@
             }
         },
         {
-            "id": 47,
+            "id": 43,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103029,7 +103009,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 41
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103107,7 +103087,7 @@
             }
         },
         {
-            "id": 48,
+            "id": 44,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103124,7 +103104,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 47
+                    "parent": 43
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103165,7 +103145,7 @@
             }
         },
         {
-            "id": 49,
+            "id": 45,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103182,7 +103162,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 47
+                    "parent": 43
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103223,7 +103203,7 @@
             }
         },
         {
-            "id": 50,
+            "id": 46,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103240,7 +103220,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 41
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103318,7 +103298,7 @@
             }
         },
         {
-            "id": 51,
+            "id": 47,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103335,7 +103315,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 50
+                    "parent": 46
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103376,7 +103356,7 @@
             }
         },
         {
-            "id": 52,
+            "id": 48,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103393,7 +103373,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 50
+                    "parent": 46
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103434,7 +103414,7 @@
             }
         },
         {
-            "id": 53,
+            "id": 49,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103451,7 +103431,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 41
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103529,7 +103509,7 @@
             }
         },
         {
-            "id": 54,
+            "id": 50,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103546,7 +103526,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 49
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103587,7 +103567,7 @@
             }
         },
         {
-            "id": 55,
+            "id": 51,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103604,7 +103584,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 49
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103645,7 +103625,7 @@
             }
         },
         {
-            "id": 56,
+            "id": 52,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103662,7 +103642,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 49
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103727,7 +103707,7 @@
             }
         },
         {
-            "id": 57,
+            "id": 53,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103744,7 +103724,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 52
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103785,7 +103765,7 @@
             }
         },
         {
-            "id": 58,
+            "id": 54,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103802,7 +103782,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 52
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103843,7 +103823,7 @@
             }
         },
         {
-            "id": 59,
+            "id": 55,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103860,7 +103840,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 52
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103900,7 +103880,7 @@
             }
         },
         {
-            "id": 60,
+            "id": 56,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103917,7 +103897,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103957,7 +103937,7 @@
             }
         },
         {
-            "id": 61,
+            "id": 57,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -103974,7 +103954,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 60
+                    "parent": 56
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104015,7 +103995,7 @@
             }
         },
         {
-            "id": 62,
+            "id": 58,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104032,7 +104012,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 60
+                    "parent": 56
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104073,7 +104053,7 @@
             }
         },
         {
-            "id": 63,
+            "id": 59,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104090,7 +104070,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104130,7 +104110,7 @@
             }
         },
         {
-            "id": 64,
+            "id": 60,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104147,7 +104127,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 63
+                    "parent": 59
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104188,7 +104168,7 @@
             }
         },
         {
-            "id": 65,
+            "id": 61,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104205,7 +104185,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 63
+                    "parent": 59
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104246,7 +104226,7 @@
             }
         },
         {
-            "id": 66,
+            "id": 62,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104263,7 +104243,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 40
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104303,7 +104283,7 @@
             }
         },
         {
-            "id": 67,
+            "id": 63,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104320,7 +104300,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 66
+                    "parent": 62
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104361,7 +104341,7 @@
             }
         },
         {
-            "id": 68,
+            "id": 64,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104378,7 +104358,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 66
+                    "parent": 62
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104419,7 +104399,7 @@
             }
         },
         {
-            "id": 69,
+            "id": 65,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -104440,6 +104420,58 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/weather_effect.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 66,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": 949.562,
+                        "y": -1647.598
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 70,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 1007.2,
+                        "y": -1661.963
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.699,
+                        "y": 1.6
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/bird enemy.prefab",
                     "isRoot": true
                 }
             }

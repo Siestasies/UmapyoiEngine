@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": 1000.0,
-                            "y": 0.0
+                            "x": 949.018,
+                            "y": -1647.598
                         },
                         "rotation": {
                             "x": 0.0,
@@ -232,7 +232,7 @@
                                     {
                                         "name": "StunnedDuration",
                                         "type": 0,
-                                        "value": 10.0,
+                                        "value": 3.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -358,6 +358,95 @@
                         "prefabPath": "Assets/Prefabs/water enemy.prefab",
                         "isRoot": true
                     },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": [
+                            {
+                                "mode": 1,
+                                "maxParticles": 3,
+                                "isActive": false,
+                                "renderLayer": 16,
+                                "renderOrder": 100,
+                                "texturePath": "Assets/star.png",
+                                "appearance": {
+                                    "scaleRange": [
+                                        4.0,
+                                        4.0
+                                    ],
+                                    "startColor": [
+                                        1.0,
+                                        1.0,
+                                        0.5
+                                    ],
+                                    "endColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "colorLerp": true,
+                                    "randomOpacity": true,
+                                    "opacityRange": [
+                                        0.699,
+                                        1.0
+                                    ],
+                                    "rotateParticles": true,
+                                    "rotationSpeedRange": [
+                                        -180.0,
+                                        180.0
+                                    ]
+                                },
+                                "fade": {
+                                    "fadeIn": true,
+                                    "fadeInDuration": 0.2,
+                                    "fadeOut": true,
+                                    "fadeOutDuration": 0.3,
+                                    "fadeAtEdges": true,
+                                    "edgeFadeDistance": 150.0
+                                },
+                                "physics": {
+                                    "speedRange": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "lifetimeRange": [
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "gravity": [
+                                        2.0,
+                                        2.0
+                                    ],
+                                    "drag": 0.0
+                                },
+                                "spawn": {
+                                    "spawnOffset": [
+                                        0.0,
+                                        0.3
+                                    ],
+                                    "spawnRadius": 5.0,
+                                    "useEmissionCone": false,
+                                    "emissionAngle": 0.0,
+                                    "emissionSpread": 360.0
+                                },
+                                "emission": {
+                                    "emissionRate": 3.0,
+                                    "loop": false,
+                                    "loopDelay": 0.0
+                                },
+                                "screenFill": {
+                                    "velocityXRange": [
+                                        -20.0,
+                                        20.0
+                                    ],
+                                    "velocityYRange": [
+                                        -150.0,
+                                        -80.0
+                                    ],
+                                    "spawnAtTop": true,
+                                    "spawnMargin": 100.0
+                                }
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
@@ -399,7 +488,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "vfx",
                         "position": {
-                            "x": -0.1,
+                            "x": 0.0,
                             "y": -0.2
                         },
                         "rotation": {

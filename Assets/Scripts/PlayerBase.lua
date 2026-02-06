@@ -32,17 +32,17 @@ ExposedVars = {
     -- Steam Burst settings
     steamBurst_damage = 2.5,
     steamBurst_speed = 1.0,
-    steamBurst_manaCost = 30,
+    steamBurst_manaCost = 50,
 
     -- Pyronado settings
     pyronado_damage = 2.5,
     pyronado_speed = 1.0,
-    pyronado_manaCost = 30,
+    pyronado_manaCost = 50,
 
     -- Whirlpool settings
     whirlpool_damage = 2.5,
     whirlpool_speed = 1.0,
-    whirlpool_manaCost = 30
+    whirlpool_manaCost = 50
 }
 
 local isDead

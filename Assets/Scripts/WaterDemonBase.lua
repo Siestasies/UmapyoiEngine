@@ -9,6 +9,7 @@ local isDead
 local enemyHurtEffectTimer
 local isHurt = false
 local isEffective = false
+local isFusion = false
 
 
 function Start()
@@ -93,13 +94,19 @@ function HandleCollision(trigger)
             --Log("ElementType.Steam: " .. tostring(ElementType.Steam))
             --Log("===================")
 --
-            if attack.elementType == ElementType.Wind or 
-            attack.elementType == ElementType.Whirlpool or  
-            attack.elementType == ElementType.Pyronado then
+
+            if attack.elementType == ElementType.Whirlpool or  
+            attack.elementType == ElementType.Pyronado then 
                 isEffective = true
+                isFusion = true
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+            elseif attack.elementType == ElementType.Wind then
+                isEffective = true
+                isFusion = false
                 OnHurt(playerId, math.floor(playerComp.mAttackDamage))
             else
                 isEffective = false
+                isFusion = false
                 OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
             end
 
@@ -113,13 +120,19 @@ end
 
 function OnHurt(player, damage)
     -- damage handling logic here
+    
+        PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
+        PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
 
     isHurt = true
 
-    PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
-    PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
+    if isEffective and isFusion then
+        ChangeState(EntityID, "WaterDemonStunned")
+        isEffective = false
+        isFusion = false
+    end
 end
 
 function OnTriggerEnter(other, triggerOwner)

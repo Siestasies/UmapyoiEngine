@@ -34,6 +34,7 @@ All rights reserved.
 #include "../Components/Camera.h"
 #include "../Components/Player.h"
 #include "../Components/Enemy.h"
+#include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
 
@@ -1054,6 +1055,153 @@ namespace Uma_ECS
             "GetEffectiveLayer", &Collider::GetEffectiveLayer,
             "GetEffectiveMask", &Collider::GetEffectiveMask
         );
+
+        // particle emmitter
+        // EmitterMode enum
+        sharedLua->new_enum<EmitterMode>("EmitterMode",
+            {
+                {"Burst", EmitterMode::Burst},
+                {"Continuous", EmitterMode::Continuous},
+                {"ScreenFill", EmitterMode::ScreenFill}
+            }
+        );
+
+        // Particle struct (read-only, mostly for debugging)
+        sharedLua->new_usertype<Particle>("Particle",
+            "position", &Particle::position,
+            "velocity", &Particle::velocity,
+            "color", &Particle::color,
+            "scale", &Particle::scale,
+            "rotation", &Particle::rotation,
+            "rotationSpeed", &Particle::rotationSpeed,
+            "lifetime", &Particle::lifetime,
+            "maxLifetime", &Particle::maxLifetime,
+            "age", &Particle::age,
+            "opacity", &Particle::opacity,
+            "baseOpacity", &Particle::baseOpacity,
+            "active", &Particle::active
+        );
+
+        // ParticleAppearance struct
+        sharedLua->new_usertype<ParticleAppearance>("ParticleAppearance",
+            "scaleRange", &ParticleAppearance::scaleRange,
+            "startColor", &ParticleAppearance::startColor,
+            "endColor", &ParticleAppearance::endColor,
+            "colorLerp", &ParticleAppearance::colorLerp,
+            "randomOpacity", &ParticleAppearance::randomOpacity,
+            "opacityRange", &ParticleAppearance::opacityRange,
+            "rotateParticles", &ParticleAppearance::rotateParticles,
+            "rotationSpeedRange", &ParticleAppearance::rotationSpeedRange
+        );
+
+        // FadeSettings struct
+        sharedLua->new_usertype<FadeSettings>("FadeSettings",
+            "fadeIn", &FadeSettings::fadeIn,
+            "fadeInDuration", &FadeSettings::fadeInDuration,
+            "fadeOut", &FadeSettings::fadeOut,
+            "fadeOutDuration", &FadeSettings::fadeOutDuration,
+            "fadeAtEdges", &FadeSettings::fadeAtEdges,
+            "edgeFadeDistance", &FadeSettings::edgeFadeDistance
+        );
+
+        // ParticlePhysics struct
+        sharedLua->new_usertype<ParticlePhysics>("ParticlePhysics",
+            "speedRange", &ParticlePhysics::speedRange,
+            "lifetimeRange", &ParticlePhysics::lifetimeRange,
+            "gravity", &ParticlePhysics::gravity,
+            "drag", &ParticlePhysics::drag
+        );
+
+        // SpawnSettings struct
+        sharedLua->new_usertype<SpawnSettings>("SpawnSettings",
+            "spawnOffset", &SpawnSettings::spawnOffset,
+            "spawnRadius", &SpawnSettings::spawnRadius,
+            "useEmissionCone", &SpawnSettings::useEmissionCone,
+            "emissionAngle", &SpawnSettings::emissionAngle,
+            "emissionSpread", &SpawnSettings::emissionSpread
+        );
+
+        // EmissionSettings struct
+        sharedLua->new_usertype<EmissionSettings>("EmissionSettings",
+            "emissionRate", &EmissionSettings::emissionRate,
+            "loop", &EmissionSettings::loop,
+            "loopDelay", &EmissionSettings::loopDelay
+        );
+
+        // ScreenFillSettings struct
+        sharedLua->new_usertype<ScreenFillSettings>("ScreenFillSettings",
+            "velocityXRange", &ScreenFillSettings::velocityXRange,
+            "velocityYRange", &ScreenFillSettings::velocityYRange,
+            "spawnAtTop", &ScreenFillSettings::spawnAtTop,
+            "spawnMargin", &ScreenFillSettings::spawnMargin
+        );
+
+        // EmitterInstance struct
+        sharedLua->new_usertype<EmitterInstance>("EmitterInstance",
+            // Core settings
+            "name", &EmitterInstance::name,
+            "mode", &EmitterInstance::mode,
+            "maxParticles", &EmitterInstance::maxParticles,
+            "texturePath", &EmitterInstance::texturePath,
+            "isActive", &EmitterInstance::isActive,
+            "renderLayer", &EmitterInstance::renderLayer,
+            "renderOrder", &EmitterInstance::renderOrder,
+
+            // Configuration structs
+            "appearance", & EmitterInstance::appearance,
+            "fade", & EmitterInstance::fade,
+            "physics", & EmitterInstance::physics,
+            "spawn", & EmitterInstance::spawn,
+            "emission", & EmitterInstance::emission,
+            "screenFill", & EmitterInstance::screenFill,
+
+            // Runtime state (read-only via property)
+            "particles", sol::property(
+                [](EmitterInstance& e) -> std::vector<Particle>& { return e.particles; }
+            ),
+            "initialized", sol::readonly(&EmitterInstance::initialized),
+            "emissionTimer", sol::readonly(&EmitterInstance::emissionTimer),
+            "burstTimer", sol::readonly(&EmitterInstance::burstTimer),
+
+            // Control methods
+            "Play", & EmitterInstance::Play,
+            "Stop", & EmitterInstance::Stop,
+            "StopAndClear", & EmitterInstance::StopAndClear,
+            "Pause", & EmitterInstance::Pause,
+            "Resume", & EmitterInstance::Resume,
+            "IsPlaying", & EmitterInstance::IsPlaying,
+            "HasActiveParticles", & EmitterInstance::HasActiveParticles,
+            "GetActiveParticleCount", & EmitterInstance::GetActiveParticleCount
+        );
+
+        // ParticleEmitter component
+        sharedLua->new_usertype<ParticleEmitter>("ParticleEmitter",
+            // Access to emitters vector
+            "emitters", sol::property(
+                [](ParticleEmitter& pe) -> std::vector<EmitterInstance>& { return pe.emitters; }
+            ),
+
+            // Management methods
+            "AddEmitter", sol::overload(
+                [](ParticleEmitter& pe, const std::string& name) -> int {
+                    return pe.AddEmitter(name);
+                },
+                [](ParticleEmitter& pe) -> int {
+                    return pe.AddEmitter();
+                }
+            ),
+            "RemoveEmitter", & ParticleEmitter::RemoveEmitter,
+
+            // Getters - return pointers, Sol2 handles nullptr
+            "GetEmitter", sol::overload(
+                sol::resolve<EmitterInstance* (int)>(&ParticleEmitter::GetEmitter),
+                sol::resolve<EmitterInstance* (const std::string&)>(&ParticleEmitter::GetEmitter)
+            ),
+
+            "GetEmitterCount", & ParticleEmitter::GetEmitterCount,
+            "PlayAll", & ParticleEmitter::PlayAll,
+            "StopAll", & ParticleEmitter::StopAll
+        );
     }
 
     void LuaScriptingSystem::RegisterEntityQueries() 
@@ -1133,6 +1281,7 @@ namespace Uma_ECS
         X(Text)        \
         X(Image)       \
         X(Effects)     \
+        X(ParticleEmitter) \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1574,6 +1723,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(PathFinding) \
         BIND_COMPONENT_GETTER(Animator)    \
         BIND_COMPONENT_GETTER(Image)       \
+        BIND_COMPONENT_GETTER(ParticleEmitter)\
         BIND_COMPONENT_GETTER(Effects)     \
         //BIND_COMPONENT_GETTER(Projectile)\
 
