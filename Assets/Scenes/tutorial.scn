@@ -124,6 +124,11 @@
                 "type": 0
             },
             {
+                "name": "GameStart",
+                "path": "Assets/sounds/GameStart.wav",
+                "type": 1
+            },
+            {
                 "name": "CombatGameplayBGM",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
@@ -103127,6 +103132,22 @@
                     },
                     "parent": 45
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -103337,6 +103358,22 @@
                         "y": 1.0
                     },
                     "parent": 45
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103549,6 +103586,22 @@
                     },
                     "parent": 45
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -103759,6 +103812,22 @@
                         "y": 1.0
                     },
                     "parent": 53
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -104727,6 +104796,22 @@
                         "y": 1.0
                     },
                     "parent": 77
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [

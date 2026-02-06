@@ -35,6 +35,11 @@
                 "name": "quitbtn_sound",
                 "path": "Assets/sounds/MenuClick.wav",
                 "type": 0
+            },
+            {
+                "name": "MainMenuBGM",
+                "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                "type": 1
             }
         ],
         "shaders": [
@@ -1562,6 +1567,22 @@
                         "y": 1.0
                     },
                     "parent": -1
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "MainMenuBGM": {
+                            "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 0.469,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [

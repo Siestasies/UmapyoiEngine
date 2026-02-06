@@ -147,6 +147,11 @@
                 "type": 0
             },
             {
+                "name": "GameStart",
+                "path": "Assets/sounds/GameStart.wav",
+                "type": 1
+            },
+            {
                 "name": "Water Demon Charge",
                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
                 "type": 0
@@ -4666,26 +4671,26 @@
                                 -1,
                                 36,
                                 -1,
-                                41,
-                                38,
-                                38,
-                                41,
-                                38,
-                                38,
-                                39,
-                                38,
-                                38,
                                 -1,
                                 -1,
-                                41,
-                                38,
-                                39,
-                                38,
-                                41,
-                                38,
-                                38,
-                                38,
-                                39,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
                                 43,
                                 44,
                                 -1,
@@ -4746,26 +4751,26 @@
                                 -1,
                                 45,
                                 46,
-                                47,
-                                48,
-                                50,
-                                51,
-                                47,
-                                48,
-                                50,
-                                51,
-                                47,
                                 -1,
                                 -1,
-                                51,
-                                47,
-                                48,
-                                50,
-                                51,
-                                47,
-                                48,
-                                50,
-                                47,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
+                                -1,
                                 52,
                                 53,
                                 -1,
@@ -11075,8 +11080,26 @@
                                 -1,
                                 -1,
                                 37,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
                                 -1,
                                 -1,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
+                                42,
                                 -1,
                                 -1,
                                 -1,
@@ -11137,44 +11160,26 @@
                                 -1,
                                 -1,
                                 -1,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
                                 -1,
                                 -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
-                                -1,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
+                                51,
                                 -1,
                                 -1,
                                 -1,
@@ -34144,6 +34149,22 @@
                         33
                     ]
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -34360,6 +34381,22 @@
                         35,
                         36
                     ]
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34579,6 +34616,22 @@
                         40
                     ]
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -34796,6 +34849,22 @@
                         42,
                         43
                     ]
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -35212,9 +35281,31 @@
                         49
                     ]
                 },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/BGM mainmenu obj.prefab",
-                    "isRoot": true
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "MainMenuBGM": {
+                            "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BGM_mainmenu.lua",
+                            "scriptName": "BGM_mainmenu.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 }
             }
         }
