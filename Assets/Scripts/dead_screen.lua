@@ -9,7 +9,7 @@ function Update(dt)
     local player = GetPlayerFrom(playerEntity)
     if not player then return end
 
-    if player.mHealth <= 50 then
+    if player.mHealth <= 0 then
         if #children > 0 then
             SetActiveEntity(children[1], true)
         end
