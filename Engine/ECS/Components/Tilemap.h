@@ -28,18 +28,21 @@ namespace Uma_ECS
 
         void GetUVs(Vec2& uvOffset, Vec2& uvSize, Vec2 cell) const
         {
-            if (!IsLoaded()) 
-            {
-                return;
-            }
+            if (!IsLoaded()) return;
 
-            // Calculate size of one cell in UV space
-            uvSize.x = 1.0f / columns;
-            uvSize.y = 1.0f / rows;
+            float cellWidth = 1.0f / columns;
+            float cellHeight = 1.0f / rows;
 
-            // Calculate offset for the specific cell
-            uvOffset.x = cell.x * uvSize.x;
-            uvOffset.y = cell.y * uvSize.y;
+            float texelWidth = 1.0f / texture->tex_size.x;
+            float texelHeight = 1.0f / texture->tex_size.y;
+            float insetX = texelWidth * 0.5f;
+            float insetY = texelHeight * 0.5f;
+
+            uvOffset.x = cell.x * cellWidth + insetX;
+            uvOffset.y = cell.y * cellHeight + insetY;
+
+            uvSize.x = cellWidth - texelWidth;
+            uvSize.y = cellHeight - texelHeight;
         }
 
         void GetUVs(int tileIndex, float& u0, float& v0, float& u1, float& v1) const
