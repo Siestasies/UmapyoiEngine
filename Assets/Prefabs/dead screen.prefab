@@ -19,7 +19,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            4
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -70,7 +75,7 @@
             },
             {
                 "id": 1,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "background",
@@ -86,7 +91,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/dead screen.prefab",
@@ -131,7 +137,7 @@
             },
             {
                 "id": 2,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "retry btn",
@@ -147,7 +153,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": [
+                            3
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -246,7 +255,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 2
+                        "parent": 2,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/dead screen.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -288,7 +302,7 @@
             },
             {
                 "id": 4,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "back btn",
@@ -304,7 +318,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": [
+                            5
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -403,7 +420,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 4
+                        "parent": 4,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/dead screen.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
