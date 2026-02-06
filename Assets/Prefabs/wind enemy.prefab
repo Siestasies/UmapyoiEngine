@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "wind enemy",
                         "position": {
-                            "x": 1000.0,
-                            "y": -1659.8
+                            "x": 402.984,
+                            "y": -1141.104
                         },
                         "rotation": {
                             "x": 0.0,
@@ -20,6 +20,42 @@
                             "y": 30.0
                         },
                         "parent": -1
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "WindDemonAttack(Charge)": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "WindDemonDamage": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "WindDemonDeath": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
@@ -515,7 +551,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": false
                     }
                 }
@@ -572,7 +608,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": false
                     }
                 }

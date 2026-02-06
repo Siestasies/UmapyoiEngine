@@ -1,3 +1,5 @@
+local audio = nil
+
 ExposedVars = {
     attackExitRange = 50.0,
     HoverSpd = 1.5,
@@ -94,7 +96,8 @@ function state_update(entity, dt)
             local projectile = GetProjectileFrom(prefab)
 
             projectile.mStats.damage = enemy.mAttackDamage
-            PlayEntitySound(entity, "fire_enemy_attack", false, 0.3)
+            audio = GetAudioComponent()
+            audio:play(EntityID, "WindDemonAttack(Charge)")
 
             if angle < 0 then angle = angle + 360 end
 

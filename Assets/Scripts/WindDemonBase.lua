@@ -10,7 +10,7 @@ local enemyHurtEffectTimer
 local isHurt = false
 local isEffective = false
 local isFusion = false
-
+local audio
 
 function Start()
     if HasEnemy() then
@@ -108,8 +108,8 @@ end
 function OnHurt(player, damage)
     -- damage handling logic here
     
-    PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
-    PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
+    audio = GetAudioComponent()
+    audio:play(EntityID, "WindDemonDamage")
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
 

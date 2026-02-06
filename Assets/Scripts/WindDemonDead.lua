@@ -5,6 +5,7 @@ ExposedVars = {
 local dead = false
 local animator = nil
 local deathTimer = 0.0
+local audio
 
 function state_enter(entity)
     
@@ -18,6 +19,9 @@ function state_enter(entity)
         animator = GetAnimator()
         animator.animator:Play("dead", true)
     end
+
+    audio = GetAudioComponent()
+    audio:play(EntityID, "WindDemonDeath")
 end
 
 function state_update(entity, dt)
