@@ -63,7 +63,7 @@ namespace Uma_ECS
             return texture != nullptr;
         }
 
-        void Load(Uma_Engine::ResourcesManager* pResourcesManager, const std::string& texture_path = "")
+        void Load(const std::string& texture_path = "")
         {
             // use the path from the parameter if its not empty
             texturePath = (!texture_path.empty()) ? texture_path : texturePath;

@@ -34,7 +34,7 @@ All rights reserved.
 
 // using sol to do scripting
 #pragma warning(push)
-#pragma warning(disable: 5321)
+#pragma warning(disable: 4244 6287 26498 5321)
 #include <sol/sol.hpp>
 #pragma warning(pop)
 

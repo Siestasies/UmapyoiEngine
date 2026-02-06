@@ -225,7 +225,7 @@ namespace Uma_Engine
             Vec2 screenDelta = newScreenPos - currentScreenPos;
 
             // Get canvas scale for proper pixel conversion
-            float canvasScale = GetCanvasScale(entity);
+            //float canvasScale = GetCanvasScale(entity);
 
             // Convert screen delta to scaled pixel delta for anchoredPosition
             // anchoredPosition is in canvas-scaled pixels
@@ -253,7 +253,7 @@ namespace Uma_Engine
             return;
 
         auto& transformArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
-        auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
+        //auto& rectTransformArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
         if (transformArray.Has(entity))
         {

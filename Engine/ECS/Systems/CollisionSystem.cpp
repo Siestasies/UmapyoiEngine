@@ -381,6 +381,9 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     const BoundingBox& box1, const BoundingBox& box2,
     ColliderPurpose purpose1, ColliderPurpose purpose2)
 {
+    (void)physEntity1;
+    (void)physEntity2;
+
     // Use original collider entities for event tracking and emission
     EntityPair pair(colliderEntity1, colliderEntity2);
 

@@ -107,18 +107,19 @@ namespace Uma_Engine
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
 
         // Create and setup default game scene
-        auto gameScene = sceneManager->CreateScene("spawn_map.scn", "spawn_map.scn");
+        auto gameScene = sceneManager->CreateScene("main_menu.scn", "main_menu.scn");
         gameScene->g_EngineConfig = *GetConfig();
 
         // Attach game script to scene
-        sceneManager->AttachScriptToScene("spawn_map.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("main_menu.scn", "GameBehaviour");
 
         // Load the scene
-        sceneManager->LoadScene("spawn_map.scn");
+        sceneManager->LoadScene("main_menu.scn");
     }
 
     void GameApplication::PreUpdate(float dt)
     {
+        (void)dt;
     }
 
     bool GameApplication::HandleInterruptions(float deltaTime)

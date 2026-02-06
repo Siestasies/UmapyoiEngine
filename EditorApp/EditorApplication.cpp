@@ -79,6 +79,7 @@ namespace Uma_Engine
 
     void EditorApplication::PreUpdate(float dt)
     {
+        (void)dt;
         // Imgui to make new frame
         ImguiStartFrame();
     }
@@ -207,14 +208,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
         // Create the editor scene and configure it
-        auto editorScene = sceneManager->CreateScene("test_Combat.scn", "test_Combat.scn");
+        auto editorScene = sceneManager->CreateScene("tutorial.scn", "tutorial.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        sceneManager->AttachScriptToScene("test_Combat.scn", "GameBehaviour");
-        sceneManager->AttachScriptToScene("test_Combat.scn", "EditorBehaviour");
+        sceneManager->AttachScriptToScene("tutorial.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("tutorial.scn", "EditorBehaviour");
 
         // Load the default scene
-        sceneManager->LoadScene("test_Combat.scn");
+        sceneManager->LoadScene("tutorial.scn");
     }
 
     bool EditorApplication::HandleInterruptions(float deltaTime)

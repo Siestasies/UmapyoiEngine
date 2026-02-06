@@ -27,7 +27,7 @@ namespace Uma_Engine
 
         if (!currentTileset.IsLoaded())
         {
-            currentTileset.Load(pResourcesManager);
+            currentTileset.Load();
         }
     }
 
@@ -107,6 +107,8 @@ namespace Uma_Engine
 
     void TilemapEditorManager::Update(float dt)
     {
+        (void)dt;
+
         if (!currTilemap) return;
 
         if (currEntity == static_cast<Entity>(-1))
@@ -406,7 +408,7 @@ namespace Uma_Engine
         float tile_screen_y = (screenMax.y - screenMin.y) / currTilemap->layers[currTilemap->activeLayerIndex].height;
 
         // vert
-        for (int i = 0; i <= currTilemap->layers[currTilemap->activeLayerIndex].width; i++)
+        for (unsigned int i = 0; i <= currTilemap->layers[currTilemap->activeLayerIndex].width; i++)
         {
             drawList->AddLine(
                 ImVec2{ screenMin.x + imagePos.x + (i * tile_screen_x), screenMin.y + imagePos.y },
@@ -415,7 +417,7 @@ namespace Uma_Engine
             );
         }
 
-        for (int i = 0; i <= currTilemap->layers[currTilemap->activeLayerIndex].height; i++)
+        for (unsigned int i = 0; i <= currTilemap->layers[currTilemap->activeLayerIndex].height; i++)
         {
             drawList->AddLine(
                 ImVec2{ screenMin.x + imagePos.x, screenMax.y + imagePos.y - (i * tile_screen_y)},

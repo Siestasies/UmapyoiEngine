@@ -353,7 +353,8 @@ namespace Uma_Engine
             };
 
             std::string lowerExt = ext;
-            std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(), ::tolower);
+            std::transform(lowerExt.begin(), lowerExt.end(), lowerExt.begin(),
+                [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             return imageExts.count(lowerExt) > 0;
         }
 

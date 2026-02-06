@@ -60,6 +60,7 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::Update(float dt)
     {
+        (void)dt;
         if (aEntities.empty()) return;
 
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
@@ -114,6 +115,7 @@ namespace Uma_ECS
 
         pEventSystem->Subscribe<Uma_Engine::OnTriggerEnterEvent, PlayerControllerSystem>([this](const Uma_Engine::OnTriggerEnterEvent& e)
             {
+                (void)e;
                 //if (!pCoordinator || aEntities.empty()) return;
                 //if (e.entityA != aEntities[0] && e.entityB != aEntities[0]) return;
 
@@ -281,6 +283,7 @@ namespace Uma_ECS
 
     void PlayerControllerSystem::OnKeyPress(const Uma_Engine::KeyPressEvent& event)
     {
+        (void)event;
         //switch (event.key)
         //{
         //case GLFW_KEY_Q:
@@ -299,6 +302,7 @@ namespace Uma_ECS
     }
     void PlayerControllerSystem::OnKeyRelease(const Uma_Engine::KeyReleaseEvent& event)
     {
+        (void)event;
         //switch (event.key)
         //{
         //case GLFW_KEY_Q:

@@ -98,8 +98,8 @@ namespace Uma_ECS
 
         Vec2 cameraPos(0, 0);
         float cameraZoom = 1.0f;
-        int viewportWidth = pGraphics->GetSceneViewport().x;
-        int viewportHeight = pGraphics->GetSceneViewport().y;
+        int viewportWidth = static_cast<int>(pGraphics->GetSceneViewport().x);
+        int viewportHeight = static_cast<int>(pGraphics->GetSceneViewport().y);
 
         if (camArray.Size() > 0)
         {
@@ -359,7 +359,7 @@ namespace Uma_ECS
 
                         Vec2 uvOffset(0.0f, 0.0f);
                         Vec2 uvSize(1.0f, 1.0f);
-                        tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(tileset_col, tileset_row));
+                        tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(static_cast<float>(tileset_col), static_cast<float>(tileset_row)));
 
                         allSprites.push_back(LayeredSprite
                             {
@@ -520,7 +520,7 @@ namespace Uma_ECS
     void RenderingSystem::GatherUIElements(std::vector<UIDrawCommand>& uiDrawCommands)
     {
         auto& canvasArray = pCoordinator->GetComponentArray<Uma_UI::Canvas>();
-        auto& tfArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
+        //auto& tfArray = pCoordinator->GetComponentArray<Uma_ECS::Transform>();
         auto& rtfArray = pCoordinator->GetComponentArray<Uma_UI::RectTransform>();
 
         std::vector<Entity> sortedCanvasIds = canvasArray.GetAllEntities();
@@ -562,7 +562,7 @@ namespace Uma_ECS
 
             GetAllChildren(canvasId, childrenList);
 
-            auto& canvas = canvasArray.GetData(canvasId);
+            //auto& canvas = canvasArray.GetData(canvasId);
 
             for (int i = 0; i < childrenList.size(); i++)
             {

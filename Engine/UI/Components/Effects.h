@@ -233,7 +233,7 @@ namespace Uma_UI
 
                 // Serialize name
                 rapidjson::Value nameValue;
-                nameValue.SetString(clip.name.c_str(), clip.name.length(), allocator);
+                nameValue.SetString(clip.name.c_str(), static_cast<rapidjson::SizeType>(clip.name.length()), allocator);
                 clipObj.AddMember("name", nameValue, allocator);
 
                 clipObj.AddMember("property", static_cast<int>(clip.property), allocator);

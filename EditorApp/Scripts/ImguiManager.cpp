@@ -563,7 +563,7 @@ namespace Uma_Engine
 
             ImGui::Begin("Scene View");
 
-            Graphics* graphics = pSystemManager->GetSystem<Graphics>();
+            //Graphics* graphics = pSystemManager->GetSystem<Graphics>();
 
             // Get mouse position relative to the image
             ImVec2 mousePos = ImGui::GetMousePos();
@@ -1225,9 +1225,9 @@ namespace Uma_Engine
                 ImGui::SetTooltip("Reparent to: %s", entityName.c_str());
             }
 
-            if (payload = ImGui::AcceptDragDropPayload("ENTITY_NODE")) // accept
+            if (const ImGuiPayload* acceptedPayload = ImGui::AcceptDragDropPayload("ENTITY_NODE")) // accept
             {
-                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
+                Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)acceptedPayload->Data;
 
                 // Don't allow setting parent to itself or to its own children
                 if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
@@ -1794,7 +1794,8 @@ namespace Uma_Engine
                         std::string ext = p.extension().string();
 
                         // Convert to lowercase for comparison
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                         if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                         {
@@ -2371,7 +2372,8 @@ namespace Uma_Engine
                                 std::string ext = p.extension().string();
 
                                 // Convert to lowercase for comparison
-                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                                std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                                 if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                                 {
@@ -2562,7 +2564,8 @@ namespace Uma_Engine
                         std::string ext = p.extension().string();
 
                         // Convert to lowercase for comparison
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                         if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                         {
@@ -3135,7 +3138,8 @@ namespace Uma_Engine
                         // Extract extension
                         std::filesystem::path p(fullPath);
                         std::string ext = p.extension().string();
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                         // Validate audio file format
                         if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".flac")
@@ -3468,7 +3472,8 @@ namespace Uma_Engine
                                 std::string ext = p.extension().string();
 
                                 // Convert to lowercase for comparison
-                                std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                                std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                                 if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                                 {
@@ -3885,7 +3890,8 @@ namespace Uma_Engine
                         std::string ext = p.extension().string();
 
                         // Convert to lowercase for comparison
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                         if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                         {
@@ -4884,7 +4890,8 @@ namespace Uma_Engine
                         std::string ext = p.extension().string();
 
                         // Convert to lowercase for comparison
-                        std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                         if (ext == ".ttf" || ext == ".otf")
                         {
@@ -5571,7 +5578,8 @@ namespace Uma_Engine
                             std::string ext = p.extension().string();
 
                             // Convert to lowercase for comparison
-                            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+                            std::transform(ext.begin(), ext.end(), ext.begin(),
+                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                             if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                             {
@@ -5602,11 +5610,11 @@ namespace Uma_Engine
                             IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
                     }
 
-                    float gridArray[2] = { tilemap.tileset.columns, tilemap.tileset.rows };
+                    float gridArray[2] = { static_cast<float>(tilemap.tileset.columns), static_cast<float>(tilemap.tileset.rows) };
                     if (ImGui::DragFloat2("Grids (Col, Row)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
                     {
-                        tilemap.tileset.columns = gridArray[0];
-                        tilemap.tileset.rows = gridArray[1];
+                        tilemap.tileset.columns = static_cast<int>(gridArray[0]);
+                        tilemap.tileset.rows = static_cast<int>(gridArray[1]);
                         m_hasUnsavedEdit = true;
                     }
                     ImGui::TreePop();

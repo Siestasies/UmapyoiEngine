@@ -667,7 +667,7 @@ namespace Uma_Engine
         std::string normalized = path;
         std::replace(normalized.begin(), normalized.end(), '\\', '/');
         // Convert to lowercase for case-insensitive comparison
-        std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return std::tolower(c); });
+        std::transform(normalized.begin(), normalized.end(), normalized.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return normalized;
     }
 

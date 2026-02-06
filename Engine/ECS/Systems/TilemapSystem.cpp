@@ -14,7 +14,7 @@ namespace Uma_ECS
 
     void TilemapSystem::Update(float dt)
     {
-        
+        (void)dt;
     }
 
     void TilemapSystem::Shutdown()
