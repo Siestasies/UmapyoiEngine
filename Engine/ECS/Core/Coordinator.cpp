@@ -494,8 +494,8 @@ namespace Uma_ECS
     {
         out.SetArray();
 
-        // loop thru all entities
-        for (const Entity& en : aEntityManager->GetAllEntites())
+        // loop thru all entities in hierarchy order (preserves inspector ordering)
+        for (const Entity& en : aHierarchyOrder)
         {
             if (!aEntityManager->IsEntityActive(en)) continue;
 
@@ -662,9 +662,10 @@ namespace Uma_ECS
             sceneEntities.insert(pair.second);
         }
 
-        for (size_t i = 0; i < tfArray.Size(); ++i)
+        // Iterate in hierarchy order so children are added to parents in the correct sequence
+        for (const Entity& entity : aHierarchyOrder)
         {
-            Entity entity = tfArray.GetEntity(i);
+            if (!tfArray.Has(entity)) continue;
 
             // Skip entities that were created by LoadPrefabInstance (not in scene file)
             if (sceneEntities.count(entity) == 0)
@@ -695,11 +696,16 @@ namespace Uma_ECS
                     Entity newParentID = it->second;
                     tf.parent = newParentID;
 
-                    // Add to parent's children
+                    // Add to parent's children if not already present
+                    // (new scene files have children from deserialization + remap,
+                    //  old scene files without "children" field need rebuilding here)
                     if (tfArray.Has(newParentID))
                     {
                         auto& parentTf = tfArray.GetData(newParentID);
-                        parentTf.children.push_back(entity);
+                        if (std::find(parentTf.children.begin(), parentTf.children.end(), entity) == parentTf.children.end())
+                        {
+                            parentTf.children.push_back(entity);
+                        }
                     }
                 }
                 else
@@ -1294,6 +1300,54 @@ namespace Uma_ECS
         parentTransform.children.erase(it);
         newIndex = std::clamp(newIndex, 0, static_cast<int>(parentTransform.children.size()));
         parentTransform.children.insert(parentTransform.children.begin() + newIndex, entity);
+
+        // Also update global hierarchy order
+        auto hierIt = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+        if (hierIt != aHierarchyOrder.end())
+        {
+            aHierarchyOrder.erase(hierIt);
+
+            // Find insertion point in hierarchy order based on new sibling position
+            auto insertPos = aHierarchyOrder.end();
+            if (newIndex == 0)
+            {
+                // First child: insert right after parent
+                auto parentIt = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), parentEntity);
+                if (parentIt != aHierarchyOrder.end())
+                    insertPos = parentIt + 1;
+            }
+            else
+            {
+                // Insert after the previous sibling and all its descendants
+                Entity prevSibling = parentTransform.children[newIndex - 1];
+                auto siblingIt = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), prevSibling);
+                if (siblingIt != aHierarchyOrder.end())
+                {
+                    insertPos = siblingIt + 1;
+                    // Skip past any descendants of the previous sibling
+                    while (insertPos != aHierarchyOrder.end())
+                    {
+                        bool isDescendant = false;
+                        if (transformArray.Has(*insertPos))
+                        {
+                            auto p = transformArray.GetData(*insertPos).parent;
+                            while (p.has_value())
+                            {
+                                if (p.value() == prevSibling) { isDescendant = true; break; }
+                                if (transformArray.Has(p.value()))
+                                    p = transformArray.GetData(p.value()).parent;
+                                else
+                                    break;
+                            }
+                        }
+                        if (!isDescendant) break;
+                        ++insertPos;
+                    }
+                }
+            }
+
+            aHierarchyOrder.insert(insertPos, entity);
+        }
     }
 
     // Move one position up

@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -17,16 +17,16 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/lost hp point.png"
-            },
-            {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
@@ -82,13 +82,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -109,13 +109,13 @@
                 "type": 0
             },
             {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
                 "type": 0
             },
             {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             },
             {
@@ -139,13 +139,13 @@
                 "type": 0
             },
             {
-                "name": "WaterDemonSuicide",
-                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
                 "type": 0
             },
             {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
                 "type": 0
             },
             {
@@ -101175,7 +101175,7 @@
                     "name": "player_new",
                     "position": {
                         "x": 1036.291,
-                        "y": -1639.792
+                        "y": -1639.791
                     },
                     "rotation": {
                         "x": 0.0,
@@ -102392,7 +102392,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "wind enemy",
                     "position": {
-                        "x": 402.985,
+                        "x": 402.984,
                         "y": -1141.104
                     },
                     "rotation": {
@@ -103742,7 +103742,7 @@
         },
         {
             "id": 56,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "HTPClose",
@@ -105102,7 +105102,7 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "BGM comabt obj",
+                    "name": "BGM combat obj",
                     "position": {
                         "x": 0.0,
                         "y": 0.0

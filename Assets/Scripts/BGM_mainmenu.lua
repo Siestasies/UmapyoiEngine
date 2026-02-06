@@ -7,7 +7,6 @@ function Update(dt)
     if start == false then
         --audio:play(EntityID, "MainMenuBGM")
         PlaySound("MainMenuBGM", 0.2, -1)
-        Log("SODINFGSODGDOFIGN")
         start = true
     end
 end

@@ -92,6 +92,14 @@ namespace Uma_ECS
             {
                 value.AddMember("parent", -1, allocator);  // Use -1 for JSON compatibility
             }
+
+            // Serialize children order so rearranging is preserved
+            rapidjson::Value childrenArr(rapidjson::kArrayType);
+            for (Entity child : children)
+            {
+                childrenArr.PushBack(child, allocator);
+            }
+            value.AddMember("children", childrenArr, allocator);
         }
 
         // Deserialize from JSON
@@ -136,8 +144,16 @@ namespace Uma_ECS
                 }
             }
 
-            // Don't deserialize children - will be rebuilt in Coordinator::Deserialize
+            // Deserialize children order (old scenes without this field will rebuild in Coordinator::Deserialize)
             children.clear();
+            if (value.HasMember("children"))
+            {
+                const auto& childrenArr = value["children"];
+                for (rapidjson::SizeType i = 0; i < childrenArr.Size(); ++i)
+                {
+                    children.push_back(static_cast<Entity>(childrenArr[i].GetUint()));
+                }
+            }
 
             // Reset world transforms
             worldPosition = position;

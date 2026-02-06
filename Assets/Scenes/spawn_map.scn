@@ -209,7 +209,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Tilemap": {
                     "mapWidth": 80,
@@ -13083,7 +13084,8 @@
                         "x": 0.75,
                         "y": 0.75
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/player_new.prefab",
@@ -13109,7 +13111,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Camera": {
                     "zoom": 10.0,
@@ -13135,7 +13138,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Tilemap": {
                     "mapWidth": 80,
@@ -32426,7 +32430,8 @@
                         "x": 20.0,
                         "y": 20.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Sprite": {
                     "texturePath": "Assets/whole castle.png",
@@ -32533,7 +32538,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Sprite": {
                     "texturePath": "Assets/whitePixel.png",
@@ -32576,7 +32582,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -32677,7 +32684,10 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        8
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -32730,7 +32740,8 @@
                         "x": 1500.0,
                         "y": 1500.0
                     },
-                    "parent": 7
+                    "parent": 7,
+                    "children": []
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -32797,7 +32808,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -32863,7 +32875,21 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        19,
+                        18,
+                        17,
+                        16,
+                        15,
+                        14,
+                        13,
+                        12,
+                        11,
+                        20,
+                        23,
+                        26
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -32909,11 +32935,11 @@
             }
         },
         {
-            "id": 11,
+            "id": 19,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "hp 1",
+                    "name": "mp 5",
                     "position": {
                         "x": 0.0,
                         "y": 0.0
@@ -32926,7 +32952,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -32942,349 +32969,7 @@
                         "y": 0.5
                     },
                     "anchoredPosition": {
-                        "x": -900.0,
-                        "y": 425.0
-                    },
-                    "sizeDelta": {
-                        "x": 100.0,
-                        "y": 100.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 12,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "hp 2",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -825.0,
-                        "y": 425.0
-                    },
-                    "sizeDelta": {
-                        "x": 100.0,
-                        "y": 100.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 13,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "hp 3",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -750.0,
-                        "y": 425.0
-                    },
-                    "sizeDelta": {
-                        "x": 100.0,
-                        "y": 100.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 14,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "hp 4",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -675.0,
-                        "y": 425.0
-                    },
-                    "sizeDelta": {
-                        "x": 100.0,
-                        "y": 100.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 15,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "mp 1",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -937.5,
-                        "y": 350.0
-                    },
-                    "sizeDelta": {
-                        "x": 75.0,
-                        "y": 75.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/lost hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 16,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "mp 2",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -862.5,
-                        "y": 350.0
-                    },
-                    "sizeDelta": {
-                        "x": 75.0,
-                        "y": 75.0
-                    }
-                },
-                "class Uma_UI::Image": {
-                    "texturePath": "Assets/lost hp point.png",
-                    "sortingOrder": 0,
-                    "color": {
-                        "r": 1.0,
-                        "g": 1.0,
-                        "b": 1.0,
-                        "a": 1.0
-                    },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
-                }
-            }
-        },
-        {
-            "id": 17,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "mp 3",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": 10
-                },
-                "class Uma_UI::RectTransform": {
-                    "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "pivot": {
-                        "x": 0.5,
-                        "y": 0.5
-                    },
-                    "anchoredPosition": {
-                        "x": -787.5,
+                        "x": -637.5,
                         "y": 350.0
                     },
                     "sizeDelta": {
@@ -33325,7 +33010,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33365,11 +33051,11 @@
             }
         },
         {
-            "id": 19,
+            "id": 17,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "mp 5",
+                    "name": "mp 3",
                     "position": {
                         "x": 0.0,
                         "y": 0.0
@@ -33382,7 +33068,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33398,7 +33085,7 @@
                         "y": 0.5
                     },
                     "anchoredPosition": {
-                        "x": -637.5,
+                        "x": -787.5,
                         "y": 350.0
                     },
                     "sizeDelta": {
@@ -33408,6 +33095,354 @@
                 },
                 "class Uma_UI::Image": {
                     "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 16,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -862.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 15,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mp 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -937.5,
+                        "y": 350.0
+                    },
+                    "sizeDelta": {
+                        "x": 75.0,
+                        "y": 75.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/lost hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 4",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -675.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 13,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 3",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -750.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 12,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 2",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -825.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 11,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp 1",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 10,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -900.0,
+                        "y": 425.0
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    }
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hp point.png",
                     "sortingOrder": 0,
                     "color": {
                         "r": 1.0,
@@ -33439,7 +33474,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": [
+                        21,
+                        22
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33496,7 +33535,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 20
+                    "parent": 20,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33554,7 +33594,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 20
+                    "parent": 20,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33612,7 +33653,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": [
+                        24,
+                        25
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33669,7 +33714,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 23
+                    "parent": 23,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33727,7 +33773,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 23
+                    "parent": 23,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33785,7 +33832,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 10
+                    "parent": 10,
+                    "children": [
+                        27,
+                        28
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33842,7 +33893,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 26
+                    "parent": 26,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33900,7 +33952,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 26
+                    "parent": 26,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -33958,7 +34011,13 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        30,
+                        31,
+                        34,
+                        37
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34021,7 +34080,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 29
+                    "parent": 29,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34078,7 +34138,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 29
+                    "parent": 29,
+                    "children": [
+                        32,
+                        33
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34173,7 +34237,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 31
+                    "parent": 31,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34231,7 +34296,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 31
+                    "parent": 31,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34289,7 +34355,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 29
+                    "parent": 29,
+                    "children": [
+                        35,
+                        36
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34384,7 +34454,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 34
+                    "parent": 34,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34442,7 +34513,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 34
+                    "parent": 34,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34500,7 +34572,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 29
+                    "parent": 29,
+                    "children": [
+                        38,
+                        39,
+                        40
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34595,7 +34672,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 37
+                    "parent": 37,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34653,7 +34731,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 37
+                    "parent": 37,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34711,7 +34790,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 37
+                    "parent": 37,
+                    "children": [
+                        41,
+                        42,
+                        43
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34793,7 +34877,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 40
+                    "parent": 40,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34851,7 +34936,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 40
+                    "parent": 40,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34909,7 +34995,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 40
+                    "parent": 40,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -34966,7 +35053,12 @@
                         "x": 30.0,
                         "y": 30.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        45,
+                        46,
+                        47
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/water enemy.prefab",
@@ -34992,7 +35084,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -35045,7 +35138,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 50
+                    "parent": 50,
+                    "children": []
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -35113,7 +35207,10 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        49
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/BGM mainmenu obj.prefab",
