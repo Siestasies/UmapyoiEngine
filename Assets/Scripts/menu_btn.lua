@@ -7,10 +7,11 @@ function Start()
     fadeState = require("fadeState")
 end
 
-function OnClicked()
+function OnClick()
     PlaySound("startbtn_sound", 0.8, 0)
     fadeState.setFading(true)
     clicked = true
+    Log("OSDNFOSFMOASFISEOFINSOFINSOFNSFOIN")
 end
 
 function Update(dt)

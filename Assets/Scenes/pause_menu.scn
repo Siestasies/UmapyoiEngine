@@ -2,15 +2,21 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "name": "white",
+                "path": "Assets/whitePixel.png"
             },
             {
-                "path": "assets/main menu.png"
+                "name": "main",
+                "path": "Assets/main menu.png"
+            },
+            {
+                "name": "pausemenu",
+                "path": "Assets/pause menu.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
+                "name": "Fujimaru-Regular",
                 "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             }
@@ -20,48 +26,6 @@
                 "name": "explosion",
                 "path": "Assets/sounds/explosion.mp3",
                 "type": 0
-            },
-            {
-                "name": "mainmenu_bgm",
-                "path": "Assets/sounds/Music/MainMenuBGM.wav",
-                "type": 0
-            },
-            {
-                "name": "startbtn_sound",
-                "path": "Assets/sounds/GameStart.wav",
-                "type": 0
-            },
-            {
-                "name": "quitbtn_sound",
-                "path": "Assets/sounds/MenuClick.wav",
-                "type": 0
-            }
-        ],
-        "shaders": [
-            {
-                "name": "system_sprite",
-                "vertexPath": "Assets/Shaders/sprite.vert",
-                "fragmentPath": "Assets/Shaders/sprite.frag"
-            },
-            {
-                "name": "system_instanced",
-                "vertexPath": "Assets/Shaders/instanced.vert",
-                "fragmentPath": "Assets/Shaders/instanced.frag"
-            },
-            {
-                "name": "system_text",
-                "vertexPath": "Assets/Shaders/text.vert",
-                "fragmentPath": "Assets/Shaders/text.frag"
-            },
-            {
-                "name": "system_shape",
-                "vertexPath": "Assets/Shaders/shape.vert",
-                "fragmentPath": "Assets/Shaders/shape.frag"
-            },
-            {
-                "name": "system_debug",
-                "vertexPath": "Assets/Shaders/debug.vert",
-                "fragmentPath": "Assets/Shaders/debug.frag"
             }
         ]
     },
@@ -162,17 +126,14 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "texturePath": "Assets/main menu.png",
-                    "sortingOrder": 0,
+                    "textureName": "pausemenu",
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
+                    "visible": true
                 }
             }
         },
@@ -199,8 +160,7 @@
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
-                            "scriptPath": "Assets/Scripts/play_btn.lua",
-                            "scriptName": "play_btn.lua",
+                            "scriptPath": "Assets/Scripts/quit_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -216,7 +176,7 @@
                         "y": 0.5
                     },
                     "pivot": {
-                        "x": 0.578,
+                        "x": 0.5,
                         "y": 0.5
                     },
                     "anchoredPosition": {
@@ -230,7 +190,6 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
-                    "scriptName": "play_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -255,104 +214,6 @@
                         "b": 0.5,
                         "a": 0.5
                     }
-                },
-                "class Uma_UI::Effects": {
-                    "playOnEnable": false,
-                    "clips": [
-                        {
-                            "name": "HoverEnter",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 1.0,
-                            "delay": 0.0,
-                            "loop": true,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "endVec2": {
-                                "x": 1.25,
-                                "y": 1.25
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        },
-                        {
-                            "name": "HoverEnter",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 1.0,
-                            "delay": 1.0,
-                            "loop": true,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.25,
-                                "y": 1.25
-                            },
-                            "endVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        },
-                        {
-                            "name": "HoverExit",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 0.0,
-                            "delay": 0.0,
-                            "loop": false,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "endVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        }
-                    ]
                 }
             }
         },
@@ -391,7 +252,7 @@
                     },
                     "anchoredPosition": {
                         "x": 0.0,
-                        "y": 17.5
+                        "y": -20.0
                     },
                     "sizeDelta": {
                         "x": 100.0,
@@ -399,9 +260,8 @@
                     }
                 },
                 "class Uma_UI::Text": {
-                    "text": "Play",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "text": "Continue",
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -449,7 +309,7 @@
                     },
                     "anchoredPosition": {
                         "x": 0.0,
-                        "y": 17.5
+                        "y": -20.0
                     },
                     "sizeDelta": {
                         "x": 100.0,
@@ -457,9 +317,8 @@
                     }
                 },
                 "class Uma_UI::Text": {
-                    "text": "Play",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "text": "Continue",
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -496,7 +355,6 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/settings_btn.lua",
-                            "scriptName": "settings_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -526,7 +384,6 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
-                    "scriptName": "settings_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -598,8 +455,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Settings",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.598,
                     "colour": {
                         "r": 0.0,
@@ -656,8 +512,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Settings",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -694,7 +549,6 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/quit_btn.lua",
-                            "scriptName": "quit_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -710,7 +564,7 @@
                         "y": 0.5
                     },
                     "pivot": {
-                        "x": 0.578,
+                        "x": 0.5,
                         "y": 0.5
                     },
                     "anchoredPosition": {
@@ -724,7 +578,6 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
-                    "scriptName": "quit_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -749,104 +602,6 @@
                         "b": 0.5,
                         "a": 0.5
                     }
-                },
-                "class Uma_UI::Effects": {
-                    "playOnEnable": false,
-                    "clips": [
-                        {
-                            "name": "HoverEnter",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 1.0,
-                            "delay": 0.0,
-                            "loop": true,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "endVec2": {
-                                "x": 1.25,
-                                "y": 1.25
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        },
-                        {
-                            "name": "HoverEnter",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 1.0,
-                            "delay": 1.0,
-                            "loop": true,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.25,
-                                "y": 1.25
-                            },
-                            "endVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        },
-                        {
-                            "name": "HoverExit",
-                            "property": 1,
-                            "easing": 3,
-                            "duration": 0.0,
-                            "delay": 0.0,
-                            "loop": false,
-                            "applyToChildren": true,
-                            "startVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "endVec2": {
-                                "x": 1.0,
-                                "y": 1.0
-                            },
-                            "startColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "endColor": {
-                                "r": 1.0,
-                                "g": 1.0,
-                                "b": 1.0,
-                                "a": 1.0
-                            },
-                            "startFloat": 0.0,
-                            "endFloat": 1.0
-                        }
-                    ]
                 }
             }
         },
@@ -894,8 +649,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Quit",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -952,8 +706,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Quit",
-                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -1062,17 +815,14 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "texturePath": "",
-                    "sortingOrder": 0,
+                    "textureName": "main",
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
                         "b": 1.0,
                         "a": 0.497
                     },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
+                    "visible": true
                 }
             }
         },
@@ -1144,7 +894,6 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/settings_btn.lua",
-                            "scriptName": "settings_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -1173,21 +922,17 @@
                     }
                 },
                 "class Uma_UI::Image": {
-                    "texturePath": "",
-                    "sortingOrder": 0,
+                    "textureName": "white",
                     "color": {
                         "r": 1.0,
                         "g": 1.0,
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true,
-                    "fillDirection": 0,
-                    "fillAmount": 1.0
+                    "visible": true
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
-                    "scriptName": "settings_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -1215,8 +960,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "100",
-                    "fontPath": "",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 1.5,
                     "colour": {
                         "r": 1.0,
@@ -1273,8 +1017,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Volume",
-                    "fontPath": "",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 2.598,
                     "colour": {
                         "r": 0.0,
@@ -1331,8 +1074,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Volume",
-                    "fontPath": "",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 2.5,
                     "colour": {
                         "r": 1.0,
@@ -1369,7 +1111,6 @@
                     "scripts": [
                         {
                             "scriptPath": "Assets/Scripts/quit_btn.lua",
-                            "scriptName": "quit_btn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }
@@ -1399,7 +1140,6 @@
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
-                    "scriptName": "quit_btn.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -1471,8 +1211,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back",
-                    "fontPath": "",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.7,
                     "colour": {
                         "r": 0.0,
@@ -1529,8 +1268,7 @@
                 },
                 "class Uma_UI::Text": {
                     "text": "Back",
-                    "fontPath": "",
-                    "sortingOrder": 0,
+                    "fontName": "Fujimaru-Regular",
                     "fontSize": 3.5,
                     "colour": {
                         "r": 1.0,
@@ -1540,64 +1278,6 @@
                     },
                     "alignment": 1,
                     "visible": true
-                }
-            }
-        },
-        {
-            "id": 20,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "BGM Object",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/BGM_mainmenu.lua",
-                            "scriptName": "BGM_mainmenu.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 21,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "Fade Screen REAL",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/Fade Screen REAL.prefab",
-                    "isRoot": true
                 }
             }
         }

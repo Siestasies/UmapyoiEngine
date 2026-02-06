@@ -1,29 +1,31 @@
--- local levelEndState
--- local fadeState
--- local time = 1
--- local loadNextScene = false
+local levelEnd
+local fadeState
+local time = 1
 
 function Start()
-    
+    levelEnd = false
+    fadeState = require("fadeState")
 end
 
 function Update(dt)
+    if levelEnd then
+        fadeState.setFading(true)
+        time = time - dt
+        if time <= 0 then 
+            time = 0
+            LoadScene("tutorial.scn")
+        end
+    end
 end
 
 -- when player step on trigger
 function OnTriggerEnter(other, triggerOwner)
     -- trigger fading
-   
     if HasPlayerOn(triggerOwner) or HasPlayerOn(other) then
-
-        --Log("NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN : " .. other)
-        
         local enemyCount = CountEntitiesWithComponent("Enemy")
-
         if enemyCount <= 0 then
-            LoadScene("tutorial.scn")
+            levelEnd = true
         end
-
     end
 end
 
