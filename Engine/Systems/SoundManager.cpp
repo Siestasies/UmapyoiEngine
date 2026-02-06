@@ -88,7 +88,7 @@ namespace Uma_Engine {
         FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
 
         // Set 3D settings (doppler scale, distance factor, rolloff scale)
-        FMOD_System_Set3DSettings(pFmodSystem, 1.0f, 1.0f, 1.0f);
+        FMOD_System_Set3DSettings(pFmodSystem, 0.0f, 1.0f, 1.0f);
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
 
