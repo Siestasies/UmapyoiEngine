@@ -101943,7 +101943,7 @@
             }
         },
         {
-            "id": 18,
+            "id": 15,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -101996,7 +101996,7 @@
         },
         {
             "id": 20,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Fade Screen REAL",
@@ -102279,7 +102279,7 @@
             }
         },
         {
-            "id": 30,
+            "id": 27,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -102305,14 +102305,14 @@
             }
         },
         {
-            "id": 34,
+            "id": 31,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "wind enemy",
                     "position": {
-                        "x": 402.727,
-                        "y": -1136.163
+                        "x": 402.726,
+                        "y": -1136.161
                     },
                     "rotation": {
                         "x": 0.0,
@@ -104461,7 +104461,7 @@
         },
         {
             "id": 70,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "dead screen",
@@ -104892,6 +104892,32 @@
                     "visible": true,
                     "fillDirection": 0,
                     "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 83,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "fps",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/fps.prefab",
+                    "isRoot": true
                 }
             }
         }
