@@ -993,9 +993,11 @@ namespace Uma_ECS
             "play", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
                 // We use the AudioSystem directly here for performance 
                 // because these happen every frame/frequently
+                (void)self;
                 pCoordinator->GetSystem<AudioSystem>()->PlayEntitySound(entity, name);
             },
             "playOneShot", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                (void)self;
                 pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtEntity(entity, name);
             },
             "stop", sol::overload(
@@ -1009,9 +1011,11 @@ namespace Uma_ECS
             ),
             "playAtPos", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, float x, float y, const std::string& name) {
                 // Uses the entity's component defaults but plays at specific coordinates
+                (void)self;
                 pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtPosition(entity, x, y, name, self.defaultVolume, self.default3D);
             },
             "playFaded", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                (void)self;
                 pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime);
             },
             "fadeOut", sol::overload(
