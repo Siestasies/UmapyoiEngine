@@ -2,10 +2,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,19 +17,19 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/props animation.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/sprite_sheet_17.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/pause menu.png"
             },
             {
-                "path": "assets/pause menu.png"
+                "path": "assets/exterior_environment_fence_with_water.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/whole castle.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -70,13 +70,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -97,13 +97,13 @@
                 "type": 0
             },
             {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             },
             {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
                 "type": 0
             },
             {
@@ -112,13 +112,13 @@
                 "type": 0
             },
             {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
                 "type": 0
             },
             {
-                "name": "WaterDemonSuicide",
-                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
                 "type": 0
             },
             {
@@ -145,6 +145,11 @@
                 "name": "SteamBurst",
                 "path": "Assets/sounds/Player Wav/SteamBurst.wav",
                 "type": 0
+            },
+            {
+                "name": "GameStart",
+                "path": "Assets/sounds/GameStart.wav",
+                "type": 1
             },
             {
                 "name": "Water Demon Charge",
@@ -34080,6 +34085,22 @@
                     },
                     "parent": 29
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -34290,6 +34311,22 @@
                         "y": 1.0
                     },
                     "parent": 29
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -34502,6 +34539,22 @@
                     },
                     "parent": 29
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
@@ -34712,6 +34765,22 @@
                         "y": 1.0
                     },
                     "parent": 37
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "GameStart": {
+                            "path": "Assets/sounds/GameStart.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
