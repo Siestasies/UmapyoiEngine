@@ -142,6 +142,16 @@ namespace Uma_Engine
             }
         );
 
+        pEventSystem->Subscribe<ReLoadSceneRequestEvent, SceneManager>(
+            [this](const ReLoadSceneRequestEvent&) {
+                if (m_ActiveScene) {
+                    std::string name = m_ActiveScene->GetName();
+                    UnloadScene(name);
+                    LoadScene(name, false);
+                }
+            }
+        );
+
         pEventSystem->Subscribe<PrefabSceneRequestEvent, SceneManager>(
             [this](const PrefabSceneRequestEvent& e) {
                 LoadScene(e.scene_name, false);
