@@ -998,10 +998,10 @@ namespace Uma_ECS
                 pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtEntity(entity, name, self.defaultVolume, self.default3D);
             },
             "stop", sol::overload(
-                [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity) {
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
                     pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
                 },
-                [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name) {
                     // This maps to your StopEntitySound(Entity, string) overload
                     pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity, name);
                 }
@@ -1277,8 +1277,8 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtEntityEvent>(entity, audioName, vol);
             });
 
-        sharedLua->set_function("PlayOneShotAtPosition", [this](float x, float y, const std::string& audioName, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
+        sharedLua->set_function("PlayOneShotAtPosition", [this](Uma_Engine::Entity ent, float x, float y, const std::string& audioName, float vol) {
+            pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(ent, x, y, audioName, vol);
             });
 
         // scene management
@@ -1604,6 +1604,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Animator)    \
         BIND_COMPONENT_GETTER(Image)       \
         BIND_COMPONENT_GETTER(Effects)     \
+        BIND_COMPONENT_GETTER(AudioComponent)\
         //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \

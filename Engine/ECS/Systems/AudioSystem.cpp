@@ -224,12 +224,8 @@ void Uma_ECS::AudioSystem::PlayEntitySound(Entity entity, const std::string& sou
     auto& audio = audioArray.GetData(entity);
 
     // Stop existing sound with same name
-    SoundInfo* info = nullptr;
-    if (info = GetSoundInfo(entity, soundName)) {}
-    else
-    {
-        return;
-    }
+    SoundInfo* info = GetSoundInfo(entity, soundName);
+    if (!info) return;
 
     // getting sound form resources here
 
