@@ -1,5 +1,6 @@
 -- PlayerDeath.lua
 -- Death state - handles player death animation, respawn, or game over
+local audio = nil
 
 ExposedVars = {
     deathAnimationName = "die",
@@ -45,7 +46,8 @@ function state_enter(entity)
     -- Play death animation and sound
     PlayAnimation(entity, deathAnimationName)
     --PlaySound("player_death", 1.0, 0)
-    
+    audio = GetAudioComponent()
+    audio:play(EntityID, "PlayerDeathMono")
     Log("Player has died!")
 end
 

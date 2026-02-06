@@ -88,7 +88,7 @@ namespace Uma_Engine {
         FMOD_SoundGroup_SetMaxAudibleBehavior(SFX_SG, FMOD_SOUNDGROUP_BEHAVIOR_MUTE);
 
         // Set 3D settings (doppler scale, distance factor, rolloff scale)
-        FMOD_System_Set3DSettings(pFmodSystem, 1.0f, 1.0f, 1.0f);
+        FMOD_System_Set3DSettings(pFmodSystem, 0.0f, 1.0f, 1.0f);
         pEventSystem = pSystemManager->GetSystem<EventSystem>();
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
 
@@ -158,7 +158,7 @@ namespace Uma_Engine {
 
     void SoundManager::Update(float dt)
     {
-        (void)dt;
+        UpdateFades(dt);
 
         if (pFmodSystem) {
             FMOD_System_Set3DListenerAttributes(
@@ -377,14 +377,12 @@ namespace Uma_Engine {
         listenerUp = up;
     }
 
-    void SoundManager::PlayOneShotAt(const std::string& soundName, const FMOD_VECTOR& pos, float volume, bool is3D)
+    void SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return;
         }
 
-        // Get sound from resource manager
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->sound) {
             return;
         }
@@ -393,7 +391,7 @@ namespace Uma_Engine {
         FMOD_CHANNEL* tempChannel = nullptr;
         FMOD_CHANNELGROUP* group = SFX;
 
-        FMOD_Sound_SetLoopCount(info->sound, 0);
+        
 
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &tempChannel);
@@ -403,6 +401,8 @@ namespace Uma_Engine {
 
         // Set volume
         FMOD_Channel_SetVolume(tempChannel, volume);
+        // Set channel to false
+        FMOD_Channel_SetMode(tempChannel, FMOD_LOOP_OFF);
 
         // Set 3D position if applicable
         if (is3D) {
@@ -413,24 +413,19 @@ namespace Uma_Engine {
         }
     }
 
-    FMOD_CHANNEL* SoundManager::PlaySoundInstance(const std::string& soundName, bool loop,float volume, const FMOD_VECTOR& pos, bool is3D)
+    FMOD_CHANNEL* SoundManager::PlaySoundInstance(SoundInfo* info, bool loop, float volume, const FMOD_VECTOR& pos, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return nullptr;
         }
 
         // Get sound from ResourcesManager
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->sound) {
-            std::cerr << "[SoundManager] Sound not found: " << soundName << std::endl;
             return nullptr;
         }
 
         FMOD_CHANNEL* channel = nullptr;
         FMOD_CHANNELGROUP* group = (info->type == SoundType::SFX) ? SFX : BGM;
-
-        // Set loop mode
-        FMOD_Sound_SetLoopCount(info->sound, loop ? -1 : 0);
 
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &channel);
@@ -439,12 +434,21 @@ namespace Uma_Engine {
             return nullptr;
         }
 
-        // Set volume
+        FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+        if (is3D) {
+            mode |= FMOD_3D;  // Add 3D spatialization
+        }
+        else {
+            mode |= FMOD_2D;  // Explicitly force 2D (omnidirectional)
+        }
+
+        FMOD_Channel_SetMode(channel, mode);  // Single mode call
+
+        // Volume (before 3D attributes)
         FMOD_Channel_SetVolume(channel, volume);
 
-        // Set 3D attributes if requested
+        // 3D attributes ONLY if 3D
         if (is3D) {
-            FMOD_Channel_SetMode(channel, FMOD_3D);
             FMOD_Channel_Set3DAttributes(channel, &pos, nullptr);
             FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
         }
@@ -474,17 +478,8 @@ namespace Uma_Engine {
         FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
     }
 
-    SoundInfo* SoundManager::GetSoundInfo(const std::string& soundName)
+    bool SoundManager::IsSoundPlaying(SoundInfo* info)
     {
-        if (!pResourcesManager) {
-            return nullptr;
-        }
-        return pResourcesManager->GetSound(soundName);
-    }
-
-    bool SoundManager::IsSoundPlaying(const std::string& soundName)
-    {
-        SoundInfo* info = pResourcesManager->GetSound(soundName);
         if (!info || !info->channel) {
             return false;
         }
@@ -492,6 +487,73 @@ namespace Uma_Engine {
         FMOD_BOOL isPlaying = false;
         FMOD_Channel_IsPlaying(info->channel, &isPlaying);
         return isPlaying != 0;
+    }
+
+    void SoundManager::StartFade(FMOD_CHANNEL* channel, float targetVolume, float duration, bool fadeOut) {
+        if (!channel) return;
+
+        fadingChannels.push_back({
+            channel,
+            targetVolume,
+            duration,
+            (float)currentTime,
+            0.0f,  // Will get current volume
+            fadeOut
+            });
+
+        // Get starting volume
+        FMOD_Channel_GetVolume(channel, &fadingChannels.back().startVolume);
+
+        // Pause channel during fade for smoother interpolation
+        FMOD_Channel_SetPaused(channel, true);
+    }
+
+    void SoundManager::UpdateFades(float dt) {
+        currentTime += dt;
+
+        for (auto it = fadingChannels.begin(); it != fadingChannels.end(); ) {
+            float elapsed = currentTime - it->fadeStartTime;
+            float t = (std::min)(elapsed / it->fadeDuration, 1.0f);
+
+            // Smooth easing (EaseOutQuad) - inline lerp
+            t = t * t * (3.0f - 2.0f * t);
+            float currentVol = it->startVolume + (it->targetVolume - it->startVolume) * t;  // Inline lerp
+
+            FMOD_Channel_SetVolume(it->channel, currentVol);
+            FMOD_Channel_SetPaused(it->channel, false);
+
+            // Fade complete
+            if (t >= 1.0f) {
+                if (it->fadeOut) {
+                    StopChannel(it->channel);
+                }
+                it = fadingChannels.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+    }
+
+    FMOD_CHANNEL* SoundManager::PlaySoundInstanceFaded(SoundInfo* info, bool loop, float targetVolume, const FMOD_VECTOR& pos, bool is3D, float fadeInTime) {
+        // Play SILENT first
+        FMOD_CHANNEL* channel = PlaySoundInstance(info, loop, 0.0f, pos, is3D);
+        if (channel && fadeInTime > 0.0f) {
+            StartFade(channel, targetVolume, fadeInTime, false);  // Fade IN to target
+        }
+        else if (channel) {
+            FMOD_Channel_SetVolume(channel, targetVolume);  // Instant if no fade
+        }
+        return channel;
+    }
+
+    void SoundManager::FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime) {
+        if (channel && fadeOutTime > 0.0f) {
+            StartFade(channel, 0.0f, fadeOutTime, true);  // Fade OUT to 0
+        }
+        else {
+            StopChannel(channel);  // Instant stop
+        }
     }
 
 }

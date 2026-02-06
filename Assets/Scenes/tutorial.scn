@@ -97,7 +97,88 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            },
+            {
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "type": 0
+            },
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
+            },
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "FireCyclone",
+                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -101093,8 +101174,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": 1028.696,
-                        "y": -1656.734
+                        "x": 1036.291,
+                        "y": -1639.792
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101119,8 +101200,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 1028.599,
-                        "y": -1656.8
+                        "x": 1036.2,
+                        "y": -1639.8
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101923,8 +102004,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": 978.291,
-                        "y": -1370.088
+                        "x": 983.653,
+                        "y": -1369.26
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101949,8 +102030,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "water enemy",
                     "position": {
-                        "x": 743.163,
-                        "y": -1463.961
+                        "x": 743.013,
+                        "y": -1456.604
                     },
                     "rotation": {
                         "x": 0.0,
@@ -102285,8 +102366,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": 385.0,
-                        "y": -1434.963
+                        "x": 391.691,
+                        "y": -1412.661
                     },
                     "rotation": {
                         "x": 0.0,
@@ -102311,8 +102392,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "wind enemy",
                     "position": {
-                        "x": 402.726,
-                        "y": -1136.161
+                        "x": 402.985,
+                        "y": -1141.104
                     },
                     "rotation": {
                         "x": 0.0,
@@ -102332,7 +102413,7 @@
         },
         {
             "id": 35,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "mp 5",
@@ -102389,7 +102470,7 @@
         },
         {
             "id": 36,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "mp 4",
@@ -102446,7 +102527,7 @@
         },
         {
             "id": 37,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "mp 3",
@@ -103916,7 +103997,7 @@
         },
         {
             "id": 60,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cd 1",
@@ -104089,7 +104170,7 @@
         },
         {
             "id": 63,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cd 2",
@@ -104262,7 +104343,7 @@
         },
         {
             "id": 66,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cd 3",
@@ -105013,6 +105094,54 @@
                     },
                     "alignment": 1,
                     "visible": true
+                }
+            }
+        },
+        {
+            "id": 85,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "BGM comabt obj",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": true,
+                    "loadedSounds": {
+                        "CombatGameplayBGM": {
+                            "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                            "isPlaying": false,
+                            "shouldLoop": true,
+                            "is3D": false,
+                            "volume": 0.187,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        }
+                    }
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                            "scriptName": "BGM_combat.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 }
             }
         }

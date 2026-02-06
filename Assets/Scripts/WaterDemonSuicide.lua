@@ -1,3 +1,5 @@
+local audio = nil
+
 ExposedVars = {
     explosionTimer = 2.0,
     damageLinger = 0.5
@@ -29,6 +31,9 @@ function state_enter(entity)
         local animator = GetAnimator()
         animator.animator:Play("shield_broken", false)
     end
+
+    audio = GetAudioComponent()
+    audio:play(EntityID, "WaterDemonSuicide")
 
     if HasChildren(EntityID, 0) then
 
@@ -75,6 +80,9 @@ function state_update(entity, dt)
                 
                 -- Play explosion animation
                 animator.animator:Play("explode", false)
+
+                local audio = GetAudioComponent()
+                audio:play(EntityID, "Water Demon ChargenAttack")
 
                 if vfxAnimator ~= nil then
                     vfxAnimator.animator:Play("splash", true)

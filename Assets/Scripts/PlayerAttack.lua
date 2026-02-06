@@ -1,5 +1,6 @@
 -- PlayerAttack.lua
 -- Basic attack state - handles neutral attack combos (Attack 1, Attack 2)
+local audio = nil
 
 ExposedVars = {
     attack1AnimationName = "normal_atk",
@@ -82,6 +83,9 @@ function state_enter(entity)
     
     -- Face towards mouse position
     FaceTowardsMouse(entity)
+
+    audio = GetAudioComponent()
+    audio:play(EntityID, "Neutral Slash(BasicAttack)")
 end
 
 function state_update(entity, dt)

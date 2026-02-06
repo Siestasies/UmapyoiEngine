@@ -13,6 +13,7 @@ local animator = nil
 local transform = nil
 local isAttacking = false
 local spriteComp = nil
+local audio = nil
 
 function state_enter(entity)
     if HasEnemy() then
@@ -39,6 +40,10 @@ function state_enter(entity)
 
     if HasSprite() then
         spriteComp = GetSprite()
+    end
+
+    if HasAudioComponent() then
+        audio = GetAudioComponent()
     end
 end
 
@@ -94,7 +99,8 @@ function state_update(entity, dt)
             local projectile = GetProjectileFrom(prefab)
 
             projectile.mStats.damage = enemy.mAttackDamage
-            PlayEntitySound(entity, "fire_enemy_attack", false, 0.3)
+            --PlayEntitySound(entity, "fire_enemy_attack", false, 0.3)
+            audio:play(entity,"Fire Demon Shoot Fireball")
 
             if angle < 0 then angle = angle + 360 end
 

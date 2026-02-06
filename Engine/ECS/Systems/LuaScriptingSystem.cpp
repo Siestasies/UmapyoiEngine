@@ -37,6 +37,7 @@ All rights reserved.
 #include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
+#include "../Components/AudioComponent.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -985,6 +986,50 @@ namespace Uma_ECS
             "enabled", &PathFinding::enabled
         );
 
+        sharedLua->new_usertype<AudioComponent>("AudioComponent",
+            "defaultVolume", &Uma_ECS::AudioComponent::defaultVolume, //to set the default volumes
+            "hasLoadedSound", &Uma_ECS::AudioComponent::HasLoadedSound,
+
+            "play", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                // We use the AudioSystem directly here for performance 
+                // because these happen every frame/frequently
+                pCoordinator->GetSystem<AudioSystem>()->PlayEntitySound(entity, name);
+            },
+            "playOneShot", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name) {
+                pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtEntity(entity, name);
+            },
+            "stop", sol::overload(
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
+                    pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name) {
+                    // This maps to your StopEntitySound(Entity, string) overload
+                    pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity, name);
+                }
+            ),
+            "playAtPos", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, float x, float y, const std::string& name) {
+                // Uses the entity's component defaults but plays at specific coordinates
+                pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtPosition(entity, x, y, name, self.defaultVolume, self.default3D);
+            },
+            "playFaded", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime);
+            },
+            "fadeOut", sol::overload(
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutSound(entity, name, fadeTime);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, float fadeTime) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, fadeTime);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutSound(entity, name, 1.0f);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, 1.0f);
+                }
+            )
+        );
+
         // ===================================================================
         // COLLISION SYSTEM TYPES
         // ===================================================================
@@ -1282,6 +1327,7 @@ namespace Uma_ECS
         X(Image)       \
         X(Effects)     \
         X(ParticleEmitter) \
+        X(AudioComponent)\
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1397,8 +1443,8 @@ namespace Uma_ECS
             pEventSystem->Emit<Uma_Engine::PlayOneShotAtEntityEvent>(entity, audioName, vol);
             });
 
-        sharedLua->set_function("PlayOneShotAtPosition", [this](float x, float y, const std::string& audioName, float vol) {
-            pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(x, y, audioName, vol);
+        sharedLua->set_function("PlayOneShotAtPosition", [this](Uma_Engine::Entity ent, float x, float y, const std::string& audioName, float vol) {
+            pEventSystem->Emit<Uma_Engine::PlayOneShotAtPositionEvent>(ent, x, y, audioName, vol);
             });
 
         // scene management
@@ -1730,6 +1776,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Image)       \
         BIND_COMPONENT_GETTER(ParticleEmitter)\
         BIND_COMPONENT_GETTER(Effects)     \
+        BIND_COMPONENT_GETTER(AudioComponent)\
         //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \

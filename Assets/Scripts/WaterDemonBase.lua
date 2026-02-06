@@ -1,3 +1,4 @@
+local audio = nil
 ExposedVars = {
     --empty for now
     enemyHurtEffectDuration = 0.5;
@@ -136,6 +137,8 @@ function OnHurt(player, damage)
         isEffective = false
         isFusion = false
     end
+    audio = GetAudioComponent()
+    audio:play(EntityID, "Water Demon Damage Scream")
 end
 
 function OnTriggerEnter(other, triggerOwner)

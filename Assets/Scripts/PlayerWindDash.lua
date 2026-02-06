@@ -1,6 +1,8 @@
 -- PlayerWindDash.lua
 -- Fire Slash elemental attack - applies burn and sets up elemental combo
 
+local audio = nil
+
 ExposedVars = {
     WindDashAnimationName = "atk_3",
     WindDashSoundName = "atk_3",
@@ -74,7 +76,8 @@ function state_enter(entity)
     
     -- Play animation and sound
     animator.animator:Play(WindDashAnimationName, true)
-    PlaySound(WindDashSoundName, 0.8, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "WindSlash")
     
     player.mDashCD = attackStat.attackCd
 end

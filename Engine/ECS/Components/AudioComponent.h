@@ -29,6 +29,9 @@ namespace Uma_ECS
         bool shouldLoop = false;
         bool is3D = true;
 
+        bool isFading = false;
+        FMOD_CHANNEL* fadeHandle = nullptr;
+
         // Optional: per-sound overrides
         float pitch = 1.0f;
         float minDistance = 100.0f;
@@ -43,7 +46,7 @@ namespace Uma_ECS
         bool default3D = true;
 
         //All active sounds playing on this entity
-        std::unordered_map<std::string, SoundInstance> activeSounds;
+        std::unordered_map<std::string, std::vector<SoundInstance>> activeSounds;
         std::unordered_map<std::string, SoundInstance> loadedSounds;
 
         //runtime
@@ -126,7 +129,7 @@ namespace Uma_ECS
             return activeSounds.find(soundName) != activeSounds.end();
         }
 
-        SoundInstance* GetSound(const std::string& soundName)
+        std::vector<SoundInstance>* GetSound(const std::string& soundName)
         {
             auto it = activeSounds.find(soundName);
             return (it != activeSounds.end()) ? &it->second : nullptr;

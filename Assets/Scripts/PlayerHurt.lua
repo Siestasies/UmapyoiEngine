@@ -1,6 +1,8 @@
 -- PlayerHurt.lua
 -- Hurt state - triggered when player takes damage, provides i-frames
 
+local audio = nil
+
 ExposedVars = {
     hurtAnimationName = "hurt",
     hurtDuration = 0.3,
@@ -10,6 +12,7 @@ ExposedVars = {
 -- State-local variables
 local hurtTimer = 0
 local knockbackApplied = false
+local audio = nil
 
 function state_enter(entity)
     Log("Player entered Hurt state")
@@ -30,6 +33,10 @@ function state_enter(entity)
         ChangeState(entity, "PlayerDeath")
         return
     end
+
+    if HasAudioComponent() then
+        audio = GetAudioComponent()
+    end
     
     -- Set hurt duration from player component or default
     hurtTimer = player.mHitStunDuration
@@ -48,7 +55,8 @@ function state_enter(entity)
     
     -- Play hurt animation and sound
     PlayAnimation(entity, hurtAnimationName)
-    PlaySound("player_hurt", 0.8, 0)
+    --PlaySound("player_hurt", 0.8, 0)
+    audio:play(entity,"PlayerDamageMono")
     
     -- Stop current movement
     if HasRigidBody() then

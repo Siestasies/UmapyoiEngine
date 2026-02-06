@@ -1,6 +1,8 @@
 -- PlayerDash.lua
 -- Dash state - quick movement with invulnerability frames
 
+local audio = nil
+
 ExposedVars = {
     dashAnimationName = "dash",
     dashDuration = 0.2,
@@ -36,13 +38,49 @@ function state_enter(entity)
     originalInvulnerable = player.isInvulnerable
     player.isInvulnerable = true
     
-    getDashDirection(player)
+        -- Calculate dash direction based on input or facing direction
+    local moveX = 0
+    local moveY = 0
+    
+    if KeyDown(KEY_W) then moveY = moveY + 1 end
+    if KeyDown(KEY_S) then moveY = moveY - 1 end
+    if KeyDown(KEY_A) then moveX = moveX - 1 end
+    if KeyDown(KEY_D) then moveX = moveX + 1 end
+    
+    -- If no input, dash in facing direction
+    if moveX == 0 and moveY == 0 then
+        if HasSprite() then
+            local sprite = GetSprite()
+            if sprite then
+                --moveX = sprite.flipX and -1 or 1
+                local playerTransform = GetTransformFrom(EntityID)
+                if playerTransform.scale.x <= 0 then
+                    moveX = -1
+                else
+                    moveX = 1
+                end
+            else
+                moveX = 1
+            end
+        else
+            moveX = 1
+        end
+    end
+    
+    -- Normalize direction
+    local length = math.sqrt(moveX * moveX + moveY * moveY)
+    if length > 0 then
+        dashDirection = Vec2(moveX / length, moveY / length)
+    else
+        dashDirection = Vec2(1, 0)
+    end
     
     -- Play dash animation
     PlayAnimation(entity, dashAnimationName)
     
     -- Play dash sound
-    PlaySound("dash", 0.7, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "PlayerDash")
 
     player.mDashCD = dashCooldown;
 end

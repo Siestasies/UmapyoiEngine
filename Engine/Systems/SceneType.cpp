@@ -452,7 +452,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::AudioComponent>());
             m_Coordinator.SetSystemSignature<Uma_ECS::AudioSystem>(sign);
         }
-        m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem);
+        m_AudioSystem->Init(m_Sound, &m_Coordinator, m_EventSystem, m_ResourcesManager);
 
         //path finding system
         m_PathFindingSystem = m_Coordinator.RegisterSystem<Uma_ECS::PathFindingSystem>(); 

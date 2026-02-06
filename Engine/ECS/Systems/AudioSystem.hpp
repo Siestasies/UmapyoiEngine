@@ -34,7 +34,7 @@ namespace Uma_ECS
         * \param sound manager and coordinator pointer
         * \return nothing
         */
-        void Init(Uma_Engine::SoundManager* sm, Coordinator* c, Uma_Engine::EventSystem* es);
+        void Init(Uma_Engine::SoundManager* sm, Coordinator* c, Uma_Engine::EventSystem* es, Uma_Engine::ResourcesManager* rm);
 
         /*!
         * \brief updates the listner position in sound manager
@@ -48,11 +48,17 @@ namespace Uma_ECS
 
         void OnEntityDestroyed(Entity entity);
 
-        void PlayEntitySound(Entity entity, const std::string& soundName, bool loop, float volume);
+        void PlayEntitySound(Entity entity, const std::string& soundName);
         void StopEntitySound(Entity entity);
-        void StopEntitySoundByName(Entity entity, const std::string& soundName);
-        void PlayOneShotAtEntity(Entity entity, const std::string& soundName, float volume, bool is3D);
-        void PlayOneShotAtPosition(float x, float y, const std::string& soundName, float volume, bool is3D);
+        void StopEntitySound(Entity entity, const std::string& soundName);
+        void PlayOneShotAtEntity(Entity entity, const std::string& soundName);
+        void PlayOneShotAtPosition(Entity entity, float x, float y, const std::string& soundName, float volume, bool is3D);
+        SoundInfo* GetSoundInfo(Entity entity, const std::string& soundName);
+
+        // Fade methods
+        void PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime = 1.0f);
+        void FadeOutSound(Entity entity, const std::string& soundName, float fadeOutTime = 1.0f);
+        void FadeOutEntity(Entity entity, float fadeOutTime = 1.0f);
 
     private:
 
