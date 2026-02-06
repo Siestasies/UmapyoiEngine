@@ -121,43 +121,37 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
         if (!pCoordinator->IsActiveInHierarchy(entity))
             continue;
 
-        // Check if entity has required components
-        if (!tfArray.Has(entity)) {
+        if (!tfArray.Has(entity) || !rbArray.Has(entity))
             continue;
-        }
-
-        if (!rbArray.Has(entity)) {
-            continue;
-        }
 
         auto& tf = tfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        // Update audio component position from transform
         FMOD_VECTOR newPosition = { tf.position.x, tf.position.y, 0.0f };
         FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f };
-
         ac.position = newPosition;
         ac.velocity = velocity;
 
         for (auto groupIt = ac.activeSounds.begin(); groupIt != ac.activeSounds.end(); ) {
             auto& instances = groupIt->second;
 
-            // Clean up finished instances within this sound group
             for (auto instIt = instances.begin(); instIt != instances.end(); ) {
                 FMOD_BOOL isPlaying = false;
                 FMOD_RESULT result = FMOD_Channel_IsPlaying(instIt->channel, &isPlaying);
 
                 if (result != FMOD_OK || !isPlaying) {
-                    instIt = instances.erase(instIt);  // Remove finished sound
+                    instIt = instances.erase(instIt);
+                    continue;
                 }
-                else {
-                    // Update 3D position for playing sounds
-                    if (instIt->is3D) {
-                        pSoundManager->UpdateChannel3DPosition(instIt->channel, ac.position, ac.velocity);
-                    }
-                    ++instIt;
+
+                if (instIt->is3D && !instIt->isFading) {
+                    pSoundManager->UpdateChannel3DPosition(instIt->channel, ac.position, ac.velocity);
                 }
+
+
+                instIt->isPlaying = true;
+
+                ++instIt;
             }
 
             // Remove empty sound groups
@@ -170,6 +164,7 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
         }
     }
 }
+
 
 SoundInfo* Uma_ECS::AudioSystem::GetSoundInfo(Entity entity, const std::string& soundName) {
     if (!pResourcesManager) return nullptr;
@@ -302,3 +297,74 @@ void Uma_ECS::AudioSystem::PlayOneShotAtPosition(Entity entity, float x, float y
 
     pSoundManager->PlayOneShotAt(GetSoundInfo(entity, soundName), pos, volume, is3D);
 }
+
+void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime) {
+    auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+    if (!audioArray.Has(entity)) {
+        pCoordinator->AddComponent(entity, AudioComponent{});
+    }
+
+    auto& audio = audioArray.GetData(entity);
+    SoundInfo* info = GetSoundInfo(entity, soundName);
+    if (!info) return;
+
+    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
+    if (!tfArray.Has(entity)) return;
+
+    auto& tf = tfArray.GetData(entity);
+    FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
+    bool is3D = audio.default3D;
+    bool shouldLoop = audio.loadedSounds[soundName].shouldLoop;
+    float volume = audio.loadedSounds[soundName].volume;
+
+    // Play SILENT, then fade in
+    FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstanceFaded(
+        info, shouldLoop, volume, pos, is3D, fadeInTime
+    );
+
+    if (channel) {
+        audio.activeSounds[soundName].emplace_back(SoundInstance{
+            channel,                    // channel
+            soundName,                  // soundName
+            info->filePath,             // path
+            volume,                     // volume
+            false,                      // isPlaying
+            shouldLoop,                 // shouldLoop
+            is3D,                       // is3D
+            true,                       // isFading
+            channel                     // fadeHandle
+            });
+    }
+}
+
+void Uma_ECS::AudioSystem::FadeOutSound(Entity entity, const std::string& soundName, float fadeOutTime) {
+    auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+    if (!audioArray.Has(entity)) return;
+
+    auto& audio = audioArray.GetData(entity);
+    if (auto* instances = audio.GetSound(soundName)) {
+        for (auto& instance : *instances) {
+            if (instance.channel) {
+                pSoundManager->FadeOutChannel(instance.channel, fadeOutTime);
+                instance.isFading = true;
+            }
+        }
+    }
+}
+
+void Uma_ECS::AudioSystem::FadeOutEntity(Entity entity, float fadeOutTime) {
+    auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
+    if (!audioArray.Has(entity)) return;
+
+    auto& audio = audioArray.GetData(entity);
+    for (auto& [name, instances] : audio.activeSounds) {
+        for (auto& instance : instances) {
+            if (instance.channel) {
+                pSoundManager->FadeOutChannel(instance.channel, fadeOutTime);
+                instance.isFading = true;
+            }
+        }
+    }
+}
+
+

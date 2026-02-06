@@ -29,6 +29,9 @@ namespace Uma_ECS
         bool shouldLoop = false;
         bool is3D = true;
 
+        bool isFading = false;
+        FMOD_CHANNEL* fadeHandle = nullptr;
+
         // Optional: per-sound overrides
         float pitch = 1.0f;
         float minDistance = 100.0f;

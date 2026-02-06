@@ -37,6 +37,15 @@ using SoundType = Uma_Engine::SoundType;
 namespace Uma_Engine
 {
 
+		struct FadeChannel {
+			FMOD_CHANNEL* channel;
+			float targetVolume;
+			float fadeDuration;
+			float fadeStartTime;
+			float startVolume;
+			bool fadeOut;  // true = fade to 0, false = fade to targetVolume
+		};
+
 		class SoundManager : public ISystem 
 		{
 				public:
@@ -150,6 +159,13 @@ namespace Uma_Engine
 				void UpdateChannel3DPosition(FMOD_CHANNEL* channel, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel);
 
 				bool IsSoundPlaying(SoundInfo* info);
+
+				void StartFade(FMOD_CHANNEL* channel, float targetVolume, float duration, bool fadeOut = false);
+				void UpdateFades(float dt);
+
+				FMOD_CHANNEL* PlaySoundInstanceFaded(SoundInfo* info, bool loop, float targetVolume, const FMOD_VECTOR& pos, bool is3D, float fadeInTime = 1.0f);
+				void FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime = 1.0f);
+
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
@@ -172,6 +188,9 @@ namespace Uma_Engine
 				FMOD_VECTOR listenerVel = { 0.0f, 0.0f, 0.0f };
 				FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 1.0f };
 				FMOD_VECTOR listenerUp = { 0.0f, 1.0f, 0.0f };
+
+				std::vector<FadeChannel> fadingChannels;
+				float currentTime = 0.0f;
 		};
 }
 

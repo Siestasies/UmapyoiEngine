@@ -1009,7 +1009,24 @@ namespace Uma_ECS
             "playAtPos", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, float x, float y, const std::string& name) {
                 // Uses the entity's component defaults but plays at specific coordinates
                 pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtPosition(entity, x, y, name, self.defaultVolume, self.default3D);
-            }
+            },
+            "playFaded", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime);
+            },
+            "fadeOut", sol::overload(
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutSound(entity, name, fadeTime);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, float fadeTime) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, fadeTime);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutSound(entity, name, 1.0f);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
+                    pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, 1.0f);
+                }
+            )
         );
 
         // ===================================================================

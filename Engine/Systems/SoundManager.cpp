@@ -158,7 +158,7 @@ namespace Uma_Engine {
 
     void SoundManager::Update(float dt)
     {
-        (void)dt;
+        UpdateFades(dt);
 
         if (pFmodSystem) {
             FMOD_System_Set3DListenerAttributes(
@@ -486,6 +486,73 @@ namespace Uma_Engine {
         FMOD_BOOL isPlaying = false;
         FMOD_Channel_IsPlaying(info->channel, &isPlaying);
         return isPlaying != 0;
+    }
+
+    void SoundManager::StartFade(FMOD_CHANNEL* channel, float targetVolume, float duration, bool fadeOut) {
+        if (!channel) return;
+
+        fadingChannels.push_back({
+            channel,
+            targetVolume,
+            duration,
+            (float)currentTime,
+            0.0f,  // Will get current volume
+            fadeOut
+            });
+
+        // Get starting volume
+        FMOD_Channel_GetVolume(channel, &fadingChannels.back().startVolume);
+
+        // Pause channel during fade for smoother interpolation
+        FMOD_Channel_SetPaused(channel, true);
+    }
+
+    void SoundManager::UpdateFades(float dt) {
+        currentTime += dt;
+
+        for (auto it = fadingChannels.begin(); it != fadingChannels.end(); ) {
+            float elapsed = currentTime - it->fadeStartTime;
+            float t = (std::min)(elapsed / it->fadeDuration, 1.0f);
+
+            // Smooth easing (EaseOutQuad) - inline lerp
+            t = t * t * (3.0f - 2.0f * t);
+            float currentVol = it->startVolume + (it->targetVolume - it->startVolume) * t;  // Inline lerp
+
+            FMOD_Channel_SetVolume(it->channel, currentVol);
+            FMOD_Channel_SetPaused(it->channel, false);
+
+            // Fade complete
+            if (t >= 1.0f) {
+                if (it->fadeOut) {
+                    StopChannel(it->channel);
+                }
+                it = fadingChannels.erase(it);
+            }
+            else {
+                ++it;
+            }
+        }
+    }
+
+    FMOD_CHANNEL* SoundManager::PlaySoundInstanceFaded(SoundInfo* info, bool loop, float targetVolume, const FMOD_VECTOR& pos, bool is3D, float fadeInTime) {
+        // Play SILENT first
+        FMOD_CHANNEL* channel = PlaySoundInstance(info, loop, 0.0f, pos, is3D);
+        if (channel && fadeInTime > 0.0f) {
+            StartFade(channel, targetVolume, fadeInTime, false);  // Fade IN to target
+        }
+        else if (channel) {
+            FMOD_Channel_SetVolume(channel, targetVolume);  // Instant if no fade
+        }
+        return channel;
+    }
+
+    void SoundManager::FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime) {
+        if (channel && fadeOutTime > 0.0f) {
+            StartFade(channel, 0.0f, fadeOutTime, true);  // Fade OUT to 0
+        }
+        else {
+            StopChannel(channel);  // Instant stop
+        }
     }
 
 }

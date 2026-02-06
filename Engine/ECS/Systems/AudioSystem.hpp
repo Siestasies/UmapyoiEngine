@@ -55,6 +55,11 @@ namespace Uma_ECS
         void PlayOneShotAtPosition(Entity entity, float x, float y, const std::string& soundName, float volume, bool is3D);
         SoundInfo* GetSoundInfo(Entity entity, const std::string& soundName);
 
+        // Fade methods
+        void PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime = 1.0f);
+        void FadeOutSound(Entity entity, const std::string& soundName, float fadeOutTime = 1.0f);
+        void FadeOutEntity(Entity entity, float fadeOutTime = 1.0f);
+
     private:
 
         void UpdateListener(float dt);
