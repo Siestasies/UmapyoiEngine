@@ -2,10 +2,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,19 +17,19 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/props animation.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/sprite_sheet_17.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/pause menu.png"
             },
             {
-                "path": "assets/pause menu.png"
+                "path": "assets/exterior_environment_fence_with_water.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/whole castle.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -63,17 +63,20 @@
             },
             {
                 "path": "assets/howtoplay.png"
+            },
+            {
+                "path": "assets/player ss 3.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -82,7 +85,83 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "MainMenuBGM",
+                "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "PlayerDeathMono",
+                "path": "Assets/sounds/Player Wav/PlayerDeathMono.wav",
+                "type": 0
+            },
+            {
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "type": 0
+            },
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
+                "type": 0
+            },
+            {
+                "name": "FireCyclone",
+                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -34797,6 +34876,32 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 48,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "BGM mainmenu obj",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/BGM mainmenu obj.prefab",
                     "isRoot": true
                 }
             }
