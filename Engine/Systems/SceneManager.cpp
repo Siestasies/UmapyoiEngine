@@ -208,15 +208,15 @@ namespace Uma_Engine
                 {
                     m_UseEditorCamera = false;
                     m_EditorCamera.SetActive(false);
-
-                    // Tell RenderingSystem to update camera
-                    if (m_ActiveScene->m_RenderingSystem)
-                    {
-                        m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
-                    }
-
-                    std::cout << "Switched to game camera" << std::endl;
                 }
+
+                // Tell RenderingSystem to update camera
+                if (m_ActiveScene->m_RenderingSystem)
+                {
+                    m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
+                }
+
+                std::cout << "Switched to game camera" << std::endl;
             }
 
             // Update editor camera if active
