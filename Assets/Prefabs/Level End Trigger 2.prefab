@@ -36,7 +36,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
@@ -44,8 +44,8 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 16.299,
-                                    "y": 7.099
+                                    "x": 16.298,
+                                    "y": 7.098
                                 },
                                 "purpose": 2,
                                 "layer": 32,

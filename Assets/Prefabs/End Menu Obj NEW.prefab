@@ -6,7 +6,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "End Menu obj",
+                        "name": "End Menu Obj NEW",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -32,14 +32,14 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
+                        "prefabPath": "Assets/Prefabs/End Menu Obj NEW.prefab",
                         "isRoot": true
                     }
                 }
             },
             {
                 "id": 1,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "End Menu",
@@ -58,7 +58,7 @@
                         "parent": 0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
+                        "prefabPath": "Assets/Prefabs/End Menu Obj NEW.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -113,10 +113,6 @@
                             "y": 1.0
                         },
                         "parent": 1
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -184,10 +180,6 @@
                                 "exposedVariables": []
                             }
                         ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -274,10 +266,6 @@
                         },
                         "parent": 3
                     },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
-                    },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
                             "x": 0.5,
@@ -336,10 +324,6 @@
                         },
                         "parent": 3
                     },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
-                    },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
                             "x": 0.5,
@@ -380,7 +364,7 @@
             },
             {
                 "id": 6,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "restart",
@@ -407,10 +391,6 @@
                                 "exposedVariables": []
                             }
                         ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -458,14 +438,14 @@
                         },
                         "hoverColour": {
                             "r": 0.745,
-                            "g": 0.352,
-                            "b": 0.058,
+                            "g": 0.351,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.352,
+                            "r": 0.351,
                             "g": 0.156,
-                            "b": 0.058,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -496,10 +476,6 @@
                             "y": 1.0
                         },
                         "parent": 6
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -559,10 +535,6 @@
                         },
                         "parent": 6
                     },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
-                    },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
                             "x": 0.5,
@@ -620,10 +592,6 @@
                             "y": 1.0
                         },
                         "parent": 1
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/End Menu obj.prefab",
-                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {

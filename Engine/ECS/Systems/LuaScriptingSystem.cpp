@@ -1407,6 +1407,11 @@ namespace Uma_ECS
                 pEventSystem->Emit<Uma_Engine::LoadSceneRequestEvent>(sceneName, true);
             });
 
+        sharedLua->set_function("ReloadScene", [this]()
+            {
+                pEventSystem->Emit<Uma_Engine::ReLoadSceneRequestEvent>();
+            });
+
         sharedLua->set_function("CloseApplication", [this]()
             {
                 pEventSystem->Emit<Uma_Engine::ApplicationQuitRequest>();

@@ -65,21 +65,21 @@ function state_update(entity, dt)
         end
     else
         -- After death animation, handle respawn or game over
-        respawnTimer = respawnTimer - dt
-        Log("rt" ..  tostring(respawnTimer))
+        -- respawnTimer = respawnTimer - dt
+        -- Log("rt" ..  tostring(respawnTimer))
         
-        if respawnTimer <= 0 and not respawnTriggered then
-            respawnTriggered = true
+        -- if respawnTimer <= 0 and not respawnTriggered then
+        --     respawnTriggered = true
             
-            if enableRespawn and player.checkpointData.hasCheckpoint then
-                -- Respawn at checkpoint
-                RespawnPlayer(entity, player)
-            else
-                -- No checkpoint or respawn disabled - game over
-                HandleGameOver()
-                Log("GameOver")
-            end
-        end
+        --     if enableRespawn and player.checkpointData.hasCheckpoint then
+        --         -- Respawn at checkpoint
+        --         RespawnPlayer(entity, player)
+        --     else
+        --         -- No checkpoint or respawn disabled - game over
+        --         HandleGameOver()
+        --         Log("GameOver")
+        --     end
+        -- end
     end
 end
 
