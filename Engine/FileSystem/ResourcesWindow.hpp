@@ -9,6 +9,10 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
+\co-author  Javier Chua Dong Qing (Changed texture and font + add shader and prefab)
+\par        E-mail: javierdongqing.chua@digipen.edu
+\par        DigiPen login: javierdongqing.chua
+
 \brief
 Defines ImGui-based resource management window for engine asset loading and inspection.
 
@@ -83,10 +87,11 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    if (ImGui::BeginTable("TexturesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    if (ImGui::BeginTable("TexturesTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
                     {
                         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
                         ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                         ImGui::TableHeadersRow();
 
                         std::string toDelete;
@@ -99,9 +104,22 @@ namespace Uma_Engine
 
                             ImGui::TableSetColumnIndex(1);
                             ImGui::Text("%u", texture->tex_id);
+
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::PushID(path.c_str());
+                            if (ImGui::SmallButton("X"))
+                            {
+                                toDelete = path;
+                            }
+                            ImGui::PopID();
                         }
 
                         ImGui::EndTable();
+
+                        if (!toDelete.empty())
+                        {
+                            m_ResourcesManager->UnloadTexture(toDelete);
+                        }
                     }
                 }
 
@@ -126,12 +144,14 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    if (ImGui::BeginTable("FontsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    if (ImGui::BeginTable("FontsTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
                     {
                         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
                         ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                         ImGui::TableHeadersRow();
 
+                        std::string toDelete;
                         for (const auto& [path, fontData] : fonts)
                         {
                             ImGui::TableNextRow();
@@ -141,9 +161,22 @@ namespace Uma_Engine
 
                             ImGui::TableSetColumnIndex(1);
                             ImGui::Text("%u", fontData.fontSize);
+
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::PushID(path.c_str());
+                            if (ImGui::SmallButton("X"))
+                            {
+                                toDelete = path;
+                            }
+                            ImGui::PopID();
                         }
 
                         ImGui::EndTable();
+
+                        if (!toDelete.empty())
+                        {
+                            m_ResourcesManager->UnloadFont(toDelete);
+                        }
                     }
                 }
 
@@ -272,6 +305,9 @@ namespace Uma_Engine
             }
         }
 
+        /**
+         * \brief Renders prefabs section with table
+         */
         void RenderPrefabs()
         {
             if (ImGui::CollapsingHeader("Prefabs"))
@@ -286,12 +322,14 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    if (ImGui::BeginTable("PrefabsTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    if (ImGui::BeginTable("PrefabsTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
                     {
                         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
                         ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
                         ImGui::TableHeadersRow();
 
+                        std::string toDelete;
                         for (const auto& [path, doc] : prefabs)
                         {
                             ImGui::TableNextRow();
@@ -301,9 +339,22 @@ namespace Uma_Engine
 
                             ImGui::TableSetColumnIndex(1);
                             ImGui::Text("%s", (doc && !doc->HasParseError()) ? "Valid" : "Error");
+
+                            ImGui::TableSetColumnIndex(2);
+                            ImGui::PushID(path.c_str());
+                            if (ImGui::SmallButton("X"))
+                            {
+                                toDelete = path;
+                            }
+                            ImGui::PopID();
                         }
 
                         ImGui::EndTable();
+
+                        if (!toDelete.empty())
+                        {
+                            m_ResourcesManager->UnloadPrefab(toDelete);
+                        }
                     }
                 }
 

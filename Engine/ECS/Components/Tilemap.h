@@ -1,3 +1,29 @@
+/*!
+\file   Tilemap.h
+\par    Project: GAM250
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Tilemap component and supporting structures for 2D tile-based rendering
+
+ This file defines the core tilemap system used in UmapyoiEngine. It provides
+ a complete implementation for grid-based tile rendering with support for:
+ - Multi-layer tilemaps with independent visual properties
+ - Tileset management with UV coordinate calculation
+ - Serialization/deserialization for scene persistence
+ - Runtime visibility and rendering controls
+
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "RapidJSON/document.h"
@@ -13,6 +39,12 @@
 
 namespace Uma_ECS
 {
+    /**
+     * @brief Represents a tileset - a texture atlas containing multiple tiles
+     *
+     * A tileset is a grid-based texture that contains all the tiles used in a tilemap.
+     * It stores the texture reference, dimensions, and provides UV calculation utilities.
+     */
     struct Tileset
     {
         // Tileset reference
@@ -26,6 +58,16 @@ namespace Uma_ECS
         int columns = 0;
         int rows = 0;
 
+        /**
+         * @brief Calculate UV coordinates for a tile at a given cell position
+         *
+         * Converts grid coordinates (column, row) to normalized UV coordinates (0-1 range)
+         * for texture sampling.
+         *
+         * @param uvOffset Output: Bottom-left corner UV coordinates
+         * @param uvSize Output: Width and height of UV region
+         * @param cell Input: Grid cell position (x=column, y=row)
+         */
         void GetUVs(Vec2& uvOffset, Vec2& uvSize, Vec2 cell) const
         {
             if (!IsLoaded()) 
@@ -42,6 +84,18 @@ namespace Uma_ECS
             uvOffset.y = cell.y * uvSize.y;
         }
 
+        /**
+         * @brief Calculate UV coordinates for a tile using linear index
+         *
+         * Uses pixel insets to prevent texture bleeding between adjacent tiles.
+         * This is crucial for avoiding visual artifacts at tile boundaries.
+         *
+         * @param tileIndex Linear tile index (0 = top-left, increases left-to-right, top-to-bottom)
+         * @param u0 Output: Left UV coordinate
+         * @param v0 Output: Bottom UV coordinate
+         * @param u1 Output: Right UV coordinate
+         * @param v1 Output: Top UV coordinate
+         */
         void GetUVs(int tileIndex, float& u0, float& v0, float& u1, float& v1) const
         {
             if (!IsLoaded() || tileIndex < 0) {
@@ -63,12 +117,23 @@ namespace Uma_ECS
             v1 = (float)(row + 1) / rows - insetY;
         }
 
-
+        /**
+         * @brief Check if the tileset texture is loaded and ready
+         * @return true if texture is valid, false otherwise
+         */
         bool IsLoaded() const
         {
             return texture != nullptr;
         }
 
+        /**
+         * @brief Load the tileset texture from file path
+         *
+         * NOTE: This currently only validates the texture but doesn't actually load it.
+         * The actual texture loading happens through ResourcesManager.
+         *
+         * @param texture_path Optional path override. If empty, uses stored texturePath
+         */
         void Load(const std::string& texture_path = "")
         {
             // use the path from the parameter if its not empty
@@ -83,12 +148,22 @@ namespace Uma_ECS
             }
         }
 
+        /**
+         * @brief Get total number of tiles in the tileset
+         * @return Total tile count (columns * rows)
+         */
         int GetTileCount()
         {
             return columns * rows;
         }
     };
 
+    /**
+     * @brief Represents a single layer in a tilemap
+     *
+     * Each layer is an independent grid of tile indices that can be rendered
+     * with different visual properties (tint, alpha, render order).
+     */
     struct TileLayer
     {
         std::vector<int> tiles;
@@ -105,6 +180,12 @@ namespace Uma_ECS
         bool locked = false;
     };
 
+    /**
+     * @brief Complete tilemap component containing all layers and tileset data
+     *
+     * This is the main component attached to entities that represent tilemaps.
+     * It manages multiple layers, each with their own tile data and visual properties.
+     */
     struct Tilemap
     {
         std::vector<TileLayer> layers;
@@ -123,6 +204,14 @@ namespace Uma_ECS
         bool isInEditMode = false;
         int activeLayerIndex = 0;
 
+        /**
+         * @brief Create a new tile layer and add it to the tilemap
+         *
+         * @param name Display name for the layer
+         * @param width Grid width in tiles
+         * @param height Grid height in tiles
+         * @param sortingOrder Render order (lower renders first)
+         */
         void CreateLayer(std::string name, unsigned int width, unsigned int height, int sortingOrder) 
         {
             TileLayer layer;
@@ -138,6 +227,13 @@ namespace Uma_ECS
             layerNames.push_back(name);
         }
 
+        /**
+         * @brief Remove a layer at the specified index
+         *
+         * Also removes corresponding entries from visibility and names arrays.
+         *
+         * @param index Layer index to remove
+         */
         void RemoveLayer(int index)
         {
             if (index >= 0 && index < layers.size()) 
@@ -148,6 +244,15 @@ namespace Uma_ECS
             }
         }
 
+        /**
+         * @brief Serialize tilemap data to JSON format
+         *
+         * Converts all tilemap data (dimensions, tileset, layers, settings) into
+         * a RapidJSON value for saving to file.
+         *
+         * @param value Output JSON value to populate
+         * @param allocator RapidJSON allocator for creating new values
+         */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -226,6 +331,14 @@ namespace Uma_ECS
             value.AddMember("layerNames", namesArray, allocator);
         }
 
+        /**
+         * @brief Deserialize tilemap data from JSON format
+         *
+         * Loads all tilemap data from a RapidJSON value, typically read from a file.
+         * Clears existing data before loading.
+         *
+         * @param value JSON value containing serialized tilemap data
+         */
         void Deserialize(const rapidjson::Value& value)
         {
             // Clear existing data

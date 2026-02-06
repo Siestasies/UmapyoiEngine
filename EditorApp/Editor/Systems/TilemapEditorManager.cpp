@@ -1,3 +1,23 @@
+/*!
+\file   TilemapEditorManager.h
+\par    Project: GAM250
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+ * Implements interactive tile painting, layer management, and visual overlays
+ * for the tilemap editor. Handles coordinate transformations between world space,
+ * screen space, and tile grid coordinates for precise editing.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "TilemapEditorManager.h"
 #include "../Systems/SceneManager.h"
 
