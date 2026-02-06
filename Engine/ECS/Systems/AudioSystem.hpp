@@ -48,10 +48,10 @@ namespace Uma_ECS
 
         void OnEntityDestroyed(Entity entity);
 
-        void PlayEntitySound(Entity entity, const std::string& soundName, bool loop, float volume);
+        void PlayEntitySound(Entity entity, const std::string& soundName);
         void StopEntitySound(Entity entity);
         void StopEntitySound(Entity entity, const std::string& soundName);
-        void PlayOneShotAtEntity(Entity entity, const std::string& soundName, float volume, bool is3D);
+        void PlayOneShotAtEntity(Entity entity, const std::string& soundName);
         void PlayOneShotAtPosition(Entity entity, float x, float y, const std::string& soundName, float volume, bool is3D);
         SoundInfo* GetSoundInfo(Entity entity, const std::string& soundName);
 

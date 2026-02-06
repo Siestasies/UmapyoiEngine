@@ -3016,43 +3016,49 @@ namespace Uma_Engine
                 if (!audio.activeSounds.empty())
                 {
                     std::vector<std::string> soundNames;
-                    for (const auto& [name, _] : audio.activeSounds)
-                        soundNames.push_back(name);
+                    for (const auto& [name, instances] : audio.activeSounds)
+                        if (!instances.empty())  // Only show non-empty groups
+                            soundNames.push_back(name);
 
                     for (const std::string& soundName : soundNames)
                     {
                         auto it = audio.activeSounds.find(soundName);
                         if (it == audio.activeSounds.end()) continue;
 
-                        auto& soundInstance = it->second;
+                        auto& instances = it->second;  // Now vector<SoundInstance>
+
                         ImGui::PushID(soundName.c_str());
 
-                        if (ImGui::TreeNode(soundName.c_str()))
+                        // Show sound group info + instance count
+                        std::string treeLabel = std::format("{} ({})", soundName, instances.size());
+                        if (ImGui::TreeNode(treeLabel.c_str()))
                         {
+                            // Group-level controls (affects all instances)
                             ImGui::Text("Sound: %s", soundName.c_str());
-                            ImGui::Text("Path: %s", soundInstance.path.c_str());
-                            ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
-                            ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
-                            ImGui::Checkbox("Is 3D", &soundInstance.is3D);
+                            ImGui::Text("Active Instances: %zu", instances.size());
 
-                            ImGui::Separator();
-                            ImGui::Text("Sound Properties");
+                            // Show first instance's properties as representative
+                            if (!instances.empty()) {
+                                auto& reprInstance = instances[0];
+                                ImGui::Text("Path: %s", reprInstance.path.c_str());
+                                ImGui::Checkbox("Should Loop", &reprInstance.shouldLoop);
+                                ImGui::Checkbox("Is 3D", &reprInstance.is3D);
 
-                            ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
-                            ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
+                                ImGui::Separator();
+                                ImGui::Text("Properties (first instance)");
 
-                            if (soundInstance.is3D)
-                            {
-                                ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
-                                ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
+                                ImGui::DragFloat("Volume", &reprInstance.volume, 0.01f, 0.0f, 1.0f);
+                                ImGui::DragFloat("Pitch", &reprInstance.pitch, 0.01f, 0.1f, 3.0f);
+
+                                if (reprInstance.is3D) {
+                                    ImGui::DragFloat("Min Distance", &reprInstance.minDistance, 1.0f, 0.0f, reprInstance.maxDistance);
+                                    ImGui::DragFloat("Max Distance", &reprInstance.maxDistance, 10.0f, reprInstance.minDistance, 10000.0f);
+                                }
                             }
 
                             ImGui::Separator();
-                            if (ImGui::Button("Remove Sound"))
+                            if (ImGui::Button("Remove All Instances"))
                             {
-                                /*audio.RemoveSound(soundName);
-                                m_hasUnsavedEdit = true;*/
-
                                 pendingRemoves.push_back(soundName);
                                 hasPendingEdit = true;
                             }

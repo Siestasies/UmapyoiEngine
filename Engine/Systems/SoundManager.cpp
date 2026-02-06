@@ -391,7 +391,7 @@ namespace Uma_Engine {
         FMOD_CHANNEL* tempChannel = nullptr;
         FMOD_CHANNELGROUP* group = SFX;
 
-        FMOD_Sound_SetLoopCount(info->sound, 0);
+        
 
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &tempChannel);
@@ -401,6 +401,8 @@ namespace Uma_Engine {
 
         // Set volume
         FMOD_Channel_SetVolume(tempChannel, volume);
+        // Set channel to false
+        FMOD_Channel_SetMode(tempChannel, FMOD_LOOP_OFF);
 
         // Set 3D position if applicable
         if (is3D) {
@@ -425,14 +427,19 @@ namespace Uma_Engine {
         FMOD_CHANNEL* channel = nullptr;
         FMOD_CHANNELGROUP* group = (info->type == SoundType::SFX) ? SFX : BGM;
 
-        // Set loop mode
-        FMOD_Sound_SetLoopCount(info->sound, loop ? -1 : 0);
-
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &channel);
         if (result != FMOD_OK || !channel) {
             std::cerr << "[SoundManager] Failed to play: " << FMOD_ErrorString(result) << std::endl;
             return nullptr;
+        }
+
+        if (loop) {
+            FMOD_Channel_SetMode(channel, FMOD_LOOP_NORMAL);
+            FMOD_Channel_SetLoopCount(channel, -1);  // Infinite
+        }
+        else {
+            FMOD_Channel_SetMode(channel, FMOD_LOOP_OFF);  // One-shot
         }
 
         // Set volume
