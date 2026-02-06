@@ -340,7 +340,7 @@ namespace Uma_Engine
                     });
 
                 GetCoordinator().AddComponent(cam, Camera{
-                    .mZoom = 1.f,
+                    .mZoom = 10.f,
                     .followPlayer = true
                     });
             }

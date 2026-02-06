@@ -33,6 +33,7 @@ All rights reserved.
 
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 namespace Uma_ECS
 {
@@ -83,6 +84,11 @@ namespace Uma_ECS
             }
         }
         cam_tf.position += cam_c.mShakeOffset;
+
+        // Pixel perfect snap
+        float pixelSize = 1.0f / cam_c.mZoom;
+        cam_tf.position.x = std::floor(cam_tf.position.x / pixelSize) * pixelSize;
+        cam_tf.position.y = std::floor(cam_tf.position.y / pixelSize) * pixelSize;
     }
 }
 
