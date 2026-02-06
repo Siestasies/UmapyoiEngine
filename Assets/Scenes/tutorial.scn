@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -17,16 +17,16 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
@@ -68,18 +68,27 @@
                 "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/stage_clear.png"
+                "path": "assets/star.png"
+            },
+            {
+                "path": "assets/player ss 3.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 1.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 2.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -101914,7 +101923,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": 973.091,
+                        "x": 978.291,
                         "y": -1370.088
                     },
                     "rotation": {
@@ -101934,14 +101943,14 @@
             }
         },
         {
-            "id": 15,
+            "id": 18,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "water enemy",
                     "position": {
-                        "x": 364.915,
-                        "y": -1405.515
+                        "x": 743.163,
+                        "y": -1463.961
                     },
                     "rotation": {
                         "x": 0.0,
@@ -101987,7 +101996,7 @@
         },
         {
             "id": 20,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Fade Screen REAL",
@@ -102270,40 +102279,14 @@
             }
         },
         {
-            "id": 27,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "water enemy",
-                    "position": {
-                        "x": 364.915,
-                        "y": -1456.416
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 30.0,
-                        "y": 30.0
-                    },
-                    "parent": -1
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 31,
+            "id": 30,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
                     "position": {
-                        "x": 712.111,
-                        "y": -1465.187
+                        "x": 385.0,
+                        "y": -1434.963
                     },
                     "rotation": {
                         "x": 0.0,
@@ -102317,6 +102300,32 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 34,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "wind enemy",
+                    "position": {
+                        "x": 402.727,
+                        "y": -1136.163
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                     "isRoot": true
                 }
             }
@@ -104452,7 +104461,7 @@
         },
         {
             "id": 70,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "dead screen",
