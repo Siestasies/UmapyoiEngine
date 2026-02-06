@@ -42,7 +42,7 @@ namespace Uma_ECS
             uvOffset.y = cell.y * uvSize.y;
         }
 
-        void GetUVs(int tileIndex, float& u0, float& v0, float& u1, float& v1) const 
+        void GetUVs(int tileIndex, float& u0, float& v0, float& u1, float& v1) const
         {
             if (!IsLoaded() || tileIndex < 0) {
                 u0 = v0 = u1 = v1 = 0.0f;
@@ -52,11 +52,17 @@ namespace Uma_ECS
             int col = tileIndex % columns;
             int row = tileIndex / columns;
 
-            u0 = (float)col / columns;
-            v0 = (float)row / rows;
-            u1 = (float)(col + 1) / columns;
-            v1 = (float)(row + 1) / rows;
+            float texelWidth = 1.0f / texture->tex_size.x;
+            float texelHeight = 1.0f / texture->tex_size.y;
+            float insetX = texelWidth * 0.5f;
+            float insetY = texelHeight * 0.5f;
+
+            u0 = (float)col / columns + insetX;
+            v0 = (float)row / rows + insetY;
+            u1 = (float)(col + 1) / columns - insetX;
+            v1 = (float)(row + 1) / rows - insetY;
         }
+
 
         bool IsLoaded() const
         {
