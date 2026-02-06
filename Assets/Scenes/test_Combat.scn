@@ -5,28 +5,28 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/statue.png"
-            },
-            {
                 "path": "assets/wall_top.png"
             },
             {
-                "path": "assets/wall_top_right.png"
-            },
-            {
-                "path": "assets/fire bird.png"
+                "path": "assets/statue.png"
             },
             {
                 "path": "assets/floor_tatami.png"
             },
             {
+                "path": "assets/fire bird.png"
+            },
+            {
+                "path": "assets/wall_top_right.png"
+            },
+            {
                 "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/wall_left.png"
+                "path": "assets/environment/floor 2 horizontal.png"
             },
             {
-                "path": "assets/environment/floor 2 horizontal.png"
+                "path": "assets/wall_left.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -44,10 +44,10 @@
                 "path": "assets/wall_btm.png"
             },
             {
-                "path": "assets/environment/spritesheet (9).png"
+                "path": "assets/fire enemy shadow.png"
             },
             {
-                "path": "assets/fire enemy shadow.png"
+                "path": "assets/environment/spritesheet (9).png"
             },
             {
                 "path": "assets/environment/horizontal hallway.png"
@@ -67,20 +67,30 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             }
         ],
         "sounds": [
             {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
+                "name": "player_hurt",
+                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
+                "type": 0
+            },
+            {
+                "name": "combat_bgm",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "explosion",
+                "path": "Assets/sounds/explosion.mp3",
                 "type": 0
             },
             {
@@ -94,19 +104,9 @@
                 "type": 0
             },
             {
-                "name": "explosion",
-                "path": "Assets/sounds/explosion.mp3",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
                 "type": 0
-            },
-            {
-                "name": "player_hurt",
-                "path": "Assets/sounds/Player Wav/PlayerDamageLoud.wav",
-                "type": 0
-            },
-            {
-                "name": "combat_bgm",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
             },
             {
                 "name": "enemy_hurt",
@@ -195,7 +195,8 @@
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 0.759,
-                    "default3D": true
+                    "default3D": true,
+                    "loadedSounds": {}
                 },
                 "struct Uma_ECS::Sprite": {
                     "texturePath": "",
@@ -16367,7 +16368,8 @@
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 0.289,
-                    "default3D": true
+                    "default3D": true,
+                    "loadedSounds": {}
                 },
                 "struct Uma_ECS::Sprite": {
                     "texturePath": "",
@@ -16963,7 +16965,8 @@
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 0.33,
-                    "default3D": true
+                    "default3D": true,
+                    "loadedSounds": {}
                 },
                 "struct Uma_ECS::Sprite": {
                     "texturePath": "",

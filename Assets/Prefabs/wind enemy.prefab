@@ -57,7 +57,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
@@ -112,7 +112,16 @@
                                 "scriptPath": "Assets/Scripts/WindDemonBase.lua",
                                 "scriptName": "WindDemonBase.lua",
                                 "isEnabled": true,
-                                "exposedVariables": []
+                                "exposedVariables": [
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             },
                             {
                                 "scriptPath": "Assets/Scripts/WindDemonIdle.lua",
@@ -237,7 +246,7 @@
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 10.0,
                         "mAttackDamage": 10,
-                        "mAttackSpeed": 1.0,
+                        "mAttackSpeed": 1.5,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -301,7 +310,7 @@
                                 "framesY": 3,
                                 "startFrame": 0,
                                 "frameCount": 24,
-                                "speed": 10.0,
+                                "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/Wind Enemy Spritesheets 2.png"
                             }
@@ -314,6 +323,95 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": true
+                    },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": [
+                            {
+                                "mode": 1,
+                                "maxParticles": 3,
+                                "isActive": false,
+                                "renderLayer": 16,
+                                "renderOrder": 100,
+                                "texturePath": "Assets/star.png",
+                                "appearance": {
+                                    "scaleRange": [
+                                        4.0,
+                                        4.0
+                                    ],
+                                    "startColor": [
+                                        1.0,
+                                        1.0,
+                                        0.5
+                                    ],
+                                    "endColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "colorLerp": true,
+                                    "randomOpacity": true,
+                                    "opacityRange": [
+                                        0.699,
+                                        1.0
+                                    ],
+                                    "rotateParticles": true,
+                                    "rotationSpeedRange": [
+                                        -180.0,
+                                        180.0
+                                    ]
+                                },
+                                "fade": {
+                                    "fadeIn": true,
+                                    "fadeInDuration": 0.2,
+                                    "fadeOut": true,
+                                    "fadeOutDuration": 0.3,
+                                    "fadeAtEdges": true,
+                                    "edgeFadeDistance": 150.0
+                                },
+                                "physics": {
+                                    "speedRange": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "lifetimeRange": [
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "gravity": [
+                                        2.0,
+                                        2.0
+                                    ],
+                                    "drag": 0.0
+                                },
+                                "spawn": {
+                                    "spawnOffset": [
+                                        0.0,
+                                        0.3
+                                    ],
+                                    "spawnRadius": 5.0,
+                                    "useEmissionCone": false,
+                                    "emissionAngle": 0.0,
+                                    "emissionSpread": 360.0
+                                },
+                                "emission": {
+                                    "emissionRate": 3.0,
+                                    "loop": false,
+                                    "loopDelay": 0.0
+                                },
+                                "screenFill": {
+                                    "velocityXRange": [
+                                        -20.0,
+                                        20.0
+                                    ],
+                                    "velocityYRange": [
+                                        -150.0,
+                                        -80.0
+                                    ],
+                                    "spawnAtTop": true,
+                                    "spawnMargin": 100.0
+                                }
+                            }
+                        ]
                     },
                     "struct Uma_ECS::FSM": {
                         "states": [
@@ -351,7 +449,7 @@
             },
             {
                 "id": 1,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "vfx",
@@ -369,45 +467,112 @@
                         },
                         "parent": 0
                     },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.638,
+                            "y": 0.07
+                        },
+                        "parent": 0
+                    },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
-                        "layer": 16,
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
                         "Native": false,
-                        "gridX": 8.0,
-                        "gridY": 7.0,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
                         "offsetY": 0.0,
                         "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
+                            0.442,
+                            0.442,
+                            0.442
                         ],
                         "alpha": 1.0
                     },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": false,
-                        "initialClip": "",
-                        "clips": [
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.638,
+                            "y": 0.07
+                        },
+                        "parent": 0
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.33,
+                            0.045,
+                            0.045
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
                             {
-                                "name": "splash",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
+                                "scriptName": "EnemyHealthBar.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
                             }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
                         "isRoot": false
                     }
                 }
@@ -421,7 +586,7 @@
                 "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/whitepixel.png"
             }
         ],
         "fonts": [],

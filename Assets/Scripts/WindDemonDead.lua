@@ -10,10 +10,13 @@ function state_enter(entity)
     
     deathTimer = ExposedVars.deathDuration
 
+    GetRigidBody().velocity = Vec2(0.0, 0.0)
+    GetPathFinding().enabled = false
+
     -- Play death animation
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("die", true)
+        animator.animator:Play("dead", true)
     end
 end
 
@@ -28,3 +31,5 @@ function state_update(entity, dt)
         DestroyWithChildren(entity)
     end
 end
+
+

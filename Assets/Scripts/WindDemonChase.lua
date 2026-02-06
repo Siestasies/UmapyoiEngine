@@ -1,6 +1,6 @@
 ExposedVars = {
-    chaseExitRange = 25.0,
-    attackEnterRange = 8.0
+    chaseExitRange = 70.0,
+    attackEnterRange = 40.0
 }
 
 local animator
@@ -64,8 +64,6 @@ function state_exit(entity)
 
     if HasPathFinding() then 
         local pf = GetPathFinding()
-        -- pf.goal.x = GetTransform().worldPosition.x
-        -- pf.goal.y = GetTransform().worldPosition.y
 
         pf.reachedGoal = true
     end 

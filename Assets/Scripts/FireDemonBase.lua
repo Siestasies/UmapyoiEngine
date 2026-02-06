@@ -22,6 +22,9 @@ function Start()
         return
     end
 
+    isEffective = false
+    isFusion = false
+    isHurt = false
     enemyHurtEffectTimer = enemyHurtEffectDuration
 
     ChangeState(EntityID, "FireDemonIdle")

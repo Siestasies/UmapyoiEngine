@@ -10,6 +10,9 @@ function state_enter(entity)
     
     deathTimer = ExposedVars.deathDuration
 
+    GetRigidBody().velocity = Vec2(0.0, 0.0)
+    GetPathFinding().enabled = false
+
     -- Play death animation
     if HasAnimator() then
         animator = GetAnimator()
