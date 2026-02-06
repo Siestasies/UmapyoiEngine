@@ -101980,11 +101980,11 @@
             }
         },
         {
-            "id": 20,
-            "isActive": false,
+            "id": 21,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Fade Screen",
+                    "name": "Fade Screen REAL",
                     "position": {
                         "x": 0.0,
                         "y": 0.0
@@ -102000,14 +102000,14 @@
                     "parent": -1
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/Fade Screen.prefab",
+                    "prefabPath": "Assets/Prefabs/Fade Screen REAL.prefab",
                     "isRoot": true
                 }
             }
         },
         {
             "id": 22,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "Level End Trigger 2",
@@ -102265,13 +102265,13 @@
         },
         {
             "id": 27,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "water enemy",
                     "position": {
                         "x": 364.915,
-                        "y": -1370.317
+                        "y": -1456.416
                     },
                     "rotation": {
                         "x": 0.0,

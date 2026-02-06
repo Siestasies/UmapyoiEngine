@@ -39,7 +39,7 @@
             },
             {
                 "id": 1,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "End Menu",
@@ -457,15 +457,15 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
+                            "r": 0.745,
+                            "g": 0.352,
+                            "b": 0.058,
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.352,
+                            "g": 0.156,
+                            "b": 0.058,
                             "a": 1.0
                         },
                         "disabledColour": {
