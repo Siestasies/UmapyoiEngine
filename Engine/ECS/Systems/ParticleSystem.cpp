@@ -56,7 +56,7 @@ namespace Uma_ECS
 
             int width = pGraphics->GetViewportWidth();
             int height = pGraphics->GetViewportHeight();
-            float zoom = cam_c.mZoom * 10.f;
+            float zoom = cam_c.mZoom;
 
             float halfWidth = (width * 0.5f) / zoom;
             float halfHeight = (height * 0.5f) / zoom;

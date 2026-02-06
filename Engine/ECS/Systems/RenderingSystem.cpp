@@ -108,7 +108,7 @@ namespace Uma_ECS
             auto& cam_c = camArray.GetData(camera);
 
             cameraPos = cam_tf.position;
-            cameraZoom = cam_c.mZoom * 10.f;
+            cameraZoom = cam_c.mZoom;
 
             // Only update graphics camera if not using editor camera
             if (mUpdateCamera)

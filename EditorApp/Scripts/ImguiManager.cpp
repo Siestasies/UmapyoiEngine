@@ -2133,14 +2133,14 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                if (ImGui::DragFloat("Zoom", &camera.mZoom, 0.1f, 0.1f, 10.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Zoom", &camera.mZoom, 0.1f, 0.1f, 20.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::Checkbox("Follow Player", &camera.followPlayer)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Camera Controls");
                 if (ImGui::Button("Reset Zoom"))
                 {
-                    camera.mZoom = 1.0f;
+                    camera.mZoom = 10.0f;
                     m_hasUnsavedEdit = true;
                 }
 
