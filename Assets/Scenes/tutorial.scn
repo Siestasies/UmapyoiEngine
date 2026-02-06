@@ -134,6 +134,11 @@
                 "type": 1
             },
             {
+                "name": "WindDemonAttack(Charge)",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                "type": 0
+            },
+            {
                 "name": "PlayerDash",
                 "path": "Assets/sounds/Player Wav/PlayerDash.wav",
                 "type": 0
@@ -181,6 +186,16 @@
             {
                 "name": "FireCyclone",
                 "path": "Assets/sounds/Player Wav/FireCyclone.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDamage",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
                 "type": 0
             }
         ],
@@ -231,7 +246,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Tilemap": {
                     "mapWidth": 120,
@@ -101190,7 +101206,8 @@
                         "x": -0.75,
                         "y": 0.75
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/player_new.prefab",
@@ -101216,7 +101233,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Camera": {
                     "zoom": 10.0,
@@ -101242,7 +101260,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101358,7 +101377,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101474,7 +101494,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101590,7 +101611,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101751,7 +101773,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101852,7 +101875,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -101968,7 +101992,8 @@
                         "x": 0.5,
                         "y": 0.5
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/drum.prefab",
@@ -101994,7 +102019,8 @@
                         "x": 0.5,
                         "y": 0.5
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/drum.prefab",
@@ -102020,7 +102046,12 @@
                         "x": 0.689,
                         "y": 1.519
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        12,
+                        13,
+                        14
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/bird enemy.prefab",
@@ -102046,7 +102077,12 @@
                         "x": 30.0,
                         "y": 30.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        16,
+                        17,
+                        18
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/water enemy.prefab",
@@ -102072,7 +102108,8 @@
                         "x": 1.0,
                         "y": 4.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/fireball.prefab",
@@ -102098,7 +102135,10 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        21
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/Fade Screen REAL.prefab",
@@ -102124,7 +102164,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/Level End Trigger 3.prefab",
@@ -102150,7 +102191,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102208,7 +102250,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102266,7 +102309,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102324,7 +102368,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102382,7 +102427,12 @@
                         "x": 0.699,
                         "y": 1.6
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        28,
+                        29,
+                        30
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/bird enemy.prefab",
@@ -102408,7 +102458,12 @@
                         "x": 30.0,
                         "y": 30.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        32,
+                        33,
+                        34
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/wind enemy.prefab",
@@ -102434,7 +102489,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102491,7 +102547,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102548,7 +102605,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102605,7 +102663,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102662,7 +102721,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102719,7 +102779,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102776,7 +102837,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102833,7 +102895,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102890,7 +102953,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -102947,7 +103011,21 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        35,
+                        36,
+                        37,
+                        38,
+                        39,
+                        40,
+                        41,
+                        42,
+                        43,
+                        60,
+                        63,
+                        66
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103010,7 +103088,13 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        46,
+                        47,
+                        50,
+                        53
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -103073,7 +103157,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 45,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103130,7 +103215,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 45,
+                    "children": [
+                        48,
+                        49
+                    ]
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,
@@ -103241,7 +103330,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 47
+                    "parent": 47,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103299,7 +103389,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 47
+                    "parent": 47,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103357,7 +103448,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 45,
+                    "children": [
+                        51,
+                        52
+                    ]
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,
@@ -103468,7 +103563,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 50
+                    "parent": 50,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103526,7 +103622,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 50
+                    "parent": 50,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103584,7 +103681,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 45
+                    "parent": 45,
+                    "children": [
+                        54,
+                        55,
+                        56
+                    ]
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,
@@ -103695,7 +103797,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 53,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103753,7 +103856,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 53,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103811,7 +103915,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 53
+                    "parent": 53,
+                    "children": [
+                        57,
+                        58,
+                        59
+                    ]
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,
@@ -103909,7 +104018,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 56,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -103967,7 +104077,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 56,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104025,7 +104136,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 56
+                    "parent": 56,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104082,7 +104194,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": [
+                        61,
+                        62
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104139,7 +104255,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 60
+                    "parent": 60,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104197,7 +104314,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 60
+                    "parent": 60,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104255,7 +104373,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": [
+                        64,
+                        65
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104312,7 +104434,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 63
+                    "parent": 63,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104370,7 +104493,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 63
+                    "parent": 63,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104428,7 +104552,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 44
+                    "parent": 44,
+                    "children": [
+                        67,
+                        68
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104485,7 +104613,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 66
+                    "parent": 66,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104543,7 +104672,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 66
+                    "parent": 66,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104601,7 +104731,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/weather_effect.prefab",
@@ -104627,7 +104758,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        71,
+                        72,
+                        74
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/dead screen.prefab",
@@ -104653,7 +104789,10 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        77
+                    ]
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -104685,7 +104824,12 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 76
+                    "parent": 76,
+                    "children": [
+                        78,
+                        79,
+                        82
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104738,7 +104882,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 77
+                    "parent": 77,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104795,7 +104940,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 77
+                    "parent": 77,
+                    "children": [
+                        80,
+                        81
+                    ]
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,
@@ -104906,7 +105055,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 79
+                    "parent": 79,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -104964,7 +105114,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 79
+                    "parent": 79,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -105022,7 +105173,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 77
+                    "parent": 77,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -105079,7 +105231,10 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        84
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -105132,7 +105287,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 83
+                    "parent": 83,
+                    "children": []
                 },
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
@@ -105200,7 +105356,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::AudioComponent": {
                     "defaultVolume": 1.0,

@@ -19,7 +19,12 @@
                             "x": 30.0,
                             "y": 30.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            3
+                        ]
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
@@ -59,7 +64,7 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
-                        "layer": 1,
+                        "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
@@ -501,7 +506,8 @@
                             "x": 1.5,
                             "y": 1.5
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/wind enemy.prefab",
@@ -527,7 +533,8 @@
                             "x": 0.638,
                             "y": 0.07
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
@@ -574,7 +581,8 @@
                             "x": 0.638,
                             "y": 0.07
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",

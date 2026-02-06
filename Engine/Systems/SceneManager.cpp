@@ -81,6 +81,53 @@ namespace Uma_Engine
             }
         );
 
+        pEventSystem->Subscribe<ResetSceneRequest, SceneManager>(
+            [&](const ResetSceneRequest& e) {
+                (void)e;
+
+                // Step 1: Stop all audio before restoring state
+                if (m_ActiveScene->m_AudioSystem)
+                {
+                    m_ActiveScene->m_AudioSystem->StopAllEntityAudio();
+                }
+
+                // Step 2: Restore the cached state
+                m_ActiveScene->GetCoordinator().RestoreState();
+
+                // Step 3: Force transform system to update world positions
+                if (m_ActiveScene->m_TransformSystem)
+                {
+                    m_ActiveScene->m_TransformSystem->UpdateWorldTransform();
+                }
+
+                // Step 4: Re-cache state so restart can be called again
+                m_ActiveScene->GetCoordinator().CacheState();
+
+                // Step 5: Restart Lua scripts - reinitialize state and start all scripts
+                if (m_ActiveScene->m_LuaScriptingSystem)
+                {
+                    //m_ActiveScene->m_LuaScriptingSystem->Restart();
+                    m_ActiveScene->m_LuaScriptingSystem->StartScripts();
+                }
+
+                // Step 6: Set play mode state
+                mGamePause = false;
+                playMode = PLAYMODE::PM_PLAY;
+                m_UseEditorCamera = false;
+                m_EditorCamera.SetActive(false);
+
+                // Step 7: Tell RenderingSystem to use game camera
+                if (m_ActiveScene->m_RenderingSystem)
+                {
+                    m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
+                }
+
+                // Step 8: Emit events to notify other systems
+                pEventSystem->Emit<PlaySceneRequest>();
+                pEventSystem->Emit<UpdateImguiPlayModeEvent>(true);
+            }
+        );
+
         pEventSystem->Subscribe<CreateNewSceneRequest, SceneManager>(
             [this](const CreateNewSceneRequest& e) {
                 (void)e;

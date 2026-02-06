@@ -222,6 +222,14 @@ namespace Uma_Engine
         PauseSceneRequest() { priority = Priority::High; }
     };
 
+    class ResetSceneRequest : public Event
+    {
+    public:
+        ResetSceneRequest(bool reset_n_play) : reset_n_play(reset_n_play) { priority = Priority::High; }
+
+        bool reset_n_play;
+    };
+
     class CreateNewSceneRequest : public Event
     {
     public:

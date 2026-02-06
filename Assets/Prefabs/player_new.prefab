@@ -19,10 +19,11 @@
                             "x": -0.75,
                             "y": 0.75
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": []
                     },
                     "struct Uma_ECS::Player": {
-                        "mHealth": 200,
+                        "mHealth": 100,
                         "mMaxHealth": 200,
                         "mHealthRegenRate": 1.0,
                         "mHealthRegenDelay": 3.0,

@@ -1,3 +1,3 @@
 function OnClick()
-    ReloadScene()
+    RestartScene()
 end
