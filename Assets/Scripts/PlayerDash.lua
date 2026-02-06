@@ -1,6 +1,8 @@
 -- PlayerDash.lua
 -- Dash state - quick movement with invulnerability frames
 
+local audio = nil
+
 ExposedVars = {
     dashAnimationName = "dash",
     dashDuration = 0.2,
@@ -42,7 +44,8 @@ function state_enter(entity)
     PlayAnimation(entity, dashAnimationName)
     
     -- Play dash sound
-    PlaySound("dash", 0.7, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "PlayerDash")
 
     player.mDashCD = dashCooldown;
 end

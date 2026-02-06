@@ -69,7 +69,8 @@ function state_enter(entity)
     
     -- Play animation and sound
     animator.animator:Play(steamBurstAnimationName, true)
-    PlaySound(steamBurstSoundName, 1.0, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "SteamBurst")
 
     local children = GetChildrenList(EntityID)
     if #children > 0 then

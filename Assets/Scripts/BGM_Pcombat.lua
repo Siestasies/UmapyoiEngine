@@ -1,13 +1,13 @@
 local start
+local audio
 function Start()
     start = false
+    audio = GetAudioComponent()
 end
 
 function Update(dt)
     if start == false then
-        --audio:play(EntityID, "MainMenuBGM")
-        PlaySound("MainMenuBGM", 0.2, -1)
-        Log("SODINFGSODGDOFIGN")
+        audio:playFaded(EntityID, "CombatGameplayBGM", 3)
         start = true
     end
 end

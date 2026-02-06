@@ -1,6 +1,6 @@
 -- PlayerSteamBurst.lua
 -- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
-
+local audio = nil
 ExposedVars = {
     whirlpoolAnimationName = "atk_water_wind",
     whirlpoolSoundName = "atk_water_wind",
@@ -69,7 +69,8 @@ function state_enter(entity)
     
     -- Play animation and sound
     animator.animator:Play(whirlpoolAnimationName, true)
-    PlaySound(whirlpoolSoundName, 1.0, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "TyphoonGuard")
 
     local children = GetChildrenList(EntityID)
     if #children > 0 then

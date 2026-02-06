@@ -1,6 +1,8 @@
 -- PlayerHurt.lua
 -- Hurt state - triggered when player takes damage, provides i-frames
 
+local audio = nil
+
 ExposedVars = {
     hurtAnimationName = "hurt",
     hurtDuration = 0.3,
@@ -54,7 +56,7 @@ function state_enter(entity)
     -- Play hurt animation and sound
     PlayAnimation(entity, hurtAnimationName)
     --PlaySound("player_hurt", 0.8, 0)
-    audio:play(entity,"PlayerDamage")
+    audio:play(entity,"PlayerDamageMono")
     
     -- Stop current movement
     if HasRigidBody() then

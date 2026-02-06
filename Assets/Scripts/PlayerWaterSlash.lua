@@ -1,6 +1,8 @@
 -- PlayerWaterSlash.lua
 -- Water Slash elemental attack - can stun certain enemies, sets up elemental combo
 
+local audio = nil
+
 ExposedVars = {
     waterSlashAnimationName = "water_slash",
     waterSlashSoundName = "water_slash",
@@ -66,7 +68,8 @@ function state_enter(entity)
     
     -- Play animation and sound
     animator.animator:Play(waterSlashAnimationName, true)
-    PlaySound(waterSlashSoundName, 0.8, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "WaterSlash")
     
     -- Stop movement
     if HasRigidBody() then

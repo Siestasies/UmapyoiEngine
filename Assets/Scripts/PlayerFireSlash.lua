@@ -1,5 +1,6 @@
 -- PlayerFireSlash.lua
 -- Fire Slash elemental attack - applies burn and sets up elemental combo
+local audio = nil
 
 ExposedVars = {
     fireSlashAnimationName = "atk_3",
@@ -66,7 +67,10 @@ function state_enter(entity)
     
     -- Play animation and sound
     animator.animator:Play(fireSlashAnimationName, true)
-    PlaySound(fireSlashSoundName, 0.8, 0)
+    --PlaySound(fireSlashSoundName, 0.8, 0)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "FireSlash")
+    Log("Player has died!")
     
     -- Stop movement
     if HasRigidBody() then

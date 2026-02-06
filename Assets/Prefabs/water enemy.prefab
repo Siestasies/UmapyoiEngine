@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": 1000.0,
-                            "y": 0.0
+                            "x": 211.427,
+                            "y": -150.966
                         },
                         "rotation": {
                             "x": 0.0,
@@ -20,6 +20,72 @@
                             "y": 30.0
                         },
                         "parent": -1
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": false,
+                        "loadedSounds": {
+                            "Water Demon Damage Scream": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "Water Demon Charge": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "waterDemon Death": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "WaterDemonSuicide": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "Water Demon ChargenAttack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "Water Demon Explode attack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",

@@ -1,5 +1,6 @@
 --copy and paste template for the states
 --exposed vars for variable you want that can be editied in editor
+local audio = nil
 ExposedVars = {
     attackExitRange = 30.0,
     HoverSpd = 1.5,
@@ -53,6 +54,8 @@ function state_enter(entity)
     end
 
     animator.animator:Play("charging_atk", false)
+    audio = GetAudioComponent()
+    audio:play(EntityID, "Water Demon Charge")
 end
 
 --takes in entity id from C++ to use in case needed
@@ -105,6 +108,9 @@ function state_update(entity, dt)
                 local collider = GetCollider(entity)
                 if collider and collider.shapes:size() >= 3 then
                     animator.animator:Play("atk", false)
+
+                        audio = GetAudioComponent()
+                        audio:play(EntityID, "Water Demon ChargenAttack")
 
                     if vfxAnimator ~= nil then
                         vfxAnimator.animator:Play("splash", true)

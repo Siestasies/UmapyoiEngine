@@ -1,3 +1,4 @@
+local audio = nil
 ExposedVars = {
     --empty for now
     enemyHurtEffectDuration = 0.5;
@@ -114,8 +115,8 @@ function OnHurt(player, damage)
 
     isHurt = true
 
-    PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
-    PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
+    audio = GetAudioComponent()
+    audio:play(EntityID, "Fire Demon Damage Scream")
 end
 
 function OnTriggerEnter(other, triggerOwner)
