@@ -6,9 +6,15 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author     Lai Jun Siang (100%)
+\author     Lai Jun Siang (Initial FileSystem)
 \par        E-mail: lai.j@digipen.edu
 \par        DigiPen login: lai.j
+
+\co-author Javier Chua Dong Qing (File icons, display asset images tooltip,
+                                  upload file functionality, drag and drop
+                                  from windows file explorer upload)
+\par       E-mail: javierdongqing.chua@digipen.edu
+\par       DigiPen login: javierdongqing.chua
 
 \brief
 Declares the FileBrowser class, responsible for rendering and managing the

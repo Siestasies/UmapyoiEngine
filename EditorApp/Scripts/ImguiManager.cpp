@@ -13,7 +13,9 @@
 \par        E-mail: lai.j@digipen.edu
 \par        DigiPen login: lai.j
 
-\co-author  Javier Chua Dong Qing (EditorCamera)
+\co-author  Javier Chua Dong Qing (EditorCamera, Drag and drop font,texture,
+                                   UI Image, Particle Emitter and SoundComponent
+                                    with duplicate/file check)
 \par        E-mail: javierdongqing.chua@digipen.edu
 \par        DigiPen login: javierdongqing.chua
 
