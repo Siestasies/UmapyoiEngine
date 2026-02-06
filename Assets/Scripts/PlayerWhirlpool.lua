@@ -2,9 +2,11 @@
 -- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
 
 ExposedVars = {
-    whirlpoolAnimationName = "whirlpool",
-    whirlpoolSoundName = "whirlpool",
-    attackDuration = 0.7
+    whirlpoolAnimationName = "atk_water_wind",
+    whirlpoolSoundName = "atk_water_wind",
+    attackDuration = 0.7,
+    vfxOffsetX = 16.0,
+    vfxOffsetY = -8.0
 }
 
 -- State-local variables
@@ -12,6 +14,7 @@ local attackTimer = 0
 local attackPerformed = false
 local attackStat = nil
 local animator = nil
+local vfx = nil
 local collider = nil
 
 function state_enter(entity)
@@ -67,6 +70,17 @@ function state_enter(entity)
     -- Play animation and sound
     animator.animator:Play(whirlpoolAnimationName, true)
     PlaySound(whirlpoolSoundName, 1.0, 0)
+
+    local children = GetChildrenList(EntityID)
+    if #children > 0 then
+        SetActiveEntity(children[1], true)
+        if HasAnimatorOn(children[1]) then
+            vfx = GetAnimatorFrom(children[1])
+            vfx.animator:Play(whirlpoolAnimationName, true)
+            local vfxTransform = GetTransformFrom(children[1])
+            vfxTransform.position = Vec2(vfxOffsetX, vfxOffsetY)
+        end
+    end
     
     -- Stop movement
     if HasRigidBody() then

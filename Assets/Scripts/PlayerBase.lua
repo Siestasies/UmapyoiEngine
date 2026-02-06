@@ -52,6 +52,10 @@ function Start()
         local player = GetPlayer()
         if player then
             Log("PlayerBase initialized - Health: " .. tostring(player.mHealth) .. "/" .. tostring(player.mMaxHealth))
+            local children = GetChildrenList(EntityID)
+            if #children > 0 then
+                SetActiveEntity(children[1], false)
+            end
             InitializeAttackStats(player)
             ChangeState(EntityID, "PlayerIdle")
             isDead = false
