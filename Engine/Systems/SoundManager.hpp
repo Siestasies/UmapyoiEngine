@@ -150,21 +150,81 @@ namespace Uma_Engine
 				*/
 				void setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up);
 
+				/*!
+				 * \brief Plays a one-shot sound at a 3D position.
+				 * \param info Sound resource and metadata to play.
+				 * \param pos World-space position of the sound.
+				 * \param volume Initial playback volume (0.0–1.0).
+				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
+				 */
 				void PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume = 1.0f, bool is3D = true);
 
+				/*!
+				 * \brief Starts a sound instance and returns its channel.
+				 * \param info Sound resource and metadata to play.
+				 * \param loop Whether the sound should loop.
+				 * \param volume Initial playback volume (0.0–1.0).
+				 * \param pos World-space position of the sound.
+				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
+				 * \return The FMOD channel used to play this sound.
+				 */
 				FMOD_CHANNEL* PlaySoundInstance(SoundInfo* info, bool loop, float volume, const FMOD_VECTOR& pos, bool is3D = true);
 
+				/*!
+				 * \brief Stops playback on the given channel.
+				 * \param channel Channel to stop.
+				 */
 				void StopChannel(FMOD_CHANNEL* channel);
 
+				/*!
+				 * \brief Updates the 3D position and velocity of a playing channel.
+				 * \param channel Channel whose 3D attributes will be updated.
+				 * \param pos New world-space position of the channel.
+				 * \param vel New velocity of the channel in world space.
+				 */
 				void UpdateChannel3DPosition(FMOD_CHANNEL* channel, const FMOD_VECTOR& pos, const FMOD_VECTOR& vel);
 
+				/*!
+				 * \brief Checks if a sound is currently playing on any channel.
+				 * \param info Sound resource to check.
+				 * \return True if the sound is playing, false otherwise.
+				 */
 				bool IsSoundPlaying(SoundInfo* info);
 
+				/*!
+				 * \brief Starts a volume fade operation on a channel.
+				 * \param channel Channel to fade.
+				 * \param targetVolume Volume to reach at the end of the fade (0.0–1.0).
+				 * \param duration Duration of the fade in seconds.
+				 * \param fadeOut If true, fade from current volume down; if false, fade up to targetVolume.
+				 */
 				void StartFade(FMOD_CHANNEL* channel, float targetVolume, float duration, bool fadeOut = false);
+
+				/*!
+				 * \brief Updates all active volume fades.
+				 * \param dt Time step since the last update in seconds.
+				 */
 				void UpdateFades(float dt);
 
+				/*!
+				 * \brief Plays a sound instance and fades it in to a target volume.
+				 * \param info Sound resource and metadata to play.
+				 * \param loop Whether the sound should loop.
+				 * \param targetVolume Volume to reach at the end of the fade-in (0.0–1.0).
+				 * \param pos World-space position of the sound.
+				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
+				 * \param fadeInTime Duration of the fade-in in seconds.
+				 * \return The FMOD channel used to play this sound.
+				 */
 				FMOD_CHANNEL* PlaySoundInstanceFaded(SoundInfo* info, bool loop, float targetVolume, const FMOD_VECTOR& pos, bool is3D, float fadeInTime = 1.0f);
+
+				/*!
+				 * \brief Starts a fade out on the given channel and optionally stops it when finished.
+				 * \param channel Channel to fade out.
+				 * \param fadeOutTime Duration of the fade-out in seconds.
+				 */
 				void FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime = 1.0f);
+
 
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;

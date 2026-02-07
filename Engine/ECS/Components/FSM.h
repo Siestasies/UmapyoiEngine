@@ -1,4 +1,22 @@
 #pragma once
+/*!
+\file   FSM.h
+\par    Project: GAM200
+\par    Course: CSD2401
+\par    Section A
+\par    Software Engineering Project 3
+
+\author Koh Kai Yang (100%)
+\par    E-mail: k.kaiyang@digipen.edu
+\par    DigiPen login: k.kaiyang
+
+\brief
+component used for state machine on the entity
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "../Engine/ECS/Core/Types.hpp"
 #include "unordered_map"
 
@@ -23,7 +41,11 @@ namespace Uma_ECS
 		std::string current;
 		std::string next;
 
-		//expose this to lua
+        /*!
+        * \brief passes in the name of the state to change to
+        * \param name of the next state
+        * \return bool if the next state is found and has changed to that state
+        */
 		bool ChangeStates(const std::string& name) {
 			if (name.empty()) return false;
 			auto it = states.find(name);
@@ -39,7 +61,11 @@ namespace Uma_ECS
 			return true;
 		};
 
-		//bool to indicate successful adding of state
+        /*!
+        * \brief passes in a state to be added to the state list
+        * \param name and is the script/state active
+        * \return bool to indicate successful adding of state
+        */
 		bool AddStates(const std::string& name, bool isActive) {
 			if (name.empty()) return false;
 
@@ -52,6 +78,11 @@ namespace Uma_ECS
 			return true;
 		}
 
+        /*!
+        * \brief serliaise the code from the scene file
+        * \param json value and allocator
+        * \return nothing
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -75,6 +106,11 @@ namespace Uma_ECS
             value.AddMember("next", rapidjson::Value(next.c_str(), allocator), allocator);
         }
 
+        /*!
+        * \brief Deserialize the code to the scene file
+        * \param json value and allocator
+        * \return nothing
+        */
         void Deserialize(const rapidjson::Value& value)
         {
             // Full reset
