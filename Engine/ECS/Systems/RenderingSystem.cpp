@@ -48,6 +48,7 @@ All rights reserved.
 #include <sstream>
 #include <algorithm>
 #include <map>
+#include <unordered_set>
 
 namespace Uma_ECS
 {
@@ -678,15 +679,39 @@ namespace Uma_ECS
 
     void RenderingSystem::GetAllChildren(Entity parent, std::vector<Entity>& childrenList)
     {
-        const auto& transform = pCoordinator->GetComponent<Transform>(parent);
+        std::unordered_set<Entity> visited;
+        visited.insert(parent);
 
-        if (!transform.children.size()) return;
+        // Iterative DFS using an explicit stack to avoid call-stack overflow
+        // and to detect circular parent-child references
+        std::vector<Entity> stack;
 
-        for (const auto& childObj : transform.children)
+        if (!pCoordinator->HasComponent<Transform>(parent)) return;
+
+        const auto& rootTf = pCoordinator->GetComponent<Transform>(parent);
+        // Push in reverse so children come out in original order
+        for (auto it = rootTf.children.rbegin(); it != rootTf.children.rend(); ++it)
+            stack.push_back(*it);
+
+        while (!stack.empty())
         {
-            childrenList.push_back(childObj);
+            Entity current = stack.back();
+            stack.pop_back();
 
-            GetAllChildren(childObj, childrenList);
+            if (visited.count(current))
+            {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                    "Circular parent-child relationship detected for entity: " + std::to_string(current));
+                continue;
+            }
+            visited.insert(current);
+            childrenList.push_back(current);
+
+            if (!pCoordinator->HasComponent<Transform>(current)) continue;
+
+            const auto& tf = pCoordinator->GetComponent<Transform>(current);
+            for (auto it = tf.children.rbegin(); it != tf.children.rend(); ++it)
+                stack.push_back(*it);
         }
     }
 

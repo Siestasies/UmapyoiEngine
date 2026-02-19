@@ -28,6 +28,7 @@ All rights reserved.
 #include "Debugging/Debugger.hpp"
 
 #include <fstream>
+#include <optional>
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>
 
@@ -793,18 +794,27 @@ namespace Uma_ECS
                     }
                 }
 
-                // Remap children
+                // Remap children - only keep children that are part of this prefab hierarchy.
+                // Stale world IDs left in the array cause circular references on reload
+                // because they can accidentally match a valid prefab ID (e.g. 0 = the root itself).
                 if (transformComp.HasMember("children"))
                 {
                     auto& childrenArray = transformComp["children"];
+                    std::vector<Entity> validPrefabChildren;
                     for (auto& childVal : childrenArray.GetArray())
                     {
                         Entity oldChildID = childVal.GetUint();
                         auto it = worldToPrefabID.find(oldChildID);
                         if (it != worldToPrefabID.end())
                         {
-                            childVal = it->second;
+                            validPrefabChildren.push_back(it->second);
                         }
+                        // Stale reference - drop it silently
+                    }
+                    childrenArray.Clear();
+                    for (Entity prefabChildID : validPrefabChildren)
+                    {
+                        childrenArray.PushBack(prefabChildID, allocator);
                     }
                 }
             }
@@ -820,6 +830,17 @@ namespace Uma_ECS
     // Helper function to collect entire hierarchy
     void Coordinator::CollectHierarchy(Entity root, std::vector<Entity>& outEntities)
     {
+        // Guard against cycles
+        for (Entity already : outEntities)
+        {
+            if (already == root)
+            {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Cycle detected in hierarchy at entity: " + std::to_string(root));
+                return;
+            }
+        }
+
         outEntities.push_back(root);
 
         auto& tfArray = aComponentManager->GetComponentArray<Transform>();
@@ -828,7 +849,7 @@ namespace Uma_ECS
             auto& tf = tfArray.GetData(root);
             for (Entity child : tf.children)
             {
-                CollectHierarchy(child, outEntities); // Recursive
+                CollectHierarchy(child, outEntities);
             }
         }
     }
@@ -1098,7 +1119,17 @@ namespace Uma_ECS
             return prefabToWorldID;
         }
 
-        // First pass: Create entities and map IDs
+        // Clear root entity's stale transform data before deserializing
+        // so old children/parent references don't conflict with prefab data
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(rootEntityID))
+        {
+            auto& rootTf = tfArray.GetData(rootEntityID);
+            rootTf.children.clear();
+            rootTf.parent = std::nullopt;
+        }
+
+        // First pass: Create entities, map IDs, deserialize components
         for (const auto& entityVal : prefabEntities.GetArray())
         {
             Entity prefabID = entityVal["id"].GetUint();
@@ -1131,7 +1162,6 @@ namespace Uma_ECS
         {
             auto& tf = GetComponent<Transform>(rootEntityID);
 
-            // Handle position (supports both array [x,y] and object {x,y} formats)
             if (transformOverride.HasMember("position"))
             {
                 const auto& pos = transformOverride["position"];
@@ -1147,7 +1177,6 @@ namespace Uma_ECS
                 }
             }
 
-            // Handle rotation (supports both array [x,y] and object {x,y} formats)
             if (transformOverride.HasMember("rotation"))
             {
                 const auto& rot = transformOverride["rotation"];
@@ -1163,7 +1192,6 @@ namespace Uma_ECS
                 }
             }
 
-            // Handle scale (supports both array [x,y] and object {x,y} formats)
             if (transformOverride.HasMember("scale"))
             {
                 const auto& scl = transformOverride["scale"];
@@ -1182,8 +1210,8 @@ namespace Uma_ECS
             tf.isDirty = true;
         }
 
-        // Second pass: Remap parent-child relationships
-        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        // Second pass: Remap parent and children IDs from prefab space to world space
+        // Clear children before remapping to prevent duplicates
         for (const auto& pair : prefabToWorldID)
         {
             Entity worldID = pair.second;
@@ -1197,65 +1225,28 @@ namespace Uma_ECS
             {
                 Entity oldParentID = tf.parent.value();
                 auto it = prefabToWorldID.find(oldParentID);
-
-                if (it != prefabToWorldID.end())
-                {
-                    tf.parent = it->second;
-                }
-                else
-                {
-                    tf.parent = std::nullopt;
-                }
+                tf.parent = (it != prefabToWorldID.end()) ? it->second : -1;
             }
 
-            // Remap children
+            // Remap children - build fresh list to avoid stale IDs
             std::vector<Entity> remappedChildren;
             for (Entity oldChildID : tf.children)
             {
                 auto it = prefabToWorldID.find(oldChildID);
                 if (it != prefabToWorldID.end())
-                {
                     remappedChildren.push_back(it->second);
-                }
             }
             tf.children = std::move(remappedChildren);
         }
 
-        // Third pass: Rebuild parent-child consistency
-        for (const auto& pair : prefabToWorldID)
-        {
-            Entity worldID = pair.second;
-
-            if (!tfArray.Has(worldID)) continue;
-
-            auto& tf = tfArray.GetData(worldID);
-
-            if (tf.parent.has_value())
-            {
-                Entity parentID = tf.parent.value();
-
-                if (tfArray.Has(parentID))
-                {
-                    auto& parentTf = tfArray.GetData(parentID);
-
-                    // Ensure child is in parent's children list
-                    if (std::find(parentTf.children.begin(), parentTf.children.end(), worldID)
-                        == parentTf.children.end())
-                    {
-                        parentTf.children.push_back(worldID);
-                    }
-                }
-            }
-        }
-
-        // Fourth pass: Update systems
+        // Third pass: Update systems
         for (const auto& pair : prefabToWorldID)
         {
             Entity worldID = pair.second;
             aSystemManager->EntitySignatureChanged(worldID, GetEntitySignature(worldID));
         }
 
-        // Add Prefab component to mark as instance
+        // Fourth pass: Add Prefab component to mark all entities as prefab instances
         for (const auto& pair : prefabToWorldID)
         {
             Entity prefabID = pair.first;
@@ -1265,7 +1256,7 @@ namespace Uma_ECS
             {
                 Prefab prefabComp;
                 prefabComp.prefabPath = prefabPath;
-                prefabComp.isRoot = (prefabID == 0);  // Root entity in prefab has ID 0
+                prefabComp.isRoot = (prefabID == 0);
                 AddComponent(worldID, prefabComp);
             }
         }

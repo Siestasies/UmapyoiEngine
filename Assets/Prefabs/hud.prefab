@@ -19,7 +19,21 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            3,
+                            4,
+                            5,
+                            6,
+                            7,
+                            8,
+                            9,
+                            10,
+                            13,
+                            16
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -73,7 +87,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp 1",
+                        "name": "mp 5",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -86,10 +100,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -106,16 +121,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -900.0,
-                            "y": 425.0
+                            "x": -637.5,
+                            "y": 350.0
                         },
                         "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
+                            "x": 75.0,
+                            "y": 75.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/hp point.png",
+                        "texturePath": "Assets/lost hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -134,7 +149,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp 2",
+                        "name": "mp 4",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -147,10 +162,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -167,16 +183,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -825.0,
-                            "y": 425.0
+                            "x": -712.5,
+                            "y": 350.0
                         },
                         "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
+                            "x": 75.0,
+                            "y": 75.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/hp point.png",
+                        "texturePath": "Assets/lost hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -195,7 +211,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp 3",
+                        "name": "mp 3",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -208,10 +224,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -228,16 +245,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -750.0,
-                            "y": 425.0
+                            "x": -787.5,
+                            "y": 350.0
                         },
                         "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
+                            "x": 75.0,
+                            "y": 75.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/hp point.png",
+                        "texturePath": "Assets/lost hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -256,7 +273,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp 4",
+                        "name": "mp 2",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -269,10 +286,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -289,16 +307,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -675.0,
-                            "y": 425.0
+                            "x": -862.5,
+                            "y": 350.0
                         },
                         "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
+                            "x": 75.0,
+                            "y": 75.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/hp point.png",
+                        "texturePath": "Assets/lost hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -330,10 +348,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -378,7 +397,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "mp 2",
+                        "name": "hp 4",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -391,10 +410,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -411,16 +431,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -862.5,
-                            "y": 350.0
+                            "x": -675.0,
+                            "y": 425.0
                         },
                         "sizeDelta": {
-                            "x": 75.0,
-                            "y": 75.0
+                            "x": 100.0,
+                            "y": 100.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/lost hp point.png",
+                        "texturePath": "Assets/hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -439,7 +459,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "mp 3",
+                        "name": "hp 3",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -452,10 +472,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -472,16 +493,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -787.5,
-                            "y": 350.0
+                            "x": -750.0,
+                            "y": 425.0
                         },
                         "sizeDelta": {
-                            "x": 75.0,
-                            "y": 75.0
+                            "x": 100.0,
+                            "y": 100.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/lost hp point.png",
+                        "texturePath": "Assets/hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -500,7 +521,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "mp 4",
+                        "name": "hp 2",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -513,10 +534,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -533,16 +555,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -712.5,
-                            "y": 350.0
+                            "x": -825.0,
+                            "y": 425.0
                         },
                         "sizeDelta": {
-                            "x": 75.0,
-                            "y": 75.0
+                            "x": 100.0,
+                            "y": 100.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/lost hp point.png",
+                        "texturePath": "Assets/hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -561,7 +583,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "mp 5",
+                        "name": "hp 1",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -574,10 +596,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/hp.prefab",
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
@@ -594,16 +617,16 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -637.5,
-                            "y": 350.0
+                            "x": -900.0,
+                            "y": 425.0
                         },
                         "sizeDelta": {
-                            "x": 75.0,
-                            "y": 75.0
+                            "x": 100.0,
+                            "y": 100.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/lost hp point.png",
+                        "texturePath": "Assets/hp point.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -635,7 +658,15 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": [
+                            11,
+                            12
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -692,7 +723,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 10
+                        "parent": 10,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -750,7 +786,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 10
+                        "parent": 10,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -808,7 +849,15 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": [
+                            14,
+                            15
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -865,7 +914,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 13
+                        "parent": 13,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -923,7 +977,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 13
+                        "parent": 13,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -981,7 +1040,15 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": [
+                            17,
+                            18
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -1038,7 +1105,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 16
+                        "parent": 16,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -1096,7 +1168,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 16
+                        "parent": 16,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/hud.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {

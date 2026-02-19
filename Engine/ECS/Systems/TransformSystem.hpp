@@ -29,6 +29,7 @@ All rights reserved.
 #include "Core/Coordinator.hpp"
 
 #include "Math/Math.h"
+#include <unordered_set>
 
 namespace Uma_ECS
 {
@@ -58,7 +59,8 @@ namespace Uma_ECS
             Entity entity,
             const Vec2& parentWorldPos,
             const Vec2& parentWorldScale,
-            float parentWorldRot);
+            float parentWorldRot,
+            std::unordered_set<Entity>& visited);
 
         Coordinator* pCoordinator;
     };

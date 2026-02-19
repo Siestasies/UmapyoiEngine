@@ -26,6 +26,7 @@ All rights reserved.
 #include "TransformSystem.hpp"
 
 #include "Components/Transform.h"
+#include "Debugging/Debugger.hpp"
 
 namespace Uma_ECS
 {
@@ -47,16 +48,26 @@ namespace Uma_ECS
         }
 
         // Update each root and its children recursively
+        std::unordered_set<Entity> visited;
         for (Entity root : rootEntities)
         {
-            UpdateHierarchyRecursive(root, Vec2{ 0, 0 }, Vec2{ 1, 1 }, 0.0f);
+            UpdateHierarchyRecursive(root, Vec2{ 0, 0 }, Vec2{ 1, 1 }, 0.0f, visited);
         }
     }
 
-    void TransformSystem::UpdateHierarchyRecursive(Entity entity, const Vec2& parentWorldPos, const Vec2& parentWorldScale, float parentWorldRot)
+    void TransformSystem::UpdateHierarchyRecursive(Entity entity, const Vec2& parentWorldPos, const Vec2& parentWorldScale, float parentWorldRot, std::unordered_set<Entity>& visited)
     {
-        auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-        auto& tf = tfArray.GetData(entity);
+        if (visited.count(entity))
+        {
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Circular parent-child relationship detected for entity: " + std::to_string(entity));
+            return;
+        }
+        visited.insert(entity);
+
+        if (!pCoordinator->HasComponent<Transform>(entity)) return;
+
+        auto& tf = pCoordinator->GetComponent<Transform>(entity);
 
         // check if it has a parent
         if (!tf.parent.has_value())
@@ -100,7 +111,7 @@ namespace Uma_ECS
         // Recursively update children
         for (Entity child : tf.children)
         {
-            UpdateHierarchyRecursive(child, tf.worldPosition, tf.worldScale, tf.worldRotation);
+            UpdateHierarchyRecursive(child, tf.worldPosition, tf.worldScale, tf.worldRotation, visited);
         }
     }
 }

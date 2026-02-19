@@ -40,6 +40,7 @@ All rights reserved.
 #include <GLFW/glfw3.h>
 #include <algorithm>
 #include <map>
+#include <unordered_set>
 
 namespace Uma_UI
 {
@@ -131,40 +132,59 @@ namespace Uma_UI
      */
     void UISystem::ComputeLayoutRecursive(Uma_ECS::Entity entity, const Rect& parentRect, float canvasScale)
     {
-        // Compute this entity's rect if it has a RectTransform
-        if (pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-        {
-            auto& rectTransform = pCoordinator->GetComponent<RectTransform>(entity);
+        std::unordered_set<Uma_ECS::Entity> visited;
 
-            // Only recalculate if dirty
-            if (rectTransform.isDirty || rectTransform.computedRect.width <= 0.0f)
+        // Stack stores {entity, parentRect} so each node knows its parent's computed rect
+        std::vector<std::pair<Uma_ECS::Entity, Rect>> stack;
+        stack.push_back({ entity, parentRect });
+
+        while (!stack.empty())
+        {
+            auto [current, curParentRect] = stack.back();
+            stack.pop_back();
+
+            if (visited.count(current))
             {
-                rectTransform.computedRect = ComputeRectInNDC(
-                    rectTransform, parentRect, canvasScale, mScreenSize.x, mScreenSize.y);
-                rectTransform.isDirty = false;
+                std::cerr << "UISystem: Circular parent-child relationship detected for entity: "
+                          << current << std::endl;
+                continue;
             }
-        }
+            visited.insert(current);
 
-        // Get this entity's computed rect to pass to children
-        Rect currentRect = parentRect;
-        if (pCoordinator->GetComponentArray<RectTransform>().Has(entity))
-        {
-            currentRect = pCoordinator->GetComponent<RectTransform>(entity).computedRect;
-        }
-
-        // Process children using Transform hierarchy
-        if (pCoordinator->GetComponentArray<Uma_ECS::Transform>().Has(entity))
-        {
-            auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(entity);
-            for (Uma_ECS::Entity child : transform.children)
+            // Compute this entity's rect if it has a RectTransform
+            if (pCoordinator->GetComponentArray<RectTransform>().Has(current))
             {
-                if (pCoordinator->GetComponentArray<RectTransform>().Has(child))
-                {
-                    auto& rectTransform = pCoordinator->GetComponent<RectTransform>(child);
-                    rectTransform.isDirty = true;
-                }
+                auto& rectTransform = pCoordinator->GetComponent<RectTransform>(current);
 
-                ComputeLayoutRecursive(child, currentRect, canvasScale);
+                if (rectTransform.isDirty || rectTransform.computedRect.width <= 0.0f)
+                {
+                    rectTransform.computedRect = ComputeRectInNDC(
+                        rectTransform, curParentRect, canvasScale, mScreenSize.x, mScreenSize.y);
+                    rectTransform.isDirty = false;
+                }
+            }
+
+            // Get this entity's computed rect to pass to children
+            Rect currentRect = curParentRect;
+            if (pCoordinator->GetComponentArray<RectTransform>().Has(current))
+            {
+                currentRect = pCoordinator->GetComponent<RectTransform>(current).computedRect;
+            }
+
+            // Push children in reverse order to maintain original traversal order
+            if (pCoordinator->GetComponentArray<Uma_ECS::Transform>().Has(current))
+            {
+                auto& transform = pCoordinator->GetComponent<Uma_ECS::Transform>(current);
+                for (auto it = transform.children.rbegin(); it != transform.children.rend(); ++it)
+                {
+                    Uma_ECS::Entity child = *it;
+                    if (pCoordinator->GetComponentArray<RectTransform>().Has(child))
+                    {
+                        auto& rectTransform = pCoordinator->GetComponent<RectTransform>(child);
+                        rectTransform.isDirty = true;
+                    }
+                    stack.push_back({ child, currentRect });
+                }
             }
         }
     }

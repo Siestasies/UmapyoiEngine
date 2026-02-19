@@ -1533,10 +1533,13 @@ namespace Uma_Engine
         // Render children recursively
         if (nodeOpen && hasChildren)
         {
-            for (Uma_ECS::Entity child : transform.children)
+            for (size_t i = 0; i < transform.children.size(); i++)
             {
+                Uma_ECS::Entity child = transform.children[i];
+                RenderHierarchyDropZone(i, coordinator, entity);
                 RenderPrefabNode(child, coordinator, transformArray);
             }
+            RenderHierarchyDropZone(transform.children.size() - 1, coordinator, entity);
             ImGui::TreePop();
         }
 
