@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -17,16 +17,16 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
@@ -82,13 +82,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -109,18 +109,13 @@
                 "type": 0
             },
             {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
-                "type": 0
-            },
-            {
                 "name": "Neutral Slash(BasicAttack)",
                 "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             },
             {
-                "name": "Water Demon Charge",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
                 "type": 0
             },
             {
@@ -129,14 +124,19 @@
                 "type": 1
             },
             {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
             },
             {
                 "name": "WindDemonAttack(Charge)",
                 "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
                 "type": 0
+            },
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
             },
             {
                 "name": "PlayerDash",
@@ -149,13 +149,13 @@
                 "type": 0
             },
             {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
                 "type": 0
             },
             {
-                "name": "WaterDemonSuicide",
-                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
                 "type": 0
             },
             {
@@ -102032,7 +102032,7 @@
         },
         {
             "id": 12,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bird enemy",
@@ -102049,7 +102049,11 @@
                         "y": 1.519
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        13,
+                        14,
+                        15
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/bird enemy.prefab",
@@ -102059,7 +102063,7 @@
         },
         {
             "id": 16,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "water enemy",
@@ -102076,7 +102080,11 @@
                         "y": 30.0
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        17,
+                        18,
+                        19
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/water enemy.prefab",
@@ -102184,7 +102192,11 @@
                         "y": 1.6
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        25,
+                        26,
+                        27
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/bird enemy.prefab",
@@ -102284,8 +102296,8 @@
                     "computedRect": {
                         "x": 0.0,
                         "y": 0.0,
-                        "width": 0.098,
-                        "height": 0.196
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Canvas": {
@@ -102345,8 +102357,8 @@
                     "computedRect": {
                         "x": 0.0,
                         "y": 0.0,
-                        "width": 1.988,
-                        "height": 2.28
+                        "width": 2.018,
+                        "height": 2.243
                     }
                 },
                 "class Uma_UI::Image": {
@@ -102438,9 +102450,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.393,
-                        "width": 0.363,
-                        "height": 0.163
+                        "y": -0.386,
+                        "width": 0.368,
+                        "height": 0.16
                     }
                 },
                 "class Uma_UI::Image": {
@@ -102531,9 +102543,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.374,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.368,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -102597,9 +102609,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.358,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.352,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -102692,9 +102704,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.805,
-                        "width": 0.647,
-                        "height": 0.184
+                        "y": -0.793,
+                        "width": 0.657,
+                        "height": 0.181
                     }
                 },
                 "class Uma_UI::Image": {
@@ -102785,9 +102797,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.792,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.779,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -102851,9 +102863,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.774,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.762,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -102947,9 +102959,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.591,
-                        "width": 0.597,
-                        "height": 0.176
+                        "y": -0.582,
+                        "width": 0.606,
+                        "height": 0.174
                     }
                 },
                 "class Uma_UI::Image": {
@@ -103040,9 +103052,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.571,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.561,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103106,9 +103118,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.557,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.548,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103202,9 +103214,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.591,
-                        "width": 0.61,
-                        "height": 0.196
+                        "y": -0.582,
+                        "width": 0.619,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Button": {
@@ -103282,9 +103294,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.557,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.548,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103348,9 +103360,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.557,
-                        "width": 0.098,
-                        "height": 0.196
+                        "y": -0.548,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103414,9 +103426,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": -0.082,
-                        "width": 1.988,
-                        "height": 2.28
+                        "y": -0.081,
+                        "width": 2.018,
+                        "height": 2.243
                     }
                 },
                 "class Uma_UI::Image": {
@@ -103578,7 +103590,7 @@
                         "x": 0.0,
                         "y": 0.0,
                         "width": 0.104,
-                        "height": 0.207
+                        "height": 0.201
                     }
                 },
                 "class Uma_UI::Canvas": {
@@ -103639,7 +103651,7 @@
                         "x": 0.0,
                         "y": 0.0,
                         "width": 2.0,
-                        "height": 2.246
+                        "height": 2.177
                     }
                 },
                 "class Uma_UI::Image": {
@@ -103731,9 +103743,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": -0.017,
-                        "y": -0.311,
+                        "y": -0.302,
                         "width": 0.838,
-                        "height": 0.259
+                        "height": 0.252
                     }
                 },
                 "class Uma_UI::Image": {
@@ -103824,9 +103836,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": -0.021,
-                        "y": -0.292,
+                        "y": -0.283,
                         "width": 0.104,
-                        "height": 0.207
+                        "height": 0.201
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103890,9 +103902,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": -0.017,
-                        "y": -0.275,
+                        "y": -0.267,
                         "width": 0.104,
-                        "height": 0.207
+                        "height": 0.201
                     }
                 },
                 "class Uma_UI::Text": {
@@ -103956,9 +103968,9 @@
                     "isDirty": false,
                     "computedRect": {
                         "x": 0.0,
-                        "y": 0.311,
+                        "y": 0.302,
                         "width": 1.041,
-                        "height": 2.079
+                        "height": 2.016
                     }
                 },
                 "class Uma_UI::Image": {
@@ -104024,8 +104036,8 @@
                     "computedRect": {
                         "x": 0.0,
                         "y": 0.0,
-                        "width": 0.098,
-                        "height": 0.196
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Canvas": {
@@ -104093,10 +104105,10 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": 0.812,
-                        "y": 0.86,
-                        "width": 0.098,
-                        "height": 0.196
+                        "x": 0.824,
+                        "y": 0.846,
+                        "width": 0.099,
+                        "height": 0.193
                     }
                 },
                 "class Uma_UI::Text": {
@@ -104254,9 +104266,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.277,
-                        "width": 0.185,
+                        "width": 0.191,
                         "height": 0.37
                     }
                 },
@@ -104319,9 +104331,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.305,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104385,9 +104397,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.305,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104454,9 +104466,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.0,
-                        "width": 0.185,
+                        "width": 0.191,
                         "height": 0.37
                     }
                 },
@@ -104519,9 +104531,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.027,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104585,9 +104597,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": 0.027,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104654,9 +104666,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": -0.277,
-                        "width": 0.185,
+                        "width": 0.191,
                         "height": 0.37
                     }
                 },
@@ -104719,9 +104731,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": -0.249,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104785,9 +104797,9 @@
                     },
                     "isDirty": false,
                     "computedRect": {
-                        "x": -0.834,
+                        "x": -0.86,
                         "y": -0.249,
-                        "width": 0.092,
+                        "width": 0.095,
                         "height": 0.185
                     }
                 },
@@ -104804,6 +104816,37 @@
                     },
                     "alignment": 1,
                     "visible": true
+                }
+            }
+        },
+        {
+            "id": 92,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": 999.408,
+                        "y": -1647.598
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        93,
+                        94,
+                        95
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
                 }
             }
         }
