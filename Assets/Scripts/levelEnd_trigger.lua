@@ -25,7 +25,7 @@ function OnTriggerEnter(other, triggerOwner)
         local enemyCount = CountEntitiesWithComponent("Enemy")
         if enemyCount <= 0 then
             levelEnd = true
-            GetAudioComponent():playFaded(EntityID,"MainMenuBGM",1.5)
+            GetAudioComponent():fadeOut(EntityID,"MainMenuBGM",1.5)
         end
     end
 end
