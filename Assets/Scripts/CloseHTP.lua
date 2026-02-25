@@ -1,20 +1,10 @@
-bool = true
+local bool = true
 
 function OnClick()
 
     PlaySound("btn_clicked", 1.0, 0)
     SetActiveEntity(EntityID, false)
 
-
-    
-    
-    
-   
-    
-    
-
-    
-    
 end
 
 function Update(dt)

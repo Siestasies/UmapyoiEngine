@@ -104,6 +104,11 @@ rb.velocity = targetVel
         ChangeState(entity, "PlayerWaterSlash")
         return
     end
+
+    if KeyPressed(KEY_R) then
+        ChangeState(entity, "PlayerWindDash")
+        return
+    end
     
 end
 

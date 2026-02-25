@@ -9,7 +9,7 @@
                         "name": "pyronado vfx",
                         "position": {
                             "x": 1036.291,
-                            "y": -1648.49
+                            "y": -1648.489
                         },
                         "rotation": {
                             "x": 0.0,
@@ -58,7 +58,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {

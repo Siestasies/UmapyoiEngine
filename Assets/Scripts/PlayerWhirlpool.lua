@@ -58,8 +58,8 @@ function state_enter(entity)
     player.currAttackIndex = 7
     
     -- Consume mana
-    player.mMana = player.mMana - attackStat.
-    local transform = GetTransformFrom(EntityID)
+    player.mMana = player.mMana - attackStat.manaCost
+    local transform = GetTransform()
     SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, tostring(attackStat.manaCost), "manaspend")
 
     -- Set elemental combo state

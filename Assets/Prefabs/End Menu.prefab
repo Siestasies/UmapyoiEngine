@@ -19,11 +19,56 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": [
+                            1
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/levelEnd_menu.lua",
+                                "scriptName": "levelEnd_menu.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
                         "isRoot": true
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "End Menu",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            2,
+                            3,
+                            6,
+                            9
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/End Menu.prefab",
+                        "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
@@ -45,6 +90,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -59,7 +111,7 @@
                 }
             },
             {
-                "id": 1,
+                "id": 2,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -76,7 +128,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 1,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -102,23 +155,32 @@
                         "sizeDelta": {
                             "x": 1920.0,
                             "y": 1080.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 1.836,
+                            "height": 2.0
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "whitePixel",
+                        "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 1,
                         "color": {
                             "r": 0.2,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.878
+                            "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             },
             {
-                "id": 2,
+                "id": 3,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -135,7 +197,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 1,
+                        "children": [
+                            4,
+                            5
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -165,13 +231,33 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
+                            "x": 46.0,
                             "y": -125.0
                         },
                         "sizeDelta": {
-                            "x": 300.0,
+                            "x": 805.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.016,
+                            "y": -0.277,
+                            "width": 0.77,
+                            "height": 0.231
                         }
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/floor_tatami.png",
+                        "sortingOrder": 1,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -183,15 +269,15 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
+                            "r": 0.745,
+                            "g": 0.351,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.351,
+                            "g": 0.156,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -204,7 +290,7 @@
                 }
             },
             {
-                "id": 3,
+                "id": 4,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -221,7 +307,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 2
+                        "parent": 3,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -247,11 +334,18 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.019,
+                            "y": -0.26,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "Quit to main menu",
-                        "fontName": "Fujimaru-Regular",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
                         "fontSize": 3.5,
                         "colour": {
@@ -266,7 +360,7 @@
                 }
             },
             {
-                "id": 4,
+                "id": 5,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -283,7 +377,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 2
+                        "parent": 3,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -309,11 +404,18 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.016,
+                            "y": -0.245,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "Quit to main menu",
-                        "fontName": "Fujimaru-Regular",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
                         "fontSize": 3.5,
                         "colour": {
@@ -328,8 +430,8 @@
                 }
             },
             {
-                "id": 5,
-                "isActive": true,
+                "id": 6,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "restart",
@@ -345,7 +447,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 1,
+                        "children": [
+                            7,
+                            8
+                        ]
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -375,13 +481,33 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
+                            "x": 30.0,
                             "y": -325.0
                         },
                         "sizeDelta": {
-                            "x": 300.0,
-                            "y": 75.0
+                            "x": 605.0,
+                            "y": 132.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.016,
+                            "y": -0.601,
+                            "width": 0.578,
+                            "height": 0.244
                         }
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/floor_tatami.png",
+                        "sortingOrder": 1,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -393,15 +519,15 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
+                            "r": 0.745,
+                            "g": 0.351,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.351,
+                            "g": 0.156,
+                            "b": 0.057,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -414,7 +540,7 @@
                 }
             },
             {
-                "id": 6,
+                "id": 7,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -431,7 +557,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 5
+                        "parent": 6,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -457,11 +584,18 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.02,
+                            "y": -0.584,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "restart game",
-                        "fontName": "Fujimaru-Regular",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
                         "fontSize": 3.5,
                         "colour": {
@@ -476,7 +610,7 @@
                 }
             },
             {
-                "id": 7,
+                "id": 8,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -493,7 +627,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 5
+                        "parent": 6,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -519,11 +654,18 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.016,
+                            "y": -0.569,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "restart game",
-                        "fontName": "Fujimaru-Regular",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
                         "fontSize": 3.5,
                         "colour": {
@@ -538,7 +680,7 @@
                 }
             },
             {
-                "id": 8,
+                "id": 9,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -555,7 +697,8 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0
+                        "parent": 1,
+                        "children": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/End Menu.prefab",
@@ -581,10 +724,17 @@
                         "sizeDelta": {
                             "x": 1000.0,
                             "y": 1000.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.277,
+                            "width": 0.956,
+                            "height": 1.851
                         }
                     },
                     "class Uma_UI::Image": {
-                        "textureName": "stage_clear",
+                        "texturePath": "Assets/stage_clear.png",
                         "sortingOrder": 1,
                         "color": {
                             "r": 1.0,
@@ -592,7 +742,9 @@
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0
                     }
                 }
             }

@@ -1148,6 +1148,11 @@ namespace Uma_ECS
 
             prefabToWorldID[prefabID] = worldID;
 
+            bool isActive = true;
+            if (entityVal.HasMember("isActive"))
+                isActive = entityVal["isActive"].GetBool();
+            aEntityManager->SetEntityEnabled(worldID, isActive);
+
             // Deserialize all components
             if (entityVal.HasMember("components"))
             {

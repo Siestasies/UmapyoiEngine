@@ -80,6 +80,8 @@ function state_enter(entity)
             rb.velocity = Vec2(0, 0)
         end
     end
+
+    
     
     -- Face towards mouse position
     FaceTowardsMouse(entity)
@@ -108,12 +110,13 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
     
     -- Perform damage check at attack midpoint (if not already done)
-    if not attackPerformed and attackTimer < (attackDuration * 0.5) then
+    if not attackPerformed and attackTimer < (attackDuration * 0.8) then
         Log("Normal Attack!")
         attackPerformed = true
-        -- Activate Corresponding Collider
+        -- Activate Corresponding collider
+
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-        
+
         canCombo = true  -- Enable combo window after hit
     end
     

@@ -8,14 +8,18 @@ function Start()
 end
 
 function OnPointerEnter()
-    local effects = GetEffects()
-    effects:Play("HoverEnter")
+    if HasEffects() then
+        local effects = GetEffects()
+        effects:Play("HoverEnter")
+    end
 end
 
 function OnPointerExit()
-    local effects = GetEffects()
-    effects:StopAll()
-    effects:Play("HoverExit")
+    if HasEffects() then
+        local effects = GetEffects()
+        effects:StopAll()
+        effects:Play("HoverExit")
+    end
 end
 
 

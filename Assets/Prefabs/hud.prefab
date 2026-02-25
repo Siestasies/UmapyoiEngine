@@ -63,12 +63,19 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
+                            "x": 20.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.019,
+                            "y": 0.0,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -127,6 +134,13 @@
                         "sizeDelta": {
                             "x": 75.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.59,
+                            "y": 0.648,
+                            "width": 0.071,
+                            "height": 0.138
                         }
                     },
                     "class Uma_UI::Image": {
@@ -189,6 +203,13 @@
                         "sizeDelta": {
                             "x": 75.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.662,
+                            "y": 0.648,
+                            "width": 0.071,
+                            "height": 0.138
                         }
                     },
                     "class Uma_UI::Image": {
@@ -251,6 +272,13 @@
                         "sizeDelta": {
                             "x": 75.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.734,
+                            "y": 0.648,
+                            "width": 0.071,
+                            "height": 0.138
                         }
                     },
                     "class Uma_UI::Image": {
@@ -313,6 +341,13 @@
                         "sizeDelta": {
                             "x": 75.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.805,
+                            "y": 0.648,
+                            "width": 0.071,
+                            "height": 0.138
                         }
                     },
                     "class Uma_UI::Image": {
@@ -375,6 +410,13 @@
                         "sizeDelta": {
                             "x": 75.0,
                             "y": 75.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.877,
+                            "y": 0.648,
+                            "width": 0.071,
+                            "height": 0.138
                         }
                     },
                     "class Uma_UI::Image": {
@@ -437,6 +479,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.626,
+                            "y": 0.787,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Image": {
@@ -499,6 +548,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.698,
+                            "y": 0.787,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Image": {
@@ -561,6 +617,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.77,
+                            "y": 0.787,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Image": {
@@ -623,6 +686,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.787,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Image": {
@@ -688,6 +758,13 @@
                         "sizeDelta": {
                             "x": 200.0,
                             "y": 200.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.277,
+                            "width": 0.191,
+                            "height": 0.37
                         }
                     },
                     "class Uma_UI::Image": {
@@ -750,6 +827,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.305,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -813,6 +897,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.305,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -879,6 +970,13 @@
                         "sizeDelta": {
                             "x": 200.0,
                             "y": 200.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.0,
+                            "width": 0.191,
+                            "height": 0.37
                         }
                     },
                     "class Uma_UI::Image": {
@@ -941,6 +1039,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.027,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -1004,6 +1109,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": 0.027,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -1070,6 +1182,13 @@
                         "sizeDelta": {
                             "x": 200.0,
                             "y": 200.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": -0.277,
+                            "width": 0.191,
+                            "height": 0.37
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1132,6 +1251,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": -0.249,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -1195,6 +1321,13 @@
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": -0.841,
+                            "y": -0.249,
+                            "width": 0.095,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {

@@ -9,7 +9,7 @@
                         "name": "Level End Trigger",
                         "position": {
                             "x": -176.438,
-                            "y": 104.793
+                            "y": 104.791
                         },
                         "rotation": {
                             "x": 0.0,
@@ -53,7 +53,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
