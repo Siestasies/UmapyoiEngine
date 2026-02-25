@@ -1,0 +1,124 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "pyronado vfx",
+                        "position": {
+                            "x": 1036.291,
+                            "y": -1648.49
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.299,
+                            "y": 1.299
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/VFX 512 SS 3.png",
+                        "layer": 128,
+                        "order": 2,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -2.299
+                                },
+                                "size": {
+                                    "x": 35.7,
+                                    "y": 14.0
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "fire_wind",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 0,
+                                "frameCount": 16,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/VFX 512 SS 3.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/pyronado vfx.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 0.0,
+                            "fadeOVerTime": false,
+                            "fadeAfterAnimEnded": true,
+                            "lifeTime": 2.0
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/vfx 512 ss 3.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

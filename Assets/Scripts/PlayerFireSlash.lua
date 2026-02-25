@@ -99,7 +99,7 @@ function state_update(entity, dt)
     -- Update timer
     attackTimer = attackTimer - dt
 
-    if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.5) then
+    if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.7) then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerPyronado")
@@ -110,7 +110,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and attackTimer > (attackDuration * 0.5) then
+    if KeyPressed(KEY_E) and attackTimer > (attackDuration * 0.7) then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerSteamBurst")
             return
@@ -120,7 +120,7 @@ function state_update(entity, dt)
     end
     
     -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
+    if not attackPerformed and attackTimer < (attackDuration * 0.8) then
         Log("Fire Slash Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider

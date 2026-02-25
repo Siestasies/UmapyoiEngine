@@ -20,9 +20,7 @@
                             "y": 0.75
                         },
                         "parent": -1,
-                        "children": [
-                            1
-                        ]
+                        "children": []
                     },
                     "struct Uma_ECS::Player": {
                         "mHealth": 100,
@@ -304,7 +302,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": false,
+                        "showBBox": true,
                         "shapes": [
                             {
                                 "offset": {
@@ -428,12 +426,12 @@
                             },
                             {
                                 "offset": {
-                                    "x": 1.399,
-                                    "y": -7.3
+                                    "x": 0.0,
+                                    "y": -13.899
                                 },
                                 "size": {
-                                    "x": 50.798,
-                                    "y": 24.899
+                                    "x": 48.298,
+                                    "y": 24.798
                                 },
                                 "purpose": 2,
                                 "layer": 2,
@@ -1137,7 +1135,7 @@
                                     {
                                         "name": "pyronadoSoundName",
                                         "type": 3,
-                                        "value": "pyronado",
+                                        "value": "FireCyclone",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1154,6 +1152,22 @@
                                         "name": "vfxOffsetX",
                                         "type": 0,
                                         "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyronadoVFXAnimationName",
+                                        "type": 3,
+                                        "value": "fire_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "vfxIndex",
+                                        "type": 0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1427,29 +1441,6 @@
                         "nextId": 13,
                         "current": "PlayerAttack",
                         "next": ""
-                    }
-                }
-            },
-            {
-                "id": 1,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "new entity",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 0,
-                        "children": []
                     }
                 }
             }

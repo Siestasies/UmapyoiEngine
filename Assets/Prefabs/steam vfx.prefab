@@ -1,0 +1,124 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "steam vfx",
+                        "position": {
+                            "x": 1056.177,
+                            "y": -1678.072
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/VFX 512 SS 1.png",
+                        "layer": 128,
+                        "order": 2,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 32.097,
+                                    "y": 30.2
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "steam",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 0,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/VFX 512 SS 1.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/steam vfx.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 0.0,
+                            "fadeOVerTime": false,
+                            "fadeAfterAnimEnded": true,
+                            "lifeTime": 2.0
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/vfx 512 ss 1.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

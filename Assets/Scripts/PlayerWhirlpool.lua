@@ -4,6 +4,7 @@ local audio = nil
 ExposedVars = {
     whirlpoolAnimationName = "atk_water_wind",
     whirlpoolSoundName = "atk_water_wind",
+    vfxPrefab = "whirlpool vfx.prefab",
     attackDuration = 0.7,
     vfxOffsetX = 16.0,
     vfxOffsetY = -8.0
@@ -72,16 +73,40 @@ function state_enter(entity)
     audio = GetAudioComponent()
     audio:play(EntityID, "TyphoonGuard")
 
-    local children = GetChildrenList(EntityID)
-    if #children > 0 then
-        SetActiveEntity(children[1], true)
-        if HasAnimatorOn(children[1]) then
-            vfx = GetAnimatorFrom(children[1])
-            vfx.animator:Play(whirlpoolAnimationName, true)
-            local vfxTransform = GetTransformFrom(children[1])
-            vfxTransform.position = Vec2(vfxOffsetX, vfxOffsetY)
-        end
-    end
+    -- vfx is not a child of the player anymore its a seperated prefab now
+    --###################################################################################
+    --#######################       VFX Prefab Spawning     #############################
+    --###################################################################################
+    local transform = GetTransform()
+    local collider = GetCollider()
+
+    local shape = collider.shapes[1]
+
+    if not transform then return end
+
+    local myPos = Vec2(0, 0 + shape.offset.y)
+    --local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+
+    local mousePos = GetMouseWorldPosition()
+    local dx = mousePos.x - myPos.x
+    local faceX = (dx >= 0) and 1 or -1
+
+    -- Spawn offset in front of player
+    local spawnOffset = 6.0  -- adjust this value to taste
+    local spawnPos = Vec2(myPos.x + (faceX * spawnOffset), myPos.y)
+
+    local prefab = SpawnPrefab(vfxPrefab, spawnPos)
+    local projectile = GetProjectileFrom(prefab)
+
+    local player = GetPlayer()
+    projectile.mStats.damage = player.mAttackDamage
+
+    -- set parent
+    SetParent(prefab, EntityID)
+
+    --###################################################################################
+    --###################################################################################
+    --###################################################################################
     
     -- Stop movement
     if HasRigidBody() then

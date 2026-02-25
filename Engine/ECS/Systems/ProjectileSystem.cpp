@@ -90,6 +90,17 @@ namespace Uma_ECS
                     entityToDestroy.push_back(entity);
                 }
             }
+            else if (projectile.mStats.fadeAfterAnimEnded)
+            {
+                if (!pCoordinator->HasComponent<Animator>(entity))
+                {
+                    break;
+                }
+
+                auto& animator = pCoordinator->GetComponent<Animator>(entity);
+
+                if (animator.animator.HasFinished()) entityToDestroy.push_back(entity);
+            }
         }
 
         if (!entityToDestroy.empty())

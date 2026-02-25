@@ -37,6 +37,7 @@ namespace Uma_ECS
         int damage = 10;
         float speed = 70.f;
         bool fadeOVerTime = false;
+        bool fadeAfterAnimEnded = false;
         float lifeTime = 2.f;
 
     };
@@ -59,6 +60,7 @@ namespace Uma_ECS
             stats.AddMember("damage", mStats.damage, allocator);
             stats.AddMember("speed", mStats.speed, allocator);
             stats.AddMember("fadeOVerTime", mStats.fadeOVerTime, allocator);
+            stats.AddMember("fadeAfterAnimEnded", mStats.fadeAfterAnimEnded, allocator);
             stats.AddMember("lifeTime", mStats.lifeTime, allocator);
 
             value.AddMember("mStats", stats, allocator);
@@ -82,6 +84,9 @@ namespace Uma_ECS
 
                 if (stats.HasMember("fadeOVerTime") && stats["fadeOVerTime"].IsBool())
                     mStats.fadeOVerTime = stats["fadeOVerTime"].GetBool();
+
+                if (stats.HasMember("fadeAfterAnimEnded") && stats["fadeAfterAnimEnded"].IsBool())
+                    mStats.fadeAfterAnimEnded = stats["fadeAfterAnimEnded"].GetBool();
 
                 if (stats.HasMember("lifeTime") && stats["lifeTime"].IsNumber())
                     mStats.lifeTime = stats["lifeTime"].GetFloat();

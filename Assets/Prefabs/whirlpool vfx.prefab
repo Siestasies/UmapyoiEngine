@@ -1,0 +1,163 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "whirlpool vfx",
+                        "position": {
+                            "x": 1060.0,
+                            "y": -1678.357
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/VFX 512 SS 2.png",
+                        "layer": 128,
+                        "order": 2,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 32.097,
+                                    "y": 30.2
+                                },
+                                "purpose": 2,
+                                "layer": 2,
+                                "colliderMask": 4,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/playerShieldVFX.lua",
+                                "scriptName": "playerShieldVFX.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "lifeTime",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "shield up",
+                        "clips": [
+                            {
+                                "name": "shield up",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 40,
+                                "frameCount": 10,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/VFX 512 SS 2.png"
+                            },
+                            {
+                                "name": "shielding",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 56,
+                                "frameCount": 4,
+                                "speed": 12.0,
+                                "loop": true,
+                                "texturePath": "Assets/VFX 512 SS 2.png"
+                            },
+                            {
+                                "name": "shield down",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 24,
+                                "frameCount": 10,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/VFX 512 SS 2.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/whirlpool vfx.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 0.0,
+                            "fadeOVerTime": false,
+                            "fadeAfterAnimEnded": false,
+                            "lifeTime": 10.0
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/vfx 512 ss 2.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

@@ -1379,10 +1379,8 @@ namespace Uma_Engine
         auto& transform = transformArray.GetData(entity);
         bool hasChildren = !transform.children.empty();
 
-        // Generate entity name based on components
         std::string entityName = GetEntityDisplayName(entity, coordinator);
 
-        // Setup tree node flags
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 
         if (!hasChildren)
@@ -1391,28 +1389,24 @@ namespace Uma_Engine
         if (m_selectedEntity == entity)
             flags |= ImGuiTreeNodeFlags_Selected;
 
-        // Push unique ID for this entity
         ImGui::PushID(static_cast<int>(entity));
 
-        // Add checkbox for enable/disable
         bool isActive = coordinator.IsActiveSelf(entity);
 
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0)); // Make checkbox smaller
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
         if (ImGui::Checkbox("##active", &isActive))
         {
-            // Checkbox state changed - create command and execute
             auto cmd = std::make_unique<Uma_Editor::EntitySetActiveCmd>(
                 &coordinator,
                 entity,
                 isActive,
                 isActive ? "Enable " + GetEntityDisplayName(entity, coordinator)
-                         : "Disable " + GetEntityDisplayName(entity, coordinator)
+                : "Disable " + GetEntityDisplayName(entity, coordinator)
             );
             commandHistory.ExecuteCommand(std::move(cmd));
         }
         ImGui::PopStyleVar();
 
-        // Tooltip for checkbox
         if (ImGui::IsItemHovered())
         {
             ImGui::SetTooltip(isActive ? "Enabled (click to disable)" : "Disabled (click to enable)");
@@ -1420,28 +1414,20 @@ namespace Uma_Engine
 
         ImGui::SameLine();
 
-        // Grey out the text if entity is disabled
         if (!isActive)
-        {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-        }
 
-        // Render tree node
         bool nodeOpen = ImGui::TreeNodeEx(entityName.c_str(), flags);
 
         if (!isActive)
-        {
             ImGui::PopStyleColor();
-        }
 
-        // Handle selection
         if (ImGui::IsItemClicked())
         {
             m_selectedEntity = entity;
             pEventSystem->Emit<EntityPickedEvent>(m_selectedEntity);
         }
 
-        // Right-click context menu
         if (ImGui::BeginPopupContextItem())
         {
             m_selectedEntity = entity;
@@ -1456,7 +1442,6 @@ namespace Uma_Engine
                     .scale = Vec2(1, 1)
                     });
                 coordinator.SetParent(child, entity);
-
                 m_HierarchyScrollToBottom = true;
             }
 
@@ -1469,7 +1454,6 @@ namespace Uma_Engine
 
             ImGui::Separator();
 
-            // Toggle enabled state menu item
             bool entityIsActive = coordinator.IsActiveSelf(entity);
             if (ImGui::MenuItem(entityIsActive ? "Disable" : "Enable"))
             {
@@ -1488,9 +1472,7 @@ namespace Uma_Engine
             {
                 pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
                 if (m_selectedEntity == entity)
-                {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
-                }
                 m_HierarchyScrollToBottom = true;
             }
 
@@ -1498,16 +1480,13 @@ namespace Uma_Engine
             {
                 coordinator.DestroyEntityAndChildren(entity);
                 if (m_selectedEntity == entity)
-                {
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
-                }
                 m_HierarchyScrollToBottom = true;
             }
 
             ImGui::EndPopup();
         }
 
-        // Drag and drop for reparenting
         if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None))
         {
             ImGui::SetDragDropPayload("ENTITY_NODE", &entity, sizeof(Uma_ECS::Entity));
@@ -1520,8 +1499,6 @@ namespace Uma_Engine
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_NODE"))
             {
                 Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
-
-                // Don't allow setting parent to itself or to its own children
                 if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
                 {
                     coordinator.SetParent(droppedEntity, entity);
@@ -1530,16 +1507,18 @@ namespace Uma_Engine
             ImGui::EndDragDropTarget();
         }
 
-        // Render children recursively
+        // KEY FIX: was (transform.children.size() - 1) for the trailing drop zone,
+        // which duplicated index (size-1) that was already emitted in the last loop iteration.
+        // Now it correctly uses children.size() as a unique "insert after last child" slot.
         if (nodeOpen && hasChildren)
         {
             for (size_t i = 0; i < transform.children.size(); i++)
             {
                 Uma_ECS::Entity child = transform.children[i];
-                RenderHierarchyDropZone(i, coordinator, entity);
+                RenderHierarchyDropZone(static_cast<int>(i), coordinator, entity);
                 RenderPrefabNode(child, coordinator, transformArray);
             }
-            RenderHierarchyDropZone(transform.children.size() - 1, coordinator, entity);
+            RenderHierarchyDropZone(static_cast<int>(transform.children.size()), coordinator, entity);
             ImGui::TreePop();
         }
 
@@ -5405,7 +5384,7 @@ namespace Uma_Engine
                 BeginComponentEdit(entity, coordinator);
 
                 // Damage
-                if (ImGui::DragInt("Damage", &projectile.mStats.damage, 1.0F, 0, 1000))
+                if (ImGui::DragInt("Damage", &projectile.mStats.damage, 1.0f, 0, 1000))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -5419,7 +5398,7 @@ namespace Uma_Engine
                 ImGui::Separator();
 
                 // Fade Over Time
-                if (ImGui::Checkbox("Fade Over Time", &projectile.mStats.fadeOVerTime))
+                if (ImGui::Checkbox("Fade Over Time##FadeOverTime", &projectile.mStats.fadeOVerTime))
                 {
                     m_hasUnsavedEdit = true;
                 }
@@ -5441,6 +5420,19 @@ namespace Uma_Engine
                 }
 
                 ImGui::Separator();
+
+                if (ImGui::Checkbox("Fade After Animation##fadeAfterAnimEnded", &projectile.mStats.fadeAfterAnimEnded))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("It will die when the animation ends (must have animator component)");
+                }
+
+                ImGui::Separator();
+
                 ImGui::TextDisabled("This entity is marked as a projectile");
 
                 // end tracking

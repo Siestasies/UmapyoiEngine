@@ -3,7 +3,8 @@
 
 ExposedVars = {
     pyronadoAnimationName = "atk_fire_wind",
-    pyronadoSoundName = "atk_fire_wind",
+    pyronadoVFXAnimationName = "fire_wind",
+    vfxPrefab = "pyronado vfx.prefab",
     attackDuration = 0.7,
     vfxOffsetX = 2.0,
     vfxOffsetY = -8.0
@@ -70,18 +71,31 @@ function state_enter(entity)
     -- Play animation and sound
     animator.animator:Play(pyronadoAnimationName, true)
     audio = GetAudioComponent()
-    audio:play(EntityID, "FireCyclone")
+    audio:play(EntityID, pyronadoSoundName)
 
-    local children = GetChildrenList(EntityID)
-    if #children > 0 then
-        SetActiveEntity(children[1], true)
-        if HasAnimatorOn(children[1]) then
-            vfx = GetAnimatorFrom(children[1])
-            vfx.animator:Play(pyronadoAnimationName, true)
-            local vfxTransform = GetTransformFrom(children[1])
-            vfxTransform.position = Vec2(vfxOffsetX, vfxOffsetY)
-        end
-    end
+    -- vfx is not a child of the player anymore its a seperated prefab now
+    --###################################################################################
+    --#######################       VFX Prefab Spawning     #############################
+    --###################################################################################
+
+    local transform = GetTransform()
+    local collider = GetCollider()
+
+    local shape = collider.shapes[1]
+
+    if not transform then return end
+
+    local myPos = Vec2(transform.worldPosition.x, transform.worldPosition.y + shape.offset.y)
+
+    local prefab = SpawnPrefab(vfxPrefab, myPos)
+    local projectile = GetProjectileFrom(prefab)
+
+    local player = GetPlayer()
+    projectile.mStats.damage = player.mAttackDamage
+
+    --###################################################################################
+    --###################################################################################
+    --###################################################################################
     
     -- Stop movement
     if HasRigidBody() then
@@ -110,7 +124,7 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
     
     -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
+    if not attackPerformed and attackTimer < (attackDuration * 0.9) then
         Log("Pyronado Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
@@ -138,6 +152,7 @@ end
 
 function state_exit(entity)
     Log("Player exited Pyronado state")
+
     if attackStat then 
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
     end

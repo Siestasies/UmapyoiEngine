@@ -4,6 +4,7 @@
 ExposedVars = {
     steamBurstAnimationName = "atk_fire_water",
     steamBurstSoundName = "atk_fire_water",
+    vfxPrefab = "steam vfx.prefab",
     attackDuration = 0.7,
     vfxOffsetX = 25.0,
     vfxOffsetY = -8.0
@@ -72,16 +73,63 @@ function state_enter(entity)
     audio = GetAudioComponent()
     audio:play(EntityID, "SteamBurst")
 
-    local children = GetChildrenList(EntityID)
-    if #children > 0 then
-        SetActiveEntity(children[1], true)
-        if HasAnimatorOn(children[1]) then
-            vfx = GetAnimatorFrom(children[1])
-            vfx.animator:Play(steamBurstAnimationName, true)
-            local vfxTransform = GetTransformFrom(children[1])
-            vfxTransform.position = Vec2(vfxOffsetX, vfxOffsetY)
-        end
+    --local children = GetChildrenList(EntityID)
+    --if #children > 0 then
+    --    SetActiveEntity(children[1], true)
+    --    if HasAnimatorOn(children[1]) then
+    --        vfx = GetAnimatorFrom(children[1])
+    --        vfx.animator:Play(steamBurstAnimationName, true)
+    --        local vfxTransform = GetTransformFrom(children[1])
+    --        vfxTransform.position = Vec2(vfxOffsetX, vfxOffsetY)
+    --    end
+    --end
+
+    -- vfx is not a child of the player anymore its a seperated prefab now
+    --###################################################################################
+    --#######################       VFX Prefab Spawning     #############################
+    --###################################################################################
+    local transform = GetTransform()
+    local collider = GetCollider()
+
+    local shape = collider.shapes[1]
+
+    if not transform then return end
+
+    local mousePos = GetMouseWorldPosition()
+    local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+
+    -- Direction from player to mouse
+    local dx = mousePos.x - myPos.x
+    local dy = mousePos.y - myPos.y
+    local len = math.sqrt(dx * dx + dy * dy)
+    if len == 0 then len = 1 end
+    local dir = Vec2(dx / len, dy / len)
+
+    local angle = math.deg(math.atan(dir.y, dir.x))
+    if angle < 0 then angle = angle + 360 end
+
+    -- Spawn offset in front of player
+    local spawnOffset = 14.0  -- adjust this value to taste
+    local spawnPos = Vec2(myPos.x + dir.x * spawnOffset, myPos.y + dir.y * spawnOffset)
+
+    local prefab = SpawnPrefab(vfxPrefab, spawnPos)
+    local projectile = GetProjectileFrom(prefab)
+
+    local player = GetPlayer()
+    projectile.mStats.damage = player.mAttackDamage
+
+    -- Rotate the prefab to face the direction
+    local prefabTransform = GetTransformFrom(prefab)
+    if prefabTransform then
+        prefabTransform.rotation.x = angle
     end
+
+    if spriteComp then
+        spriteComp.flipX = (angle >= 90 and angle <= 270)
+    end
+    --###################################################################################
+    --###################################################################################
+    --###################################################################################
     
     -- Stop movement
     if HasRigidBody() then
