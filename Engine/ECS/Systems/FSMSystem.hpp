@@ -12,7 +12,7 @@
 \brief
 System that processes state changes for FSM
 
-All content (C) 2025 DigiPen Institute of Technology Singapore.
+All content (C) 2026 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 

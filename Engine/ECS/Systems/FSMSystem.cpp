@@ -12,7 +12,7 @@
 \brief
 System that processes state changes for FSM
 
-All content (C) 2025 DigiPen Institute of Technology Singapore.
+All content (C) 2026 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
@@ -44,18 +44,21 @@ void Uma_ECS::FSMSystem::Update(float dt)
 			if (curr.current.empty()) {
 				auto it = curr.states.begin();
 				curr.current = it->first;
+				//clears the first instance of ".lua" taken from file name
 				curr.current.pop_back();
 				curr.current.pop_back();
 				curr.current.pop_back();
 				curr.current.pop_back();
 			}
 
+			//adding .lua here so the user does not need to manually add .lua for every call to set next file
 			auto state_it = curr.states.find(curr.current + ".lua");
 			if (state_it != curr.states.end()) {
 				auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
 				system->CallScriptFunction(entity, state_it->second.name, "state_enter", entity);
 			}
 		}
+		//if current is not empty proceed to call update functions for the state
 		if (!curr.current.empty()) {
 			auto state_it = curr.states.find(curr.current + ".lua");
 			if (state_it != curr.states.end()) {
@@ -64,6 +67,8 @@ void Uma_ECS::FSMSystem::Update(float dt)
 			}
 		}
 
+		//if the next state holder is not empty begin to transition to the next state by calling exit in the current state
+		//and enter for the next state then clearing the next holder
 		if (!curr.next.empty() && !curr.current.empty()) {
 			auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
 
