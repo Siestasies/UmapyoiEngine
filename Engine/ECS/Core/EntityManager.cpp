@@ -94,7 +94,7 @@ void Uma_ECS::EntityManager::DestroyEntity(Entity entity)
 
 bool Uma_ECS::EntityManager::HasActiveEntity(Entity entity) const
 {
-    return aEntityActive[entity];
+    return (entity > MAX_ENTITIES) ? false : aEntityActive[entity];
 }
 
 void Uma_ECS::EntityManager::SetSignature(Entity entity, const Signature& signature)

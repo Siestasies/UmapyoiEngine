@@ -104,6 +104,18 @@ namespace Uma_UI
             size.AddMember("x", sizeDelta.x, allocator);
             size.AddMember("y", sizeDelta.y, allocator);
             value.AddMember("sizeDelta", size, allocator);
+
+            value.AddMember("isDirty", isDirty, allocator);
+
+            if (!isDirty)
+            {
+                rapidjson::Value cached(rapidjson::kObjectType);
+                cached.AddMember("x", computedRect.x, allocator);
+                cached.AddMember("y", computedRect.y, allocator);
+                cached.AddMember("width", computedRect.width, allocator);
+                cached.AddMember("height", computedRect.height, allocator);
+                value.AddMember("computedRect", cached, allocator);
+            }
         }
 
         /*!
@@ -132,8 +144,21 @@ namespace Uma_UI
             sizeDelta.x = size["x"].GetFloat();
             sizeDelta.y = size["y"].GetFloat();
 
-            isDirty = true;
-            computedRect = Uma_UI::Rect();
+            if (value.HasMember("isDirty") && !value["isDirty"].GetBool()
+                && value.HasMember("computedRect"))
+            {
+                const auto& cached = value["computedRect"];
+                computedRect.x = cached["x"].GetFloat();
+                computedRect.y = cached["y"].GetFloat();
+                computedRect.width = cached["width"].GetFloat();
+                computedRect.height = cached["height"].GetFloat();
+                isDirty = false;
+            }
+            else
+            {
+                computedRect = Uma_UI::Rect();
+                isDirty = true;
+            }
         }
     };
 }

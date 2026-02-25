@@ -19,7 +19,12 @@
                             "x": 0.689,
                             "y": 1.519
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            3
+                        ]
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
@@ -458,7 +463,8 @@
                             "x": 5.059,
                             "y": 3.38
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/fire enemy shadow.png",
@@ -505,12 +511,13 @@
                             "x": 15.0,
                             "y": 0.699
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 20,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -552,12 +559,13 @@
                             "x": 15.0,
                             "y": 0.699
                         },
-                        "parent": 0
+                        "parent": 0,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 20,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
