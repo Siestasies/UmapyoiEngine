@@ -41,6 +41,9 @@ All rights reserved.
 
 #include "Events/ApplicationEvents.h"
 
+// Feedback system
+#include "../UI/Core/FeedbackTypes.h"
+
 #include <functional>
 
 // temp
@@ -377,10 +380,11 @@ namespace Uma_ECS
         RegisterInputBindings();    // register the key press functions
         RegisterKeyConstants();     // register the availables keys
 
-        RegisterUtilityFUnctions();
+        RegisterUtilityFunctions();
         RegisterCrossEntityAccess();
         RegisterEntityQueries();
         RegisterEntityManipulation();
+        RegisterFeedbackAPI();
     }
 
     void LuaScriptingSystem::RegisterEntityManipulation()
@@ -586,6 +590,56 @@ namespace Uma_ECS
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Exception spawning prefab: " + std::string(e.what()));
                     return static_cast<Entity>(-1);
                 }
+            });
+    }
+
+    void LuaScriptingSystem::RegisterFeedbackAPI()
+    {
+        sharedLua->new_enum<Uma_UI::NumberType>("NumberType",
+            {
+                { "Normal",    Uma_UI::NumberType::Normal    },
+                { "Affinity",  Uma_UI::NumberType::Affinity  },
+                { "Critical",  Uma_UI::NumberType::Critical  },
+                { "Heal",      Uma_UI::NumberType::Heal      },
+                { "PlayerHit", Uma_UI::NumberType::PlayerHit },
+                { "ManaSpend", Uma_UI::NumberType::ManaSpend },
+                { "ManaGain",  Uma_UI::NumberType::ManaGain  }
+            });
+
+        sharedLua->set_function("SpawnNumber",
+            [this](float worldX, float worldY, int amount,
+                sol::optional<std::string> typeStr)
+            {
+                Uma_UI::NumberType type = Uma_UI::NumberType::Normal;
+
+                if (typeStr.has_value())
+                {
+                    const std::string& s = typeStr.value();
+                    if (s == "affinity" || s == "Affinity" || s == "AFFINITY")
+                        type = Uma_UI::NumberType::Affinity;
+
+                    else if (s == "crit" || s == "Crit" || s == "CRIT"
+                        || s == "critical" || s == "Critical" || s == "CRITICAL")
+                        type = Uma_UI::NumberType::Critical;
+
+                    else if (s == "heal" || s == "Heal" || s == "HEAL")
+                        type = Uma_UI::NumberType::Heal;
+
+                    else if (s == "playerhit" || s == "PlayerHit" || s == "PLAYERHIT"
+                        || s == "player" || s == "Player" || s == "PLAYER")
+                        type = Uma_UI::NumberType::PlayerHit;
+
+                    else if (s == "manaspend" || s == "ManaSpend" || s == "MANASPEND"
+                        || s == "mana" || s == "Mana" || s == "MANA")
+                        type = Uma_UI::NumberType::ManaSpend;
+
+                    else if (s == "managain" || s == "ManaGain" || s == "MANAGAIN")
+                        type = Uma_UI::NumberType::ManaGain;
+                    // else: anything else → Normal
+                }
+
+                pEventSystem->Emit<Uma_UI::SpawnNumberEvent>(
+                    worldX, worldY, amount, type);
             });
     }
 
@@ -1391,7 +1445,7 @@ namespace Uma_ECS
 #undef COMPONENT_LIST
     }
 
-    void LuaScriptingSystem::RegisterUtilityFUnctions()
+    void LuaScriptingSystem::RegisterUtilityFunctions()
     {
         // Utility functions
         sharedLua->set_function("Log", [](const std::string& msg) {

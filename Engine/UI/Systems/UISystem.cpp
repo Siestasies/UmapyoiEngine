@@ -5,7 +5,7 @@
 \par    Section A
 \par    Software Engineering Project 3
 
-\author Jedrek Lee Jing Wei (everthing else)
+\author Jedrek Lee Jing Wei (everything else)
 \par    E-mail: jedrekjingwei.lee@digipen.edu
 \par    DigiPen login: jedrekjingwei.lee
 
@@ -55,6 +55,8 @@ namespace Uma_UI
         if (!pResourcesManager) { std::cerr << "UISystem::Init - Warning: ResourcesManager not set!" << std::endl; }
 
         mHitTestCache.clear();
+
+        mFeedbackSystem.Init(pCoordinator, pGraphics, pEventSystem, this);
     }
 
     /*!
@@ -65,10 +67,9 @@ namespace Uma_UI
     {
         (void)dt;
 
-        if (!pCoordinator || !pEventSystem || !pGraphics || !pResourcesManager)
-        {
-            return;
-        }
+        if (!pCoordinator || !pEventSystem || !pGraphics || !pResourcesManager) return;
+
+        mFeedbackSystem.Update(dt);
 
         Vec2 screenSize = pGraphics->GetSceneViewport();
         if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
@@ -81,6 +82,8 @@ namespace Uma_UI
      */
     void UISystem::Shutdown()
     {
+        mFeedbackSystem.Shutdown();
+
         mHitTestCache.clear();
         mMouseButtonDown = false;
         mMouseButtonDownLastFrame = false;

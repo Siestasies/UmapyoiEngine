@@ -42,6 +42,7 @@ All rights reserved.
 #include "Events/AudioEvents.h"
 #include "Events/IMGUIEvents.h"
 #include "Events/LuaScriptingEvents.h"
+#include "Events/FeedbackEvents.h"
 
 //#define SOL_ALL_SAFETIES_ON 1
 //#define SOL_PRINT_ERRORS 1
@@ -305,7 +306,7 @@ namespace Uma_ECS
         /**
          * \brief Registers utility functions to Lua API
          */
-        void RegisterUtilityFUnctions();
+        void RegisterUtilityFunctions();
 
         /**
          * \brief Registers cross-entity access functions to Lua API
@@ -321,6 +322,11 @@ namespace Uma_ECS
          * \brief Registers entity creation/destruction functions to Lua API
          */
         void RegisterEntityManipulation();
+
+        /**
+         * \brief Registers feedback spawning function to Lua API
+         */
+        void RegisterFeedbackAPI();
 
         /**
          * \brief Cleanup handler for entity destruction

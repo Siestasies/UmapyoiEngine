@@ -93,6 +93,9 @@ function Update(dt)
     if player.mMana < player.mMaxMana then
         local manaGain = player.mManaRegenRate * dt
         player.mMana = math.min(player.mMana + manaGain, player.mMaxMana)
+
+        local transform = GetTransformFrom(EntityID)
+        SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(manaGain), "managain")
     end
     
     -- Debug logging
@@ -152,7 +155,10 @@ function TakeDamage(damage)
     -- Calculate actual damage after defense
     local actualDamage = math.max(1, damage - player.mDefense)
     player.mHealth = player.mHealth - actualDamage
-    
+
+    local transform = GetTransformFrom(EntityID)
+    SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(actualDamage), "playerhit")
+
     Log("Player took " .. tostring(actualDamage) .. " damage! Health: " .. tostring(player.mHealth))
     
     -- Transition to hurt state if still alive
