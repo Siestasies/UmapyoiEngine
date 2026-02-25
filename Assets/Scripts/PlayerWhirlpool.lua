@@ -77,6 +77,16 @@ function state_enter(entity)
     --###################################################################################
     --#######################       VFX Prefab Spawning     #############################
     --###################################################################################
+
+    if player.hasShield and HasChildren(EntityID, 0) then
+        local shieldEntity = GetChildren(EntityID, 0)
+        if IsEntityValid(shieldEntity) then
+            DestroyEntity(shieldEntity)
+        end
+        player.hasShield = false
+    end
+        
+
     local transform = GetTransform()
     local collider = GetCollider()
 
@@ -103,6 +113,8 @@ function state_enter(entity)
 
     -- set parent
     SetParent(prefab, EntityID)
+
+    player.hasShield = true
 
     --###################################################################################
     --###################################################################################
@@ -139,7 +151,7 @@ function state_update(entity, dt)
         Log("Whirlpool Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+        --collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
         -- Play explosion sound
         PlaySound(whirlpoolSoundName, 0.9, 0)
     end
@@ -165,9 +177,9 @@ end
 
 function state_exit(entity)
     Log("Player exited Whirlpool state")
-    if attackStat then 
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
-    end
+    --if attackStat then 
+    --    collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
+    --end
     StopSound(whirlpoolSoundName);
 end
 

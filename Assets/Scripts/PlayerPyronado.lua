@@ -128,7 +128,7 @@ function state_update(entity, dt)
         Log("Pyronado Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+        --collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
     end
     
     -- Attack finished
@@ -153,9 +153,9 @@ end
 function state_exit(entity)
     Log("Player exited Pyronado state")
 
-    if attackStat then 
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
-    end
+    --if attackStat then 
+    --    collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
+    --end
     StopSound(pyronadoSoundName);
 end
 

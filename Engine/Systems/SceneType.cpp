@@ -526,6 +526,8 @@ namespace Uma_Engine
     {
         //if (m_PlayerController)
         //    m_PlayerController->Update(m_FixedTimeStep);
+        if (m_AnimatorSystem)
+            m_AnimatorSystem->Update(dt);
 
         if (m_LuaScriptingSystem)
             m_LuaScriptingSystem->Update(dt);
@@ -542,8 +544,6 @@ namespace Uma_Engine
         if (m_TilemapSystem)
             m_TilemapSystem->Update(dt);
 
-        if (m_AnimatorSystem)
-            m_AnimatorSystem->Update(dt);
 
         if (m_ParticleSystem)
             m_ParticleSystem->Update(dt);

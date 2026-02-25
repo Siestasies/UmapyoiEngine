@@ -93,7 +93,7 @@ function HandleCollision(trigger)
             --Log("ElementType.Wind: " .. tostring(ElementType.Wind))
             --Log("ElementType.Steam: " .. tostring(ElementType.Steam))
             --Log("===================")
---
+
             if attack.elementType == ElementType.Steam or  
             attack.elementType == ElementType.Pyronado then 
                 isEffective = true
@@ -107,6 +107,32 @@ function HandleCollision(trigger)
                 isEffective = false
                 isFusion = false
                 OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+            end
+
+            local transform = GetTransform()
+            if transform then
+                --PlayOneShotAtEntity(EntityID, "hurt", 0.5)
+            end
+        end
+    elseif HasProjectileOn(trigger) then
+        local playerComp = GetPlayerFrom(playerId)
+        local projectile = GetProjectileFrom(trigger)
+        if playerComp then
+            local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
+
+            if attack.elementType == ElementType.Steam or  
+            attack.elementType == ElementType.Pyronado then 
+                isEffective = true
+                isFusion = true
+                OnHurt(playerId, math.floor(projectile.mStats.damage))
+            elseif attack.elementType == ElementType.Water then
+                isEffective = true
+                isFusion = false
+                OnHurt(playerId, math.floor(projectile.mStats.damage))
+            else
+                isEffective = false
+                isFusion = false
+                OnHurt(playerId, math.floor(projectile.mStats.damage * 0.3))
             end
 
             local transform = GetTransform()

@@ -734,6 +734,10 @@ namespace Uma_ECS
             "elementComboTimer", &Player::elementComboTimer,
             "elementComboWindow", &Player::elementComboWindow,
 
+            "hasShield", & Player::hasShield,
+            "isShieldBroken", & Player::isShieldBroken,
+
+
             "currAttackIndex", &Player::currAttackIndex,
             // "animatorState", &Player::animatorState,  // Optional - enum would need registration
 

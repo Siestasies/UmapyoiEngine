@@ -125,6 +125,13 @@ function OnCollisionEnter(other)
 end
 
 function OnTriggerEnter(other, triggerOwner)
+
+    local player = GetPlayer()
+    if player.hasShield then
+        player.isShieldBroken = true
+        return
+    end
+
     -- Can be extended for health pickups, mana pickups, checkpoints, etc.
     if HasProjectileOn(triggerOwner) then
         local proj = GetProjectileFrom(triggerOwner)

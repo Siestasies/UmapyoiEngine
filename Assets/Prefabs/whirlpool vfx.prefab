@@ -71,7 +71,7 @@
                                 },
                                 "purpose": 2,
                                 "layer": 2,
-                                "colliderMask": 4,
+                                "colliderMask": 20,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }

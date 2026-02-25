@@ -162,7 +162,7 @@ function state_update(entity, dt)
         Log("Steam Burst Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+        --collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
         -- Play explosion sound
         PlaySound(steamBurstSoundName, 0.9, 0)
     end
@@ -188,9 +188,9 @@ end
 
 function state_exit(entity)
     Log("Player exited Steam Burst state")
-    if attackStat then 
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
-    end
+    --if attackStat then 
+    --    collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
+    --end
     StopSound(steamBurstSoundName);
 end
 

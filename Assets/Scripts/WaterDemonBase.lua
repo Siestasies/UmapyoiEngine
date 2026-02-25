@@ -119,6 +119,32 @@ function HandleCollision(trigger)
                 --PlayOneShotAtEntity(EntityID, "hurt", 0.5)
             end
         end
+    elseif HasProjectileOn(trigger) then
+        local playerComp = GetPlayerFrom(playerId)
+        local projectile = GetProjectileFrom(trigger)
+        if playerComp then
+            local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
+
+            if attack.elementType == ElementType.Whirlpool or  
+            attack.elementType == ElementType.Pyronado then 
+                isEffective = true
+                isFusion = true
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+            elseif attack.elementType == ElementType.Wind then
+                isEffective = true
+                isFusion = false
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+            else
+                isEffective = false
+                isFusion = false
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+            end
+
+            local transform = GetTransform()
+            if transform then
+                --PlayOneShotAtEntity(EntityID, "hurt", 0.5)
+            end
+        end
     end
 end
 

@@ -190,6 +190,8 @@ namespace Uma_ECS
         //ThrowableInventory throwableInventory;
         CheckpointData checkpointData;
         Vec2 lookDir;
+        bool hasShield;
+        bool isShieldBroken;
 
         // ===== SERIALIZATION =====
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
@@ -404,6 +406,8 @@ namespace Uma_ECS
             elementComboTimer = 0.f;
             mHealthRegenDelayTimer = 0.f;
             mCanRegenHealth = true;
+            hasShield = false;
+            isShieldBroken = false;
         }
 
         // ===== HELPER METHODS =====
