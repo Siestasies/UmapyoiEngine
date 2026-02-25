@@ -14,10 +14,10 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/props_animation.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/exterior_environment_fence_with_water.png"
@@ -3373,7 +3373,7 @@
             }
         },
         {
-            "id": 2,
+            "id": 1,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -3400,13 +3400,13 @@
             }
         },
         {
-            "id": 3,
+            "id": 2,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "bridge",
                     "position": {
-                        "x": -272.347,
+                        "x": -272.346,
                         "y": 63.104
                     },
                     "rotation": {
@@ -3558,7 +3558,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 3,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -8462,14 +8462,14 @@
             }
         },
         {
-            "id": 5,
+            "id": 4,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "trees",
                     "position": {
                         "x": -302.049,
-                        "y": 126.504
+                        "y": 126.503
                     },
                     "rotation": {
                         "x": 0.0,
@@ -8620,7 +8620,7 @@
             }
         },
         {
-            "id": 6,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -8664,14 +8664,14 @@
             }
         },
         {
-            "id": 7,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "map colliders",
                     "position": {
                         "x": -176.014,
-                        "y": 76.546
+                        "y": 76.545
                     },
                     "rotation": {
                         "x": 0.0,
@@ -8704,10 +8704,10 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 56.598
+                                "y": 56.597
                             },
                             "size": {
-                                "x": 61.598,
+                                "x": 61.597,
                                 "y": 58.4
                             },
                             "purpose": 1,
@@ -8719,7 +8719,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 72.198
+                                "y": 72.197
                             },
                             "size": {
                                 "x": 120.0,
@@ -8748,7 +8748,7 @@
                         },
                         {
                             "offset": {
-                                "x": 56.598,
+                                "x": 56.597,
                                 "y": 0.0
                             },
                             "size": {
@@ -8959,7 +8959,7 @@
                         {
                             "offset": {
                                 "x": 31.7,
-                                "y": -48.598
+                                "y": -48.597
                             },
                             "size": {
                                 "x": 8.6,
@@ -8991,14 +8991,14 @@
             }
         },
         {
-            "id": 1,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
                         "x": -175.699,
-                        "y": -60.799
+                        "y": -60.798
                     },
                     "rotation": {
                         "x": 0.0,
@@ -9010,7 +9010,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        8
+                        8,
+                        9
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -9020,7 +9021,7 @@
             }
         },
         {
-            "id": 8,
+            "id": 9,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -9037,28 +9038,28 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 1,
+                    "parent": 7,
                     "children": []
                 }
             }
         },
         {
-            "id": 9,
+            "id": 10,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "level stuff",
                     "position": {
                         "x": -176.3,
-                        "y": 104.199
+                        "y": 103.198
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.319,
-                        "y": 0.219
+                        "x": 0.3,
+                        "y": 0.218
                     },
                     "parent": -1,
                     "children": []
@@ -9070,8 +9071,8 @@
                         "MainMenuBGM": {
                             "path": "Assets/sounds/Music/MainMenuBGM.wav",
                             "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
+                            "shouldLoop": true,
+                            "is3D": false,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 100.0,
@@ -9079,10 +9080,22 @@
                         }
                     }
                 },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": false,
+                    "showBBox": true,
                     "shapes": [
                         {
                             "offset": {
@@ -9090,14 +9103,14 @@
                                 "y": 0.0
                             },
                             "size": {
-                                "x": 1.0,
-                                "y": 1.0
+                                "x": 49.2,
+                                "y": 49.2
                             },
-                            "purpose": 0,
-                            "layer": 0,
-                            "colliderMask": 0,
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
                             "isActive": true,
-                            "autoFitToSprite": true
+                            "autoFitToSprite": false
                         }
                     ]
                 },
