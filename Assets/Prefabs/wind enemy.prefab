@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "wind enemy",
                         "position": {
-                            "x": 402.984,
-                            "y": -1141.104
+                            "x": 995.307,
+                            "y": -1665.797
                         },
                         "rotation": {
                             "x": 0.0,
@@ -22,8 +22,7 @@
                         "parent": -1,
                         "children": [
                             1,
-                            2,
-                            3
+                            2
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -493,44 +492,17 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "vfx",
-                        "position": {
-                            "x": 0.0,
-                            "y": -0.3
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.5,
-                            "y": 1.5
-                        },
-                        "parent": 0,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 2,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "hp fill",
                         "position": {
                             "x": 0.0,
-                            "y": 0.5
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.638,
+                            "x": 0.639,
                             "y": 0.07
                         },
                         "parent": 0,
@@ -538,8 +510,8 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 19,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -564,21 +536,21 @@
                 }
             },
             {
-                "id": 3,
+                "id": 2,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
+                        "name": "hp fill overlay",
                         "position": {
                             "x": 0.0,
-                            "y": 0.5
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.638,
+                            "x": 0.639,
                             "y": 0.07
                         },
                         "parent": 0,
@@ -586,8 +558,8 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 20,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
