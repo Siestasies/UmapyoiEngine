@@ -42,6 +42,7 @@ function state_enter(entity)
     local moveX = 0
     local moveY = 0
     
+    --[[
     if KeyDown(KEY_W) then moveY = moveY + 1 end
     if KeyDown(KEY_S) then moveY = moveY - 1 end
     if KeyDown(KEY_A) then moveX = moveX - 1 end
@@ -74,6 +75,10 @@ function state_enter(entity)
     else
         dashDirection = Vec2(1, 0)
     end
+
+    ]]
+
+    dashDirection = getDashDirection(player)
     
     -- Play dash animation
     PlayAnimation(entity, dashAnimationName)
@@ -174,7 +179,7 @@ function getDashDirection(player)
     -- Normalize direction
     local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
     if length > 0 then
-        dashDirection = Vec2(direction.x / length, direction.y / length)
+        direction = Vec2(direction.x / length, direction.y / length)
     end
 
     return direction

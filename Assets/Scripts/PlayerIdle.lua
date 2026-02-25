@@ -46,7 +46,7 @@ function state_update(entity, dt)
     end
     
     -- Check for dash input (Shift key)
-    if KeyPressed(KEY_SHIFT) then
+    if MouseButtonPressed(MOUSE_RIGHT) then
         if player.mDashCD <= 0 then
             ChangeState(entity, "PlayerDash")
             return

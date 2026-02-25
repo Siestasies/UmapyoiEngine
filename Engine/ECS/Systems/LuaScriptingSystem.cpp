@@ -798,6 +798,10 @@ namespace Uma_ECS
                 return animator.GetCurrentClip();
             },
 
+            "GetCurrentFrame", [](const Uma_Engine::SpriteAnimator& animator) -> int {
+                return animator.GetCurrentFrame();
+            },
+
             "Reset", [](Uma_Engine::SpriteAnimator& animator) {
                 animator.Reset();
             },

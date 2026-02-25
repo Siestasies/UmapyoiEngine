@@ -4,7 +4,7 @@
 ExposedVars = {
     pyronadoAnimationName = "atk_fire_wind",
     pyronadoSoundName = "atk_fire_wind",
-    attackDuration = 0.7,
+    attackDuration = 0.4,
     vfxOffsetX = 2.0,
     vfxOffsetY = -8.0
 }
@@ -92,6 +92,11 @@ function state_enter(entity)
     end
     
     FaceTowardsMouse(entity)
+
+    -- Activate Corresponding Collider
+    collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+    --PlaySound(pyronadoSoundName, 0.9, 0)
+    Log("Pyronado Attack!")
 end
 
 function state_update(entity, dt)
@@ -108,14 +113,15 @@ function state_update(entity, dt)
     
     -- Update timer
     attackTimer = attackTimer - dt
+    Log("" .. animator.animator:GetCurrentFrame())
     
-    -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
+    --[[ Perform attack at animation midpoint
+    if not attackPerformed and ColliderActivationFrame >= animator.animator:GetCurrentFrame() then
         Log("Pyronado Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-    end
+    end]]
     
     -- Attack finished
     if attackTimer <= 0 then

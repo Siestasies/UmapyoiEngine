@@ -5,7 +5,8 @@ local audio = nil
 ExposedVars = {
     fireSlashAnimationName = "atk_3",
     fireSlashSoundName = "atk_3",
-    attackDuration = 0.5
+    attackDuration = 0.35,
+    ComboActivationFrame = 4
 }
 
 -- State-local variables
@@ -14,6 +15,7 @@ local attackPerformed = false
 local attackStat = nil
 local animator = nil
 local collider = nil
+local attackDir = nil
 
 function state_enter(entity)
     Log("Player entered Fire Slash state")
@@ -82,6 +84,22 @@ function state_enter(entity)
     
     -- Face towards mouse
     FaceTowardsMouse(entity)
+
+    attackDir = getAttackDirection(player)
+
+    -- Activate Corresponding Collider
+    collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+    
+    -- Apply attack/dash velocity
+    local moveSpeed = player.mSpeed * 0.2
+    if HasRigidBody() then
+        local rb = GetRigidBody()
+        if rb then
+            rb.velocity = Vec2(attackDir.x * moveSpeed, attackDir.y * moveSpeed)
+        end
+    end
+
+    Log("Fire Slash Attack!")
 end
 
 function state_update(entity, dt)
@@ -98,8 +116,9 @@ function state_update(entity, dt)
     
     -- Update timer
     attackTimer = attackTimer - dt
+    --Log("" .. animator.animator:GetCurrentFrame())
 
-    if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.5) then
+    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerPyronado")
@@ -110,7 +129,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and attackTimer > (attackDuration * 0.5) then
+    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerSteamBurst")
             return
@@ -119,13 +138,14 @@ function state_update(entity, dt)
         end
     end
     
-    -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
+    --[[ Perform attack at animation midpoint
+    Log("" .. animator.animator:GetCurrentFrame())
+    if not attackPerformed and ColliderActivationFrame >= animator.animator:GetCurrentFrame() then
         Log("Fire Slash Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-    end
+    end]]
     
     -- Attack finished
     if attackTimer <= 0 then
@@ -217,4 +237,30 @@ function FaceTowardsMouse(entity)
         --myScale.x = 1.0 * myScale.x
         transform.scale.x = -1.0 * transform.scale.x
     end
+end
+
+-- Helper function to move player slightly towards mouse when attacking
+function getAttackDirection(player)
+    if not HasTransform() then return end
+    if not HasSprite() then return end
+    
+    local transform = GetTransform()
+    --local sprite = GetSprite()
+    
+    if not transform then return end
+    
+    local mousePos = GetMouseWorldPosition()
+    local myPos = transform.position
+    local direction = Vec2(1, 0)
+    
+    -- Determine direction based on mouse position and player postion
+    direction = mousePos - myPos
+    
+    -- Normalize direction
+    local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
+    if length > 0 then
+        direction = Vec2(direction.x / length, direction.y / length)
+    end
+
+    return direction
 end

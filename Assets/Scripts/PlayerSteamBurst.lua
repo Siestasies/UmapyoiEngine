@@ -4,7 +4,7 @@
 ExposedVars = {
     steamBurstAnimationName = "atk_fire_water",
     steamBurstSoundName = "atk_fire_water",
-    attackDuration = 0.7,
+    attackDuration = 0.45,
     vfxOffsetX = 25.0,
     vfxOffsetY = -8.0
 }
@@ -92,6 +92,12 @@ function state_enter(entity)
     end
     
     FaceTowardsMouse(entity)
+
+    -- Activate Corresponding Collider
+    collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+    -- Play explosion sound
+    PlaySound(steamBurstSoundName, 0.9, 0)
+    Log("Steam Burst Attack!")
 end
 
 function state_update(entity, dt)
@@ -109,15 +115,15 @@ function state_update(entity, dt)
     -- Update timer
     attackTimer = attackTimer - dt
     
-    -- Perform attack at animation midpoint
-    if not attackPerformed and attackTimer < (attackDuration * 0.4) then
+    --[[ Perform attack at animation midpoint
+    if not attackPerformed and ColliderActivationFrame >= animator.animator:GetCurrentFrame() then
         Log("Steam Burst Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
         -- Play explosion sound
         PlaySound(steamBurstSoundName, 0.9, 0)
-    end
+    end]]
     
     -- Attack finished
     if attackTimer <= 0 then
