@@ -6377,6 +6377,15 @@ namespace Uma_Engine
                     "Add Tilemap"
                     );
                 commandHistory.ExecuteCommand(std::move(cmd));
+                
+                // by default add one layer
+                auto& tilemap = coordinator.GetComponent<Uma_ECS::Tilemap>(m_selectedEntity);
+                tilemap.CreateLayer(
+                    "Layer0",
+                    static_cast<unsigned int>(tilemap.mapWidth),
+                    static_cast<unsigned int>(tilemap.mapHeight),
+                    0
+                );
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::FSM>()) && ImGui::MenuItem("FSM"))
             {

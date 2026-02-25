@@ -30,6 +30,7 @@ All rights reserved.
 #include <vector>
 #include <string>
 #include <fstream>
+#include <sstream>
 #include <filesystem>
 #include <unordered_set>
 
@@ -38,12 +39,8 @@ All rights reserved.
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/prettywriter.h>   // pretty JSON output
 
-// Forward declarations for prefab serialization
-namespace Uma_ECS
-{
-    class Coordinator;
-}
-
+// Full Coordinator definition needed for template methods (HasComponent/GetComponent)
+#include "ECS/Core/Coordinator.hpp"
 #include "ECS/Components/Prefab.h"
 
 namespace Uma_Engine
@@ -208,12 +205,8 @@ namespace Uma_Engine
                 return;
             }
 
-            // Serialize prefab entities
-            rapidjson::Value prefabSection(rapidjson::kObjectType);
-            coordinator->SerializePrefab(entity, prefabSection, allocator);
-            doc.AddMember(rapidjson::StringRef("Prefab"), prefabSection, allocator);
-
-            // Mark all entities in the hierarchy with Prefab component
+            // Mark all entities in the hierarchy with Prefab component BEFORE serialization
+            // so the Prefab component data is correctly written into the file.
             Uma_ECS::Coordinator* coordPtr = static_cast<Uma_ECS::Coordinator*>(coordinator);
             std::vector<Uma_ECS::Entity> hierarchyEntities;
             coordPtr->CollectHierarchy(entity, hierarchyEntities);
@@ -231,12 +224,26 @@ namespace Uma_Engine
                 }
                 else
                 {
-                    // Update existing Prefab component
                     auto& prefabComp = coordPtr->GetComponent<Uma_ECS::Prefab>(e);
-                    prefabComp.prefabPath = filename;
-                    prefabComp.isRoot = (i == 0);
+                    if (i == 0)
+                    {
+                        // Root entity: always update to the target prefab file
+                        prefabComp.prefabPath = filename;
+                        prefabComp.isRoot = true;
+                    }
+                    else if (prefabComp.prefabPath == filename)
+                    {
+                        // Already belongs to this prefab (re-save) - ensure isRoot is correct
+                        prefabComp.isRoot = false;
+                    }
+                    // else: nested prefab instance pointing to a different file - preserve it
                 }
             }
+
+            // Serialize prefab entities (Prefab components are now correctly set up)
+            rapidjson::Value prefabSection(rapidjson::kObjectType);
+            coordinator->SerializePrefab(entity, prefabSection, allocator);
+            doc.AddMember(rapidjson::StringRef("Prefab"), prefabSection, allocator);
 
             // Collect and serialize resources used by prefab
             if (resourcesManager)
@@ -276,38 +283,147 @@ namespace Uma_Engine
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
-        void loadPrefab(const std::string& filename)
+        // Returns the root world Entity of the loaded prefab.
+        // loadingStack is used internally for cycle detection across recursive calls.
+        Uma_ECS::Entity loadPrefab(const std::string& filename,
+            std::unordered_set<std::string>* loadingStack = nullptr)
         {
+            // Cycle detection: prevent A.prefab -> B.prefab -> A.prefab infinite loops
+            std::unordered_set<std::string> localStack;
+            if (!loadingStack)
+                loadingStack = &localStack;
+
+            if (loadingStack->count(filename))
+            {
+                Debugger::Log(WarningLevel::eError,
+                    "Circular prefab dependency detected: " + filename);
+                return static_cast<Uma_ECS::Entity>(-1);
+            }
+            loadingStack->insert(filename);
+
             std::ifstream ifs(filename);
+            if (!ifs.is_open())
+            {
+                Debugger::Log(WarningLevel::eError, "Failed to open prefab file: " + filename);
+                loadingStack->erase(filename);
+                return static_cast<Uma_ECS::Entity>(-1);
+            }
+
             rapidjson::IStreamWrapper isw(ifs);
             rapidjson::Document doc;
             doc.ParseStream(isw);
             ifs.close();
 
-            // First, load resources if available
+            // Load resources first
             for (auto* s : serializers)
             {
                 if (s->GetSerializerName() == "resources_manager" && doc.HasMember("resources"))
-                {
                     s->DeserializePrefab(doc["resources"]);
-                }
             }
 
-            // Then, load prefab entities
+            // Load all prefab entities (embedded nested data is loaded as-is for now)
+            Uma_ECS::Entity outerRoot = static_cast<Uma_ECS::Entity>(-1);
+            Uma_ECS::Coordinator* coordPtr = nullptr;
+
             for (auto* s : serializers)
             {
                 if (s->GetSerializerName() == "coordinator" && doc.HasMember("Prefab"))
                 {
-                    s->DeserializePrefab(doc["Prefab"]);
+                    outerRoot = s->DeserializePrefab(doc["Prefab"]);
+                    coordPtr = static_cast<Uma_ECS::Coordinator*>(s);
                 }
             }
 
-            std::string log;
-            std::stringstream ss(log);
+            if (outerRoot == static_cast<Uma_ECS::Entity>(-1) || !coordPtr)
+            {
+                Debugger::Log(WarningLevel::eCritical, "Loaded from file : " + filename);
+                loadingStack->erase(filename);
+                return outerRoot;
+            }
 
-            ss << "Loaded from file : " << filename;
+            // --- Nested prefab replacement ---
+            // Scan the loaded hierarchy for entities that are roots of a DIFFERENT prefab.
+            // Only collect the outermost such roots; skip entities already inside another
+            // nested sub-hierarchy so we don't double-process deep nesting.
 
-            Debugger::Log(WarningLevel::eCritical, ss.str());
+            struct NestedInfo
+            {
+                Uma_ECS::Entity embeddedEntity;
+                std::string     nestedPath;
+                std::optional<Uma_ECS::Entity> parentEntity;
+                Uma_Math::Vec2  position;
+                Uma_Math::Vec2  rotation;
+                Uma_Math::Vec2  scale;
+                std::string     name;
+            };
+
+            std::vector<Uma_ECS::Entity> outerHierarchy;
+            coordPtr->CollectHierarchy(outerRoot, outerHierarchy);
+
+            std::vector<NestedInfo>              nestedPrefabs;
+            std::unordered_set<Uma_ECS::Entity>  handledEntities; // tracks sub-hierarchies already claimed
+
+            for (Uma_ECS::Entity e : outerHierarchy)
+            {
+                if (e == outerRoot) continue;
+                if (handledEntities.count(e)) continue; // inside an already-found nested prefab
+
+                if (!coordPtr->HasComponent<Uma_ECS::Prefab>(e)) continue;
+
+                const auto& prefabComp = coordPtr->GetComponent<Uma_ECS::Prefab>(e);
+                if (!prefabComp.isRoot)            continue; // not a nested root
+                if (prefabComp.prefabPath == filename) continue; // same file, not nested
+
+                // Found a top-level nested prefab root
+                NestedInfo info;
+                info.embeddedEntity = e;
+                info.nestedPath     = prefabComp.prefabPath;
+
+                const auto& tf  = coordPtr->GetComponent<Uma_ECS::Transform>(e);
+                info.parentEntity = tf.parent;
+                info.position     = tf.position;
+                info.rotation     = tf.rotation;
+                info.scale        = tf.scale;
+                info.name         = tf.name;
+
+                nestedPrefabs.push_back(info);
+
+                // Mark the entire sub-hierarchy so we don't re-visit it
+                std::vector<Uma_ECS::Entity> sub;
+                coordPtr->CollectHierarchy(e, sub);
+                for (Uma_ECS::Entity ne : sub)
+                    handledEntities.insert(ne);
+            }
+
+            // Destroy every embedded nested prefab entity (queued; not immediate)
+            for (const auto& info : nestedPrefabs)
+                coordPtr->DestroyEntityAndChildren(info.embeddedEntity);
+
+            // Flush the deletion queue so IDs are freed before we load replacements
+            coordPtr->ProcessDeletionQueue();
+
+            // Recursively load each nested prefab from its own file and re-attach
+            for (const auto& info : nestedPrefabs)
+            {
+                Uma_ECS::Entity nestedRoot = loadPrefab(info.nestedPath, loadingStack);
+                if (nestedRoot == static_cast<Uma_ECS::Entity>(-1)) continue;
+
+                // Restore the transform context that was stored in the outer prefab
+                auto& tf    = coordPtr->GetComponent<Uma_ECS::Transform>(nestedRoot);
+                tf.position = info.position;
+                tf.rotation = info.rotation;
+                tf.scale    = info.scale;
+                tf.name     = info.name;
+                tf.isDirty  = true;
+
+                // Re-attach to the correct parent in the outer hierarchy
+                if (info.parentEntity.has_value())
+                    coordPtr->SetParent(nestedRoot, info.parentEntity.value());
+            }
+
+            Debugger::Log(WarningLevel::eCritical, "Loaded from file : " + filename);
+            loadingStack->erase(filename);
+            return outerRoot;
         }
 
         void ShutDown()
