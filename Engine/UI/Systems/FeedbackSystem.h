@@ -31,7 +31,7 @@ ARCHITECTURE
 
 EVENT INTEGRATION
 ────────────────────────────────────────────────────────────────────────────
-  Any system or Lua script emits SpawnNumberEvent through EventSystem.
+  Any system or Lua script emits SpawnFeedbackEvent through EventSystem.
   FeedbackSystem subscribes to it in Init() under the FeedbackSystem
   type tag (matching the existing Subscribe<T,U> pattern from EventSystem.h).
 
@@ -72,7 +72,7 @@ namespace Uma_UI
 
         /*!
          * \brief Creates the shared Canvas, pre-allocates the Text pool,
-         *        and subscribes to SpawnNumberEvent.
+         *        and subscribes to SpawnFeedbackEvent.
          */
         void Init(Uma_ECS::Coordinator*    coord,
                   Uma_Engine::Graphics*    gfx,
@@ -104,13 +104,13 @@ namespace Uma_UI
         /*!
          * \brief Direct C++ spawn (also the EventSystem handler target).
          */
-        void Spawn(float worldX, float worldY, int amount,
-                   NumberType type = NumberType::Normal);
+        void Spawn(float worldX, float worldY, const std::string& value = "",
+                   FeedbackType type = FeedbackType::Normal);
 
-        void Spawn(float worldX, float worldY, int amount, bool isCrit)
+        void Spawn(float worldX, float worldY, const std::string& value, bool isCrit)
         {
-            Spawn(worldX, worldY, amount,
-                  isCrit ? NumberType::Critical : NumberType::Normal);
+            Spawn(worldX, worldY, value,
+                  isCrit ? FeedbackType::Critical : FeedbackType::Normal);
         }
 
         Uma_ECS::Entity GetCanvasEntity() const { return mCanvasEntity; }
@@ -131,7 +131,7 @@ namespace Uma_UI
         Uma_ECS::Entity mCanvasEntity = static_cast<Uma_ECS::Entity>(-1);
 
         // Fixed pool
-        NumberSlot mPool[NumberConfig::kPoolSize]{};
+        Slot mPool[FeedbackConfig::kPoolSize]{};
 
         // Helpers
         Vec2  WorldToNDC(float wx, float wy) const;
@@ -141,7 +141,7 @@ namespace Uma_UI
 
         void BuildCanvas();
         void BuildPooledTextEntities();
-        void HideSlot(NumberSlot& slot);  // moves off-screen, alpha=0
+        void HideSlot(Slot& slot);  // moves off-screen, alpha=0
     };
 
 } // namespace Uma_UI

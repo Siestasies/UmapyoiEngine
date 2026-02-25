@@ -132,11 +132,11 @@ function OnHurt(player, damage)
         ChangeState(EntityID, "FireDemonStunned")
         isEffective = false
         isFusion = false
-        SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(damage - enemy.mDefense), "crit")
+        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "crit")
     elseif isEffective then
-        SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(damage - enemy.mDefense), "affinity")
+        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "affinity")
     else
-        SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(damage - enemy.mDefense))
+        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense))
     end
     audio = GetAudioComponent()
     audio:play(EntityID, "Fire Demon Damage Scream")

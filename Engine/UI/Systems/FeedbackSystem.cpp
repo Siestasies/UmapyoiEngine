@@ -51,10 +51,10 @@ namespace Uma_UI
         BuildCanvas();
         BuildPooledTextEntities();
 
-        pEventSystem->Subscribe<SpawnNumberEvent, FeedbackSystem>(
-            [this](const SpawnNumberEvent& e)
+        pEventSystem->Subscribe<SpawnFeedbackEvent, FeedbackSystem>(
+            [this](const SpawnFeedbackEvent& e)
             {
-                Spawn(e.worldX, e.worldY, e.amount, e.type);
+                Spawn(e.worldX, e.worldY, e.value, e.type);
             });
 
         pEventSystem->Subscribe<Uma_Engine::LoadSceneRequestEvent, FeedbackSystem>(
@@ -74,7 +74,7 @@ namespace Uma_UI
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
             "[FeedbackSystem] Initialized. Canvas entity = "
             + std::to_string(mCanvasEntity)
-            + ", pool size = " + std::to_string(NumberConfig::kPoolSize));
+            + ", pool size = " + std::to_string(FeedbackConfig::kPoolSize));
     }
 
     void FeedbackSystem::Update(float dt)
@@ -100,25 +100,25 @@ namespace Uma_UI
 
             anyChanged = true;
 
-            const float ndcRise = (NumberConfig::kRiseSpeed / (screen.y * 0.5f)) * slot.elapsed;
+            float ndcVertical = (slot.fall) ? -(FeedbackConfig::kFallSpeed / (screen.y * 0.5f)) * slot.elapsed : ndcVertical = (FeedbackConfig::kRiseSpeed / (screen.y * 0.5f)) * slot.elapsed;
 
             const float pixX = (slot.baseNdcX + slot.jitterNdcX) * (screen.x * 0.5f);
-            const float pixY = (slot.baseNdcY + ndcRise)          * (screen.y * 0.5f);
+            const float pixY = (slot.baseNdcY + ndcVertical) * (screen.y * 0.5f);
 
             float alpha = 1.0f;
-            if (t > NumberConfig::kFadeStartFraction)
+            if (t > FeedbackConfig::kFadeStartFraction)
             {
-                const float fadeSpan = 1.0f - NumberConfig::kFadeStartFraction;
-                alpha = 1.0f - ((t - NumberConfig::kFadeStartFraction) / fadeSpan);
+                const float fadeSpan = 1.0f - FeedbackConfig::kFadeStartFraction;
+                alpha = 1.0f - ((t - FeedbackConfig::kFadeStartFraction) / fadeSpan);
                 alpha = std::max(0.0f, alpha);
             }
 
             float scaleMul = 1.0f;
-            if (slot.elapsed < NumberConfig::kPunchDuration)
+            if (slot.elapsed < FeedbackConfig::kPunchDuration)
             {
-                const float punchT = slot.elapsed / NumberConfig::kPunchDuration;
-                const float eased  = 1.0f - (1.0f - punchT) * (1.0f - punchT); // EaseOutQuad
-                scaleMul = 1.0f + (NumberConfig::kPunchPeak - 1.0f) * eased;
+                const float punchT = slot.elapsed / FeedbackConfig::kPunchDuration;
+                const float eased  = 1.0f - (1.0f - punchT) * (1.0f - punchT);
+                scaleMul = 1.0f + (FeedbackConfig::kPunchPeak - 1.0f) * eased;
             }
 
             if (!pCoordinator->HasActiveEntity(slot.textEntity)) continue;
@@ -198,53 +198,52 @@ namespace Uma_UI
             "[FeedbackSystem] Shutdown complete.");
     }
 
-    void FeedbackSystem::Spawn(float worldX, float worldY, int amount,
-                                   NumberType type)
+    void FeedbackSystem::Spawn(float worldX, float worldY, const std::string& value, FeedbackType type)
     {
         if (!pCoordinator || !pGraphics) return;
 
-        std::string displayText;
-        if (type == NumberType::Heal)
-            displayText = "+" + std::to_string(amount);
-        else
-            displayText = std::to_string(amount);
+        std::string displayText = value;
 
-        if (type == NumberType::Affinity)
+        if (type == FeedbackType::Affinity)
             displayText += "!";
-        else if (type == NumberType::Critical)
+        else if (type == FeedbackType::Critical)
             displayText += "!!";
 
         Color color;
         float fontSize;
         switch (type)
         {
-        case NumberType::Affinity:
-            color = NumberConfig::AffinityColor();
-            fontSize = NumberConfig::kFontSizeAffinity;
+        case FeedbackType::Affinity:
+            color = FeedbackConfig::AffinityColor();
+            fontSize = FeedbackConfig::kFontSizeAffinity;
             break;
-        case NumberType::Critical:
-            color    = NumberConfig::CritColor();
-            fontSize = NumberConfig::kFontSizeCrit;
+        case FeedbackType::Critical:
+            color    = FeedbackConfig::CritColor();
+            fontSize = FeedbackConfig::kFontSizeCrit;
             break;
-        case NumberType::Heal:
-            color    = NumberConfig::HealColor();
-            fontSize = NumberConfig::kFontSizeNormal;
+        case FeedbackType::Heal:
+            color    = FeedbackConfig::HealColor();
+            fontSize = FeedbackConfig::kFontSizeNormal;
             break;
-        case NumberType::PlayerHit:
-            color    = NumberConfig::PlayerHitColor();
-            fontSize = NumberConfig::kFontSizeNormal;
+        case FeedbackType::PlayerHit:
+            color    = FeedbackConfig::PlayerHitColor();
+            fontSize = FeedbackConfig::kFontSizeNormal;
             break;
-        case NumberType::ManaSpend:
-            color = NumberConfig::ManaSpendColor();
-            fontSize = NumberConfig::kFontSizeMana;
+        case FeedbackType::ManaSpend:
+            color = FeedbackConfig::ManaSpendColor();
+            fontSize = FeedbackConfig::kFontSizeMana;
             break;
-        case NumberType::ManaGain:
-            color = NumberConfig::ManaGainColor();
-            fontSize = NumberConfig::kFontSizeMana;
+        case FeedbackType::ManaGain:
+            color = FeedbackConfig::ManaGainColor();
+            fontSize = FeedbackConfig::kFontSizeMana;
+            break;
+        case FeedbackType::Warning:
+            color = FeedbackConfig::WarningColor();
+            fontSize = FeedbackConfig::kFontSizeWarning;
             break;
         default:
-            color    = NumberConfig::NormalColor();
-            fontSize = NumberConfig::kFontSizeNormal;
+            color    = FeedbackConfig::NormalColor();
+            fontSize = FeedbackConfig::kFontSizeNormal;
             break;
         }
 
@@ -252,18 +251,19 @@ namespace Uma_UI
 
         Vec2 screen = pGraphics->GetSceneViewport();
         float jitterNdc = (NextJitter() * 2.0f - 1.0f)
-                          * (NumberConfig::kSpreadRadius / (screen.x * 0.5f));
+                          * (FeedbackConfig::kSpreadRadius / (screen.x * 0.5f));
 
         int idx = AcquireSlot();
-        NumberSlot& slot = mPool[idx];
+        Slot& slot = mPool[idx];
 
-        slot.baseNdcX    = ndc.x;
-        slot.baseNdcY    = ndc.y;
-        slot.jitterNdcX  = jitterNdc;
-        slot.elapsed     = 0.0f;
-        slot.lifetime    = NumberConfig::kLifetime;
+        slot.baseNdcX     = ndc.x;
+        slot.baseNdcY     = ndc.y;
+        slot.jitterNdcX   = jitterNdc;
+        slot.elapsed      = 0.0f;
+        slot.lifetime     = FeedbackConfig::kLifetime;
         slot.baseFontSize = fontSize;
-        slot.alive       = true;
+        slot.fall         = (type == FeedbackType::ManaSpend || type == FeedbackType::Warning);
+        slot.alive        = true;
 
         if (!pCoordinator->HasActiveEntity(slot.textEntity))
         {
@@ -278,7 +278,7 @@ namespace Uma_UI
         {
             auto& txt    = pCoordinator->GetComponent<Text>(slot.textEntity);
             txt.text     = displayText;
-            txt.fontSize = fontSize * NumberConfig::kPunchPeak;
+            txt.fontSize = fontSize * FeedbackConfig::kPunchPeak;
             txt.color    = color;
             txt.color.a  = 1.0f;
             txt.visible  = true;
@@ -289,8 +289,8 @@ namespace Uma_UI
             auto& rt = pCoordinator->GetComponent<RectTransform>(slot.textEntity);
             rt.anchoredPosition.x = (ndc.x + jitterNdc) * (screen.x * 0.5f);
             rt.anchoredPosition.y = ndc.y                * (screen.y * 0.5f);
-            rt.sizeDelta.x = fontSize * NumberConfig::kPunchPeak * 5.0f;
-            rt.sizeDelta.y = fontSize * NumberConfig::kPunchPeak * 2.0f;
+            rt.sizeDelta.x = fontSize * FeedbackConfig::kPunchPeak * 5.0f;
+            rt.sizeDelta.y = fontSize * FeedbackConfig::kPunchPeak * 2.0f;
             rt.isDirty = true;
         }
 
@@ -322,9 +322,9 @@ namespace Uma_UI
 
     void FeedbackSystem::BuildPooledTextEntities()
     {
-        for (int i = 0; i < NumberConfig::kPoolSize; ++i)
+        for (int i = 0; i < FeedbackConfig::kPoolSize; ++i)
         {
-            NumberSlot& slot = mPool[i];
+            Slot& slot = mPool[i];
 
             Uma_ECS::Entity ent = pCoordinator->CreateEntity();
             slot.textEntity = ent;
@@ -345,7 +345,7 @@ namespace Uma_UI
             Text txt{};
             txt.text     = "";
             txt.fontPath = mFontPath;
-            txt.fontSize = NumberConfig::kFontSizeNormal;
+            txt.fontSize = FeedbackConfig::kFontSizeNormal;
             txt.color    = { 1.0f, 1.0f, 1.0f, 0.0f }; // alpha = 0
             txt.alignment  = TextAlignment::Center;
             txt.visible    = false;
@@ -358,7 +358,7 @@ namespace Uma_UI
         }
     }
 
-    void FeedbackSystem::HideSlot(NumberSlot& slot)
+    void FeedbackSystem::HideSlot(Slot& slot)
     {
         slot.alive   = false;
         slot.elapsed = 0.0f;
@@ -385,14 +385,14 @@ namespace Uma_UI
 
     int FeedbackSystem::AcquireSlot()
     {
-        for (int i = 0; i < NumberConfig::kPoolSize; ++i)
+        for (int i = 0; i < FeedbackConfig::kPoolSize; ++i)
         {
             if (!mPool[i].alive) return i;
         }
 
         int   bestIdx = 0;
         float bestT   = -1.0f;
-        for (int i = 0; i < NumberConfig::kPoolSize; ++i)
+        for (int i = 0; i < FeedbackConfig::kPoolSize; ++i)
         {
             float t = mPool[i].elapsed / mPool[i].lifetime;
             if (t > bestT) { bestT = t; bestIdx = i; }
@@ -414,7 +414,7 @@ namespace Uma_UI
     }
 
     // =========================================================================
-    //  Private — NextJitter   (xorshift32, returns [0,1])
+    //  NextJitter   (xorshift32, returns [0,1])
     // =========================================================================
     float FeedbackSystem::NextJitter()
     {

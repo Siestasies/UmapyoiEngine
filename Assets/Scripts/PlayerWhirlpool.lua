@@ -49,6 +49,8 @@ function state_enter(entity)
     attackStat = GetWhirlpoolAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Whirlpool!")
+        local transform = GetTransformFrom(EntityID)
+        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Whirlpool!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end
@@ -57,7 +59,9 @@ function state_enter(entity)
     player.currAttackIndex = 7
     
     -- Consume mana
-    player.mMana = player.mMana - attackStat.manaCost
+    player.mMana = player.mMana - attackStat.
+    local transform = GetTransformFrom(EntityID)
+    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, tostring(attackStat.manaCost), "manaspend")
 
     -- Set elemental combo state
     --player.lastElementUsed = ElementType.Steam

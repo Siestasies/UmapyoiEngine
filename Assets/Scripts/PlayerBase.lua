@@ -94,13 +94,13 @@ function Update(dt)
         local manaGain = player.mManaRegenRate * dt
         player.mMana = math.min(player.mMana + manaGain, player.mMaxMana)
 
-        local transform = GetTransformFrom(EntityID)
-        SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(manaGain), "managain")
+    --    local transform = GetTransformFrom(EntityID)
+    --    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, math.ceil(manaGain), "managain")
     end
     
     -- Debug logging
     if debugMode then
-        Log("Player Health: " .. tostring(player.mHealth) .. " Mana: " .. tostring(math.floor(player.mMana)))
+        Log("Player Health: " .. tostring(player.mHealth) .. " Mana: " .. tostring(math.ceil(player.mMana)))
     end
 end
 
@@ -157,7 +157,7 @@ function TakeDamage(damage)
     player.mHealth = player.mHealth - actualDamage
 
     local transform = GetTransformFrom(EntityID)
-    SpawnNumber(transform.worldPosition.x, transform.worldPosition.y, math.tointeger(actualDamage), "playerhit")
+    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(actualDamage), "playerhit")
 
     Log("Player took " .. tostring(actualDamage) .. " damage! Health: " .. tostring(player.mHealth))
     

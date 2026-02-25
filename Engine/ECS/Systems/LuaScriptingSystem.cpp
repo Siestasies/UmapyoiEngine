@@ -595,51 +595,56 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::RegisterFeedbackAPI()
     {
-        sharedLua->new_enum<Uma_UI::NumberType>("NumberType",
+        sharedLua->new_enum<Uma_UI::FeedbackType>("FeedbackType",
             {
-                { "Normal",    Uma_UI::NumberType::Normal    },
-                { "Affinity",  Uma_UI::NumberType::Affinity  },
-                { "Critical",  Uma_UI::NumberType::Critical  },
-                { "Heal",      Uma_UI::NumberType::Heal      },
-                { "PlayerHit", Uma_UI::NumberType::PlayerHit },
-                { "ManaSpend", Uma_UI::NumberType::ManaSpend },
-                { "ManaGain",  Uma_UI::NumberType::ManaGain  }
+                { "Normal",    Uma_UI::FeedbackType::Normal    },
+                { "Affinity",  Uma_UI::FeedbackType::Affinity  },
+                { "Critical",  Uma_UI::FeedbackType::Critical  },
+                { "Heal",      Uma_UI::FeedbackType::Heal      },
+                { "PlayerHit", Uma_UI::FeedbackType::PlayerHit },
+                { "ManaSpend", Uma_UI::FeedbackType::ManaSpend },
+                { "ManaGain",  Uma_UI::FeedbackType::ManaGain  },
+                { "Warning",   Uma_UI::FeedbackType::Warning   },
             });
 
-        sharedLua->set_function("SpawnNumber",
-            [this](float worldX, float worldY, int amount,
+        sharedLua->set_function("SpawnFeedback",
+            [this](float worldX, float worldY, const std::string& value,
                 sol::optional<std::string> typeStr)
             {
-                Uma_UI::NumberType type = Uma_UI::NumberType::Normal;
+                Uma_UI::FeedbackType type = Uma_UI::FeedbackType::Normal;
 
                 if (typeStr.has_value())
                 {
                     const std::string& s = typeStr.value();
                     if (s == "affinity" || s == "Affinity" || s == "AFFINITY")
-                        type = Uma_UI::NumberType::Affinity;
+                        type = Uma_UI::FeedbackType::Affinity;
 
                     else if (s == "crit" || s == "Crit" || s == "CRIT"
                         || s == "critical" || s == "Critical" || s == "CRITICAL")
-                        type = Uma_UI::NumberType::Critical;
+                        type = Uma_UI::FeedbackType::Critical;
 
                     else if (s == "heal" || s == "Heal" || s == "HEAL")
-                        type = Uma_UI::NumberType::Heal;
+                        type = Uma_UI::FeedbackType::Heal;
 
                     else if (s == "playerhit" || s == "PlayerHit" || s == "PLAYERHIT"
                         || s == "player" || s == "Player" || s == "PLAYER")
-                        type = Uma_UI::NumberType::PlayerHit;
+                        type = Uma_UI::FeedbackType::PlayerHit;
 
                     else if (s == "manaspend" || s == "ManaSpend" || s == "MANASPEND"
                         || s == "mana" || s == "Mana" || s == "MANA")
-                        type = Uma_UI::NumberType::ManaSpend;
+                        type = Uma_UI::FeedbackType::ManaSpend;
 
                     else if (s == "managain" || s == "ManaGain" || s == "MANAGAIN")
-                        type = Uma_UI::NumberType::ManaGain;
+                        type = Uma_UI::FeedbackType::ManaGain;
+
+                    else if (s == "warn" || s == "Warn" || s == "WARN" 
+                        || s == "warning" || s == "Warning" || s == "WARNING")
+                        type = Uma_UI::FeedbackType::Warning;
                     // else: anything else → Normal
                 }
 
-                pEventSystem->Emit<Uma_UI::SpawnNumberEvent>(
-                    worldX, worldY, amount, type);
+                pEventSystem->Emit<Uma_UI::SpawnFeedbackEvent>(
+                    worldX, worldY, value, type);
             });
     }
 

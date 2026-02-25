@@ -49,6 +49,8 @@ function state_enter(entity)
     attackStat = GetPyronadoAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Pyronado!")
+        local transform = GetTransformFrom(EntityID)
+        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Pyronado!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end
@@ -58,6 +60,8 @@ function state_enter(entity)
     
     -- Consume mana
     player.mMana = player.mMana - attackStat.manaCost
+    local transform = GetTransformFrom(EntityID)
+    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, tostring(attackStat.manaCost), "manaspend")
 
     -- Set elemental combo state
     --player.lastElementUsed = ElementType.Steam
