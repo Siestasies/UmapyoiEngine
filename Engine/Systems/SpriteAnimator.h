@@ -217,6 +217,15 @@ namespace Uma_Engine
         }
 
         /**
+         * \brief Gets number of the currently playing animation frame
+         * \return Const int to the current clip's frame
+         */
+        const int GetCurrentFrame() const
+        {
+            return currentFrame;
+        }
+
+        /**
          * \brief Checks if the animation is currently playing
          * \return true if playing
          */

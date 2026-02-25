@@ -6,6 +6,7 @@ local audio = nil
 ExposedVars = {
     WindDashAnimationName = "atk_3",
     WindDashSoundName = "atk_3",
+    ComboActivationFrame = 4
 }
 
 -- State-local variables
@@ -80,6 +81,11 @@ function state_enter(entity)
     audio:play(EntityID, "WindSlash")
     
     player.mDashCD = attackStat.attackCd
+
+    -- Activate Corresponding Collider
+    collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+    PlaySound(WindDashSoundName, 0.9, 0)
+    Log("Wind Dash Attack!")
 end
 
 function state_update(entity, dt)
@@ -99,7 +105,7 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and attackTimer > (player.mDashDuration * 0.5) then
+    if KeyPressed(KEY_Q) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerPyronado")
             return
@@ -109,7 +115,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and attackTimer > (player.mDashDuration * 0.5) then
+    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWhirlpool")
             return
@@ -118,13 +124,13 @@ function state_update(entity, dt)
         end
     end
 
-    -- Perform damage at attack midpoint
-    if not attackPerformed and attackTimer < (player.mDashDuration * 0.5) then
+    --[[ Perform damage at attack midpoint
+    if not attackPerformed and ColliderActivationFrame >= animator.animator:GetCurrentFrame() then
         Log("Wind Dash Attack!")
         attackPerformed = true
         -- Activate Corresponding Collider
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-    end
+    end]]
 
     -- Apply attack/dash velocity
     local dashSpeed = player.mSpeed * player.mDashSpeed
