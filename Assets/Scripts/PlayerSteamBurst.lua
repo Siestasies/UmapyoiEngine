@@ -49,8 +49,6 @@ function state_enter(entity)
     attackStat = GetSteamBurstAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Steam Burst!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Steam Burst!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end

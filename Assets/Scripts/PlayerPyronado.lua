@@ -49,8 +49,6 @@ function state_enter(entity)
     attackStat = GetPyronadoAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Pyronado!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Pyronado!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end

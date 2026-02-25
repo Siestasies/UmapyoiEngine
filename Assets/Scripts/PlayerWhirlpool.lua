@@ -49,8 +49,6 @@ function state_enter(entity)
     attackStat = GetWhirlpoolAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Whirlpool!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Whirlpool!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end

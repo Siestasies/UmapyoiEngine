@@ -60,6 +60,8 @@ function state_update(entity, dt)
         return
     end
 
+    local transform = GetTransformFrom(EntityID)
+
     if KeyPressed(KEY_R) then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
@@ -67,6 +69,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Wind Dash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Wind Dash!", "warning")
         end
     end
     
@@ -78,6 +81,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Fire Slash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Fire Slash!", "warning")
         end
     end
     
@@ -88,6 +92,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Water Slash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Water Slash!", "warning")
         end
     end
 end

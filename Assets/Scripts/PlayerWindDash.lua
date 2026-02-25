@@ -50,8 +50,6 @@ function state_enter(entity)
     -- Check mana cost
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Wind Dash!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Wind Dash!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end
@@ -109,6 +107,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Pyronado!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Pyronado!", "warning")            
         end
     end
 
@@ -119,6 +118,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Whirlpool!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Whirlpool!", "warning")            
         end
     end
 

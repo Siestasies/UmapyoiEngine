@@ -51,8 +51,6 @@ function state_enter(entity)
     attackStat = GetWaterSlashAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Water Slash!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Water Slash!", "warning")        
         ChangeState(entity, "PlayerIdle")
         return
     end
@@ -109,6 +107,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Whirlpool!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Whirlpool!", "warning")                        
         end
     end
 
@@ -119,6 +118,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Steam Burst!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Steam Burst!", "warning")
         end
     end
     

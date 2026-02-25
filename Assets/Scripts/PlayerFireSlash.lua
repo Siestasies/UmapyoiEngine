@@ -50,8 +50,6 @@ function state_enter(entity)
     attackStat = GetFireSlashAttackStat(player)
     if player.mMana < attackStat.manaCost then
         Log("Not enough mana for Fire Slash!")
-        local transform = GetTransformFrom(EntityID)
-        SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Fire Slash!", "warning")
         ChangeState(entity, "PlayerIdle")
         return
     end
@@ -103,6 +101,7 @@ function state_update(entity, dt)
     
     -- Update timer
     attackTimer = attackTimer - dt
+    local transform = GetTransformFrom(EntityID)
 
     if KeyPressed(KEY_R) and attackTimer > (attackDuration * 0.5) then
         -- Check if player has enough mana for wind dash
@@ -111,6 +110,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Pyronado!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Pyronado!", "warning")            
         end
     end
 
@@ -121,6 +121,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Steam Burst!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Steam Burst!", "warning")            
         end
     end
     
