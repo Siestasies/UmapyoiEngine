@@ -41,6 +41,9 @@ All rights reserved.
 
 #include "Events/ApplicationEvents.h"
 
+// Feedback system
+#include "../UI/Core/FeedbackTypes.h"
+
 #include <functional>
 
 // temp
@@ -377,10 +380,11 @@ namespace Uma_ECS
         RegisterInputBindings();    // register the key press functions
         RegisterKeyConstants();     // register the availables keys
 
-        RegisterUtilityFUnctions();
+        RegisterUtilityFunctions();
         RegisterCrossEntityAccess();
         RegisterEntityQueries();
         RegisterEntityManipulation();
+        RegisterFeedbackAPI();
     }
 
     void LuaScriptingSystem::RegisterEntityManipulation()
@@ -586,6 +590,61 @@ namespace Uma_ECS
                     Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Exception spawning prefab: " + std::string(e.what()));
                     return static_cast<Entity>(-1);
                 }
+            });
+    }
+
+    void LuaScriptingSystem::RegisterFeedbackAPI()
+    {
+        sharedLua->new_enum<Uma_UI::FeedbackType>("FeedbackType",
+            {
+                { "Normal",    Uma_UI::FeedbackType::Normal    },
+                { "Affinity",  Uma_UI::FeedbackType::Affinity  },
+                { "Critical",  Uma_UI::FeedbackType::Critical  },
+                { "Heal",      Uma_UI::FeedbackType::Heal      },
+                { "PlayerHit", Uma_UI::FeedbackType::PlayerHit },
+                { "ManaSpend", Uma_UI::FeedbackType::ManaSpend },
+                { "ManaGain",  Uma_UI::FeedbackType::ManaGain  },
+                { "Warning",   Uma_UI::FeedbackType::Warning   },
+            });
+
+        sharedLua->set_function("SpawnFeedback",
+            [this](float worldX, float worldY, const std::string& value,
+                sol::optional<std::string> typeStr)
+            {
+                Uma_UI::FeedbackType type = Uma_UI::FeedbackType::Normal;
+
+                if (typeStr.has_value())
+                {
+                    const std::string& s = typeStr.value();
+                    if (s == "affinity" || s == "Affinity" || s == "AFFINITY")
+                        type = Uma_UI::FeedbackType::Affinity;
+
+                    else if (s == "crit" || s == "Crit" || s == "CRIT"
+                        || s == "critical" || s == "Critical" || s == "CRITICAL")
+                        type = Uma_UI::FeedbackType::Critical;
+
+                    else if (s == "heal" || s == "Heal" || s == "HEAL")
+                        type = Uma_UI::FeedbackType::Heal;
+
+                    else if (s == "playerhit" || s == "PlayerHit" || s == "PLAYERHIT"
+                        || s == "player" || s == "Player" || s == "PLAYER")
+                        type = Uma_UI::FeedbackType::PlayerHit;
+
+                    else if (s == "manaspend" || s == "ManaSpend" || s == "MANASPEND"
+                        || s == "mana" || s == "Mana" || s == "MANA")
+                        type = Uma_UI::FeedbackType::ManaSpend;
+
+                    else if (s == "managain" || s == "ManaGain" || s == "MANAGAIN")
+                        type = Uma_UI::FeedbackType::ManaGain;
+
+                    else if (s == "warn" || s == "Warn" || s == "WARN" 
+                        || s == "warning" || s == "Warning" || s == "WARNING")
+                        type = Uma_UI::FeedbackType::Warning;
+                    // else: anything else → Normal
+                }
+
+                pEventSystem->Emit<Uma_UI::SpawnFeedbackEvent>(
+                    worldX, worldY, value, type);
             });
     }
 
@@ -1399,7 +1458,7 @@ namespace Uma_ECS
 #undef COMPONENT_LIST
     }
 
-    void LuaScriptingSystem::RegisterUtilityFUnctions()
+    void LuaScriptingSystem::RegisterUtilityFunctions()
     {
         // Utility functions
         sharedLua->set_function("Log", [](const std::string& msg) {

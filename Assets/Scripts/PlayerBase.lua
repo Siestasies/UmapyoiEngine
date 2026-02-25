@@ -93,11 +93,14 @@ function Update(dt)
     if player.mMana < player.mMaxMana then
         local manaGain = player.mManaRegenRate * dt
         player.mMana = math.min(player.mMana + manaGain, player.mMaxMana)
+
+    --    local transform = GetTransformFrom(EntityID)
+    --    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, math.ceil(manaGain), "managain")
     end
     
     -- Debug logging
     if debugMode then
-        Log("Player Health: " .. tostring(player.mHealth) .. " Mana: " .. tostring(math.floor(player.mMana)))
+        Log("Player Health: " .. tostring(player.mHealth) .. " Mana: " .. tostring(math.ceil(player.mMana)))
     end
 end
 
@@ -159,7 +162,10 @@ function TakeDamage(damage)
     -- Calculate actual damage after defense
     local actualDamage = math.max(1, damage - player.mDefense)
     player.mHealth = player.mHealth - actualDamage
-    
+
+    local transform = GetTransformFrom(EntityID)
+    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(actualDamage), "playerhit")
+
     Log("Player took " .. tostring(actualDamage) .. " damage! Health: " .. tostring(player.mHealth))
     
     -- Transition to hurt state if still alive

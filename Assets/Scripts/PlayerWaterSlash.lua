@@ -58,6 +58,8 @@ function state_enter(entity)
     
     -- Consume mana
     player.mMana = math.floor(player.mMana - attackStat.manaCost)
+    local transform = GetTransformFrom(EntityID)
+    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, tostring(attackStat.manaCost), "manaspend")
     
     -- Set elemental combo state
     --player.lastElementUsed = ElementType.Water
@@ -122,6 +124,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Whirlpool!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Whirlpool!", "warning")                        
         end
     end
 
@@ -132,6 +135,7 @@ function state_update(entity, dt)
             return
         else
             Log("Not enough mana for Steam Burst!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Steam Burst!", "warning")
         end
     end
     
