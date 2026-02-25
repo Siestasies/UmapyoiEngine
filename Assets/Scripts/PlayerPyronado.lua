@@ -106,6 +106,8 @@ function state_enter(entity)
     end
     
     FaceTowardsMouse(entity)
+
+    Log("Pyronado Attack!")
 end
 
 function state_update(entity, dt)

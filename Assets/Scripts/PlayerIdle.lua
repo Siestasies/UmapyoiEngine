@@ -17,6 +17,8 @@ function state_enter(entity)
     end
 
     animator.animator:Play(idleAnimationName, false)
+
+    
 end
 
 function state_update(entity, dt)
@@ -52,6 +54,13 @@ function state_update(entity, dt)
             return
         end
         Log("Dash Failed")
+    end
+
+    if KeyPressed(KEY_SHIFT) then
+        if player.mDashCD <= 0 then
+            ChangeState(entity, "PlayerDash")
+            return
+        end
     end
     
     -- Check for basic attack input (Left mouse button)

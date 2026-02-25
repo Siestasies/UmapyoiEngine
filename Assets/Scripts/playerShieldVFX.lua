@@ -46,7 +46,7 @@ function BeginDie()
     isDying = true
     isAlive = false
     animator.animator:Play("shield down", true)
-    Log("WATER SHIELD: BeginDie called, playing shield down")
+    --Log("WATER SHIELD: BeginDie called, playing shield down")
 end
 
 function Update(dt)
@@ -55,7 +55,7 @@ function Update(dt)
 
     animator = GetAnimator()
 
-    Log("WATER SHIELD clip: " .. tostring(animator.animator:GetCurrentClip()) .. " | finished: " .. tostring(animator.animator:HasFinished()) .. " | isDying: " .. tostring(isDying))
+    --Log("WATER SHIELD clip: " .. tostring(animator.animator:GetCurrentClip()) .. " | finished: " .. tostring(animator.animator:HasFinished()) .. " | isDying: " .. tostring(isDying))
 
     -- Shield up -> shielding transition
     if isAlive and

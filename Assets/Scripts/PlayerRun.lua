@@ -75,6 +75,13 @@ rb.velocity = targetVel
             return
         end
     end
+
+    if MouseButtonPressed(MOUSE_RIGHT) then
+        if player.mDashCD <= 0 then
+            ChangeState(entity, "PlayerDash")
+            return
+        end
+    end
     
     -- Check for attack input while moving
     if MouseButtonPressed(MOUSE_LEFT) then

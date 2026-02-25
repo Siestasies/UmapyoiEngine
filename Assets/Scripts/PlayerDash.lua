@@ -88,6 +88,8 @@ function state_enter(entity)
     audio:play(EntityID, "PlayerDash")
 
     player.mDashCD = dashCooldown;
+
+    FaceTowardsMouse(entity)
 end
 
 function state_update(entity, dt)
@@ -183,4 +185,28 @@ function getDashDirection(player)
     end
 
     return direction
+end
+
+-- Helper function to face towards mouse
+function FaceTowardsMouse(entity)
+    if not HasTransform() then return end
+    if not HasSprite() then return end
+    
+    local transform = GetTransform()
+    --local sprite = GetSprite()
+    
+    if not transform then return end
+    
+    local mousePos = GetMouseWorldPosition()
+    local myPos = transform.position
+    
+    -- Determine facing direction based on mouse position
+    if mousePos.x < myPos.x and transform.scale.x > 0 then
+        --sprite.flipX = true
+       transform.scale.x = -1.0 * transform.scale.x
+    elseif mousePos.x > myPos.x and transform.scale.x < 0 then
+        --sprite.flipX = false
+        --myScale.x = 1.0 * myScale.x
+        transform.scale.x = -1.0 * transform.scale.x
+    end
 end

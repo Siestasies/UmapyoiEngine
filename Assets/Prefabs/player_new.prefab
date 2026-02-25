@@ -881,6 +881,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "ComboActivationFrame",
+                                        "type": 0,
+                                        "value": 4.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -933,6 +941,14 @@
                                         "name": "waterSlashSoundName",
                                         "type": 3,
                                         "value": "water_slash",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "ComboActivationFrame",
+                                        "type": 0,
+                                        "value": 3.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1054,6 +1070,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "vfxPrefab",
+                                        "type": 3,
+                                        "value": "steam vfx.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -1073,7 +1097,7 @@
                                     {
                                         "name": "dashCooldown",
                                         "type": 0,
-                                        "value": 2.0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1105,6 +1129,14 @@
                                         "name": "WindDashSoundName",
                                         "type": 3,
                                         "value": "atk_wind",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "ComboActivationFrame",
+                                        "type": 0,
+                                        "value": 4.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1171,6 +1203,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "vfxPrefab",
+                                        "type": 3,
+                                        "value": "pyronado vfx.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -1231,6 +1271,14 @@
                                         "name": "vfxOffsetX",
                                         "type": 0,
                                         "value": 16.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "vfxPrefab",
+                                        "type": 3,
+                                        "value": "whirlpool vfx.prefab",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
