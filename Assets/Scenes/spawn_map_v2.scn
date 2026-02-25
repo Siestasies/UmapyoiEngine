@@ -14,10 +14,13 @@
                 "path": "assets/int_ss.png"
             },
             {
+                "path": "assets/player ss 2.png"
+            },
+            {
                 "path": "assets/props_animation.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/pause menu.png"
             },
             {
                 "path": "assets/exterior_environment_fence_with_water.png"
@@ -30,9 +33,17 @@
             },
             {
                 "path": "assets/player ss 1.png"
+            },
+            {
+                "path": "assets/floor_tatami.png"
             }
         ],
         "fonts": [
+            {
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "size": 48
+            },
             {
                 "name": "assets/fonts/neucha.ttf",
                 "path": "Assets/Fonts/Neucha.ttf",
@@ -8469,7 +8480,7 @@
                     "name": "trees",
                     "position": {
                         "x": -302.049,
-                        "y": 126.503
+                        "y": 126.502
                     },
                     "rotation": {
                         "x": 0.0,
@@ -8671,7 +8682,7 @@
                     "name": "map colliders",
                     "position": {
                         "x": -176.014,
-                        "y": 76.545
+                        "y": 76.544
                     },
                     "rotation": {
                         "x": 0.0,
@@ -8719,7 +8730,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 72.197
+                                "y": 72.196
                             },
                             "size": {
                                 "x": 120.0,
@@ -9045,21 +9056,21 @@
         },
         {
             "id": 10,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "level stuff",
                     "position": {
                         "x": -176.3,
-                        "y": 103.198
+                        "y": 104.197
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.3,
-                        "y": 0.218
+                        "x": 0.319,
+                        "y": 0.217
                     },
                     "parent": -1,
                     "children": []
@@ -9071,8 +9082,8 @@
                         "MainMenuBGM": {
                             "path": "Assets/sounds/Music/MainMenuBGM.wav",
                             "isPlaying": false,
-                            "shouldLoop": true,
-                            "is3D": false,
+                            "shouldLoop": false,
+                            "is3D": true,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 100.0,
@@ -9080,22 +9091,10 @@
                         }
                     }
                 },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 0.0,
-                    "fric_coeff": 0.0
-                },
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
                     "defaultMask": 64,
-                    "showBBox": true,
+                    "showBBox": false,
                     "shapes": [
                         {
                             "offset": {
@@ -9103,14 +9102,14 @@
                                 "y": 0.0
                             },
                             "size": {
-                                "x": 49.2,
-                                "y": 49.2
+                                "x": 1.0,
+                                "y": 1.0
                             },
-                            "purpose": 2,
-                            "layer": 32,
-                            "colliderMask": 2,
+                            "purpose": 0,
+                            "layer": 0,
+                            "colliderMask": 0,
                             "isActive": true,
-                            "autoFitToSprite": false
+                            "autoFitToSprite": true
                         }
                     ]
                 },
@@ -9129,6 +9128,95 @@
                             "exposedVariables": []
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 13,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level End Trigger",
+                    "position": {
+                        "x": -176.438,
+                        "y": 104.792
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Level End Trigger.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "pause screen",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        15,
+                        16,
+                        19,
+                        22,
+                        25
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/pause screen.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 11,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Fade Screen REAL",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        30
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Fade Screen REAL.prefab",
+                    "isRoot": true
                 }
             }
         }

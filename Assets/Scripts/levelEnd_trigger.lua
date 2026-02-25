@@ -13,7 +13,7 @@ function Update(dt)
         time = time - dt
         if time <= 0 then 
             time = 0
-            LoadScene("tutorial.scn")
+            LoadScene("tutorial_v2.scn")
         end
     end
 end

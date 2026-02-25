@@ -32,7 +32,7 @@ function Update(dt)
         if time >= 1 then
             time = 0
             clicked = false
-            LoadScene("spawn_map.scn")
+            LoadScene("spawn_map_v2.scn")
         end
     end
 end

@@ -2,6 +2,12 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/game over menu.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
                 "path": "assets/whitepixel.png"
             },
             {
@@ -11,13 +17,40 @@
                 "path": "assets/tilemap.png"
             },
             {
-                "path": "assets/door opening ss.png"
-            },
-            {
                 "path": "assets/int_ss.png"
             },
             {
+                "path": "assets/door opening ss.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
+            },
+            {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 1.png"
+            },
+            {
+                "path": "assets/fire bird.png"
+            },
+            {
+                "path": "assets/fire enemy shadow.png"
+            },
+            {
+                "path": "assets/256px vfx.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/pause menu.png"
+            },
+            {
+                "path": "assets/floor_tatami.png"
+            },
+            {
+                "path": "assets/howtoplay.png"
             }
         ],
         "fonts": [
@@ -27,12 +60,63 @@
                 "size": 48
             },
             {
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "size": 48
+            },
+            {
                 "name": "assets/fonts/urbanist-regular.ttf",
                 "path": "Assets/fonts/Urbanist-Regular.ttf",
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 0
+            },
+            {
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDeathMono",
+                "path": "Assets/sounds/Player Wav/PlayerDeathMono.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -11439,37 +11523,10 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "player",
-                    "position": {
-                        "x": 55.635,
-                        "y": -157.304
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": []
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/player.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 2,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 55.6,
-                        "y": -157.4
+                        "x": 56.0,
+                        "y": -161.199
                     },
                     "rotation": {
                         "x": 0.0,
@@ -11489,7 +11546,7 @@
             }
         },
         {
-            "id": 3,
+            "id": 2,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -11548,7 +11605,7 @@
                             },
                             "size": {
                                 "x": 13.1,
-                                "y": 91.698
+                                "y": 91.694
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -11592,7 +11649,7 @@
                                 "y": -89.9
                             },
                             "size": {
-                                "x": 38.098,
+                                "x": 38.097,
                                 "y": 13.6
                             },
                             "purpose": 1,
@@ -11603,7 +11660,7 @@
                         },
                         {
                             "offset": {
-                                "x": 36.598,
+                                "x": 36.597,
                                 "y": -67.0
                             },
                             "size": {
@@ -11618,12 +11675,12 @@
                         },
                         {
                             "offset": {
-                                "x": 75.198,
+                                "x": 75.194,
                                 "y": -66.9
                             },
                             "size": {
                                 "x": 9.8,
-                                "y": 46.098
+                                "y": 46.097
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -11634,7 +11691,7 @@
                         {
                             "offset": {
                                 "x": 31.1,
-                                "y": -47.598
+                                "y": -47.597
                             },
                             "size": {
                                 "x": 20.298,
@@ -11648,7 +11705,7 @@
                         },
                         {
                             "offset": {
-                                "x": 82.598,
+                                "x": 82.597,
                                 "y": -47.798
                             },
                             "size": {
@@ -11679,7 +11736,7 @@
                         {
                             "offset": {
                                 "x": 80.3,
-                                "y": 37.098
+                                "y": 37.097
                             },
                             "size": {
                                 "x": 19.899,
@@ -11698,7 +11755,7 @@
                             },
                             "size": {
                                 "x": 10.3,
-                                "y": 35.598
+                                "y": 35.597
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -11738,7 +11795,7 @@
                         },
                         {
                             "offset": {
-                                "x": 56.598,
+                                "x": 56.597,
                                 "y": 148.8
                             },
                             "size": {
@@ -11832,7 +11889,7 @@
                                 "y": -31.1
                             },
                             "size": {
-                                "x": 51.098,
+                                "x": 51.097,
                                 "y": 10.5
                             },
                             "purpose": 1,
@@ -11873,8 +11930,8 @@
                         },
                         {
                             "offset": {
-                                "x": -72.598,
-                                "y": -48.098
+                                "x": -72.597,
+                                "y": -48.097
                             },
                             "size": {
                                 "x": 110.0,
@@ -11903,11 +11960,11 @@
                         },
                         {
                             "offset": {
-                                "x": -106.698,
+                                "x": -106.694,
                                 "y": 37.0
                             },
                             "size": {
-                                "x": 39.598,
+                                "x": 39.597,
                                 "y": 11.6
                             },
                             "purpose": 1,
@@ -11933,12 +11990,12 @@
                         },
                         {
                             "offset": {
-                                "x": -52.598,
-                                "y": 59.098
+                                "x": -52.597,
+                                "y": 59.097
                             },
                             "size": {
                                 "x": 9.899,
-                                "y": 51.098
+                                "y": 51.097
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -11948,7 +12005,7 @@
                         },
                         {
                             "offset": {
-                                "x": -91.598,
+                                "x": -91.597,
                                 "y": 60.4
                             },
                             "size": {
@@ -11997,7 +12054,7 @@
                                 "y": 149.1
                             },
                             "size": {
-                                "x": 79.198,
+                                "x": 79.194,
                                 "y": 11.5
                             },
                             "purpose": 1,
@@ -12008,7 +12065,7 @@
                         },
                         {
                             "offset": {
-                                "x": -46.598,
+                                "x": -46.597,
                                 "y": 79.3
                             },
                             "size": {
@@ -12041,7 +12098,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 3,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12107,6 +12164,861 @@
                             "texturePath": ""
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 4,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "player_new",
+                    "position": {
+                        "x": 56.09,
+                        "y": -161.199
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": -0.75,
+                        "y": 0.75
+                    },
+                    "parent": -1,
+                    "children": [
+                        5,
+                        6
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/player_new.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 6,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "new entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 4,
+                    "children": []
+                }
+            }
+        },
+        {
+            "id": 7,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level End Trigger 2",
+                    "position": {
+                        "x": -72.525,
+                        "y": 109.499
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Level End Trigger 2.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 10,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 29.891,
+                        "y": 65.8
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.689,
+                        "y": 1.519
+                    },
+                    "parent": -1,
+                    "children": [
+                        11,
+                        12,
+                        13
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 82.691,
+                        "y": 66.8
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.689,
+                        "y": 1.519
+                    },
+                    "parent": -1,
+                    "children": [
+                        15,
+                        16,
+                        17
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 18,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": -99.382,
+                        "y": -61.7
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        19,
+                        20,
+                        21
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 22,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "water enemy",
+                    "position": {
+                        "x": -65.582,
+                        "y": -15.699
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        23,
+                        24,
+                        25
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/water enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 26,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "pause screen",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        27,
+                        28,
+                        31,
+                        34,
+                        37
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/pause screen.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 52,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Bg",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 0.2,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 53,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "quit btn",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        54,
+                        55
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/menu_btn.lua",
+                            "scriptName": "menu_btn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.0
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.578,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 46.0,
+                        "y": -125.0
+                    },
+                    "sizeDelta": {
+                        "x": 805.0,
+                        "y": 75.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/floor_tatami.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "menu_btn.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 54,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "quit shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 53,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -4.0,
+                        "y": 9.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Text": {
+                    "text": "Quit to main menu",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 55,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "quit txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 53,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Text": {
+                    "text": "Quit to main menu",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 56,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "restart",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        57,
+                        58
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/play_btn.lua",
+                            "scriptName": "play_btn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.578,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 30.0,
+                        "y": -325.0
+                    },
+                    "sizeDelta": {
+                        "x": 605.0,
+                        "y": 132.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/floor_tatami.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                },
+                "class Uma_UI::Button": {
+                    "interactable": true,
+                    "scriptName": "play_btn.lua",
+                    "normalColour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "hoverColour": {
+                        "r": 0.745,
+                        "g": 0.351,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "pressedColour": {
+                        "r": 0.351,
+                        "g": 0.156,
+                        "b": 0.057,
+                        "a": 1.0
+                    },
+                    "disabledColour": {
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
+                        "a": 0.5
+                    }
+                }
+            }
+        },
+        {
+            "id": 57,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "restart shd",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 56,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -4.0,
+                        "y": 9.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Text": {
+                    "text": "restart game",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 0.0,
+                        "g": 0.0,
+                        "b": 0.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 58,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "restart txt",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": 56,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 17.5
+                    },
+                    "sizeDelta": {
+                        "x": 100.0,
+                        "y": 100.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Text": {
+                    "text": "restart game",
+                    "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 3.5,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "alignment": 1,
+                    "visible": true
+                }
+            }
+        },
+        {
+            "id": 59,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "stage clear",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 150.0
+                    },
+                    "sizeDelta": {
+                        "x": 1000.0,
+                        "y": 1000.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/stage_clear.png",
+                    "sortingOrder": 1,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 8,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Fade Screen REAL",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        60
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Fade Screen REAL.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 61,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "dead screen",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        62,
+                        63,
+                        65
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/dead screen.prefab",
+                    "isRoot": true
                 }
             }
         }
