@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Level End Trigger",
                         "position": {
-                            "x": -148.738,
-                            "y": 115.194
+                            "x": -176.438,
+                            "y": 104.793
                         },
                         "rotation": {
                             "x": 0.0,
@@ -19,7 +19,24 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": false,
+                        "loadedSounds": {
+                            "MainMenuBGM": {
+                                "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "volume": 0.46,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -71,6 +88,12 @@
                                         "isSlider": false
                                     }
                                 ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BGM_mainmenu.lua",
+                                "scriptName": "BGM_mainmenu.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
                             }
                         ]
                     },

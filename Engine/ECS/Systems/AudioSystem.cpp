@@ -1,7 +1,7 @@
 /*!
 \file   AudioSystem.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
 \par    Software Engineering Project 3
 
@@ -12,7 +12,7 @@
 \brief
 Implementation of updating the audio listener position/audio component
 
-All content (C) 2025 DigiPen Institute of Technology Singapore.
+All content (C) 2026 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 

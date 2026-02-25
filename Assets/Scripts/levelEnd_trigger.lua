@@ -13,7 +13,7 @@ function Update(dt)
         time = time - dt
         if time <= 0 then 
             time = 0
-            LoadScene("tutorial.scn")
+            LoadScene("tutorial_v2.scn")
         end
     end
 end
@@ -25,6 +25,7 @@ function OnTriggerEnter(other, triggerOwner)
         local enemyCount = CountEntitiesWithComponent("Enemy")
         if enemyCount <= 0 then
             levelEnd = true
+            GetAudioComponent():fadeOut(EntityID,"MainMenuBGM",1.5)
         end
     end
 end

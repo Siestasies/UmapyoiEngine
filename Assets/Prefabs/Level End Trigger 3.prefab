@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Level End Trigger 3",
                         "position": {
-                            "x": 286.062,
-                            "y": -245.205
+                            "x": 163.861,
+                            "y": -135.904
                         },
                         "rotation": {
                             "x": 0.0,
@@ -19,7 +19,24 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": false,
+                        "loadedSounds": {
+                            "CombatGameplayBGM": {
+                                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                                "isPlaying": false,
+                                "shouldLoop": true,
+                                "is3D": false,
+                                "volume": 0.3,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -60,6 +77,12 @@
                             {
                                 "scriptPath": "Assets/Scripts/levelEnd_trigger3.lua",
                                 "scriptName": "levelEnd_trigger3.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                                "scriptName": "BGM_combat.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
                             }
