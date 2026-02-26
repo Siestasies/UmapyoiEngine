@@ -161,7 +161,7 @@ namespace Uma_ECS
                 Vec2 tileWorldSize = { tilemap.tileSize * tf.scale.x, tilemap.tileSize * tf.scale.y };
 
                 int minCol = (std::max)(0, int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
-                int maxCol = (std::min)(int(layer.width), int((camMin.x - tf.worldPosition.x) / tileWorldSize.x));
+                int maxCol = (std::min)(int(layer.width), int((camMax.x - tf.worldPosition.x) / tileWorldSize.x) + 1);
                 int minRow = (std::max)(0, int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
                 int maxRow = (std::min)(int(layer.height), int((camMin.y - tf.worldPosition.y) / tileWorldSize.y));
 
@@ -348,11 +348,13 @@ namespace Uma_ECS
                         // Skip empty tiles (tile ID 0 or -1)
                         if (layer.tiles[i] < 0) continue;
 
-                        // Grid position
+                        // Grid position - snap to pixel grid to prevent sub-pixel seams
                         Vec2 tilePos = tf.worldPosition + Vec2(
                             col * tileWorldSizeX,
                             -(row * tileWorldSizeY)
                         );
+                        tilePos.x = std::round(tilePos.x);
+                        tilePos.y = std::round(tilePos.y);
 
                         // Tileset indices for UVs
                         int tileset_row = layer.tiles[i] / int(tilemap.tileset.columns);

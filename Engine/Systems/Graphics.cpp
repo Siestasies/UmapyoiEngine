@@ -134,6 +134,20 @@ namespace Uma_Engine
 
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
+
+        // Adaptive sync: syncs to VBlank when frame is on time, tears instead of waiting when late.
+        // Eliminates the fixed center-screen tear caused by 120 FPS on 60Hz without adding VSync lag.
+        if (glfwExtensionSupported("WGL_EXT_swap_control_tear") ||
+            glfwExtensionSupported("GLX_EXT_swap_control_tear"))
+        {
+            glfwSwapInterval(-1);
+            std::cout << "Adaptive sync enabled." << std::endl;
+        }
+        else
+        {
+            glfwSwapInterval(0);
+            std::cout << "Adaptive sync not supported, running without VSync." << std::endl;
+        }
     }
 
     void Graphics::Update(float dt)

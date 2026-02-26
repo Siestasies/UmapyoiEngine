@@ -49,7 +49,6 @@ namespace Uma_ECS
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
 
-        // one camera for now
         Entity camera = aEntities[0];
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
@@ -58,37 +57,34 @@ namespace Uma_ECS
         {
             Entity player = pArray.GetEntity(0);
             auto& player_tf = tfArray.GetData(player);
-
-            // set the pos of camera to be the player world pos
-            // camera must be in root
             cam_tf.position = player_tf.worldPosition;
         }
 
-        // Camera shake
+        // Pixel-perfect snap FIRST, on the base position
+        float pixelSize = 1.0f / cam_c.mZoom;
+        cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
+        cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
+
+        // Update shake timer
         if (cam_c.mShakeTimer > 0.0f)
         {
             cam_c.mShakeTimer -= dt;
 
             if (cam_c.mShakeTimer <= 0.0f)
             {
-                // Timer ended, reset
                 cam_c.mShakeOffset = Vec2(0.0f, 0.0f);
                 cam_c.mShakeIntensity = 0.0f;
             }
             else
             {
-                // Still shaking, calculate a new random offset
                 float offsetX = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * cam_c.mShakeIntensity;
                 float offsetY = (static_cast<float>(rand()) / RAND_MAX * 2.0f - 1.0f) * cam_c.mShakeIntensity;
                 cam_c.mShakeOffset = Vec2(offsetX, offsetY);
             }
         }
-        cam_tf.position += cam_c.mShakeOffset;
 
-        // Pixel perfect snap
-        float pixelSize = 1.0f / cam_c.mZoom;
-        cam_tf.position.x = std::floor(cam_tf.position.x / pixelSize) * pixelSize;
-        cam_tf.position.y = std::floor(cam_tf.position.y / pixelSize) * pixelSize;
+        // Apply shake AFTER snap � shake is intentionally sub-pixel
+        cam_tf.position += cam_c.mShakeOffset;
     }
 }
 
