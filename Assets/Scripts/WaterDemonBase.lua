@@ -80,6 +80,10 @@ end
 
 function HandleCollision(trigger)
 
+    enemy = GetEnemy()
+    if enemy.mHealth <= 0 then
+        return
+    end 
    
     if playerId == trigger then
         local playerComp = GetPlayerFrom(playerId)

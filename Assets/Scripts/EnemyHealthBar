@@ -12,32 +12,36 @@ function Start()
 end
   
 function Update(dt)
+      local parentID = GetParent(EntityID)
+      --local enemy = GetEnemyFrom(parentID)
 
-    local parentID = GetParent(EntityID)
-    local enemy = GetEnemyFrom(parentID)
+      if parentID == -1 then
+          Log("[HB] parentID is -1 for entity " .. tostring(EntityID))
+          return
+      end
 
-    if enemy then
-    
-        local currentHealth = enemy.mHealth
-        local maxHealth = enemy.mMaxHealth
+      local enemy = GetEnemyFrom(parentID)
+      if not enemy then
+          Log("[HB] enemy is nil, parentID=" .. tostring(parentID))
+          return
+      end
 
-        local ratio = 0
-        if maxHealth > 0 then
-            ratio = currentHealth / maxHealth
-        end
+      if enemy then
+          local currentHealth = enemy.mHealth
+          local maxHealth = enemy.mMaxHealth
 
-        -- clamp
-        if ratio < 0 then ratio = 0 end
-        if ratio > 1 then ratio = 1 end
+          local ratio = 0
+          if maxHealth > 0 then
+              ratio = currentHealth / maxHealth
+          end
 
-        local transform = GetTransform()
+          if ratio < 0 then ratio = 0 end
+          if ratio > 1 then ratio = 1 end
 
-        transform.scale.x = originalScaleX * ratio
+          local transform = GetTransform()
 
-        local lost = originalScaleX * (1 - ratio)
-        transform.worldPosition.x = originalPosX - (lost / 2)
-
-        -- if needed in your engine:
-        -- SetTransform(transform)
-    end
-end
+          local lost = originalScaleX * (1 - ratio)
+          transform.scale    = Vec2(originalScaleX * ratio, transform.scale.y)
+          transform.position = Vec2(originalPosX - (lost / 2), transform.position.y)
+      end
+  end

@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 1005.291,
-                            "y": -280.898
+                            "x": 1036.291,
+                            "y": -1639.791
                         },
                         "rotation": {
                             "x": 0.0,
@@ -24,7 +24,7 @@
                     },
                     "struct Uma_ECS::Player": {
                         "mHealth": 100,
-                        "mMaxHealth": 200,
+                        "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
                         "mHealthRegenDelay": 3.0,
                         "mSpeed": 50.0,
