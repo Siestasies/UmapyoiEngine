@@ -143,6 +143,8 @@ namespace Uma_Engine
 
                 const AnimationClip& clip = it->second;
 
+                if (clip.speed <= 0.0f) return;
+
                 timer += dt;
                 float frameTime = 1.0f / clip.speed;
 
@@ -159,6 +161,7 @@ namespace Uma_Engine
                         {
                             currentFrame = clip.frameCount - 1;
                             playing = false;
+                            break;
                         }
                     }
                 }
@@ -264,6 +267,18 @@ namespace Uma_Engine
 
             clips.erase(it);
             return true;
+        }
+
+        /**
+         * \brief Clear all clips and reset animator
+         */
+        void Clear()
+        {
+            clips.clear();
+            currentClip.clear();
+            currentFrame = 0;
+            timer = 0.0f;
+            playing = false;
         }
 
     private:

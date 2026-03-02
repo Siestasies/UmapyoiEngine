@@ -108,6 +108,8 @@ namespace Uma_ECS
          */
         void Deserialize(const rapidjson::Value& value)
         {
+            animator.Clear();
+
             autoPlay = value["autoPlay"].GetBool();
             initialClip = value["initialClip"].GetString();
 
