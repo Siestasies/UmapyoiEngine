@@ -358,7 +358,7 @@ namespace Uma_Engine {
         FMOD_Channel_SetPitch(info->channel, pitch);
     }
 
-    void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {
+    void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::MASTER) {
         if (type == SoundType::SFX) {
             FMOD_ChannelGroup_SetVolume(SFX, volume);
         }

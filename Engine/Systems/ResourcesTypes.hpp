@@ -65,6 +65,7 @@ namespace Uma_Engine
 	enum class SoundType {
 		SFX = 0,
 		BGM,
+		MASTER,
 		END
 	};
 

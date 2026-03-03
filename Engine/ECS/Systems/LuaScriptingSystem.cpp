@@ -26,6 +26,8 @@ All rights reserved.
 
 #include "LuaScriptingSystem.hpp"
 #include "AudioSystem.hpp"
+#include "SoundManager.hpp"
+#include "ResourcesTypes.hpp"
 
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
@@ -1561,6 +1563,22 @@ namespace Uma_ECS
             {
                 auto& fsm = pCoordinator->GetComponent<FSM>(e);
                 fsm.next = nextState;
+            });
+
+        sharedLua->set_function("setMasterVolume", [this](float volume) {
+            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
+            });
+
+        sharedLua->set_function("setSFXVolume", [this](float volume) {
+            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::SFX);
+            });
+
+        sharedLua->set_function("setBGMVolume", [this](float volume) {
+            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::BGM);
+            });
+
+        sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
+            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, type);
             });
     }
 
