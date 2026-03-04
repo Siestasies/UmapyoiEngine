@@ -60,7 +60,8 @@ namespace Uma_ECS
         Uma_Engine::EventSystem* e, 
         Uma_Engine::HybridInputSystem* i, 
         Uma_Engine::ResourcesManager* r, 
-        Uma_Engine::Graphics* g)
+        Uma_Engine::Graphics* g,
+        Uma_Engine::SoundManager* s)
     {
         // linking the Engine systems 
         pCoordinator = c;
@@ -68,6 +69,7 @@ namespace Uma_ECS
         pInputSystem = i;
         pResourcesManager = r;
         pGraphics = g;
+        pSoundManager = s;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -1566,19 +1568,19 @@ namespace Uma_ECS
             });
 
         sharedLua->set_function("setMasterVolume", [this](float volume) {
-            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
             });
 
         sharedLua->set_function("setSFXVolume", [this](float volume) {
-            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::SFX);
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::SFX);
             });
 
         sharedLua->set_function("setBGMVolume", [this](float volume) {
-            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, Uma_Engine::SoundType::BGM);
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::BGM);
             });
 
         sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
-            pCoordinator->GetSystem<Uma_Engine::SoundManager>()->setChannelGroupVolume(volume, type);
+            pSoundManager->setChannelGroupVolume(volume, type);
             });
     }
 
@@ -1856,23 +1858,27 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Slider = Uma_UI::Slider;
+        using Checkbox = Uma_UI::Checkbox;
 
-#define COMPONENT_LIST \
-        BIND_COMPONENT_GETTER(Transform)   \
-        BIND_COMPONENT_GETTER(RigidBody)   \
-        BIND_COMPONENT_GETTER(Sprite)      \
-        BIND_COMPONENT_GETTER(Collider)    \
-        BIND_COMPONENT_GETTER(Player)      \
-        BIND_COMPONENT_GETTER(Enemy)       \
-        BIND_COMPONENT_GETTER(Camera)      \
-        BIND_COMPONENT_GETTER(Text)        \
-        BIND_COMPONENT_GETTER(PathFinding) \
-        BIND_COMPONENT_GETTER(Animator)    \
-        BIND_COMPONENT_GETTER(Image)       \
-        BIND_COMPONENT_GETTER(ParticleEmitter)\
-        BIND_COMPONENT_GETTER(Effects)     \
-        BIND_COMPONENT_GETTER(AudioComponent)\
-        //BIND_COMPONENT_GETTER(Projectile)\
+#define COMPONENT_LIST                          \
+        BIND_COMPONENT_GETTER(Transform)        \
+        BIND_COMPONENT_GETTER(RigidBody)        \
+        BIND_COMPONENT_GETTER(Sprite)           \
+        BIND_COMPONENT_GETTER(Collider)         \
+        BIND_COMPONENT_GETTER(Player)           \
+        BIND_COMPONENT_GETTER(Enemy)            \
+        BIND_COMPONENT_GETTER(Camera)           \
+        BIND_COMPONENT_GETTER(Text)             \
+        BIND_COMPONENT_GETTER(PathFinding)      \
+        BIND_COMPONENT_GETTER(Animator)         \
+        BIND_COMPONENT_GETTER(Image)            \
+        BIND_COMPONENT_GETTER(ParticleEmitter)  \
+        BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(AudioComponent)   \
+        BIND_COMPONENT_GETTER(Slider)           \
+        BIND_COMPONENT_GETTER(Checkbox)         \
+        //BIND_COMPONENT_GETTER(Projectile)     \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
