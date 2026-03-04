@@ -285,6 +285,7 @@ namespace Uma_Engine
         {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         // Free image data
@@ -306,6 +307,7 @@ namespace Uma_Engine
         // Update camera position and zoom level
         cam.pos = pos;
         cam.zoom = zoom;
+        UpdateProjectionMatrix();
     }
 
     void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint, float alpha)
@@ -337,8 +339,7 @@ namespace Uma_Engine
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
         // Bind texture and render
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
 
         // Draw the quad
         glBindVertexArray(mVAO);
@@ -370,8 +371,7 @@ namespace Uma_Engine
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &identity[0][0]);
 
         // Render fullscreen quad
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
         glBindVertexArray(mVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
@@ -555,23 +555,19 @@ namespace Uma_Engine
         int width, height;
         GetCurrentRenderDimensions(width, height);
 
-        // Calculate orthographic projection bounds based on camera zoom
         float halfWidth = (width * 0.5f) / cam.zoom;
         float halfHeight = (height * 0.5f) / cam.zoom;
 
-        // Calculate projection bounds centered on camera position
         float left = cam.pos.x - halfWidth;
         float right = cam.pos.x + halfWidth;
         float bottom = cam.pos.y - halfHeight;
         float top = cam.pos.y + halfHeight;
 
-        // Create orthographic projection matrix
-        glm::mat4 projMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        mProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
-        // Upload projection matrix to shader
         glUseProgram(mShaderProgram);
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projMat[0][0]);
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mProjectionMatrix[0][0]);
     }
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
@@ -869,14 +865,7 @@ namespace Uma_Engine
         int width, height;
         GetCurrentRenderDimensions(width, height);
 
-        // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
@@ -1079,9 +1068,6 @@ namespace Uma_Engine
             return;
         }
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         glUseProgram(mTextShaderProgram);
         glBindVertexArray(font.VAO);
 
@@ -1161,9 +1147,6 @@ namespace Uma_Engine
             return;
         }
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         glUseProgram(mTextShaderProgram);
         glBindVertexArray(font.VAO);
 
@@ -1174,13 +1157,7 @@ namespace Uma_Engine
         GetCurrentRenderDimensions(width, height);
 
         // Use camera-based projection
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1329,8 +1306,7 @@ namespace Uma_Engine
 
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
 
         glBindVertexArray(mInstanceVAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
@@ -1394,17 +1370,7 @@ namespace Uma_Engine
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mDebugLineShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1511,17 +1477,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1571,17 +1527,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1618,17 +1564,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);

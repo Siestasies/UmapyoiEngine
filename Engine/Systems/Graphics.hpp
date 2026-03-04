@@ -35,6 +35,7 @@ All rights reserved.
 // Forward declarations
 struct GLFWwindow;
 using GLuint = unsigned int;
+#include <glm/mat4x4.hpp>
 
 namespace Uma_Engine
 {
@@ -132,7 +133,7 @@ namespace Uma_Engine
 
         // gCoordinator
         //Camera2D mCamera;
-        //mat4 mprojectionMatrix;
+        glm::mat4 mProjectionMatrix{ 1.0f };
         Cam_Info cam;
 
         // Rendering
@@ -469,55 +470,6 @@ namespace Uma_Engine
         Vec2 WorldToScreen(const Vec2& worldPos) const;
 
         // Debug drawing
-
-        /**
-         * \brief Draws a point
-         * \param position Point position in world space
-         * \param r Red component (0.0 to 1.0)
-         * \param g Green component (0.0 to 1.0)
-         * \param b Blue component (0.0 to 1.0)
-         */
-        void DrawDebugPoint(const Vec2& position, float r = 1.0f, float g = 0.0f, float b = 0.0f);
-
-        /**
-         * \brief Draws a line
-         * \param start Line start position in world space
-         * \param end Line end position in world space
-         * \param r Red component (0.0 to 1.0)
-         * \param g Green component (0.0 to 1.0)
-         * \param b Blue component (0.0 to 1.0)
-         */
-        void DrawDebugLine(const Vec2& start, const Vec2& end, float r = 1.0f, float g = 0.0f, float b = 0.0f);
-
-        /**
-         * \brief Draws a rectangle
-         * \param center Rectangle center in world space
-         * \param size Rectangle dimensions
-         * \param r Red component (0.0 to 1.0)
-         * \param g Green component (0.0 to 1.0)
-         * \param b Blue component (0.0 to 1.0)
-         */
-        void DrawDebugRect(const Vec2& center, const Vec2& size, float r = 1.0f, float g = 0.0f, float b = 0.0f);
-
-        /**
-         * \brief Draws a rectangle using bounding box
-         * \param bbox Bounding box to draw
-         * \param r Red component (0.0 to 1.0)
-         * \param g Green component (0.0 to 1.0)
-         * \param b Blue component (0.0 to 1.0)
-         */
-        void DrawDebugRect(const Uma_ECS::BoundingBox& bbox, float r = 1.0f, float g = 0.0f, float b = 0.0f);
-
-        /**
-         * \brief Draws a circle
-         * \param center Circle center in world space
-         * \param radius Circle radius
-         * \param r Red component (0.0 to 1.0)
-         * \param g Green component (0.0 to 1.0)
-         * \param b Blue component (0.0 to 1.0)
-         */
-        void DrawDebugCircle(const Vec2& center, float radius, float r = 1.0f, float g = 0.0f, float b = 0.0f);
-
         /**
          * \brief Draws a batch of debug lines using instanced rendering
          * \param lines Vector of DebugLineInfo
