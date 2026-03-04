@@ -37,6 +37,8 @@ All rights reserved.
 #include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
+#include "../UI/Components/Slider.h"
+#include "../UI/Components/Checkbox.h"
 #include "../Components/AudioComponent.h"
 
 #include "Events/ApplicationEvents.h"
@@ -925,6 +927,58 @@ namespace Uma_ECS
             )
         );
 
+        sharedLua->new_enum<Uma_UI::SliderDirection>("SliderDirection",
+            {
+                { "LeftToRight", Uma_UI::SliderDirection::LeftToRight },
+                { "RightToLeft", Uma_UI::SliderDirection::RightToLeft },
+                { "BottomToTop", Uma_UI::SliderDirection::BottomToTop },
+                { "TopToBottom", Uma_UI::SliderDirection::TopToBottom }
+            });
+
+        sharedLua->new_usertype<Uma_UI::Slider>("Slider",
+            "minValue", &Uma_UI::Slider::minValue,
+            "maxValue", &Uma_UI::Slider::maxValue,
+            "value", &Uma_UI::Slider::value,
+            "wholeNumbers", &Uma_UI::Slider::wholeNumbers,
+            "direction", &Uma_UI::Slider::direction,
+            "interactable", &Uma_UI::Slider::interactable,
+            "background", &Uma_UI::Slider::background,
+            "fill", &Uma_UI::Slider::fill,
+            "handle", &Uma_UI::Slider::handle,
+            "normalColour", &Uma_UI::Slider::normalColour,
+            "highlightColour", &Uma_UI::Slider::highlightColour,
+            "disabledColour", &Uma_UI::Slider::disabledColour,
+            "scriptName", &Uma_UI::Slider::scriptName,
+            "isDragging", sol::readonly(&Uma_UI::Slider::isDragging),
+            "isHovered", sol::readonly(&Uma_UI::Slider::isHovered)
+        );
+
+        sharedLua->new_enum<Uma_UI::CheckboxState>("CheckboxState",
+            {
+                { "Normal",   Uma_UI::CheckboxState::Normal   },
+                { "Hovered",  Uma_UI::CheckboxState::Hovered  },
+                { "Pressed",  Uma_UI::CheckboxState::Pressed  },
+                { "Disabled", Uma_UI::CheckboxState::Disabled }
+            });
+
+        sharedLua->new_usertype<Uma_UI::Checkbox>("Checkbox",
+            "isChecked", &Uma_UI::Checkbox::isChecked,
+            "interactable", &Uma_UI::Checkbox::interactable,
+            "currentState", sol::readonly(&Uma_UI::Checkbox::currentState),
+            "background", &Uma_UI::Checkbox::background,
+            "checkmark", &Uma_UI::Checkbox::checkmark,
+            "normalColour", &Uma_UI::Checkbox::normalColour,
+            "hoverColour", &Uma_UI::Checkbox::hoverColour,
+            "pressedColour", &Uma_UI::Checkbox::pressedColour,
+            "disabledColour", &Uma_UI::Checkbox::disabledColour,
+            "checkedColour", &Uma_UI::Checkbox::checkedColour,
+            "checkmarkNormalColour", &Uma_UI::Checkbox::checkmarkNormalColour,
+            "checkmarkDisabledColour", &Uma_UI::Checkbox::checkmarkDisabledColour,
+            "scriptName", &Uma_UI::Checkbox::scriptName,
+            "wasHoveredLastFrame", sol::readonly(&Uma_UI::Checkbox::wasHoveredLastFrame),
+            "wasPressedWhileHovered", sol::readonly(&Uma_UI::Checkbox::wasPressedWhileHovered)
+        );
+
         // Register EffectProperty enum
         sharedLua->new_enum<Uma_UI::EffectProperty>("EffectProperty", {
             {"Position", Uma_UI::EffectProperty::Position},
@@ -1374,24 +1428,28 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
-       // Component list macro
-#define COMPONENT_LIST \
-        X(Transform)   \
-        X(RigidBody)   \
-        X(Sprite)      \
-        X(Collider)    \
-        X(Player)      \
-        X(Enemy)       \
-        X(Camera)      \
-        X(PathFinding) \
-        X(Projectile)  \
-        X(Animator)    \
-        X(Text)        \
-        X(Image)       \
-        X(Effects)     \
-        X(ParticleEmitter) \
-        X(AudioComponent)\
+        using Slider = Uma_UI::Slider;
+        using Checkbox = Uma_UI::Checkbox;
 
+       // Component list macro
+#define COMPONENT_LIST      \
+        X(Transform)        \
+        X(RigidBody)        \
+        X(Sprite)           \
+        X(Collider)         \
+        X(Player)           \
+        X(Enemy)            \
+        X(Camera)           \
+        X(PathFinding)      \
+        X(Projectile)       \
+        X(Animator)         \
+        X(Text)             \
+        X(Image)            \
+        X(Effects)          \
+        X(ParticleEmitter)  \
+        X(AudioComponent)   \
+        X(Slider)           \
+        X(Checkbox)         \
     // -----------------------------------------------------------
     // ENTITY WRAPPER
     // -----------------------------------------------------------
@@ -1830,23 +1888,27 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Slider = Uma_UI::Slider;
+        using Checkbox = Uma_UI::Checkbox;
 
-#define COMPONENT_LIST \
-        BIND_COMPONENT_GETTER(Transform)   \
-        BIND_COMPONENT_GETTER(RigidBody)   \
-        BIND_COMPONENT_GETTER(Sprite)      \
-        BIND_COMPONENT_GETTER(Collider)    \
-        BIND_COMPONENT_GETTER(Player)      \
-        BIND_COMPONENT_GETTER(Enemy)       \
-        BIND_COMPONENT_GETTER(Camera)      \
-        BIND_COMPONENT_GETTER(Text)        \
-        BIND_COMPONENT_GETTER(PathFinding) \
-        BIND_COMPONENT_GETTER(Animator)    \
-        BIND_COMPONENT_GETTER(Image)       \
-        BIND_COMPONENT_GETTER(ParticleEmitter)\
-        BIND_COMPONENT_GETTER(Effects)     \
-        BIND_COMPONENT_GETTER(AudioComponent)\
-        //BIND_COMPONENT_GETTER(Projectile)\
+#define COMPONENT_LIST                          \
+        BIND_COMPONENT_GETTER(Transform)        \
+        BIND_COMPONENT_GETTER(RigidBody)        \
+        BIND_COMPONENT_GETTER(Sprite)           \
+        BIND_COMPONENT_GETTER(Collider)         \
+        BIND_COMPONENT_GETTER(Player)           \
+        BIND_COMPONENT_GETTER(Enemy)            \
+        BIND_COMPONENT_GETTER(Camera)           \
+        BIND_COMPONENT_GETTER(Text)             \
+        BIND_COMPONENT_GETTER(PathFinding)      \
+        BIND_COMPONENT_GETTER(Animator)         \
+        BIND_COMPONENT_GETTER(Image)            \
+        BIND_COMPONENT_GETTER(ParticleEmitter)  \
+        BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(AudioComponent)   \
+        BIND_COMPONENT_GETTER(Slider)           \
+        BIND_COMPONENT_GETTER(Checkbox)         \
+        //BIND_COMPONENT_GETTER(Projectile)     \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
