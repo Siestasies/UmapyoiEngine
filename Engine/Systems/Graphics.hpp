@@ -392,10 +392,14 @@ namespace Uma_Engine
          * \brief Draws a batch of sprites using instanced rendering
          * \param textureID OpenGL texture ID of batch
          * \param sprites Vector of Sprite_Info
+         * \param shaderOverride Shader that will override default shader
+         * \param material Sprite's material asset
          */
         void DrawSpritesInstanced(
             unsigned int textureID,
-            std::vector<Sprite_Info> const& sprites);
+            std::vector<Sprite_Info> const& sprites,
+            unsigned int shaderOverride = 0,
+            const MaterialAsset* material = nullptr);
 
         // Draw background image
 

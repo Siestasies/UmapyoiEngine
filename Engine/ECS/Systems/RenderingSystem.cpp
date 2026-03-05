@@ -269,6 +269,19 @@ namespace Uma_ECS
                 sr.GetUVs(uvOffset, uvSize);
             }
 
+            // Resolve material
+            unsigned int shaderId = 0;
+            std::string matName;
+            if (!sr.materialName.empty())
+            {
+                auto mat = pResourcesManager->GetMaterial(sr.materialName);
+                if (mat && mat->cachedShaderID != 0)
+                {
+                    shaderId = mat->cachedShaderID;
+                    matName = sr.materialName;
+                }
+            }
+
             allSprites.push_back(LayeredSprite
                 {
                     .info = Uma_Engine::Sprite_Info{
@@ -286,6 +299,8 @@ namespace Uma_ECS
                     .order = sr.renderOrder,
                     .hierarchyOrder = hierarchyOrder,
                     .texId = activeTexture->tex_id,
+                    .shaderId = shaderId,
+                    .materialName = matName,
                     .entityId = entity
                 });
         }
@@ -476,6 +491,10 @@ namespace Uma_ECS
                     return a.hierarchyOrder < b.hierarchyOrder;
                 if (a.texId != b.texId)
                     return a.texId < b.texId;
+                if (a.shaderId != b.shaderId)
+                    return a.shaderId < b.shaderId;
+                if (a.texId != b.texId)
+                    return a.texId < b.texId;
                 return a.entityId < b.entityId;
             });
 
@@ -487,18 +506,28 @@ namespace Uma_ECS
             LayerMask currentLayer = allSprites[0].layer;
             int currentOrder = allSprites[0].order;
             int currentHierarchy = allSprites[0].hierarchyOrder;
+            unsigned int currentShader = allSprites[0].shaderId;
+            std::string currentMaterial = allSprites[0].materialName;
 
             for (const auto& layeredSprite : allSprites)
             {
                 // Flush if ANY of the sorting criteria changed
                 if (layeredSprite.layer != currentLayer ||
                     layeredSprite.order != currentOrder ||
-                    layeredSprite.hierarchyOrder != currentHierarchy)
+                    layeredSprite.hierarchyOrder != currentHierarchy ||
+                    layeredSprite.shaderId != currentShader)
                 {
+                    const Uma_Engine::MaterialAsset* mat = nullptr;
+                    if (!currentMaterial.empty())
+                    {
+                        auto matPtr = pResourcesManager->GetMaterial(currentMaterial);
+                        if (matPtr) mat = matPtr.get();
+                    }
+
                     // Render all batches from previous group
                     for (const auto& pair : sorted_sprites)
                     {
-                        pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                        pGraphics->DrawSpritesInstanced(pair.first, pair.second, currentShader, mat);
                     }
                     sorted_sprites.clear();
 
@@ -506,6 +535,8 @@ namespace Uma_ECS
                     currentLayer = layeredSprite.layer;
                     currentOrder = layeredSprite.order;
                     currentHierarchy = layeredSprite.hierarchyOrder;
+                    currentShader = layeredSprite.shaderId;
+                    currentMaterial = layeredSprite.materialName;
                 }
 
                 // Add to batch
@@ -513,9 +544,16 @@ namespace Uma_ECS
             }
 
             // Render remaining batches
+            const Uma_Engine::MaterialAsset* mat = nullptr;
+            if (!currentMaterial.empty())
+            {
+                auto matPtr = pResourcesManager->GetMaterial(currentMaterial);
+                if (matPtr) mat = matPtr.get();
+            }
+
             for (const auto& pair : sorted_sprites)
             {
-                pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                pGraphics->DrawSpritesInstanced(pair.first, pair.second, currentShader, mat);
             }
         }
     }

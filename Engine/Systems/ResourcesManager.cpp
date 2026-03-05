@@ -68,6 +68,7 @@ namespace Uma_Engine
         UnloadAllSound();
         UnloadAllShaders();
         UnloadAllPrefabs();
+        UnloadAllMaterials();
 
         mSound->release();
     }
@@ -275,6 +276,24 @@ namespace Uma_Engine
             shadersArr.PushBack(obj, allocator);
         }
         out.AddMember("shaders", shadersArr, allocator);
+
+        // Materials
+        rapidjson::Value materialsArr(rapidjson::kArrayType);
+        for (const auto& [name, mat] : mMaterials)
+        {
+            rapidjson::Value obj(rapidjson::kObjectType);
+
+            rapidjson::Value nameVal;
+            nameVal.SetString(name.c_str(), allocator);
+            obj.AddMember("name", nameVal, allocator);
+
+            rapidjson::Value pathVal;
+            pathVal.SetString(mat->filePath.c_str(), allocator);
+            obj.AddMember("path", pathVal, allocator);
+
+            materialsArr.PushBack(obj, allocator);
+        }
+        out.AddMember("materials", materialsArr, allocator);
     }
 
     void ResourcesManager::Deserialize(const rapidjson::Value& in)
@@ -339,6 +358,17 @@ namespace Uma_Engine
                         val["vertexPath"].GetString(),
                         val["fragmentPath"].GetString()
                     );
+                }
+            }
+        }
+
+        if (in.HasMember("materials") && in["materials"].IsArray())
+        {
+            for (const auto& val : in["materials"].GetArray())
+            {
+                if (val.HasMember("path"))
+                {
+                    LoadMaterial(val["path"].GetString());
                 }
             }
         }
@@ -445,6 +475,128 @@ namespace Uma_Engine
     const std::unordered_map<std::string, std::shared_ptr<Shader>>& ResourcesManager::GetLoadedShaders() const
     {
         return mShaders;
+    }
+
+    bool ResourcesManager::LoadMaterial(const std::string& filePath)
+    {
+        if (filePath.empty()) return false;
+
+        std::string normalized = NormalizePath(filePath);
+
+        // Already loaded?
+        if (mMaterials.find(normalized) != mMaterials.end()) return true;
+
+        std::ifstream file(filePath);
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to open material file: " << filePath << std::endl;
+            return false;
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string content = buffer.str();
+        file.close();
+
+        rapidjson::Document doc;
+        if (doc.Parse(content.c_str()).HasParseError())
+        {
+            std::cerr << "Failed to parse material JSON: " << filePath << std::endl;
+            return false;
+        }
+
+        auto mat = std::make_shared<MaterialAsset>();
+        mat->name = doc["name"].GetString();
+        mat->shaderName = doc["shader"].GetString();
+        mat->filePath = filePath;
+
+        if (doc.HasMember("properties") && doc["properties"].IsArray())
+        {
+            for (auto& prop : doc["properties"].GetArray())
+            {
+                MaterialProperty mp;
+                mp.uniformName = prop["name"].GetString();
+                std::string typeStr = prop["type"].GetString();
+
+                if (typeStr == "float")
+                {
+                    mp.type = MaterialPropertyType::Float;
+                    mp.floatVal = prop["value"].GetFloat();
+                }
+                else if (typeStr == "int")
+                {
+                    mp.type = MaterialPropertyType::Int;
+                    mp.intVal = prop["value"].GetInt();
+                }
+                else if (typeStr == "vec2")
+                {
+                    mp.type = MaterialPropertyType::Vec2;
+                    auto arr = prop["value"].GetArray();
+                    mp.vec2Val = glm::vec2(arr[0].GetFloat(), arr[1].GetFloat());
+                }
+                else if (typeStr == "vec3")
+                {
+                    mp.type = MaterialPropertyType::Vec3;
+                    auto arr = prop["value"].GetArray();
+                    mp.vec3Val = glm::vec3(arr[0].GetFloat(), arr[1].GetFloat(), arr[2].GetFloat());
+                }
+                else if (typeStr == "vec4")
+                {
+                    mp.type = MaterialPropertyType::Vec4;
+                    auto arr = prop["value"].GetArray();
+                    mp.vec4Val = glm::vec4(arr[0].GetFloat(), arr[1].GetFloat(),
+                        arr[2].GetFloat(), arr[3].GetFloat());
+                }
+                else if (typeStr == "texture")
+                {
+                    mp.type = MaterialPropertyType::Texture;
+                    mp.texturePath = prop["value"].GetString();
+                }
+
+                mat->properties.push_back(mp);
+            }
+        }
+
+        // Cache shader program ID
+        auto shader = GetShader(mat->shaderName);
+        if (shader)
+        {
+            mat->cachedShaderID = shader->shaderProgramID;
+        }
+
+        mMaterials[mat->name] = mat;
+        std::cout << "Material loaded: " << mat->name << std::endl;
+        return true;
+    }
+
+    std::shared_ptr<MaterialAsset> ResourcesManager::GetMaterial(const std::string& name)
+    {
+        auto it = mMaterials.find(name);
+        if (it != mMaterials.end())
+        {
+            return it->second;
+        }
+        return nullptr;
+    }
+
+    bool ResourcesManager::HasMaterial(const std::string& name) const
+    {
+        return mMaterials.find(name) != mMaterials.end();
+    }
+
+    void ResourcesManager::UnloadMaterial(const std::string& name)
+    {
+        mMaterials.erase(name);
+    }
+
+    void ResourcesManager::UnloadAllMaterials()
+    {
+        mMaterials.clear();
+    }
+
+    const std::unordered_map<std::string, std::shared_ptr<MaterialAsset>>& ResourcesManager::GetLoadedMaterials() const
+    {
+        return mMaterials;
     }
 
     void ResourcesManager::SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator)

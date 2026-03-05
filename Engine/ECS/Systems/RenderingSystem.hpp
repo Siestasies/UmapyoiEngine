@@ -38,6 +38,8 @@ namespace Uma_ECS
         int order;
         int hierarchyOrder;
         unsigned int texId;
+        unsigned int shaderId{ 0 };
+        std::string materialName;
         Entity entityId;
     };
 
