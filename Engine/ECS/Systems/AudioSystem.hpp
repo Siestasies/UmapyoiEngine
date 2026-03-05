@@ -128,6 +128,7 @@ namespace Uma_ECS
          */
         void FadeOutEntity(Entity entity, float fadeOutTime = 1.0f);
 
+        void toggleLowpass(Entity entity, const std::string& soundName, bool dulled);
 
     private:
 

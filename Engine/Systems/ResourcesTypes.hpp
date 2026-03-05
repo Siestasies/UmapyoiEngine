@@ -77,6 +77,9 @@ namespace Uma_Engine
 
 		FMOD_VECTOR pos{};
 		FMOD_VECTOR vel{};
+
+		//to toggle to low pass from normal audio
+		FMOD_DSP* dspLowpass = nullptr;
 	};
 
 	struct Character

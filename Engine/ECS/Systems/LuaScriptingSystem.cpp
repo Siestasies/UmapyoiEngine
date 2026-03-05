@@ -1156,7 +1156,11 @@ namespace Uma_ECS
                 [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
                     pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, 1.0f);
                 }
-            )
+            ),
+            "toggleLowpass", [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, bool dulled) {
+                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(entity, name, dulled);
+            }
+
         );
 
         // ===================================================================

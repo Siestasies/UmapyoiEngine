@@ -321,6 +321,7 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
     FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstanceFaded(
         info, shouldLoop, volume, pos, is3D, fadeInTime
     );
+    info->channel = channel;
 
     if (channel) {
         audio.activeSounds[soundName].emplace_back(SoundInstance{
@@ -365,6 +366,13 @@ void Uma_ECS::AudioSystem::FadeOutEntity(Entity entity, float fadeOutTime) {
             }
         }
     }
+}
+
+void Uma_ECS::AudioSystem::toggleLowpass(Entity entity, const std::string& soundName, bool dulled) {
+    SoundInfo* info = GetSoundInfo(entity, soundName);
+    if (!info || !info->dspLowpass) return;
+
+    pSoundManager->ToggleLowpass(info, dulled);
 }
 
 

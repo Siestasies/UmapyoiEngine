@@ -361,7 +361,7 @@ namespace Uma_Engine
 
         if (sound)
         {
-            mSound->unloadSound(mSoundList.find(name)->second.sound);
+            mSound->unloadSound(mSoundList.find(name)->second);
             mSoundList.erase(name);
         }
     }

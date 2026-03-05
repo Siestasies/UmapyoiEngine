@@ -69,7 +69,7 @@ namespace Uma_Engine
 				*\brief unload the sound 
 				*\param sound
 				*/
-				void unloadSound(FMOD_SOUND* sound);
+				void unloadSound(SoundInfo& info);
 
 				/*!
 				*\brief unload and releases the sound
@@ -225,7 +225,7 @@ namespace Uma_Engine
 				 */
 				void FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime = 1.0f);
 
-
+				void ToggleLowpass(SoundInfo* info, bool enable);
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
