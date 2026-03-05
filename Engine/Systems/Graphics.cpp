@@ -804,9 +804,7 @@ namespace Uma_Engine
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites,
-        unsigned int shaderOverride,
-        const MaterialAsset* material)
+        std::vector<Sprite_Info> const& sprites)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -829,15 +827,18 @@ namespace Uma_Engine
         {
             const Sprite_Info& sprite = sprites[i];
 
+            // Build model matrix
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, glm::vec3(sprite.pos.x, sprite.pos.y, 0.0f));
             model = glm::rotate(model, glm::radians(sprite.rot), glm::vec3(0.0f, 0.0f, 1.0f));
             model = glm::scale(model, glm::vec3(sprite.scale.x, sprite.scale.y, 1.0f));
             models.push_back(model);
 
+            // Build UV data
             uvData.push_back(glm::vec4(sprite.uvOffset.x, sprite.uvOffset.y,
                 sprite.uvSize.x, sprite.uvSize.y));
 
+            // Build tint data
             tintData.push_back(glm::vec4(sprite.tintColor.x, sprite.tintColor.y,
                 sprite.tintColor.z, sprite.alpha));
         }
@@ -856,70 +857,30 @@ namespace Uma_Engine
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        // Select shader
-        GLuint activeShader = (shaderOverride != 0) ? shaderOverride : mInstanceShaderProgram;
-        glUseProgram(activeShader);
+        glUseProgram(mInstanceShaderProgram);
 
-        // Set projection matrix
-        GLint projLoc = glGetUniformLocation(activeShader, "projection");
+        // Set projection matrix uniform
+        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+
         int width, height;
         GetCurrentRenderDimensions(width, height);
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mProjectionMatrix[0][0]);
 
-        // Set texture sampler
-        glUniform1i(glGetUniformLocation(activeShader, "image"), 0);
+        const glm::mat4& projection = mProjectionMatrix;
 
-        // Bind material uniforms
-        int nextTextureUnit = 1;
-        if (material)
-        {
-            for (const auto& prop : material->properties)
-            {
-                GLint loc = glGetUniformLocation(activeShader, prop.uniformName.c_str());
-                if (loc == -1) continue;
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
-                switch (prop.type)
-                {
-                case MaterialPropertyType::Float:
-                    glUniform1f(loc, prop.floatVal);
-                    break;
-                case MaterialPropertyType::Vec2:
-                    glUniform2f(loc, prop.vec2Val.x, prop.vec2Val.y);
-                    break;
-                case MaterialPropertyType::Vec3:
-                    glUniform3f(loc, prop.vec3Val.x, prop.vec3Val.y, prop.vec3Val.z);
-                    break;
-                case MaterialPropertyType::Vec4:
-                    glUniform4f(loc, prop.vec4Val.x, prop.vec4Val.y,
-                        prop.vec4Val.z, prop.vec4Val.w);
-                    break;
-                case MaterialPropertyType::Int:
-                    glUniform1i(loc, prop.intVal);
-                    break;
-                case MaterialPropertyType::Texture:
-                {
-                    auto tex = mResourcesManager->GetTexture(prop.texturePath);
-                    if (tex && tex->tex_id != 0)
-                    {
-                        glActiveTexture(GL_TEXTURE0 + nextTextureUnit);
-                        glBindTexture(GL_TEXTURE_2D, tex->tex_id);
-                        glUniform1i(loc, nextTextureUnit);
-                        nextTextureUnit++;
-                    }
-                    break;
-                }
-                }
-            }
-        }
+        // Set texture uniform
+        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
 
-        // Bind sprite texture to unit 0
+        // Bind texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
 
-        // Draw
+        // Draw all instances in one call
         glBindVertexArray(mInstanceVAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
 
+        // Cleanup
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }

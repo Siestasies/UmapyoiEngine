@@ -673,7 +673,6 @@ namespace Uma_ECS
             "texturePath", &Sprite::texturePath,
             "renderLayer", &Sprite::renderLayer,
             "renderOrder", &Sprite::renderOrder,
-            "materialName", &Sprite::materialName,
 
             // Flip flags
             "flipX", &Sprite::flipX,

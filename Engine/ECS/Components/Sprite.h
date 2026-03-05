@@ -34,7 +34,6 @@ namespace Uma_ECS
     {
         // pointer pointing to the texture in resources manager
         std::string texturePath{};
-        std::string materialName{};  // empty = default shader
         LayerMask renderLayer = RL_NONE;
         int renderOrder = 0;
         bool flipX{ false };
@@ -79,7 +78,6 @@ namespace Uma_ECS
             value.SetObject();
 
             value.AddMember("texturePath", rapidjson::Value(texturePath.c_str(), allocator), allocator);
-            value.AddMember("materialName", rapidjson::Value(materialName.c_str(), allocator), allocator);
 
             value.AddMember("layer", renderLayer, allocator);
             value.AddMember("order", renderOrder, allocator);
@@ -113,11 +111,6 @@ namespace Uma_ECS
             if (value.HasMember("texturePath"))
             {
                 texturePath = value["texturePath"].GetString();
-            }
-
-            if (value.HasMember("materialName"))
-            {
-                materialName = value["materialName"].GetString();
             }
 
             if (value.HasMember("layer"))

@@ -36,7 +36,6 @@ All rights reserved.
 #include "Systems/TilemapEditorManager.h"
 
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
@@ -1868,87 +1867,6 @@ namespace Uma_Engine
 
                 // Alpha (opacity)
                 if (ImGui::SliderFloat("Alpha", &sprite.alpha, 0.0f, 1.0f, "%.2f")) m_hasUnsavedEdit = true;
-
-                ImGui::Separator();
-                ImGui::Text("Material");
-
-                auto& materials = pResourcesManager->GetLoadedMaterials();
-                std::vector<const char*> matNames;
-                matNames.push_back("(None)");
-                int currentMatIdx = 0;
-                int matIdx = 1;
-                for (const auto& [name, mat] : materials)
-                {
-                    matNames.push_back(name.c_str());
-                    if (name == sprite.materialName) currentMatIdx = matIdx;
-                    matIdx++;
-                }
-
-                if (ImGui::Combo("Material##Sprite", &currentMatIdx, matNames.data(),
-                    static_cast<int>(matNames.size())))
-                {
-                    sprite.materialName = (currentMatIdx == 0) ? "" : std::string(matNames[currentMatIdx]);
-                    m_hasUnsavedEdit = true;
-                }
-
-                if (!sprite.materialName.empty())
-                {
-                    auto mat = pResourcesManager->GetMaterial(sprite.materialName);
-                    if (mat)
-                    {
-                        ImGui::Indent();
-                        ImGui::Text("Shader: %s", mat->shaderName.c_str());
-
-                        for (auto& prop : mat->properties)
-                        {
-                            switch (prop.type)
-                            {
-                            case Uma_Engine::MaterialPropertyType::Float:
-                                if (ImGui::DragFloat(prop.uniformName.c_str(), &prop.floatVal, 0.01f))
-                                    m_hasUnsavedEdit = true;
-                                break;
-                            case Uma_Engine::MaterialPropertyType::Vec2:
-                            {
-                                float v[2] = { prop.vec2Val.x, prop.vec2Val.y };
-                                if (ImGui::DragFloat2(prop.uniformName.c_str(), v, 0.01f))
-                                {
-                                    prop.vec2Val = glm::vec2(v[0], v[1]);
-                                    m_hasUnsavedEdit = true;
-                                }
-                                break;
-                            }
-                            case Uma_Engine::MaterialPropertyType::Vec3:
-                            {
-                                float v[3] = { prop.vec3Val.x, prop.vec3Val.y, prop.vec3Val.z };
-                                if (ImGui::ColorEdit3(prop.uniformName.c_str(), v))
-                                {
-                                    prop.vec3Val = glm::vec3(v[0], v[1], v[2]);
-                                    m_hasUnsavedEdit = true;
-                                }
-                                break;
-                            }
-                            case Uma_Engine::MaterialPropertyType::Vec4:
-                            {
-                                float v[4] = { prop.vec4Val.x, prop.vec4Val.y, prop.vec4Val.z, prop.vec4Val.w };
-                                if (ImGui::ColorEdit4(prop.uniformName.c_str(), v))
-                                {
-                                    prop.vec4Val = glm::vec4(v[0], v[1], v[2], v[3]);
-                                    m_hasUnsavedEdit = true;
-                                }
-                                break;
-                            }
-                            case Uma_Engine::MaterialPropertyType::Int:
-                                if (ImGui::DragInt(prop.uniformName.c_str(), &prop.intVal))
-                                    m_hasUnsavedEdit = true;
-                                break;
-                            case Uma_Engine::MaterialPropertyType::Texture:
-                                ImGui::Text("%s: %s", prop.uniformName.c_str(), prop.texturePath.c_str());
-                                break;
-                            }
-                        }
-                        ImGui::Unindent();
-                    }
-                }
 
                 ImGui::Separator();
                 ImGui::Text("Sprite Sheet");
