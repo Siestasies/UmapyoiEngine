@@ -33,7 +33,6 @@ All rights reserved.
 
 #include <string>
 #include <map>
-#include <glm/glm.hpp>
 
 // forward declare
 struct FMOD_SYSTEM;
@@ -94,39 +93,5 @@ namespace Uma_Engine
 		unsigned int VBO = 0;
 		unsigned int fontSize = 0;
 		std::string filePath;
-	};
-
-	// Material system
-	enum class MaterialPropertyType
-	{
-		Float,
-		Vec2,
-		Vec3,
-		Vec4,
-		Int,
-		Texture
-	};
-
-	struct MaterialProperty
-	{
-		std::string uniformName{};
-		MaterialPropertyType type = MaterialPropertyType::Float;
-
-		float floatVal = 0.0f;
-		glm::vec2 vec2Val{};
-		glm::vec3 vec3Val{};
-		glm::vec4 vec4Val{};
-		int intVal = 0;
-		std::string texturePath{};
-	};
-
-	struct MaterialAsset
-	{
-		std::string name{};
-		std::string shaderName{};
-		std::string filePath{};
-		std::vector<MaterialProperty> properties{};
-
-		unsigned int cachedShaderID = 0;
 	};
 }

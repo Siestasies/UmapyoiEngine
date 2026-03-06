@@ -218,14 +218,6 @@ namespace Uma_Engine
         void UnloadAllPrefabs();
         bool HasPrefab(const std::string& filePath) const;
         const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& GetLoadedPrefabs() const;
-
-        // Materials
-        bool LoadMaterial(const std::string& filePath);
-        void UnloadMaterial(const std::string& name);
-        std::shared_ptr<MaterialAsset> GetMaterial(const std::string& name);
-        bool HasMaterial(const std::string& name) const;
-        void UnloadAllMaterials();
-        const std::unordered_map<std::string, std::shared_ptr<MaterialAsset>>& GetLoadedMaterials() const;
         
         // serializer
         /*!
@@ -301,8 +293,5 @@ namespace Uma_Engine
         std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders{};
 
         std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>> mPrefabs;
-
-        std::unordered_map<std::string, std::shared_ptr<MaterialAsset>> mMaterials{};
-
     };
 }
