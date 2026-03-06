@@ -12,7 +12,7 @@ function Update(dt)
     end
     if KeyDown(KEY_P) then
         audio:toggleLowpass(EntityID, "MainMenuBGM", false)
-    elseif KeyDown(Key_O) then
+    elseif KeyDown(KEY_O) then
         audio:toggleLowpass(EntityID, "MainMenuBGM", true)
     end
 end

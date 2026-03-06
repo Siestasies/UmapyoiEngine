@@ -451,7 +451,7 @@ namespace Uma_Engine {
         // 3D attributes ONLY if 3D
         if (is3D) {
             FMOD_Channel_Set3DAttributes(channel, &pos, nullptr);
-            FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
+            //FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
         }
 
         FMOD_DSP* dsp = nullptr;
