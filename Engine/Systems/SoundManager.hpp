@@ -157,7 +157,7 @@ namespace Uma_Engine
 				 * \param volume Initial playback volume (0.0–1.0).
 				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
 				 */
-				void PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume = 1.0f, bool is3D = true);
+				FMOD_CHANNEL* PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume = 1.0f, bool is3D = true);
 
 				/*!
 				 * \brief Starts a sound instance and returns its channel.

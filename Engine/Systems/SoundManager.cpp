@@ -378,7 +378,7 @@ namespace Uma_Engine {
         listenerUp = up;
     }
 
-    void SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
+    FMOD_CHANNEL* SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
             return;
@@ -412,6 +412,8 @@ namespace Uma_Engine {
             FMOD_Channel_Set3DAttributes(tempChannel, &fmodPos, &fmodVel);
             FMOD_Channel_Set3DMinMaxDistance(tempChannel, 100.0f, 1000.0f);
         }
+
+        return tempChannel;
     }
 
     FMOD_CHANNEL* SoundManager::PlaySoundInstance(SoundInfo* info, bool loop, float volume, const FMOD_VECTOR& pos, bool is3D)
