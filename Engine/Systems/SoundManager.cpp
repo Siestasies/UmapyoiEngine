@@ -187,7 +187,7 @@ namespace Uma_Engine {
 
         FMOD_MODE mode = FMOD_LOOP_NORMAL;
         if (is3D)
-            mode |= FMOD_3D;
+            mode |= FMOD_3D | FMOD_3D_LINEARSQUAREROLLOFF;
         else
             mode |= FMOD_2D;
 
@@ -381,11 +381,11 @@ namespace Uma_Engine {
     FMOD_CHANNEL* SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
-            return;
+            return nullptr;
         }
 
         if (!info || !info->sound) {
-            return;
+            return nullptr;
         }
 
         // Create temporary channel (no tracking needed - fire and forget)
@@ -397,7 +397,7 @@ namespace Uma_Engine {
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &tempChannel);
         if (result != FMOD_OK || !tempChannel) {
-            return;
+            return nullptr;
         }
 
         // Set volume
@@ -431,19 +431,19 @@ namespace Uma_Engine {
         FMOD_CHANNELGROUP* group = (info->type == SoundType::SFX) ? SFX : BGM;
 
         // Play sound
-        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &channel);
+        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, true, &channel);
         if (result != FMOD_OK || !channel) {
             std::cerr << "[SoundManager] Failed to play: " << FMOD_ErrorString(result) << std::endl;
             return nullptr;
         }
 
         FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
-        if (is3D) {
-            mode |= FMOD_3D;  // Add 3D spatialization
-        }
-        else {
-            mode |= FMOD_2D;  // Explicitly force 2D (omnidirectional)
-        }
+        //if (is3D) {
+        //    mode |= FMOD_3D;  // Add 3D spatialization
+        //}
+        //else {
+        //    mode |= FMOD_2D;  // Explicitly force 2D (omnidirectional)
+        //}
 
         FMOD_Channel_SetMode(channel, mode);  // Single mode call
 
@@ -453,7 +453,6 @@ namespace Uma_Engine {
         // 3D attributes ONLY if 3D
         if (is3D) {
             FMOD_Channel_Set3DAttributes(channel, &pos, nullptr);
-            //FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
         }
 
         FMOD_DSP* dsp = nullptr;
@@ -466,6 +465,7 @@ namespace Uma_Engine {
             }
         }
 
+        FMOD_Channel_SetPaused(channel, false);
 
         return channel;
     }
@@ -490,6 +490,31 @@ namespace Uma_Engine {
 
         // Safe to update
         FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
+
+        // DEBUG — print every 60 frames
+        static int frame = 0;
+        if (++frame % 60 == 0) {
+            // Read back what FMOD actually has
+            FMOD_VECTOR actualPos, actualVel;
+            FMOD_Channel_Get3DAttributes(channel, &actualPos, &actualVel);
+
+            float minDist, maxDist;
+            FMOD_Channel_Get3DMinMaxDistance(channel, &minDist, &maxDist);
+
+            FMOD_MODE mode;
+            FMOD_Channel_GetMode(channel, &mode);
+
+            // Replace printf with this:
+            char buf[256];
+            snprintf(buf, sizeof(buf),
+                "[Audio3D] pos=(%.1f,%.1f) min=%.1f max=%.1f is3D=%s listener=(%.1f,%.1f)\n",
+                actualPos.x, actualPos.y,
+                minDist, maxDist,
+                (mode & FMOD_3D) ? "YES" : "NO",
+                listenerPos.x, listenerPos.y);
+            OutputDebugStringA(buf);
+
+        }
     }
 
     bool SoundManager::IsSoundPlaying(SoundInfo* info)

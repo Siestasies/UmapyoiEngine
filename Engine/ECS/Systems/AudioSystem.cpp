@@ -169,16 +169,11 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
 SoundInfo* Uma_ECS::AudioSystem::GetSoundInfo(Entity entity, const std::string& soundName) {
     if (!pResourcesManager) return nullptr;
     AudioComponent audio = pCoordinator->GetComponent<AudioComponent>(entity);
-    if (!audio.HasLoadedSound(soundName)) {
-        return nullptr;
-    }
+    if (!audio.HasLoadedSound(soundName)) return nullptr;
     //if dont have load it
     if (!pResourcesManager->HasSound(soundName)) {
         auto& instance = audio.loadedSounds[soundName];
-        if(instance.is3D)
-            pResourcesManager->LoadSound(soundName, audio.loadedSounds[soundName].path, SoundType::SFX);
-        else
-            pResourcesManager->LoadSound(soundName, audio.loadedSounds[soundName].path, SoundType::BGM);
+        pResourcesManager->LoadSound(soundName, instance.path, instance.type, instance.is3D);
     }
     return pResourcesManager->GetSound(soundName);
     
@@ -238,6 +233,15 @@ void Uma_ECS::AudioSystem::PlayEntitySound(Entity entity, const std::string& sou
         audio.activeSounds[soundName].push_back(audio.loadedSounds[soundName]);
         if(is3D)
             FMOD_Channel_Set3DMinMaxDistance(info->channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
+
+        float checkMin, checkMax;
+        FMOD_Channel_Get3DMinMaxDistance(info->channel, &checkMin, &checkMax);
+        char buf[128];
+        snprintf(buf, sizeof(buf), "[Audio] Set min=%.1f max=%.1f | ReadBack min=%.1f max=%.1f\n",
+            audio.loadedSounds[soundName].minDistance,
+            audio.loadedSounds[soundName].maxDistance,
+            checkMin, checkMax);
+        OutputDebugStringA(buf);
     }
 }
 
@@ -326,6 +330,7 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
     bool is3D = audio.loadedSounds[soundName].is3D;
     bool shouldLoop = audio.loadedSounds[soundName].shouldLoop;
     float volume = audio.loadedSounds[soundName].volume;
+    Uma_Engine::SoundType type = audio.loadedSounds[soundName].type;
 
     // Play SILENT, then fade in
     FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstanceFaded(
@@ -346,9 +351,19 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
             false,                      // isPlaying
             shouldLoop,                 // shouldLoop
             is3D,                       // is3D
+            type,                       // sound type
             true,                       // isFading
             channel                     // fadeHandle
             });
+
+        float checkMin, checkMax;
+        FMOD_Channel_Get3DMinMaxDistance(info->channel, &checkMin, &checkMax);
+        char buf[128];
+        snprintf(buf, sizeof(buf), "[Audio] Set min=%.1f max=%.1f | ReadBack min=%.1f max=%.1f\n",
+            audio.loadedSounds[soundName].minDistance,
+            audio.loadedSounds[soundName].maxDistance,
+            checkMin, checkMax);
+        OutputDebugStringA(buf);
     }
 }
 
