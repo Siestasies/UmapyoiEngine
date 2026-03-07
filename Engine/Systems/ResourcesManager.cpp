@@ -887,6 +887,7 @@ namespace Uma_Engine
             << "out vec4 color;\n"
             << "\n"
             << "uniform sampler2D image;\n"
+            << "uniform float uTime;\n"
             << "\n"
             << "// Add your custom uniforms here, e.g.:\n"
             << "// uniform float intensity;\n"
