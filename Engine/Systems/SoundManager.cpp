@@ -504,16 +504,6 @@ namespace Uma_Engine {
             FMOD_MODE mode;
             FMOD_Channel_GetMode(channel, &mode);
 
-            // Replace printf with this:
-            char buf[256];
-            snprintf(buf, sizeof(buf),
-                "[Audio3D] pos=(%.1f,%.1f) min=%.1f max=%.1f is3D=%s listener=(%.1f,%.1f)\n",
-                actualPos.x, actualPos.y,
-                minDist, maxDist,
-                (mode & FMOD_3D) ? "YES" : "NO",
-                listenerPos.x, listenerPos.y);
-            OutputDebugStringA(buf);
-
         }
     }
 
