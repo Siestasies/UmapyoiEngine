@@ -1410,6 +1410,7 @@ namespace Uma_ECS
         X(Effects)     \
         X(ParticleEmitter) \
         X(AudioComponent)\
+        X(SpriteMaterial)\
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1865,6 +1866,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(ParticleEmitter)\
         BIND_COMPONENT_GETTER(Effects)     \
         BIND_COMPONENT_GETTER(AudioComponent)\
+        BIND_COMPONENT_GETTER(SpriteMaterial)\
         //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
