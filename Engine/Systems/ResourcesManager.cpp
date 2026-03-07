@@ -51,6 +51,8 @@ namespace Uma_Engine
         assert(mSound != nullptr && "Error: Sound system failed to initialize");
 
         std::cout << "ResourcesManager initialized" << std::endl;
+
+        LoadAllEffectShaders();
     }
 
     void ResourcesManager::SetCoordinator(Uma_ECS::Coordinator* coordinator)
@@ -757,7 +759,7 @@ namespace Uma_Engine
 
         // Skip engine-managed uniforms
         static const std::unordered_set<std::string> skip = {
-            "image", "projection"
+            "image", "projection", "uTime"
         };
 
         for (GLint i = 0; i < count; i++)

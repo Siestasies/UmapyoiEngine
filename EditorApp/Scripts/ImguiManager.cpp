@@ -1920,6 +1920,17 @@ namespace Uma_Engine
                 {
                     ImGui::Separator();
                     ImGui::Text("Material");
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Remove Material"))
+                    {
+                        auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::SpriteMaterial>>(
+                            &coordinator,
+                            entity,
+                            "Remove SpriteMaterial"
+                        );
+                        commandHistory.ExecuteCommand(std::move(cmd));
+                        return true;
+                    }
 
                     auto& mat = coordinator.GetComponent<Uma_ECS::SpriteMaterial>(entity);
 
@@ -2000,6 +2011,20 @@ namespace Uma_Engine
                             }
                             ImGui::Unindent();
                         }
+                    }
+                }
+                else
+                {
+                    ImGui::Separator();
+                    if (ImGui::SmallButton("Add Material"))
+                    {
+                        auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::SpriteMaterial>>(
+                            &coordinator,
+                            entity,
+                            Uma_ECS::SpriteMaterial{},
+                            "Add SpriteMaterial"
+                        );
+                        commandHistory.ExecuteCommand(std::move(cmd));
                     }
                 }
             }
@@ -6366,16 +6391,6 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_ECS::ParticleEmitter{},
                     "Add ParticleEmitter"
-                );
-                commandHistory.ExecuteCommand(std::move(cmd));
-            }
-            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::SpriteMaterial>()) && ImGui::MenuItem("SpriteMaterial"))
-            {
-                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::SpriteMaterial>>(
-                    &coordinator,
-                    m_selectedEntity,
-                    Uma_ECS::SpriteMaterial{},
-                    "Add SpriteMaterial"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

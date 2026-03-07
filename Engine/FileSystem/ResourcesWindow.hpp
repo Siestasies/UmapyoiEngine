@@ -374,7 +374,7 @@ namespace Uma_Engine
 
                 // New effect + Refresh buttons
                 static char newEffectName[128] = "";
-                ImGui::InputText("##NewEffectName", newEffectName, sizeof(newEffectName));
+                ImGui::InputTextWithHint("##NewEffectName", "Enter effect name", newEffectName, sizeof(newEffectName));
                 ImGui::SameLine();
                 if (ImGui::Button("+ New Effect"))
                 {
@@ -385,7 +385,6 @@ namespace Uma_Engine
                         newEffectName[0] = '\0';
                     }
                 }
-                ImGui::SameLine();
                 if (ImGui::Button("Refresh"))
                 {
                     m_ResourcesManager->RefreshEffectShaders();

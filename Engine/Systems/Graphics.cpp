@@ -33,6 +33,7 @@ All rights reserved.
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -870,6 +871,16 @@ namespace Uma_Engine
 
         // Set texture sampler uniform
         glUniform1i(glGetUniformLocation(activeShader, "image"), 0);
+
+        // Set time uniform for animated effects
+        GLint timeLoc = glGetUniformLocation(activeShader, "uTime");
+        if (timeLoc != -1)
+        {
+            static auto startTime = std::chrono::high_resolution_clock::now();
+            auto now = std::chrono::high_resolution_clock::now();
+            float elapsed = std::chrono::duration<float>(now - startTime).count();
+            glUniform1f(timeLoc, elapsed);
+        }
 
         // Bind material uniforms from reflected uniform info
         if (properties && uniforms)
