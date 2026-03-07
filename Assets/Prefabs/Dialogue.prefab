@@ -76,8 +76,13 @@
                                 "lines": [
                                     {
                                         "speaker": "Player",
-                                        "text": "The quick brown fox jumps over the lazy dog",
+                                        "text": "Nice cock",
                                         "portrait": "Assets/statue.png"
+                                    },
+                                    {
+                                        "speaker": "Boss",
+                                        "text": "Nice tits",
+                                        "portrait": ""
                                     }
                                 ]
                             }
