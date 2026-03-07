@@ -25,6 +25,9 @@ All rights reserved.
 #include "Window.hpp"
 #include "Math/Math.h"
 #include "ResourcesTypes.hpp"
+#include <unordered_map>
+#include <variant>
+#include <glm/glm.hpp>
 #include <string>
 #include <map>
 //#include "Systems/TMP_CameraSystem.hpp"
@@ -35,7 +38,11 @@ All rights reserved.
 // Forward declarations
 struct GLFWwindow;
 using GLuint = unsigned int;
-#include <glm/mat4x4.hpp>
+
+namespace Uma_ECS
+{
+    using MaterialValue = std::variant<float, glm::vec2, glm::vec3, glm::vec4, int>;
+}
 
 namespace Uma_Engine
 {
@@ -395,7 +402,10 @@ namespace Uma_Engine
          */
         void DrawSpritesInstanced(
             unsigned int textureID,
-            std::vector<Sprite_Info> const& sprites);
+            std::vector<Sprite_Info> const& sprites,
+            unsigned int shaderOverride = 0,
+            const std::unordered_map<std::string, Uma_ECS::MaterialValue>* properties = nullptr,
+            const std::vector<Uma_Engine::UniformInfo>* uniforms = nullptr);
 
         // Draw background image
 

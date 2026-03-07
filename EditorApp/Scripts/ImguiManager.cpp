@@ -34,6 +34,7 @@ All rights reserved.
 #include "Systems/SceneManager.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/TilemapEditorManager.h"
+#include "ECS/Components/SpriteMaterial.h"
 
 #include <GLFW/glfw3.h>
 
@@ -1913,6 +1914,94 @@ namespace Uma_Engine
                 }
 
                 ImGui::Unindent();
+
+                // SpriteMaterial (optional to Sprite)
+                if (coordinator.HasComponent<Uma_ECS::SpriteMaterial>(entity))
+                {
+                    ImGui::Separator();
+                    ImGui::Text("Material");
+
+                    auto& mat = coordinator.GetComponent<Uma_ECS::SpriteMaterial>(entity);
+
+                    // Effect dropdown
+                    auto effectNames = pResourcesManager->GetEffectShaderNames();
+                    std::vector<const char*> items;
+                    items.push_back("(None)");
+                    int current = 0;
+                    for (int i = 0; i < static_cast<int>(effectNames.size()); i++)
+                    {
+                        items.push_back(effectNames[i].c_str());
+                        if (effectNames[i] == mat.effectName) current = i + 1;
+                    }
+
+                    if (ImGui::Combo("Effect##Material", &current, items.data(), static_cast<int>(items.size())))
+                    {
+                        mat.effectName = (current == 0) ? "" : effectNames[current - 1];
+                        mat.properties.clear();  // reset when switching effects
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    // Auto-generated uniform editors from reflection
+                    if (!mat.effectName.empty())
+                    {
+                        auto* effect = pResourcesManager->GetEffect(mat.effectName);
+                        if (effect)
+                        {
+                            ImGui::Indent();
+                            for (const auto& u : effect->uniforms)
+                            {
+                                // Ensure property exists with default
+                                if (mat.properties.find(u.name) == mat.properties.end())
+                                {
+                                    switch (u.type)
+                                    {
+                                    case Uma_Engine::UniformType::Float: mat.properties[u.name] = 0.0f; break;
+                                    case Uma_Engine::UniformType::Vec2:  mat.properties[u.name] = glm::vec2(0); break;
+                                    case Uma_Engine::UniformType::Vec3:  mat.properties[u.name] = glm::vec3(0); break;
+                                    case Uma_Engine::UniformType::Vec4:  mat.properties[u.name] = glm::vec4(0); break;
+                                    case Uma_Engine::UniformType::Int:   mat.properties[u.name] = 0; break;
+                                    }
+                                }
+
+                                // Render appropriate widget
+                                auto& val = mat.properties[u.name];
+                                switch (u.type)
+                                {
+                                case Uma_Engine::UniformType::Float:
+                                    if (ImGui::DragFloat(u.name.c_str(), &std::get<float>(val), 0.01f))
+                                        m_hasUnsavedEdit = true;
+                                    break;
+                                case Uma_Engine::UniformType::Vec2:
+                                {
+                                    auto& v = std::get<glm::vec2>(val);
+                                    if (ImGui::DragFloat2(u.name.c_str(), &v.x, 0.01f))
+                                        m_hasUnsavedEdit = true;
+                                    break;
+                                }
+                                case Uma_Engine::UniformType::Vec3:
+                                {
+                                    auto& v = std::get<glm::vec3>(val);
+                                    if (ImGui::ColorEdit3(u.name.c_str(), &v.x))
+                                        m_hasUnsavedEdit = true;
+                                    break;
+                                }
+                                case Uma_Engine::UniformType::Vec4:
+                                {
+                                    auto& v = std::get<glm::vec4>(val);
+                                    if (ImGui::ColorEdit4(u.name.c_str(), &v.x))
+                                        m_hasUnsavedEdit = true;
+                                    break;
+                                }
+                                case Uma_Engine::UniformType::Int:
+                                    if (ImGui::DragInt(u.name.c_str(), &std::get<int>(val)))
+                                        m_hasUnsavedEdit = true;
+                                    break;
+                                }
+                            }
+                            ImGui::Unindent();
+                        }
+                    }
+                }
             }
         }
         else if (type == coordinator.GetComponentType<Uma_ECS::Collider>())
@@ -6277,6 +6366,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_ECS::ParticleEmitter{},
                     "Add ParticleEmitter"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::SpriteMaterial>()) && ImGui::MenuItem("SpriteMaterial"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::SpriteMaterial>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::SpriteMaterial{},
+                    "Add SpriteMaterial"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

@@ -804,7 +804,10 @@ namespace Uma_Engine
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites)
+        std::vector<Sprite_Info> const& sprites,
+        unsigned int shaderOverride,
+        const std::unordered_map<std::string, Uma_ECS::MaterialValue>* properties,
+        const std::vector<Uma_Engine::UniformInfo>* uniforms)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -857,20 +860,41 @@ namespace Uma_Engine
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        // Select shader, use effect override if provided, otherwise default instanced shader
+        GLuint activeShader = (shaderOverride != 0) ? shaderOverride : mInstanceShaderProgram;
+        glUseProgram(activeShader);
 
         // Set projection matrix uniform
-        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+        GLint projLoc = glGetUniformLocation(activeShader, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mProjectionMatrix[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
+        // Set texture sampler uniform
+        glUniform1i(glGetUniformLocation(activeShader, "image"), 0);
 
-        const glm::mat4& projection = mProjectionMatrix;
+        // Bind material uniforms from reflected uniform info
+        if (properties && uniforms)
+        {
+            for (const auto& u : *uniforms)
+            {
+                auto it = properties->find(u.name);
+                if (it == properties->end()) continue;
 
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
-
-        // Set texture uniform
-        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+                std::visit([&](auto&& v)
+                    {
+                        using T = std::decay_t<decltype(v)>;
+                        if constexpr (std::is_same_v<T, float>)
+                            glUniform1f(u.location, v);
+                        else if constexpr (std::is_same_v<T, int>)
+                            glUniform1i(u.location, v);
+                        else if constexpr (std::is_same_v<T, glm::vec2>)
+                            glUniform2f(u.location, v.x, v.y);
+                        else if constexpr (std::is_same_v<T, glm::vec3>)
+                            glUniform3f(u.location, v.x, v.y, v.z);
+                        else if constexpr (std::is_same_v<T, glm::vec4>)
+                            glUniform4f(u.location, v.x, v.y, v.z, v.w);
+                    }, it->second);
+            }
+        }
 
         // Bind texture
         glActiveTexture(GL_TEXTURE0);

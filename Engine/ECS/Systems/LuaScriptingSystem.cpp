@@ -38,6 +38,7 @@ All rights reserved.
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
 #include "../Components/AudioComponent.h"
+#include "../Components/SpriteMaterial.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -697,6 +698,16 @@ namespace Uma_ECS
                 sprite.GetUVs(uvOffset, uvSize);
                 return std::make_tuple(uvOffset, uvSize);
             }
+        );
+
+        // Register SpriteMaterial
+        sharedLua->new_usertype<SpriteMaterial>("SpriteMaterial",
+            "effectName", &SpriteMaterial::effectName,
+            "SetFloat", &SpriteMaterial::SetFloat,
+            "SetVec2", &SpriteMaterial::SetVec2,
+            "SetVec3", &SpriteMaterial::SetVec3,
+            "SetVec4", &SpriteMaterial::SetVec4,
+            "SetInt", &SpriteMaterial::SetInt
         );
 
         sharedLua->new_enum<ElementType>("ElementType",

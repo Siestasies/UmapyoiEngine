@@ -269,6 +269,26 @@ namespace Uma_ECS
                 sr.GetUVs(uvOffset, uvSize);
             }
 
+            // Check for material override
+            unsigned int shaderId = 0;
+            const std::unordered_map<std::string, MaterialValue>* matProps = nullptr;
+            const std::vector<Uma_Engine::UniformInfo>* matUniforms = nullptr;
+
+            if (pCoordinator->HasComponent<SpriteMaterial>(entity))
+            {
+                auto& mat = pCoordinator->GetComponent<SpriteMaterial>(entity);
+                if (!mat.effectName.empty())
+                {
+                    auto* effect = pResourcesManager->GetEffect(mat.effectName);
+                    if (effect && effect->shaderProgramID != 0)
+                    {
+                        shaderId = effect->shaderProgramID;
+                        matProps = &mat.properties;
+                        matUniforms = &effect->uniforms;
+                    }
+                }
+            }
+
             allSprites.push_back(LayeredSprite
                 {
                     .info = Uma_Engine::Sprite_Info{
@@ -286,7 +306,10 @@ namespace Uma_ECS
                     .order = sr.renderOrder,
                     .hierarchyOrder = hierarchyOrder,
                     .texId = activeTexture->tex_id,
-                    .entityId = entity
+                    .entityId = entity,
+                    .shaderId = shaderId,
+                    .properties = matProps,
+                    .uniforms = matUniforms
                 });
         }
 
@@ -474,12 +497,14 @@ namespace Uma_ECS
                     return a.order < b.order;
                 if (a.hierarchyOrder != b.hierarchyOrder)
                     return a.hierarchyOrder < b.hierarchyOrder;
+                if (a.shaderId != b.shaderId)
+                    return a.shaderId < b.shaderId;
                 if (a.texId != b.texId)
                     return a.texId < b.texId;
                 return a.entityId < b.entityId;
             });
 
-        // Batch within same layer+order+hierarchy only
+        // Batch within same layer+order+hierarchy+shader only
         std::map<unsigned int, std::vector<Uma_Engine::Sprite_Info>> sorted_sprites;
 
         if (!allSprites.empty())
@@ -487,18 +512,25 @@ namespace Uma_ECS
             LayerMask currentLayer = allSprites[0].layer;
             int currentOrder = allSprites[0].order;
             int currentHierarchy = allSprites[0].hierarchyOrder;
+            unsigned int currentShader = allSprites[0].shaderId;
+
+            // Track material pointers for current batch (all sprites in a shader batch share the same material)
+            const std::unordered_map<std::string, Uma_ECS::MaterialValue>* currentProps = allSprites[0].properties;
+            const std::vector<Uma_Engine::UniformInfo>* currentUniforms = allSprites[0].uniforms;
 
             for (const auto& layeredSprite : allSprites)
             {
                 // Flush if ANY of the sorting criteria changed
                 if (layeredSprite.layer != currentLayer ||
                     layeredSprite.order != currentOrder ||
-                    layeredSprite.hierarchyOrder != currentHierarchy)
+                    layeredSprite.hierarchyOrder != currentHierarchy ||
+                    layeredSprite.shaderId != currentShader)
                 {
                     // Render all batches from previous group
                     for (const auto& pair : sorted_sprites)
                     {
-                        pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                        pGraphics->DrawSpritesInstanced(pair.first, pair.second,
+                            currentShader, currentProps, currentUniforms);
                     }
                     sorted_sprites.clear();
 
@@ -506,6 +538,9 @@ namespace Uma_ECS
                     currentLayer = layeredSprite.layer;
                     currentOrder = layeredSprite.order;
                     currentHierarchy = layeredSprite.hierarchyOrder;
+                    currentShader = layeredSprite.shaderId;
+                    currentProps = layeredSprite.properties;
+                    currentUniforms = layeredSprite.uniforms;
                 }
 
                 // Add to batch
@@ -515,7 +550,8 @@ namespace Uma_ECS
             // Render remaining batches
             for (const auto& pair : sorted_sprites)
             {
-                pGraphics->DrawSpritesInstanced(pair.first, pair.second);
+                pGraphics->DrawSpritesInstanced(pair.first, pair.second,
+                    currentShader, currentProps, currentUniforms);
             }
         }
     }
