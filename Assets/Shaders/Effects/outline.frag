@@ -15,14 +15,18 @@ void main()
     vec2 uvMin = CellUV.xy;
     vec2 uvMax = CellUV.xy + CellUV.zw;
 
+    // Convert thickness from pixels to UV-space offsets
+    vec2 texelSize = 1.0 / vec2(textureSize(image, 0));
+    vec2 step = texelSize * thickness;
+
     vec4 texColor = texture(image, TexCoords);
     float alpha = texColor.a;
 
     // Sample neighbours, clamped to cell bounds
-    float aU = texture(image, clamp(TexCoords + vec2(0.0,  thickness), uvMin, uvMax)).a;
-    float aD = texture(image, clamp(TexCoords + vec2(0.0, -thickness), uvMin, uvMax)).a;
-    float aL = texture(image, clamp(TexCoords + vec2(-thickness, 0.0), uvMin, uvMax)).a;
-    float aR = texture(image, clamp(TexCoords + vec2( thickness, 0.0), uvMin, uvMax)).a;
+    float aU = texture(image, clamp(TexCoords + vec2(0.0,  step.y), uvMin, uvMax)).a;
+    float aD = texture(image, clamp(TexCoords + vec2(0.0, -step.y), uvMin, uvMax)).a;
+    float aL = texture(image, clamp(TexCoords + vec2(-step.x, 0.0), uvMin, uvMax)).a;
+    float aR = texture(image, clamp(TexCoords + vec2( step.x, 0.0), uvMin, uvMax)).a;
 
     float outline = max(max(aU, aD), max(aL, aR)) - alpha;
     outline = clamp(outline, 0.0, 1.0);
