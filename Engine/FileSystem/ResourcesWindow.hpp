@@ -431,8 +431,7 @@ namespace Uma_Engine
                             ImGui::PushID(name.c_str());
                             if (ImGui::SmallButton("Edit"))
                             {
-                                std::string cmd = "code \"" + effect->fragPath + "\"";
-                                system(cmd.c_str());
+                                ShellExecuteA(NULL, "open", "code", effect->fragPath.c_str(), NULL, SW_HIDE);
                             }
                             ImGui::PopID();
                         }
