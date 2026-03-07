@@ -1,6 +1,7 @@
 -- PlayerFireSlash.lua
 -- Fire Slash elemental attack - applies burn and sets up elemental combo
 local audio = nil
+local PlayerStatTrackState = require("PlayerStatTrackState")
 
 ExposedVars = {
     fireSlashAnimationName = "atk_3",
@@ -101,6 +102,7 @@ function state_enter(entity)
         end
     end
 
+    PlayerStatTrackState.incrFireAttack()
     Log("Fire Slash Attack!")
 end
 
