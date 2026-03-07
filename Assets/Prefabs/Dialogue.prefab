@@ -27,16 +27,6 @@
                             6
                         ]
                     },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/DialogueController.lua",
-                                "scriptName": "DialogueController.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Dialogue.prefab",
                         "isRoot": true
@@ -87,7 +77,7 @@
                                     {
                                         "speaker": "Player",
                                         "text": "The quick brown fox jumps over the lazy dog",
-                                        "portrait": ""
+                                        "portrait": "Assets/statue.png"
                                     }
                                 ]
                             }
@@ -124,7 +114,7 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.218,
+                            "x": 0.216,
                             "y": 0.039
                         },
                         "anchorMax": {
@@ -146,9 +136,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.54,
-                            "width": 1.969,
-                            "height": 0.796
+                            "y": -0.553,
+                            "width": 1.929,
+                            "height": 0.814
                         }
                     },
                     "class Uma_UI::Image": {
@@ -215,7 +205,7 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.54,
+                            "y": -0.553,
                             "width": 0.0,
                             "height": 0.0
                         }
@@ -286,10 +276,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.59,
-                            "y": -0.147,
-                            "width": 0.492,
-                            "height": 0.196
+                            "x": -0.578,
+                            "y": -0.15,
+                            "width": 0.482,
+                            "height": 0.201
                         }
                     },
                     "class Uma_UI::Image": {
@@ -355,10 +345,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.59,
-                            "y": -0.112,
-                            "width": 0.492,
-                            "height": 0.196
+                            "x": -0.578,
+                            "y": -0.114,
+                            "width": 0.482,
+                            "height": 0.201
                         }
                     },
                     "class Uma_UI::Text": {
@@ -425,10 +415,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.59,
-                            "y": -0.196,
-                            "width": 0.787,
-                            "height": 1.572
+                            "x": 0.578,
+                            "y": -0.201,
+                            "width": 0.771,
+                            "height": 1.609
                         }
                     },
                     "class Uma_UI::Image": {
@@ -494,10 +484,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.886,
-                            "y": -0.737,
-                            "width": 0.098,
-                            "height": 0.196
+                            "x": 0.868,
+                            "y": -0.754,
+                            "width": 0.096,
+                            "height": 0.201
                         }
                     },
                     "class Uma_UI::Image": {
