@@ -4,6 +4,7 @@
 #include <variant>
 #include <glm/glm.hpp>
 #include "rapidjson/document.h"
+#include "Debugging/Debugger.hpp"
 
 namespace Uma_ECS
 {
@@ -113,6 +114,11 @@ namespace Uma_ECS
                         auto arr = prop["value"].GetArray();
                         properties[name] = glm::vec4(arr[0].GetFloat(), arr[1].GetFloat(),
                             arr[2].GetFloat(), arr[3].GetFloat());
+                    }
+                    else
+                    {
+                        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                            "SpriteMaterial::Deserialize: unknown property type \"" + type + "\" for \"" + name + "\", skipping");
                     }
                 }
             }
