@@ -62,6 +62,7 @@ All rights reserved.
 #include "UI/Components/Canvas.h"
 #include "UI/Components/Text.h"
 #include "UI/Components/Effects.h"
+#include "UI/Components/Dialogue.h"
 #include "../Components/FSM.h"
 #include "../Components/SpriteMaterial.h"
 
@@ -289,6 +290,7 @@ namespace Uma_ECS
             CHECK_COMPONENT(Uma_UI::Text)
             CHECK_COMPONENT(Uma_UI::Effects)
             CHECK_COMPONENT(SpriteMaterial)
+            CHECK_COMPONENT(Uma_UI::Dialogue)
 #undef CHECK_COMPONENT
         }
 

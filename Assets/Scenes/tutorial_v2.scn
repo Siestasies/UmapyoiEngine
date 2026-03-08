@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,16 +17,16 @@
                 "path": "assets/tilemap.png"
             },
             {
-                "path": "assets/door opening ss.png"
-            },
-            {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -41,10 +41,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -66,17 +66,20 @@
             },
             {
                 "path": "assets/wind ability icon.png"
+            },
+            {
+                "path": "assets/statue.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -162,7 +165,7 @@
     },
     "entities": [
         {
-            "id": 33,
+            "id": 0,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -11534,13 +11537,13 @@
             }
         },
         {
-            "id": 34,
+            "id": 1,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 56.0,
+                        "x": 56.1,
                         "y": -161.199
                     },
                     "rotation": {
@@ -11561,7 +11564,7 @@
             }
         },
         {
-            "id": 35,
+            "id": 2,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12113,7 +12116,7 @@
             }
         },
         {
-            "id": 36,
+            "id": 3,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12183,7 +12186,7 @@
             }
         },
         {
-            "id": 37,
+            "id": 4,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12202,7 +12205,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        38
+                        5
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12212,7 +12215,7 @@
             }
         },
         {
-            "id": 38,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12229,13 +12232,13 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 37,
+                    "parent": 4,
                     "children": []
                 }
             }
         },
         {
-            "id": 39,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12262,7 +12265,7 @@
             }
         },
         {
-            "id": 40,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12281,9 +12284,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        41,
-                        42,
-                        43
+                        8,
+                        9,
+                        10
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12293,7 +12296,7 @@
             }
         },
         {
-            "id": 44,
+            "id": 11,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12312,9 +12315,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        45,
-                        46,
-                        47
+                        12,
+                        13,
+                        14
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12324,7 +12327,7 @@
             }
         },
         {
-            "id": 48,
+            "id": 15,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12343,7 +12346,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        49
+                        16
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12353,7 +12356,7 @@
             }
         },
         {
-            "id": 50,
+            "id": 17,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12372,9 +12375,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        51,
-                        52,
-                        54
+                        18,
+                        19,
+                        21
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12384,7 +12387,7 @@
             }
         },
         {
-            "id": 56,
+            "id": 23,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12403,18 +12406,18 @@
                     },
                     "parent": -1,
                     "children": [
-                        57,
-                        58,
-                        59,
-                        60,
-                        61,
-                        62,
-                        63,
-                        64,
-                        65,
-                        66,
-                        69,
-                        72
+                        24,
+                        25,
+                        26,
+                        27,
+                        28,
+                        29,
+                        30,
+                        31,
+                        32,
+                        33,
+                        36,
+                        39
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12424,7 +12427,7 @@
             }
         },
         {
-            "id": 75,
+            "id": 42,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12443,15 +12446,73 @@
                     },
                     "parent": -1,
                     "children": [
-                        76,
-                        77,
-                        80,
-                        83
+                        43,
+                        44,
+                        47,
+                        50
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/pause screen.prefab",
                     "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 57,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "new entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/DialogueTrigger.lua",
+                            "scriptName": "DialogueTrigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "interactKey",
+                                    "type": 0,
+                                    "value": 69.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "sequenceId",
+                                    "type": 3,
+                                    "value": "Intro",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
                 }
             }
         }
