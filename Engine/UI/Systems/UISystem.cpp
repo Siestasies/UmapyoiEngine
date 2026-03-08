@@ -56,7 +56,7 @@ namespace Uma_UI
 
         mHitTestCache.clear();
 
-        //mFeedbackSystem.Init(pCoordinator, pGraphics, pEventSystem, this);
+        mFeedbackSystem.Init(pCoordinator, pGraphics, pEventSystem, this);
     }
 
     /*!
@@ -69,7 +69,7 @@ namespace Uma_UI
 
         if (!pCoordinator || !pEventSystem || !pGraphics || !pResourcesManager) return;
 
-        //mFeedbackSystem.Update(dt);
+        mFeedbackSystem.Update(dt);
 
         Vec2 screenSize = pGraphics->GetSceneViewport();
         if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
@@ -82,7 +82,7 @@ namespace Uma_UI
      */
     void UISystem::Shutdown()
     {
-        //mFeedbackSystem.Shutdown();
+        mFeedbackSystem.Shutdown();
 
         mHitTestCache.clear();
         mMouseButtonDown = false;

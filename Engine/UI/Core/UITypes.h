@@ -23,8 +23,6 @@ All rights reserved.
 
 #include "../../ECS/Core/Types.hpp"
 #include "Math/Math.h"
-
-#include "rapidjson/document.h"
 #include <functional>
 
 namespace Uma_UI
@@ -213,67 +211,6 @@ namespace Uma_UI
         ColorTint,         // Image.color
         Alpha,             // Image.color.a / Text.color.a
         FillAmount         // For progress bars, radial fills
-    };
-
-    struct DialogueLine
-    {
-        std::string speaker = "";
-        std::string text = "";   
-        std::string portrait = "";
-
-        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
-        {
-            out.SetObject();
-            out.AddMember("speaker", rapidjson::Value(speaker.c_str(), alloc), alloc);
-            out.AddMember("text", rapidjson::Value(text.c_str(), alloc), alloc);
-            out.AddMember("portrait", rapidjson::Value(portrait.c_str(), alloc), alloc);
-        }
-
-        void Deserialize(const rapidjson::Value& in)
-        {
-            speaker = in.HasMember("speaker") ? in["speaker"].GetString() : "";
-            text = in.HasMember("text") ? in["text"].GetString() : "";
-            portrait = in.HasMember("portrait") ? in["portrait"].GetString() : "";
-        }
-    };
-
-    // ---------------------------------------------------------------------------
-    //  An ordered collection of lines that belong to one conversation
-    // ---------------------------------------------------------------------------
-    struct DialogueSequence
-    {
-        std::string              id = "";
-        std::vector<DialogueLine> lines;
-
-        void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
-        {
-            out.SetObject();
-            out.AddMember("id", rapidjson::Value(id.c_str(), alloc), alloc);
-
-            rapidjson::Value arr(rapidjson::kArrayType);
-            for (const auto& line : lines)
-            {
-                rapidjson::Value lineVal;
-                line.Serialize(lineVal, alloc);
-                arr.PushBack(lineVal, alloc);
-            }
-            out.AddMember("lines", arr, alloc);
-        }
-
-        void Deserialize(const rapidjson::Value& in)
-        {
-            id = in.HasMember("id") ? in["id"].GetString() : "";
-            lines.clear();
-            if (in.HasMember("lines") && in["lines"].IsArray())
-            {
-                for (const auto& lineVal : in["lines"].GetArray())
-                {
-                    DialogueLine l;
-                    l.Deserialize(lineVal);
-                    lines.push_back(l);
-                }
-            }
-        }
     };
 
     namespace Easing
