@@ -2050,67 +2050,6 @@ namespace Uma_Engine
 
                     // End tracking for material edits
                     EndComponentEdit(entity, coordinator, "SpriteMaterial");
-
-                    // Auto-generated uniform editors from reflection
-                    if (!mat.effectName.empty())
-                    {
-                        auto* effect = pResourcesManager->GetEffect(mat.effectName);
-                        if (effect)
-                        {
-                            ImGui::Indent();
-                            for (const auto& u : effect->uniforms)
-                            {
-                                // Ensure property exists with default
-                                if (mat.properties.find(u.name) == mat.properties.end())
-                                {
-                                    switch (u.type)
-                                    {
-                                    case Uma_Engine::UniformType::Float: mat.properties[u.name] = 0.0f; break;
-                                    case Uma_Engine::UniformType::Vec2:  mat.properties[u.name] = glm::vec2(0); break;
-                                    case Uma_Engine::UniformType::Vec3:  mat.properties[u.name] = glm::vec3(0); break;
-                                    case Uma_Engine::UniformType::Vec4:  mat.properties[u.name] = glm::vec4(0); break;
-                                    case Uma_Engine::UniformType::Int:   mat.properties[u.name] = 0; break;
-                                    }
-                                }
-
-                                // Render appropriate widget
-                                auto& val = mat.properties[u.name];
-                                switch (u.type)
-                                {
-                                case Uma_Engine::UniformType::Float:
-                                    if (ImGui::DragFloat(u.name.c_str(), &std::get<float>(val), 0.01f))
-                                        m_hasUnsavedEdit = true;
-                                    break;
-                                case Uma_Engine::UniformType::Vec2:
-                                {
-                                    auto& v = std::get<glm::vec2>(val);
-                                    if (ImGui::DragFloat2(u.name.c_str(), &v.x, 0.01f))
-                                        m_hasUnsavedEdit = true;
-                                    break;
-                                }
-                                case Uma_Engine::UniformType::Vec3:
-                                {
-                                    auto& v = std::get<glm::vec3>(val);
-                                    if (ImGui::ColorEdit3(u.name.c_str(), &v.x))
-                                        m_hasUnsavedEdit = true;
-                                    break;
-                                }
-                                case Uma_Engine::UniformType::Vec4:
-                                {
-                                    auto& v = std::get<glm::vec4>(val);
-                                    if (ImGui::ColorEdit4(u.name.c_str(), &v.x))
-                                        m_hasUnsavedEdit = true;
-                                    break;
-                                }
-                                case Uma_Engine::UniformType::Int:
-                                    if (ImGui::DragInt(u.name.c_str(), &std::get<int>(val)))
-                                        m_hasUnsavedEdit = true;
-                                    break;
-                                }
-                            }
-                            ImGui::Unindent();
-                        }
-                    }
                 }
                 else
                 {
