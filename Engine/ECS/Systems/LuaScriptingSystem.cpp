@@ -1159,6 +1159,14 @@ namespace Uma_ECS
             ),
             "toggleLowpass", [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, bool dulled) {
                 pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(entity, name, dulled);
+            },
+            "toggleGroupLowpass", [this](Uma_ECS::AudioComponent&, const std::string& groupName, bool enable)
+            {
+                SoundType type = SoundType::MASTER;
+                if (groupName == "SFX") type = SoundType::SFX;
+                else if (groupName == "BGM") type = SoundType::BGM;
+
+                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
             }
 
         );

@@ -225,7 +225,21 @@ namespace Uma_Engine
 				 */
 				void FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime = 1.0f);
 
+				/*!
+				 * \brief Applies or removes a low-pass filter on a specific sound instance.
+				 * \param info   Pointer to the SoundInfo containing the channel and DSP handle.
+				 * \param enable If true, applies a muffled low-pass cutoff (1000 Hz);
+				 *               if false, restores a near-full-range cutoff (22000 Hz).
+				 */
 				void ToggleLowpass(SoundInfo* info, bool enable);
+
+				/*!
+				 * \brief Enables or disables the low-pass DSP filter on a sound group.
+				 * \param type   channel group SoundType::SFX, SoundType::BGM, or SoundType::MASTER.
+				 * \param enable If true, activates the low-pass filter on the specified channel group.
+				 *               If false, bypasses it.
+				 */
+				void ToggleGroupLowpass(SoundType type, bool enable);
 		private:
 				FMOD_SYSTEM* pFmodSystem = nullptr;
 				//std::unordered_map<std::string, SoundInfo> aSoundListMap;
@@ -233,6 +247,10 @@ namespace Uma_Engine
 				FMOD_CHANNELGROUP* SFX = nullptr;
 				FMOD_CHANNELGROUP* BGM = nullptr;
 				FMOD_CHANNELGROUP* Master = nullptr;
+
+				FMOD_DSP* pLowpassMaster = nullptr;
+				FMOD_DSP* pLowpassSFX = nullptr;
+				FMOD_DSP* pLowpassBGM = nullptr;
 
 				FMOD_SOUNDGROUP* SFX_SG = nullptr;
 

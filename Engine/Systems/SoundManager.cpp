@@ -148,6 +148,22 @@ namespace Uma_Engine {
             Debugger::Log(WarningLevel::eWarning, "Audio Manager did not subscribe to the audio events");
         }
 
+        result = FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, &pLowpassMaster);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create lowpass DSP: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        auto CreateLowpass = [&](FMOD_CHANNELGROUP* group, FMOD_DSP** dsp) {
+            FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, dsp);
+            FMOD_DSP_SetParameterFloat(*dsp, FMOD_DSP_LOWPASS_SIMPLE_CUTOFF, 500.0f);
+            FMOD_ChannelGroup_AddDSP(group, FMOD_CHANNELCONTROL_DSP_HEAD, *dsp);
+            FMOD_DSP_SetBypass(*dsp, true); // Off by default
+            };
+
+        CreateLowpass(Master, &pLowpassMaster);
+        CreateLowpass(SFX, &pLowpassSFX);
+        CreateLowpass(BGM, &pLowpassBGM);
+
         return;
     }
 
@@ -229,6 +245,18 @@ namespace Uma_Engine {
     {
         if (!pFmodSystem) return;
         stopAllSounds();
+
+        auto ReleaseLowpass = [&](FMOD_CHANNELGROUP* group, FMOD_DSP*& dsp) {
+            if (dsp) {
+                FMOD_ChannelGroup_RemoveDSP(group, dsp);
+                FMOD_DSP_Release(dsp);
+                dsp = nullptr;
+            }
+        };
+
+        ReleaseLowpass(Master, pLowpassMaster);
+        ReleaseLowpass(SFX, pLowpassSFX);
+        ReleaseLowpass(BGM, pLowpassBGM);
         if (SFX) 
         {
             FMOD_ChannelGroup_Release(SFX);
@@ -594,6 +622,53 @@ namespace Uma_Engine {
         FMOD_DSP_SetParameterFloat(info->dspLowpass, FMOD_DSP_LOWPASS_CUTOFF, cutoff);
         FMOD_System_Update(pFmodSystem);
     }
+
+    void SoundManager::ToggleGroupLowpass(SoundType type, bool enable)
+    {
+        // Prevent toggling Master if SFX or BGM is active, and vice versa
+        if (enable)
+        {
+            FMOD_BOOL sfxBypassed, bgmBypassed, masterBypassed;
+            FMOD_DSP_GetBypass(pLowpassSFX, &sfxBypassed);
+            FMOD_DSP_GetBypass(pLowpassBGM, &bgmBypassed);
+            FMOD_DSP_GetBypass(pLowpassMaster, &masterBypassed);
+
+            // bypass=false means active (not bypassed = enabled)
+            bool sfxActive = !sfxBypassed;
+            bool bgmActive = !bgmBypassed;
+            bool masterActive = !masterBypassed;
+
+            if (type == SoundType::MASTER && (sfxActive || bgmActive))
+            {
+                Debugger::Log(WarningLevel::eWarning,
+                    "Cannot enable Master lowpass while SFX or BGM lowpass is active — would double-filter.");
+                return;
+            }
+            if ((type == SoundType::SFX || type == SoundType::BGM) && masterActive)
+            {
+                Debugger::Log(WarningLevel::eWarning,
+                    "Cannot enable SFX/BGM lowpass while Master lowpass is active — would double-filter.");
+                return;
+            }
+        }
+
+        FMOD_DSP** dsp = nullptr;
+        switch (type)
+        {
+        case SoundType::SFX:
+            dsp = &pLowpassSFX;
+            break;
+        case SoundType::BGM:
+            dsp = &pLowpassBGM;
+            break;
+        default:
+            dsp = &pLowpassMaster;
+            break;
+        }
+
+        FMOD_DSP_SetBypass(*dsp, enable);
+    }
+
 
 
 }

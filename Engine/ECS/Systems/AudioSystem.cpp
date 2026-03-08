@@ -233,15 +233,6 @@ void Uma_ECS::AudioSystem::PlayEntitySound(Entity entity, const std::string& sou
         audio.activeSounds[soundName].push_back(audio.loadedSounds[soundName]);
         if(is3D)
             FMOD_Channel_Set3DMinMaxDistance(info->channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
-
-        float checkMin, checkMax;
-        FMOD_Channel_Get3DMinMaxDistance(info->channel, &checkMin, &checkMax);
-        char buf[128];
-        snprintf(buf, sizeof(buf), "[Audio] Set min=%.1f max=%.1f | ReadBack min=%.1f max=%.1f\n",
-            audio.loadedSounds[soundName].minDistance,
-            audio.loadedSounds[soundName].maxDistance,
-            checkMin, checkMax);
-        OutputDebugStringA(buf);
     }
 }
 
@@ -355,15 +346,6 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
             true,                       // isFading
             channel                     // fadeHandle
             });
-
-        float checkMin, checkMax;
-        FMOD_Channel_Get3DMinMaxDistance(info->channel, &checkMin, &checkMax);
-        char buf[128];
-        snprintf(buf, sizeof(buf), "[Audio] Set min=%.1f max=%.1f | ReadBack min=%.1f max=%.1f\n",
-            audio.loadedSounds[soundName].minDistance,
-            audio.loadedSounds[soundName].maxDistance,
-            checkMin, checkMax);
-        OutputDebugStringA(buf);
     }
 }
 
@@ -402,6 +384,10 @@ void Uma_ECS::AudioSystem::toggleLowpass(Entity entity, const std::string& sound
     if (!info || !info->dspLowpass) return;
 
     pSoundManager->ToggleLowpass(info, dulled);
+}
+
+void Uma_ECS::AudioSystem::toggleLowpass(SoundType type, bool dulled) {
+    pSoundManager->ToggleGroupLowpass(type, dulled);
 }
 
 
