@@ -120,7 +120,7 @@ namespace Uma_UI
          *        Must be called before Init(). Defaults to "Assets/Fonts/Fujimaru-Regular.ttf".
          * \param fontPath Relative path to the font file.
          */
-        void SetNumberFont(const std::string& fontPath) { mFeedbackSystem.SetNumberFont(fontPath); }
+        //void SetNumberFont(const std::string& fontPath) { mFeedbackSystem.SetNumberFont(fontPath); }
 
         /*!
          * \brief Gets the current mouse position in screen pixel coordinates.
@@ -166,7 +166,7 @@ namespace Uma_UI
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
 
-        FeedbackSystem mFeedbackSystem;
+        //FeedbackSystem mFeedbackSystem;
 
         // Screen state
         Vec2 mScreenSize{ 1280.f, 720.f };
