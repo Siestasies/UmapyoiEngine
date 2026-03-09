@@ -1,5 +1,13 @@
 --[[
-    CutsceneTrigger.lua
+\file   CutsceneTrigger.lua
+\par    Project: GAM250
+\par    Course: CSD2401
+\par    Section A
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
     Attach to: any entity with Collider (Trigger), Cutscene, and Dialogue components.
 
     Activates a cutscene when the player enters the trigger collider.
@@ -10,7 +18,7 @@
       - Wait (3): pause for duration seconds
       - ReturnCameraToPlayer (4): re-enable camera follow
 
-    Requires Dialogue.prefab for dialogue display (same as DialogueTrigger.lua).
+    Requires Dialogue.prefab for dialogue display.
 
     ExposedVars:
         prefabName - dialogue prefab file name (include .prefab extension)
@@ -305,11 +313,9 @@ function Update(dt)
             end
         end
 
-        -- Click or key to advance
+        -- Click or Enter to advance
         local advanceInput = MouseButtonPressed(MOUSE_LEFT)
-            or KeyPressed(KEY_E)
             or KeyPressed(KEY_ENTER)
-            or KeyPressed(KEY_SPACE)
 
         if skipFrames <= 0 and advanceInput then
             if isTyping then
