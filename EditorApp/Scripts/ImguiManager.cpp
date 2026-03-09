@@ -3747,24 +3747,18 @@ namespace Uma_Engine
                 {
                     struct PresetEntry
                     {
-                        const char* label;
+                        const char* tooltip;
                         Uma_UI::AnchorPreset(*fn)();
                     };
 
-                    static const PresetEntry presets[] =
+                    // Row-major: 4 rows x 3 cols, matching Unity's layout
+                    // Row 0: Top    | Row 1: Middle | Row 2: Bottom | Row 3: Stretch variants
+                    static const PresetEntry presets[4][3] =
                     {
-                        { "TL",     Uma_UI::AnchorPreset::TopLeft           },
-                        { "TC",     Uma_UI::AnchorPreset::TopCenter         },
-                        { "TR",     Uma_UI::AnchorPreset::TopRight          },
-                        { "ML",     Uma_UI::AnchorPreset::MiddleLeft        },
-                        { "MC",     Uma_UI::AnchorPreset::MiddleCenter      },
-                        { "MR",     Uma_UI::AnchorPreset::MiddleRight       },
-                        { "BL",     Uma_UI::AnchorPreset::BottomLeft        },
-                        { "BC",     Uma_UI::AnchorPreset::BottomCenter      },
-                        { "BR",     Uma_UI::AnchorPreset::BottomRight       },
-                        { "StrH",   Uma_UI::AnchorPreset::StretchHorizontal },
-                        { "StrV",   Uma_UI::AnchorPreset::StretchVertical   },
-                        { "StrAll", Uma_UI::AnchorPreset::StretchAll        },
+                        { { "Top Left",    Uma_UI::AnchorPreset::TopLeft    }, { "Top Center",    Uma_UI::AnchorPreset::TopCenter    }, { "Top Right",    Uma_UI::AnchorPreset::TopRight    } },
+                        { { "Mid Left",    Uma_UI::AnchorPreset::MiddleLeft }, { "Mid Center",    Uma_UI::AnchorPreset::MiddleCenter }, { "Mid Right",    Uma_UI::AnchorPreset::MiddleRight } },
+                        { { "Bot Left",    Uma_UI::AnchorPreset::BottomLeft }, { "Bot Center",    Uma_UI::AnchorPreset::BottomCenter }, { "Bot Right",    Uma_UI::AnchorPreset::BottomRight } },
+                        { { "Stretch H",   Uma_UI::AnchorPreset::StretchHorizontal }, { "Stretch V", Uma_UI::AnchorPreset::StretchVertical }, { "Stretch All", Uma_UI::AnchorPreset::StretchAll } },
                     };
 
                     auto matchesPreset = [&](const Uma_UI::AnchorPreset& p) -> bool
@@ -3775,38 +3769,206 @@ namespace Uma_Engine
                                 && rectTransform.anchorMax.y == p.anchorMax.y;
                         };
 
-                    ImGui::Text("Presets");
-                    const float btnSize = 36.0f;
-                    const int   cols = 3;
-                    for (int i = 0; i < (int)(sizeof(presets) / sizeof(presets[0])); ++i)
-                    {
-                        if (i % cols != 0)
-                            ImGui::SameLine();
-
-                        Uma_UI::AnchorPreset p = presets[i].fn();
-                        bool active = matchesPreset(p);
-
-                        if (active)
-                            ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
-
-                        std::string btnId = std::string(presets[i].label) + "##AnchorPreset";
-                        if (ImGui::Button(btnId.c_str(), ImVec2(btnSize, btnSize)))
+                    // Draws a miniature anchor diagram into a cell using ImDrawList.
+                    // parentMin/parentMax: pixel bounds of the outer "parent" box.
+                    // preset: the anchor config to visualise.
+                    // col_dim: dim line colour, col_anchor: anchor marker colour.
+                    auto drawAnchorDiagram = [&](
+                        ImDrawList* dl,
+                        ImVec2 parentMin, ImVec2 parentMax,
+                        const Uma_UI::AnchorPreset& p,
+                        ImU32 col_bg, ImU32 col_border,
+                        ImU32 col_anchor, ImU32 col_child)
                         {
-                            rectTransform.ApplyPreset(p);
-                            rectTransform.isDirty = true;
-                            m_hasUnsavedEdit = true;
+                            float pw = parentMax.x - parentMin.x;
+                            float ph = parentMax.y - parentMin.y;
+
+                            // Parent box
+                            dl->AddRectFilled(parentMin, parentMax, col_bg);
+                            dl->AddRect(parentMin, parentMax, col_border);
+
+                            // Anchor point(s) in pixel space.
+                            // Note: Y is flipped — anchorMin.y=0 is bottom in UI space, but top in screen space.
+                            float axMin = parentMin.x + p.anchorMin.x * pw;
+                            float ayMin = parentMax.y - p.anchorMin.y * ph; // flip Y
+                            float axMax = parentMin.x + p.anchorMax.x * pw;
+                            float ayMax = parentMax.y - p.anchorMax.y * ph; // flip Y
+
+                            bool stretchH = (p.anchorMin.x != p.anchorMax.x);
+                            bool stretchV = (p.anchorMin.y != p.anchorMax.y);
+
+                            if (stretchH || stretchV)
+                            {
+                                // Draw stretch lines across the parent
+                                if (stretchH)
+                                    dl->AddLine(ImVec2(axMin, parentMin.y + ph * 0.5f),
+                                        ImVec2(axMax, parentMin.y + ph * 0.5f), col_anchor, 1.5f);
+                                if (stretchV)
+                                    dl->AddLine(ImVec2(parentMin.x + pw * 0.5f, ayMax),
+                                        ImVec2(parentMin.x + pw * 0.5f, ayMin), col_anchor, 1.5f);
+
+                                // Child rect fills anchor span
+                                float childL = stretchH ? axMin : parentMin.x + pw * 0.15f;
+                                float childR = stretchH ? axMax : parentMax.x - pw * 0.15f;
+                                float childT = stretchV ? ayMax : parentMin.y + ph * 0.25f;
+                                float childB = stretchV ? ayMin : parentMax.y - ph * 0.25f;
+                                dl->AddRectFilled(ImVec2(childL, childT), ImVec2(childR, childB), col_child);
+
+                                // Arrow heads on stretch lines
+                                const float ar = 2.5f;
+                                if (stretchH)
+                                {
+                                    float my = parentMin.y + ph * 0.5f;
+                                    dl->AddTriangleFilled(ImVec2(axMin, my), ImVec2(axMin + ar, my - ar), ImVec2(axMin + ar, my + ar), col_anchor);
+                                    dl->AddTriangleFilled(ImVec2(axMax, my), ImVec2(axMax - ar, my - ar), ImVec2(axMax - ar, my + ar), col_anchor);
+                                }
+                                if (stretchV)
+                                {
+                                    float mx = parentMin.x + pw * 0.5f;
+                                    dl->AddTriangleFilled(ImVec2(mx, ayMin), ImVec2(mx - ar, ayMin - ar), ImVec2(mx + ar, ayMin - ar), col_anchor);
+                                    dl->AddTriangleFilled(ImVec2(mx, ayMax), ImVec2(mx - ar, ayMax + ar), ImVec2(mx + ar, ayMax + ar), col_anchor);
+                                }
+                            }
+                            else
+                            {
+                                // Point anchor — draw crosshair at anchor point
+                                float cx = axMin;
+                                float cy = ayMin;
+                                dl->AddLine(ImVec2(cx - 3, cy), ImVec2(cx + 3, cy), col_anchor, 1.5f);
+                                dl->AddLine(ImVec2(cx, cy - 3), ImVec2(cx, cy + 3), col_anchor, 1.5f);
+
+                                // Child rect offset from anchor via pivot
+                                float cw = pw * 0.45f;
+                                float ch = ph * 0.45f;
+                                float childL = cx + (0.0f - p.pivot.x) * cw;
+                                float childT = cy + (p.pivot.y - 1.0f) * ch;
+                                dl->AddRectFilled(
+                                    ImVec2(childL, childT),
+                                    ImVec2(childL + cw, childT + ch),
+                                    col_child);
+                            }
+                        };
+
+                    // ---- Preset button: "Anchor Presets ?" opens a popup ----
+                    if (ImGui::Button("Anchor Presets##AnchorPresetBtn"))
+                        ImGui::OpenPopup("AnchorPresetPopup");
+
+                    if (ImGui::BeginPopup("AnchorPresetPopup"))
+                    {
+                        ImGui::TextDisabled("Anchor Presets");
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        ImDrawList* dl = ImGui::GetWindowDrawList();
+                        const float cell = 46.0f;  // cell size in pixels
+                        const float pad = 4.0f;   // padding inside cell
+                        const float diagSz = cell - pad * 2.0f;
+                        const int   cols = 3;
+                        const int   rows = 4;
+
+                        ImU32 col_bg = IM_COL32(40, 40, 44, 255);
+                        ImU32 col_border = IM_COL32(90, 90, 100, 255);
+                        ImU32 col_anchor = IM_COL32(100, 200, 255, 255);
+                        ImU32 col_child = IM_COL32(80, 140, 200, 120);
+                        ImU32 col_active_bg = IM_COL32(60, 120, 200, 255);
+                        ImU32 col_hover_bg = IM_COL32(55, 55, 65, 255);
+
+                        for (int row = 0; row < rows; ++row)
+                        {
+                            if (row == 3)
+                            {
+                                ImGui::Spacing();
+                                ImGui::Separator();
+                                ImGui::Spacing();
+                            }
+
+                            for (int col = 0; col < cols; ++col)
+                            {
+                                if (col > 0) ImGui::SameLine(0.0f, 4.0f);
+
+                                Uma_UI::AnchorPreset p = presets[row][col].fn();
+                                bool active = matchesPreset(p);
+
+                                // Invisible button to capture hover/click
+                                std::string btnId = "##APCell_" + std::to_string(row) + "_" + std::to_string(col);
+                                ImVec2 cellMin = ImGui::GetCursorScreenPos();
+                                ImVec2 cellMax = ImVec2(cellMin.x + cell, cellMin.y + cell);
+
+                                bool hovered = false;
+                                bool clicked = ImGui::InvisibleButton(btnId.c_str(), ImVec2(cell, cell));
+                                hovered = ImGui::IsItemHovered();
+
+                                // Background
+                                ImU32 bgCol = active ? col_active_bg : (hovered ? col_hover_bg : col_bg);
+                                dl->AddRectFilled(cellMin, cellMax, bgCol, 4.0f);
+                                dl->AddRect(cellMin, cellMax,
+                                    active ? IM_COL32(120, 180, 255, 255) : IM_COL32(70, 70, 80, 255),
+                                    4.0f, 0, active ? 1.5f : 1.0f);
+
+                                // Anchor diagram inside cell
+                                ImVec2 diagMin = ImVec2(cellMin.x + pad, cellMin.y + pad);
+                                ImVec2 diagMax = ImVec2(diagMin.x + diagSz, diagMin.y + diagSz);
+                                drawAnchorDiagram(dl, diagMin, diagMax, p,
+                                    active ? IM_COL32(30, 70, 130, 255) : col_bg,
+                                    active ? IM_COL32(140, 200, 255, 200) : col_border,
+                                    active ? IM_COL32(255, 255, 255, 255) : col_anchor,
+                                    active ? IM_COL32(180, 220, 255, 160) : col_child);
+
+                                if (clicked)
+                                {
+                                    rectTransform.ApplyPreset(p);
+                                    rectTransform.isDirty = true;
+                                    m_hasUnsavedEdit = true;
+                                    ImGui::CloseCurrentPopup();
+                                }
+
+                                if (hovered)
+                                    ImGui::SetTooltip("%s\nanchorMin=(%.1f, %.1f)  anchorMax=(%.1f, %.1f)\npivot=(%.1f, %.1f)",
+                                        presets[row][col].tooltip,
+                                        p.anchorMin.x, p.anchorMin.y,
+                                        p.anchorMax.x, p.anchorMax.y,
+                                        p.pivot.x, p.pivot.y);
+                            }
                         }
 
-                        if (active)
-                            ImGui::PopStyleColor();
-
-                        if (ImGui::IsItemHovered())
-                            ImGui::SetTooltip("%s\nanchorMin=(%.1f, %.1f)\nanchorMax=(%.1f, %.1f)\npivot=(%.1f, %.1f)",
-                                presets[i].label,
-                                p.anchorMin.x, p.anchorMin.y,
-                                p.anchorMax.x, p.anchorMax.y,
-                                p.pivot.x, p.pivot.y);
+                        ImGui::Spacing();
+                        ImGui::EndPopup();
                     }
+
+                    // Small inline preview of the current anchor next to the button
+                    ImGui::SameLine();
+                    {
+                        ImDrawList* dl = ImGui::GetWindowDrawList();
+                        ImVec2 pos = ImGui::GetCursorScreenPos();
+                        const float sz = 20.0f;
+                        ImVec2 pMin = ImVec2(pos.x, pos.y + 1.0f);
+                        ImVec2 pMax = ImVec2(pos.x + sz, pos.y + sz - 1.0f);
+                        Uma_UI::AnchorPreset cur = { rectTransform.anchorMin, rectTransform.anchorMax, rectTransform.pivot };
+                        ImGui::Dummy(ImVec2(sz + 2.0f, sz));
+                        dl->AddRectFilled(pMin, pMax, IM_COL32(40, 40, 44, 255), 2.0f);
+                        dl->AddRect(pMin, pMax, IM_COL32(90, 90, 100, 255), 2.0f);
+
+                        float pw = pMax.x - pMin.x;
+                        float ph = pMax.y - pMin.y;
+                        float axMin = pMin.x + cur.anchorMin.x * pw;
+                        float ayMin = pMax.y - cur.anchorMin.y * ph;
+                        float axMax = pMin.x + cur.anchorMax.x * pw;
+                        float ayMax = pMax.y - cur.anchorMax.y * ph;
+                        bool strH = cur.anchorMin.x != cur.anchorMax.x;
+                        bool strV = cur.anchorMin.y != cur.anchorMax.y;
+                        ImU32 ac = IM_COL32(100, 200, 255, 255);
+                        if (strH || strV)
+                        {
+                            if (strH) dl->AddLine(ImVec2(axMin, pMin.y + ph * 0.5f), ImVec2(axMax, pMin.y + ph * 0.5f), ac, 1.5f);
+                            if (strV) dl->AddLine(ImVec2(pMin.x + pw * 0.5f, ayMax), ImVec2(pMin.x + pw * 0.5f, ayMin), ac, 1.5f);
+                        }
+                        else
+                        {
+                            dl->AddLine(ImVec2(axMin - 3, ayMin), ImVec2(axMin + 3, ayMin), ac, 1.5f);
+                            dl->AddLine(ImVec2(axMin, ayMin - 3), ImVec2(axMin, ayMin + 3), ac, 1.5f);
+                        }
+                    }
+
                     ImGui::Spacing();
                 }
                 // --- End Anchor Preset Picker ---
