@@ -22,6 +22,7 @@ All rights reserved.
 */
 #include "SceneType.h"
 #include "Core/GameSerializer.h"
+#include "Application.h"
 #include <algorithm>
 
 namespace Uma_Engine
@@ -563,25 +564,32 @@ namespace Uma_Engine
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);
 
-        if (m_FSMSystem)
+        if (m_FSMSystem && !Uma_Engine::Application::GetCutsceneActive())
             m_FSMSystem->Update(dt);
     }
 
     void Scene::FixedUpdateECSSystems()
     {
-        // Physics runs at FIXED timestep
+        bool cutscene = Uma_Engine::Application::GetCutsceneActive();
 
-        if (m_PlayerController)
-            m_PlayerController->Update(m_FixedTimeStep);
+        // Skip gameplay systems during cutscenes
+        if (!cutscene)
+        {
+            if (m_PlayerController)
+                m_PlayerController->Update(m_FixedTimeStep);
 
-        if (m_PathFindingSystem)
-            m_PathFindingSystem->Update(m_FixedTimeStep);
+            if (m_PathFindingSystem)
+                m_PathFindingSystem->Update(m_FixedTimeStep);
+        }
 
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
 
-        if (m_ProjectileSystem)
-            m_ProjectileSystem->Update(m_FixedTimeStep);
+        if (!cutscene)
+        {
+            if (m_ProjectileSystem)
+                m_ProjectileSystem->Update(m_FixedTimeStep);
+        }
 
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();

@@ -174,6 +174,7 @@ local function NextAction()
         -- Cutscene finished
         isPlaying = false
         actionIndex = 0
+        SetCutsceneActive(false)
         SetCutscenePlayed(ownerEntity, true)
         Log("[CutsceneTrigger] Cutscene finished")
         return
@@ -364,6 +365,7 @@ function OnTriggerEnter(other, triggerOwner)
         isPlaying = true
         actionIndex = 1
         cameraEntity = FindCameraEntity()
+        SetCutsceneActive(true)
 
         Log("[CutsceneTrigger] Starting cutscene with " .. #actions .. " actions")
         BeginAction()

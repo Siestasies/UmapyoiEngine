@@ -1220,6 +1220,14 @@ namespace Uma_ECS
                 return entities[0];
             });
 
+        // Cutscene active flag - freezes gameplay systems (player, enemies, pathfinding, projectiles)
+        sharedLua->set_function("SetCutsceneActive", [](bool active) {
+            Uma_Engine::Application::GetCutsceneActive() = active;
+        });
+        sharedLua->set_function("IsCutsceneActive", []() -> bool {
+            return Uma_Engine::Application::GetCutsceneActive();
+        });
+
         // CutsceneActionType constants for Lua
         sharedLua->set("CUTSCENE_SET_CAMERA", 0);
         sharedLua->set("CUTSCENE_LERP_CAMERA", 1);
