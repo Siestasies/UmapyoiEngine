@@ -45,6 +45,9 @@ All rights reserved.
 // Events
 #include "Events/ApplicationEvents.h"
 
+// playfab test WIP
+#include "PlayFab/Test Scripts/PlayFabRestTest.cpp"
+
 namespace Uma_Engine
 {
     /**
@@ -216,6 +219,9 @@ namespace Uma_Engine
 
         // Load the default scene
         sceneManager->LoadScene("tutorial.scn");
+
+        // do a playfab rest test
+        Uma_Engine::TestSetTitleData();
     }
 
     bool EditorApplication::HandleInterruptions(float deltaTime)

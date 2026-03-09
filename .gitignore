@@ -99,6 +99,9 @@ UmapyoiGame
 Uma_Engine.lib
 Uma_Engine.a
 
+# playfab dev config
+Configs/playfab_dev.json
+
 # ========================================
 # Intermediate/Object Files
 # ========================================
