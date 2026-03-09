@@ -3,36 +3,49 @@ local PlayerStatTrackState = {
     bWaterAttackCount = 0,
     bWindAttackCount = 0,
     comboAttackCount = 0,
-    passedTrigger = false
+    passedTrigger = 0
 }
 
 -- increment functions
 function PlayerStatTrackState.incrFireAttack()
-    if PlayerStatTrackState.passedTrigger == true then
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current fire attack count " ..  PlayerStatTrackState.bFireAttackCount)
+    if PlayerStatTrackState.passedTrigger == 1 then
         PlayerStatTrackState.bFireAttackCount =
             PlayerStatTrackState.bFireAttackCount + 1
     end
 end
 
 function PlayerStatTrackState.incrWaterAttack()
-    if PlayerStatTrackState.passedTrigger == true then
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current water attack count " ..  PlayerStatTrackState.bWaterAttackCount)
+    if PlayerStatTrackState.passedTrigger == 3 then
         PlayerStatTrackState.bWaterAttackCount =
             PlayerStatTrackState.bWaterAttackCount + 1
     end
 end
 
 function PlayerStatTrackState.incrWindAttack()
-    if PlayerStatTrackState.passedTrigger == true then
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current wind attack count " ..  PlayerStatTrackState.bWindAttackCount)
+    if PlayerStatTrackState.passedTrigger == 2 then
         PlayerStatTrackState.bWindAttackCount =
             PlayerStatTrackState.bWindAttackCount + 1
     end
 end
 
 function PlayerStatTrackState.incrComboAttack()
-    if PlayerStatTrackState.passedTrigger == true then
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current combo attack count " ..  PlayerStatTrackState.comboAttackCount)
+    if PlayerStatTrackState.passedTrigger == 4 then
         PlayerStatTrackState.comboAttackCount =
             PlayerStatTrackState.comboAttackCount + 1
     end
+end
+
+function PlayerStatTrackState.incrPassedTrigger()
+    PlayerStatTrackState.passedTrigger =
+        PlayerStatTrackState.passedTrigger + 1
 end
 
 -- Getter functions

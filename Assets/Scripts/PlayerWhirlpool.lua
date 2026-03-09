@@ -1,6 +1,8 @@
 -- PlayerSteamBurst.lua
 -- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
 local audio = nil
+local PlayerStatTrackState = require("PlayerStatTrackState")
+
 ExposedVars = {
     whirlpoolAnimationName = "atk_water_wind",
     whirlpoolSoundName = "atk_water_wind",
@@ -131,6 +133,8 @@ function state_enter(entity)
     end
     
     FaceTowardsMouse(entity)
+
+    PlayerStatTrackState.incrComboAttack()
 end
 
 function state_update(entity, dt)
