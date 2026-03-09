@@ -40,6 +40,7 @@ All rights reserved.
 #include "../UI/Components/Dialogue.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/SpriteMaterial.h"
+#include "../Components/Cutscene.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -1133,6 +1134,99 @@ namespace Uma_ECS
             "followPlayer", &Camera::followPlayer
         );
 
+        // Register Cutscene
+        sharedLua->new_usertype<Cutscene>("Cutscene",
+            "playOnce", &Cutscene::playOnce,
+            "hasPlayed", &Cutscene::hasPlayed
+        );
+
+        // GetCutsceneActions(entity) -> table of actions or nil
+        sharedLua->set_function("GetCutsceneActions",
+            [this](Entity entity) -> sol::object
+            {
+                if (!pCoordinator->HasActiveEntity(entity))
+                    return sol::nil;
+
+                auto& arr = pCoordinator->GetComponentArray<Cutscene>();
+                if (!arr.Has(entity))
+                    return sol::nil;
+
+                auto& cutscene = arr.GetData(entity);
+                sol::state_view L(sharedLua->lua_state());
+                sol::table actions = L.create_table(static_cast<int>(cutscene.actions.size()), 0);
+                for (size_t i = 0; i < cutscene.actions.size(); ++i)
+                {
+                    sol::table entry = L.create_table(0, 5);
+                    entry["type"] = static_cast<int>(cutscene.actions[i].type);
+                    entry["targetX"] = cutscene.actions[i].targetPosition.x;
+                    entry["targetY"] = cutscene.actions[i].targetPosition.y;
+                    entry["duration"] = cutscene.actions[i].duration;
+                    entry["dialogueSequenceId"] = cutscene.actions[i].dialogueSequenceId;
+                    actions[static_cast<int>(i) + 1] = entry;
+                }
+                return actions;
+            });
+
+        // SetCutscenePlayed(entity, played) - mark cutscene as played
+        sharedLua->set_function("SetCutscenePlayed",
+            [this](Entity entity, bool played)
+            {
+                if (!pCoordinator->HasActiveEntity(entity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Cutscene>();
+                if (!arr.Has(entity)) return;
+                arr.GetData(entity).hasPlayed = played;
+            });
+
+        // SetCameraFollow(cameraEntity, follow) - enable/disable player follow
+        sharedLua->set_function("SetCameraFollow",
+            [this](Entity cameraEntity, bool follow)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                arr.GetData(cameraEntity).followPlayer = follow;
+            });
+
+        // SetCameraPosition(cameraEntity, x, y) - snap camera to position
+        sharedLua->set_function("SetCameraPosition",
+            [this](Entity cameraEntity, float x, float y)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& tfArr = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArr.Has(cameraEntity)) return;
+                tfArr.GetData(cameraEntity).position = Vec2(x, y);
+            });
+
+        // GetTransformPosition(entity) -> x, y (multi-return)
+        sharedLua->set_function("GetTransformPosition",
+            [this](Entity entity) -> std::tuple<float, float>
+            {
+                if (!pCoordinator->HasActiveEntity(entity))
+                    return { 0.0f, 0.0f };
+                auto& tfArr = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArr.Has(entity))
+                    return { 0.0f, 0.0f };
+                auto& pos = tfArr.GetData(entity).worldPosition;
+                return { pos.x, pos.y };
+            });
+
+        // FindCameraEntity() -> entity or -1
+        sharedLua->set_function("FindCameraEntity",
+            [this]() -> Entity
+            {
+                auto& camArr = pCoordinator->GetComponentArray<Camera>();
+                auto entities = camArr.GetAllEntities();
+                if (entities.empty()) return static_cast<Entity>(-1);
+                return entities[0];
+            });
+
+        // CutsceneActionType constants for Lua
+        sharedLua->set("CUTSCENE_SET_CAMERA", 0);
+        sharedLua->set("CUTSCENE_LERP_CAMERA", 1);
+        sharedLua->set("CUTSCENE_PLAY_DIALOGUE", 2);
+        sharedLua->set("CUTSCENE_WAIT", 3);
+        sharedLua->set("CUTSCENE_RETURN_CAMERA", 4);
+
         sharedLua->new_usertype<PathFinding>("PathFinding",
             "goal", &PathFinding::goal,
             "reachedGoal", &PathFinding::reachedGoal,
@@ -1469,6 +1563,7 @@ namespace Uma_ECS
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
         using Dialogue = Uma_UI::Dialogue;
+        using Cutscene = Uma_ECS::Cutscene;
         // Component list macro
 #define COMPONENT_LIST \
         X(Transform)   \
@@ -1488,6 +1583,7 @@ namespace Uma_ECS
         X(ParticleEmitter)\
         X(AudioComponent)\
         X(SpriteMaterial)\
+        X(Cutscene)    \
 
     // -----------------------------------------------------------
     // ENTITY WRAPPER
@@ -1928,6 +2024,7 @@ namespace Uma_ECS
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
         using Dialogue = Uma_UI::Dialogue;
+        using Cutscene = Uma_ECS::Cutscene;
 
 #define COMPONENT_LIST \
         BIND_COMPONENT_GETTER(Transform)   \
@@ -1946,6 +2043,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Dialogue)     \
         BIND_COMPONENT_GETTER(AudioComponent)\
         BIND_COMPONENT_GETTER(SpriteMaterial)\
+        BIND_COMPONENT_GETTER(Cutscene)    \
         //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \

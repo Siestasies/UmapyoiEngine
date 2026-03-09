@@ -353,7 +353,8 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::Tilemap>();
         m_Coordinator.RegisterComponent<Uma_ECS::FSM>();
         m_Coordinator.RegisterComponent<Uma_ECS::SpriteMaterial>();
-        
+        m_Coordinator.RegisterComponent<Uma_ECS::Cutscene>();
+
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
         {

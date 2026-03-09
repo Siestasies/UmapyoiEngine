@@ -35,6 +35,7 @@ All rights reserved.
 #include "Systems/Graphics.hpp"
 #include "Systems/TilemapEditorManager.h"
 #include "ECS/Components/SpriteMaterial.h"
+#include "ECS/Components/Cutscene.h"
 
 #include <GLFW/glfw3.h>
 
@@ -5746,6 +5747,229 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Cutscene>())
+        {
+            if (ImGui::CollapsingHeader("Cutscene", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Cutscene"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Cutscene>>(
+                        &coordinator,
+                        entity,
+                        "Remove Cutscene"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& cutscene = coordinator.GetComponent<Uma_ECS::Cutscene>(entity);
+                ImGui::Indent();
+                BeginComponentEdit(entity, coordinator);
+
+                // Play Once checkbox
+                if (ImGui::Checkbox("Play Once##cutscenePlayOnce", &cutscene.playOnce))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("If checked, cutscene only triggers once per game session.");
+
+                // Has Played (read-only indicator)
+                ImGui::TextDisabled("Has Played: %s", cutscene.hasPlayed ? "Yes" : "No");
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Reset##cutsceneReset"))
+                {
+                    cutscene.hasPlayed = false;
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Actions (%zu)", cutscene.actions.size());
+                ImGui::Separator();
+
+                const char* actionTypeNames[] = {
+                    "Set Camera To Position",
+                    "Lerp Camera To Position",
+                    "Play Dialogue",
+                    "Wait",
+                    "Return Camera To Player"
+                };
+
+                for (int actionIdx = 0; actionIdx < static_cast<int>(cutscene.actions.size()); ++actionIdx)
+                {
+                    auto& action = cutscene.actions[actionIdx];
+
+                    int typeInt = static_cast<int>(action.type);
+                    const char* typeName = (typeInt >= 0 && typeInt < 5) ? actionTypeNames[typeInt] : "Unknown";
+
+                    char actionLabel[256];
+                    snprintf(actionLabel, sizeof(actionLabel), "[%d] %s##action%d",
+                        actionIdx, typeName, actionIdx);
+
+                    bool actionOpen = ImGui::CollapsingHeader(actionLabel);
+
+                    // Right-click context menu
+                    char actionCtxId[64];
+                    snprintf(actionCtxId, sizeof(actionCtxId), "##actionctx%d", actionIdx);
+                    if (ImGui::BeginPopupContextItem(actionCtxId))
+                    {
+                        if (actionIdx > 0 && ImGui::MenuItem("Move Up"))
+                        {
+                            std::swap(cutscene.actions[actionIdx], cutscene.actions[actionIdx - 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        if (actionIdx < static_cast<int>(cutscene.actions.size()) - 1 && ImGui::MenuItem("Move Down"))
+                        {
+                            std::swap(cutscene.actions[actionIdx], cutscene.actions[actionIdx + 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        if (ImGui::MenuItem("Delete Action"))
+                        {
+                            cutscene.actions.erase(cutscene.actions.begin() + actionIdx);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        ImGui::EndPopup();
+                    }
+
+                    if (actionOpen)
+                    {
+                        ImGui::Indent();
+
+                        // Action type combo
+                        char typeLabel[64];
+                        snprintf(typeLabel, sizeof(typeLabel), "Type##actiontype%d", actionIdx);
+                        if (ImGui::Combo(typeLabel, &typeInt, actionTypeNames, 5))
+                        {
+                            action.type = static_cast<Uma_ECS::CutsceneActionType>(typeInt);
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        // Show relevant fields based on type
+                        switch (action.type)
+                        {
+                        case Uma_ECS::CutsceneActionType::SetCameraToPosition:
+                        {
+                            char posLabel[64];
+                            snprintf(posLabel, sizeof(posLabel), "Position##campos%d", actionIdx);
+                            float pos[2] = { action.targetPosition.x, action.targetPosition.y };
+                            if (ImGui::DragFloat2(posLabel, pos, 0.1f))
+                            {
+                                action.targetPosition = Vec2(pos[0], pos[1]);
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::LerpCameraToPosition:
+                        {
+                            char posLabel[64];
+                            snprintf(posLabel, sizeof(posLabel), "Target Position##lerppos%d", actionIdx);
+                            float pos[2] = { action.targetPosition.x, action.targetPosition.y };
+                            if (ImGui::DragFloat2(posLabel, pos, 0.1f))
+                            {
+                                action.targetPosition = Vec2(pos[0], pos[1]);
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##lerpdur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.1f, 30.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::PlayDialogue:
+                        {
+                            static char seqIdBuf[128];
+                            strncpy(seqIdBuf, action.dialogueSequenceId.c_str(), 127);
+                            seqIdBuf[127] = '\0';
+                            char seqLabel[64];
+                            snprintf(seqLabel, sizeof(seqLabel), "Sequence ID##dlgseq%d", actionIdx);
+                            if (ImGui::InputText(seqLabel, seqIdBuf, 128))
+                            {
+                                action.dialogueSequenceId = seqIdBuf;
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                                ImGui::SetTooltip("ID of the dialogue sequence to play.\nMust match an ID in the Dialogue component on this entity.");
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::Wait:
+                        {
+                            char waitLabel[64];
+                            snprintf(waitLabel, sizeof(waitLabel), "Duration (s)##waitdur%d", actionIdx);
+                            if (ImGui::DragFloat(waitLabel, &action.duration, 0.05f, 0.0f, 60.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::ReturnCameraToPlayer:
+                        {
+                            ImGui::TextDisabled("Re-enables camera follow on player.");
+                            break;
+                        }
+                        }
+
+                        ImGui::Unindent();
+                    }
+                } // end actions loop
+
+                ImGui::Separator();
+
+                // Add action buttons
+                if (ImGui::Button("+ Set Camera##addSetCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::SetCameraToPosition;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Lerp Camera##addLerpCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::LerpCameraToPosition;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Dialogue##addDlg"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::PlayDialogue;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::Button("+ Wait##addWait"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::Wait;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Return Camera##addRetCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::ReturnCameraToPlayer;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("Tip: Add Collider (Trigger) + LuaScript (CutsceneTrigger.lua)");
+                ImGui::TextDisabled("to activate this cutscene on player collision.");
+
+                EndComponentEdit(entity, coordinator, "Cutscene");
+                ImGui::Unindent();
+            }
+        }
         else if (type == coordinator.GetComponentType<Uma_ECS::Prefab>())
         {
             if (ImGui::CollapsingHeader("Prefab"))
@@ -6810,6 +7034,16 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Dialogue{},
                     "Add Dialogue"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Cutscene>()) && ImGui::MenuItem("Cutscene"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Cutscene>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Cutscene{},
+                    "Add Cutscene"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }
