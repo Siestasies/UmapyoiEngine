@@ -156,6 +156,9 @@ namespace Uma_Engine
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();
 
+        if (m_UISystem)
+            m_UISystem->Update(dt);
+
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt, false);
 
@@ -164,9 +167,6 @@ namespace Uma_Engine
 
         if (m_AnimatorSystem)
             m_AnimatorSystem->Update(dt);
-
-        if (m_UISystem)
-            m_UISystem->Update(dt);
 
         if (m_CollisionSystem)
             m_CollisionSystem->DebugRender();
@@ -527,6 +527,7 @@ namespace Uma_Engine
     {
         //if (m_PlayerController)
         //    m_PlayerController->Update(m_FixedTimeStep);
+        
         if (m_AnimatorSystem)
             m_AnimatorSystem->Update(dt);
 
@@ -539,24 +540,21 @@ namespace Uma_Engine
        /* if (m_Graphics)
             m_Graphics->ClearBackground(0.2f, 0.3f, 0.3f);*/
 
+        if (m_UISystem)
+            m_UISystem->Update(dt);
+            m_UISystem->InputPass();
+
         if (m_RenderingSystem)
             m_RenderingSystem->Update(dt, true);
 
         if (m_TilemapSystem)
             m_TilemapSystem->Update(dt);
 
-
         if (m_ParticleSystem)
             m_ParticleSystem->Update(dt);
 
         if (m_CollisionSystem)
             m_CollisionSystem->DebugRender();
-
-        if (m_UISystem)
-        {
-            m_UISystem->Update(dt);
-            m_UISystem->InputPass();
-        }
 
         if (m_AudioSystem)
             m_AudioSystem->Update(dt);
