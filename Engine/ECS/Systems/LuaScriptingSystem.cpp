@@ -1162,6 +1162,7 @@ namespace Uma_ECS
                     entry["targetY"] = cutscene.actions[i].targetPosition.y;
                     entry["duration"] = cutscene.actions[i].duration;
                     entry["dialogueSequenceId"] = cutscene.actions[i].dialogueSequenceId;
+                    entry["shakeIntensity"] = cutscene.actions[i].shakeIntensity;
                     actions[static_cast<int>(i) + 1] = entry;
                 }
                 return actions;
@@ -1210,6 +1211,18 @@ namespace Uma_ECS
                 return { pos.x, pos.y };
             });
 
+        // CameraShake(cameraEntity, intensity, duration) - trigger screen shake
+        sharedLua->set_function("CameraShake",
+            [this](Entity cameraEntity, float intensity, float duration)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                auto& cam = arr.GetData(cameraEntity);
+                cam.mShakeIntensity = intensity;
+                cam.mShakeTimer = duration;
+            });
+
         // FindCameraEntity() -> entity or -1
         sharedLua->set_function("FindCameraEntity",
             [this]() -> Entity
@@ -1234,6 +1247,7 @@ namespace Uma_ECS
         sharedLua->set("CUTSCENE_PLAY_DIALOGUE", 2);
         sharedLua->set("CUTSCENE_WAIT", 3);
         sharedLua->set("CUTSCENE_RETURN_CAMERA", 4);
+        sharedLua->set("CUTSCENE_SHAKE_CAMERA", 5);
 
         sharedLua->new_usertype<PathFinding>("PathFinding",
             "goal", &PathFinding::goal,

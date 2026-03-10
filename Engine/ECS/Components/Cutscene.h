@@ -30,7 +30,8 @@ namespace Uma_ECS
         LerpCameraToPosition,
         PlayDialogue,
         Wait,
-        ReturnCameraToPlayer
+        ReturnCameraToPlayer,
+        ShakeCamera
     };
 
     struct CutsceneAction
@@ -39,6 +40,7 @@ namespace Uma_ECS
         Vec2 targetPosition{ 0.0f, 0.0f };
         float duration = 1.0f;
         std::string dialogueSequenceId;
+        float shakeIntensity = 1.0f;
 
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
         {
@@ -49,6 +51,7 @@ namespace Uma_ECS
             out.AddMember("duration", duration, alloc);
             out.AddMember("dialogueSequenceId",
                 rapidjson::Value(dialogueSequenceId.c_str(), alloc), alloc);
+            out.AddMember("shakeIntensity", shakeIntensity, alloc);
         }
 
         void Deserialize(const rapidjson::Value& in)
@@ -60,6 +63,8 @@ namespace Uma_ECS
             duration = in.HasMember("duration") ? in["duration"].GetFloat() : 1.0f;
             dialogueSequenceId = in.HasMember("dialogueSequenceId")
                 ? in["dialogueSequenceId"].GetString() : "";
+            shakeIntensity = in.HasMember("shakeIntensity")
+                ? in["shakeIntensity"].GetFloat() : 1.0f;
         }
     };
 

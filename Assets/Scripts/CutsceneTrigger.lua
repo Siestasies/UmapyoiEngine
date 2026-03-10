@@ -17,6 +17,7 @@
       - PlayDialogue (2): play a dialogue sequence (uses Dialogue component)
       - Wait (3): pause for duration seconds
       - ReturnCameraToPlayer (4): re-enable camera follow
+      - ShakeCamera (5): trigger screen shake with intensity/duration
 
     Requires Dialogue.prefab for dialogue display.
 
@@ -37,6 +38,7 @@ local ACT_LERP_CAMERA   = 1
 local ACT_PLAY_DIALOGUE = 2
 local ACT_WAIT          = 3
 local ACT_RETURN_CAMERA = 4
+local ACT_SHAKE_CAMERA  = 5
 
 -- Dialogue config
 local CHARS_PER_SECOND = 40
@@ -216,6 +218,10 @@ function BeginAction()
 
     elseif aType == ACT_RETURN_CAMERA then
         SetCameraFollow(cameraEntity, true)
+        NextAction()
+
+    elseif aType == ACT_SHAKE_CAMERA then
+        CameraShake(cameraEntity, action.shakeIntensity, action.duration)
         NextAction()
     end
 end

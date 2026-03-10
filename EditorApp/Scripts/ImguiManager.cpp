@@ -5792,15 +5792,17 @@ namespace Uma_Engine
                     "Lerp Camera To Position",
                     "Play Dialogue",
                     "Wait",
-                    "Return Camera To Player"
+                    "Return Camera To Player",
+                    "Shake Camera"
                 };
+                constexpr int actionTypeCount = 6;
 
                 for (int actionIdx = 0; actionIdx < static_cast<int>(cutscene.actions.size()); ++actionIdx)
                 {
                     auto& action = cutscene.actions[actionIdx];
 
                     int typeInt = static_cast<int>(action.type);
-                    const char* typeName = (typeInt >= 0 && typeInt < 5) ? actionTypeNames[typeInt] : "Unknown";
+                    const char* typeName = (typeInt >= 0 && typeInt < actionTypeCount) ? actionTypeNames[typeInt] : "Unknown";
 
                     char actionLabel[256];
                     snprintf(actionLabel, sizeof(actionLabel), "[%d] %s##action%d",
@@ -5844,7 +5846,7 @@ namespace Uma_Engine
                         // Action type combo
                         char typeLabel[64];
                         snprintf(typeLabel, sizeof(typeLabel), "Type##actiontype%d", actionIdx);
-                        if (ImGui::Combo(typeLabel, &typeInt, actionTypeNames, 5))
+                        if (ImGui::Combo(typeLabel, &typeInt, actionTypeNames, actionTypeCount))
                         {
                             action.type = static_cast<Uma_ECS::CutsceneActionType>(typeInt);
                             m_hasUnsavedEdit = true;
@@ -5914,6 +5916,22 @@ namespace Uma_Engine
                             ImGui::TextDisabled("Re-enables camera follow on player.");
                             break;
                         }
+                        case Uma_ECS::CutsceneActionType::ShakeCamera:
+                        {
+                            char intLabel[64];
+                            snprintf(intLabel, sizeof(intLabel), "Intensity##shakeint%d", actionIdx);
+                            if (ImGui::DragFloat(intLabel, &action.shakeIntensity, 0.05f, 0.0f, 10.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##shakedur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.0f, 10.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
                         }
 
                         ImGui::Unindent();
@@ -5958,6 +5976,16 @@ namespace Uma_Engine
                 {
                     Uma_ECS::CutsceneAction a;
                     a.type = Uma_ECS::CutsceneActionType::ReturnCameraToPlayer;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Shake Camera##addShakeCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::ShakeCamera;
+                    a.shakeIntensity = 1.0f;
+                    a.duration = 0.25f;
                     cutscene.actions.push_back(a);
                     m_hasUnsavedEdit = true;
                 }
