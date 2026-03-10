@@ -78,6 +78,7 @@ namespace Uma_Engine
             [&](const StopSceneRequest& e) {
                 (void)e;
                 playMode = PLAYMODE::PM_STOP;
+                Application::GetCutsceneActive() = false;
             }
         );
 
@@ -112,6 +113,7 @@ namespace Uma_Engine
 
                 // Step 6: Set play mode state
                 mGamePause = false;
+                Application::GetCutsceneActive() = false;
                 playMode = PLAYMODE::PM_PLAY;
                 m_UseEditorCamera = false;
                 m_EditorCamera.SetActive(false);
@@ -479,6 +481,7 @@ namespace Uma_Engine
         pEventSystem->Emit<SceneUnloadedEvent>(name);
 
         playMode = PLAYMODE::PM_STOP;
+        Application::GetCutsceneActive() = false;
         //pSystemManager->GetSystem<EditorSystem>()->SetCoordinator(nullptr);
 
         if (!HasScene(name))
@@ -554,8 +557,8 @@ namespace Uma_Engine
 
     void SceneManager::UnloadAllScenes()
     {
-        // texh debt i dk why i dont have to send event here
-        
+        Application::GetCutsceneActive() = false;
+
         // Unload all loaded scenes
         for (auto& scene : m_LoadedScenes)
         {
