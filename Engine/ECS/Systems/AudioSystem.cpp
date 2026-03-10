@@ -388,6 +388,7 @@ void Uma_ECS::AudioSystem::toggleLowpass(const std::string& soundName, bool dull
 }
 
 void Uma_ECS::AudioSystem::toggleLowpass(SoundType type, bool dulled) {
+    //toggle lowpass for the whole group type
     pSoundManager->ToggleGroupLowpass(type, dulled);
 }
 

@@ -614,8 +614,10 @@ namespace Uma_Engine {
     }
 
     void SoundManager::ToggleLowpass(SoundInfo* info, bool enable) {
+        //check if the audio channel exist
         if (!info || !info->channel || !info->dspLowpass) return;
 
+        //toggle lowpass cutoff values
         float cutoff;
         if (enable) cutoff = 1000.0f;
         else cutoff = 22000.0f;
@@ -626,6 +628,8 @@ namespace Uma_Engine {
     void SoundManager::ToggleGroupLowpass(SoundType type, bool enable)
     {
         // Prevent toggling Master if SFX or BGM is active, and vice versa
+        // this is to prevent double filtering of sound groups if individual sound channel have low pass
+        // this guard will not protect it so beware when using it
         if (enable)
         {
             FMOD_BOOL sfxBypassed, bgmBypassed, masterBypassed;

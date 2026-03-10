@@ -1156,19 +1156,7 @@ namespace Uma_ECS
                 [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
                     pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, 1.0f);
                 }
-            ),
-            "toggleLowpass", [this](Uma_ECS::AudioComponent&, const std::string& name, bool dulled) {
-                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
-            },
-            "toggleGroupLowpass", [this](Uma_ECS::AudioComponent&, const std::string& groupName, bool enable)
-            {
-                SoundType type = SoundType::MASTER;
-                if (groupName == "SFX") type = SoundType::SFX;
-                else if (groupName == "BGM") type = SoundType::BGM;
-
-                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
-            }
-
+            )
         );
 
         // ===================================================================
@@ -1651,6 +1639,22 @@ namespace Uma_ECS
 
         sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
             pSoundManager->setChannelGroupVolume(volume, type);
+            });
+        sharedLua->set_function("toggleLowpass", [this](const std::string& name, bool dulled) {
+            pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
+            });
+        sharedLua->set_function("toggleGroupLowpass", [this](const std::string& groupName, bool enable)
+            {
+                SoundType type;
+                if (groupName == "SFX") type = SoundType::SFX;
+                else if (groupName == "BGM") type = SoundType::BGM;
+                else if (groupName == "MASTER") type = SoundType::MASTER;
+                else {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Audio Group doesnt exist");
+                    return;
+                }
+
+                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
             });
     }
 
