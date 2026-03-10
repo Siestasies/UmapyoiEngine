@@ -3743,7 +3743,7 @@ namespace Uma_Engine
                 ImGui::Text("Anchors");
                 ImGui::Separator();
 
-                // --- Anchor Preset Picker ---
+                // Anchor Preset Picker
                 {
                     struct PresetEntry
                     {
@@ -3751,8 +3751,6 @@ namespace Uma_Engine
                         Uma_UI::AnchorPreset(*fn)();
                     };
 
-                    // Row-major: 4 rows x 3 cols, matching Unity's layout
-                    // Row 0: Top    | Row 1: Middle | Row 2: Bottom | Row 3: Stretch variants
                     static const PresetEntry presets[4][3] =
                     {
                         { { "Top Left",    Uma_UI::AnchorPreset::TopLeft    }, { "Top Center",    Uma_UI::AnchorPreset::TopCenter    }, { "Top Right",    Uma_UI::AnchorPreset::TopRight    } },
@@ -3849,7 +3847,7 @@ namespace Uma_Engine
                             }
                         };
 
-                    // ---- Preset button: "Anchor Presets ?" opens a popup ----
+                    // Preset button: "Anchor Presets" opens a popup
                     if (ImGui::Button("Anchor Presets##AnchorPresetBtn"))
                         ImGui::OpenPopup("AnchorPresetPopup");
 
@@ -3971,7 +3969,7 @@ namespace Uma_Engine
 
                     ImGui::Spacing();
                 }
-                // --- End Anchor Preset Picker ---
+                // End Anchor Preset Picker
 
                 float anchorMin[2] = { rectTransform.anchorMin.x, rectTransform.anchorMin.y };
                 if (ImGui::DragFloat2("Anchor Min", anchorMin, 0.01f, 0.0f, 1.0f))

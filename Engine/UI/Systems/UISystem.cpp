@@ -124,14 +124,14 @@ namespace Uma_UI
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
             canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y); // Need to fix this.
 
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "LayoutPass | Screen: " + std::to_string((int)mScreenSize.x) + "x" + std::to_string((int)mScreenSize.y));
+            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            //    "LayoutPass | Screen: " + std::to_string((int)mScreenSize.x) + "x" + std::to_string((int)mScreenSize.y));
 
-            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                "LayoutPass | ScaleMode: " + std::to_string((int)canvas.scaleMode) +
-                " | RefRes: " + std::to_string((int)canvas.referenceResolution.x) + "x" + std::to_string((int)canvas.referenceResolution.y) +
-                " | MatchWidthOrHeight: " + std::to_string(canvas.matchWidthOrHeight) +
-                " | CanvasScale: " + std::to_string(ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y)));
+            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            //    "LayoutPass | ScaleMode: " + std::to_string((int)canvas.scaleMode) +
+            //    " | RefRes: " + std::to_string((int)canvas.referenceResolution.x) + "x" + std::to_string((int)canvas.referenceResolution.y) +
+            //    " | MatchWidthOrHeight: " + std::to_string(canvas.matchWidthOrHeight) +
+            //    " | CanvasScale: " + std::to_string(ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y)));
 
             // Recursively compute layout for this canvas's children
             ComputeLayoutRecursive(canvasEntity, GetScreenRect(), canvas.scaleFactor);
@@ -176,12 +176,12 @@ namespace Uma_UI
                         rectTransform, curParentRect, canvasScale, mScreenSize.x, mScreenSize.y);
                     rectTransform.isDirty = false;
 
-                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-                        "Layout entity: " + std::to_string(current) +
-                        " | rect center=(" + std::to_string(rectTransform.computedRect.x) + ", " + std::to_string(rectTransform.computedRect.y) + ")" +
-                        " size=(" + std::to_string(rectTransform.computedRect.width) + ", " + std::to_string(rectTransform.computedRect.height) + ")" +
-                        " | parentRect center=(" + std::to_string(curParentRect.x) + ", " + std::to_string(curParentRect.y) + ")" +
-                        " size=(" + std::to_string(curParentRect.width) + ", " + std::to_string(curParentRect.height) + ")");
+                    //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                    //    "Layout entity: " + std::to_string(current) +
+                    //    " | rect center=(" + std::to_string(rectTransform.computedRect.x) + ", " + std::to_string(rectTransform.computedRect.y) + ")" +
+                    //    " size=(" + std::to_string(rectTransform.computedRect.width) + ", " + std::to_string(rectTransform.computedRect.height) + ")" +
+                    //    " | parentRect center=(" + std::to_string(curParentRect.x) + ", " + std::to_string(curParentRect.y) + ")" +
+                    //    " size=(" + std::to_string(curParentRect.width) + ", " + std::to_string(curParentRect.height) + ")");
 
                 }
             }
