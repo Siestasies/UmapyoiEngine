@@ -665,12 +665,16 @@ namespace Uma_Engine {
         case SoundType::BGM:
             dsp = &pLowpassBGM;
             break;
-        default:
+        case SoundType::MASTER:
             dsp = &pLowpassMaster;
+            break;
+        default:
+            Debugger::Log(WarningLevel::eWarning, "ToggleGroupLowpass: unknown SoundType.");
+            return;
             break;
         }
 
-        FMOD_DSP_SetBypass(*dsp, enable);
+        FMOD_DSP_SetBypass(*dsp, !enable);
     }
 
 
