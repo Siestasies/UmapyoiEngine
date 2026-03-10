@@ -168,15 +168,24 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
 
 SoundInfo* Uma_ECS::AudioSystem::GetSoundInfo(Entity entity, const std::string& soundName) {
     if (!pResourcesManager) return nullptr;
+
     AudioComponent audio = pCoordinator->GetComponent<AudioComponent>(entity);
     if (!audio.HasLoadedSound(soundName)) return nullptr;
-    //if dont have load it
-    if (!pResourcesManager->HasSound(soundName)) {
-        auto& instance = audio.loadedSounds[soundName];
-        pResourcesManager->LoadSound(soundName, instance.path, instance.type, instance.is3D);
+
+    auto& instance = audio.loadedSounds[soundName];
+
+    if (pResourcesManager->HasSound(soundName)) {
+        SoundInfo* existing = pResourcesManager->GetSound(soundName);
+
+        if (existing && existing->type != instance.type) {
+            pResourcesManager->UnloadSound(soundName);
+        }
+        else {
+            return existing;
+        }
     }
+    pResourcesManager->LoadSound(soundName, instance.path, instance.type, instance.is3D);
     return pResourcesManager->GetSound(soundName);
-    
 }
 
 void Uma_ECS::AudioSystem::OnEntityDestroyed(Entity entity)
