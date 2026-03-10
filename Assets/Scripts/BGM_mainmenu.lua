@@ -11,8 +11,8 @@ function Update(dt)
         start = true
     end
     if KeyDown(KEY_P) then
-        toggleLowpass(EntityID, "MainMenuBGM", false)
+        audio:toggleLowpass(EntityID, "MainMenuBGM", false)
     elseif KeyDown(KEY_O) then
-        toggleLowpass(EntityID, "MainMenuBGM", true)
+        audio:toggleLowpass(EntityID, "MainMenuBGM", true)
     end
 end
