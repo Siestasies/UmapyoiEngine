@@ -130,11 +130,12 @@ namespace Uma_ECS
 
         /*!
          * \brief Toggles a low-pass filter on a specific sound instance owned by an entity.
+         * \param entity    The entity holding this sound channel
          * \param soundName The name key identifying the sound within the entity's sound map.
          * \param dulled    If true, applies a muffled low-pass cutoff (1000 Hz);
          *                  if false, restores a near-full-range cutoff (22000 Hz).
          */
-        void toggleLowpass(const std::string& soundName, bool dulled);
+        void toggleLowpass(Entity entity, const std::string& soundName, bool dulled);
 
         /*!
          * \brief Toggles a low-pass filter on an entire sound group bus.

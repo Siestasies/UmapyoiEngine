@@ -379,9 +379,8 @@ void Uma_ECS::AudioSystem::FadeOutEntity(Entity entity, float fadeOutTime) {
     }
 }
 
-void Uma_ECS::AudioSystem::toggleLowpass(const std::string& soundName, bool dulled) {
-    //bypass the entity sound list check as its supposed to be universal
-    SoundInfo* info = pResourcesManager->GetSound(soundName);
+void Uma_ECS::AudioSystem::toggleLowpass(Entity entity, const std::string& soundName, bool dulled) {
+    SoundInfo* info = GetSoundInfo(entity,soundName);
     if (!info || !info->dspLowpass) return;
 
     pSoundManager->ToggleLowpass(info, dulled);
