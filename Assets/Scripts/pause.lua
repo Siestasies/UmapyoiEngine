@@ -4,6 +4,8 @@ function Update(dt)
     local paused = IsGamePause()
 
     if paused == true then
+        toggleGroupLowPass("MASTER", true)
+
         if #children > 0 then
             local child = children[1]
             SetActiveEntity(child, true)
@@ -25,6 +27,8 @@ function Update(dt)
         end
 
     else
+        toggleGroupLowPass("MASTER", false)
+
         if #children > 0 then
             local child = children[1]
             SetActiveEntity(child, false)

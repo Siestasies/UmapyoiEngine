@@ -37,7 +37,7 @@
             },
             {
                 "id": 1,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "hud",
@@ -59,9 +59,6 @@
                             11,
                             14
                         ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -125,6 +122,16 @@
                             5,
                             7,
                             9
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/hp.lua",
+                                "scriptName": "hp.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -666,6 +673,16 @@
                         "parent": 1,
                         "children": [
                             12
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/mp.lua",
+                                "scriptName": "mp.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1398,7 +1415,7 @@
                         "text": "Resume",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 4,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -1806,7 +1823,7 @@
             },
             {
                 "id": 30,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "complete",
