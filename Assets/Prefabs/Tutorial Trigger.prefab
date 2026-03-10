@@ -26,7 +26,10 @@
                             3,
                             4,
                             5,
-                            6
+                            6,
+                            10,
+                            14,
+                            18
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -88,7 +91,7 @@
                                     {
                                         "name": "missionText",
                                         "type": 3,
-                                        "value": "Use water skill e 3 times",
+                                        "value": "Use fire skill 3 times",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -96,7 +99,7 @@
                                     {
                                         "name": "missionText2",
                                         "type": 3,
-                                        "value": "Use wind skill R 3 times",
+                                        "value": "Use water skill  3 times",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -104,7 +107,7 @@
                                     {
                                         "name": "missionText4",
                                         "type": 3,
-                                        "value": "Use Fire skill Q 3 times",
+                                        "value": "Use pyronado fusion skill 3 times",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -112,7 +115,31 @@
                                     {
                                         "name": "missionText3",
                                         "type": 3,
-                                        "value": "Use any combo skill 3 times",
+                                        "value": "Use wind skill 3 times",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "missionText5",
+                                        "type": 3,
+                                        "value": "Use Whirlpool fusion skill 3 times",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "missionText6",
+                                        "type": 3,
+                                        "value": "Use Steam Burst fusion skill 3 times",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "missionText7",
+                                        "type": 3,
+                                        "value": "Kill the enemies",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -150,8 +177,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.106,
-                            "height": 0.181
+                            "width": 0.102,
+                            "height": 0.187
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -213,10 +240,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": 0.643,
-                            "width": 0.98,
-                            "height": 0.115
+                            "x": 0.585,
+                            "y": 0.665,
+                            "width": 0.947,
+                            "height": 0.119
                         }
                     },
                     "class Uma_UI::Image": {
@@ -224,8 +251,8 @@
                         "sortingOrder": 0,
                         "color": {
                             "r": 0.112,
-                            "g": 0.091,
-                            "b": 0.091,
+                            "g": 0.09,
+                            "b": 0.09,
                             "a": 1.0
                         },
                         "visible": true,
@@ -282,19 +309,19 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": 0.643,
-                            "width": 0.974,
-                            "height": 0.105
+                            "x": 0.585,
+                            "y": 0.665,
+                            "width": 0.941,
+                            "height": 0.108
                         }
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 0,
                         "color": {
-                            "r": 0.346,
-                            "g": 0.021,
-                            "b": 0.021,
+                            "r": 0.344,
+                            "g": 0.019,
+                            "b": 0.019,
                             "a": 1.0
                         },
                         "visible": true,
@@ -351,10 +378,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.629,
-                            "y": 0.658,
-                            "width": 0.053,
-                            "height": 0.193
+                            "x": 0.608,
+                            "y": 0.681,
+                            "width": 0.051,
+                            "height": 0.2
                         }
                     },
                     "class Uma_UI::Text": {
@@ -421,10 +448,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.633,
-                            "y": 0.658,
-                            "width": 0.053,
-                            "height": 0.193
+                            "x": 0.612,
+                            "y": 0.681,
+                            "width": 0.051,
+                            "height": 0.2
                         }
                     },
                     "class Uma_UI::Text": {
@@ -491,10 +518,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.187,
-                            "y": 0.644,
-                            "width": 0.053,
-                            "height": 0.09
+                            "x": 0.181,
+                            "y": 0.667,
+                            "width": 0.051,
+                            "height": 0.093
                         }
                     },
                     "class Uma_UI::Image": {
@@ -648,8 +675,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.106,
-                            "height": 0.181
+                            "width": 0.102,
+                            "height": 0.187
                         }
                     }
                 }
@@ -725,8 +752,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.106,
-                            "height": 0.181
+                            "width": 0.102,
+                            "height": 0.187
                         }
                     }
                 }
@@ -802,8 +829,896 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.106,
-                            "height": 0.181
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 10,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Blocker Collider_dup",
+                        "position": {
+                            "x": -17.5,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            11,
+                            12,
+                            13
+                        ]
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -42.0,
+                                    "y": 29.399
+                                },
+                                "size": {
+                                    "x": 15.0,
+                                    "y": 50.0
+                                },
+                                "purpose": 1,
+                                "layer": 8,
+                                "colliderMask": 66,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 11,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.7,
+                            "y": 49.097
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 10,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 12,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.2,
+                            "y": 34.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 10,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 13,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag",
+                        "position": {
+                            "x": -41.2,
+                            "y": 17.298
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 10,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 14,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Blocker Collider_dup",
+                        "position": {
+                            "x": -37.2,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            15,
+                            16,
+                            17
+                        ]
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -42.0,
+                                    "y": 29.399
+                                },
+                                "size": {
+                                    "x": 15.0,
+                                    "y": 50.0
+                                },
+                                "purpose": 1,
+                                "layer": 8,
+                                "colliderMask": 66,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 15,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.7,
+                            "y": 49.097
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 14,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 16,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.2,
+                            "y": 34.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 14,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 17,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag",
+                        "position": {
+                            "x": -41.2,
+                            "y": 17.298
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 14,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 18,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Blocker Collider_dup",
+                        "position": {
+                            "x": -59.098,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            19,
+                            20,
+                            21
+                        ]
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -42.0,
+                                    "y": 29.399
+                                },
+                                "size": {
+                                    "x": 15.0,
+                                    "y": 50.0
+                                },
+                                "purpose": 1,
+                                "layer": 8,
+                                "colliderMask": 66,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 19,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.7,
+                            "y": 49.097
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 18,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 20,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.2,
+                            "y": 34.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 18,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
+                        }
+                    }
+                }
+            },
+            {
+                "id": 21,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag",
+                        "position": {
+                            "x": -41.2,
+                            "y": 17.298
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 18,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": false,
+                        "computedRect": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "width": 0.102,
+                            "height": 0.187
                         }
                     }
                 }

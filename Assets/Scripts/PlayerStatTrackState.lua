@@ -2,7 +2,10 @@ local PlayerStatTrackState = {
     bFireAttackCount = 0,
     bWaterAttackCount = 0,
     bWindAttackCount = 0,
-    comboAttackCount = 0,
+
+    pyronadoAttackCount = 0,
+    whirlpoolAttackCount = 0,
+    steamburstAttackCount = 0,
     passedTrigger = 0
 }
 
@@ -19,7 +22,7 @@ end
 function PlayerStatTrackState.incrWaterAttack()
     Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
     Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current water attack count " ..  PlayerStatTrackState.bWaterAttackCount)
-    if PlayerStatTrackState.passedTrigger == 3 then
+    if PlayerStatTrackState.passedTrigger == 1 then
         PlayerStatTrackState.bWaterAttackCount =
             PlayerStatTrackState.bWaterAttackCount + 1
     end
@@ -28,18 +31,36 @@ end
 function PlayerStatTrackState.incrWindAttack()
     Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
     Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current wind attack count " ..  PlayerStatTrackState.bWindAttackCount)
-    if PlayerStatTrackState.passedTrigger == 2 then
+    if PlayerStatTrackState.passedTrigger == 1 then
         PlayerStatTrackState.bWindAttackCount =
             PlayerStatTrackState.bWindAttackCount + 1
     end
 end
 
-function PlayerStatTrackState.incrComboAttack()
+function PlayerStatTrackState.incrPyronadoAttack()
     Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
-    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current combo attack count " ..  PlayerStatTrackState.comboAttackCount)
-    if PlayerStatTrackState.passedTrigger == 4 then
-        PlayerStatTrackState.comboAttackCount =
-            PlayerStatTrackState.comboAttackCount + 1
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current combo attack count " ..  PlayerStatTrackState.pyronadoAttackCount)
+    if PlayerStatTrackState.passedTrigger == 2 then
+        PlayerStatTrackState.pyronadoAttackCount =
+            PlayerStatTrackState.pyronadoAttackCount + 1
+    end
+end
+
+function PlayerStatTrackState.incrWhirlpoolAttack()
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current combo attack count " ..  PlayerStatTrackState.whirlpoolAttackCount)
+    if PlayerStatTrackState.passedTrigger == 2 then
+        PlayerStatTrackState.whirlpoolAttackCount =
+            PlayerStatTrackState.whirlpoolAttackCount + 1
+    end
+end
+
+function PlayerStatTrackState.incrSteamburstAttack()
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current trigger count " ..  PlayerStatTrackState.passedTrigger)
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXX  current combo attack count " ..  PlayerStatTrackState.steamburstAttackCount)
+    if PlayerStatTrackState.passedTrigger == 2 then
+        PlayerStatTrackState.steamburstAttackCount =
+            PlayerStatTrackState.steamburstAttackCount + 1
     end
 end
 
@@ -61,8 +82,16 @@ function PlayerStatTrackState.GetWindAttackCount()
     return PlayerStatTrackState.bWindAttackCount
 end
 
-function PlayerStatTrackState.GetComboAttackCount()
-    return PlayerStatTrackState.comboAttackCount
+function PlayerStatTrackState.GetPyronadoAttackCount()
+    return PlayerStatTrackState.pyronadoAttackCount
+end
+
+function PlayerStatTrackState.GetWhirlpoolAttackCount()
+    return PlayerStatTrackState.whirlpoolAttackCount
+end
+
+function PlayerStatTrackState.GetSteamburstAttackCount()
+    return PlayerStatTrackState.steamburstAttackCount
 end
 
 function PlayerStatTrackState.GetPassedTrigger()
@@ -82,8 +111,16 @@ function PlayerStatTrackState.SetWindAttackCount(value)
     PlayerStatTrackState.bWindAttackCount = value
 end
 
-function PlayerStatTrackState.SetComboAttackCount(value)
-    PlayerStatTrackState.comboAttackCount = value
+function PlayerStatTrackState.SetPyronadoAttackCount(value)
+    PlayerStatTrackState.pyronadoAttackCount = value
+end
+
+function PlayerStatTrackState.SetWhirlpoolAttackCount(value)
+    PlayerStatTrackState.whirlpoolAttackCount = value
+end
+
+function PlayerStatTrackState.SetSteamburstAttackCount(value)
+    PlayerStatTrackState.steamburstAttackCount = value
 end
 
 function PlayerStatTrackState.SetPassedTrigger(value)

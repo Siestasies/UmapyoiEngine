@@ -145,7 +145,7 @@ function state_enter(entity)
     
     FaceTowardsMouse(entity)
 
-    PlayerStatTrackState.incrComboAttack()
+    PlayerStatTrackState.incrSteamburstAttack()
 end
 
 function state_update(entity, dt)

@@ -67,8 +67,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.106,
-                            "height": 0.181
+                            "width": 0.103,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -132,8 +132,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 2.045,
-                            "height": 1.956
+                            "width": 1.991,
+                            "height": 2.008
                         }
                     },
                     "class Uma_UI::Image": {
@@ -200,9 +200,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.851,
-                            "width": 0.106,
-                            "height": 0.181
+                            "y": 0.874,
+                            "width": 0.103,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -284,10 +284,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.633,
-                            "y": -0.108,
-                            "width": 0.671,
-                            "height": 1.811
+                            "x": -0.617,
+                            "y": -0.111,
+                            "width": 0.653,
+                            "height": 1.859
                         }
                     },
                     "class Uma_UI::Image": {
@@ -381,10 +381,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.633,
-                            "y": -0.108,
-                            "width": 0.485,
-                            "height": 1.311
+                            "x": -0.617,
+                            "y": -0.111,
+                            "width": 0.472,
+                            "height": 1.346
                         }
                     },
                     "class Uma_UI::Image": {
@@ -450,10 +450,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.633,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "x": -0.617,
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -519,10 +519,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.633,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "x": -0.617,
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -588,10 +588,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.633,
-                            "y": -0.253,
-                            "width": 0.106,
-                            "height": 0.181
+                            "x": -0.617,
+                            "y": -0.26,
+                            "width": 0.103,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -674,9 +674,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.108,
-                            "width": 0.671,
-                            "height": 1.811
+                            "y": -0.111,
+                            "width": 0.653,
+                            "height": 1.859
                         }
                     },
                     "class Uma_UI::Image": {
@@ -771,16 +771,16 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.108,
-                            "width": 0.484,
-                            "height": 1.315
+                            "y": -0.111,
+                            "width": 0.471,
+                            "height": 1.35
                         }
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 1,
                         "color": {
-                            "r": 0.175,
+                            "r": 0.174,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
@@ -840,9 +840,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -909,9 +909,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -978,9 +978,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.253,
-                            "width": 0.106,
-                            "height": 0.181
+                            "y": -0.26,
+                            "width": 0.103,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {
@@ -1057,15 +1057,15 @@
                             "y": -60.0
                         },
                         "sizeDelta": {
-                            "x": -630.0,
+                            "x": 630.0,
                             "y": 1000.0
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.623,
-                            "y": -0.108,
-                            "width": -0.671,
-                            "height": 1.811
+                            "x": 0.606,
+                            "y": -0.111,
+                            "width": 0.653,
+                            "height": 1.859
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1159,17 +1159,17 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.623,
-                            "y": -0.108,
-                            "width": 0.485,
-                            "height": 1.322
+                            "x": 0.606,
+                            "y": -0.111,
+                            "width": 0.472,
+                            "height": 1.357
                         }
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 1,
                         "color": {
-                            "r": 0.175,
+                            "r": 0.174,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
@@ -1228,10 +1228,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.623,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "x": 0.606,
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1297,10 +1297,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.623,
-                            "y": 0.135,
-                            "width": 0.319,
-                            "height": 0.543
+                            "x": 0.606,
+                            "y": 0.139,
+                            "width": 0.311,
+                            "height": 0.557
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1366,10 +1366,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.623,
-                            "y": -0.253,
-                            "width": 0.106,
-                            "height": 0.181
+                            "x": 0.606,
+                            "y": -0.26,
+                            "width": 0.103,
+                            "height": 0.185
                         }
                     },
                     "class Uma_UI::Text": {

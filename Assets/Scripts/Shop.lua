@@ -1,11 +1,12 @@
 local RNG = require("xorRNG")
-local rng = RNG.new()
+local rng
 
 local children
 local cardText = {}
 local cardIcon = {}
 
 function Start()
+    rng = RNG.new()
     -- init references for icon and text, for editing later
     children = GetChildrenList(EntityID)
 
@@ -37,6 +38,8 @@ function Start()
         elseif statMultiRNG == 3 then
             statMulti = 25
         end
+
+        -- BALANCE STATS HERE
 
         if cardStatRNG == 1 then
             --cardIcon[i].texturePath = ""

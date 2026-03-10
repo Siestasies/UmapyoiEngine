@@ -6,7 +6,6 @@ ExposedVars = {
 }
 
 function Start()
-
 end
 
 function Update(dt)
@@ -23,6 +22,8 @@ function OnTriggerEnter(other)
         if player then
             player.mHealth = math.floor(player.mHealth + healAmount)
             player.mHealth = math.floor(math.min(player.mMaxHealth, player.mHealth))
+            
+            LoadScene("level_1_v2.scn")
         end
     end
 end

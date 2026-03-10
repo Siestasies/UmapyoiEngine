@@ -1,7 +1,7 @@
 local stat
 local numberStr
 local number
-local player
+local playerID
 local parentObj
 
 function Start()
@@ -15,21 +15,78 @@ function Start()
     stat, numberStr = string.match(cardText, pattern_stat)
     number = tonumber(numberStr)
 
-    --player = GetPlayer() PROBLEM HERE
+    playerID = FindEntityWithComponent("Player")
     parentObj = GetParent(EntityID)
 end
 
+function GetFireSlashAttackStat(player)
+    if not player then return nil end
+    
+    local attackStats = player.attackStats
+    if attackStats then
+        for i = 1, #attackStats do
+            local attack = attackStats[i]
+            if attack and attack.elementType == ElementType.Fire then
+                return attack
+            end
+        end
+    end
+    
+    return nil
+end
+
+function GetWaterSlashAttackStat(player)
+    if not player then
+        return nil
+    end
+    
+    local attackStats = player.attackStats
+    if attackStats then
+        for i = 1, #attackStats do
+            local attack = attackStats[i]
+            if attack and attack.elementType == ElementType.Water then
+                return attack
+            end
+        end
+    end
+    return nil
+end
+
+function GetWindDashAttackStat(player)
+    if not player then
+        return nil
+    end
+    
+    local attackStats = player.attackStats
+    if attackStats then
+        for i = 1, #attackStats do
+            local attack = attackStats[i]
+            if attack and attack.elementType == ElementType.Wind then
+                return attack
+            end
+        end
+    end
+    return nil
+end
+
 function OnClick()
+    player = GetPlayerFrom(playerID)
+
     if stat == "Increase Max HP" then
-        --player.fireSlash_manaCost = 10
+        player.mMaxHealth = player.mMaxHealth + number
     elseif stat == "Increase Move Speed" then
-        --player.fireSlash_manaCost = 10
+        player.mSpeed = player.mSpeed + number
     elseif stat == "Increase Crit Dmg" then
-        --player.fireSlash_manaCost = 10
+        -- bruh
     elseif stat == "Decrease Dash CD" then
-        --player.fireSlash_manaCost = 10
+        player.mDashCD = player.mDashCD - number
     elseif stat == "Decrease Mana cost" then
-        --player.fireSlash_manaCost = 10
+        local fireAttack = GetFireSlashAttackStat(player)
+        fireAttack.manaCost = fireAttack.manaCost - number
+        local waterAttack = GetWaterSlashAttackStat(player)
+        waterAttack.manaCost = waterAttack.manaCost - number
+        local windAttack = GetWindSlashAttackStat(player)
+        windAttack.manaCost = windAttack.manaCost - number
     end
 
     SetActiveEntity(parentObj, false)

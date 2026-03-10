@@ -111,7 +111,7 @@ function state_enter(entity)
     
     FaceTowardsMouse(entity)
 
-    PlayerStatTrackState.incrComboAttack()
+    PlayerStatTrackState.incrPyronadoAttack()
     Log("Pyronado Attack!")
 end
 
