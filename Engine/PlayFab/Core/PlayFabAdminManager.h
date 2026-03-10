@@ -39,14 +39,18 @@ All rights reserved.
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <Windows.h>
 
 // ── PlayFab Services SDK ──────────────────────────────────────────────────────
 #include <playfab/core/PFEntity.h>
 #include <playfab/services/PFTitleDataManagement.h>
 #include <playfab/services/PFTitleDataManagementTypes.h>
+#include <playfab/services/PFServices.h>
 
 // ── XAsync (GDK / PlayFab Services on Win32) ──────────────────────────────────
 #include <XAsync.h>
+#include <XTaskQueue.h>
+
 
 namespace Uma_Engine
 {
@@ -238,17 +242,17 @@ namespace Uma_Engine
         /// Context carried through a GetTitleData async operation.
         struct GetTitleDataContext
         {
-            XAsyncBlock        async{};   // must be first
             OnAdminDataSuccess onSuccess;
             OnAdminFailure     onFailure;
+            XAsyncBlock        async{};
         };
 
         /// Context carried through a SetTitleData async operation.
         struct SetTitleDataContext
         {
-            XAsyncBlock    async{};       // must be first
             OnAdminSuccess onSuccess;
             OnAdminFailure onFailure;
+            XAsyncBlock    async{};
         };
 
 
