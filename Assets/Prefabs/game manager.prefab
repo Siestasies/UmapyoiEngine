@@ -733,16 +733,16 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 0.0
+                            "y": -12.5
                         },
                         "sizeDelta": {
-                            "x": 200.0,
-                            "y": 200.0
+                            "x": 175.0,
+                            "y": 175.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/lost hp point.png",
+                        "texturePath": "Assets/Mana Bar Empty.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -799,13 +799,13 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 200.0,
-                            "y": 200.0
+                            "x": 175.0,
+                            "y": 175.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/hp point.png",
+                        "texturePath": "Assets/Mana Bar Full.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,

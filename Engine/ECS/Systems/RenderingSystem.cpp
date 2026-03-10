@@ -621,9 +621,10 @@ namespace Uma_ECS
 
                     if (!image.visible) continue;
 
-                    if (!image.texture || image.texture->tex_id == 0)
+                    if (!image.texture || image.texture->tex_id == 0 || image.change)
                     {
                         image.texture = pResourcesManager->GetTexture(image.texturePath);
+                        image.change = false;
                     }
 
                     if (!image.texture || image.texture->tex_id == 0)

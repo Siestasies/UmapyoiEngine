@@ -776,7 +776,7 @@ namespace Uma_ECS
 
             "mSpeed", &Player::mSpeed,
             "mDashSpeed", &Player::mDashSpeed,
-            "mDashDuration", &Player::mDashDuration,  // NEW - needed for dash state
+            "mDashDuration", &Player::mDashDuration,
             "mDashCD", &Player::mDashCD,
 
             "mAttackDamage", &Player::mAttackDamage,
@@ -787,7 +787,7 @@ namespace Uma_ECS
             "mMana", &Player::mMana,
             "mMaxMana", &Player::mMaxMana,
             "mManaRegenRate", &Player::mManaRegenRate,
-            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,  // NEW - needed for attack mana gain
+            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,
 
             "isStunned", &Player::isStunned,
             "stunedTimer", &Player::stunedTimer,
@@ -939,7 +939,8 @@ namespace Uma_ECS
                 [](Image& img, const Uma_UI::Color& c) {
                     img.color = c;
                 }
-            )
+            ),
+            "change", &Image::change
         );
 
         sharedLua->new_enum<Uma_UI::SliderDirection>("SliderDirection",

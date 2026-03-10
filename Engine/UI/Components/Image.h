@@ -52,6 +52,8 @@ namespace Uma_UI
         FillDirection fillDirection = FillDirection::None;
         float fillAmount = 1.0f;  // 0.0 to 1.0 (0 = empty, 1 = full)
 
+        bool change = false;
+
         /*!
          * \brief Serializes image properties to a JSON value.
          * \param value JSON value to populate.
