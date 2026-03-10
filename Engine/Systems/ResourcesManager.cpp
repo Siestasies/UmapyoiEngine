@@ -250,6 +250,7 @@ namespace Uma_Engine
             typeVal.SetInt(static_cast<int>(sound.second.type));
             soundObj.AddMember("type", typeVal, allocator);
 
+
             audioArr.PushBack(soundObj, allocator);
         }
         out.AddMember("sounds", audioArr, allocator);
@@ -323,7 +324,7 @@ namespace Uma_Engine
                     std::string path = sndVal["path"].GetString();
                     SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
 
-                    LoadSound(name, path, type);
+                    //LoadSound(name, path, type);
                 }
             }
         }
@@ -344,10 +345,10 @@ namespace Uma_Engine
         }
     }
 
-    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type) 
+    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type,bool is3D) 
     {
         if (!HasSound(name)) {
-            SoundInfo temp = mSound->loadSound(path, type);
+            SoundInfo temp = mSound->loadSound(path, type, is3D);
             if (temp.sound == nullptr) return false;
             mSoundList[name] = temp;
             return true;
@@ -361,7 +362,7 @@ namespace Uma_Engine
 
         if (sound)
         {
-            mSound->unloadSound(mSoundList.find(name)->second.sound);
+            mSound->unloadSound(mSoundList.find(name)->second);
             mSoundList.erase(name);
         }
     }
@@ -392,10 +393,6 @@ namespace Uma_Engine
         // already loaded
         if (it != mSoundList.end())
             return &it->second;
-
-        // try load if path provided
-        if (!path.empty() && LoadSound(name, path, SoundType::SFX))
-            return &mSoundList.find(name)->second;
 
         return nullptr;
     }

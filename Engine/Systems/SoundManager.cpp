@@ -20,6 +20,9 @@ All rights reserved.
 #include <iostream>
 #include <filesystem>
 
+#include <fmod/inc/fmod_dsp.h>
+#include <fmod/inc/fmod_codec.h>
+
 #include "Events/AudioEvents.h"
 #include "Events/IMGUIEvents.h"
 
@@ -145,6 +148,22 @@ namespace Uma_Engine {
             Debugger::Log(WarningLevel::eWarning, "Audio Manager did not subscribe to the audio events");
         }
 
+        result = FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, &pLowpassMaster);
+        if (result != FMOD_OK) {
+            std::cerr << "Failed to create lowpass DSP: " << FMOD_ErrorString(result) << std::endl;
+            return;
+        }
+        auto CreateLowpass = [&](FMOD_CHANNELGROUP* group, FMOD_DSP** dsp) {
+            FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, dsp);
+            FMOD_DSP_SetParameterFloat(*dsp, FMOD_DSP_LOWPASS_SIMPLE_CUTOFF, 500.0f);
+            FMOD_ChannelGroup_AddDSP(group, FMOD_CHANNELCONTROL_DSP_HEAD, *dsp);
+            FMOD_DSP_SetBypass(*dsp, true); // Off by default
+            };
+
+        CreateLowpass(Master, &pLowpassMaster);
+        CreateLowpass(SFX, &pLowpassSFX);
+        CreateLowpass(BGM, &pLowpassBGM);
+
         return;
     }
 
@@ -184,7 +203,7 @@ namespace Uma_Engine {
 
         FMOD_MODE mode = FMOD_LOOP_NORMAL;
         if (is3D)
-            mode |= FMOD_3D;
+            mode |= FMOD_3D | FMOD_3D_LINEARSQUAREROLLOFF;
         else
             mode |= FMOD_2D;
 
@@ -208,9 +227,9 @@ namespace Uma_Engine {
         return info;
     }
 
-    void SoundManager::unloadSound(FMOD_SOUND* sound)
+    void SoundManager::unloadSound(SoundInfo& info)
     {
-        if (!sound)
+        if (!info.sound)
         {
             Debugger::Log(WarningLevel::eWarning, "unload sound : sound doesnt exsists");
             return;
@@ -218,7 +237,7 @@ namespace Uma_Engine {
 
         //goes thru the map and looks for the sound file if it is found release it and removes it from the map
         if (pFmodSystem) {
-            FMOD_Sound_Release(sound);
+            FMOD_Sound_Release(info.sound);
         }
     }
 
@@ -226,6 +245,18 @@ namespace Uma_Engine {
     {
         if (!pFmodSystem) return;
         stopAllSounds();
+
+        auto ReleaseLowpass = [&](FMOD_CHANNELGROUP* group, FMOD_DSP*& dsp) {
+            if (dsp) {
+                FMOD_ChannelGroup_RemoveDSP(group, dsp);
+                FMOD_DSP_Release(dsp);
+                dsp = nullptr;
+            }
+        };
+
+        ReleaseLowpass(Master, pLowpassMaster);
+        ReleaseLowpass(SFX, pLowpassSFX);
+        ReleaseLowpass(BGM, pLowpassBGM);
         if (SFX) 
         {
             FMOD_ChannelGroup_Release(SFX);
@@ -306,16 +337,14 @@ namespace Uma_Engine {
 
     void SoundManager::stopSound(SoundInfo* info)
     {
-        if (!info)
-        {
-            Debugger::Log(WarningLevel::eWarning, "stop sound : sound doesnt exsists");
-            return;
-        }
+        if (!info || !info->channel) return;
 
-        FMOD_RESULT result = FMOD_Channel_Stop(info->channel);
-        if (result != FMOD_OK) {
-            return;
+        FMOD_Channel_Stop(info->channel);
+        if (info->dspLowpass) {
+            FMOD_DSP_Release(info->dspLowpass);
+            info->dspLowpass = nullptr;
         }
+        info->channel = nullptr;
     }
 
     void SoundManager::stopAllSounds()
@@ -358,7 +387,7 @@ namespace Uma_Engine {
         FMOD_Channel_SetPitch(info->channel, pitch);
     }
 
-    void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::END) {
+    void SoundManager::setChannelGroupVolume(float volume, SoundType type = SoundType::MASTER) {
         if (type == SoundType::SFX) {
             FMOD_ChannelGroup_SetVolume(SFX, volume);
         }
@@ -377,14 +406,14 @@ namespace Uma_Engine {
         listenerUp = up;
     }
 
-    void SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
+    FMOD_CHANNEL* SoundManager::PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume, bool is3D)
     {
         if (!pFmodSystem || !pResourcesManager) {
-            return;
+            return nullptr;
         }
 
         if (!info || !info->sound) {
-            return;
+            return nullptr;
         }
 
         // Create temporary channel (no tracking needed - fire and forget)
@@ -396,7 +425,7 @@ namespace Uma_Engine {
         // Play sound
         FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &tempChannel);
         if (result != FMOD_OK || !tempChannel) {
-            return;
+            return nullptr;
         }
 
         // Set volume
@@ -411,6 +440,8 @@ namespace Uma_Engine {
             FMOD_Channel_Set3DAttributes(tempChannel, &fmodPos, &fmodVel);
             FMOD_Channel_Set3DMinMaxDistance(tempChannel, 100.0f, 1000.0f);
         }
+
+        return tempChannel;
     }
 
     FMOD_CHANNEL* SoundManager::PlaySoundInstance(SoundInfo* info, bool loop, float volume, const FMOD_VECTOR& pos, bool is3D)
@@ -428,19 +459,19 @@ namespace Uma_Engine {
         FMOD_CHANNELGROUP* group = (info->type == SoundType::SFX) ? SFX : BGM;
 
         // Play sound
-        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, false, &channel);
+        FMOD_RESULT result = FMOD_System_PlaySound(pFmodSystem, info->sound, group, true, &channel);
         if (result != FMOD_OK || !channel) {
             std::cerr << "[SoundManager] Failed to play: " << FMOD_ErrorString(result) << std::endl;
             return nullptr;
         }
 
         FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
-        if (is3D) {
-            mode |= FMOD_3D;  // Add 3D spatialization
-        }
-        else {
-            mode |= FMOD_2D;  // Explicitly force 2D (omnidirectional)
-        }
+        //if (is3D) {
+        //    mode |= FMOD_3D;  // Add 3D spatialization
+        //}
+        //else {
+        //    mode |= FMOD_2D;  // Explicitly force 2D (omnidirectional)
+        //}
 
         FMOD_Channel_SetMode(channel, mode);  // Single mode call
 
@@ -450,8 +481,19 @@ namespace Uma_Engine {
         // 3D attributes ONLY if 3D
         if (is3D) {
             FMOD_Channel_Set3DAttributes(channel, &pos, nullptr);
-            FMOD_Channel_Set3DMinMaxDistance(channel, 100.0f, 1000.0f);
         }
+
+        FMOD_DSP* dsp = nullptr;
+        FMOD_RESULT res = FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, &dsp);
+        if (res == FMOD_OK && dsp) {
+            res = FMOD_Channel_AddDSP(channel, FMOD_CHANNELCONTROL_DSP_HEAD, dsp);
+            if (res == FMOD_OK) {
+                info->dspLowpass = dsp;
+                FMOD_DSP_SetParameterFloat(dsp, FMOD_DSP_LOWPASS_CUTOFF, 22000.0f);
+            }
+        }
+
+        FMOD_Channel_SetPaused(channel, false);
 
         return channel;
     }
@@ -476,6 +518,21 @@ namespace Uma_Engine {
 
         // Safe to update
         FMOD_Channel_Set3DAttributes(channel, &pos, &vel);
+
+        // DEBUG — print every 60 frames
+        static int frame = 0;
+        if (++frame % 60 == 0) {
+            // Read back what FMOD actually has
+            FMOD_VECTOR actualPos, actualVel;
+            FMOD_Channel_Get3DAttributes(channel, &actualPos, &actualVel);
+
+            float minDist, maxDist;
+            FMOD_Channel_Get3DMinMaxDistance(channel, &minDist, &maxDist);
+
+            FMOD_MODE mode;
+            FMOD_Channel_GetMode(channel, &mode);
+
+        }
     }
 
     bool SoundManager::IsSoundPlaying(SoundInfo* info)
@@ -555,5 +612,67 @@ namespace Uma_Engine {
             StopChannel(channel);  // Instant stop
         }
     }
+
+    void SoundManager::ToggleLowpass(SoundInfo* info, bool enable) {
+        //check if the audio channel exist
+        if (!info || !info->channel || !info->dspLowpass) return;
+
+        //toggle lowpass cutoff values
+        float cutoff;
+        if (enable) cutoff = 1000.0f;
+        else cutoff = 22000.0f;
+        FMOD_DSP_SetParameterFloat(info->dspLowpass, FMOD_DSP_LOWPASS_CUTOFF, cutoff);
+        FMOD_System_Update(pFmodSystem);
+    }
+
+    void SoundManager::ToggleGroupLowpass(SoundType type, bool enable)
+    {
+        // Prevent toggling Master if SFX or BGM is active, and vice versa
+        // this is to prevent double filtering of sound groups if individual sound channel have low pass
+        // this guard will not protect it so beware when using it
+        if (enable)
+        {
+            FMOD_BOOL sfxBypassed, bgmBypassed, masterBypassed;
+            FMOD_DSP_GetBypass(pLowpassSFX, &sfxBypassed);
+            FMOD_DSP_GetBypass(pLowpassBGM, &bgmBypassed);
+            FMOD_DSP_GetBypass(pLowpassMaster, &masterBypassed);
+
+            // bypass=false means active (not bypassed = enabled)
+            bool sfxActive = !sfxBypassed;
+            bool bgmActive = !bgmBypassed;
+            bool masterActive = !masterBypassed;
+
+            if (type == SoundType::MASTER && (sfxActive || bgmActive))
+            {
+                Debugger::Log(WarningLevel::eWarning,
+                    "Cannot enable Master lowpass while SFX or BGM lowpass is active — would double-filter.");
+                return;
+            }
+            if ((type == SoundType::SFX || type == SoundType::BGM) && masterActive)
+            {
+                Debugger::Log(WarningLevel::eWarning,
+                    "Cannot enable SFX/BGM lowpass while Master lowpass is active — would double-filter.");
+                return;
+            }
+        }
+
+        FMOD_DSP** dsp = nullptr;
+        switch (type)
+        {
+        case SoundType::SFX:
+            dsp = &pLowpassSFX;
+            break;
+        case SoundType::BGM:
+            dsp = &pLowpassBGM;
+            break;
+        default:
+            dsp = &pLowpassMaster;
+            break;
+        }
+
+        FMOD_DSP_SetBypass(*dsp, enable);
+    }
+
+
 
 }

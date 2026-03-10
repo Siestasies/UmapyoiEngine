@@ -123,7 +123,7 @@ namespace Uma_Engine
         \param type The type of sound (e.g., BGM, SFX).
         \return True if loaded successfully, false if failed or already exists.
         */
-        bool LoadSound(const std::string& name, const std::string& filePath, SoundType type);
+        bool LoadSound(const std::string& name, const std::string& filePath, SoundType type, bool is3D);
 
         /*!
         \brief Unloads a specific sound resource.

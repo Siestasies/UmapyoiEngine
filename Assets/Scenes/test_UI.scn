@@ -17,7 +17,13 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "MainMenuBGM",
+                "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -48,7 +54,7 @@
     },
     "entities": [
         {
-            "id": 0,
+            "id": 33,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -65,7 +71,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        34,
+                        38
+                    ]
                 },
                 "class Uma_UI::Canvas": {
                     "sortingOrder": 0,
@@ -79,7 +89,7 @@
             }
         },
         {
-            "id": 1,
+            "id": 34,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -96,7 +106,22 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 0
+                    "parent": 33,
+                    "children": [
+                        35,
+                        36,
+                        37
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/VolumeSlider.lua",
+                            "scriptName": "VolumeSlider.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -118,6 +143,13 @@
                     "sizeDelta": {
                         "x": 500.0,
                         "y": 20.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.505,
+                        "height": 0.038
                     }
                 },
                 "class Uma_UI::Slider": {
@@ -127,10 +159,10 @@
                     "wholeNumbers": false,
                     "direction": 0,
                     "interactable": true,
-                    "backgroundEntity": 2,
-                    "fillEntity": 3,
-                    "handleEntity": 4,
-                    "scriptName": "",
+                    "backgroundEntity": 35,
+                    "fillEntity": 36,
+                    "handleEntity": 37,
+                    "scriptName": "VolumeSlider.lua",
                     "normalColour": {
                         "r": 1.0,
                         "g": 1.0,
@@ -153,7 +185,7 @@
             }
         },
         {
-            "id": 2,
+            "id": 35,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -170,7 +202,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 1
+                    "parent": 34,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -192,6 +225,13 @@
                     "sizeDelta": {
                         "x": 500.0,
                         "y": 20.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.505,
+                        "height": 0.038
                     }
                 },
                 "class Uma_UI::Image": {
@@ -203,12 +243,14 @@
                         "b": 0.497,
                         "a": 0.497
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
         {
-            "id": 3,
+            "id": 36,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -225,7 +267,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 1
+                    "parent": 34,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -247,6 +290,13 @@
                     "sizeDelta": {
                         "x": 500.0,
                         "y": 20.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.505,
+                        "height": 0.038
                     }
                 },
                 "class Uma_UI::Image": {
@@ -258,12 +308,14 @@
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
         {
-            "id": 4,
+            "id": 37,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -280,7 +332,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 1
+                    "parent": 34,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -302,6 +355,13 @@
                     "sizeDelta": {
                         "x": 40.0,
                         "y": 40.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.252,
+                        "y": 0.0,
+                        "width": 0.04,
+                        "height": 0.076
                     }
                 },
                 "class Uma_UI::Image": {
@@ -313,12 +373,14 @@
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
         {
-            "id": 5,
+            "id": 38,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -335,7 +397,11 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 0
+                    "parent": 33,
+                    "children": [
+                        39,
+                        40
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -357,6 +423,13 @@
                     "sizeDelta": {
                         "x": 50.0,
                         "y": 50.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.05,
+                        "height": 0.095
                     }
                 },
                 "class Uma_UI::Checkbox": {
@@ -411,7 +484,7 @@
             }
         },
         {
-            "id": 6,
+            "id": 39,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -428,7 +501,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 5
+                    "parent": 38,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -450,6 +524,13 @@
                     "sizeDelta": {
                         "x": 50.0,
                         "y": 50.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.05,
+                        "height": 0.095
                     }
                 },
                 "class Uma_UI::Image": {
@@ -461,12 +542,14 @@
                         "b": 1.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
                 }
             }
         },
         {
-            "id": 7,
+            "id": 40,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -483,7 +566,8 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 5
+                    "parent": 38,
+                    "children": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -505,6 +589,13 @@
                     "sizeDelta": {
                         "x": 45.0,
                         "y": 45.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 0.045,
+                        "height": 0.086
                     }
                 },
                 "class Uma_UI::Image": {
@@ -516,7 +607,2215 @@
                         "b": 0.0,
                         "a": 1.0
                     },
-                    "visible": true
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0
+                }
+            }
+        },
+        {
+            "id": 42,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 43,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 44,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 45,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 46,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 47,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 48,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 49,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 50,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 51,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 52,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 53,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 54,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 55,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 56,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 57,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 58,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 59,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 60,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 61,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 62,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 63,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 64,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 65,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 66,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 67,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 68,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 69,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 70,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 71,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 72,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 73,
+            "isActive": false,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Entity",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": 41,
+                    "children": []
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchorMax": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": -9999.0,
+                        "y": -9999.0
+                    },
+                    "sizeDelta": {
+                        "x": 200.0,
+                        "y": 80.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": -17.823,
+                        "y": -33.723,
+                        "width": 0.356,
+                        "height": 0.269
+                    }
+                },
+                "class Uma_UI::Text": {
+                    "text": "",
+                    "fontPath": "Assets/Fonts/Fujimaru-Regular.ttf",
+                    "sortingOrder": 1,
+                    "fontSize": 2.0,
+                    "colour": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 0.0
+                    },
+                    "alignment": 1,
+                    "visible": false
+                }
+            }
+        },
+        {
+            "id": 41,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "audio player",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        42,
+                        43,
+                        44,
+                        45,
+                        46,
+                        47,
+                        48,
+                        49,
+                        50,
+                        51,
+                        52,
+                        53,
+                        54,
+                        55,
+                        56,
+                        57,
+                        58,
+                        59,
+                        60,
+                        61,
+                        62,
+                        63,
+                        64,
+                        65,
+                        66,
+                        67,
+                        68,
+                        69,
+                        70,
+                        71,
+                        72,
+                        73
+                    ]
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "anchorMax": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "isDirty": false,
+                    "computedRect": {
+                        "x": 0.0,
+                        "y": 0.0,
+                        "width": 2.0,
+                        "height": 2.0
+                    }
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 999,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 0,
+                    "matchWidthOrHeight": 0.5
                 }
             }
         }

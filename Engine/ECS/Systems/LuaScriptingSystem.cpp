@@ -26,6 +26,8 @@ All rights reserved.
 
 #include "LuaScriptingSystem.hpp"
 #include "AudioSystem.hpp"
+#include "SoundManager.hpp"
+#include "ResourcesTypes.hpp"
 
 #include "../Components/Transform.h"
 #include "../Components/RigidBody.h"
@@ -38,6 +40,8 @@ All rights reserved.
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
 #include "../UI/Components/Dialogue.h"
+#include "../UI/Components/Slider.h"
+#include "../UI/Components/Checkbox.h"
 #include "../Components/AudioComponent.h"
 
 #include "Events/ApplicationEvents.h"
@@ -54,12 +58,13 @@ All rights reserved.
 
 namespace Uma_ECS
 {
-
-    void LuaScriptingSystem::Init(Coordinator* c,
-        Uma_Engine::EventSystem* e,
-        Uma_Engine::HybridInputSystem* i,
-        Uma_Engine::ResourcesManager* r,
-        Uma_Engine::Graphics* g)
+    
+    void LuaScriptingSystem::Init(Coordinator* c, 
+        Uma_Engine::EventSystem* e, 
+        Uma_Engine::HybridInputSystem* i, 
+        Uma_Engine::ResourcesManager* r, 
+        Uma_Engine::Graphics* g,
+        Uma_Engine::SoundManager* s)
     {
         // linking the Engine systems 
         pCoordinator = c;
@@ -67,6 +72,7 @@ namespace Uma_ECS
         pInputSystem = i;
         pResourcesManager = r;
         pGraphics = g;
+        pSoundManager = s;
 
         // create shared Lua state with all standard libraries
         sharedLua = std::make_shared<sol::state>();
@@ -934,6 +940,58 @@ namespace Uma_ECS
             )
         );
 
+        sharedLua->new_enum<Uma_UI::SliderDirection>("SliderDirection",
+            {
+                { "LeftToRight", Uma_UI::SliderDirection::LeftToRight },
+                { "RightToLeft", Uma_UI::SliderDirection::RightToLeft },
+                { "BottomToTop", Uma_UI::SliderDirection::BottomToTop },
+                { "TopToBottom", Uma_UI::SliderDirection::TopToBottom }
+            });
+
+        sharedLua->new_usertype<Uma_UI::Slider>("Slider",
+            "minValue", &Uma_UI::Slider::minValue,
+            "maxValue", &Uma_UI::Slider::maxValue,
+            "value", &Uma_UI::Slider::value,
+            "wholeNumbers", &Uma_UI::Slider::wholeNumbers,
+            "direction", &Uma_UI::Slider::direction,
+            "interactable", &Uma_UI::Slider::interactable,
+            "background", &Uma_UI::Slider::background,
+            "fill", &Uma_UI::Slider::fill,
+            "handle", &Uma_UI::Slider::handle,
+            "normalColour", &Uma_UI::Slider::normalColour,
+            "highlightColour", &Uma_UI::Slider::highlightColour,
+            "disabledColour", &Uma_UI::Slider::disabledColour,
+            "scriptName", &Uma_UI::Slider::scriptName,
+            "isDragging", sol::readonly(&Uma_UI::Slider::isDragging),
+            "isHovered", sol::readonly(&Uma_UI::Slider::isHovered)
+        );
+
+        sharedLua->new_enum<Uma_UI::CheckboxState>("CheckboxState",
+            {
+                { "Normal",   Uma_UI::CheckboxState::Normal   },
+                { "Hovered",  Uma_UI::CheckboxState::Hovered  },
+                { "Pressed",  Uma_UI::CheckboxState::Pressed  },
+                { "Disabled", Uma_UI::CheckboxState::Disabled }
+            });
+
+        sharedLua->new_usertype<Uma_UI::Checkbox>("Checkbox",
+            "isChecked", &Uma_UI::Checkbox::isChecked,
+            "interactable", &Uma_UI::Checkbox::interactable,
+            "currentState", sol::readonly(&Uma_UI::Checkbox::currentState),
+            "background", &Uma_UI::Checkbox::background,
+            "checkmark", &Uma_UI::Checkbox::checkmark,
+            "normalColour", &Uma_UI::Checkbox::normalColour,
+            "hoverColour", &Uma_UI::Checkbox::hoverColour,
+            "pressedColour", &Uma_UI::Checkbox::pressedColour,
+            "disabledColour", &Uma_UI::Checkbox::disabledColour,
+            "checkedColour", &Uma_UI::Checkbox::checkedColour,
+            "checkmarkNormalColour", &Uma_UI::Checkbox::checkmarkNormalColour,
+            "checkmarkDisabledColour", &Uma_UI::Checkbox::checkmarkDisabledColour,
+            "scriptName", &Uma_UI::Checkbox::scriptName,
+            "wasHoveredLastFrame", sol::readonly(&Uma_UI::Checkbox::wasHoveredLastFrame),
+            "wasPressedWhileHovered", sol::readonly(&Uma_UI::Checkbox::wasPressedWhileHovered)
+        );
+
         // Register EffectProperty enum
         sharedLua->new_enum<Uma_UI::EffectProperty>("EffectProperty", {
             {"Position", Uma_UI::EffectProperty::Position},
@@ -1458,25 +1516,29 @@ namespace Uma_ECS
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
         using Dialogue = Uma_UI::Dialogue;
-        // Component list macro
-#define COMPONENT_LIST \
-        X(Transform)   \
-        X(RigidBody)   \
-        X(Sprite)      \
-        X(Collider)    \
-        X(Player)      \
-        X(Enemy)       \
-        X(Camera)      \
-        X(PathFinding) \
-        X(Projectile)  \
-        X(Animator)    \
-        X(Text)        \
-        X(Image)       \
-        X(Effects)     \
-        X(Dialogue)    \
-        X(ParticleEmitter)\
-        X(AudioComponent)\
+        using Slider = Uma_UI::Slider;
+        using Checkbox = Uma_UI::Checkbox;
 
+       // Component list macro
+#define COMPONENT_LIST      \
+        X(Transform)        \
+        X(RigidBody)        \
+        X(Sprite)           \
+        X(Collider)         \
+        X(Player)           \
+        X(Enemy)            \
+        X(Camera)           \
+        X(PathFinding)      \
+        X(Projectile)       \
+        X(Animator)         \
+        X(Text)             \
+        X(Image)            \
+        X(Effects)          \
+        X(Dialogue)         \
+        X(ParticleEmitter)  \
+        X(AudioComponent)   \
+        X(Slider)           \
+        X(Checkbox)         \
     // -----------------------------------------------------------
     // ENTITY WRAPPER
     // -----------------------------------------------------------
@@ -1638,6 +1700,38 @@ namespace Uma_ECS
             {
                 auto& fsm = pCoordinator->GetComponent<FSM>(e);
                 fsm.next = nextState;
+            });
+
+        sharedLua->set_function("setMasterVolume", [this](float volume) {
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
+            });
+
+        sharedLua->set_function("setSFXVolume", [this](float volume) {
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::SFX);
+            });
+
+        sharedLua->set_function("setBGMVolume", [this](float volume) {
+            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::BGM);
+            });
+
+        sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
+            pSoundManager->setChannelGroupVolume(volume, type);
+            });
+        sharedLua->set_function("toggleLowpass", [this](const std::string& name, bool dulled) {
+            pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
+            });
+        sharedLua->set_function("toggleGroupLowpass", [this](const std::string& groupName, bool enable)
+            {
+                SoundType type;
+                if (groupName == "SFX") type = SoundType::SFX;
+                else if (groupName == "BGM") type = SoundType::BGM;
+                else if (groupName == "MASTER") type = SoundType::MASTER;
+                else {
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError, "Audio Group doesnt exist");
+                    return;
+                }
+
+                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
             });
     }
 
@@ -1916,24 +2010,28 @@ namespace Uma_ECS
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
         using Dialogue = Uma_UI::Dialogue;
+        using Slider = Uma_UI::Slider;
+        using Checkbox = Uma_UI::Checkbox;
 
-#define COMPONENT_LIST \
-        BIND_COMPONENT_GETTER(Transform)   \
-        BIND_COMPONENT_GETTER(RigidBody)   \
-        BIND_COMPONENT_GETTER(Sprite)      \
-        BIND_COMPONENT_GETTER(Collider)    \
-        BIND_COMPONENT_GETTER(Player)      \
-        BIND_COMPONENT_GETTER(Enemy)       \
-        BIND_COMPONENT_GETTER(Camera)      \
-        BIND_COMPONENT_GETTER(Text)        \
-        BIND_COMPONENT_GETTER(PathFinding) \
-        BIND_COMPONENT_GETTER(Animator)    \
-        BIND_COMPONENT_GETTER(Image)       \
-        BIND_COMPONENT_GETTER(ParticleEmitter)\
-        BIND_COMPONENT_GETTER(Effects)     \
-        BIND_COMPONENT_GETTER(Dialogue)     \
-        BIND_COMPONENT_GETTER(AudioComponent)\
-        //BIND_COMPONENT_GETTER(Projectile)\
+#define COMPONENT_LIST                          \
+        BIND_COMPONENT_GETTER(Transform)        \
+        BIND_COMPONENT_GETTER(RigidBody)        \
+        BIND_COMPONENT_GETTER(Sprite)           \
+        BIND_COMPONENT_GETTER(Collider)         \
+        BIND_COMPONENT_GETTER(Player)           \
+        BIND_COMPONENT_GETTER(Enemy)            \
+        BIND_COMPONENT_GETTER(Camera)           \
+        BIND_COMPONENT_GETTER(Text)             \
+        BIND_COMPONENT_GETTER(PathFinding)      \
+        BIND_COMPONENT_GETTER(Animator)         \
+        BIND_COMPONENT_GETTER(Image)            \
+        BIND_COMPONENT_GETTER(ParticleEmitter)  \
+        BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(Dialogue)         \
+        BIND_COMPONENT_GETTER(AudioComponent)   \
+        BIND_COMPONENT_GETTER(Slider)           \
+        BIND_COMPONENT_GETTER(Checkbox)         \
+        //BIND_COMPONENT_GETTER(Projectile)     \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
