@@ -2967,7 +2967,7 @@ namespace Uma_Engine
                             ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
                             ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
                             ImGui::Checkbox("Is 3D", &soundInstance.is3D);
-                            const char* typeNames[] = { "SFX", "BGM", "MASTER" };
+                            const char* typeNames[] = { "SFX", "BGM"};
                             int currentType = static_cast<int>(soundInstance.type);
                             if (ImGui::Combo("Sound Type", &currentType, typeNames, IM_ARRAYSIZE(typeNames)))
                                 soundInstance.type = static_cast<Uma_Engine::SoundType>(currentType);
@@ -3034,7 +3034,7 @@ namespace Uma_Engine
                                 ImGui::Text("Path: %s", reprInstance.path.c_str());
                                 ImGui::Checkbox("Should Loop", &reprInstance.shouldLoop);
                                 ImGui::Checkbox("Is 3D", &reprInstance.is3D);
-                                const char* typeNames[] = { "SFX", "BGM", "MASTER" };
+                                const char* typeNames[] = { "SFX", "BGM" };
                                 int currentType = static_cast<int>(reprInstance.type);
                                 if (ImGui::Combo("Sound Type", &currentType, typeNames, IM_ARRAYSIZE(typeNames)))
                                     reprInstance.type = static_cast<Uma_Engine::SoundType>(currentType);
