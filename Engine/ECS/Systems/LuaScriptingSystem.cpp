@@ -1156,7 +1156,10 @@ namespace Uma_ECS
                 [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity) {
                     pCoordinator->GetSystem<AudioSystem>()->FadeOutEntity(entity, 1.0f);
                 }
-            )
+            ),
+            "toggleLowpass", [this](Uma_ECS::AudioComponent&, const std::string& name, bool dulled) {
+                pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
+            }
         );
 
         // ===================================================================
@@ -1639,9 +1642,6 @@ namespace Uma_ECS
 
         sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
             pSoundManager->setChannelGroupVolume(volume, type);
-            });
-        sharedLua->set_function("toggleLowpass", [this](const std::string& name, bool dulled) {
-            pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
             });
         sharedLua->set_function("toggleGroupLowpass", [this](const std::string& groupName, bool enable)
             {
