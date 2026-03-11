@@ -5637,6 +5637,7 @@ namespace Uma_Engine
                 // === Layers Section ===
                 if (ImGui::TreeNode("Layers", "Layers (%zu)", tilemap.layers.size()))
                 {
+                    int layerToDelete = -1;
                     for (size_t i = 0; i < tilemap.layers.size(); i++)
                     {
                         ImGui::PushID(static_cast<int>(i));
@@ -5679,9 +5680,15 @@ namespace Uma_Engine
                             ImGui::Separator();
                             if (ImGui::MenuItem("Delete", nullptr, false, tilemap.layers.size() > 1))
                             {
-                                tilemap.RemoveLayer(static_cast<int>(i));
+                                /* tilemap.RemoveLayer(static_cast<int>(i));
+                                 ImGui::PopID();
+                                 ImGui::EndPopup();
+                                 if (layerOpen) ImGui::TreePop();*/
+
+                                layerToDelete = static_cast<int>(i);
+
+                                ImGui::EndPopup();
                                 ImGui::PopID();
-                                ImGui::TreePop();
                                 break;
                             }
                             ImGui::EndPopup();
@@ -5773,6 +5780,12 @@ namespace Uma_Engine
                         }
 
                         ImGui::PopID();
+                    }
+
+                    if (layerToDelete != -1)
+                    {
+                        tilemap.RemoveLayer(layerToDelete);
+                        m_hasUnsavedEdit = true;
                     }
 
                     ImGui::Separator();
