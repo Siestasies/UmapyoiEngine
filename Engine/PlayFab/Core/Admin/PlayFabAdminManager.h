@@ -48,6 +48,7 @@ All rights reserved.
 #include <unordered_map>
 #include <vector>
 #include <Windows.h>
+#include <queue>
 
 // ── PlayFab Services SDK ──────────────────────────────────────────────────────
 #include <playfab/core/PFEntity.h>
@@ -215,14 +216,18 @@ namespace Uma_Engine
         );
 
         /*!
-        \brief  Writes multiple TitleData key-value pairs in one logical call.
+        \brief  Writes multiple TitleData key-value pairs sequentially.
 
-        Dispatches one independent SetTitleData call per key. Each key fires
-        its own success/failure callback.
+        Chains each SetTitleData call inside the previous one's success callback,
+        so writes are serialised one-at-a-time. This avoids E_PF_CONCURRENT_EDIT_ERROR
+        which PlayFab returns when multiple writes hit the same title's data store
+        simultaneously.
 
-        \param  kvPairs     Map of { key -> value } to write.
-        \param  onSuccess   Called for each key that succeeds.
-        \param  onFailure   Called for each key that fails.
+        \param  kvPairs     Map of { key -> value } to write. Written in an
+                            unspecified but non-concurrent order.
+        \param  onSuccess   Called once after every key has been written successfully.
+        \param  onFailure   Called on the first key that fails; remaining keys are
+                            not written after a failure.
 
         \pre    IsReady() == true
         */
@@ -260,11 +265,18 @@ namespace Uma_Engine
         /*!
         \brief  Creates a new statistic definition on the title.
 
-        A definition specifies the stat name, per-column aggregation method
-        (Last / Min / Max / Sum), and optional automatic version-reset schedule.
+        A definition specifies the stat name, the column name (a sub-identifier
+        used when writing/reading scores), per-column aggregation method
+        (Last / Min / Max / Sum), and an automatic version-reset schedule.
         Must be called once before any entity can have values for that stat.
 
         \param  name            Stat name (a-Z, 0-9, '_', '-', '.', max 150 chars).
+                                This is the identifier used in UpdateStatistics /
+                                GetStatistics calls.
+        \param  columnName      Name of the single score column within this stat
+                                (e.g. "score", "time_ms"). Must be distinct from the
+                                stat name. Used by PlayFab internally to identify the
+                                column when the stat has multiple columns.
         \param  aggregation     How scores are aggregated: Last, Min, Max, Sum.
         \param  onSuccess       Called when the definition is created.
         \param  onFailure       Called on failure.
@@ -274,7 +286,7 @@ namespace Uma_Engine
         \par Example
         \code
             pfb->Admin().CreateStatisticDefinition(
-                "HighScore",
+                "HighScore", "score",
                 PFStatisticsStatisticAggregationMethod::Max,
                 []() { LOG_INFO("Stat created"); },
                 [](HRESULT hr, const auto& msg) { LOG_ERROR(msg); }
@@ -283,6 +295,7 @@ namespace Uma_Engine
         */
         void CreateStatisticDefinition(
             const std::string& name,
+            const std::string& columnName,
             PFStatisticsStatisticAggregationMethod     aggregation,
             OnAdminSuccess                             onSuccess = nullptr,
             OnAdminFailure                             onFailure = nullptr
@@ -598,6 +611,14 @@ namespace Uma_Engine
             OnAdminFailure      onFailure = nullptr
         );
 
+        // QueueTitleData just pushes — no async launched yet
+        void QueueTitleData(const std::string& key, const std::string& value,
+            OnAdminSuccess onSuccess = nullptr,
+            OnAdminFailure onFailure = nullptr);
+
+        // Called from PlayFabManager::Update()
+        void Update();
+
 
         // =====================================================================
         //  (Planned) Player Management
@@ -744,6 +765,24 @@ namespace Uma_Engine
         /// Borrowed handle — owned and closed by PlayFabManager.
         /// nullptr until SetTitleEntityHandle() is called.
         PFEntityHandle m_titleEntityHandle{ nullptr };
+
+        struct TitleDataWriteCommand
+        {
+            std::string    key;
+            std::string    value;
+            OnAdminSuccess onSuccess; // per-key callback, optional
+            OnAdminFailure onFailure;
+        };
+
+        void ProcessSetTitleDataQueue(
+            const std::string& key,
+            const std::string& value,
+            OnAdminSuccess     onSuccess = nullptr,
+            OnAdminFailure     onFailure = nullptr
+        );
+
+        std::queue<TitleDataWriteCommand> m_titleDataQueue;
+        bool                              m_titleDataWriteInFlight{ false };
     };
 
 } // namespace Uma_Engine

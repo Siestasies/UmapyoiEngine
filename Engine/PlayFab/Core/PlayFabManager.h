@@ -218,7 +218,7 @@ namespace Uma_Engine
         static void DispatchError(
             HRESULT               hr,
             const std::string& context,
-            const OnManagerFailure& onFailure
+            const OnAdminFailure& onFailure
         );
 
         /*!

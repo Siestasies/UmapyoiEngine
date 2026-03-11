@@ -1,4 +1,4 @@
-/*!
+﻿/*!
 \file   EditorApplication.cpp
 \par    Project: GAM200
 \par    Course: CSD2401
@@ -283,15 +283,12 @@ namespace Uma_Engine
 
     void EditorApplication::PlayFabConfiguration()
     {
-        // this function basically check if there is any playfab configuration file 
-        // if user prev setup before it will auto establish connection
-        // if there is no playfab config file it will skip this operation
-
+        // Checks for a playfab config file. If previously set up, auto-establishes
+        // connection. If no config file is found, the function is skipped.
         PlayFabConfig* config = new PlayFabConfig{};  // deleted after SetCredentials below
         EngineConfigSerializer configSerializer;
         configSerializer.Register(config);
         configSerializer.load(Uma_FilePath::CONFIG_ROOT + "playfab_dev.json");
-
         if (config->titleId.empty()) return;
 
         PlayFabManager* playfabManager = GetPlayFabManager();
@@ -300,28 +297,268 @@ namespace Uma_Engine
             config->secretKey,
             [playfabManager]()
             {
-                std::vector<std::string> keys;
+                auto& admin = playfabManager->Admin();
 
-                keys.emplace_back("game version");
-
-                playfabManager->Admin().GetTitleData(
-                    keys,
-                    [keys](std::unordered_map<std::string, std::string> const& data)
+                // ── helpers ──────────────────────────────────────────────────────
+                auto onFail = [](HRESULT hr, const std::string& msg)
                     {
-                        std::string key = keys[0];
-                        Debugger::Log(WarningLevel::eInfo, "[Playfab GetTitleData] data is : " + data.at(key));
+                        Debugger::Log(WarningLevel::eWarning, msg);
+                    };
+
+                // ================================================================
+                //  1. TitleData  (existing smoke-test, kept for reference)
+                // ================================================================
+                admin.GetTitleData(
+                    { "game version" },
+                    [](const std::unordered_map<std::string, std::string>& data)
+                    {
+                        Debugger::Log(WarningLevel::eInfo,
+                            "[PF | GetTitleData] game version = " + data.at("game version"));
                     },
-                    [](HRESULT hr, const std::string& message)
-                    {
-                        Debugger::Log(WarningLevel::eInfo, "[Playfab GetTitleData] failed");
-                    }
+                    onFail
                 );
+
+                admin.SetTitleData(
+                    "test_key", "hello_uma",
+                    []() { Debugger::Log(WarningLevel::eInfo, "[PF | SetTitleData] OK"); },
+                    onFail
+                );
+
+                admin.SetTitleDataBatch(
+                    { { "batch_a", "1" }, { "batch_b", "2" } },
+                    []() { Debugger::Log(WarningLevel::eInfo, "[PF | SetTitleDataBatch] OK"); },
+                    onFail
+                );
+
+                admin.DeleteTitleData(
+                    "test_key",
+                    []() { Debugger::Log(WarningLevel::eInfo, "[PF | DeleteTitleData] OK"); },
+                    onFail
+                );
+
+
+                // ================================================================
+                //  2. Statistics
+                // ================================================================
+
+                //// -- 2a. Create a stat definition --------------------------------
+                //admin.CreateStatisticDefinition(
+                //    "TestHighScore",
+                //    "score",                                        // column name — distinct from stat name
+                //    PFStatisticsStatisticAggregationMethod::Max,
+                //    [&admin, onFail]()
+                //    {
+                //        Debugger::Log(WarningLevel::eInfo,
+                //            "[PF | CreateStatisticDefinition] TestHighScore created");
+
+                //        // -- 2b. Write a value for a dummy entity ----------------
+                //        // Replace the entityId below with a real title_player_account
+                //        // ID from your PlayFab Game Manager → Players tab.
+                //        const std::string testEntityId = "REPLACE_WITH_REAL_ENTITY_ID";
+                //        const std::string testEntityType = "title_player_account";
+
+                //        admin.UpdateStatistics(
+                //            testEntityId, testEntityType,
+                //            "TestHighScore", "99000",
+                //            [&admin, testEntityId, testEntityType, onFail]()
+                //            {
+                //                Debugger::Log(WarningLevel::eInfo,
+                //                    "[PF | UpdateStatistics] wrote 99000 to TestHighScore");
+
+                //                // -- 2c. Read back the value ---------------------
+                //                admin.GetStatistics(
+                //                    testEntityId, testEntityType,
+                //                    [](const std::vector<Uma_Engine::StatisticValue>& stats)
+                //                    {
+                //                        for (auto const& s : stats)
+                //                        {
+                //                            std::string scores;
+                //                            for (auto const& sc : s.scores)
+                //                                scores += sc + " ";
+                //                            Debugger::Log(WarningLevel::eInfo,
+                //                                "[PF | GetStatistics] " + s.name
+                //                                + " v" + std::to_string(s.version)
+                //                                + " = " + scores);
+                //                        }
+                //                    },
+                //                    onFail
+                //                );
+                //            },
+                //            onFail
+                //        );
+                //    },
+                //    onFail
+                //);
+
+                //// -- 2d. List all stat definitions --------------------------------
+                //admin.ListStatisticDefinitions(
+                //    [](const std::vector<std::string>& names)
+                //    {
+                //        for (auto const& n : names)
+                //            Debugger::Log(WarningLevel::eInfo,
+                //                "[PF | ListStatisticDefinitions] " + n);
+                //    },
+                //    onFail
+                //);
+
+                // -- 2e. Increment stat version (season reset) -------------------
+                //        Uncomment when you actually want to roll the version.
+                //        Doing it here would wipe your TestHighScore data above.
+                //
+                // admin.IncrementStatisticVersion(
+                //     "TestHighScore",
+                //     [](uint32_t v)
+                //     {
+                //         Debugger::Log(WarningLevel::eInfo,
+                //             "[PF | IncrementStatisticVersion] new version = "
+                //             + std::to_string(v));
+                //     },
+                //     onFail
+                // );
+
+
+                // ================================================================
+                //  3. Leaderboards
+                // ================================================================
+
+                // -- 3a. Create a leaderboard definition -------------------------
+                //admin.CreateLeaderboardDefinition(
+                //    "TestLeaderboard", "Score",
+                //    PFLeaderboardsLeaderboardSortDirection::Descending,
+                //    100,
+                //    [&admin, onFail]()
+                //    {
+                //        Debugger::Log(WarningLevel::eInfo,
+                //            "[PF | CreateLeaderboardDefinition] TestLeaderboard created");
+
+                //        // -- 3b. Server-side write an entry ----------------------
+                //        const std::string testEntityId = "REPLACE_WITH_REAL_ENTITY_ID";
+
+                //        admin.UpdateLeaderboardEntries(
+                //            "TestLeaderboard", testEntityId, "88000", "test_meta",
+                //            [&admin, testEntityId, onFail]()
+                //            {
+                //                Debugger::Log(WarningLevel::eInfo,
+                //                    "[PF | UpdateLeaderboardEntries] wrote 88000");
+
+                //                // -- 3c. Read top 10 -----------------------------
+                //                admin.GetLeaderboard(
+                //                    "TestLeaderboard", 10, nullptr,
+                //                    [](const std::vector<Uma_Engine::LeaderboardEntry>& entries,
+                //                        uint32_t version)
+                //                    {
+                //                        Debugger::Log(WarningLevel::eInfo,
+                //                            "[PF | GetLeaderboard] version "
+                //                            + std::to_string(version)
+                //                            + ", entries: "
+                //                            + std::to_string(entries.size()));
+
+                //                        for (auto const& e : entries)
+                //                        {
+                //                            std::string score = e.scores.empty()
+                //                                ? "?" : e.scores[0];
+                //                            Debugger::Log(WarningLevel::eInfo,
+                //                                "  #" + std::to_string(e.rank)
+                //                                + " [" + e.entityId + "] "
+                //                                + e.displayName
+                //                                + " — " + score);
+                //                        }
+                //                    },
+                //                    onFail
+                //                );
+
+                //                // -- 3d. Read entries around the test entity -----
+                //                admin.GetLeaderboardAroundEntity(
+                //                    "TestLeaderboard",
+                //                    testEntityId, "title_player_account",
+                //                    5,
+                //                    [](const std::vector<Uma_Engine::LeaderboardEntry>& entries,
+                //                        uint32_t version)
+                //                    {
+                //                        Debugger::Log(WarningLevel::eInfo,
+                //                            "[PF | GetLeaderboardAroundEntity] "
+                //                            + std::to_string(entries.size()) + " entries");
+
+                //                        for (auto const& e : entries)
+                //                            Debugger::Log(WarningLevel::eInfo,
+                //                                "  #" + std::to_string(e.rank)
+                //                                + " " + e.entityId);
+                //                    },
+                //                    onFail
+                //                );
+                //            },
+                //            onFail
+                //        );
+                //    },
+                //    onFail
+                //);
+
+                //// -- 3e. List all leaderboard definitions ------------------------
+                //admin.ListLeaderboardDefinitions(
+                //    [](const std::vector<std::string>& names)
+                //    {
+                //        for (auto const& n : names)
+                //            Debugger::Log(WarningLevel::eInfo,
+                //                "[PF | ListLeaderboardDefinitions] " + n);
+                //    },
+                //    onFail
+                //);
+
+                // -- 3f. Increment leaderboard version (season reset) ------------
+                //        Same caution as IncrementStatisticVersion — destructive.
+                //        Uncomment only when intentionally rolling a new season.
+                //
+                // admin.IncrementLeaderboardVersion(
+                //     "TestLeaderboard",
+                //     [](uint32_t v)
+                //     {
+                //         Debugger::Log(WarningLevel::eInfo,
+                //             "[PF | IncrementLeaderboardVersion] new version = "
+                //             + std::to_string(v));
+                //     },
+                //     onFail
+                // );
+
+
+                // ================================================================
+                //  4. CloudScript / Azure Functions
+                // ================================================================
+
+                // -- 4a. Call a registered Azure Function ------------------------
+                //        "GetSessionKey" is the function name you register in
+                //        PlayFab Game Manager → Automation → Functions.
+                //        Replace with your actual function name and argument JSON.
+                //admin.ExecuteFunction(
+                //    "GetSessionKey",
+                //    R"({"reason":"test"})",
+                //    [](const std::string& fnName, const std::string& resultJson)
+                //    {
+                //        Debugger::Log(WarningLevel::eInfo,
+                //            "[PF | ExecuteFunction] " + fnName
+                //            + " returned: " + resultJson);
+                //    },
+                //    onFail
+                //);
+
+                //// -- 4b. Call SubmitScore via Azure Function ----------------------
+                ////        This mirrors the flow your game client will use, but
+                ////        invoked here from admin context for testing.
+                //admin.ExecuteFunction(
+                //    "SubmitScore",
+                //    R"({"score":12345,"hmac":"REPLACE_WITH_REAL_HMAC"})",
+                //    [](const std::string& fnName, const std::string& resultJson)
+                //    {
+                //        Debugger::Log(WarningLevel::eInfo,
+                //            "[PF | ExecuteFunction] " + fnName
+                //            + " returned: " + resultJson);
+                //    },
+                //    onFail
+                //);
             },
-            nullptr
+            nullptr  // onAuthFailure
         );
 
         playfabManager->Init();
-
         delete config;
     }
 }

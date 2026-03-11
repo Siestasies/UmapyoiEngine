@@ -92,23 +92,7 @@ void Uma_Engine::PlayFabAdminManager::SetTitleData(
     OnAdminSuccess     onSuccess,
     OnAdminFailure     onFailure)
 {
-    PFTitleDataManagementSetTitleDataRequest request{};
-    request.key = key.c_str();
-    request.value = value.c_str();
-
-    auto* ctx = new SetTitleDataContext{ std::move(onSuccess), std::move(onFailure) };
-    ctx->async.queue = nullptr;
-    ctx->async.context = ctx;
-    ctx->async.callback = OnSetTitleDataComplete;
-
-    HRESULT hr = PFTitleDataManagementServerSetTitleDataAsync(
-        m_titleEntityHandle, &request, &ctx->async);
-
-    if (FAILED(hr))
-    {
-        DispatchError(hr, "SetTitleData (Launch)", ctx->onFailure);
-        delete ctx;
-    }
+    QueueTitleData(key, value, onSuccess, onFailure);
 }
 
 void Uma_Engine::PlayFabAdminManager::SetTitleDataBatch(
@@ -116,8 +100,12 @@ void Uma_Engine::PlayFabAdminManager::SetTitleDataBatch(
     OnAdminSuccess                                       onSuccess,
     OnAdminFailure                                       onFailure)
 {
-    for (auto const& kv : kvPairs)
-        SetTitleData(kv.first, kv.second, onSuccess, onFailure);
+    if (kvPairs.empty()) return;
+
+    for (auto const& pair : kvPairs)
+    {
+        QueueTitleData(pair.first, pair.second, onSuccess, onFailure);
+    }
 }
 
 void Uma_Engine::PlayFabAdminManager::DeleteTitleData(
@@ -199,20 +187,27 @@ void Uma_Engine::PlayFabAdminManager::OnSetTitleDataComplete(XAsyncBlock* async)
 
 void Uma_Engine::PlayFabAdminManager::CreateStatisticDefinition(
     const std::string& name,
+    const std::string& columnName,
     PFStatisticsStatisticAggregationMethod aggregation,
     OnAdminSuccess                         onSuccess,
     OnAdminFailure                         onFailure)
 {
+    PFVersionConfiguration versionCfg{};
+    versionCfg.resetInterval = PFResetInterval::Manual;
+    versionCfg.maxQueryableVersions = 1;
+
     PFStatisticsStatisticColumn column{};
-    column.name = name.c_str();
+    column.name = columnName.c_str(); // column name is distinct from stat name
     column.aggregationMethod = aggregation;
 
-    const PFStatisticsStatisticColumn* columnPtr = &column;
+    const PFStatisticsStatisticColumn* columnPtrs[1] = { &column };
 
     PFStatisticsCreateStatisticDefinitionRequest request{};
     request.name = name.c_str();
-    request.columns = &columnPtr;
+    request.entityType = "title_player_account";
+    request.columns = columnPtrs;
     request.columnsCount = 1;
+    request.versionConfiguration = &versionCfg; // optional — omit for a stat with no auto-reset
 
     auto* ctx = new NoPayloadContext{ std::move(onSuccess), std::move(onFailure) };
     ctx->async.queue = nullptr;
@@ -540,9 +535,11 @@ void Uma_Engine::PlayFabAdminManager::CreateLeaderboardDefinition(
 
     const PFLeaderboardsLeaderboardColumn* columnPtr = &column;
 
-    // Manual reset, no scheduled versioning by default
+    // versionConfiguration is required (not _Maybenull_).
+    // maxQueryableVersions must be >= 1 — PlayFab rejects 0 with E_PF_INVALID_PARAMS.
     PFVersionConfiguration versionCfg{};
     versionCfg.resetInterval = PFResetInterval::Manual;
+    versionCfg.maxQueryableVersions = 1;
 
     PFLeaderboardsCreateLeaderboardDefinitionRequest request{};
     request.name = name.c_str();
@@ -881,6 +878,40 @@ void Uma_Engine::PlayFabAdminManager::ExecuteFunction(
     }
 }
 
+void Uma_Engine::PlayFabAdminManager::QueueTitleData(const std::string& key, const std::string& value, OnAdminSuccess onSuccess, OnAdminFailure onFailure)
+{
+    TitleDataWriteCommand cmd{
+        key,
+        value,
+        onSuccess,
+        onFailure
+    };
+
+    m_titleDataQueue.push(cmd);
+}
+
+void Uma_Engine::PlayFabAdminManager::Update()
+{
+    if (m_titleDataWriteInFlight || m_titleDataQueue.empty()) return;
+
+    m_titleDataWriteInFlight = true;
+    auto cmd = m_titleDataQueue.front();
+    m_titleDataQueue.pop();
+
+    ProcessSetTitleDataQueue(cmd.key, cmd.value,
+        [this, cmd]() {
+            m_titleDataWriteInFlight = false;
+            if (cmd.onSuccess) cmd.onSuccess();
+            // next command picked up next Update() tick
+        },
+        [this, cmd](HRESULT hr, const std::string& msg) {
+            m_titleDataWriteInFlight = false;
+            if (cmd.onFailure) cmd.onFailure(hr, msg);
+            // queue is NOT cleared — remaining commands still attempt
+        }
+    );
+}
+
 void Uma_Engine::PlayFabAdminManager::OnExecuteFunctionComplete(XAsyncBlock* async)
 {
     auto* ctx = reinterpret_cast<ExecuteFunctionContext*>(async->context);
@@ -978,9 +1009,35 @@ void Uma_Engine::PlayFabAdminManager::DispatchError(
     const std::string& context,
     const OnAdminFailure& onFailure)
 {
-    if (!onFailure)
-        return;
+    if (!onFailure) return;
 
-    std::string msg = "[PlayFabAdminManager] " + context + " failed: " + std::to_string(static_cast<double>(hr));
+    std::string msg = "[PlayFabAdminManager] " + context
+        + " failed: 0x" + [](HRESULT h) {
+        char buf[12];
+        snprintf(buf, sizeof(buf), "%08X", static_cast<unsigned>(h));
+        return std::string(buf);
+        }(hr);
+
     onFailure(hr, msg);
+}
+
+void Uma_Engine::PlayFabAdminManager::ProcessSetTitleDataQueue(const std::string& key, const std::string& value, OnAdminSuccess onSuccess, OnAdminFailure onFailure)
+{
+    PFTitleDataManagementSetTitleDataRequest request{};
+    request.key = key.c_str();
+    request.value = value.c_str();
+
+    auto* ctx = new SetTitleDataContext{ std::move(onSuccess), std::move(onFailure) };
+    ctx->async.queue = nullptr;
+    ctx->async.context = ctx;
+    ctx->async.callback = OnSetTitleDataComplete;
+
+    HRESULT hr = PFTitleDataManagementServerSetTitleDataAsync(
+        m_titleEntityHandle, &request, &ctx->async);
+
+    if (FAILED(hr))
+    {
+        DispatchError(hr, "SetTitleData (Launch)", ctx->onFailure);
+        delete ctx;
+    }
 }

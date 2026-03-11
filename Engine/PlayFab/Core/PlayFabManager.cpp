@@ -61,6 +61,11 @@ void Uma_Engine::PlayFabManager::Init()
 void Uma_Engine::PlayFabManager::Update(float dt)
 {
     (void)dt;
+
+	if (m_adminManager)
+	{
+		m_adminManager->Update();
+	}
 }
 
 void Uma_Engine::PlayFabManager::Shutdown()

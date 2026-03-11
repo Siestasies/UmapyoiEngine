@@ -13,7 +13,6 @@
 |---|---|
 | `GetAccountInfo(...)` | Fetch the current player's account details (PlayFab ID, username, created date). |
 | `SetDisplayName(name, ...)` | Set or update the display name shown on leaderboards and profiles. |
-| `UpgradeGuestAccount(email, password, username, ...)` | Attach email/password credentials to an existing guest account, preserving all progress. |
 
 ## Player Data
 | Method | Description |
