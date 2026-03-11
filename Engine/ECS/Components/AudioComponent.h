@@ -38,7 +38,7 @@ namespace Uma_ECS
         // Optional: per-sound overrides
         float pitch = 1.0f;
         float minDistance = 30.0f;
-        float maxDistance = 200.0f;
+        float maxDistance = 80.0f;
     };
 
 	struct AudioComponent {

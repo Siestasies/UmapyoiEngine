@@ -24,7 +24,7 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/PROPS ANIMATION.png",
-                        "layer": 1,
+                        "layer": 2,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
@@ -43,9 +43,31 @@
                         ],
                         "alpha": 1.0
                     },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/Eye.lua",
+                                "scriptName": "Eye.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Animator": {
                         "autoPlay": true,
-                        "initialClip": "eye4",
+                        "initialClip": "eye1",
                         "clips": [
                             {
                                 "name": "eye2",
