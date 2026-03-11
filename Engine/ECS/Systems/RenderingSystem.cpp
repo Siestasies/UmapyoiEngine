@@ -445,7 +445,7 @@ namespace Uma_ECS
     }
 
     bool RenderingSystem::IsSpriteVisible(const Vec2& spritePos, const Vec2& spriteScale,
-                         const Vec2& camMin, const Vec2& camMax)
+        const Vec2& camMin, const Vec2& camMax)
     {
         float halfSpriteWidth = spriteScale.x * 0.5f;
         float halfSpriteHeight = spriteScale.y * 0.5f;
@@ -573,7 +573,7 @@ namespace Uma_ECS
 
                 if (!pCoordinator->IsActiveInHierarchy(childUI) || !rtfArray.Has(childUI)) continue;
 
-                auto& rectTransform = rtfArray.GetData(childUI);                
+                auto& rectTransform = rtfArray.GetData(childUI);
 
                 if (pCoordinator->HasComponent<Uma_UI::Text>(childUI))
                 {
@@ -611,7 +611,7 @@ namespace Uma_ECS
                             .alignment = textComp.alignment,
                             .textColor = textComp.color
                         }
-                        );
+                    );
                 }
                 if (pCoordinator->HasComponent<Uma_UI::Image>(childUI))
                 {
@@ -635,6 +635,9 @@ namespace Uma_ECS
                         continue;
                     }
 
+                    Vec2 uvOffset, uvSize;
+                    image.GetUVs(uvOffset, uvSize);
+
                     Uma_Engine::Sprite_Info spriteInfo = Uma_Engine::Sprite_Info
                     {
                         .tex_id = image.texture->tex_id,
@@ -642,8 +645,8 @@ namespace Uma_ECS
                         .scale = rectTransform.computedRect.Size(),
                         .rot = 0.0f,
                         .rot_speed = 0.0f,
-                        .uvOffset = Vec2(0.0f, 0.0f),
-                        .uvSize = Vec2(1.0f, 1.0f),
+                        .uvOffset = uvOffset,
+                        .uvSize = uvSize,
                         .tintColor = image.color.ToVec3(),
                         .alpha = image.color.a,
                         .fillDirection = static_cast<int>(image.fillDirection),

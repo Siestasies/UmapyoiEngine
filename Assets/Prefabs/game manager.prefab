@@ -201,7 +201,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -264,7 +276,19 @@
                         },
                         "visible": true,
                         "fillDirection": 1,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -329,7 +353,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -392,7 +428,19 @@
                         },
                         "visible": true,
                         "fillDirection": 1,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -457,7 +505,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -520,7 +580,19 @@
                         },
                         "visible": true,
                         "fillDirection": 1,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -585,7 +657,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -648,7 +732,19 @@
                         },
                         "visible": true,
                         "fillDirection": 1,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -752,7 +848,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -815,7 +923,19 @@
                         },
                         "visible": true,
                         "fillDirection": 4,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -910,7 +1030,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -973,7 +1105,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1036,7 +1180,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1099,7 +1255,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1228,7 +1396,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1287,11 +1467,23 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1360,7 +1552,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1557,7 +1761,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1754,7 +1970,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1888,7 +2116,7 @@
             },
             {
                 "id": 31,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "complete",
@@ -1907,7 +2135,7 @@
                         "parent": 0,
                         "children": [
                             32,
-                            33
+                            34
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1967,7 +2195,9 @@
                             "y": 1.0
                         },
                         "parent": 31,
-                        "children": []
+                        "children": [
+                            33
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -1997,7 +2227,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/stage_clear.png",
+                        "texturePath": "Assets/stage cleared ui.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -2006,13 +2236,180 @@
                             "a": 1.0
                         },
                         "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillDirection": 1,
+                        "fillAmount": 0.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Effects": {
+                        "playOnEnable": true,
+                        "clips": [
+                            {
+                                "name": "",
+                                "property": 4,
+                                "easing": 0,
+                                "duration": 0.5,
+                                "delay": 0.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
+                            }
+                        ]
                     }
                 }
             },
             {
                 "id": 33,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "bg shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 32,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 2000.0,
+                            "y": 2000.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "sortingOrder": -1,
+                        "color": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.5
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Effects": {
+                        "playOnEnable": true,
+                        "clips": [
+                            {
+                                "name": "",
+                                "property": 3,
+                                "easing": 0,
+                                "duration": 0.5,
+                                "delay": 0.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 0.5,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "id": 34,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2031,8 +2428,8 @@
                         },
                         "parent": 31,
                         "children": [
-                            34,
-                            35
+                            35,
+                            36
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -2057,7 +2454,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -200.0
+                            "y": -350.0
                         },
                         "sizeDelta": {
                             "x": 500.0,
@@ -2066,22 +2463,109 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
-                            "a": 1.0
+                            "a": 0.0
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Effects": {
+                        "playOnEnable": true,
+                        "clips": [
+                            {
+                                "name": "",
+                                "property": 3,
+                                "easing": 0,
+                                "duration": 0.5,
+                                "delay": 0.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
+                            },
+                            {
+                                "name": "",
+                                "property": 0,
+                                "easing": 0,
+                                "duration": 0.5,
+                                "delay": 0.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": -350.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": -250.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
+                            }
+                        ]
                     }
                 }
             },
             {
-                "id": 34,
+                "id": 35,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2098,7 +2582,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 33,
+                        "parent": 34,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -2145,7 +2629,7 @@
                 }
             },
             {
-                "id": 35,
+                "id": 36,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2162,7 +2646,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 33,
+                        "parent": 34,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {

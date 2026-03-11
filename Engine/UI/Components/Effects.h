@@ -30,6 +30,13 @@ namespace Uma_UI
         float startFloat = 0.0f;
         float endFloat = 1.0f;
 
+        // Spritesheet animation (used when property == SpritesheetFrame)
+        // Frames are specified as flat row-major indices into the spritesheet grid.
+        int   startFrame = 0;      // First frame index (inclusive)
+        int   endFrame = 0;      // Last frame index (inclusive)
+        float fps = 12.0f;  // Playback speed in frames per second
+        bool  pingPong = false;  // If true, plays forward then in reverse
+
         // Runtime state
         float currentTime = 0.0f;
         bool isPlaying = false;
@@ -65,6 +72,37 @@ namespace Uma_UI
             return (std::max)(0.0f, (std::min)(1.0f, t));
         }
 
+        /*!
+         * \brief Computes the current spritesheet frame index for SpritesheetFrame effects.
+         *
+         * Uses fps and currentTime to step through [startFrame, endFrame] in row-major order.
+         * Supports looping and ping-pong playback.
+         * \return Flat frame index into the spritesheet grid.
+         */
+        int GetCurrentFrame() const
+        {
+            int frameCount = endFrame - startFrame + 1;
+            if (frameCount <= 0) return startFrame;
+
+            float elapsed = currentTime - delay;
+            if (elapsed < 0.0f) return startFrame;
+
+            int totalSteps = static_cast<int>(elapsed * fps);
+
+            if (pingPong)
+            {
+                int cycleLen = (frameCount > 1) ? (frameCount * 2 - 2) : 1;
+                int step = loop ? (totalSteps % cycleLen) : (std::min)(totalSteps, cycleLen - 1);
+                int frame = (step < frameCount) ? step : (cycleLen - step);
+                return startFrame + frame;
+            }
+            else
+            {
+                int step = loop ? (totalSteps % frameCount) : (std::min)(totalSteps, frameCount - 1);
+                return startFrame + step;
+            }
+        }
+
         bool IsComplete() const
         {
             if (!hasStarted) return false;
@@ -77,6 +115,11 @@ namespace Uma_UI
     public:
         std::vector<EffectClip> clips;
         bool playOnEnable = false;
+
+        // Runtime-only: tracks last-known hierarchy-active state so playOnEnable
+        // fires exactly once on each inactive->active transition, never every frame.
+        // Never serialized.
+        bool _wasActiveInHierarchy = false;
 
         void AddClip(const EffectClip& clip)
         {
@@ -270,6 +313,11 @@ namespace Uma_UI
                 clipObj.AddMember("startFloat", clip.startFloat, allocator);
                 clipObj.AddMember("endFloat", clip.endFloat, allocator);
 
+                clipObj.AddMember("startFrame", clip.startFrame, allocator);
+                clipObj.AddMember("endFrame", clip.endFrame, allocator);
+                clipObj.AddMember("fps", clip.fps, allocator);
+                clipObj.AddMember("pingPong", clip.pingPong, allocator);
+
                 clipsArray.PushBack(clipObj, allocator);
             }
             jsonValue.AddMember("clips", clipsArray, allocator);
@@ -316,6 +364,11 @@ namespace Uma_UI
 
                 clip.startFloat = clipObj["startFloat"].GetFloat();
                 clip.endFloat = clipObj["endFloat"].GetFloat();
+
+                clip.startFrame = clipObj.HasMember("startFrame") ? clipObj["startFrame"].GetInt() : 0;
+                clip.endFrame = clipObj.HasMember("endFrame") ? clipObj["endFrame"].GetInt() : 0;
+                clip.fps = clipObj.HasMember("fps") ? clipObj["fps"].GetFloat() : 12.0f;
+                clip.pingPong = clipObj.HasMember("pingPong") ? clipObj["pingPong"].GetBool() : false;
 
                 clips.push_back(clip);
             }

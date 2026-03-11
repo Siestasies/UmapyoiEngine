@@ -49,9 +49,10 @@ namespace
 namespace Uma_Engine
 {
     Graphics::Graphics() : mInitialized(false), mWindow(nullptr), mVAO(0), mVBO(0),
-        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0), 
+        mShaderProgram(0), mInstanceVBO(0), mInstanceVAO(0), mInstanceShaderProgram(0),
         mViewportWidth(800), mViewportHeight(600), mSceneFramebuffer(0), mSceneTexture(0),
-        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {}
+        mSceneDepthBuffer(0), mSceneFBWidth(0), mSceneFBHeight(0), mRenderTarget(RenderTarget::Framebuffer) {
+    }
 
     Graphics::~Graphics()
     {
@@ -1109,7 +1110,7 @@ namespace Uma_Engine
 
         // Initialize FreeType
         FT_Library ft;
-        if (FT_Init_FreeType(&ft)) 
+        if (FT_Init_FreeType(&ft))
         {
             std::cerr << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
             return newFont;
@@ -1117,7 +1118,7 @@ namespace Uma_Engine
 
         // Load font face
         FT_Face face;
-        if (FT_New_Face(ft, fontPath.c_str(), 0, &face)) 
+        if (FT_New_Face(ft, fontPath.c_str(), 0, &face))
         {
             std::cerr << "ERROR::FREETYPE: Failed to load font: " << fontPath << std::endl;
             FT_Done_FreeType(ft);
@@ -1239,7 +1240,7 @@ namespace Uma_Engine
 
     float Graphics::MeasureText(const FontData& font, const std::string& text, float scale)
     {
-        if (font.VAO == 0) 
+        if (font.VAO == 0)
         {
             return 0.0f;
         }
@@ -1263,7 +1264,7 @@ namespace Uma_Engine
     void Graphics::DrawTextWorld(const FontData& font, const std::string& text,
         float x, float y, float scale, float r, float g, float b)
     {
-        if (font.VAO == 0) 
+        if (font.VAO == 0)
         {
             std::cerr << "ERROR: Invalid FontData passed to DrawTextWorld" << std::endl;
             return;
@@ -1330,56 +1331,19 @@ namespace Uma_Engine
     void Graphics::DrawSpriteScreen(unsigned int textureID, const Vec2& position,
         const Vec2& size, float rotation, const Vec2& uvOffset, const Vec2& uvSize, const Vec3& tint, float alpha, int fillDirection, float fillAmount)
     {
-        (void)uvSize;
-        (void)uvOffset;
-        if (!mInitialized || textureID == 0) return;
+        Sprite_Info info{};
+        info.tex_id = textureID;
+        info.pos = position;
+        info.scale = size;
+        info.rot = rotation;
+        info.uvOffset = uvOffset;
+        info.uvSize = uvSize;
+        info.tintColor = tint;
+        info.alpha = alpha;
+        info.fillDirection = fillDirection;
+        info.fillAmount = fillAmount;
 
-        glUseProgram(mShaderProgram);
-
-        // Set fill uniforms
-        GLint fillDirLoc = glGetUniformLocation(mShaderProgram, "fillDirection");
-        glUniform1i(fillDirLoc, fillDirection);
-
-        GLint fillAmtLoc = glGetUniformLocation(mShaderProgram, "fillAmount");
-        glUniform1f(fillAmtLoc, fillAmount);
-
-        // Set tint uniform
-        GLint tintLoc = glGetUniformLocation(mShaderProgram, "tintColor");
-        glUniform3f(tintLoc, tint.x, tint.y, tint.z);
-
-        GLint alphaLoc = glGetUniformLocation(mShaderProgram, "alpha");
-        glUniform1f(alphaLoc, alpha);
-
-        // Calculate current aspect ratio
-        //float aspect = static_cast<float>(mViewportWidth) / static_cast<float>(mViewportHeight);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-
-        if (rotation != 0.0f)
-        {
-            model = glm::translate(model, glm::vec3(size.x * 0.5f, size.y * 0.5f, 0.0f));
-            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-            model = glm::translate(model, glm::vec3(-size.x * 0.5f, -size.y * 0.5f, 0.0f));
-        }
-
-        model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
-
-        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
-
-        glm::mat4 projection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);
-        GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
-
-        glBindVertexArray(mVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        UpdateProjectionMatrix();
+        DrawSpritesScreenInstanced(textureID, { info });
     }
 
     void Graphics::DrawSpritesScreenInstanced(unsigned int textureID, std::vector<Sprite_Info> const& sprites)
@@ -1436,6 +1400,13 @@ namespace Uma_Engine
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
 
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+
+        // Fill effect uniforms - taken from first sprite (UI images are one-per-call)
+        const Sprite_Info& first = sprites[0];
+        GLint fillDirLoc = glGetUniformLocation(mInstanceShaderProgram, "fillDirection");
+        glUniform1i(fillDirLoc, first.fillDirection);
+        GLint fillAmtLoc = glGetUniformLocation(mInstanceShaderProgram, "fillAmount");
+        glUniform1f(fillAmtLoc, first.fillAmount);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textureID);
