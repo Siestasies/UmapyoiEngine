@@ -9,7 +9,7 @@
                         "name": "wind enemy",
                         "position": {
                             "x": 995.307,
-                            "y": -1665.797
+                            "y": -1665.796
                         },
                         "rotation": {
                             "x": 0.0,
@@ -34,30 +34,33 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.2,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "WindDemonDamage": {
                                 "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.3,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "WindDemonDeath": {
                                 "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.25,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -502,7 +505,7 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.639,
+                            "x": 0.638,
                             "y": 0.07
                         },
                         "parent": 0,
@@ -550,7 +553,7 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.639,
+                            "x": 0.638,
                             "y": 0.07
                         },
                         "parent": 0,
