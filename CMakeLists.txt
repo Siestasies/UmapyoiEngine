@@ -59,6 +59,36 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(stb)
 
+# Downloading the Playfab sdk
+FetchContent_Declare(
+    playfab
+    URL https://github.com/PlayFab/PlayFabCSdk/releases/download/2411.0.0/PlayFabCSdk-Win32.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+FetchContent_MakeAvailable(playfab)
+
+set(PLAYFAB_BIN_DIR "${playfab_SOURCE_DIR}/binaries/x64")
+set(PLAYFAB_INC_DIR "${playfab_SOURCE_DIR}/include")
+
+add_library(PlayFabServices SHARED IMPORTED GLOBAL)
+set_target_properties(PlayFabServices PROPERTIES
+    IMPORTED_LOCATION     "${PLAYFAB_BIN_DIR}/PlayFabServices.Win32.dll"
+    IMPORTED_IMPLIB       "${PLAYFAB_BIN_DIR}/PlayFabServices.Win32.lib"
+    INTERFACE_INCLUDE_DIRECTORIES "${playfab_SOURCE_DIR}/include"
+)
+
+add_library(PlayFabCore SHARED IMPORTED GLOBAL)
+set_target_properties(PlayFabCore PROPERTIES
+    IMPORTED_LOCATION "${PLAYFAB_BIN_DIR}/PlayFabCore.Win32.dll"
+    IMPORTED_IMPLIB   "${PLAYFAB_BIN_DIR}/PlayFabCore.Win32.lib"
+)
+
+add_library(libHttpClient SHARED IMPORTED GLOBAL)
+set_target_properties(libHttpClient PROPERTIES
+    IMPORTED_LOCATION "${PLAYFAB_BIN_DIR}/libHttpClient.Win32.dll"
+    IMPORTED_IMPLIB   "${PLAYFAB_BIN_DIR}/libHttpClient.Win32.lib"
+)
+
 # ===== BUILD LUA 5.4.6 FROM SOURCE =====
 message(STATUS "Building Lua 5.4.6 from source...")
 

@@ -40,6 +40,7 @@ All rights reserved.
 #include "Systems/SoundManager.hpp"
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/SceneManager.h"
+#include "PlayFab/Core/PlayFabManager.h"
 #include "Debugging/Debugger.hpp"
 #include "Debugging/CrashLogger.hpp"
 #include "FileSystem/DropCallback.hpp"
@@ -229,6 +230,10 @@ namespace Uma_Engine
         // Register scene manager
         mSceneManager = mSystemManager->RegisterSystem<SceneManager>();
         mSceneManager->SetSystemManager(mSystemManager.get());
+
+        //Register PlayFab
+        mPlayFabManager = mSystemManager->RegisterSystem<PlayFabManager>();
+        mPlayFabManager->SetSystemManager(mSystemManager.get());
     }
 
     void Application::SubscribeToEvents()

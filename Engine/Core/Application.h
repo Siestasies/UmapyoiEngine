@@ -27,8 +27,10 @@ namespace Uma_Engine
     class HybridInputSystem;
     class SceneManager;
     class SoundManager;
+    class PlayFabManager;
     class Graphics;
     class EngineConfig;
+    class PlayFabConfig;
 
     /**
      * \brief Base application class that manages the engine lifecycle
@@ -78,6 +80,8 @@ namespace Uma_Engine
          * \brief Gets the engine configuration
          */
         EngineConfig* GetConfig() const { return mConfig.get(); }
+
+        //PlayFabConfig* GetPlayFabConfig() const { return mPlayFabConfig.get(); }
 
         static bool& GetGamePause() { return mGamePause; }
         static bool& GetCutsceneActive() { return mCutsceneActive; }
@@ -130,6 +134,7 @@ namespace Uma_Engine
         SceneManager* GetSceneManager() const { return mSceneManager; }
         Graphics* GetGraphics() const { return mGraphics; }
         SoundManager* GetSoundManager() const { return mSoundManager; }
+        PlayFabManager* GetPlayFabManager() const { return mPlayFabManager; }
         GLFWwindow* GetGLFWWindow() const;
         bool& GamePause() { return mGamePause; }
 
@@ -156,6 +161,7 @@ namespace Uma_Engine
         std::unique_ptr<Window> mWindow;
         std::unique_ptr<SystemManager> mSystemManager;
         std::unique_ptr<EngineConfig> mConfig;
+        //std::unique_ptr<PlayFabConfig> mPlayFabConfig;
 
         // Cached pointers to frequently used systems (not owned)
         EventSystem* mEventSystem;
@@ -163,5 +169,6 @@ namespace Uma_Engine
         SoundManager* mSoundManager;
         Graphics* mGraphics;
         SceneManager* mSceneManager;
+        PlayFabManager* mPlayFabManager;
     };
 }
