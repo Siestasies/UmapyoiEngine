@@ -509,6 +509,17 @@ namespace Uma_ECS
                     // This is a child of a prefab instance, skip serializing it
                     continue;
                 }
+
+                // Also skip nested prefab roots (isRoot=true but parented inside another prefab).
+                // They are embedded in the parent prefab file and will be re-spawned from there.
+                if (HasComponent<Transform>(en))
+                {
+                    auto& tf = GetComponent<Transform>(en);
+                    if (tf.parent.has_value() && HasComponent<Prefab>(tf.parent.value()))
+                    {
+                        continue;
+                    }
+                }
             }
 
             rapidjson::Value entityObj(rapidjson::kObjectType);
@@ -1264,6 +1275,82 @@ namespace Uma_ECS
                 prefabComp.isRoot = (prefabID == 0);
                 AddComponent(worldID, prefabComp);
             }
+        }
+
+        // Fifth pass: Handle nested prefabs embedded in this prefab file.
+        // Any entity with isRoot=true pointing to a DIFFERENT prefab file is a nested
+        // prefab root — destroy the stale embedded data and reload fresh from that file.
+        struct NestedPrefabInfo
+        {
+            Entity                   embeddedEntity;
+            std::string              nestedPath;
+            std::optional<Entity>    parentEntity;
+            Uma_Math::Vec2           position;
+            Uma_Math::Vec2           rotation;
+            Uma_Math::Vec2           scale;
+            std::string              name;
+        };
+
+        std::vector<NestedPrefabInfo>          nestedPrefabs;
+        std::unordered_set<Entity>             handledEntities;
+        std::vector<Entity>                    outerHierarchy;
+        CollectHierarchy(rootEntityID, outerHierarchy);
+
+        for (Entity e : outerHierarchy)
+        {
+            if (e == rootEntityID)        continue;
+            if (handledEntities.count(e)) continue;
+            if (!HasComponent<Prefab>(e)) continue;
+
+            const auto& pf = GetComponent<Prefab>(e);
+            if (!pf.isRoot)               continue; // regular child, not a nested root
+            if (pf.prefabPath == prefabPath) continue; // same file, not nested
+
+            NestedPrefabInfo info;
+            info.embeddedEntity = e;
+            info.nestedPath     = pf.prefabPath;
+
+            const auto& tf  = GetComponent<Transform>(e);
+            info.parentEntity = tf.parent;
+            info.position     = tf.position;
+            info.rotation     = tf.rotation;
+            info.scale        = tf.scale;
+            info.name         = tf.name;
+
+            nestedPrefabs.push_back(info);
+
+            // Mark the entire sub-hierarchy so we don't double-process deep nesting
+            std::vector<Entity> sub;
+            CollectHierarchy(e, sub);
+            for (Entity ne : sub)
+                handledEntities.insert(ne);
+        }
+
+        // Destroy stale embedded entities
+        for (const auto& info : nestedPrefabs)
+            DestroyEntityAndChildren(info.embeddedEntity);
+        ProcessDeletionQueue();
+
+        // Reload each nested prefab fresh from its own file and re-attach
+        for (const auto& info : nestedPrefabs)
+        {
+            Entity nestedRoot = CreateEntity();
+            rapidjson::Value emptyOverride(rapidjson::kObjectType);
+            LoadPrefabInstance(info.nestedPath, nestedRoot, emptyOverride);
+
+            if (!HasComponent<Transform>(nestedRoot)) continue;
+
+            // Restore the transform stored in the parent prefab
+            auto& tf    = GetComponent<Transform>(nestedRoot);
+            tf.position = info.position;
+            tf.rotation = info.rotation;
+            tf.scale    = info.scale;
+            tf.name     = info.name;
+            tf.isDirty  = true;
+
+            // Re-attach to the correct parent within the outer hierarchy
+            if (info.parentEntity.has_value())
+                SetParent(nestedRoot, info.parentEntity.value());
         }
 
         return prefabToWorldID;

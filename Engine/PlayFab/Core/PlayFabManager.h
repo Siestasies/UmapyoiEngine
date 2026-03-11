@@ -35,6 +35,15 @@ Player() is usable immediately after Init() returns (player login is separate).
 
 Shutdown() closes all handles in reverse order then calls PFUninitializeAsync().
 
+=== Player Authentication ===
+
+Three login paths are provided, all async. On success the resulting
+PFEntityHandle is forwarded to PlayFabPlayerManager via
+SetPlayerEntityHandle(), after which Player().IsLoggedIn() returns true.
+
+    LoginWithCustomID()    -- guest / random account (GUID stored locally)
+    Logout()               -- close player handle, clears Player().IsLoggedIn()
+
 === Usage ===
 
     // Engine boot
@@ -42,7 +51,12 @@ Shutdown() closes all handles in reverse order then calls PFUninitializeAsync().
     pfb->SetCredentials("YOUR_TITLE_ID", "YOUR_DEV_SECRET_KEY");
     systemManager.Init();
 
-    // Game code — Admin is ready asynchronously, poll or use the callback
+    // Player login (game code)
+    pfb->LoginWithCustomID("some-guid", true,
+        []{ UMA_INFO("Logged in!"); },
+        [](HRESULT hr, const std::string& msg){ UMA_ERROR(msg); });
+
+    // Admin API — ready asynchronously, poll or use the callback
     if (pfb->Admin().IsReady())
         pfb->Admin().GetTitleData(...);
 
@@ -66,15 +80,28 @@ All rights reserved.
 #include <playfab/core/PFEntity.h>
 #include <playfab/services/PFServices.h>
 
-// ── XAsync (GDK / PlayFab Services on Win32) ──────────────────────────────────
+// ── XAsync / XTaskQueue (GDK / PlayFab Services on Win32) ─────────────────────
 #include <XAsync.h>
+#include <XTaskQueue.h>
 
 // ── Standard library ──────────────────────────────────────────────────────────
+#include <functional>
 #include <memory>
 #include <string>
 
 namespace Uma_Engine
 {
+    // =========================================================================
+    //  Callback aliases (player auth)
+    // =========================================================================
+
+    /// Called when a player login or registration completes successfully.
+    using OnPlayerLoginSuccess = std::function<void()>;
+
+    /// Called when a player login or registration fails.
+    using OnPlayerLoginFailure = std::function<void(HRESULT hr, const std::string& msg)>;
+
+
     // =========================================================================
     //  PlayFabManager   (ISystem facade)
     // =========================================================================
@@ -130,7 +157,6 @@ namespace Uma_Engine
         );
 
 
-
         // ── ISystem ───────────────────────────────────────────────────────────
 
         /*!
@@ -138,18 +164,18 @@ namespace Uma_Engine
                 kicks off title-entity authentication if a secret key was given.
         \pre    SetCredentials() has been called with a non-empty titleId.
         */
-        void Init() override;
+        void Init()             override;
 
         /*!
         \brief  Required by ISystem contract. Unused — SDK manages its own threads.
         \param  dt  Delta time (not used).
         */
-        void Update(float dt) override;
+        void Update(float dt)   override;
 
         /*!
         \brief  Closes all PlayFab handles and uninitialises the SDK.
         */
-        void Shutdown() override;
+        void Shutdown()         override;
 
 
         // ── State queries ─────────────────────────────────────────────────────
@@ -158,13 +184,45 @@ namespace Uma_Engine
         \brief  Returns true after Init() has successfully initialised the SDK
                 and created the service config handle.
         */
-        [[nodiscard]] bool IsReady() const;
+        [[nodiscard]] bool IsReady()       const;
 
         /*!
         \brief  Returns true if a Developer Secret Key was supplied.
                 Does NOT mean async auth has completed — use Admin().IsReady().
         */
         [[nodiscard]] bool HasAdminAccess() const;
+
+
+        // ── Player Authentication ─────────────────────────────────────────────
+
+        /*!
+        \brief  Logs in as a player using a custom ID string.
+
+        Suitable for guest / anonymous accounts. Pass a locally stored GUID
+        as the customId so the same account is recovered on subsequent launches.
+        Set createAccount to true to auto-create an account on first use.
+
+        On success the resulting PFEntityHandle is forwarded to
+        PlayFabPlayerManager and Player().IsLoggedIn() becomes true.
+
+        \param  customId       Arbitrary unique string identifying this player.
+        \param  createAccount  If true, creates the account when it does not exist.
+        \param  onSuccess      Optional — called when login succeeds.
+        \param  onFailure      Optional — receives HRESULT and message on failure.
+        \pre    IsReady() == true
+        */
+        void LoginWithCustomID(
+            const std::string& customId,
+            bool                  createAccount = true,
+            OnPlayerLoginSuccess  onSuccess = nullptr,
+            OnPlayerLoginFailure  onFailure = nullptr
+        );
+
+        /*!
+        \brief  Closes the current player entity handle and clears the logged-in
+                state in PlayFabPlayerManager. Safe to call if not logged in.
+        */
+        void Logout();
 
 
         // ── Sub-manager accessors ─────────────────────────────────────────────
@@ -175,29 +233,37 @@ namespace Uma_Engine
         \pre    IsReady() == true
         */
         PlayFabAdminManager& Admin();
+        const PlayFabAdminManager& Admin()  const;
 
         /*!
         \brief  Returns a reference to the Player sub-manager.
+        \note   Check Player().IsLoggedIn() before making any Player API calls.
         \pre    IsReady() == true
         */
-        //PlayFabPlayerManager& Player();
-
-        const PlayFabAdminManager& Admin()  const;
-        //const PlayFabPlayerManager& Player() const;
+        PlayFabPlayerManager& Player();
+        const PlayFabPlayerManager& Player() const;
 
 
     private:
-        // ── Async context struct ──────────────────────────────────────────────
-        // Used for the one async operation PlayFabManager itself owns:
-        // PFAuthenticationGetEntityWithSecretKeyAsync.
-        // XAsyncBlock is first so the static callback can cast back safely.
+        // ── Async context structs ─────────────────────────────────────────────
+        // XAsyncBlock is always the first member so the static callback can
+        // safely cast XAsyncBlock* back to the full context struct.
 
+        /// Context for PFAuthenticationGetEntityWithSecretKeyAsync (admin auth).
         struct TitleAuthContext
         {
-            XAsyncBlock     async{};        // must be first
-            PlayFabManager* manager;        // back-pointer to set handle + call callbacks
+            XAsyncBlock     async{};    ///< Must be first.
+            PlayFabManager* manager;    ///< Back-pointer.
         };
 
+        /// Context for PFAuthenticationLoginWithCustomIDAsync.
+        struct LoginWithCustomIDContext
+        {
+            XAsyncBlock          async{};       ///< Must be first.
+            PlayFabManager* manager;       ///< Back-pointer.
+            OnPlayerLoginSuccess onSuccess;
+            OnPlayerLoginFailure onFailure;
+        };
 
         // ── Internal helpers ──────────────────────────────────────────────────
 
@@ -209,6 +275,21 @@ namespace Uma_Engine
         void AuthenticateAsTitle();
 
 
+        // ── Static async callbacks ────────────────────────────────────────────
+
+        /*!
+        \brief  SDK completion callback for GetEntityWithSecretKey (admin).
+                Retrieves the PFEntityHandle and passes it to PlayFabAdminManager.
+        */
+        static void CALLBACK OnGetEntityWithSecretKeyComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  SDK completion callback for LoginWithCustomID.
+                Retrieves the PFEntityHandle and passes it to PlayFabPlayerManager.
+        */
+        static void CALLBACK OnLoginWithCustomIDComplete(XAsyncBlock* async);
+
+
         // ── Private helpers ───────────────────────────────────────────────────
 
         /*!
@@ -216,17 +297,10 @@ namespace Uma_Engine
                 formatted message. Safe to call with a null onFailure.
         */
         static void DispatchError(
-            HRESULT               hr,
+            HRESULT                      hr,
             const std::string& context,
             const OnAdminFailure& onFailure
         );
-
-        /*!
-        \brief  SDK completion callback for GetEntityWithSecretKey.
-                Retrieves the PFEntityHandle and hands it to PlayFabAdminManager.
-        */
-        static void CALLBACK OnGetEntityWithSecretKeyComplete(XAsyncBlock* async);
-
 
         // ── Credentials ───────────────────────────────────────────────────────
         std::string    m_titleId;
@@ -238,15 +312,20 @@ namespace Uma_Engine
 
         // ── SDK handles ───────────────────────────────────────────────────────
 
-        /// Created in Init(). Required for PFServiceConfig-based API calls
-        /// (client/player login etc.). Closed in Shutdown().
+        /// Created in Init(). Required for all login calls (holds TitleId +
+        /// endpoint). Closed in Shutdown().
         PFServiceConfigHandle m_serviceConfig{ nullptr };
 
         /// Obtained after GetEntityWithSecretKeyAsync completes.
-        /// Passed to PlayFabAdminManager::SetTitleEntityHandle() and then
-        /// kept here so Shutdown() can close it via PFEntityCloseHandle().
+        /// Passed to PlayFabAdminManager::SetTitleEntityHandle() and kept here
+        /// so Shutdown() can close it via PFEntityCloseHandle().
         PFEntityHandle m_titleEntityHandle{ nullptr };
 
+
+        // ── Task queue ────────────────────────────────────────────────────────
+        /// Explicit task queue for all PlayFab async operations.
+        /// Created in Init(), dispatched in Update(), drained in Shutdown().
+        XTaskQueueHandle m_taskQueue{ nullptr };
 
         // ── State ─────────────────────────────────────────────────────────────
         bool m_ready{ false };
