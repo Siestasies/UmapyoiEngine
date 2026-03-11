@@ -21,19 +21,19 @@ Implements ISystem so it participates in the engine lifecycle
 === SDK lifecycle (PlayFab Services C SDK) ===
 
 Init() does three things in order:
-  1. PFInitialize()               -- boots the SDK and its task queue
-  2. PFServiceConfigCreateHandle() -- creates the service config from TitleId
+  1. PFInitialize()                             -- boots the SDK
+  2. PFServiceConfigCreateHandle()              -- creates service config from TitleId
   3. PFAuthenticationGetEntityWithSecretKeyAsync()
-                                  -- authenticates as the title entity using
-                                     the Developer Secret Key, async.
-                                     On completion, the resulting PFEntityHandle
-                                     is handed to PlayFabAdminManager via
-                                     SetTitleEntityHandle().
+                                               -- authenticates as the title entity
+                                                  using the Developer Secret Key, async.
+                                                  On completion the PFEntityHandle is
+                                                  passed to PlayFabAdminManager via
+                                                  SetTitleEntityHandle().
 
 Admin().IsReady() becomes true only after step 3 completes.
-Player() is ready immediately after Init() returns (player login is separate).
+Player() is usable immediately after Init() returns (player login is separate).
 
-Shutdown() closes handles in reverse order and calls PFUninitializeAsync().
+Shutdown() closes all handles in reverse order then calls PFUninitializeAsync().
 
 === Usage ===
 
@@ -42,7 +42,7 @@ Shutdown() closes handles in reverse order and calls PFUninitializeAsync().
     pfb->SetCredentials("YOUR_TITLE_ID", "YOUR_DEV_SECRET_KEY");
     systemManager.Init();
 
-    // Later in game code -- check Admin().IsReady() before calling Admin APIs
+    // Game code — Admin is ready asynchronously, poll or use the callback
     if (pfb->Admin().IsReady())
         pfb->Admin().GetTitleData(...);
 
@@ -56,14 +56,18 @@ All rights reserved.
 #include "Core/SystemType.h"
 
 // ── Sub-managers ──────────────────────────────────────────────────────────────
-#include "PlayFabAdminManager.h"
-//#include "PlayFabPlayerManager.h"
+#include "Admin/PlayFabAdminManager.h"
+#include "Player/PlayFabPlayerManager.h"
 
 // ── PlayFab Services SDK ──────────────────────────────────────────────────────
 #include <playfab/core/PFCore.h>
 #include <playfab/core/PFServiceConfig.h>
 #include <playfab/core/PFAuthentication.h>
 #include <playfab/core/PFEntity.h>
+#include <playfab/services/PFServices.h>
+
+// ── XAsync (GDK / PlayFab Services on Win32) ──────────────────────────────────
+#include <XAsync.h>
 
 // ── Standard library ──────────────────────────────────────────────────────────
 #include <memory>
@@ -88,8 +92,8 @@ namespace Uma_Engine
         systemManager.Init();
     \endcode
 
-    Admin API becomes available asynchronously after Init() — poll
-    Admin().IsReady() or supply an OnAdminReady callback via SetCredentials.
+    Admin API becomes available asynchronously after Init(). Poll
+    Admin().IsReady() or supply an onAdminReady callback to SetCredentials().
     */
     class PlayFabManager : public ISystem
     {
@@ -110,15 +114,13 @@ namespace Uma_Engine
         \brief  Supplies the PlayFab Title ID and Developer Secret Key.
 
         Must be called before systemManager.Init(). The secret key is only
-        required for Admin API access; leave it empty in release builds.
+        required for Admin API access; omit it in release builds.
 
-        Optionally supply onAdminReady to be notified when the async
-        secret-key authentication completes and Admin().IsReady() becomes true.
-
-        \param  titleId         PlayFab Title ID (e.g. "1A2B3C").
-        \param  devSecretKey    Developer Secret Key. Empty = no Admin access.
-        \param  onAdminReady    Optional callback fired when admin auth succeeds.
-        \param  onAdminFailed   Optional callback fired if admin auth fails.
+        \param  titleId       PlayFab Title ID (e.g. "1A2B3C").
+        \param  devSecretKey  Developer Secret Key. Empty = no Admin access.
+        \param  onAdminReady  Optional — fired when admin auth succeeds and
+                              Admin().IsReady() becomes true.
+        \param  onAdminFailed Optional — fired if admin auth fails.
         */
         void SetCredentials(
             const std::string& titleId,
@@ -128,19 +130,19 @@ namespace Uma_Engine
         );
 
 
+
         // ── ISystem ───────────────────────────────────────────────────────────
 
         /*!
         \brief  Initialises the PlayFab SDK, creates the service config, and
-                kicks off title-entity authentication (if a secret key was given).
-
+                kicks off title-entity authentication if a secret key was given.
         \pre    SetCredentials() has been called with a non-empty titleId.
         */
         void Init() override;
 
         /*!
-        \brief  Required by ISystem contract; unused (SDK uses its own threads).
-        \param  dt  Delta time — not used.
+        \brief  Required by ISystem contract. Unused — SDK manages its own threads.
+        \param  dt  Delta time (not used).
         */
         void Update(float dt) override;
 
@@ -159,9 +161,8 @@ namespace Uma_Engine
         [[nodiscard]] bool IsReady() const;
 
         /*!
-        \brief  Returns true if a Developer Secret Key was provided.
-                Does NOT imply the async auth has completed — use
-                Admin().IsReady() for that.
+        \brief  Returns true if a Developer Secret Key was supplied.
+                Does NOT mean async auth has completed — use Admin().IsReady().
         */
         [[nodiscard]] bool HasAdminAccess() const;
 
@@ -170,17 +171,13 @@ namespace Uma_Engine
 
         /*!
         \brief  Returns a reference to the Admin sub-manager.
-
-        \note   Admin().IsReady() must be true before making Admin API calls.
-                The handle is set asynchronously after Init().
-
+        \note   Check Admin().IsReady() before making any Admin API calls.
         \pre    IsReady() == true
         */
         PlayFabAdminManager& Admin();
 
         /*!
         \brief  Returns a reference to the Player sub-manager.
-
         \pre    IsReady() == true
         */
         //PlayFabPlayerManager& Player();
@@ -190,15 +187,44 @@ namespace Uma_Engine
 
 
     private:
+        // ── Async context struct ──────────────────────────────────────────────
+        // Used for the one async operation PlayFabManager itself owns:
+        // PFAuthenticationGetEntityWithSecretKeyAsync.
+        // XAsyncBlock is first so the static callback can cast back safely.
+
+        struct TitleAuthContext
+        {
+            XAsyncBlock     async{};        // must be first
+            PlayFabManager* manager;        // back-pointer to set handle + call callbacks
+        };
+
+
         // ── Internal helpers ──────────────────────────────────────────────────
 
         /*!
-        \brief  Kicks off PFAuthenticationGetEntityWithSecretKeyAsync.
+        \brief  Allocates a TitleAuthContext and calls
+                PFAuthenticationGetEntityWithSecretKeyAsync.
                 Called from Init() when a secret key is present.
         */
         void AuthenticateAsTitle();
 
-        /// XAsyncBlock completion callback for PFAuthenticationGetEntityWithSecretKeyAsync.
+
+        // ── Private helpers ───────────────────────────────────────────────────
+
+        /*!
+        \brief  Calls onFailure (if set) with the given HRESULT and a
+                formatted message. Safe to call with a null onFailure.
+        */
+        static void DispatchError(
+            HRESULT               hr,
+            const std::string& context,
+            const OnManagerFailure& onFailure
+        );
+
+        /*!
+        \brief  SDK completion callback for GetEntityWithSecretKey.
+                Retrieves the PFEntityHandle and hands it to PlayFabAdminManager.
+        */
         static void CALLBACK OnGetEntityWithSecretKeyComplete(XAsyncBlock* async);
 
 
@@ -206,20 +232,19 @@ namespace Uma_Engine
         std::string    m_titleId;
         std::string    m_devSecretKey;      ///< Empty in release builds.
 
-        /// Optional callbacks supplied via SetCredentials().
-        OnAdminSuccess m_onAdminReady;
-        OnAdminFailure m_onAdminFailed;
+        OnAdminSuccess m_onAdminReady;      ///< Fired when admin auth succeeds.
+        OnAdminFailure m_onAdminFailed;     ///< Fired when admin auth fails.
 
 
         // ── SDK handles ───────────────────────────────────────────────────────
 
-        /// Created in Init() via PFServiceConfigCreateHandle.
-        /// Used for all API calls and for player logins.
+        /// Created in Init(). Required for PFServiceConfig-based API calls
+        /// (client/player login etc.). Closed in Shutdown().
         PFServiceConfigHandle m_serviceConfig{ nullptr };
 
-        /// Obtained after PFAuthenticationGetEntityWithSecretKeyAsync completes.
-        /// Passed to PlayFabAdminManager::SetTitleEntityHandle().
-        /// Closed in Shutdown() via PFEntityCloseHandle.
+        /// Obtained after GetEntityWithSecretKeyAsync completes.
+        /// Passed to PlayFabAdminManager::SetTitleEntityHandle() and then
+        /// kept here so Shutdown() can close it via PFEntityCloseHandle().
         PFEntityHandle m_titleEntityHandle{ nullptr };
 
 
@@ -229,7 +254,7 @@ namespace Uma_Engine
 
         // ── Sub-managers ──────────────────────────────────────────────────────
         std::unique_ptr<PlayFabAdminManager>  m_adminManager;
-        //std::unique_ptr<PlayFabPlayerManager> m_playerManager;
+        std::unique_ptr<PlayFabPlayerManager> m_playerManager;
     };
 
 } // namespace Uma_Engine

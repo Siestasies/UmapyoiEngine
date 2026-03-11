@@ -35,6 +35,7 @@ All rights reserved.
 #include "Editor/Core/EditorSystem.h"
 #include "Scripts/ImguiManager.h"
 #include "../Editor/Systems/TilemapEditorManager.h"
+#include "PlayFab/Core/PlayFabManager.h"
 
 // imgui
 #include "imgui.h"
@@ -46,7 +47,10 @@ All rights reserved.
 #include "Events/ApplicationEvents.h"
 
 // playfab test WIP
-#include "PlayFab/Test Scripts/PlayFabRestTest.cpp"
+//#include "PlayFab/Test Scripts/PlayFabRestTest.cpp"
+
+#include "Core/EngineConfigSerializer.h"
+#include "PlayFab/Core/PlayFabConfig.h"
 
 namespace Uma_Engine
 {
@@ -220,8 +224,8 @@ namespace Uma_Engine
         // Load the default scene
         sceneManager->LoadScene("tutorial.scn");
 
-        // do a playfab rest test
-        Uma_Engine::TestSetTitleData();
+        // load and configure playfab
+        PlayFabConfiguration();
     }
 
     bool EditorApplication::HandleInterruptions(float deltaTime)
@@ -275,5 +279,49 @@ namespace Uma_Engine
     {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void EditorApplication::PlayFabConfiguration()
+    {
+        // this function basically check if there is any playfab configuration file 
+        // if user prev setup before it will auto establish connection
+        // if there is no playfab config file it will skip this operation
+
+        PlayFabConfig* config = new PlayFabConfig{};  // deleted after SetCredentials below
+        EngineConfigSerializer configSerializer;
+        configSerializer.Register(config);
+        configSerializer.load(Uma_FilePath::CONFIG_ROOT + "playfab_dev.json");
+
+        if (config->titleId.empty()) return;
+
+        PlayFabManager* playfabManager = GetPlayFabManager();
+        playfabManager->SetCredentials(
+            config->titleId,
+            config->secretKey,
+            [playfabManager]()
+            {
+                std::vector<std::string> keys;
+
+                keys.emplace_back("game version");
+
+                playfabManager->Admin().GetTitleData(
+                    keys,
+                    [keys](std::unordered_map<std::string, std::string> const& data)
+                    {
+                        std::string key = keys[0];
+                        Debugger::Log(WarningLevel::eInfo, "[Playfab GetTitleData] data is : " + data.at(key));
+                    },
+                    [](HRESULT hr, const std::string& message)
+                    {
+                        Debugger::Log(WarningLevel::eInfo, "[Playfab GetTitleData] failed");
+                    }
+                );
+            },
+            nullptr
+        );
+
+        playfabManager->Init();
+
+        delete config;
     }
 }
