@@ -74,7 +74,7 @@
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/cutscene.prefab",
+                    "prefabPath": "Assets/Prefabs/intro.prefab",
                     "isRoot": true
                 }
             }
