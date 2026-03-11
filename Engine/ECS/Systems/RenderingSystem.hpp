@@ -26,6 +26,7 @@ All rights reserved.
 
 #include "../Systems/Graphics.hpp"
 #include "../Systems/ResourcesManager.hpp"
+#include "../Components/SpriteMaterial.h"
 
 
 namespace Uma_ECS
@@ -39,6 +40,11 @@ namespace Uma_ECS
         int hierarchyOrder;
         unsigned int texId;
         Entity entityId;
+
+        // Material override (optional)
+        unsigned int shaderId{ 0 };
+        const std::unordered_map<std::string, Uma_ECS::MaterialValue>* properties = nullptr;
+        const std::vector<Uma_Engine::UniformInfo>* uniforms = nullptr;
     };
 
     struct tilesetLayerInfo

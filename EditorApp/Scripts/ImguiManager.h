@@ -53,6 +53,7 @@ All rights reserved.
 #include "UI/Components/Slider.h"
 #include "UI/Components/Checkbox.h"
 #include "UI/Components/Effects.h"
+#include "UI/Components/Dialogue.h"
 
 #include "Systems/ResourcesManager.hpp"
 

@@ -80,6 +80,7 @@ namespace Uma_Engine
         EngineConfig* GetConfig() const { return mConfig.get(); }
 
         static bool& GetGamePause() { return mGamePause; }
+        static bool& GetCutsceneActive() { return mCutsceneActive; }
 
         static float GetFps() { return mFps; }
 
@@ -147,6 +148,7 @@ namespace Uma_Engine
         bool mInitialized;
         bool mIsEditor;
         inline static bool mGamePause = false;
+        inline static bool mCutsceneActive = false;
         inline static float mFps = 0;
 
     protected:

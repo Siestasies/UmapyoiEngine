@@ -70,18 +70,23 @@ namespace Uma_ECS
          */
         void GetUVs(Vec2& uvOffset, Vec2& uvSize, Vec2 cell) const
         {
-            if (!IsLoaded()) 
+            if (!IsLoaded())
             {
                 return;
             }
 
             // Calculate size of one cell in UV space
-            uvSize.x = 1.0f / columns;
-            uvSize.y = 1.0f / rows;
+            float cellW = 1.0f / columns;
+            float cellH = 1.0f / rows;
 
-            // Calculate offset for the specific cell
-            uvOffset.x = cell.x * uvSize.x;
-            uvOffset.y = cell.y * uvSize.y;
+            // Half-texel inset to prevent bleeding from adjacent tiles
+            float insetX = 0.5f / texture->tex_size.x;
+            float insetY = 0.5f / texture->tex_size.y;
+
+            uvOffset.x = cell.x * cellW + insetX;
+            uvOffset.y = cell.y * cellH + insetY;
+            uvSize.x = cellW - 2.0f * insetX;
+            uvSize.y = cellH - 2.0f * insetY;
         }
 
         /**

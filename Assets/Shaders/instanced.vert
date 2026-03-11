@@ -6,6 +6,7 @@ layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
 
 out vec2 TexCoords;
 out vec4 Tint;
+flat out vec4 CellUV;
 
 uniform mat4 projection;
 
@@ -17,6 +18,9 @@ void main()
     
     // Pass tint to fragment shader
     Tint = instanceTint;
+
+    // Pass cell UV bounds for effect shaders
+    CellUV = instanceUV;
     
     gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
 }
