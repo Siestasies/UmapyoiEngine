@@ -78,6 +78,36 @@
                                 "colliderMask": 2,
                                 "isActive": true,
                                 "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -41.2,
+                                    "y": 28.899
+                                },
+                                "size": {
+                                    "x": 7.4,
+                                    "y": 36.298
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -57.798,
+                                    "y": 27.399
+                                },
+                                "size": {
+                                    "x": 9.5,
+                                    "y": 41.9
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
                             }
                         ]
                     },
@@ -143,6 +173,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "moveToNext",
+                                        "type": 3,
+                                        "value": "Move to the next room",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             }
@@ -177,8 +215,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -240,10 +278,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.585,
-                            "y": 0.665,
-                            "width": 0.947,
-                            "height": 0.119
+                            "x": 0.562,
+                            "y": 0.695,
+                            "width": 0.908,
+                            "height": 0.125
                         }
                     },
                     "class Uma_UI::Image": {
@@ -309,10 +347,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.585,
-                            "y": 0.665,
-                            "width": 0.941,
-                            "height": 0.108
+                            "x": 0.562,
+                            "y": 0.695,
+                            "width": 0.903,
+                            "height": 0.113
                         }
                     },
                     "class Uma_UI::Image": {
@@ -320,8 +358,8 @@
                         "sortingOrder": 0,
                         "color": {
                             "r": 0.344,
-                            "g": 0.019,
-                            "b": 0.019,
+                            "g": 0.017,
+                            "b": 0.017,
                             "a": 1.0
                         },
                         "visible": true,
@@ -378,10 +416,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.608,
-                            "y": 0.681,
-                            "width": 0.051,
-                            "height": 0.2
+                            "x": 0.583,
+                            "y": 0.711,
+                            "width": 0.049,
+                            "height": 0.209
                         }
                     },
                     "class Uma_UI::Text": {
@@ -448,10 +486,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.612,
-                            "y": 0.681,
-                            "width": 0.051,
-                            "height": 0.2
+                            "x": 0.587,
+                            "y": 0.711,
+                            "width": 0.049,
+                            "height": 0.209
                         }
                     },
                     "class Uma_UI::Text": {
@@ -518,10 +556,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.181,
-                            "y": 0.667,
-                            "width": 0.051,
-                            "height": 0.093
+                            "x": 0.173,
+                            "y": 0.697,
+                            "width": 0.049,
+                            "height": 0.097
                         }
                     },
                     "class Uma_UI::Image": {
@@ -675,8 +713,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -752,8 +790,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -829,8 +867,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -971,8 +1009,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1048,8 +1086,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1125,8 +1163,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1267,8 +1305,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1344,8 +1382,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1421,8 +1459,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1434,7 +1472,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Blocker Collider_dup",
                         "position": {
-                            "x": -59.098,
+                            "x": -59.097,
                             "y": 0.0
                         },
                         "rotation": {
@@ -1563,8 +1601,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1640,8 +1678,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }
@@ -1717,8 +1755,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.102,
-                            "height": 0.187
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     }
                 }

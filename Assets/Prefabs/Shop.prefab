@@ -67,8 +67,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.103,
-                            "height": 0.185
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -132,8 +132,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 1.991,
-                            "height": 2.008
+                            "width": 1.896,
+                            "height": 2.115
                         }
                     },
                     "class Uma_UI::Image": {
@@ -200,9 +200,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.874,
-                            "width": 0.103,
-                            "height": 0.185
+                            "y": 0.92,
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Text": {
@@ -284,10 +284,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.617,
-                            "y": -0.111,
-                            "width": 0.653,
-                            "height": 1.859
+                            "x": -0.587,
+                            "y": -0.117,
+                            "width": 0.622,
+                            "height": 1.958
                         }
                     },
                     "class Uma_UI::Image": {
@@ -381,10 +381,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.617,
-                            "y": -0.111,
-                            "width": 0.472,
-                            "height": 1.346
+                            "x": -0.587,
+                            "y": -0.117,
+                            "width": 0.45,
+                            "height": 1.417
                         }
                     },
                     "class Uma_UI::Image": {
@@ -450,10 +450,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.617,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "x": -0.587,
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -519,10 +519,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.617,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "x": -0.587,
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -588,17 +588,17 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": -0.617,
-                            "y": -0.26,
-                            "width": 0.103,
-                            "height": 0.185
+                            "x": -0.587,
+                            "y": -0.274,
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "INCREASE MAX HP BY XX",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 1.75,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.762,
                             "g": 0.762,
@@ -674,9 +674,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.111,
-                            "width": 0.653,
-                            "height": 1.859
+                            "y": -0.117,
+                            "width": 0.622,
+                            "height": 1.958
                         }
                     },
                     "class Uma_UI::Image": {
@@ -771,16 +771,16 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.111,
-                            "width": 0.471,
-                            "height": 1.35
+                            "y": -0.117,
+                            "width": 0.449,
+                            "height": 1.421
                         }
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 1,
                         "color": {
-                            "r": 0.174,
+                            "r": 0.172,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
@@ -840,9 +840,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -909,9 +909,9 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -978,16 +978,16 @@
                         "isDirty": false,
                         "computedRect": {
                             "x": 0.0,
-                            "y": -0.26,
-                            "width": 0.103,
-                            "height": 0.185
+                            "y": -0.274,
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "increase max hp by xx",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 1.75,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.759,
                             "g": 0.759,
@@ -1062,10 +1062,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": -0.111,
-                            "width": 0.653,
-                            "height": 1.859
+                            "x": 0.577,
+                            "y": -0.117,
+                            "width": 0.622,
+                            "height": 1.958
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1159,17 +1159,17 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": -0.111,
-                            "width": 0.472,
-                            "height": 1.357
+                            "x": 0.577,
+                            "y": -0.117,
+                            "width": 0.45,
+                            "height": 1.429
                         }
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 1,
                         "color": {
-                            "r": 0.174,
+                            "r": 0.172,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
@@ -1228,10 +1228,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "x": 0.577,
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1297,10 +1297,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": 0.139,
-                            "width": 0.311,
-                            "height": 0.557
+                            "x": 0.577,
+                            "y": 0.146,
+                            "width": 0.296,
+                            "height": 0.587
                         }
                     },
                     "class Uma_UI::Image": {
@@ -1366,17 +1366,17 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.606,
-                            "y": -0.26,
-                            "width": 0.103,
-                            "height": 0.185
+                            "x": 0.577,
+                            "y": -0.274,
+                            "width": 0.098,
+                            "height": 0.195
                         }
                     },
                     "class Uma_UI::Text": {
                         "text": "increase max hp by xx",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 1.799,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.759,
                             "g": 0.759,

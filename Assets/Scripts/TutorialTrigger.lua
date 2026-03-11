@@ -13,7 +13,8 @@ ExposedVars = {
     missionText4 = "",
     missionText5 = "",
     missionText6 = "",
-    missionText7 = ""
+    missionText7 = "",
+    moveToNext = "",
 }
 
 function Start()
@@ -73,40 +74,53 @@ function Update(dt)
 
     -- if player use each elemental skills at least 3x
     if PlayerStatTrackState.GetPassedTrigger() == 1 then
-        if PlayerStatTrackState.GetFireAttackCount() >= 3 then
-            SetMissionText(missionText2)
-        end
-        if PlayerStatTrackState.GetWaterAttackCount() >= 3 then
-            SetMissionText(missionText3)
-        end
-        if PlayerStatTrackState.GetWindAttackCount() >= 3 then
-            SetMissionText("Move to next room")
+        local fire = PlayerStatTrackState.GetFireAttackCount()
+        local water = PlayerStatTrackState.GetWaterAttackCount()
+        local wind = PlayerStatTrackState.GetWindAttackCount()
+
+        if wind >= 3 and water >= 3 and fire >= 3 then
+            SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[1], false)
+        elseif water >= 3 and fire >= 3 then
+            SetMissionText(missionText3)  -- wind
+        elseif fire >= 3 then
+            SetMissionText(missionText2)  -- water
         end
-    
-    -- if player use each combo skills at least 3x
+        -- missionText use fire set in OnTriggerEnter
+
     elseif PlayerStatTrackState.GetPassedTrigger() == 2 then
-        if PlayerStatTrackState.GetPyronadoAttackCount() >= 3 then
-            SetMissionText(missionText5)
-        end
-        if PlayerStatTrackState.GetWhirlpoolAttackCount() >= 3 then
-            SetMissionText(missionText6)
-        end
-        if PlayerStatTrackState.GetSteamburstAttackCount() >= 3 then
-            SetMissionText("Move to next room")
+        local pyro = PlayerStatTrackState.GetPyronadoAttackCount()
+        local whirl = PlayerStatTrackState.GetWhirlpoolAttackCount()
+        local steam = PlayerStatTrackState.GetSteamburstAttackCount()
+
+        if steam >= 3 and whirl >= 3 and pyro >= 3 then
+            SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[2], false)
+        elseif whirl >= 3 and pyro >= 3 then
+            SetMissionText(missionText6)  -- steamburst
+        elseif pyro >= 3 then
+            SetMissionText(missionText5)  -- whirlpool
         end
 
+    -- when only specifically <<4>> enemies left
+    -- assuming player killed 1 at the third tutorial
     elseif PlayerStatTrackState.GetPassedTrigger() == 3 then
-        if PlayerStatTrackState.GetWaterAttackCount() == 3 then -- SHOULD BE WHEN ENEMY DIES
+        local enemyCount = CountEntitiesWithComponent("Enemy")
+        if enemyCount == 4 then
             SetActiveEntity(blockerCollider[3], false)
+            SetMissionText(moveToNext)
         end
 
+    -- when only specifically <<2>> enemies left
+    -- assuming player killed last 2 at the fourth tutorial
     elseif PlayerStatTrackState.GetPassedTrigger() == 4 then
-        if PlayerStatTrackState.GetComboAttackCount() == 3 then -- SHOULD BE WHEN ENEMIESSS DIE
+        local enemyCount = CountEntitiesWithComponent("Enemy")
+        if enemyCount == 2 then
             SetActiveEntity(blockerCollider[4], false)
+            SetMissionText(moveToNext)
         end
     end
+
 end
 
 function RoomTriggerInit()

@@ -6,7 +6,10 @@ local cardText = {}
 local cardIcon = {}
 
 function Start()
+    RNG.seed(math.random(1,1000000))
     rng = RNG.new()
+
+    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     SHOP INIT")
     -- init references for icon and text, for editing later
     children = GetChildrenList(EntityID)
 
@@ -44,13 +47,38 @@ function Start()
         if cardStatRNG == 1 then
             --cardIcon[i].texturePath = ""
             cardText[i].text = "Increase Max HP by " .. statMulti
+
         elseif cardStatRNG == 2 then
             cardText[i].text = "Increase Move Speed by " .. statMulti
+
         elseif cardStatRNG == 3 then
+            if (statMulti == 15) then
+                statMulti = 7
+            elseif (statMulti == 20) then
+                statMulti = 10
+            else
+                statMulti = 12
+            end
             cardText[i].text = "Increase Crit Dmg by " .. statMulti
+
         elseif cardStatRNG == 4 then
-            cardText[i].text = "Decrease Dash CD by " .. statMulti
+            if (statMulti == 15) then
+                statMulti = 0.2
+            elseif (statMulti == 20) then
+                statMulti = 0.25
+            else
+                statMulti = 0.33
+            end
+            cardText[i].text = "Decrease Dash CD by " .. statMulti 
+
         elseif cardStatRNG == 5 then
+            if (statMulti == 15) then
+                statMulti = 5
+            elseif (statMulti == 20) then
+                statMulti = 7
+            else
+                statMulti = 10
+            end
             cardText[i].text = "Decrease Mana cost by " .. statMulti
         end
 

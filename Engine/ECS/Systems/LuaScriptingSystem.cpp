@@ -776,6 +776,7 @@ namespace Uma_ECS
             "mAttackSpeed", &Player::mAttackSpeed,
             "mAttackRange", &Player::mAttackRange,
             "mDefense", &Player::mDefense,
+            "mCritDamage", &Player::mCritDamage,
 
             "mMana", &Player::mMana,
             "mMaxMana", &Player::mMaxMana,

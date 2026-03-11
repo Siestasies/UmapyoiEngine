@@ -1,12 +1,24 @@
 local RNG = {
-    currentSeed = 1,
+    currentSeed = nil,
 }
 RNG.__index = RNG
 
+-- seed the RNG system
+function RNG.seed(seed)
+    RNG.currentSeed = seed or 1
+end
+
 function RNG.new()
     local self = setmetatable({}, RNG)
-    self.state = RNG.currentSeed or os.time()
-    RNG.currentSeed = RNG.currentSeed + 1 
+
+    if RNG.currentSeed == nil then
+        RNG.seed(1)
+    end
+
+    self.seed = RNG.currentSeed
+    self.state = self.seed
+
+    RNG.currentSeed = RNG.currentSeed + 1
     return self
 end
 

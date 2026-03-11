@@ -161,6 +161,7 @@ namespace Uma_ECS
         float   mAttackSpeed = 1.f;
         float   mAttackRange = 20.f;
         int     mDefense = 5;
+        float   mCritDamage = 1.0f;
 
         // ===== MANA SYSTEM =====
         float   mMana = 100.f;
@@ -215,6 +216,7 @@ namespace Uma_ECS
             value.AddMember("mAttackSpeed", mAttackSpeed, allocator);
             value.AddMember("mAttackRange", mAttackRange, allocator);
             value.AddMember("mDefense", mDefense, allocator);
+            value.AddMember("mCritDamage", mCritDamage, allocator);
 
             // Mana
             value.AddMember("mMana", mMana, allocator);
@@ -305,6 +307,8 @@ namespace Uma_ECS
                 mAttackRange = value["mAttackRange"].GetFloat();
             if (value.HasMember("mDefense"))
                 mDefense = value["mDefense"].GetInt();
+            if (value.HasMember("mCritDamage"))
+                mCritDamage = value["mCritDamage"].GetFloat();
 
             // Mana
             if (value.HasMember("mMana"))

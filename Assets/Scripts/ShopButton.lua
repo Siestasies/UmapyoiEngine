@@ -11,7 +11,7 @@ function Start()
     local cardTextComp = GetTextFrom(children[4])
     local cardText = cardTextComp.text
 
-    local pattern_stat = "(.*) by (%d+)"
+    local pattern_stat = "(.*) by (%d+%.?%d*)"
     stat, numberStr = string.match(cardText, pattern_stat)
     number = tonumber(numberStr)
 
@@ -20,7 +20,9 @@ function Start()
 end
 
 function GetFireSlashAttackStat(player)
-    if not player then return nil end
+    if not player then
+        return nil
+    end
     
     local attackStats = player.attackStats
     if attackStats then
@@ -52,7 +54,7 @@ function GetWaterSlashAttackStat(player)
     return nil
 end
 
-function GetWindDashAttackStat(player)
+function GetWindSlashAttackStat(player)
     if not player then
         return nil
     end
@@ -72,12 +74,13 @@ end
 function OnClick()
     player = GetPlayerFrom(playerID)
 
+    -- BALANCED IN Shop.lua
     if stat == "Increase Max HP" then
         player.mMaxHealth = player.mMaxHealth + number
     elseif stat == "Increase Move Speed" then
         player.mSpeed = player.mSpeed + number
     elseif stat == "Increase Crit Dmg" then
-        -- bruh
+        player.mCritDamage = player.mCritDamage + number
     elseif stat == "Decrease Dash CD" then
         player.mDashCD = player.mDashCD - number
     elseif stat == "Decrease Mana cost" then
