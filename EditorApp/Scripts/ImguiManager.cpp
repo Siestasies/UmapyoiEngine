@@ -5793,9 +5793,10 @@ namespace Uma_Engine
                     "Play Dialogue",
                     "Wait",
                     "Return Camera To Player",
-                    "Shake Camera"
+                    "Shake Camera",
+                    "Lerp Camera Zoom"
                 };
-                constexpr int actionTypeCount = 6;
+                constexpr int actionTypeCount = 7;
 
                 for (int actionIdx = 0; actionIdx < static_cast<int>(cutscene.actions.size()); ++actionIdx)
                 {
@@ -5932,6 +5933,22 @@ namespace Uma_Engine
                             }
                             break;
                         }
+                        case Uma_ECS::CutsceneActionType::LerpCameraZoom:
+                        {
+                            char zoomLabel[64];
+                            snprintf(zoomLabel, sizeof(zoomLabel), "Target Zoom##zoomtarget%d", actionIdx);
+                            if (ImGui::DragFloat(zoomLabel, &action.targetZoom, 0.1f, 0.1f, 50.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##zoomdur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.1f, 30.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
                         }
 
                         ImGui::Unindent();
@@ -5986,6 +6003,16 @@ namespace Uma_Engine
                     a.type = Uma_ECS::CutsceneActionType::ShakeCamera;
                     a.shakeIntensity = 1.0f;
                     a.duration = 0.25f;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Lerp Zoom##addLerpZoom"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::LerpCameraZoom;
+                    a.targetZoom = 10.0f;
+                    a.duration = 1.0f;
                     cutscene.actions.push_back(a);
                     m_hasUnsavedEdit = true;
                 }

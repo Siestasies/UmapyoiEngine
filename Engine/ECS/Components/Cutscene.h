@@ -10,6 +10,7 @@ Each cutscene contains a list of CutsceneAction steps that execute in order:
 - PlayDialogue: play a dialogue sequence (references Dialogue component)
 - Wait: pause for a duration before next action
 - ReturnCameraToPlayer: re-enable camera follow on player
+- LerpCameraZoom: smoothly lerp camera zoom to a target value over duration
 
 All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
@@ -31,7 +32,8 @@ namespace Uma_ECS
         PlayDialogue,
         Wait,
         ReturnCameraToPlayer,
-        ShakeCamera
+        ShakeCamera,
+        LerpCameraZoom
     };
 
     struct CutsceneAction
@@ -41,6 +43,7 @@ namespace Uma_ECS
         float duration = 1.0f;
         std::string dialogueSequenceId;
         float shakeIntensity = 1.0f;
+        float targetZoom = 10.0f;
 
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
         {
@@ -52,6 +55,7 @@ namespace Uma_ECS
             out.AddMember("dialogueSequenceId",
                 rapidjson::Value(dialogueSequenceId.c_str(), alloc), alloc);
             out.AddMember("shakeIntensity", shakeIntensity, alloc);
+            out.AddMember("targetZoom", targetZoom, alloc);
         }
 
         void Deserialize(const rapidjson::Value& in)
@@ -65,6 +69,8 @@ namespace Uma_ECS
                 ? in["dialogueSequenceId"].GetString() : "";
             shakeIntensity = in.HasMember("shakeIntensity")
                 ? in["shakeIntensity"].GetFloat() : 1.0f;
+            targetZoom = in.HasMember("targetZoom")
+                ? in["targetZoom"].GetFloat() : 10.0f;
         }
     };
 

@@ -1163,6 +1163,7 @@ namespace Uma_ECS
                     entry["duration"] = cutscene.actions[i].duration;
                     entry["dialogueSequenceId"] = cutscene.actions[i].dialogueSequenceId;
                     entry["shakeIntensity"] = cutscene.actions[i].shakeIntensity;
+                    entry["targetZoom"] = cutscene.actions[i].targetZoom;
                     actions[static_cast<int>(i) + 1] = entry;
                 }
                 return actions;
@@ -1221,6 +1222,26 @@ namespace Uma_ECS
                 auto& cam = arr.GetData(cameraEntity);
                 cam.mShakeIntensity = intensity;
                 cam.mShakeTimer = duration;
+            });
+
+        // SetCameraZoom(cameraEntity, zoom) - set camera zoom level
+        sharedLua->set_function("SetCameraZoom",
+            [this](Entity cameraEntity, float zoom)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                arr.GetData(cameraEntity).mZoom = zoom;
+            });
+
+        // GetCameraZoom(cameraEntity) -> zoom value
+        sharedLua->set_function("GetCameraZoom",
+            [this](Entity cameraEntity) -> float
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return 10.0f;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return 10.0f;
+                return arr.GetData(cameraEntity).mZoom;
             });
 
         // FindCameraEntity() -> entity or -1

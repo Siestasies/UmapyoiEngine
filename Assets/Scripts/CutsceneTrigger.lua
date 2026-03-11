@@ -18,6 +18,7 @@
       - Wait (3): pause for duration seconds
       - ReturnCameraToPlayer (4): re-enable camera follow
       - ShakeCamera (5): trigger screen shake with intensity/duration
+      - LerpCameraZoom (6): smoothly lerp camera zoom to targetZoom over duration
 
     Requires Dialogue.prefab for dialogue display.
 
@@ -39,6 +40,7 @@ local ACT_PLAY_DIALOGUE = 2
 local ACT_WAIT          = 3
 local ACT_RETURN_CAMERA = 4
 local ACT_SHAKE_CAMERA  = 5
+local ACT_LERP_ZOOM     = 6
 
 -- Dialogue config
 local CHARS_PER_SECOND = 40
@@ -67,6 +69,11 @@ local lerpTargetX   = 0
 local lerpTargetY   = 0
 local lerpTimer     = 0
 local lerpDuration  = 1
+
+local zoomStart     = 10
+local zoomTarget    = 10
+local zoomTimer     = 0
+local zoomDuration  = 1
 
 local waitTimer     = 0
 
@@ -216,7 +223,14 @@ function BeginAction()
     elseif aType == ACT_WAIT then
         waitTimer = action.duration
 
+    elseif aType == ACT_LERP_ZOOM then
+        zoomStart = GetCameraZoom(cameraEntity)
+        zoomTarget = action.targetZoom
+        zoomDuration = action.duration
+        zoomTimer = 0
+
     elseif aType == ACT_RETURN_CAMERA then
+        SetCameraZoom(cameraEntity, 10)
         SetCameraFollow(cameraEntity, true)
         NextAction()
 
@@ -279,6 +293,21 @@ function Update(dt)
             local cx = lerpStartX + (lerpTargetX - lerpStartX) * t
             local cy = lerpStartY + (lerpTargetY - lerpStartY) * t
             SetCameraPosition(cameraEntity, cx, cy)
+        end
+
+    -- Lerp zoom
+    elseif aType == ACT_LERP_ZOOM then
+        zoomTimer = zoomTimer + dt
+        local t = zoomTimer / zoomDuration
+        if t >= 1.0 then
+            t = 1.0
+            SetCameraZoom(cameraEntity, zoomTarget)
+            NextAction()
+        else
+            -- Ease out quad
+            t = t * (2.0 - t)
+            local z = zoomStart + (zoomTarget - zoomStart) * t
+            SetCameraZoom(cameraEntity, z)
         end
 
     -- Wait
