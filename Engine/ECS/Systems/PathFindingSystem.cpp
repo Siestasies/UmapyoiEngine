@@ -183,10 +183,23 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             std::uniform_real_distribution<float> dist(0.0f, pf.pathUpdateInterval);
             pf.pathUpdateTimer = dist(rng);
             staggeredEntities.insert(entity);
+
+            // Initialize goal for dynamically spawned entities
+            if (!pf.haveLastGoal) {
+                pf.goal = tf.worldPosition;  // stand still until goal is explicitly set
+            }
         }
 
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
+
+        //if enemy has no speed no need to update
+        if (isEnemy && enemyArray.GetData(entity).mSpeed <= 0.0f) {
+            rb.velocity = Vec2(0, 0);
+            pf.reachedGoal = true;
+            pf.hasValidPath = false;
+            continue;
+        }
 
         // Calculate current position with collider offset
         //Vec2 currentPos = tf.position;
@@ -347,9 +360,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
 }
 
-
-
-
 void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float maxAgentRadius)
 {
     std::unordered_set<Uma_Navigation::GridCell, Uma_Navigation::GridCellHash> blocked;
@@ -430,9 +440,6 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float max
 
     gridPathfinder->ComputeClearances(maxClearanceRadius);
 }
-
-
-
 
 void Uma_ECS::PathFindingSystem::Shutdown()
 {
