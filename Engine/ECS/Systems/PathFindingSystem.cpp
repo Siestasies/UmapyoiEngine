@@ -115,7 +115,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
             if (initGoal && pfArray.Has(entity)) {
                 auto& pf = pfArray.GetData(entity);
-                pf.goal = tf.position;
+                pf.goal = tf.worldPosition;
                 if (playerArray.Has(entity) && collider.shapes.size() > 1 && collider.shapes[1].isActive) {
                     // For player, use shapes[1]
                     const auto& navShape = collider.shapes[1];
@@ -203,7 +203,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         //    }
         //}
 
-        Vec2 currentPos = tf.position;
+        Vec2 currentPos = tf.worldPosition;
         if (colArray.Has(entity)) {
             const auto& collider = colArray.GetData(entity);
             //use shapes[1] for pathfinding position
@@ -212,7 +212,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                     collider.shapes[1].offset.x * tf.scale.x,
                     collider.shapes[1].offset.y * tf.scale.y
                 };
-                currentPos = tf.position + worldOffset;
+                currentPos = tf.worldPosition + worldOffset;
             }
         }
 
@@ -401,7 +401,7 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float max
                 shape.offset.y * transform.scale.y
             };
 
-            Vec2 shapeCenter = transform.position + worldOffset;
+            Vec2 shapeCenter = transform.worldPosition + worldOffset;
             Vec2 halfSize = scaledSize * 0.5f;
 
             int minX = static_cast<int>(std::floor((shapeCenter.x - halfSize.x) / cellSize));
