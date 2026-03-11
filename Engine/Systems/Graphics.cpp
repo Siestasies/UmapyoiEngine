@@ -33,6 +33,7 @@ All rights reserved.
 #include <cassert>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -285,6 +286,7 @@ namespace Uma_Engine
         {
             std::cerr << "Failed to load texture: " << texturePath << std::endl;
             glDeleteTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         // Free image data
@@ -306,6 +308,7 @@ namespace Uma_Engine
         // Update camera position and zoom level
         cam.pos = pos;
         cam.zoom = zoom;
+        UpdateProjectionMatrix();
     }
 
     void Graphics::DrawSprite(unsigned int textureID, const Vec2& position, const Vec2& scale, float rotation, const Vec3& tint, float alpha)
@@ -337,8 +340,7 @@ namespace Uma_Engine
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
         // Bind texture and render
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
 
         // Draw the quad
         glBindVertexArray(mVAO);
@@ -370,8 +372,7 @@ namespace Uma_Engine
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &identity[0][0]);
 
         // Render fullscreen quad
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
         glBindVertexArray(mVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
@@ -555,23 +556,25 @@ namespace Uma_Engine
         int width, height;
         GetCurrentRenderDimensions(width, height);
 
-        // Calculate orthographic projection bounds based on camera zoom
         float halfWidth = (width * 0.5f) / cam.zoom;
         float halfHeight = (height * 0.5f) / cam.zoom;
 
-        // Calculate projection bounds centered on camera position
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
+        // Snap camera position to pixel grid to prevent sub-pixel seams in tilemaps
+        float pixelSize = 1.0f / cam.zoom;
+        float snappedX = std::round(cam.pos.x / pixelSize) * pixelSize;
+        float snappedY = std::round(cam.pos.y / pixelSize) * pixelSize;
 
-        // Create orthographic projection matrix
-        glm::mat4 projMat = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        // Calculate projection bounds centered on snapped camera position
+        float left = snappedX - halfWidth;
+        float right = snappedX + halfWidth;
+        float bottom = snappedY - halfHeight;
+        float top = snappedY + halfHeight;
 
-        // Upload projection matrix to shader
+        mProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+
         glUseProgram(mShaderProgram);
         GLint projLoc = glGetUniformLocation(mShaderProgram, "projection");
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projMat[0][0]);
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mProjectionMatrix[0][0]);
     }
 
     Vec2 Graphics::ScreenToWorld(const Vec2& screenPos) const
@@ -626,114 +629,6 @@ namespace Uma_Engine
         float screenY = (1.0f - ndcY) * 0.5f * height;
 
         return Vec2(screenX, screenY);
-    }
-
-    void Graphics::DrawDebugPoint(const Vec2& position, float r, float g, float b)
-    {
-        if (!mInitialized) return;
-
-        glUseProgram(mShaderProgram);
-
-        // Enable debug color mode
-        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
-        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
-
-        // Draw a small quad as point
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(position.x, position.y, 0.0f));
-        model = glm::scale(model, glm::vec3(6.0f, 6.0f, 1.0f)); // 6x6 pixel point
-
-        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
-
-        // Draw using existing VAO
-        glBindVertexArray(mVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        // Disable debug color mode
-        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
-    }
-
-    void Graphics::DrawDebugLine(const Vec2& start, const Vec2& end, float r, float g, float b)
-    {
-        if (!mInitialized) return;
-
-        // Calculate line properties
-        float dx = end.x - start.x;
-        float dy = end.y - start.y;
-        float length = sqrtf(dx * dx + dy * dy);
-        if (length < 0.001f) return;
-
-        float angle = atan2f(dy, dx) * 180.0f / 3.14159265f;
-        Vec2 center = Vec2((start.x + end.x) * 0.5f, (start.y + end.y) * 0.5f);
-
-        glUseProgram(mShaderProgram);
-
-        // Enable debug color mode
-        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 1);
-        glUniform3f(glGetUniformLocation(mShaderProgram, "debugColor"), r, g, b);
-
-        // Draw line as thin rectangle
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
-        model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));
-        model = glm::scale(model, glm::vec3(length, 0.3f, 0.3f)); // 2 pixel thick line
-
-        GLint modelLoc = glGetUniformLocation(mShaderProgram, "model");
-        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
-
-        glBindVertexArray(mVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
-
-        // Disable debug color mode
-        glUniform1i(glGetUniformLocation(mShaderProgram, "useDebugColor"), 0);
-    }
-
-    void Graphics::DrawDebugRect(const Vec2& center, const Vec2& size, float r, float g, float b)
-    {
-        if (!mInitialized) return;
-
-        float halfW = size.x * 0.5f;
-        float halfH = size.y * 0.5f;
-
-        // Draw 4 lines
-        DrawDebugLine(Vec2(center.x - halfW, center.y - halfH), Vec2(center.x + halfW, center.y - halfH), r, g, b); // Bottom
-        DrawDebugLine(Vec2(center.x + halfW, center.y - halfH), Vec2(center.x + halfW, center.y + halfH), r, g, b); // Right
-        DrawDebugLine(Vec2(center.x + halfW, center.y + halfH), Vec2(center.x - halfW, center.y + halfH), r, g, b); // Top
-        DrawDebugLine(Vec2(center.x - halfW, center.y + halfH), Vec2(center.x - halfW, center.y - halfH), r, g, b); // Left
-    }
-
-    void Graphics::DrawDebugRect(const Uma_ECS::BoundingBox& bbox, float r, float g, float b)
-    {
-        if (!mInitialized) return;
-
-        // Draw 4 lines using bounding box min and max
-        DrawDebugLine(Vec2(bbox.min.x, bbox.min.y), Vec2(bbox.max.x, bbox.min.y), r, g, b); // Bottom
-        DrawDebugLine(Vec2(bbox.max.x, bbox.min.y), Vec2(bbox.max.x, bbox.max.y), r, g, b); // Right
-        DrawDebugLine(Vec2(bbox.max.x, bbox.max.y), Vec2(bbox.min.x, bbox.max.y), r, g, b); // Top
-        DrawDebugLine(Vec2(bbox.min.x, bbox.max.y), Vec2(bbox.min.x, bbox.min.y), r, g, b); // Left
-    }
-
-    void Graphics::DrawDebugCircle(const Vec2& center, float radius, float r, float g, float b)
-    {
-        if (!mInitialized) return;
-
-        const int segments = 24;
-        const float angleStep = 2.0f * 3.14159f / segments;
-
-        // Draw circle as connected lines
-        for (int i = 0; i < segments; ++i)
-        {
-            float angle1 = i * angleStep;
-            float angle2 = (i + 1) * angleStep;
-
-            Vec2 p1 = Vec2(center.x + cosf(angle1) * radius, center.y + sinf(angle1) * radius);
-            Vec2 p2 = Vec2(center.x + cosf(angle2) * radius, center.y + sinf(angle2) * radius);
-
-            DrawDebugLine(p1, p2, r, g, b);
-        }
     }
 
     bool Graphics::InitializeInstancedRenderer()
@@ -916,7 +811,10 @@ namespace Uma_Engine
 
     void Graphics::DrawSpritesInstanced(
         unsigned int textureID,
-        std::vector<Sprite_Info> const& sprites)
+        std::vector<Sprite_Info> const& sprites,
+        unsigned int shaderOverride,
+        const std::unordered_map<std::string, Uma_ECS::MaterialValue>* properties,
+        const std::vector<Uma_Engine::UniformInfo>* uniforms)
     {
         if (!mInitialized || textureID == 0 || sprites.empty()) return;
 
@@ -969,27 +867,51 @@ namespace Uma_Engine
         glBindBuffer(GL_ARRAY_BUFFER, mInstanceTintVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec4) * tintData.size(), tintData.data());
 
-        glUseProgram(mInstanceShaderProgram);
+        // Select shader, use effect override if provided, otherwise default instanced shader
+        GLuint activeShader = (shaderOverride != 0) ? shaderOverride : mInstanceShaderProgram;
+        glUseProgram(activeShader);
 
         // Set projection matrix uniform
-        GLint projLoc = glGetUniformLocation(mInstanceShaderProgram, "projection");
+        GLint projLoc = glGetUniformLocation(activeShader, "projection");
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &mProjectionMatrix[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
+        // Set texture sampler uniform
+        glUniform1i(glGetUniformLocation(activeShader, "image"), 0);
 
-        // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        // Set time uniform for animated effects
+        GLint timeLoc = glGetUniformLocation(activeShader, "uTime");
+        if (timeLoc != -1)
+        {
+            static auto startTime = std::chrono::high_resolution_clock::now();
+            auto now = std::chrono::high_resolution_clock::now();
+            float elapsed = std::chrono::duration<float>(now - startTime).count();
+            glUniform1f(timeLoc, elapsed);
+        }
 
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
+        // Bind material uniforms from reflected uniform info
+        if (properties && uniforms)
+        {
+            for (const auto& u : *uniforms)
+            {
+                auto it = properties->find(u.name);
+                if (it == properties->end()) continue;
 
-        // Set texture uniform
-        glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
+                std::visit([&](auto&& v)
+                    {
+                        using T = std::decay_t<decltype(v)>;
+                        if constexpr (std::is_same_v<T, float>)
+                            glUniform1f(u.location, v);
+                        else if constexpr (std::is_same_v<T, int>)
+                            glUniform1i(u.location, v);
+                        else if constexpr (std::is_same_v<T, glm::vec2>)
+                            glUniform2f(u.location, v.x, v.y);
+                        else if constexpr (std::is_same_v<T, glm::vec3>)
+                            glUniform3f(u.location, v.x, v.y, v.z);
+                        else if constexpr (std::is_same_v<T, glm::vec4>)
+                            glUniform4f(u.location, v.x, v.y, v.z, v.w);
+                    }, it->second);
+            }
+        }
 
         // Bind texture
         glActiveTexture(GL_TEXTURE0);
@@ -1187,9 +1109,6 @@ namespace Uma_Engine
             return;
         }
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         glUseProgram(mTextShaderProgram);
         glBindVertexArray(font.VAO);
 
@@ -1269,9 +1188,6 @@ namespace Uma_Engine
             return;
         }
 
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         glUseProgram(mTextShaderProgram);
         glBindVertexArray(font.VAO);
 
@@ -1282,13 +1198,7 @@ namespace Uma_Engine
         GetCurrentRenderDimensions(width, height);
 
         // Use camera-based projection
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mTextShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1437,8 +1347,7 @@ namespace Uma_Engine
 
         glUniform1i(glGetUniformLocation(mInstanceShaderProgram, "image"), 0);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTextureUnit(0, textureID);
 
         glBindVertexArray(mInstanceVAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
@@ -1502,17 +1411,7 @@ namespace Uma_Engine
         // Use debug shader
         glUseProgram(mDebugLineShaderProgram);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Calculate projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mDebugLineShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1619,17 +1518,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1679,17 +1568,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);
@@ -1726,17 +1605,7 @@ namespace Uma_Engine
         GLint modelLoc = glGetUniformLocation(mShapeShaderProgram, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-        int width, height;
-        GetCurrentRenderDimensions(width, height);
-
-        // Set projection matrix
-        float halfWidth = (width * 0.5f) / cam.zoom;
-        float halfHeight = (height * 0.5f) / cam.zoom;
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
-        glm::mat4 projection = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+        const glm::mat4& projection = mProjectionMatrix;
 
         GLint projLoc = glGetUniformLocation(mShapeShaderProgram, "projection");
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, &projection[0][0]);

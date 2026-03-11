@@ -82,6 +82,9 @@ namespace Uma_Engine
         void load(const std::string& filename)
         {
             std::ifstream ifs(filename);
+
+            if (ifs.fail()) return;
+
             rapidjson::IStreamWrapper isw(ifs);
             rapidjson::Document doc;
             doc.ParseStream(isw);

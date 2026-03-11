@@ -34,6 +34,8 @@ All rights reserved.
 #include "Systems/SceneManager.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/TilemapEditorManager.h"
+#include "ECS/Components/SpriteMaterial.h"
+#include "ECS/Components/Cutscene.h"
 
 #include <GLFW/glfw3.h>
 
@@ -1700,6 +1702,23 @@ namespace Uma_Engine
             {
                 if (ImGui::Button("Remove Component##Sprite"))
                 {
+                    // Flush any pending material/sprite edits before removing
+                    if (m_hasUnsavedEdit)
+                    {
+                        EndComponentEdit(entity, coordinator, "Sprite", true);
+                    }
+
+                    // Remove SpriteMaterial first if it exists (cascade)
+                    if (coordinator.HasComponent<Uma_ECS::SpriteMaterial>(entity))
+                    {
+                        auto matCmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::SpriteMaterial>>(
+                            &coordinator,
+                            entity,
+                            "Remove SpriteMaterial (cascade)"
+                        );
+                        commandHistory.ExecuteCommand(std::move(matCmd));
+                    }
+
                     auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Sprite>>(
                         &coordinator,
                         entity,
@@ -1890,7 +1909,7 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
-                // end tracking
+                // end tracking for Sprite
                 EndComponentEdit(entity, coordinator, "Sprite");
 
                 ImGui::Separator();
@@ -1913,6 +1932,140 @@ namespace Uma_Engine
                 }
 
                 ImGui::Unindent();
+
+                // SpriteMaterial (optional to Sprite)
+                if (coordinator.HasComponent<Uma_ECS::SpriteMaterial>(entity))
+                {
+                    ImGui::Separator();
+                    ImGui::Text("Material");
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Remove Material"))
+                    {
+                        // Flush any pending material edits before removing
+                        if (m_hasUnsavedEdit)
+                        {
+                            EndComponentEdit(entity, coordinator, "SpriteMaterial", true);
+                        }
+
+                        auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::SpriteMaterial>>(
+                            &coordinator,
+                            entity,
+                            "Remove SpriteMaterial"
+                        );
+                        commandHistory.ExecuteCommand(std::move(cmd));
+                        return true;
+                    }
+
+                    auto& mat = coordinator.GetComponent<Uma_ECS::SpriteMaterial>(entity);
+
+                    // Begin tracking for material edits (separate from Sprite)
+                    BeginComponentEdit(entity, coordinator);
+
+                    // Effect dropdown
+                    auto effectNames = pResourcesManager->GetEffectShaderNames();
+                    std::vector<const char*> items;
+                    items.push_back("(None)");
+                    int current = 0;
+                    for (int i = 0; i < static_cast<int>(effectNames.size()); i++)
+                    {
+                        items.push_back(effectNames[i].c_str());
+                        if (effectNames[i] == mat.effectName) current = i + 1;
+                    }
+
+                    if (ImGui::Combo("Effect##Material", &current, items.data(), static_cast<int>(items.size())))
+                    {
+                        mat.effectName = (current == 0) ? "" : effectNames[current - 1];
+                        mat.properties.clear();  // reset when switching effects
+                        m_hasUnsavedEdit = true;
+                    }
+
+                    // Auto-generated uniform editors from reflection
+                    if (!mat.effectName.empty())
+                    {
+                        auto* effect = pResourcesManager->GetEffect(mat.effectName);
+                        if (effect)
+                        {
+                            ImGui::Indent();
+                            for (const auto& u : effect->uniforms)
+                            {
+                                // Ensure property exists with default
+                                if (mat.properties.find(u.name) == mat.properties.end())
+                                {
+                                    switch (u.type)
+                                    {
+                                    case Uma_Engine::UniformType::Float: mat.properties[u.name] = 0.0f; break;
+                                    case Uma_Engine::UniformType::Vec2:  mat.properties[u.name] = glm::vec2(0); break;
+                                    case Uma_Engine::UniformType::Vec3:  mat.properties[u.name] = glm::vec3(0); break;
+                                    case Uma_Engine::UniformType::Vec4:  mat.properties[u.name] = glm::vec4(0); break;
+                                    case Uma_Engine::UniformType::Int:   mat.properties[u.name] = 0; break;
+                                    }
+                                }
+
+                                // Render appropriate widget with type safety
+                                auto& val = mat.properties[u.name];
+                                switch (u.type)
+                                {
+                                case Uma_Engine::UniformType::Float:
+                                    if (std::holds_alternative<float>(val))
+                                    {
+                                        if (ImGui::DragFloat(u.name.c_str(), &std::get<float>(val), 0.01f))
+                                            m_hasUnsavedEdit = true;
+                                    }
+                                    break;
+                                case Uma_Engine::UniformType::Vec2:
+                                    if (std::holds_alternative<glm::vec2>(val))
+                                    {
+                                        auto& v = std::get<glm::vec2>(val);
+                                        if (ImGui::DragFloat2(u.name.c_str(), &v.x, 0.01f))
+                                            m_hasUnsavedEdit = true;
+                                    }
+                                    break;
+                                case Uma_Engine::UniformType::Vec3:
+                                    if (std::holds_alternative<glm::vec3>(val))
+                                    {
+                                        auto& v = std::get<glm::vec3>(val);
+                                        if (ImGui::ColorEdit3(u.name.c_str(), &v.x))
+                                            m_hasUnsavedEdit = true;
+                                    }
+                                    break;
+                                case Uma_Engine::UniformType::Vec4:
+                                    if (std::holds_alternative<glm::vec4>(val))
+                                    {
+                                        auto& v = std::get<glm::vec4>(val);
+                                        if (ImGui::ColorEdit4(u.name.c_str(), &v.x))
+                                            m_hasUnsavedEdit = true;
+                                    }
+                                    break;
+                                case Uma_Engine::UniformType::Int:
+                                    if (std::holds_alternative<int>(val))
+                                    {
+                                        if (ImGui::DragInt(u.name.c_str(), &std::get<int>(val)))
+                                            m_hasUnsavedEdit = true;
+                                    }
+                                    break;
+                                }
+                            }
+                            ImGui::Unindent();
+                        }
+                    }
+
+                    // End tracking for material edits
+                    EndComponentEdit(entity, coordinator, "SpriteMaterial");
+                }
+                else
+                {
+                    ImGui::Separator();
+                    if (ImGui::SmallButton("Add Material"))
+                    {
+                        auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::SpriteMaterial>>(
+                            &coordinator,
+                            entity,
+                            Uma_ECS::SpriteMaterial{},
+                            "Add SpriteMaterial"
+                        );
+                        commandHistory.ExecuteCommand(std::move(cmd));
+                    }
+                }
             }
         }
         else if (type == coordinator.GetComponentType<Uma_ECS::Collider>())
@@ -5312,6 +5465,576 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_UI::Dialogue>())
+        {
+            if (ImGui::CollapsingHeader("DialogueData", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##DialogueData"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Dialogue>>(
+                        &coordinator,
+                        entity,
+                        "Remove DialogueData"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+
+                    return true;
+                }
+
+                auto& dialogueData = coordinator.GetComponent<Uma_UI::Dialogue>(entity);
+
+                ImGui::Indent();
+
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
+
+                // ?? Sequence list ????????????????????????????????????????????
+                ImGui::Text("Sequences (%zu)", dialogueData.sequences.size());
+                ImGui::Separator();
+
+                // Buffer for new-sequence id input (persists across frames)
+                static char newSeqIdBuffer[128] = "";
+
+                for (int seqIdx = 0; seqIdx < static_cast<int>(dialogueData.sequences.size()); ++seqIdx)
+                {
+                    auto& seq = dialogueData.sequences[seqIdx];
+
+                    // Per-sequence collapsing header labelled by id
+                    char seqLabel[256];
+                    snprintf(seqLabel, sizeof(seqLabel), "Sequence [%d]: \"%s\"##seq%d",
+                        seqIdx, seq.id.c_str(), seqIdx);
+
+                    bool seqOpen = ImGui::CollapsingHeader(seqLabel);
+
+                    // Drag-drop reorder handle (right-click context menu)
+                    if (ImGui::BeginPopupContextItem())
+                    {
+                        if (seqIdx > 0 && ImGui::MenuItem("Move Up"))
+                        {
+                            std::swap(dialogueData.sequences[seqIdx], dialogueData.sequences[seqIdx - 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break; // iterator invalidated
+                        }
+                        if (seqIdx < static_cast<int>(dialogueData.sequences.size()) - 1 && ImGui::MenuItem("Move Down"))
+                        {
+                            std::swap(dialogueData.sequences[seqIdx], dialogueData.sequences[seqIdx + 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        if (ImGui::MenuItem("Delete Sequence"))
+                        {
+                            dialogueData.sequences.erase(dialogueData.sequences.begin() + seqIdx);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        ImGui::EndPopup();
+                    }
+
+                    if (seqOpen)
+                    {
+                        ImGui::Indent();
+
+                        // Sequence ID
+                        static char seqIdBuffer[128];
+                        strncpy(seqIdBuffer, seq.id.c_str(), 127);
+                        seqIdBuffer[127] = '\0';
+                        char seqIdLabel[64];
+                        snprintf(seqIdLabel, sizeof(seqIdLabel), "ID##seqid%d", seqIdx);
+                        if (ImGui::InputText(seqIdLabel, seqIdBuffer, 128))
+                        {
+                            seq.id = seqIdBuffer;
+                            m_hasUnsavedEdit = true;
+                        }
+                        if (ImGui::IsItemHovered())
+                            ImGui::SetTooltip("Unique identifier for this sequence.\nReferenced from Lua via StartDialogueSequence(entity, id)");
+
+                        ImGui::Separator();
+                        ImGui::Text("Lines (%zu)", seq.lines.size());
+
+                        // ?? Lines ????????????????????????????????????????????
+                        for (int lineIdx = 0; lineIdx < static_cast<int>(seq.lines.size()); ++lineIdx)
+                        {
+                            auto& line = seq.lines[lineIdx];
+
+                            char lineLabel[64];
+                            snprintf(lineLabel, sizeof(lineLabel), "Line %d##lineheader%d_%d", lineIdx, seqIdx, lineIdx);
+
+                            bool lineOpen = ImGui::CollapsingHeader(lineLabel);
+
+                            // Right-click context on each line header
+                            char lineCtxId[64];
+                            snprintf(lineCtxId, sizeof(lineCtxId), "##linectx%d_%d", seqIdx, lineIdx);
+                            if (ImGui::BeginPopupContextItem(lineCtxId))
+                            {
+                                if (lineIdx > 0 && ImGui::MenuItem("Move Up"))
+                                {
+                                    std::swap(seq.lines[lineIdx], seq.lines[lineIdx - 1]);
+                                    m_hasUnsavedEdit = true;
+                                    ImGui::EndPopup();
+                                    break;
+                                }
+                                if (lineIdx < static_cast<int>(seq.lines.size()) - 1 && ImGui::MenuItem("Move Down"))
+                                {
+                                    std::swap(seq.lines[lineIdx], seq.lines[lineIdx + 1]);
+                                    m_hasUnsavedEdit = true;
+                                    ImGui::EndPopup();
+                                    break;
+                                }
+                                if (ImGui::MenuItem("Delete Line"))
+                                {
+                                    seq.lines.erase(seq.lines.begin() + lineIdx);
+                                    m_hasUnsavedEdit = true;
+                                    ImGui::EndPopup();
+                                    break;
+                                }
+                                ImGui::EndPopup();
+                            }
+
+                            if (lineOpen)
+                            {
+                                ImGui::Indent();
+
+                                // Speaker
+                                static char speakerBuf[128];
+                                strncpy(speakerBuf, line.speaker.c_str(), 127);
+                                speakerBuf[127] = '\0';
+                                char speakerLabel[64];
+                                snprintf(speakerLabel, sizeof(speakerLabel), "Speaker##sp%d_%d", seqIdx, lineIdx);
+                                if (ImGui::InputText(speakerLabel, speakerBuf, 128))
+                                {
+                                    line.speaker = speakerBuf;
+                                    m_hasUnsavedEdit = true;
+                                }
+                                if (ImGui::IsItemHovered())
+                                    ImGui::SetTooltip("Displayed in the name box. Leave empty to hide the name box.");
+
+                                // Body text
+                                static char textBuf[2048];
+                                strncpy(textBuf, line.text.c_str(), 2047);
+                                textBuf[2047] = '\0';
+                                char textLabel[64];
+                                snprintf(textLabel, sizeof(textLabel), "Text##txt%d_%d", seqIdx, lineIdx);
+                                ImGui::Text("Text");
+                                if (ImGui::InputTextMultiline(textLabel, textBuf, 2048, ImVec2(-1, 70)))
+                                {
+                                    line.text = textBuf;
+                                    m_hasUnsavedEdit = true;
+                                }
+
+                                // Portrait path with drag-drop
+                                ImGui::Text("Portrait: %s", line.portrait.empty() ? "(None)" : line.portrait.c_str());
+
+                                ImVec2 portraitDropZoneSize = ImVec2(ImGui::GetContentRegionAvail().x, 40.0f);
+                                ImVec2 portraitCursorPos = ImGui::GetCursorScreenPos();
+                                ImDrawList* drawList = ImGui::GetWindowDrawList();
+
+                                drawList->AddRectFilled(portraitCursorPos,
+                                    ImVec2(portraitCursorPos.x + portraitDropZoneSize.x, portraitCursorPos.y + portraitDropZoneSize.y),
+                                    IM_COL32(40, 40, 60, 100), 4.0f);
+
+                                ImVec2 hintSize = ImGui::CalcTextSize("Drop Portrait Texture Here (.png, .jpg)");
+                                drawList->AddText(
+                                    ImVec2(portraitCursorPos.x + (portraitDropZoneSize.x - hintSize.x) * 0.5f,
+                                        portraitCursorPos.y + (portraitDropZoneSize.y - hintSize.y) * 0.5f),
+                                    IM_COL32(150, 150, 150, 255),
+                                    "Drop Portrait Texture Here (.png, .jpg)");
+
+                                char portraitDropId[64];
+                                snprintf(portraitDropId, sizeof(portraitDropId), "##portraitdrop%d_%d", seqIdx, lineIdx);
+                                ImGui::SetCursorScreenPos(portraitCursorPos);
+                                ImGui::InvisibleButton(portraitDropId, portraitDropZoneSize);
+                                bool portraitHovered = ImGui::IsItemHovered();
+
+                                if (ImGui::BeginDragDropTarget())
+                                {
+                                    drawList->AddRect(portraitCursorPos,
+                                        ImVec2(portraitCursorPos.x + portraitDropZoneSize.x, portraitCursorPos.y + portraitDropZoneSize.y),
+                                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+                                    drawList->AddRectFilled(portraitCursorPos,
+                                        ImVec2(portraitCursorPos.x + portraitDropZoneSize.x, portraitCursorPos.y + portraitDropZoneSize.y),
+                                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                                    {
+                                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                        std::string fullPath = data->filepath;
+                                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                        std::filesystem::path fsp(fullPath);
+                                        std::string ext = fsp.extension().string();
+                                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+                                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
+                                        {
+                                            size_t assetsPos = fullPath.find("Assets/");
+                                            line.portrait = (assetsPos != std::string::npos)
+                                                ? fullPath.substr(assetsPos) : fullPath;
+                                            m_hasUnsavedEdit = true;
+                                        }
+                                        else
+                                        {
+                                            m_popupErrorMessage = "Invalid file type for Portrait!\nExpected: .png, .jpg, .jpeg";
+                                            ImGui::OpenPopup("Invalid File Format");
+                                        }
+                                    }
+                                    ImGui::EndDragDropTarget();
+                                }
+                                else if (portraitHovered)
+                                {
+                                    drawList->AddRect(portraitCursorPos,
+                                        ImVec2(portraitCursorPos.x + portraitDropZoneSize.x, portraitCursorPos.y + portraitDropZoneSize.y),
+                                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                                }
+
+                                // Clear portrait button
+                                ImGui::SetCursorScreenPos(ImVec2(portraitCursorPos.x, portraitCursorPos.y + portraitDropZoneSize.y + 4.0f));
+                                if (!line.portrait.empty())
+                                {
+                                    char clearLabel[64];
+                                    snprintf(clearLabel, sizeof(clearLabel), "Clear##clearPortrait%d_%d", seqIdx, lineIdx);
+                                    if (ImGui::SmallButton(clearLabel))
+                                    {
+                                        line.portrait.clear();
+                                        m_hasUnsavedEdit = true;
+                                    }
+                                }
+
+                                ImGui::Unindent();
+                            }
+                        } // end lines loop
+
+                        ImGui::Separator();
+
+                        // Add Line button
+                        char addLineLabel[64];
+                        snprintf(addLineLabel, sizeof(addLineLabel), "+ Add Line##addline%d", seqIdx);
+                        if (ImGui::Button(addLineLabel))
+                        {
+                            seq.lines.push_back(Uma_UI::DialogueLine{});
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        ImGui::Unindent();
+                    }
+                } // end sequences loop
+
+                ImGui::Separator();
+
+                // ?? Add new sequence ?????????????????????????????????????????
+                ImGui::Text("New Sequence ID:");
+                ImGui::SetNextItemWidth(-80.0f);
+                ImGui::InputText("##newSeqId", newSeqIdBuffer, 128);
+                ImGui::SameLine();
+                if (ImGui::Button("+ Add##addseq"))
+                {
+                    Uma_UI::DialogueSequence newSeq;
+                    newSeq.id = (newSeqIdBuffer[0] != '\0') ? newSeqIdBuffer : "sequence";
+                    // Ensure id uniqueness by appending count if needed
+                    std::string baseId = newSeq.id;
+                    int suffix = 1;
+                    while (dialogueData.FindSequence(newSeq.id) != nullptr)
+                    {
+                        newSeq.id = baseId + "_" + std::to_string(suffix++);
+                    }
+                    newSeq.lines.push_back(Uma_UI::DialogueLine{});
+                    dialogueData.sequences.push_back(std::move(newSeq));
+                    newSeqIdBuffer[0] = '\0';
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("Tip: Right-click sequence or line headers to reorder / delete.");
+                ImGui::TextDisabled("Triggered from Lua via StartDialogueSequence(entity, id)");
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "DialogueData");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Cutscene>())
+        {
+            if (ImGui::CollapsingHeader("Cutscene", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Cutscene"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Cutscene>>(
+                        &coordinator,
+                        entity,
+                        "Remove Cutscene"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& cutscene = coordinator.GetComponent<Uma_ECS::Cutscene>(entity);
+                ImGui::Indent();
+                BeginComponentEdit(entity, coordinator);
+
+                // Play Once checkbox
+                if (ImGui::Checkbox("Play Once##cutscenePlayOnce", &cutscene.playOnce))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("If checked, cutscene only triggers once per game session.");
+
+                // Has Played (read-only indicator)
+                ImGui::TextDisabled("Has Played: %s", cutscene.hasPlayed ? "Yes" : "No");
+                ImGui::SameLine();
+                if (ImGui::SmallButton("Reset##cutsceneReset"))
+                {
+                    cutscene.hasPlayed = false;
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Actions (%zu)", cutscene.actions.size());
+                ImGui::Separator();
+
+                const char* actionTypeNames[] = {
+                    "Set Camera To Position",
+                    "Lerp Camera To Position",
+                    "Play Dialogue",
+                    "Wait",
+                    "Return Camera To Player",
+                    "Shake Camera",
+                    "Lerp Camera Zoom"
+                };
+                constexpr int actionTypeCount = 7;
+
+                for (int actionIdx = 0; actionIdx < static_cast<int>(cutscene.actions.size()); ++actionIdx)
+                {
+                    auto& action = cutscene.actions[actionIdx];
+
+                    int typeInt = static_cast<int>(action.type);
+                    const char* typeName = (typeInt >= 0 && typeInt < actionTypeCount) ? actionTypeNames[typeInt] : "Unknown";
+
+                    char actionLabel[256];
+                    snprintf(actionLabel, sizeof(actionLabel), "[%d] %s##action%d",
+                        actionIdx, typeName, actionIdx);
+
+                    bool actionOpen = ImGui::CollapsingHeader(actionLabel);
+
+                    // Right-click context menu
+                    char actionCtxId[64];
+                    snprintf(actionCtxId, sizeof(actionCtxId), "##actionctx%d", actionIdx);
+                    if (ImGui::BeginPopupContextItem(actionCtxId))
+                    {
+                        if (actionIdx > 0 && ImGui::MenuItem("Move Up"))
+                        {
+                            std::swap(cutscene.actions[actionIdx], cutscene.actions[actionIdx - 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        if (actionIdx < static_cast<int>(cutscene.actions.size()) - 1 && ImGui::MenuItem("Move Down"))
+                        {
+                            std::swap(cutscene.actions[actionIdx], cutscene.actions[actionIdx + 1]);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        if (ImGui::MenuItem("Delete Action"))
+                        {
+                            cutscene.actions.erase(cutscene.actions.begin() + actionIdx);
+                            m_hasUnsavedEdit = true;
+                            ImGui::EndPopup();
+                            break;
+                        }
+                        ImGui::EndPopup();
+                    }
+
+                    if (actionOpen)
+                    {
+                        ImGui::Indent();
+
+                        // Action type combo
+                        char typeLabel[64];
+                        snprintf(typeLabel, sizeof(typeLabel), "Type##actiontype%d", actionIdx);
+                        if (ImGui::Combo(typeLabel, &typeInt, actionTypeNames, actionTypeCount))
+                        {
+                            action.type = static_cast<Uma_ECS::CutsceneActionType>(typeInt);
+                            m_hasUnsavedEdit = true;
+                        }
+
+                        // Show relevant fields based on type
+                        switch (action.type)
+                        {
+                        case Uma_ECS::CutsceneActionType::SetCameraToPosition:
+                        {
+                            char posLabel[64];
+                            snprintf(posLabel, sizeof(posLabel), "Position##campos%d", actionIdx);
+                            float pos[2] = { action.targetPosition.x, action.targetPosition.y };
+                            if (ImGui::DragFloat2(posLabel, pos, 0.1f))
+                            {
+                                action.targetPosition = Vec2(pos[0], pos[1]);
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::LerpCameraToPosition:
+                        {
+                            char posLabel[64];
+                            snprintf(posLabel, sizeof(posLabel), "Target Position##lerppos%d", actionIdx);
+                            float pos[2] = { action.targetPosition.x, action.targetPosition.y };
+                            if (ImGui::DragFloat2(posLabel, pos, 0.1f))
+                            {
+                                action.targetPosition = Vec2(pos[0], pos[1]);
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##lerpdur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.1f, 30.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::PlayDialogue:
+                        {
+                            static char seqIdBuf[128];
+                            strncpy(seqIdBuf, action.dialogueSequenceId.c_str(), 127);
+                            seqIdBuf[127] = '\0';
+                            char seqLabel[64];
+                            snprintf(seqLabel, sizeof(seqLabel), "Sequence ID##dlgseq%d", actionIdx);
+                            if (ImGui::InputText(seqLabel, seqIdBuf, 128))
+                            {
+                                action.dialogueSequenceId = seqIdBuf;
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                                ImGui::SetTooltip("ID of the dialogue sequence to play.\nMust match an ID in the Dialogue component on this entity.");
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::Wait:
+                        {
+                            char waitLabel[64];
+                            snprintf(waitLabel, sizeof(waitLabel), "Duration (s)##waitdur%d", actionIdx);
+                            if (ImGui::DragFloat(waitLabel, &action.duration, 0.05f, 0.0f, 60.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::ReturnCameraToPlayer:
+                        {
+                            ImGui::TextDisabled("Re-enables camera follow on player.");
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::ShakeCamera:
+                        {
+                            char intLabel[64];
+                            snprintf(intLabel, sizeof(intLabel), "Intensity##shakeint%d", actionIdx);
+                            if (ImGui::DragFloat(intLabel, &action.shakeIntensity, 0.05f, 0.0f, 10.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##shakedur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.0f, 10.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        case Uma_ECS::CutsceneActionType::LerpCameraZoom:
+                        {
+                            char zoomLabel[64];
+                            snprintf(zoomLabel, sizeof(zoomLabel), "Target Zoom##zoomtarget%d", actionIdx);
+                            if (ImGui::DragFloat(zoomLabel, &action.targetZoom, 0.1f, 0.1f, 50.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            char durLabel[64];
+                            snprintf(durLabel, sizeof(durLabel), "Duration (s)##zoomdur%d", actionIdx);
+                            if (ImGui::DragFloat(durLabel, &action.duration, 0.05f, 0.1f, 30.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            break;
+                        }
+                        }
+
+                        ImGui::Unindent();
+                    }
+                } // end actions loop
+
+                ImGui::Separator();
+
+                // Add action buttons
+                if (ImGui::Button("+ Set Camera##addSetCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::SetCameraToPosition;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Lerp Camera##addLerpCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::LerpCameraToPosition;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Dialogue##addDlg"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::PlayDialogue;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::Button("+ Wait##addWait"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::Wait;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Return Camera##addRetCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::ReturnCameraToPlayer;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("+ Shake Camera##addShakeCam"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::ShakeCamera;
+                    a.shakeIntensity = 1.0f;
+                    a.duration = 0.25f;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+                //ImGui::SameLine();
+                if (ImGui::Button("+ Lerp Zoom##addLerpZoom"))
+                {
+                    Uma_ECS::CutsceneAction a;
+                    a.type = Uma_ECS::CutsceneActionType::LerpCameraZoom;
+                    a.targetZoom = 10.0f;
+                    a.duration = 1.0f;
+                    cutscene.actions.push_back(a);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Separator();
+                ImGui::TextDisabled("Tip: Add Collider (Trigger + CL_PICKUP + CL_PLAYER mask)");
+                ImGui::TextDisabled("+ Rigidbody + LuaScript (CutsceneTrigger.lua)");
+                ImGui::TextDisabled("to activate this cutscene on player collision.");
+
+                EndComponentEdit(entity, coordinator, "Cutscene");
+                ImGui::Unindent();
+            }
+        }
         else if (type == coordinator.GetComponentType<Uma_ECS::Prefab>())
         {
             if (ImGui::CollapsingHeader("Prefab"))
@@ -5637,6 +6360,7 @@ namespace Uma_Engine
                 // === Layers Section ===
                 if (ImGui::TreeNode("Layers", "Layers (%zu)", tilemap.layers.size()))
                 {
+                    int layerToDelete = -1;
                     for (size_t i = 0; i < tilemap.layers.size(); i++)
                     {
                         ImGui::PushID(static_cast<int>(i));
@@ -5679,9 +6403,15 @@ namespace Uma_Engine
                             ImGui::Separator();
                             if (ImGui::MenuItem("Delete", nullptr, false, tilemap.layers.size() > 1))
                             {
-                                tilemap.RemoveLayer(static_cast<int>(i));
+                               /* tilemap.RemoveLayer(static_cast<int>(i));
                                 ImGui::PopID();
-                                ImGui::TreePop();
+                                ImGui::EndPopup();
+                                if (layerOpen) ImGui::TreePop();*/
+
+                                layerToDelete = static_cast<int>(i);
+
+                                ImGui::EndPopup();
+                                ImGui::PopID();
                                 break;
                             }
                             ImGui::EndPopup();
@@ -5773,6 +6503,12 @@ namespace Uma_Engine
                         }
 
                         ImGui::PopID();
+                    }
+
+                    if (layerToDelete != -1)
+                    {
+                        tilemap.RemoveLayer(layerToDelete);
+                        m_hasUnsavedEdit = true;
                     }
 
                     ImGui::Separator();
@@ -6366,6 +7102,26 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_UI::Effects{},
                     "Add Effects"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_UI::Dialogue>()) && ImGui::MenuItem("Dialogue"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_UI::Dialogue>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_UI::Dialogue{},
+                    "Add Dialogue"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Cutscene>()) && ImGui::MenuItem("Cutscene"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Cutscene>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Cutscene{},
+                    "Add Cutscene"
                 );
                 commandHistory.ExecuteCommand(std::move(cmd));
             }

@@ -70,6 +70,19 @@ add_custom_command(TARGET UmapyoiGame POST_BUILD
     COMMENT "Copying fmod.dll next to executable"
 )
 
+# Copy PlayFab DLLs next to the executable after build
+foreach(DLL
+    PlayFabServices.Win32.dll
+    PlayFabCore.Win32.dll
+    libHttpClient.Win32.dll)
+    add_custom_command(TARGET UmapyoiGame POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${PLAYFAB_BIN_DIR}/${DLL}"
+            $<TARGET_FILE_DIR:UmapyoiGame>
+        COMMENT "Copying ${DLL} to editor output"
+    )
+endforeach()
+
 # FreeType runtime DLL (Windows only)
 set(FREETYPE_DLL ${CMAKE_SOURCE_DIR}/Engine/freetype/win64/freetype.dll)
 

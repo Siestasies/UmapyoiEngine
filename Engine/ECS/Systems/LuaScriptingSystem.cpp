@@ -41,7 +41,10 @@ All rights reserved.
 #include "../UI/Components/Text.h"
 #include "../UI/Components/Slider.h"
 #include "../UI/Components/Checkbox.h"
+#include "../UI/Components/Dialogue.h"
 #include "../Components/AudioComponent.h"
+#include "../Components/SpriteMaterial.h"
+#include "../Components/Cutscene.h"
 
 #include "Events/ApplicationEvents.h"
 
@@ -216,7 +219,7 @@ namespace Uma_ECS
 
                 // refresh the varaibles of the script
                 RefreshScript(entity, i);
-                
+
                 // call start on the lua script
                 CallLuaFunction(scriptComponent.scripts[i], "Start");
             }
@@ -395,7 +398,7 @@ namespace Uma_ECS
 
     void LuaScriptingSystem::RegisterEntityManipulation()
     {
-        sharedLua->set_function("CreateEntity", [&]() 
+        sharedLua->set_function("CreateEntity", [&]()
             {
                 try
                 {
@@ -412,7 +415,7 @@ namespace Uma_ECS
 
                     return static_cast<Entity>(-1);
                 }
-                
+
             });
 
         sharedLua->set_function("DestroyEntity", [&](const Entity& entity)
@@ -495,7 +498,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("GetActiveEntity", [this](Uma_ECS::Entity entity) -> bool
             {
-               return  pCoordinator->IsActiveInHierarchy(entity);
+                return  pCoordinator->IsActiveInHierarchy(entity);
             });
 
         // temp animator exposure
@@ -507,7 +510,7 @@ namespace Uma_ECS
                 auto& animator = pCoordinator->GetComponent<Animator>(entity);
 
                 animator.animator.Play(name, true);
-            
+
             });
 
         // Add Force
@@ -643,7 +646,7 @@ namespace Uma_ECS
                     else if (s == "managain" || s == "ManaGain" || s == "MANAGAIN")
                         type = Uma_UI::FeedbackType::ManaGain;
 
-                    else if (s == "warn" || s == "Warn" || s == "WARN" 
+                    else if (s == "warn" || s == "Warn" || s == "WARN"
                         || s == "warning" || s == "Warning" || s == "WARNING")
                         type = Uma_UI::FeedbackType::Warning;
                     // else: anything else → Normal
@@ -705,6 +708,16 @@ namespace Uma_ECS
             }
         );
 
+        // Register SpriteMaterial
+        sharedLua->new_usertype<SpriteMaterial>("SpriteMaterial",
+            "effectName", &SpriteMaterial::effectName,
+            "SetFloat", &SpriteMaterial::SetFloat,
+            "SetVec2", &SpriteMaterial::SetVec2,
+            "SetVec3", &SpriteMaterial::SetVec3,
+            "SetVec4", &SpriteMaterial::SetVec4,
+            "SetInt", &SpriteMaterial::SetInt
+        );
+
         sharedLua->new_enum<ElementType>("ElementType",
             {
                 { "None", ElementType::None },          // 1,2
@@ -734,7 +747,7 @@ namespace Uma_ECS
             "attackCdCurr", &AttackStats::attackCdCurr,
             "attackIsInCoolDown", &AttackStats::attackIsInCoolDown,
             "elementType", &AttackStats::elementType
-            );
+        );
 
         sharedLua->set_function("CreateAttackStats", []() -> AttackStats* {
             return new AttackStats();
@@ -763,7 +776,7 @@ namespace Uma_ECS
             "checkpointX", &CheckpointData::checkpointX,
             "checkpointY", &CheckpointData::checkpointY,
             "hasCheckpoint", &CheckpointData::hasCheckpoint
-            );
+        );
 
         sharedLua->new_usertype<Player>("Player",
             "mHealth", &Player::mHealth,
@@ -799,8 +812,8 @@ namespace Uma_ECS
             "elementComboTimer", &Player::elementComboTimer,
             "elementComboWindow", &Player::elementComboWindow,
 
-            "hasShield", & Player::hasShield,
-            "isShieldBroken", & Player::isShieldBroken,
+            "hasShield", &Player::hasShield,
+            "isShieldBroken", &Player::isShieldBroken,
 
 
             "currAttackIndex", &Player::currAttackIndex,
@@ -808,22 +821,22 @@ namespace Uma_ECS
 
             "attackStats", sol::property(
                 [](Player& c) -> std::vector<AttackStats>&{ return c.attackStats; }
-                ),
+            ),
 
             "checkpointData", &Player::checkpointData
-            );
+        );
 
 
         // Register Enemy component
         sharedLua->new_usertype<Enemy>("Enemy",
-            "mHealth"         ,&Enemy::mHealth,
-            "mMaxHealth"      ,&Enemy::mMaxHealth,
-            "mHealthRegenRate",&Enemy::mHealthRegenRate,
-            "mSpeed"          ,&Enemy::mSpeed,
-            "mAttackDamage"   ,&Enemy::mAttackDamage,
-            "mAttackSpeed"    ,&Enemy::mAttackSpeed,
-            "mAttackRange"    ,&Enemy::mAttackRange,
-            "mDefense"        ,&Enemy::mDefense
+            "mHealth", &Enemy::mHealth,
+            "mMaxHealth", &Enemy::mMaxHealth,
+            "mHealthRegenRate", &Enemy::mHealthRegenRate,
+            "mSpeed", &Enemy::mSpeed,
+            "mAttackDamage", &Enemy::mAttackDamage,
+            "mAttackSpeed", &Enemy::mAttackSpeed,
+            "mAttackRange", &Enemy::mAttackRange,
+            "mDefense", &Enemy::mDefense
         );
 
         // ProjectileType
@@ -1059,9 +1072,9 @@ namespace Uma_ECS
             "PauseClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.PauseClip(static_cast<size_t>(index)); },
             "StopClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.StopClip(static_cast<size_t>(index)); },
             "ResetClip", [](Uma_UI::Effects& effects, int index) { if (index >= 0) effects.ResetClip(static_cast<size_t>(index)); },
-            "PauseClipByName", & Uma_UI::Effects::PauseClipByName,
-            "StopClipByName", & Uma_UI::Effects::StopClipByName,
-            "ResetClipByName", & Uma_UI::Effects::ResetClipByName,
+            "PauseClipByName", &Uma_UI::Effects::PauseClipByName,
+            "StopClipByName", &Uma_UI::Effects::StopClipByName,
+            "ResetClipByName", &Uma_UI::Effects::ResetClipByName,
             "IsClipPlaying", sol::overload(
                 [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                     int index = effects.FindClipIndexByName(name);
@@ -1086,9 +1099,9 @@ namespace Uma_ECS
                 }
                 return "";
             },
-            "GetClipCount", & Uma_UI::Effects::GetClipCount,
-            "FindClipIndexByName", & Uma_UI::Effects::FindClipIndexByName,
-            "AddClip", & Uma_UI::Effects::AddClip,
+            "GetClipCount", &Uma_UI::Effects::GetClipCount,
+            "FindClipIndexByName", &Uma_UI::Effects::FindClipIndexByName,
+            "AddClip", &Uma_UI::Effects::AddClip,
             "RemoveClip", [](Uma_UI::Effects& effects, const std::string& name) -> bool {
                 int index = effects.FindClipIndexByName(name);
                 if (index >= 0) {
@@ -1099,11 +1112,221 @@ namespace Uma_ECS
             }
         );
 
+        // ── Dialogue ──────────────────────────────────────────────────────────
+
+        // Register DialogueLine so Lua can read fields off returned line tables
+        sharedLua->new_usertype<Uma_UI::DialogueLine>("DialogueLine",
+            "speaker", &Uma_UI::DialogueLine::speaker,
+            "text", &Uma_UI::DialogueLine::text,
+            "portrait", &Uma_UI::DialogueLine::portrait
+        );
+
+        // Register Dialogue so GetDialogueFrom(entity) returns a usable object
+        sharedLua->new_usertype<Uma_UI::Dialogue>("Dialogue",
+            // GetSequence(id) → table of DialogueLine, or nil
+            "GetSequence", [this](Uma_UI::Dialogue& data, const std::string& seqId) -> sol::object
+            {
+                const Uma_UI::DialogueSequence* seq = data.FindSequence(seqId);
+                if (!seq)
+                    return sol::nil;
+
+                sol::state_view L(sharedLua->lua_state());
+                sol::table lines = L.create_table(static_cast<int>(seq->lines.size()), 0);
+                for (size_t i = 0; i < seq->lines.size(); ++i)
+                {
+                    sol::table entry = L.create_table(0, 3);
+                    entry["speaker"] = seq->lines[i].speaker;
+                    entry["text"] = seq->lines[i].text;
+                    entry["portrait"] = seq->lines[i].portrait;
+                    lines[static_cast<int>(i) + 1] = entry;
+                }
+                return lines;
+            },
+
+            // GetLineCount(id) → int (useful for Lua-side validation)
+            "GetLineCount", [](Uma_UI::Dialogue& data, const std::string& seqId) -> int
+            {
+                const Uma_UI::DialogueSequence* seq = data.FindSequence(seqId);
+                return seq ? static_cast<int>(seq->lines.size()) : 0;
+            },
+
+            // HasSequence(id) → bool
+            "HasSequence", [](Uma_UI::Dialogue& data, const std::string& seqId) -> bool
+            {
+                return data.FindSequence(seqId) != nullptr;
+            }
+        );
+
+        // Convenience free function: GetDialogueSequence(entity, id) → line table or nil
+        // Matches the call style used in DialogueController.lua.
+        sharedLua->set_function("GetDialogueSequence",
+            [this](Entity entity, const std::string& seqId) -> sol::object
+            {
+                if (!pCoordinator->HasActiveEntity(entity))
+                    return sol::nil;
+
+                auto& arr = pCoordinator->GetComponentArray<Uma_UI::Dialogue>();
+                if (!arr.Has(entity))
+                    return sol::nil;
+
+                const Uma_UI::DialogueSequence* seq = arr.GetData(entity).FindSequence(seqId);
+                if (!seq)
+                    return sol::nil;
+
+                sol::state_view L(sharedLua->lua_state());
+                sol::table lines = L.create_table(static_cast<int>(seq->lines.size()), 0);
+                for (size_t i = 0; i < seq->lines.size(); ++i)
+                {
+                    sol::table entry = L.create_table(0, 3);
+                    entry["speaker"] = seq->lines[i].speaker;
+                    entry["text"] = seq->lines[i].text;
+                    entry["portrait"] = seq->lines[i].portrait;
+                    lines[static_cast<int>(i) + 1] = entry;
+                }
+                return lines;
+            });
+
         // Register Camera
         sharedLua->new_usertype<Camera>("Camera",
             "zoom", &Camera::mZoom,
             "followPlayer", &Camera::followPlayer
         );
+
+        // Register Cutscene
+        sharedLua->new_usertype<Cutscene>("Cutscene",
+            "playOnce", &Cutscene::playOnce,
+            "hasPlayed", &Cutscene::hasPlayed
+        );
+
+        // GetCutsceneActions(entity) -> table of actions or nil
+        sharedLua->set_function("GetCutsceneActions",
+            [this](Entity entity) -> sol::object
+            {
+                if (!pCoordinator->HasActiveEntity(entity))
+                    return sol::nil;
+
+                auto& arr = pCoordinator->GetComponentArray<Cutscene>();
+                if (!arr.Has(entity))
+                    return sol::nil;
+
+                auto& cutscene = arr.GetData(entity);
+                sol::state_view L(sharedLua->lua_state());
+                sol::table actions = L.create_table(static_cast<int>(cutscene.actions.size()), 0);
+                for (size_t i = 0; i < cutscene.actions.size(); ++i)
+                {
+                    sol::table entry = L.create_table(0, 5);
+                    entry["type"] = static_cast<int>(cutscene.actions[i].type);
+                    entry["targetX"] = cutscene.actions[i].targetPosition.x;
+                    entry["targetY"] = cutscene.actions[i].targetPosition.y;
+                    entry["duration"] = cutscene.actions[i].duration;
+                    entry["dialogueSequenceId"] = cutscene.actions[i].dialogueSequenceId;
+                    entry["shakeIntensity"] = cutscene.actions[i].shakeIntensity;
+                    entry["targetZoom"] = cutscene.actions[i].targetZoom;
+                    actions[static_cast<int>(i) + 1] = entry;
+                }
+                return actions;
+            });
+
+        // SetCutscenePlayed(entity, played) - mark cutscene as played
+        sharedLua->set_function("SetCutscenePlayed",
+            [this](Entity entity, bool played)
+            {
+                if (!pCoordinator->HasActiveEntity(entity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Cutscene>();
+                if (!arr.Has(entity)) return;
+                arr.GetData(entity).hasPlayed = played;
+            });
+
+        // SetCameraFollow(cameraEntity, follow) - enable/disable player follow
+        sharedLua->set_function("SetCameraFollow",
+            [this](Entity cameraEntity, bool follow)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                arr.GetData(cameraEntity).followPlayer = follow;
+            });
+
+        // SetCameraPosition(cameraEntity, x, y) - snap camera to position
+        sharedLua->set_function("SetCameraPosition",
+            [this](Entity cameraEntity, float x, float y)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& tfArr = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArr.Has(cameraEntity)) return;
+                tfArr.GetData(cameraEntity).position = Vec2(x, y);
+            });
+
+        // GetTransformPosition(entity) -> x, y (multi-return)
+        sharedLua->set_function("GetTransformPosition",
+            [this](Entity entity) -> std::tuple<float, float>
+            {
+                if (!pCoordinator->HasActiveEntity(entity))
+                    return { 0.0f, 0.0f };
+                auto& tfArr = pCoordinator->GetComponentArray<Transform>();
+                if (!tfArr.Has(entity))
+                    return { 0.0f, 0.0f };
+                auto& pos = tfArr.GetData(entity).worldPosition;
+                return { pos.x, pos.y };
+            });
+
+        // CameraShake(cameraEntity, intensity, duration) - trigger screen shake
+        sharedLua->set_function("CameraShake",
+            [this](Entity cameraEntity, float intensity, float duration)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                auto& cam = arr.GetData(cameraEntity);
+                cam.mShakeIntensity = intensity;
+                cam.mShakeTimer = duration;
+            });
+
+        // SetCameraZoom(cameraEntity, zoom) - set camera zoom level
+        sharedLua->set_function("SetCameraZoom",
+            [this](Entity cameraEntity, float zoom)
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return;
+                arr.GetData(cameraEntity).mZoom = zoom;
+            });
+
+        // GetCameraZoom(cameraEntity) -> zoom value
+        sharedLua->set_function("GetCameraZoom",
+            [this](Entity cameraEntity) -> float
+            {
+                if (!pCoordinator->HasActiveEntity(cameraEntity)) return 10.0f;
+                auto& arr = pCoordinator->GetComponentArray<Camera>();
+                if (!arr.Has(cameraEntity)) return 10.0f;
+                return arr.GetData(cameraEntity).mZoom;
+            });
+
+        // FindCameraEntity() -> entity or -1
+        sharedLua->set_function("FindCameraEntity",
+            [this]() -> Entity
+            {
+                auto& camArr = pCoordinator->GetComponentArray<Camera>();
+                auto entities = camArr.GetAllEntities();
+                if (entities.empty()) return static_cast<Entity>(-1);
+                return entities[0];
+            });
+
+        // Cutscene active flag - freezes gameplay systems (player, enemies, pathfinding, projectiles)
+        sharedLua->set_function("SetCutsceneActive", [](bool active) {
+            Uma_Engine::Application::GetCutsceneActive() = active;
+        });
+        sharedLua->set_function("IsCutsceneActive", []() -> bool {
+            return Uma_Engine::Application::GetCutsceneActive();
+        });
+
+        // CutsceneActionType constants for Lua
+        sharedLua->set("CUTSCENE_SET_CAMERA", 0);
+        sharedLua->set("CUTSCENE_LERP_CAMERA", 1);
+        sharedLua->set("CUTSCENE_PLAY_DIALOGUE", 2);
+        sharedLua->set("CUTSCENE_WAIT", 3);
+        sharedLua->set("CUTSCENE_RETURN_CAMERA", 4);
+        sharedLua->set("CUTSCENE_SHAKE_CAMERA", 5);
 
         sharedLua->new_usertype<PathFinding>("PathFinding",
             "goal", &PathFinding::goal,
@@ -1325,37 +1548,37 @@ namespace Uma_ECS
             "renderOrder", &EmitterInstance::renderOrder,
 
             // Configuration structs
-            "appearance", & EmitterInstance::appearance,
-            "fade", & EmitterInstance::fade,
-            "physics", & EmitterInstance::physics,
-            "spawn", & EmitterInstance::spawn,
-            "emission", & EmitterInstance::emission,
-            "screenFill", & EmitterInstance::screenFill,
+            "appearance", &EmitterInstance::appearance,
+            "fade", &EmitterInstance::fade,
+            "physics", &EmitterInstance::physics,
+            "spawn", &EmitterInstance::spawn,
+            "emission", &EmitterInstance::emission,
+            "screenFill", &EmitterInstance::screenFill,
 
             // Runtime state (read-only via property)
             "particles", sol::property(
-                [](EmitterInstance& e) -> std::vector<Particle>& { return e.particles; }
+                [](EmitterInstance& e) -> std::vector<Particle>&{ return e.particles; }
             ),
             "initialized", sol::readonly(&EmitterInstance::initialized),
             "emissionTimer", sol::readonly(&EmitterInstance::emissionTimer),
             "burstTimer", sol::readonly(&EmitterInstance::burstTimer),
 
             // Control methods
-            "Play", & EmitterInstance::Play,
-            "Stop", & EmitterInstance::Stop,
-            "StopAndClear", & EmitterInstance::StopAndClear,
-            "Pause", & EmitterInstance::Pause,
-            "Resume", & EmitterInstance::Resume,
-            "IsPlaying", & EmitterInstance::IsPlaying,
-            "HasActiveParticles", & EmitterInstance::HasActiveParticles,
-            "GetActiveParticleCount", & EmitterInstance::GetActiveParticleCount
+            "Play", &EmitterInstance::Play,
+            "Stop", &EmitterInstance::Stop,
+            "StopAndClear", &EmitterInstance::StopAndClear,
+            "Pause", &EmitterInstance::Pause,
+            "Resume", &EmitterInstance::Resume,
+            "IsPlaying", &EmitterInstance::IsPlaying,
+            "HasActiveParticles", &EmitterInstance::HasActiveParticles,
+            "GetActiveParticleCount", &EmitterInstance::GetActiveParticleCount
         );
 
         // ParticleEmitter component
         sharedLua->new_usertype<ParticleEmitter>("ParticleEmitter",
             // Access to emitters vector
             "emitters", sol::property(
-                [](ParticleEmitter& pe) -> std::vector<EmitterInstance>& { return pe.emitters; }
+                [](ParticleEmitter& pe) -> std::vector<EmitterInstance>&{ return pe.emitters; }
             ),
 
             // Management methods
@@ -1367,21 +1590,21 @@ namespace Uma_ECS
                     return pe.AddEmitter();
                 }
             ),
-            "RemoveEmitter", & ParticleEmitter::RemoveEmitter,
+            "RemoveEmitter", &ParticleEmitter::RemoveEmitter,
 
             // Getters - return pointers, Sol2 handles nullptr
             "GetEmitter", sol::overload(
-                sol::resolve<EmitterInstance* (int)>(&ParticleEmitter::GetEmitter),
-                sol::resolve<EmitterInstance* (const std::string&)>(&ParticleEmitter::GetEmitter)
+                sol::resolve<EmitterInstance * (int)>(&ParticleEmitter::GetEmitter),
+                sol::resolve<EmitterInstance * (const std::string&)>(&ParticleEmitter::GetEmitter)
             ),
 
-            "GetEmitterCount", & ParticleEmitter::GetEmitterCount,
-            "PlayAll", & ParticleEmitter::PlayAll,
-            "StopAll", & ParticleEmitter::StopAll
+            "GetEmitterCount", &ParticleEmitter::GetEmitterCount,
+            "PlayAll", &ParticleEmitter::PlayAll,
+            "StopAll", &ParticleEmitter::StopAll
         );
     }
 
-    void LuaScriptingSystem::RegisterEntityQueries() 
+    void LuaScriptingSystem::RegisterEntityQueries()
     {
         // -----------------------------------------------------------
         // ENTITY QUERY FUNCTIONS (GLOBAL)
@@ -1445,6 +1668,8 @@ namespace Uma_ECS
         using Effects = Uma_UI::Effects;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
+        using Dialogue = Uma_UI::Dialogue;
+        using Cutscene = Uma_ECS::Cutscene;
 
        // Component list macro
 #define COMPONENT_LIST      \
@@ -1465,6 +1690,8 @@ namespace Uma_ECS
         X(AudioComponent)   \
         X(Slider)           \
         X(Checkbox)         \
+        X(SpriteMaterial)   \
+        X(Cutscene)         \
     // -----------------------------------------------------------
     // ENTITY WRAPPER
     // -----------------------------------------------------------
@@ -1683,10 +1910,10 @@ namespace Uma_ECS
 
         script.scriptEnv = std::make_shared<sol::environment>(*sharedLua, sol::create, sharedLua->globals());
 
-            // Bind entity-specific functions to this environment
+        // Bind entity-specific functions to this environment
         BindEntityAPI(entity, (*script.scriptEnv));
 
-       // load and run the script
+        // load and run the script
         try
         {
             auto result = sharedLua->script_file(script.scriptPath, *script.scriptEnv);
@@ -1705,7 +1932,7 @@ namespace Uma_ECS
             }
         }
         catch (const sol::error& e)
-        {    
+        {
             script.hasError = true;
             script.errorMessage = e.what();
 
@@ -1728,7 +1955,7 @@ namespace Uma_ECS
         script.isInitialized = true;
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
-           "Lua script loaded: " + script.scriptPath);
+            "Lua script loaded: " + script.scriptPath);
     }
 
     void LuaScriptingSystem::UnsubscribeEvents()
@@ -1919,23 +2146,25 @@ namespace Uma_ECS
             CallLuaFunction(script, callbackName, other, triggerOwner);
         }
     }
-     
+
     // this function is to allow the luascript to be able to get other component 
     // of this entity
     // key difference from register LUA API is that this is only for the entity 
     // that owns the script (non global)
     void LuaScriptingSystem::BindEntityAPI(Entity entity, sol::environment& env)
     {
-       // USING MARCO TO DO THE JOB 
-       // More effecient
+        // USING MACRO TO DO THE JOB 
+        // More efficient
 
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
+        using Dialogue = Uma_UI::Dialogue;
+        using Cutscene = Uma_ECS::Cutscene;
 
-#define COMPONENT_LIST                          \
+#define COMPONENT_LIST \
         BIND_COMPONENT_GETTER(Transform)        \
         BIND_COMPONENT_GETTER(RigidBody)        \
         BIND_COMPONENT_GETTER(Sprite)           \
@@ -1949,10 +2178,13 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Image)            \
         BIND_COMPONENT_GETTER(ParticleEmitter)  \
         BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(Dialogue)         \
         BIND_COMPONENT_GETTER(AudioComponent)   \
+        BIND_COMPONENT_GETTER(SpriteMaterial)   \
+        BIND_COMPONENT_GETTER(Cutscene)         \
         BIND_COMPONENT_GETTER(Slider)           \
         BIND_COMPONENT_GETTER(Checkbox)         \
-        //BIND_COMPONENT_GETTER(Projectile)     \
+        //BIND_COMPONENT_GETTER(Projectile)\
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \
@@ -2082,7 +2314,7 @@ namespace Uma_ECS
     {
         auto& scriptArray = pCoordinator->GetComponentArray<LuaScript>();
         if (!scriptArray.Has(entity)) return;
-        
+
         auto& scriptComponent = scriptArray.GetData(entity);
         if (scriptIndex >= scriptComponent.scripts.size()) return;
 
@@ -2132,7 +2364,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("GetMouseWorldPosition", [this]() -> Vec2 {
 
-            return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{0, 0};
+            return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{ 0, 0 };
             });
     }
 

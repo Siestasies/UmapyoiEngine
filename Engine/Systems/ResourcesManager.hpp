@@ -37,6 +37,8 @@ All rights reserved.
 #include <unordered_map>
 #include <unordered_set>
 #include <optional>
+#include <vector>
+
 namespace Uma_ECS
 {
     class Coordinator;
@@ -203,13 +205,22 @@ namespace Uma_Engine
         */
         const std::unordered_map<std::string, FontData>& GetLoadedFonts() const;
 
-        // Shaders
+        // Default Shaders
         bool LoadShader(const std::string& shaderName, const std::string& vertexPath, const std::string& fragmentPath);
         void UnloadShader(const std::string& shaderName);
         std::shared_ptr<Shader> GetShader(const std::string& shaderName);
         bool HasShader(const std::string& shaderName) const;
         void UnloadAllShaders();
         const std::unordered_map<std::string, std::shared_ptr<Shader>>& GetLoadedShaders() const;
+
+        // Effect Shaders
+        void LoadAllEffectShaders();
+        bool LoadEffectShader(const std::string& effectName, const std::string& fragPath);
+        void RefreshEffectShaders();
+        bool CreateEffectShaderFile(const std::string& effectName);
+        std::vector<std::string> GetEffectShaderNames() const;
+        bool EffectShaderFileExists(const std::string& effectName) const;
+        const ShaderEffect* GetEffect(const std::string& effectName) const;
 
         // Prefab
         bool LoadPrefab(const std::string& filePath);
@@ -293,5 +304,8 @@ namespace Uma_Engine
         std::unordered_map<std::string, std::shared_ptr<Shader>> mShaders{};
 
         std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>> mPrefabs;
+
+        std::unordered_map<std::string, ShaderEffect> mEffects{};
+        void ReflectUniforms(ShaderEffect& effect);
     };
 }

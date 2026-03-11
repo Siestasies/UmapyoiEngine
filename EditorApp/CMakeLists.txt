@@ -69,6 +69,22 @@ add_executable(UmapyoiEditor WIN32 ${EDITOR_APP_SOURCES} ${EDITOR_APP_HEADERS})
 
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 
+
+target_compile_definitions(UmapyoiEditor PRIVATE UMAPYOI_EDITOR)
+
+# Copy PlayFab DLLs next to the executable after build
+foreach(DLL
+    PlayFabServices.Win32.dll
+    PlayFabCore.Win32.dll
+    libHttpClient.Win32.dll)
+    add_custom_command(TARGET UmapyoiEditor POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${PLAYFAB_BIN_DIR}/${DLL}"
+            $<TARGET_FILE_DIR:UmapyoiEditor>
+        COMMENT "Copying ${DLL} to editor output"
+    )
+endforeach()
+
 # Set working directory for Visual Studio debugging
 set_target_properties(UmapyoiEditor PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:UmapyoiEditor>"

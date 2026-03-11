@@ -39,7 +39,6 @@ namespace Uma_ECS
 {
     void CameraSystem::Update(float dt)
     {
-        (void)dt;
         if (aEntities.size() == 0) return;
 
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
@@ -53,6 +52,9 @@ namespace Uma_ECS
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 
+        // Strip previous shake offset to recover the true base position
+        cam_tf.position -= cam_c.mShakeOffset;
+
         if (cam_c.followPlayer && pArray.Size() > 0)
         {
             Entity player = pArray.GetEntity(0);
@@ -60,7 +62,7 @@ namespace Uma_ECS
             cam_tf.position = player_tf.worldPosition;
         }
 
-        // Pixel-perfect snap FIRST, on the base position
+        // Pixel-perfect snap on the base position
         float pixelSize = 1.0f / cam_c.mZoom;
         cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
         cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
@@ -83,7 +85,7 @@ namespace Uma_ECS
             }
         }
 
-        // Apply shake AFTER snap � shake is intentionally sub-pixel
+        // Apply shake
         cam_tf.position += cam_c.mShakeOffset;
     }
 }
