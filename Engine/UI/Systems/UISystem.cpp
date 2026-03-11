@@ -325,7 +325,6 @@ namespace Uma_UI
                     button.currentState = Uma_UI::ButtonState::Hovered;
                     if (!button.scriptName.empty())
                     {
-                        system->CallScriptFunction(entity, button.scriptName, "OnClick");
                         system->CallScriptFunction(entity, button.scriptName, "OnPointerClick");
                         system->CallScriptFunction(entity, button.scriptName, "OnPointerUp");
                     }

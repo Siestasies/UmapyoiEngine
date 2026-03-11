@@ -42,6 +42,7 @@ All rights reserved.
 #include "../UI/Components/Dialogue.h"
 #include "../UI/Components/Slider.h"
 #include "../UI/Components/Checkbox.h"
+#include "../UI/Components/Button.h"
 #include "../Components/AudioComponent.h"
 
 #include "Events/ApplicationEvents.h"
@@ -916,6 +917,14 @@ namespace Uma_ECS
         //Register Text component
         sharedLua->new_usertype<Text>("Text",
             "text", &Text::text,
+            "color", sol::property(
+                [](Text& txt) -> Uma_UI::Color& {
+                    return txt.color;
+                },
+                [](Text& txt, const Uma_UI::Color& c) {
+                    txt.color = c;
+                }
+            ),
             "visible", &Text::visible
         );
 
@@ -1103,7 +1112,14 @@ namespace Uma_ECS
             }
         );
 
-        // ── Dialogue ──────────────────────────────────────────────────────────
+        sharedLua->new_usertype<Uma_UI::Button>("Button",
+            "interactable", &Uma_UI::Button::interactable,
+            "currentState", &Uma_UI::Button::currentState,
+            "normalColour", &Uma_UI::Button::normalColour,
+            "hoverColour", &Uma_UI::Button::hoverColour,
+            "pressedColour", &Uma_UI::Button::pressedColour,
+            "disabledColour", &Uma_UI::Button::disabledColour
+        );
 
         // Register DialogueLine so Lua can read fields off returned line tables
         sharedLua->new_usertype<Uma_UI::DialogueLine>("DialogueLine",
@@ -1518,6 +1534,7 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Button = Uma_UI::Button;
         using Dialogue = Uma_UI::Dialogue;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
@@ -1537,6 +1554,7 @@ namespace Uma_ECS
         X(Text)             \
         X(Image)            \
         X(Effects)          \
+        X(Button)         \
         X(Dialogue)         \
         X(ParticleEmitter)  \
         X(AudioComponent)   \
@@ -2012,6 +2030,7 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Button = Uma_UI::Button;
         using Dialogue = Uma_UI::Dialogue;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
@@ -2030,6 +2049,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Image)            \
         BIND_COMPONENT_GETTER(ParticleEmitter)  \
         BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(Button)           \
         BIND_COMPONENT_GETTER(Dialogue)         \
         BIND_COMPONENT_GETTER(AudioComponent)   \
         BIND_COMPONENT_GETTER(Slider)           \

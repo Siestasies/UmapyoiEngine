@@ -344,9 +344,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "r": 0.792,
+                            "g": 0.65,
+                            "b": 0.584,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -378,7 +378,14 @@
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": []
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/help_btn.lua",
+                                "scriptName": "help_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
@@ -504,9 +511,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "r": 0.792,
+                            "g": 0.65,
+                            "b": 0.584,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -664,9 +671,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "r": 0.792,
+                            "g": 0.65,
+                            "b": 0.584,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -831,9 +838,9 @@
                         "sortingOrder": 0,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "r": 0.792,
+                            "g": 0.65,
+                            "b": 0.584,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -930,7 +937,14 @@
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": []
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/close_btn.lua",
+                                "scriptName": "close_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
@@ -1071,7 +1085,7 @@
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "cfm pnl",
+                        "name": "cfm mnu",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -1125,7 +1139,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1321,7 +1335,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.701
+                            "a": 0.7
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1334,7 +1348,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.701
+                            "a": 0.7
                         },
                         "hoverColour": {
                             "r": 0.898,
@@ -1478,7 +1492,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.701
+                            "a": 0.7
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1491,7 +1505,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.701
+                            "a": 0.7
                         },
                         "hoverColour": {
                             "r": 0.898,
