@@ -917,14 +917,7 @@ namespace Uma_ECS
         //Register Text component
         sharedLua->new_usertype<Text>("Text",
             "text", &Text::text,
-            "color", sol::property(
-                [](Text& txt) -> Uma_UI::Color& {
-                    return txt.color;
-                },
-                [](Text& txt, const Uma_UI::Color& c) {
-                    txt.color = c;
-                }
-            ),
+            "color", &Text::color,
             "visible", &Text::visible
         );
 

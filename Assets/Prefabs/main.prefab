@@ -262,7 +262,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "play_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -344,9 +344,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 0.792,
-                            "g": 0.65,
-                            "b": 0.584,
+                            "r": 0.791,
+                            "g": 0.648,
+                            "b": 0.583,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -429,7 +429,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "help_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -511,9 +511,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 0.792,
-                            "g": 0.65,
-                            "b": 0.584,
+                            "r": 0.791,
+                            "g": 0.648,
+                            "b": 0.583,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -545,7 +545,14 @@
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": []
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/cred_btn.lua",
+                                "scriptName": "cred_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
@@ -589,7 +596,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "cred_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -671,9 +678,9 @@
                         "sortingOrder": 1,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 0.792,
-                            "g": 0.65,
-                            "b": 0.584,
+                            "r": 0.791,
+                            "g": 0.648,
+                            "b": 0.583,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -756,7 +763,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "quit_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -838,9 +845,9 @@
                         "sortingOrder": 0,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 0.792,
-                            "g": 0.65,
-                            "b": 0.584,
+                            "r": 0.791,
+                            "g": 0.648,
+                            "b": 0.583,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -988,7 +995,7 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "close_btn.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -1301,6 +1308,16 @@
                             17
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/yes_btn.lua",
+                                "scriptName": "yes_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
                         "isRoot": false
@@ -1335,7 +1352,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1343,12 +1360,12 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "yes_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "hoverColour": {
                             "r": 0.898,
@@ -1458,6 +1475,16 @@
                             19
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/no_btn.lua",
+                                "scriptName": "no_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
                         "isRoot": false
@@ -1492,7 +1519,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1500,12 +1527,12 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "no_btn.lua",
                         "normalColour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "hoverColour": {
                             "r": 0.898,
