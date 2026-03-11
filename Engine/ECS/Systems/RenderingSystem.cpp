@@ -356,13 +356,11 @@ namespace Uma_ECS
                         tilePos.x = std::round(tilePos.x);
                         tilePos.y = std::round(tilePos.y);
 
-                        // Tileset indices for UVs
-                        int tileset_row = layer.tiles[i] / int(tilemap.tileset.columns);
-                        int tileset_col = layer.tiles[i] % int(tilemap.tileset.columns);
-
-                        Vec2 uvOffset(0.0f, 0.0f);
-                        Vec2 uvSize(1.0f, 1.0f);
-                        tilemap.tileset.GetUVs(uvOffset, uvSize, Vec2(static_cast<float>(tileset_col), static_cast<float>(tileset_row)));
+                        // Get UVs with half-pixel inset to prevent tile bleeding
+                        float u0, v0, u1, v1;
+                        tilemap.tileset.GetUVs(layer.tiles[i], u0, v0, u1, v1);
+                        Vec2 uvOffset(u0, v0);
+                        Vec2 uvSize(u1 - u0, v1 - v0);
 
                         allSprites.push_back(LayeredSprite
                             {
