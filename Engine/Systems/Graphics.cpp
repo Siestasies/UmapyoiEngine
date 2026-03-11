@@ -559,10 +559,16 @@ namespace Uma_Engine
         float halfWidth = (width * 0.5f) / cam.zoom;
         float halfHeight = (height * 0.5f) / cam.zoom;
 
-        float left = cam.pos.x - halfWidth;
-        float right = cam.pos.x + halfWidth;
-        float bottom = cam.pos.y - halfHeight;
-        float top = cam.pos.y + halfHeight;
+        // Snap camera position to pixel grid to prevent sub-pixel seams in tilemaps
+        float pixelSize = 1.0f / cam.zoom;
+        float snappedX = std::round(cam.pos.x / pixelSize) * pixelSize;
+        float snappedY = std::round(cam.pos.y / pixelSize) * pixelSize;
+
+        // Calculate projection bounds centered on snapped camera position
+        float left = snappedX - halfWidth;
+        float right = snappedX + halfWidth;
+        float bottom = snappedY - halfHeight;
+        float top = snappedY + halfHeight;
 
         mProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 
