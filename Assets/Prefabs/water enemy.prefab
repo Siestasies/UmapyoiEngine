@@ -35,60 +35,66 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.349,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "WaterDemonSuicide": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon ChargenAttack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.6,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Explode attack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },

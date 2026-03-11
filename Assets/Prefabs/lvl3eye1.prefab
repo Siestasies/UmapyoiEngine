@@ -6,10 +6,10 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "tut room eye",
+                        "name": "lvl3eye1",
                         "position": {
-                            "x": -233.332,
-                            "y": -22.857
+                            "x": -281.2,
+                            "y": -7.699
                         },
                         "rotation": {
                             "x": 0.0,
@@ -44,6 +44,18 @@
                             1.0
                         ],
                         "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -102,7 +114,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/tut room eye.prefab",
+                        "prefabPath": "Assets/Prefabs/lvl3eye1.prefab",
                         "isRoot": true
                     }
                 }
@@ -112,10 +124,10 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "static bird",
+                        "name": "bird enemy",
                         "position": {
-                            "x": 0.699,
-                            "y": -35.194
+                            "x": 0.0,
+                            "y": 21.899
                         },
                         "rotation": {
                             "x": 0.0,
@@ -142,10 +154,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.23,
+                                "volume": 0.2,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
@@ -155,8 +167,8 @@
                                 "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Damage Scream": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
@@ -164,10 +176,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.1,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -371,9 +383,9 @@
                         "mHealth": 100,
                         "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 0.0,
+                        "mSpeed": 10.0,
                         "mAttackDamage": 15,
-                        "mAttackSpeed": 100000.0,
+                        "mAttackSpeed": 1.5,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -428,7 +440,7 @@
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/static bird.prefab",
+                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
                         "isRoot": true
                     },
                     "struct Uma_ECS::ParticleEmitter": {

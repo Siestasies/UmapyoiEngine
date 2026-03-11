@@ -6,10 +6,10 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "tut room eye",
+                        "name": "lvl3eye3",
                         "position": {
-                            "x": -233.332,
-                            "y": -22.857
+                            "x": -152.38,
+                            "y": 152.857
                         },
                         "rotation": {
                             "x": 0.0,
@@ -44,6 +44,18 @@
                             1.0
                         ],
                         "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -102,7 +114,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/tut room eye.prefab",
+                        "prefabPath": "Assets/Prefabs/lvl3eye3.prefab",
                         "isRoot": true
                     }
                 }
@@ -112,75 +124,74 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "static bird",
+                        "name": "wind enemy",
                         "position": {
-                            "x": 0.699,
-                            "y": -35.194
+                            "x": 0.0,
+                            "y": -37.5
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.689,
-                            "y": 1.519
+                            "x": 30.0,
+                            "y": 30.0
                         },
                         "parent": 0,
                         "children": [
                             2,
-                            3,
-                            4
+                            3
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
-                            "Fire Demon Shoot Fireball": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                            "WindDemonAttack(Charge)": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.23,
+                                "volume": 0.2,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
-                            "Fire Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
+                            "WindDemonDamage": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.3,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
-                            "Fire Demon Damage Scream": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                            "WindDemonDeath": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.25,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire bird.png",
+                        "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
                         "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
-                        "Native": true,
-                        "gridX": 0.0,
-                        "gridY": 0.0,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -198,11 +209,11 @@
                             "y": 0.0
                         },
                         "acceleration": {
-                            "x": -0.0,
+                            "x": 0.0,
                             "y": 0.0
                         },
-                        "accel_strength": 500.0,
-                        "fric_coeff": 5.0
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
@@ -211,12 +222,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.2,
-                                    "y": 2.0
+                                    "x": 0.0,
+                                    "y": 0.0
                                 },
                                 "size": {
-                                    "x": 10.6,
-                                    "y": 3.7
+                                    "x": 0.3,
+                                    "y": 0.5
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -226,17 +237,32 @@
                             },
                             {
                                 "offset": {
-                                    "x": -2.0,
-                                    "y": -3.4
+                                    "x": 0.0,
+                                    "y": -0.4
                                 },
                                 "size": {
-                                    "x": 10.8,
-                                    "y": 1.399
+                                    "x": 0.5,
+                                    "y": 0.2
                                 },
                                 "purpose": 0,
                                 "layer": 4,
                                 "colliderMask": 8,
                                 "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -0.5
+                                },
+                                "size": {
+                                    "x": 1.5,
+                                    "y": 0.799
+                                },
+                                "purpose": 2,
+                                "layer": 4,
+                                "colliderMask": 2,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             }
                         ]
@@ -244,8 +270,8 @@
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonBase.lua",
-                                "scriptName": "FireDemonBase.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonBase.lua",
+                                "scriptName": "WindDemonBase.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -259,8 +285,8 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
-                                "scriptName": "FireDemonIdle.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonIdle.lua",
+                                "scriptName": "WindDemonIdle.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -274,18 +300,10 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonChase.lua",
-                                "scriptName": "FireDemonChase.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonChase.lua",
+                                "scriptName": "WindDemonChase.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
-                                    {
-                                        "name": "attackEnterRange",
-                                        "type": 0,
-                                        "value": 8.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
                                     {
                                         "name": "chaseExitRange",
                                         "type": 0,
@@ -293,14 +311,30 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackEnterRange",
+                                        "type": 0,
+                                        "value": 8.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
-                                "scriptName": "FireDemonAttack.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonAttack.lua",
+                                "scriptName": "WindDemonAttack.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
+                                    {
+                                        "name": "HoverSpd",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
                                     {
                                         "name": "chargeTime",
                                         "type": 0,
@@ -310,17 +344,17 @@
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "attackRange",
+                                        "name": "meleeRange",
                                         "type": 0,
-                                        "value": 5.0,
+                                        "value": 4.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "HoverSpd",
+                                        "name": "dashSpeed",
                                         "type": 0,
-                                        "value": 1.5,
+                                        "value": 10.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -336,14 +370,14 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
-                                "scriptName": "FireDemonStunned.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonDead.lua",
+                                "scriptName": "WindDemonDead.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "StunnedDuration",
+                                        "name": "deathDuration",
                                         "type": 0,
-                                        "value": 3.0,
+                                        "value": 2.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -351,14 +385,14 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonDead.lua",
-                                "scriptName": "FireDemonDead.lua",
+                                "scriptPath": "Assets/Scripts/WindDemonStunned.lua",
+                                "scriptName": "WindDemonStunned.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "deathDuration",
+                                        "name": "StunnedDuration",
                                         "type": 0,
-                                        "value": 2.0,
+                                        "value": 10.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -371,9 +405,9 @@
                         "mHealth": 100,
                         "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 0.0,
-                        "mAttackDamage": 15,
-                        "mAttackSpeed": 100000.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": 10,
+                        "mAttackSpeed": 1.5,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -382,53 +416,73 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "charging_atk",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 11,
+                                "name": "charging_atk2",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 32,
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
                             },
                             {
                                 "name": "idle",
-                                "framesX": 11,
-                                "framesY": 4,
+                                "framesX": 8,
+                                "framesY": 6,
                                 "startFrame": 0,
-                                "frameCount": 10,
-                                "speed": 10.0,
-                                "loop": true,
-                                "texturePath": ""
-                            },
-                            {
-                                "name": "die",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 33,
-                                "frameCount": 11,
+                                "frameCount": 12,
                                 "speed": 24.0,
-                                "loop": false,
-                                "texturePath": ""
+                                "loop": true,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
                             },
                             {
-                                "name": "attack",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 22,
+                                "name": "charging_atk1",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 16,
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "atk1",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 24,
+                                "frameCount": 4,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "atk2",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 40,
+                                "frameCount": 4,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "dead",
+                                "framesX": 8,
+                                "framesY": 3,
+                                "startFrame": 0,
+                                "frameCount": 24,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 2.png"
                             }
                         ]
                     },
                     "struct Uma_ECS::PathFinding": {
-                        "pathUpdateTimer": 0.133,
+                        "pathUpdateTimer": 0.0,
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/static bird.prefab",
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": true
                     },
                     "struct Uma_ECS::ParticleEmitter": {
@@ -523,33 +577,33 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "FireDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
-                                "name": "FireDemonDead.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
-                            },
-                            {
-                                "name": "FireDemonChase.lua",
+                                "name": "WindDemonChase.lua",
                                 "isActive": true,
                                 "scriptIndex": 1
                             },
                             {
-                                "name": "FireDemonAttack.lua",
+                                "name": "WindDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
+                            },
+                            {
+                                "name": "WindDemonAttack.lua",
                                 "isActive": true,
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "FireDemonStunned.lua",
+                                "name": "WindDemonDead.lua",
                                 "isActive": true,
                                 "scriptIndex": 3
+                            },
+                            {
+                                "name": "WindDemonStunned.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
                             }
                         ],
                         "nextId": 5,
-                        "current": "FireDemonIdle",
+                        "current": "",
                         "next": ""
                     }
                 }
@@ -559,66 +613,18 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "bird enemy child",
-                        "position": {
-                            "x": -1.7,
-                            "y": 4.006
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 5.059,
-                            "y": 3.38
-                        },
-                        "parent": 1,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire enemy shadow.png",
-                        "layer": 16,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": false,
-                        "Native": true,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 3,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "hp fill",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.638,
+                            "y": 0.07
                         },
                         "parent": 1,
                         "children": []
@@ -626,7 +632,7 @@
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
                         "layer": 128,
-                        "order": 20,
+                        "order": 19,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -645,28 +651,28 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": false
                     }
                 }
             },
             {
-                "id": 4,
+                "id": 3,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
+                        "name": "hp fill overlay",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.638,
+                            "y": 0.07
                         },
                         "parent": 1,
                         "children": []
@@ -703,7 +709,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/wind enemy.prefab",
                         "isRoot": false
                     }
                 }
@@ -714,13 +720,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/fire enemy shadow.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
                 "path": "assets/props animation.png"
-            },
-            {
-                "path": "assets/fire bird.png"
             },
             {
                 "path": "assets/whitepixel.png"
