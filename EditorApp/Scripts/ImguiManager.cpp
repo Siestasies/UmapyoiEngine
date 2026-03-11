@@ -6006,7 +6006,7 @@ namespace Uma_Engine
                     cutscene.actions.push_back(a);
                     m_hasUnsavedEdit = true;
                 }
-                ImGui::SameLine();
+                //ImGui::SameLine();
                 if (ImGui::Button("+ Lerp Zoom##addLerpZoom"))
                 {
                     Uma_ECS::CutsceneAction a;
@@ -6018,7 +6018,8 @@ namespace Uma_Engine
                 }
 
                 ImGui::Separator();
-                ImGui::TextDisabled("Tip: Add Collider (Trigger) + LuaScript (CutsceneTrigger.lua)");
+                ImGui::TextDisabled("Tip: Add Collider (Trigger + CL_PICKUP + CL_PLAYER mask)");
+                ImGui::TextDisabled("+ Rigidbody + LuaScript (CutsceneTrigger.lua)");
                 ImGui::TextDisabled("to activate this cutscene on player collision.");
 
                 EndComponentEdit(entity, coordinator, "Cutscene");
