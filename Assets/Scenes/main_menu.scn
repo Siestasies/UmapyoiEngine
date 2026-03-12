@@ -15,6 +15,9 @@
             },
             {
                 "path": "assets/floor_tatami.png"
+            },
+            {
+                "path": "assets/main menu fade out.png"
             }
         ],
         "fonts": [
@@ -90,11 +93,11 @@
             }
         },
         {
-            "id": 14,
+            "id": 21,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "fade",
+                    "name": "fade out",
                     "position": {
                         "x": 0.0,
                         "y": 0.0
@@ -109,11 +112,11 @@
                     },
                     "parent": -1,
                     "children": [
-                        15
+                        20
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/fade.prefab",
+                    "prefabPath": "Assets/Prefabs/fade out.prefab",
                     "isRoot": true
                 }
             }
