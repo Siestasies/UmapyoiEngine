@@ -2388,7 +2388,7 @@
             },
             {
                 "id": 33,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "complete",
@@ -2477,12 +2477,12 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "pivot": {
                             "x": 0.5,
@@ -2493,8 +2493,8 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 1000.0,
-                            "y": 1000.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "isDirty": true
                     },
@@ -2508,10 +2508,10 @@
                             "a": 1.0
                         },
                         "visible": true,
-                        "fillDirection": 1,
-                        "fillAmount": 0.0,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
                         "spriteSheetGrid": {
-                            "x": 1.0,
+                            "x": 7.0,
                             "y": 1.0
                         },
                         "spriteCell": {
@@ -2527,10 +2527,10 @@
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "",
-                                "property": 4,
+                                "name": "SpriteAnim",
+                                "property": 5,
                                 "easing": 0,
-                                "duration": 0.5,
+                                "duration": 5.0,
                                 "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
@@ -2557,8 +2557,8 @@
                                 "startFloat": 0.0,
                                 "endFloat": 1.0,
                                 "startFrame": 0,
-                                "endFrame": 0,
-                                "fps": 12.0,
+                                "endFrame": 6,
+                                "fps": 24.0,
                                 "pingPong": false
                             }
                         ]
@@ -2608,8 +2608,8 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 2000.0,
-                            "y": 2000.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "isDirty": true
                     },
@@ -2742,13 +2742,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/red button.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
-                            "a": 0.0
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -3802,7 +3802,7 @@
             },
             {
                 "id": 50,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "options",
@@ -3920,7 +3920,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -4017,6 +4017,16 @@
                             55
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/master_cbx.lua",
+                                "scriptName": "master_cbx.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -4049,7 +4059,7 @@
                         "interactable": true,
                         "backgroundEntity": 56,
                         "checkmarkEntity": 55,
-                        "scriptName": "",
+                        "scriptName": "master_cbx.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4057,9 +4067,9 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -4270,6 +4280,16 @@
                             59
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/master_sld.lua",
+                                "scriptName": "master_sld.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -4307,7 +4327,7 @@
                         "backgroundEntity": 57,
                         "fillEntity": 58,
                         "handleEntity": 59,
-                        "scriptName": "",
+                        "scriptName": "master_sld.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4315,9 +4335,9 @@
                             "a": 1.0
                         },
                         "highlightColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -4631,6 +4651,16 @@
                             63
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/bgm_cbx.lua",
+                                "scriptName": "bgm_cbx.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -4663,7 +4693,7 @@
                         "interactable": true,
                         "backgroundEntity": 60,
                         "checkmarkEntity": 61,
-                        "scriptName": "",
+                        "scriptName": "bgm_cbx.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4671,9 +4701,9 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -4884,6 +4914,16 @@
                             67
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/bgm_sld.lua",
+                                "scriptName": "bgm_sld.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -4921,7 +4961,7 @@
                         "backgroundEntity": 65,
                         "fillEntity": 66,
                         "handleEntity": 67,
-                        "scriptName": "",
+                        "scriptName": "bgm_sld.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4929,9 +4969,9 @@
                             "a": 1.0
                         },
                         "highlightColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -5245,6 +5285,16 @@
                             71
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/sfx_cbx.lua",
+                                "scriptName": "sfx_cbx.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -5277,7 +5327,7 @@
                         "interactable": true,
                         "backgroundEntity": 56,
                         "checkmarkEntity": 55,
-                        "scriptName": "",
+                        "scriptName": "sfx_cbx.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -5285,9 +5335,9 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -5498,6 +5548,16 @@
                             75
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/sfx_sld.lua",
+                                "scriptName": "sfx_sld.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -5535,7 +5595,7 @@
                         "backgroundEntity": 57,
                         "fillEntity": 58,
                         "handleEntity": 59,
-                        "scriptName": "",
+                        "scriptName": "sfx_sld.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -5543,9 +5603,9 @@
                             "a": 1.0
                         },
                         "highlightColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "disabledColour": {
