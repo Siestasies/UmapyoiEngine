@@ -48,18 +48,6 @@
                         ],
                         "alpha": 1.0
                     },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 0.0,
-                        "fric_coeff": 0.0
-                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -129,7 +117,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": -35.799,
+                            "x": -35.798,
                             "y": -21.7
                         },
                         "rotation": {
@@ -1332,7 +1320,7 @@
                         "name": "water enemy",
                         "position": {
                             "x": 34.2,
-                            "y": -34.799
+                            "y": -34.798
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1359,10 +1347,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
@@ -1370,10 +1358,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
@@ -1381,10 +1369,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.349,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "WaterDemonSuicide": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
@@ -1394,8 +1382,8 @@
                                 "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon ChargenAttack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
@@ -1403,10 +1391,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.6,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Explode attack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
@@ -1414,10 +1402,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -2059,7 +2047,7 @@
                         "name": "water enemy",
                         "position": {
                             "x": -25.1,
-                            "y": -57.599
+                            "y": -57.597
                         },
                         "rotation": {
                             "x": 0.0,
@@ -2086,10 +2074,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
@@ -2097,10 +2085,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
@@ -2108,10 +2096,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.349,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "WaterDemonSuicide": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
@@ -2121,8 +2109,8 @@
                                 "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon ChargenAttack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
@@ -2130,10 +2118,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.6,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Water Demon Explode attack": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
@@ -2141,10 +2129,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },

@@ -9,7 +9,7 @@
                         "name": "lvl3eye1",
                         "position": {
                             "x": -281.2,
-                            "y": -7.699
+                            "y": -7.698
                         },
                         "rotation": {
                             "x": 0.0,
@@ -44,18 +44,6 @@
                             1.0
                         ],
                         "alpha": 1.0
-                    },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 0.0,
-                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
