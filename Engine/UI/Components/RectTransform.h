@@ -105,7 +105,7 @@ namespace Uma_UI
             size.AddMember("y", sizeDelta.y, allocator);
             value.AddMember("sizeDelta", size, allocator);
 
-            // computedRect is resolution-dependent — never persist it.
+            // computedRect is resolution-dependent, never persist it.
             // Always mark dirty on load so layout recomputes for the actual viewport.
             value.AddMember("isDirty", true, allocator);
         }
@@ -136,7 +136,7 @@ namespace Uma_UI
             sizeDelta.x = size["x"].GetFloat();
             sizeDelta.y = size["y"].GetFloat();
 
-            // Always recompute on load — computedRect is viewport-dependent.
+            // Always recompute on load, computedRect is viewport-dependent.
             computedRect = Uma_UI::Rect();
             isDirty = true;
         }
