@@ -9,7 +9,6 @@ function Start()
     RNG.seed(math.random(1,1000000))
     rng = RNG.new()
 
-    Log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX     SHOP INIT")
     -- init references for icon and text, for editing later
     children = GetChildrenList(EntityID)
 
@@ -43,7 +42,6 @@ function Start()
         end
 
         -- BALANCE STATS HERE
-
         if cardStatRNG == 1 then
             --cardIcon[i].texturePath = ""
             cardText[i].text = "Increase Max HP by " .. statMulti
@@ -63,11 +61,11 @@ function Start()
 
         elseif cardStatRNG == 4 then
             if (statMulti == 15) then
-                statMulti = 0.2
-            elseif (statMulti == 20) then
-                statMulti = 0.25
-            else
                 statMulti = 0.33
+            elseif (statMulti == 20) then
+                statMulti = 0.67
+            else
+                statMulti = 1.0
             end
             cardText[i].text = "Decrease Dash CD by " .. statMulti 
 

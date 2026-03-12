@@ -5,8 +5,8 @@ local audio = nil
 
 ExposedVars = {
     dashAnimationName = "dash",
-    dashDuration = 0.2,
-    dashCooldown = 2.0
+    dashDuration = 1,
+    --dashCooldown = 2.0
 }
 
 -- State-local variables (reset on state enter)
@@ -87,7 +87,7 @@ function state_enter(entity)
     audio = GetAudioComponent()
     audio:play(EntityID, "PlayerDash")
 
-    player.mDashCD = dashCooldown;
+    player.mDashCD = player.mDashCDMax;
 
     FaceTowardsMouse(entity)
 end

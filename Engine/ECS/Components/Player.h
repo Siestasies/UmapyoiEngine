@@ -155,6 +155,7 @@ namespace Uma_ECS
         float   mDashSpeed = 10.f;              // Multiplier for dash
         float   mDashDuration = 0.2f;           // How long dash lasts
         float   mDashCD = 2.f;
+        float   mDashCDMax = 2.f;
 
         // ===== BASIC COMBAT =====
         int     mAttackDamage = 10;
@@ -210,6 +211,7 @@ namespace Uma_ECS
             value.AddMember("mDashSpeed", mDashSpeed, allocator);
             value.AddMember("mDashDuration", mDashDuration, allocator);
             value.AddMember("mDashCD", mDashCD, allocator);
+            value.AddMember("mDashCDMax", mDashCDMax, allocator);
 
             // Combat
             value.AddMember("mAttackDamage", mAttackDamage, allocator);
@@ -297,6 +299,8 @@ namespace Uma_ECS
                 mDashDuration = value["mDashDuration"].GetFloat();
             if (value.HasMember("mDashCD"))
                 mDashCD = value["mDashCD"].GetFloat();
+            if (value.HasMember("mDashCDMax"))
+                mDashCDMax = value["mDashCDMax"].GetFloat();
 
             // Combat
             if (value.HasMember("mAttackDamage"))

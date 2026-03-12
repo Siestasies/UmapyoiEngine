@@ -771,6 +771,7 @@ namespace Uma_ECS
             "mDashSpeed", &Player::mDashSpeed,
             "mDashDuration", &Player::mDashDuration,  // NEW - needed for dash state
             "mDashCD", &Player::mDashCD,
+            "mDashCDMax", & Player::mDashCDMax,
 
             "mAttackDamage", &Player::mAttackDamage,
             "mAttackSpeed", &Player::mAttackSpeed,

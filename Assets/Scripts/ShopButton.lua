@@ -82,7 +82,7 @@ function OnClick()
     elseif stat == "Increase Crit Dmg" then
         player.mCritDamage = player.mCritDamage + number
     elseif stat == "Decrease Dash CD" then
-        player.mDashCD = player.mDashCD - number
+        player.mDashCDMax = player.mDashCDMax - number
     elseif stat == "Decrease Mana cost" then
         local fireAttack = GetFireSlashAttackStat(player)
         fireAttack.manaCost = fireAttack.manaCost - number
