@@ -33,6 +33,7 @@ function Update(dt)
                     SetActiveEntity(child, false)
                 end
             end
+            PauseGame(true)
             return
         end
     end
