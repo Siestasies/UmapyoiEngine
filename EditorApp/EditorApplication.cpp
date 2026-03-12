@@ -309,7 +309,6 @@ namespace Uma_Engine
         );
 
         playfabManager->Init();
-
         delete config;
     }
 }

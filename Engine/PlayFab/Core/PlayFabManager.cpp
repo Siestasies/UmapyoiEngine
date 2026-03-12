@@ -18,7 +18,19 @@ void Uma_Engine::PlayFabManager::Init()
 	{
 		return;
 	}
-	
+
+	// Guard against double initialization — SDK handles (task queue,
+	// PFInitialize, service config) must only be created once.
+	if (m_ready)
+	{
+		// Already initialized — just re-authenticate admin if credentials changed
+		if (!m_devSecretKey.empty() && m_adminManager && !m_adminManager->IsReady())
+		{
+			AuthenticateAsTitle();
+		}
+		return;
+	}
+
 	// Create an explicit task queue so we can dispatch completions in Update()
 	// and drain them during Shutdown(). Without this the process default queue
 	// may not pump completions at shutdown, causing an infinite hang.
@@ -255,8 +267,11 @@ void Uma_Engine::PlayFabManager::DispatchError(HRESULT hr, const std::string& co
 	if (!onFailure)
 		return;
 	
-	std::string msg = "[PlayFabManager] " + context + " failed: " + std::to_string(static_cast<double>(hr));
-	onFailure(hr, msg);
+	std::ostringstream oss;
+	oss << "[PlayFabManager] " << context << " failed: HRESULT 0x"
+		<< std::hex << std::uppercase << hr;
+
+	onFailure(hr, oss.str());
 }
 
 
