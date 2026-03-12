@@ -138,6 +138,19 @@ namespace Uma_ECS
         void Update(float dt);
 
         /**
+         * \brief Clears all tracked collision/trigger state so the next frame
+         *        treats every overlap as a fresh Enter event.
+         *        Call this when restarting play mode.
+         */
+        void ResetCollisionState()
+        {
+            currentCollisions.clear();
+            previousCollisions.clear();
+            currentTriggers.clear();
+            previousTriggers.clear();
+        }
+
+        /**
          * \brief Renders collision debug visuals such as bounding boxes or grid cells
          */
         void DebugRender();
