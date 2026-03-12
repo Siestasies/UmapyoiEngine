@@ -55,12 +55,15 @@ void Uma_Engine::PlayFabManager::Init()
 		return;
 	}
 
-	// Create an explicit task queue so we can dispatch completions in Update()
-	// and drain them during Shutdown(). Without this the process default queue
-	// may not pump completions at shutdown, causing an infinite hang.
+	// We create our own task queue instead of using the process default so
+	// that we have an explicit handle we can terminate during Shutdown().
+	// Terminating it cancels every pending async callback, which lets the
+	// SDK uninitialise calls finish immediately instead of hanging forever.
+	// Both work and completion ports use ThreadPool mode so the SDK fires
+	// callbacks on OS thread-pool threads without us having to pump manually.
 	HRESULT hr = XTaskQueueCreate(
-		XTaskQueueDispatchMode::ThreadPool,   // work runs on threadpool
-		XTaskQueueDispatchMode::ThreadPool,   // completions also on threadpool
+		XTaskQueueDispatchMode::ThreadPool,
+		XTaskQueueDispatchMode::ThreadPool,
 		&m_taskQueue
 	);
 
@@ -70,9 +73,14 @@ void Uma_Engine::PlayFabManager::Init()
 		return;
 	}
 
-	// Make it the process default so all nullptr-queue XAsyncBlocks use it.
+	// Promote to process default so every XAsyncBlock created with a
+	// nullptr queue (including ones inside the PlayFab SDK itself) routes
+	// through our queue and can be drained on shutdown.
 	XTaskQueueSetCurrentProcessTaskQueue(m_taskQueue);
 
+	// Bootstraps the low-level PlayFab Core SDK (HTTP layer, retry
+	// policies, etc.). Must be called exactly once and paired with
+	// PFUninitializeAsync on teardown.
 	hr = PFInitialize(nullptr);
 
 	if (FAILED(hr))
@@ -81,6 +89,9 @@ void Uma_Engine::PlayFabManager::Init()
 		return;
 	}
 
+	// Layers the high-level service APIs (auth, leaderboards, data,
+	// cloud-script) on top of Core. Must be uninitialised before Core
+	// during shutdown (reverse init order).
 	hr = PFServicesInitialize(nullptr);
 
 	if (FAILED(hr))
@@ -89,6 +100,9 @@ void Uma_Engine::PlayFabManager::Init()
 		return;
 	}
 
+	// A service-config handle binds a Title ID to its API endpoint.
+	// All auth and entity calls reference this handle so the SDK knows
+	// which title to talk to.
 	std::string end_point = "https://" + m_titleId + ".playfabapi.com";
 
 	hr = PFServiceConfigCreateHandle(
@@ -126,7 +140,8 @@ void Uma_Engine::PlayFabManager::Update(float dt)
 
 void Uma_Engine::PlayFabManager::Shutdown()
 {
-	// 1. Close entity handles — SDK won't uninitialise while handles are open.
+	// Close entity handles first — the SDK refuses to uninitialise while
+	// any entity handles are still open, so these must go before anything else.
 	if (m_playerManager)
 	{
 		m_playerManager->ClearPlayerEntityHandle();
@@ -141,14 +156,17 @@ void Uma_Engine::PlayFabManager::Shutdown()
 		m_titleEntityHandle = nullptr;
 	}
 
-	// 2. Terminate the task queue — cancels every pending async callback so
-	//    the SDK uninitialise calls below can complete immediately.
+	// Terminate the task queue with wait=true. This blocks until every
+	// pending async callback has been cancelled, which prevents the SDK
+	// uninitialise calls below from waiting on callbacks that will never run.
 	if (m_taskQueue)
 	{
 		XTaskQueueTerminate(m_taskQueue, /*wait=*/true, nullptr, nullptr);
 	}
 
-	// 3. Uninitialise services, then close the service config, then core.
+	// Teardown order matters: Services before Core (reverse of init order).
+	// Each uninitialise is async, so we block-wait on the XAsyncBlock to
+	// ensure each layer is fully torn down before proceeding to the next.
 	if (m_ready)
 	{
 		XAsyncBlock servicesUninitAsync{};
@@ -157,6 +175,8 @@ void Uma_Engine::PlayFabManager::Shutdown()
 			XAsyncGetStatus(&servicesUninitAsync, /*wait=*/true);
 	}
 
+	// Service config handle must be closed after Services uninit but
+	// before Core uninit — Services may still reference it internally.
 	if (m_serviceConfig)
 	{
 		PFServiceConfigCloseHandle(m_serviceConfig);
@@ -171,7 +191,7 @@ void Uma_Engine::PlayFabManager::Shutdown()
 			XAsyncGetStatus(&uninitAsync, /*wait=*/true);
 	}
 
-	// 4. Release the task queue.
+	// Finally release the task queue handle itself now that nothing is using it.
 	if (m_taskQueue)
 	{
 		XTaskQueueCloseHandle(m_taskQueue);
@@ -204,8 +224,12 @@ void Uma_Engine::PlayFabManager::LoginWithCustomID(const std::string& customId, 
 	PFAuthenticationLoginWithCustomIDRequest request{};
 	request.createAccount = createAccount;
 	request.customId = customId.c_str();
-	
-	// Allocate context — deleted in the callback
+
+	// Heap-allocate a context that bundles the XAsyncBlock, the callbacks,
+	// and a back-pointer to this manager. The XAsyncBlock::context field
+	// stores a void* to the context so the static callback can recover it
+	// via reinterpret_cast. Ownership transfers to the callback — it is
+	// responsible for deleting the context when done (success or failure).
 	auto* ctx = new LoginWithCustomIDContext{};
 	ctx->manager = this;
 	ctx->async.context = ctx;
@@ -219,6 +243,8 @@ void Uma_Engine::PlayFabManager::LoginWithCustomID(const std::string& customId, 
 		&ctx->async
 	);
 
+	// If the async launch itself fails, the callback will never fire,
+	// so we must delete the context here to avoid leaking it.
 	if (FAILED(hr))
 	{
 		DispatchError(hr, "LoginWithCustomID — PFAuthenticationLoginWithCustomIDAsync failed.", ctx->onFailure);
@@ -258,14 +284,21 @@ std::string Uma_Engine::PlayFabManager::GenerateUUID4()
 	std::mt19937_64 gen(rd());
 	std::uniform_int_distribution<uint64_t> dist;
 
+	// Generate two random 64-bit values and splice them into the UUID
+	// layout: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
+	// where '4' is the version nibble and 'y' is the variant (8/9/a/b).
 	uint64_t hi = dist(gen);
 	uint64_t lo = dist(gen);
 
-	// Set version 4 (bits 12-15 of time_hi_and_version)
+	// Clear bits 12-15 of hi then force them to 0100 (version 4).
+	// In the final UUID string these bits land in the '4xxx' group.
 	hi = (hi & 0xFFFFFFFFFFFF0FFFULL) | 0x0000000000004000ULL;
-	// Set variant 1 (bits 6-7 of clock_seq_hi)
+	// Clear the top two bits of lo then force them to 10 (variant 1 / RFC 4122).
+	// These bits land in the 'yxxx' group.
 	lo = (lo & 0x3FFFFFFFFFFFFFFFULL) | 0x8000000000000000ULL;
 
+	// Format as 8-4-4-4-12 hex groups. The hi value covers the first three
+	// groups (32+16+16 = 64 bits), lo covers the last two (16+48 = 64 bits).
 	std::ostringstream ss;
 	ss << std::hex << std::setfill('0')
 		<< std::setw(8) << (hi >> 32) << '-'
@@ -363,10 +396,15 @@ void Uma_Engine::PlayFabManager::OnGetEntityWithSecretKeyComplete(XAsyncBlock* a
 
 void Uma_Engine::PlayFabManager::OnLoginWithCustomIDComplete(XAsyncBlock* async)
 {
+	// Recover our context from the void* we stashed in XAsyncBlock::context.
+	// This is the standard pattern for Xbox async callbacks: the static
+	// callback casts async->context back to the original context struct.
 	auto* ctx = reinterpret_cast<LoginWithCustomIDContext*>(async->context);
 
-	// entityHandle is always returned — we only need that.
-	// buffer/result are optional (LoginResult payload); pass 0/nullptr to skip.
+	// GetResult can optionally return a LoginResult payload (player profile,
+	// newly-created flag, etc.) in a caller-supplied buffer. We only care
+	// about the entity handle, so we pass 0/nullptr for the buffer params
+	// to skip deserialising the payload entirely.
 	PFEntityHandle entityHandle{ nullptr };
 	HRESULT hr = PFAuthenticationLoginWithCustomIDGetResult(
 		async,
