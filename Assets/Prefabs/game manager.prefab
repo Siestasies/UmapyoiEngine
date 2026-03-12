@@ -4343,7 +4343,7 @@
             },
             {
                 "id": 55,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "options",
@@ -4434,12 +4434,12 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 0.5,
+                            "y": 0.5
                         },
                         "anchorMax": {
-                            "x": 1.0,
-                            "y": 1.0
+                            "x": 0.5,
+                            "y": 0.5
                         },
                         "pivot": {
                             "x": 0.5,
@@ -4450,8 +4450,8 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 900.0,
+                            "y": 520.0
                         },
                         "isDirty": true
                     },
@@ -4525,7 +4525,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 75.0
+                            "y": 50.0
                         },
                         "sizeDelta": {
                             "x": 750.0,
@@ -4603,46 +4603,46 @@
                         "checkmarkEntity": 55,
                         "scriptName": "master_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
-                        "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
-                            "a": 1.0
-                        },
-                        "disabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
-                            "a": 0.5
-                        },
-                        "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "checkmarkNormalColour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
-                        "checkmarkDisabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
+                        "hoverColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
+                        },
+                        "pressedColour": {
+                            "r": 0.698,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.698
+                        },
+                        "disabledColour": {
+                            "r": 0.898,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.898
+                        },
+                        "checkedColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
+                        },
+                        "checkmarkNormalColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "checkmarkDisabledColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
                         }
                     }
                 }
@@ -4696,12 +4696,12 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 20,
+                        "texturePath": "Assets/free textures/icons8.com/icons8-volume-100.png",
+                        "sortingOrder": 21,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "visible": true,
@@ -4771,13 +4771,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/free textures/icons8.com/icons8-volume-100.png",
                         "sortingOrder": 20,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.5
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -4854,7 +4854,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -5082,7 +5082,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
@@ -5236,7 +5236,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 0.0
+                            "y": -25.0
                         },
                         "sizeDelta": {
                             "x": 750.0,
@@ -5314,46 +5314,46 @@
                         "checkmarkEntity": 61,
                         "scriptName": "bgm_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
-                        "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
-                            "a": 1.0
-                        },
-                        "disabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
-                            "a": 0.5
-                        },
-                        "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "checkmarkNormalColour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
-                        "checkmarkDisabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
+                        "hoverColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
+                        },
+                        "pressedColour": {
+                            "r": 0.698,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.698
+                        },
+                        "disabledColour": {
+                            "r": 0.898,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.898
+                        },
+                        "checkedColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
+                        },
+                        "checkmarkNormalColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "checkmarkDisabledColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
                         }
                     }
                 }
@@ -5407,12 +5407,12 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 20,
+                        "texturePath": "Assets/free textures/icons8.com/icons8-musical-note-100.png",
+                        "sortingOrder": 21,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "visible": true,
@@ -5482,13 +5482,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/free textures/icons8.com/icons8-musical-note-100.png",
                         "sortingOrder": 20,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.5
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -5565,7 +5565,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -5793,7 +5793,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
@@ -5947,7 +5947,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -75.0
+                            "y": -100.0
                         },
                         "sizeDelta": {
                             "x": 750.0,
@@ -6025,46 +6025,46 @@
                         "checkmarkEntity": 55,
                         "scriptName": "sfx_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
-                        "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
-                            "a": 1.0
-                        },
-                        "disabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
-                            "a": 0.5
-                        },
-                        "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "checkmarkNormalColour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
-                        "checkmarkDisabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
+                        "hoverColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
+                        },
+                        "pressedColour": {
+                            "r": 0.698,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.698
+                        },
+                        "disabledColour": {
+                            "r": 0.898,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.898
+                        },
+                        "checkedColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
+                        },
+                        "checkmarkNormalColour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "checkmarkDisabledColour": {
+                            "r": 0.501,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.501
                         }
                     }
                 }
@@ -6118,12 +6118,12 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 20,
+                        "texturePath": "Assets/free textures/icons8.com/icons8-sole-100.png",
+                        "sortingOrder": 21,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "visible": true,
@@ -6193,13 +6193,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/free textures/icons8.com/icons8-sole-100.png",
                         "sortingOrder": 20,
                         "color": {
                             "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.5
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -6276,7 +6276,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -6446,7 +6446,7 @@
                             "a": 1.0
                         },
                         "visible": true,
-                        "fillDirection": 0,
+                        "fillDirection": 1,
                         "fillAmount": 1.0,
                         "spriteSheetGrid": {
                             "x": 1.0,
@@ -6504,7 +6504,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
@@ -6671,20 +6671,20 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "anchoredPosition": {
-                            "x": 470.0,
-                            "y": 225.0
+                            "x": 10.0,
+                            "y": -5.0
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -6799,7 +6799,7 @@
             },
             {
                 "id": 86,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "feedback",

@@ -14,7 +14,7 @@ end
 function OnToggle()
     local cbx = GetCheckboxFrom(EntityID)
     -- cbx.isChecked
-    if cbx.isChecked == true then
+    if cbx.isChecked == false then
         originalVolume = getBGMVolume()
         setBGMVolume(0)
     else

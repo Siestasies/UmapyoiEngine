@@ -58,6 +58,18 @@ namespace Uma_UI
         mHitTestCache.clear();
 
         //mFeedbackSystem.Init(pCoordinator, pGraphics, pEventSystem, this);
+
+        // Push serialized colours/values into Image components immediately
+        if (pCoordinator)
+        {
+            auto& sliderArray = pCoordinator->GetComponentArray<Slider>();
+            for (size_t i = 0; i < sliderArray.Size(); ++i)
+                UpdateSliderVisual(sliderArray.GetEntity(i));
+
+            auto& checkboxArray = pCoordinator->GetComponentArray<Checkbox>();
+            for (size_t i = 0; i < checkboxArray.Size(); ++i)
+                UpdateCheckboxVisual(checkboxArray.GetEntity(i));
+        }
     }
 
     /*!
@@ -980,7 +992,8 @@ namespace Uma_UI
 
         const auto& slider = pCoordinator->GetComponent<Slider>(entity);
 
-        float normalizedValue = slider.value;
+        float range = slider.maxValue - slider.minValue;
+        float normalizedValue = (range > 0.0f) ? (slider.value - slider.minValue) / range : 0.0f;
         Uma_UI::Color currentColour = (!slider.interactable) ? slider.disabledColour : (slider.isDragging || slider.isHovered) ? slider.highlightColour : slider.normalColour;
 
         if (slider.handle != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.handle))
@@ -1017,42 +1030,19 @@ namespace Uma_UI
             }
         }
 
-        if (slider.fill != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.fill))
+        if (slider.fill != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(slider.fill))
         {
-            auto& bgRT = rectTransformArray.GetData(slider.background);
-            auto& fillRT = rectTransformArray.GetData(slider.fill);
+            auto& fillImage = imageArray.GetData(slider.fill);
+            fillImage.fillAmount = normalizedValue;
 
             switch (slider.direction)
             {
-            case SliderDirection::LeftToRight:
-                fillRT.anchorMin.x = bgRT.anchorMin.x;
-                fillRT.anchorMax.x = bgRT.anchorMax.x - (1.f - normalizedValue);
-                fillRT.anchorMin.y = bgRT.anchorMin.y;
-                fillRT.anchorMax.y = bgRT.anchorMax.y;
-                break;
-            case SliderDirection::RightToLeft:
-                fillRT.anchorMin.x = bgRT.anchorMin.x + (1.f - normalizedValue);
-                fillRT.anchorMax.x = bgRT.anchorMax.x;
-                fillRT.anchorMin.y = bgRT.anchorMin.y;
-                fillRT.anchorMax.y = bgRT.anchorMax.y;
-                break;
-            case SliderDirection::BottomToTop:
-                fillRT.anchorMin.x = bgRT.anchorMin.x;
-                fillRT.anchorMax.x = bgRT.anchorMax.x;
-                fillRT.anchorMin.y = bgRT.anchorMin.y;
-                fillRT.anchorMax.y = bgRT.anchorMax.y - (1.f - normalizedValue);
-                break;
-            case SliderDirection::TopToBottom:
-                fillRT.anchorMin.x = bgRT.anchorMin.x;
-                fillRT.anchorMax.x = bgRT.anchorMax.x;
-                fillRT.anchorMin.y = bgRT.anchorMin.y + (1.f - normalizedValue);
-                fillRT.anchorMax.y = bgRT.anchorMax.y;
-                break;
-            default:
-                break;
+            case SliderDirection::LeftToRight:  fillImage.fillDirection = FillDirection::LeftToRight;  break;
+            case SliderDirection::RightToLeft:  fillImage.fillDirection = FillDirection::RightToLeft;  break;
+            case SliderDirection::BottomToTop:  fillImage.fillDirection = FillDirection::BottomToTop;  break;
+            case SliderDirection::TopToBottom:  fillImage.fillDirection = FillDirection::TopToBottom;  break;
+            default: break;
             }
-
-            MarkEntityAndChildrenDirty(slider.fill);
         }
     }
 
