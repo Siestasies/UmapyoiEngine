@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 66.836,
-                            "y": -169.28
+                            "x": 66.835,
+                            "y": -169.279
                         },
                         "rotation": {
                             "x": 0.0,
@@ -269,7 +269,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.338,
+                                "volume": 0.337,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -356,7 +356,7 @@
                                 "purpose": 2,
                                 "layer": 2,
                                 "colliderMask": 4,
-                                "isActive": true,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             },
                             {
@@ -1512,12 +1512,6 @@
             }
         ],
         "fonts": [],
-        "sounds": [
-            {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                "type": 0
-            }
-        ]
+        "sounds": []
     }
 }
