@@ -780,6 +780,22 @@ namespace Uma_UI
             }
             break;
 
+        case EffectProperty::FillAmount:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.fillAmount = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
+            break;
+
+        case EffectProperty::SpritesheetFrame:
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.SetFrame(clip.GetCurrentFrame());
+            }
+            break;
+
         default:
             break;
         }
@@ -1001,20 +1017,42 @@ namespace Uma_UI
             }
         }
 
-        if (slider.fill != static_cast<Uma_ECS::Entity>(-1) && imageArray.Has(slider.fill))
+        if (slider.fill != static_cast<Uma_ECS::Entity>(-1) && rectTransformArray.Has(slider.fill))
         {
-            auto& fillImage = imageArray.GetData(slider.fill);
-            fillImage.fillAmount = normalizedValue;
+            auto& bgRT = rectTransformArray.GetData(slider.background);
+            auto& fillRT = rectTransformArray.GetData(slider.fill);
 
-            // Ensure fillDirection on the Image matches the slider direction
             switch (slider.direction)
             {
-            case SliderDirection::LeftToRight:  fillImage.fillDirection = FillDirection::LeftToRight;  break;
-            case SliderDirection::RightToLeft:  fillImage.fillDirection = FillDirection::RightToLeft;  break;
-            case SliderDirection::BottomToTop:  fillImage.fillDirection = FillDirection::BottomToTop;  break;
-            case SliderDirection::TopToBottom:  fillImage.fillDirection = FillDirection::TopToBottom;  break;
-            default: break;
+            case SliderDirection::LeftToRight:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x - (1.f - normalizedValue);
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            case SliderDirection::RightToLeft:
+                fillRT.anchorMin.x = bgRT.anchorMin.x + (1.f - normalizedValue);
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            case SliderDirection::BottomToTop:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y;
+                fillRT.anchorMax.y = bgRT.anchorMax.y - (1.f - normalizedValue);
+                break;
+            case SliderDirection::TopToBottom:
+                fillRT.anchorMin.x = bgRT.anchorMin.x;
+                fillRT.anchorMax.x = bgRT.anchorMax.x;
+                fillRT.anchorMin.y = bgRT.anchorMin.y + (1.f - normalizedValue);
+                fillRT.anchorMax.y = bgRT.anchorMax.y;
+                break;
+            default:
+                break;
             }
+
+            MarkEntityAndChildrenDirty(slider.fill);
         }
     }
 
