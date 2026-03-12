@@ -9,7 +9,7 @@
                         "name": "Wind Totem",
                         "position": {
                             "x": 0.0,
-                            "y": 0.0
+                            "y": 54.4
                         },
                         "rotation": {
                             "x": 0.0,
@@ -22,7 +22,8 @@
                         "parent": -1,
                         "children": [
                             1,
-                            2
+                            2,
+                            3
                         ]
                     },
                     "struct Uma_ECS::Sprite": {
@@ -61,7 +62,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 64,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
@@ -73,8 +74,8 @@
                                     "y": 0.699
                                 },
                                 "purpose": 1,
-                                "layer": 64,
-                                "colliderMask": 64,
+                                "layer": 4,
+                                "colliderMask": 6,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             },
@@ -84,14 +85,49 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 0.8,
-                                    "y": 0.898
+                                    "x": 0.4,
+                                    "y": 0.5
                                 },
-                                "purpose": 2,
+                                "purpose": 0,
                                 "layer": 4,
-                                "colliderMask": 2,
+                                "colliderMask": 18,
                                 "isActive": true,
                                 "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/TotemHurt.lua",
+                                "scriptName": "TotemHurt.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "totemElement",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "initialDelay",
+                                        "type": 0,
+                                        "value": 1.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -129,6 +165,54 @@
             },
             {
                 "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Sprite",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/boss totem tileset.png",
+                        "layer": 8,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 4.0,
+                        "gridY": 3.0,
+                        "cellX": 2.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 0.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Fire Totem.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 2,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -176,7 +260,7 @@
                 }
             },
             {
-                "id": 2,
+                "id": 3,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -243,6 +327,9 @@
             },
             {
                 "path": "assets/sprites/totems ss.png"
+            },
+            {
+                "path": "assets/sprites/boss totem tileset.png"
             }
         ],
         "fonts": [],

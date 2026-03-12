@@ -8,30 +8,30 @@
                     "struct Uma_ECS::Transform": {
                         "name": "boss projectile",
                         "position": {
-                            "x": 1023.505,
-                            "y": -1644.8
-                        },
-                        "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
+                        "rotation": {
+                            "x": -90.0,
+                            "y": 0.0
+                        },
                         "scale": {
-                            "x": 0.43,
-                            "y": 1.0
+                            "x": 2.5,
+                            "y": 2.5
                         },
                         "parent": -1,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Wind VFX Spritesheet.png",
+                        "texturePath": "Assets/Sprites/boss proj.png",
                         "layer": 128,
                         "order": 0,
                         "flipX": true,
                         "flipY": false,
                         "autoFlip": false,
                         "Native": true,
-                        "gridX": 6.0,
-                        "gridY": 2.0,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -57,7 +57,7 @@
                     },
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
-                        "defaultMask": 64,
+                        "defaultMask": 2,
                         "showBBox": false,
                         "shapes": [
                             {
@@ -66,30 +66,14 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 13.3,
-                                    "y": 1.899
+                                    "x": 1.5,
+                                    "y": 1.5
                                 },
                                 "purpose": 2,
                                 "layer": 16,
-                                "colliderMask": 10,
+                                "colliderMask": 2,
                                 "isActive": true,
                                 "autoFitToSprite": false
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": false,
-                        "initialClip": "flying",
-                        "clips": [
-                            {
-                                "name": "flying",
-                                "framesX": 11,
-                                "framesY": 3,
-                                "startFrame": 22,
-                                "frameCount": 6,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": ""
                             }
                         ]
                     },
@@ -101,7 +85,7 @@
                         "mStats": {
                             "type": 0,
                             "damage": 10,
-                            "speed": 40.0,
+                            "speed": 20.0,
                             "fadeOVerTime": true,
                             "fadeAfterAnimEnded": false,
                             "lifeTime": 5.0
@@ -115,7 +99,7 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/wind vfx spritesheet.png"
+                "path": "assets/sprites/boss proj.png"
             }
         ],
         "fonts": [],

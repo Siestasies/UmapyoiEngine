@@ -119,10 +119,19 @@ function state_update(entity, dt)
     end
 
     if elitesAlive <= 0 then
-        Log("All elites defeated! Transitioning to combining phase...")
-        ChangeState(entity, "BossCombine")
+        local canChange = true
+        for i, eliteId in ipairs(eliteIds) do
+            if IsEntityValid(eliteId) then
+                canChange = false
+            end
+        end
+        if canChange then
+            Log("All elites defeated! Transitioning to combining phase...")
+            ChangeState(entity, "BossCombine")
+        end
         return
     end
+
 end
 
 function state_exit(entity)

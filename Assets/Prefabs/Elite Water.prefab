@@ -8,7 +8,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Elite Water",
                         "position": {
-                            "x": -1.7,
+                            "x": 31.6,
                             "y": 0.0
                         },
                         "rotation": {
@@ -23,7 +23,8 @@
                         "children": [
                             1,
                             2,
-                            3
+                            3,
+                            4
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -634,10 +635,58 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp fill",
+                        "name": "Crown",
                         "position": {
                             "x": 0.0,
                             "y": 0.1
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.75,
+                            "y": 0.75
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/elite crown.png",
+                        "layer": 16,
+                        "order": 2,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Elite Fire.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.3
                         },
                         "rotation": {
                             "x": 0.0,
@@ -678,14 +727,14 @@
                 }
             },
             {
-                "id": 3,
+                "id": 4,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "hp fill_dup",
                         "position": {
                             "x": 0.0,
-                            "y": 0.1
+                            "y": 0.3
                         },
                         "rotation": {
                             "x": 0.0,
@@ -742,6 +791,9 @@
         "textures": [
             {
                 "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/sprites/elite crown.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"

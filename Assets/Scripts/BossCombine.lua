@@ -105,7 +105,7 @@ function state_update(entity, dt)
         -- Destroy corpses
         for i, corpseId in ipairs(eliteCorpses) do
             if IsEntityValid(corpseId) then
-                DestroyEntity(corpseId)
+                DestroyWithChildren(corpseId)
             end
         end
 
@@ -164,8 +164,8 @@ function state_update(entity, dt)
         if revealTime <= 0 then 
             ChangeState(entity, "BossPhase2")
         else
-            if animator and animator.animator:HasFinished then
-                vfxAnimator.animator:Play("boss_reveal", false)
+            if animator and animator.animator:HasFinished() then
+                animator.animator:Play("boss_reveal_to_idle", false)
             end
             revealTime = revealTime - dt;
         end

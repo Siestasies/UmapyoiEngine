@@ -3,7 +3,7 @@
 -- Boss death is handled by BossBase checking HP when boss is visible.
 
 ExposedVars = {
-    bulletSpeed = 350.0,
+    bulletSpeed = 200.0,
     bulletDamage = 20,
     bulletPrefab = "boss projectile.prefab",
     patternSwitchTime = 5.0,
@@ -123,7 +123,7 @@ function state_update(entity, dt)
     if patternTimer >= ExposedVars.patternSwitchTime then
         patternTimer = 0.0
         currentPattern = currentPattern + 1
-        if currentPattern > 3 then
+        if currentPattern > 4 then
             currentPattern = 1
         end
         Log("Boss Phase 3 pattern: " .. tostring(currentPattern))
@@ -141,6 +141,8 @@ function state_update(entity, dt)
         UpdateRadialBurst(entity, adjustedDt)
     elseif currentPattern == 3 then
         UpdateRotatingCross(entity, adjustedDt)
+    elseif currentPattern == 4 then
+        -- do nth dps time
     end
 end
 

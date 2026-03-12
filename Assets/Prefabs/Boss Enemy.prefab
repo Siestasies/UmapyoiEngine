@@ -23,8 +23,10 @@
                         "children": [
                             1,
                             2,
-                            3,
-                            4
+                            4,
+                            6,
+                            8,
+                            9
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -68,7 +70,7 @@
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
                         "defaultMask": 64,
-                        "showBBox": true,
+                        "showBBox": false,
                         "shapes": [
                             {
                                 "offset": {
@@ -716,7 +718,9 @@
                             "y": 30.0
                         },
                         "parent": 0,
-                        "children": []
+                        "children": [
+                            3
+                        ]
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
@@ -747,6 +751,54 @@
             },
             {
                 "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Crown",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.75,
+                            "y": 0.75
+                        },
+                        "parent": 2,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/elite crown.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Elite Fire.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 4,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -764,7 +816,9 @@
                             "y": 30.0
                         },
                         "parent": 0,
-                        "children": []
+                        "children": [
+                            5
+                        ]
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/fire bird.png",
@@ -794,7 +848,55 @@
                 }
             },
             {
-                "id": 4,
+                "id": 5,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Crown",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.4
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.75,
+                            "y": 0.75
+                        },
+                        "parent": 4,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/elite crown.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Elite Fire.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 6,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -812,7 +914,9 @@
                             "y": 30.0
                         },
                         "parent": 0,
-                        "children": []
+                        "children": [
+                            7
+                        ]
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
@@ -840,6 +944,160 @@
                         "isRoot": false
                     }
                 }
+            },
+            {
+                "id": 7,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Crown",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.4
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.75,
+                            "y": 0.75
+                        },
+                        "parent": 6,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/elite crown.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Elite Fire.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 8,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.4
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 128,
+                        "order": 20,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.442,
+                            0.442,
+                            0.442
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 9,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.4
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 128,
+                        "order": 20,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.33,
+                            0.045,
+                            0.045
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
+                                "scriptName": "EnemyHealthBar.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
             }
         ],
         "rootEntity": 0
@@ -854,6 +1112,12 @@
             },
             {
                 "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/sprites/elite crown.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"

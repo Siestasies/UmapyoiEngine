@@ -4,8 +4,9 @@
 
 ExposedVars = {
     topOffsetY = 200.0,
-    bulletInterval = 0.3,
-    bulletSpeed = 300.0,
+    --bulletInterval = 0.2,
+    bulletInterval = 10000000000,
+    bulletSpeed = 100.0,
     bulletDamage = 15,
     bulletPrefab = "boss projectile.prefab",
     waterTotemPrefab = "Water Totem.prefab",
@@ -13,7 +14,7 @@ ExposedVars = {
     windTotemPrefab = "Wind Totem.prefab",
     totemCount = 3,
     totemSpawnDelay = 1.5,
-    spreadAngle = 60.0,
+    spreadAngle = 120.0,
     bulletsPerVolley = 5,
     volleyInterval = 1.5,
     sweepSpeed = 40.0,
@@ -135,6 +136,7 @@ function state_update(entity, dt)
             if animator then
                 animator.animator:Play("final_phase_transition1", false)
             end
+            finalPhase = true
             return
         end
         
@@ -320,4 +322,9 @@ end
 
 function state_exit(entity)
     Log("Boss Phase 2: Complete")
+    for i, totemId in ipairs(totemIds) do
+        if IsEntityValid(totemId) then
+            DestroyWithChildren(totemId)
+        end
+    end
 end
