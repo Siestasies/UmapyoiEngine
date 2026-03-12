@@ -140,6 +140,14 @@ namespace Uma_Engine
 				*/
 				void setChannelGroupVolume(float volume, SoundType type);
 
+				/*!
+				 * \brief Get the volume of a sound group
+				 * \param type   - the sound group to retrieve the volume from
+				 * \return float - the volume of the specified sound group, in the range [0.0, 1.0]
+				 */
+				float getChannelGroupVolume(SoundType type);
+
+
 				//set the listener position for the update loop to update
 				/*!
 				*\brief sets the 3d positon,vel forward and up of the 3d listener

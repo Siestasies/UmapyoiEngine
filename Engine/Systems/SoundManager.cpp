@@ -399,6 +399,20 @@ namespace Uma_Engine {
         }
     }
 
+    float SoundManager::getChannelGroupVolume(SoundType type = SoundType::MASTER) {
+        float volume = 0;
+        if (type == SoundType::SFX) {
+            FMOD_ChannelGroup_GetVolume(SFX, &volume);
+        }
+        else if (type == SoundType::BGM) {
+            FMOD_ChannelGroup_GetVolume(BGM, &volume);
+        }
+        else {
+            FMOD_ChannelGroup_GetVolume(Master, &volume);
+        }
+        return volume;
+    }
+
     void SoundManager::setListenerPosition(const FMOD_VECTOR& pos, const FMOD_VECTOR& vel, const FMOD_VECTOR& forward, const FMOD_VECTOR& up) {
         listenerPos = pos;
         listenerVel = vel;
