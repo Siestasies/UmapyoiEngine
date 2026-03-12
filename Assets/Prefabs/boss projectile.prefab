@@ -1,0 +1,124 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "boss projectile",
+                        "position": {
+                            "x": 1023.505,
+                            "y": -1644.8
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.43,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Wind VFX Spritesheet.png",
+                        "layer": 128,
+                        "order": 0,
+                        "flipX": true,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 6.0,
+                        "gridY": 2.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 13.3,
+                                    "y": 1.899
+                                },
+                                "purpose": 2,
+                                "layer": 16,
+                                "colliderMask": 10,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "flying",
+                        "clips": [
+                            {
+                                "name": "flying",
+                                "framesX": 11,
+                                "framesY": 3,
+                                "startFrame": 22,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": ""
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/boss projectile.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 40.0,
+                            "fadeOVerTime": true,
+                            "fadeAfterAnimEnded": false,
+                            "lifeTime": 5.0
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/wind vfx spritesheet.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

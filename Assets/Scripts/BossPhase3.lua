@@ -1,40 +1,34 @@
 -- BossPhase3: Boss in center of room, multi-directional bullet hell
--- Boss moves to the center and fires projectiles in various patterns
--- Player must dodge and deal damage directly to the boss
--- Base script tracks boss health and transitions to BossDeath at 0 HP
+-- Fully self-contained. No shared data with other scripts.
+-- Boss death is handled by BossBase checking HP when boss is visible.
 
 ExposedVars = {
     bulletSpeed = 350.0,
     bulletDamage = 20,
-    bulletPrefab = "BossBullet.json",
-    patternSwitchTime = 5.0,     -- time between pattern changes
-    spiralSpeed = 120.0,          -- degrees per second for spiral
-    spiralBulletInterval = 0.08,  -- time between spiral bullets
-    burstCount = 12,              -- bullets per radial burst
-    burstInterval = 2.0,          -- time between bursts
-    crossCount = 4,               -- number of cross arms
-    crossRotateSpeed = 30.0,      -- degrees per second rotation
-    crossBulletInterval = 0.12,   -- time between cross bullets
-    enrageHealthPercent = 0.3,    -- below this % boss attacks faster
-    enrageSpeedMult = 1.5         -- multiplier when enraged
+    bulletPrefab = "boss projectile.prefab",
+    patternSwitchTime = 5.0,
+    spiralSpeed = 120.0,
+    spiralBulletInterval = 0.08,
+    burstCount = 12,
+    burstInterval = 2.0,
+    crossCount = 4,
+    crossRotateSpeed = 30.0,
+    crossBulletInterval = 0.12,
+    enrageHealthPercent = 0.3,
+    enrageSpeedMult = 1.5
 }
 
 local animator = nil
 local bossTransform = nil
 
--- Pattern state
-local currentPattern = 1           -- 1 = spiral, 2 = radial burst, 3 = rotating cross
+local currentPattern = 1
 local patternTimer = 0.0
 local bulletTimer = 0.0
 local burstTimer = 0.0
 
--- Spiral tracking
 local spiralAngle = 0.0
-
--- Cross tracking
 local crossAngle = 0.0
 
--- Enrage
 local isEnraged = false
 local speedMultiplier = 1.0
 
@@ -52,7 +46,6 @@ function state_enter(entity)
 
     bossTransform = GetTransform()
 
-    -- Stop pathfinding
     if HasRigidBody() then
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
@@ -61,12 +54,12 @@ function state_enter(entity)
         GetPathFinding().enabled = false
     end
 
-    -- Re-enable camera follow or keep locked on center
-    local cameraId = GetCameraId()
+    -- Lock camera on room center
+    local cameraId = FindEntityWithComponent("Camera")
     if cameraId ~= -1 and IsEntityValid(cameraId) then
         local camera = GetCameraFrom(cameraId)
         if camera then
-            camera.followPlayer = false  -- keep locked on room center
+            camera.followPlayer = false
         end
     end
 
@@ -75,7 +68,7 @@ function state_enter(entity)
         animator.animator:Play("phase3_intro", false)
     end
 
-    -- Enable all colliders for direct damage
+    -- Ensure colliders are active for direct damage
     if HasCollider() then
         local collider = GetCollider(entity)
         if collider then
@@ -118,7 +111,7 @@ function state_update(entity, dt)
         end
     end
 
-    -- Play idle anim when intro finishes
+    -- Play idle anim after intro finishes
     if animator and animator.animator:HasFinished() then
         if animator.animator:GetCurrentClip() == "phase3_intro" then
             animator.animator:Play("idle", true)
@@ -140,7 +133,6 @@ function state_update(entity, dt)
         end
     end
 
-    -- Fire based on current pattern
     local adjustedDt = dt * speedMultiplier
 
     if currentPattern == 1 then
@@ -154,7 +146,6 @@ end
 
 -- ============ BULLET PATTERNS ============
 
--- Pattern 1: Continuous spiral of bullets
 function UpdateSpiral(entity, dt)
     bulletTimer = bulletTimer + dt
     spiralAngle = spiralAngle + (ExposedVars.spiralSpeed * dt)
@@ -169,14 +160,11 @@ function UpdateSpiral(entity, dt)
 
     SpawnBullet(entity, bossPos, dirX, dirY, spiralAngle)
 
-    -- Double spiral (opposite direction)
+    -- Double spiral
     local oppAngleRad = math.rad(spiralAngle + 180)
-    local oppDirX = math.cos(oppAngleRad)
-    local oppDirY = math.sin(oppAngleRad)
-    SpawnBullet(entity, bossPos, oppDirX, oppDirY, spiralAngle + 180)
+    SpawnBullet(entity, bossPos, math.cos(oppAngleRad), math.sin(oppAngleRad), spiralAngle + 180)
 end
 
--- Pattern 2: Periodic radial burst (all directions at once)
 function UpdateRadialBurst(entity, dt)
     burstTimer = burstTimer + dt
 
@@ -190,10 +178,7 @@ function UpdateRadialBurst(entity, dt)
     for i = 0, ExposedVars.burstCount - 1 do
         local angleDeg = step * i
         local angleRad = math.rad(angleDeg)
-        local dirX = math.cos(angleRad)
-        local dirY = math.sin(angleRad)
-
-        SpawnBullet(entity, bossPos, dirX, dirY, angleDeg)
+        SpawnBullet(entity, bossPos, math.cos(angleRad), math.sin(angleRad), angleDeg)
     end
 
     if animator then
@@ -206,7 +191,6 @@ function UpdateRadialBurst(entity, dt)
     end
 end
 
--- Pattern 3: Rotating cross arms that spray bullets
 function UpdateRotatingCross(entity, dt)
     bulletTimer = bulletTimer + dt
     crossAngle = crossAngle + (ExposedVars.crossRotateSpeed * dt)
@@ -220,10 +204,7 @@ function UpdateRotatingCross(entity, dt)
     for i = 0, ExposedVars.crossCount - 1 do
         local angleDeg = crossAngle + (armStep * i)
         local angleRad = math.rad(angleDeg)
-        local dirX = math.cos(angleRad)
-        local dirY = math.sin(angleRad)
-
-        SpawnBullet(entity, bossPos, dirX, dirY, angleDeg)
+        SpawnBullet(entity, bossPos, math.cos(angleRad), math.sin(angleRad), angleDeg)
     end
 end
 
@@ -240,12 +221,12 @@ function SpawnBullet(entity, bossPos, dirX, dirY, angleDeg)
         end
         if HasProjectileOn(bulletId) then
             local proj = GetProjectileFrom(bulletId)
-            proj.mDamage = ExposedVars.bulletDamage
-            proj.mSpeed = ExposedVars.bulletSpeed
+            proj.mStats.damage = ExposedVars.bulletDamage
+            proj.mStats.speed = ExposedVars.bulletSpeed
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = angleDeg
+            bTransform.rotation = Vec2(dirX, dirY)
         end
     end
 end
@@ -253,7 +234,6 @@ end
 function state_exit(entity)
     Log("Boss Phase 3: Exiting")
 
-    -- Reset tint if enraged
     if HasSprite() then
         local spriteComp = GetSprite()
         spriteComp.tintColor = Vec3(1.0, 1.0, 1.0)

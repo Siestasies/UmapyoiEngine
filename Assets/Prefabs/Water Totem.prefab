@@ -1,0 +1,251 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Water Totem",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2
+                        ]
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/totems ss.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 6.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 64,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 0.6,
+                                    "y": 0.699
+                                },
+                                "purpose": 1,
+                                "layer": 64,
+                                "colliderMask": 64,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 0.8,
+                                    "y": 0.898
+                                },
+                                "purpose": 2,
+                                "layer": 4,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Enemy": {
+                        "mHealth": 100,
+                        "mMaxHealth": 100,
+                        "mHealthRegenRate": 1.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": 10,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 20.0,
+                        "mDefense": 5
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "spawn",
+                        "clips": [
+                            {
+                                "name": "spawn",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 16,
+                                "frameCount": 11,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": ""
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Water Totem.prefab",
+                        "isRoot": true
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 128,
+                        "order": 20,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.442,
+                            0.442,
+                            0.442
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 128,
+                        "order": 20,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.33,
+                            0.045,
+                            0.045
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
+                                "scriptName": "EnemyHealthBar.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/sprites/totems ss.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

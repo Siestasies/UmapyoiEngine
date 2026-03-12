@@ -1,8 +1,11 @@
+-- BossBase: Runs on the boss entity alongside whichever state is active
+-- Fully self-contained. No global functions or shared data.
+-- States are responsible for their own spawning, tracking, and transitions.
+-- Base only handles: boss HP death check, hurt flash, and collision/damage.
+
 local audio = nil
 ExposedVars = {
     enemyHurtEffectDuration = 0.5,
-    phase2Trigger = 0,          -- all 3 elites dead triggers phase 2
-    totalTotems = 3,
     bossMaxHealth = 500
 }
 
@@ -13,16 +16,6 @@ local enemyHurtEffectTimer = 0
 local isHurt = false
 local isEffective = false
 local isFusion = false
-
--- Phase tracking
-local currentPhase = 1          -- 1 = elite phase, 2 = bullet hell + totems, 3 = direct fight
-local eliteIds = {}             -- populated from children
-local elitesAlive = 3
-local totemsAlive = 0
-local totemIds = {}
-
--- Camera reference
-local cameraId = -1
 
 function Start()
     if HasEnemy() then
@@ -39,33 +32,14 @@ function Start()
     isFusion = false
     isHurt = false
     enemyHurtEffectTimer = ExposedVars.enemyHurtEffectDuration
-    currentPhase = 1
-    elitesAlive = 3
 
-    cameraId = FindEntityWithComponent("Camera")
-
-    -- Get the 3 elite children (indices 0, 1, 2)
-    -- Elites are parented under the boss in the hierarchy
-    eliteIds = {}
-    for i = 0, 2 do
-        if HasChildren(EntityID, i) then
-            local childId = GetChildren(EntityID, i)
-            if IsEntityValid(childId) and HasEnemyOn(childId) then
-                table.insert(eliteIds, childId)
-            end
-        end
-    end
-
-    elitesAlive = #eliteIds
-    Log("Boss initialized with " .. tostring(elitesAlive) .. " elites")
-
-    -- Boss starts inactive/hidden during phase 1
+    -- Boss starts hidden during phase 1
     if HasSprite() then
         local spriteComp = GetSprite()
-        spriteComp.visible = false
+        spriteComp.alpha = 0
     end
 
-    -- Disable boss collider during phase 1
+    -- Disable boss colliders during phase 1
     if HasCollider() then
         local collider = GetCollider(EntityID)
         if collider then
@@ -81,59 +55,16 @@ end
 function Update(dt)
     if isDead then return end
 
-    -- Track elite deaths in phase 1
-    if currentPhase == 1 then
-        local alive = 0
-        for i, eliteId in ipairs(eliteIds) do
-            if IsEntityValid(eliteId) then
-                local eliteEnemy = GetEnemyFrom(eliteId)
-                if eliteEnemy and eliteEnemy.mHealth > 0 then
-                    alive = alive + 1
-                end
-            end
+    -- Boss death check: only when boss is visible (phases 2 and 3)
+    -- We check sprite alpha to know if the boss is "active" without needing phase state
+    if enemy and enemy.mHealth <= 0 then
+        local spriteComp = nil
+        if HasSprite() then
+            spriteComp = GetSprite()
         end
 
-        if alive ~= elitesAlive then
-            elitesAlive = alive
-            Log("Elites remaining: " .. tostring(elitesAlive))
-        end
-
-        if elitesAlive <= 0 then
-            Log("All elites defeated! Transitioning to combining phase...")
-            currentPhase = 2
-            ChangeState(EntityID, "BossCombine")
-            return
-        end
-    end
-
-    -- Track totem deaths in phase 2
-    if currentPhase == 2 then
-        local alive = 0
-        for i, totemId in ipairs(totemIds) do
-            if IsEntityValid(totemId) then
-                local totemEnemy = GetEnemyFrom(totemId)
-                if totemEnemy and totemEnemy.mHealth > 0 then
-                    alive = alive + 1
-                end
-            end
-        end
-
-        if alive ~= totemsAlive then
-            totemsAlive = alive
-            Log("Totems remaining: " .. tostring(totemsAlive))
-        end
-
-        if totemsAlive <= 0 and totemsAlive ~= -1 then
-            Log("All totems destroyed! Transitioning to phase 3...")
-            currentPhase = 3
-            ChangeState(EntityID, "BossPhase3")
-            return
-        end
-    end
-
-    -- Boss death check (phases 2 and 3)
-    if currentPhase >= 2 and enemy then
-        if enemy.mHealth <= 0 and not isDead then
+        -- Only die if boss is actually revealed (alpha > 0)
+        if spriteComp and spriteComp.alpha > 0 then
             isDead = true
             ChangeState(EntityID, "BossDeath")
             return
@@ -168,44 +99,16 @@ end
 function OnDestroy()
 end
 
--- ============ HELPER FUNCTIONS FOR STATES ============
-
--- Called by BossPhase2 to register spawned totems
-function RegisterTotems(ids)
-    totemIds = ids
-    totemsAlive = #ids
-    Log("Registered " .. tostring(totemsAlive) .. " totems")
-end
-
-function GetCurrentPhase()
-    return currentPhase
-end
-
-function SetCurrentPhase(phase)
-    currentPhase = phase
-end
-
-function GetPlayerId()
-    return playerId
-end
-
-function GetEliteIds()
-    return eliteIds
-end
-
-function GetCameraId()
-    return cameraId
-end
-
-function GetTotemsAlive()
-    return totemsAlive
-end
-
 -- ============ COLLISION / DAMAGE ============
+-- Only processes hits when boss is visible (alpha > 0)
 
 function HandleCollision(trigger)
-    -- Only take damage in phases 2 and 3
-    if currentPhase < 2 then return end
+    if HasSprite() then
+        local spriteComp = GetSprite()
+        if spriteComp.alpha <= 0 then return end
+    else
+        return
+    end
 
     enemy = GetEnemy()
     if not enemy or enemy.mHealth <= 0 then

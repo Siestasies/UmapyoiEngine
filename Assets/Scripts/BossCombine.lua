@@ -1,23 +1,24 @@
 -- BossCombine: Transition from phase 1 to phase 2
--- Dead elites play a combining particle animation merging into the boss
--- Once animation finishes, boss reveals itself and transitions to Phase 2
+-- Fully self-contained. No shared data with other scripts.
+-- Finds remaining elite corpses via FindEntitiesWithComponent("Enemy"),
+-- plays a combining animation, then reveals the boss and transitions to Phase 2.
 
 ExposedVars = {
-    combineTime = 3.0,         -- total duration of the combine animation
-    roomScaleMultiplier = 1.5  -- how much bigger the room gets
+    combineTime = 5.0,
+    roomScaleMultiplier = 1.5
 }
 
 local combineTimer = 0.0
 local hasCombined = false
 local animator = nil
 local cameraId = -1
+local eliteCorpses = {}
 
 function state_enter(entity)
     Log("Boss Combine: Elites merging...")
     combineTimer = ExposedVars.combineTime
     hasCombined = false
 
-    -- Stop boss movement
     if HasRigidBody() then
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
@@ -30,28 +31,43 @@ function state_enter(entity)
         animator = GetAnimator()
     end
 
-    cameraId = GetCameraId()
+    cameraId = FindEntityWithComponent("Camera")
 
-    -- Start particle effect on each dead elite to show them converging
-    local eliteIds = GetEliteIds()
-    for i, eliteId in ipairs(eliteIds) do
-        if IsEntityValid(eliteId) then
-            if HasParticleEmitterOn(eliteId) then
-                local pe = GetParticleEmitterFrom(eliteId)
+    -- Find elite corpses: children of the boss entity
+    eliteCorpses = {}
+    for i = 1, 3 do
+        local childId = GetChildren(entity, i)
+        if IsEntityValid(childId) then
+            SetActiveEntity(childId, true)
+            table.insert(eliteCorpses, childId)
+        end
+    end
+
+    for i, corpseId in ipairs(eliteCorpses) do
+        if IsEntityValid(corpseId) then
+            RemoveParentSpecial(corpseId)
+        end
+    end
+
+    Log("Found " .. tostring(#eliteCorpses) .. " elite corpses for combine")
+
+    -- Start particle effects on corpses
+    for i, corpseId in ipairs(eliteCorpses) do
+        if IsEntityValid(corpseId) then
+            if HasParticleEmitterOn(corpseId) then
+                local pe = GetParticleEmitterFrom(corpseId)
                 local emitter = pe:GetEmitter(0)
                 if emitter then
                     emitter:Play()
                 end
             end
-            -- Fade out elite sprites
-            if HasSpriteOn(eliteId) then
-                local spr = GetSpriteFrom(eliteId)
+            if HasSpriteOn(corpseId) then
+                local spr = GetSpriteFrom(corpseId)
                 spr.tintColor = Vec3(0.5, 0.5, 1.0)
             end
         end
     end
 
-    -- Play combine sound
     local audio = GetAudioComponent()
     if audio then
         audio:play(entity, "Boss Combine")
@@ -61,23 +77,20 @@ end
 function state_update(entity, dt)
     combineTimer = combineTimer - dt
 
-    -- Fade elite sprites towards boss position during combine
-    local eliteIds = GetEliteIds()
+    -- Lerp corpses toward boss center
     local bossTransform = GetTransform()
-    local progress = 1.0 - (combineTimer / ExposedVars.combineTime)
-    progress = math.max(0.0, math.min(1.0, progress))
-
-    for i, eliteId in ipairs(eliteIds) do
-        if IsEntityValid(eliteId) then
-            local eliteTransform = GetTransformFrom(eliteId)
-            if eliteTransform and bossTransform then
-                -- Lerp elite position toward boss center
-                local targetX = bossTransform.worldPosition.x
-                local targetY = bossTransform.worldPosition.y
-                eliteTransform.worldPosition.x = eliteTransform.worldPosition.x +
-                    (targetX - eliteTransform.worldPosition.x) * dt * 2.0
-                eliteTransform.worldPosition.y = eliteTransform.worldPosition.y +
-                    (targetY - eliteTransform.worldPosition.y) * dt * 2.0
+    if bossTransform then
+        for i, corpseId in ipairs(eliteCorpses) do
+            if IsEntityValid(corpseId) then
+                local corpseTransform = GetTransformFrom(corpseId)
+                if corpseTransform then
+                    local targetX = bossTransform.position.x
+                    local targetY = bossTransform.position.y
+                    corpseTransform.position.x = corpseTransform.position.x +
+                        (targetX - corpseTransform.position.x) * dt * 2.0
+                    corpseTransform.position.y = corpseTransform.position.y +
+                        (targetY - corpseTransform.position.y) * dt * 2.0
+                end
             end
         end
     end
@@ -85,17 +98,17 @@ function state_update(entity, dt)
     if combineTimer <= 0 and not hasCombined then
         hasCombined = true
 
-        -- Destroy elite entities
-        for i, eliteId in ipairs(eliteIds) do
-            if IsEntityValid(eliteId) then
-                DestroyEntity(eliteId)
+        -- Destroy corpses
+        for i, corpseId in ipairs(eliteCorpses) do
+            if IsEntityValid(corpseId) then
+                DestroyEntity(corpseId)
             end
         end
 
         -- Reveal boss
         if HasSprite() then
             local spriteComp = GetSprite()
-            spriteComp.visible = true
+            spriteComp.alpha = 1
         end
 
         -- Enable boss colliders
@@ -108,25 +121,22 @@ function state_update(entity, dt)
             end
         end
 
-        -- Play boss reveal animation
         if animator then
             animator.animator:Play("boss_reveal", false)
         end
 
-        -- Expand the room (scale room entity if accessible)
         -- Camera zoom out and lock
         if cameraId ~= -1 and IsEntityValid(cameraId) then
             local camera = GetCameraFrom(cameraId)
             if camera then
                 camera.zoom = camera.zoom / ExposedVars.roomScaleMultiplier
-                camera.followPlayer = false  -- Lock camera on room
+                camera.followPlayer = false
             end
-            -- Center camera on boss room
             local camTransform = GetTransformFrom(cameraId)
-            local bossPos = GetTransform().worldPosition
+            local bossPos = GetTransform().position
             if camTransform then
-                camTransform.worldPosition.x = bossPos.x
-                camTransform.worldPosition.y = bossPos.y
+                camTransform.position.x = bossPos.x
+                camTransform.position.y = bossPos.y
             end
         end
 

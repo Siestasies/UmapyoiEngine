@@ -152,6 +152,7 @@ namespace Uma_ECS
                     if (!script.isInitialized)
                     {
                         InitializeEntityScript(entity, script);
+                        CallLuaFunction(script, "Start");
                     }
 
                     //CallLuaFunction(script, "OnEnable");
@@ -160,6 +161,7 @@ namespace Uma_ECS
                 if (!script.isInitialized)
                 {
                     InitializeEntityScript(entity, script);
+                    CallLuaFunction(script, "Start");
                 }
 
                 if (script.isVariableDirty) // oni update when there is changes being made
@@ -444,6 +446,16 @@ namespace Uma_ECS
             }
             });
 
+        sharedLua->set_function("RemoveParentSpecial", [&](Entity child) {
+            try {
+                pCoordinator->RemoveParentSpecial(child);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Failed to remove parent");
+            }
+            });
+
         sharedLua->set_function("GetParent", [&](Entity entity) -> int {
             auto parent = pCoordinator->GetParent(entity);
             return parent.has_value() ? static_cast<int>(parent.value()) : -1;
@@ -580,7 +592,6 @@ namespace Uma_ECS
                             auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
                             tf.position = pos;
                         }
-
                         // Log success
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Spawned prefab: " + prefabName);
                     }

@@ -1,0 +1,792 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Boss Enemy",
+                        "position": {
+                            "x": 250.0,
+                            "y": -150.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 30.0,
+                            "y": 30.0
+                        },
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {}
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/boss ss 1.png",
+                        "layer": 16,
+                        "order": 1,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 8.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 0.5,
+                                    "y": 0.5
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 18,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/BossBase.lua",
+                                "scriptName": "BossBase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bossMaxHealth",
+                                        "type": 0,
+                                        "value": 500.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "phase2Trigger",
+                                        "type": 0,
+                                        "value": 0.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "totalTotems",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BossDeath.lua",
+                                "scriptName": "BossDeath.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "deathAnimDuration",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "explosionInterval",
+                                        "type": 0,
+                                        "value": 0.4,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "explosionPrefab",
+                                        "type": 3,
+                                        "value": "BossExplosionVFX.json",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BossCombine.lua",
+                                "scriptName": "BossCombine.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "roomScaleMultiplier",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "combineTime",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BossPhase1.lua",
+                                "scriptName": "BossPhase1.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "eliteCount",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "eliteWaterPrefab",
+                                        "type": 3,
+                                        "value": "Elite Water.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "eliteWindPrefab",
+                                        "type": 3,
+                                        "value": "Elite Wind.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "spawnDelay",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "spawnRadius",
+                                        "type": 0,
+                                        "value": 120.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "eliteFirePrefab",
+                                        "type": 3,
+                                        "value": "Elite Fire.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BossPhase2.lua",
+                                "scriptName": "BossPhase2.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "bulletSpeed",
+                                        "type": 0,
+                                        "value": 300.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "spreadAngle",
+                                        "type": 0,
+                                        "value": 60.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "totemSpawnDelay",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletPrefab",
+                                        "type": 3,
+                                        "value": "boss projectile.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "patternSwitchTime",
+                                        "type": 0,
+                                        "value": 6.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletDamage",
+                                        "type": 0,
+                                        "value": 15.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "totemPrefab",
+                                        "type": 3,
+                                        "value": "BossTotem.json",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "totemCount",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "topOffsetY",
+                                        "type": 0,
+                                        "value": 200.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "volleyInterval",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletsPerVolley",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletInterval",
+                                        "type": 0,
+                                        "value": 0.3,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "sweepSpeed",
+                                        "type": 0,
+                                        "value": 40.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "fireTotemPrefab",
+                                        "type": 3,
+                                        "value": "Fire Totem.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "waterTotemPrefab",
+                                        "type": 3,
+                                        "value": "Water Totem.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "windTotemPrefab",
+                                        "type": 3,
+                                        "value": "Wind Totem.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BossPhase3.lua",
+                                "scriptName": "BossPhase3.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "bulletSpeed",
+                                        "type": 0,
+                                        "value": 350.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "spiralBulletInterval",
+                                        "type": 0,
+                                        "value": 0.079,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "spiralSpeed",
+                                        "type": 0,
+                                        "value": 120.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "crossRotateSpeed",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "patternSwitchTime",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletDamage",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "burstCount",
+                                        "type": 0,
+                                        "value": 12.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "crossBulletInterval",
+                                        "type": 0,
+                                        "value": 0.119,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "enrageHealthPercent",
+                                        "type": 0,
+                                        "value": 0.3,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "enrageSpeedMult",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "burstInterval",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "crossCount",
+                                        "type": 0,
+                                        "value": 4.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "bulletPrefab",
+                                        "type": 3,
+                                        "value": "boss projectile.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Enemy": {
+                        "mHealth": 100,
+                        "mMaxHealth": 100,
+                        "mHealthRegenRate": 1.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": 10,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 20.0,
+                        "mDefense": 5
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "idle",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 0,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/boss ss 1.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": []
+                    },
+                    "struct Uma_ECS::FSM": {
+                        "states": [
+                            {
+                                "name": "BossBase.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
+                            },
+                            {
+                                "name": "BossPhase1.lua",
+                                "isActive": true,
+                                "scriptIndex": 3
+                            },
+                            {
+                                "name": "BossDeath.lua",
+                                "isActive": true,
+                                "scriptIndex": 1
+                            },
+                            {
+                                "name": "BossCombine.lua",
+                                "isActive": true,
+                                "scriptIndex": 2
+                            },
+                            {
+                                "name": "BossPhase2.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
+                            },
+                            {
+                                "name": "BossPhase3.lua",
+                                "isActive": true,
+                                "scriptIndex": 5
+                            }
+                        ],
+                        "nextId": 6,
+                        "current": "",
+                        "next": ""
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "vfx",
+                        "position": {
+                            "x": 250.0,
+                            "y": -156.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.5,
+                            "y": 1.5
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "splash",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Water Corpse",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 30.0,
+                            "y": 30.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Fire Corpse",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 30.0,
+                            "y": 30.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/fire bird.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 10.0,
+                        "gridY": 4.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 4,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Wind Corpse",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 30.0,
+                            "y": 30.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 6.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "isRoot": false
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/fire bird.png"
+            },
+            {
+                "path": "assets/sprites/boss ss 1.png"
+            },
+            {
+                "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 1.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

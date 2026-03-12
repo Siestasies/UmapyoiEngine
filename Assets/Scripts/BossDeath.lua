@@ -1,4 +1,5 @@
 -- BossDeath: Boss defeated, plays death animation then destroys self
+-- Fully self-contained. No shared data with other scripts.
 
 ExposedVars = {
     deathAnimDuration = 3.0,
@@ -17,7 +18,6 @@ function state_enter(entity)
     explosionTimer = 0.0
     hasFinished = false
 
-    -- Stop all movement
     if HasRigidBody() then
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
@@ -26,7 +26,7 @@ function state_enter(entity)
         GetPathFinding().enabled = false
     end
 
-    -- Disable all colliders so boss can't deal more damage
+    -- Disable all colliders
     if HasCollider() then
         local collider = GetCollider(entity)
         if collider then
@@ -41,14 +41,13 @@ function state_enter(entity)
         animator.animator:Play("death", false)
     end
 
-    -- Play death cry
     local audio = GetAudioComponent()
     if audio then
         audio:play(entity, "Boss Death")
     end
 
     -- Restore camera to follow player
-    local cameraId = GetCameraId()
+    local cameraId = FindEntityWithComponent("Camera")
     if cameraId ~= -1 and IsEntityValid(cameraId) then
         local camera = GetCameraFrom(cameraId)
         if camera then
@@ -62,7 +61,7 @@ function state_update(entity, dt)
 
     deathTimer = deathTimer - dt
 
-    -- Spawn explosion VFX periodically during death
+    -- Spawn explosion VFX periodically
     explosionTimer = explosionTimer + dt
     if explosionTimer >= ExposedVars.explosionInterval then
         explosionTimer = 0.0
@@ -79,9 +78,7 @@ function state_update(entity, dt)
     if deathTimer <= 0 then
         hasFinished = true
         Log("Boss destroyed!")
-
-        -- Final cleanup - destroy boss and all children
-        DestroyWithChildren(entity)
+        DestroyEntity(entity)
     end
 end
 
@@ -90,7 +87,6 @@ function SpawnDeathExplosion(entity)
     if not transform then return end
 
     local bossPos = transform.worldPosition
-    -- Random offset around boss
     local offsetX = (math.random() - 0.5) * 80.0
     local offsetY = (math.random() - 0.5) * 80.0
     local spawnPos = Vec2(bossPos.x + offsetX, bossPos.y + offsetY)
@@ -102,6 +98,5 @@ function SpawnDeathExplosion(entity)
 end
 
 function state_exit(entity)
-    -- This may not get called since we DestroyWithChildren
     Log("Boss Death: Exit")
 end

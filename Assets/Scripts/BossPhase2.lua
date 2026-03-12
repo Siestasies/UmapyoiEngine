@@ -1,22 +1,23 @@
 -- BossPhase2: Boss at top of room, bullet hell + totems
--- Boss positions itself at the top of the room and shoots projectiles downward
--- Totems spawn that the player must destroy using advantageous elements
--- Base script tracks totem deaths and transitions to Phase 3 when all are gone
+-- Fully self-contained. No shared data with other scripts.
+-- Spawns totems, tracks their deaths, transitions to Phase 3 when all destroyed.
 
 ExposedVars = {
-    topOffsetY = 200.0,            -- how far above room center the boss sits
-    bulletInterval = 0.3,          -- time between bullet spawns
+    topOffsetY = 200.0,
+    bulletInterval = 0.3,
     bulletSpeed = 300.0,
     bulletDamage = 15,
-    bulletPrefab = "BossBullet.json",
-    totemPrefab = "BossTotem.json",
+    bulletPrefab = "boss projectile.prefab",
+    waterTotemPrefab = "Water Totem.prefab",
+    fireTotemPrefab = "Fire Totem.prefab",
+    windTotemPrefab = "Wind Totem.prefab",
     totemCount = 3,
-    totemSpawnDelay = 1.5,         -- delay before totems appear after phase starts
-    spreadAngle = 60.0,            -- spread angle for bullet fan (degrees)
-    bulletsPerVolley = 5,          -- number of bullets per volley
-    volleyInterval = 1.5,          -- time between volleys
-    sweepSpeed = 40.0,             -- horizontal sweep speed for aimed patterns
-    patternSwitchTime = 6.0        -- time before switching bullet pattern
+    totemSpawnDelay = 1.5,
+    spreadAngle = 60.0,
+    bulletsPerVolley = 5,
+    volleyInterval = 1.5,
+    sweepSpeed = 40.0,
+    patternSwitchTime = 6.0
 }
 
 local bulletTimer = 0.0
@@ -25,10 +26,14 @@ local totemSpawnTimer = 0.0
 local totemsSpawned = false
 local animator = nil
 local bossTransform = nil
-local currentPattern = 1           -- 1 = fan, 2 = sweep, 3 = rain
+local currentPattern = 1
 local patternTimer = 0.0
 local sweepAngle = 0.0
 local sweepDir = 1
+
+-- Totem tracking
+local totemIds = {}
+local totemsAlive = 0
 
 function state_enter(entity)
     Log("Boss Phase 2: Bullet hell + Totems")
@@ -40,6 +45,8 @@ function state_enter(entity)
     currentPattern = 1
     patternTimer = 0.0
     sweepAngle = -ExposedVars.spreadAngle / 2
+    totemIds = {}
+    totemsAlive = 0
 
     -- Position boss at top of room
     bossTransform = GetTransform()
@@ -47,7 +54,6 @@ function state_enter(entity)
         bossTransform.worldPosition.y = bossTransform.worldPosition.y + ExposedVars.topOffsetY
     end
 
-    -- Stop movement
     if HasRigidBody() then
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
@@ -80,7 +86,32 @@ function state_update(entity, dt)
         end
     end
 
-    -- Pattern switching
+    -- ============ TRACK TOTEM DEATHS ============
+    if totemsSpawned and totemsAlive > 0 then
+        local alive = 0
+        for i, totemId in ipairs(totemIds) do
+            if IsEntityValid(totemId) then
+                local totemEnemy = GetEnemyFrom(totemId)
+                if totemEnemy and totemEnemy.mHealth > 0 then
+                    alive = alive + 1
+                end
+            end
+        end
+
+        if alive ~= totemsAlive then
+            totemsAlive = alive
+            Log("Totems remaining: " .. tostring(totemsAlive))
+        end
+
+        if totemsAlive <= 0 then
+            Log("All totems destroyed! Transitioning to phase 3...")
+            ChangeState(entity, "BossPhase3")
+            return
+        end
+    end
+
+    -- ============ BULLET PATTERNS ============
+
     patternTimer = patternTimer + dt
     if patternTimer >= ExposedVars.patternSwitchTime then
         patternTimer = 0.0
@@ -91,7 +122,6 @@ function state_update(entity, dt)
         Log("Boss switching to pattern: " .. tostring(currentPattern))
     end
 
-    -- Fire bullets based on current pattern
     if currentPattern == 1 then
         UpdateFanPattern(entity, dt)
     elseif currentPattern == 2 then
@@ -103,7 +133,6 @@ end
 
 -- ============ BULLET PATTERNS ============
 
--- Pattern 1: Fan of bullets aimed downward
 function UpdateFanPattern(entity, dt)
     volleyTimer = volleyTimer + dt
     if volleyTimer < ExposedVars.volleyInterval then return end
@@ -119,7 +148,7 @@ function UpdateFanPattern(entity, dt)
 
     for i = 0, ExposedVars.bulletsPerVolley - 1 do
         local angleDeg = -halfSpread + (step * i)
-        local angleRad = math.rad(angleDeg - 90)  -- -90 to point downward
+        local angleRad = math.rad(angleDeg - 90)
         local dirX = math.cos(angleRad)
         local dirY = math.sin(angleRad)
 
@@ -133,13 +162,13 @@ function UpdateFanPattern(entity, dt)
             end
             if HasProjectileOn(bulletId) then
                 local proj = GetProjectileFrom(bulletId)
-                proj.mDamage = ExposedVars.bulletDamage
-                proj.mSpeed = ExposedVars.bulletSpeed
+                proj.mStats.damage = ExposedVars.bulletDamage
+                proj.mStats.speed = ExposedVars.bulletSpeed
             end
-            -- Rotate bullet to face direction
             if HasTransformOn(bulletId) then
                 local bTransform = GetTransformFrom(bulletId)
-                bTransform.rotation = angleDeg - 90
+                local rotRad = math.rad(angleDeg - 90)
+                bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad))
             end
         end
     end
@@ -150,13 +179,11 @@ function UpdateFanPattern(entity, dt)
     end
 end
 
--- Pattern 2: Sweeping beam of bullets left to right
 function UpdateSweepPattern(entity, dt)
     bulletTimer = bulletTimer + dt
     if bulletTimer < ExposedVars.bulletInterval then return end
     bulletTimer = 0.0
 
-    -- Sweep the angle back and forth
     sweepAngle = sweepAngle + (ExposedVars.sweepSpeed * dt * sweepDir * 10)
     if sweepAngle > ExposedVars.spreadAngle / 2 then
         sweepDir = -1
@@ -165,7 +192,7 @@ function UpdateSweepPattern(entity, dt)
     end
 
     local bossPos = bossTransform.worldPosition
-    local angleRad = math.rad(sweepAngle - 90)  -- -90 to point downward
+    local angleRad = math.rad(sweepAngle - 90)
     local dirX = math.cos(angleRad)
     local dirY = math.sin(angleRad)
 
@@ -179,31 +206,29 @@ function UpdateSweepPattern(entity, dt)
         end
         if HasProjectileOn(bulletId) then
             local proj = GetProjectileFrom(bulletId)
-            proj.mDamage = ExposedVars.bulletDamage
-            proj.mSpeed = ExposedVars.bulletSpeed
+            proj.mStats.damage = ExposedVars.bulletDamage
+            proj.mStats.speed = ExposedVars.bulletSpeed
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = sweepAngle - 90
+            local rotRad = math.rad(sweepAngle - 90)
+            bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad))
         end
     end
 end
 
--- Pattern 3: Random rain of bullets from boss width
 function UpdateRainPattern(entity, dt)
     bulletTimer = bulletTimer + dt
-    if bulletTimer < ExposedVars.bulletInterval * 0.5 then return end  -- faster rain
+    if bulletTimer < ExposedVars.bulletInterval * 0.5 then return end
     bulletTimer = 0.0
 
     local bossPos = bossTransform.worldPosition
-    -- Spawn across a wide horizontal range
     local offsetX = (math.random() - 0.5) * 400.0
     local spawnPos = Vec2(bossPos.x + offsetX, bossPos.y)
 
     local bulletId = SpawnPrefab(ExposedVars.bulletPrefab, spawnPos)
 
     if bulletId ~= -1 then
-        -- Slight random horizontal drift
         local driftX = (math.random() - 0.5) * 60.0
         if HasRigidBodyOn(bulletId) then
             local rb = GetRigidBodyFrom(bulletId)
@@ -211,12 +236,12 @@ function UpdateRainPattern(entity, dt)
         end
         if HasProjectileOn(bulletId) then
             local proj = GetProjectileFrom(bulletId)
-            proj.mDamage = ExposedVars.bulletDamage
-            proj.mSpeed = ExposedVars.bulletSpeed
+            proj.mStats.damage = ExposedVars.bulletDamage
+            proj.mStats.speed = ExposedVars.bulletSpeed
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = -90
+            bTransform.rotation = Vec2(0, -1)
         end
     end
 end
@@ -224,20 +249,28 @@ end
 -- ============ TOTEM SPAWNING ============
 
 function SpawnTotems(entity)
-    local totemIds = {}
+    totemIds = {}
     local bossPos = bossTransform.worldPosition
     local totemCount = ExposedVars.totemCount
 
     for i = 1, totemCount do
-        -- Spread totems evenly across the room floor
         local fraction = (i - 1) / math.max(1, totemCount - 1)
-        local offsetX = (fraction - 0.5) * 300.0  -- spread across 300 units
+        local offsetX = (fraction - 0.5) * 300.0
         local spawnPos = Vec2(
             bossPos.x + offsetX,
-            bossPos.y - ExposedVars.topOffsetY * 0.8  -- place near room floor
+            bossPos.y - ExposedVars.topOffsetY * 0.8
         )
-
-        local totemId = SpawnPrefab(ExposedVars.totemPrefab, spawnPos)
+        local totemId
+            if i == 1 then
+                totemId = SpawnPrefab(ExposedVars.waterTotemPrefab, spawnPos)
+                --SetParent(eliteId, entity)
+            elseif i == 2 then
+                totemId = SpawnPrefab(ExposedVars.fireTotemPrefab, spawnPos)
+                --SetParent(eliteId, entity)
+            else
+                totemId = SpawnPrefab(ExposedVars.windTotemPrefab, spawnPos)
+                --SetParent(eliteId, entity)
+            end
         if totemId ~= -1 then
             table.insert(totemIds, totemId)
             Log("Spawned totem " .. tostring(i) .. " at " .. tostring(spawnPos.x) .. ", " .. tostring(spawnPos.y))
@@ -246,8 +279,7 @@ function SpawnTotems(entity)
         end
     end
 
-    -- Register totems with base script for tracking
-    RegisterTotems(totemIds)
+    totemsAlive = #totemIds
 
     local audio = GetAudioComponent()
     if audio then
@@ -259,7 +291,4 @@ end
 
 function state_exit(entity)
     Log("Boss Phase 2: Complete")
-
-    -- Clean up remaining totems if any
-    -- (base script handles tracking, but just in case)
 end

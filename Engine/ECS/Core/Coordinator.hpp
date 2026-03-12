@@ -139,6 +139,7 @@ namespace Uma_ECS
 
         void SetParent(Entity child, Entity parent);
         void RemoveParent(Entity child);
+        void RemoveParentSpecial(Entity child);
         std::optional<Entity> GetParent(Entity entity);
         std::vector<Entity> GetChildrenList(Entity entity);
         Entity GetChildren(Entity entity, int index);
