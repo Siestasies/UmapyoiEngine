@@ -717,6 +717,9 @@ function CreateEntity() end
 ---@param entity Entity
 function DestroyEntity(entity) end
 
+---@param entity Entity
+function ForcedDestroyEntity(entity) end
+
 ---@param child Entity
 ---@param parent Entity
 function SetParent(child, parent) end

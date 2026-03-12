@@ -1,6 +1,3 @@
-ExposedVars = {
-    lifeTime = 5.0
-}
 
 local animator    = nil
 local isAlive     = true
@@ -8,6 +5,7 @@ local isDying     = false
 local initialized = false
 local parentID    = nil
 local shape       = nil
+local lifeTime = 8.0
 
 function Start()
 end
@@ -23,6 +21,7 @@ function Init()
         local collider = GetColliderFrom(parentID)
         if collider then
             shape = collider.shapes[1]
+            shape.isActive = false;
         end
     end
 
@@ -87,6 +86,15 @@ function Update(dt)
     animator.animator:GetCurrentClip() == "shield down" and
     animator.animator:HasFinished() then
         Log("WATER SHIELD: destroying")
+
+        if parentID then
+            local collider = GetColliderFrom(parentID)
+            if collider then
+                shape = collider.shapes[1]
+                shape.isActive = true;
+            end
+        end
+
         DestroyEntity(EntityID)
     end
 end
@@ -106,6 +114,7 @@ function HandleCollision(trigger)
     if HasEnemyOn(trigger) then
         BeginDie()
     elseif HasProjectileOn(trigger) then
+        DestroyEntity(trigger)
         BeginDie()
     end
 end

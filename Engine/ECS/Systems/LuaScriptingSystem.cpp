@@ -442,6 +442,21 @@ namespace Uma_ECS
                 }
             });
 
+        sharedLua->set_function("ForcedDestroyEntity", [&](const Entity& entity)
+            {
+                try
+                {
+                    pCoordinator->ForcedDestroyEntity(entity);
+                    std::string debug = "destroyed entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+                catch (...)
+                {
+                    std::string debug = "failed to destroy entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+            });
+
         sharedLua->set_function("SetParent", [&](Entity child, Entity parent) {
             try {
                 pCoordinator->SetParent(child, parent);

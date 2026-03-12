@@ -76,6 +76,53 @@ namespace Uma_ECS
         mEntitiesToDestroy.insert(entity);
     }
 
+    void Coordinator::ForcedDestroyEntity(Entity entity)
+    {
+        if (!aEntityManager->IsEntityActive(entity)) {
+            return; // Skip if already deleted
+        }
+
+        auto& tfArray = aComponentManager->GetComponentArray<Transform>();
+        if (tfArray.Has(entity)) {
+            auto& tf = tfArray.GetData(entity);
+
+            // Remove from parent's children list
+            if (tf.parent.has_value() &&
+                aEntityManager->IsEntityActive(tf.parent.value())) {
+                auto& parentTf = tfArray.GetData(tf.parent.value());
+                auto it = std::find(parentTf.children.begin(),
+                    parentTf.children.end(), entity);
+                if (it != parentTf.children.end()) {
+                    parentTf.children.erase(it);
+                }
+            }
+
+            // Orphan children
+            for (Entity child : tf.children) {
+                if (tfArray.Has(child) && aEntityManager->IsEntityActive(child)) {
+                    auto& childTf = tfArray.GetData(child);
+                    childTf.parent = std::nullopt;
+                    childTf.position = childTf.worldPosition;
+                }
+            }
+        }
+
+        // Remove from hierarchy order
+        auto it = std::find(aHierarchyOrder.begin(), aHierarchyOrder.end(), entity);
+        if (it != aHierarchyOrder.end()) {
+            aHierarchyOrder.erase(it);
+        }
+
+        // Actual deletion
+        aSystemManager->EntityDestroyed(entity);
+        aEntityManager->DestroyEntity(entity);
+        aComponentManager->EntityDestroyed(entity);
+
+        // Single event per entity (could batch these too)
+        pEventSystem->Emit<Uma_Engine::EntityDestroyedEvent>(
+            entity, GetEntityCount());
+    }
+
     bool Coordinator::HasActiveEntity(Entity entity) const
     {
         return aEntityManager->HasActiveEntity(entity);

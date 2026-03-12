@@ -60,9 +60,11 @@ namespace Uma_ECS
 
     void ProjectileSystem::HandleCollision(Entity self, Entity trigger)
     {
-        auto& colliderB = pCoordinator->GetComponent<Collider>(trigger);
+        auto* colliderB = pCoordinator->TryGetComponent<Collider>(trigger);
 
-        if (colliderB.GetPrimaryShape().layer == CL_WALL)
+        if (!colliderB) return;
+
+        if (colliderB->GetPrimaryShape().layer == CL_WALL)
         {
             pCoordinator->DestroyEntityAndChildren(self);
         }

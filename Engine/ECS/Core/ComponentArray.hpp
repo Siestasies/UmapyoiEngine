@@ -188,6 +188,19 @@ namespace Uma_ECS
         }
 
         /*!
+        \brief Safe version of GetData that returns nullptr when the entity has no component.
+        \param entity The Entity ID to look up.
+        \return Pointer to the component, or nullptr if not found.
+        */
+        T* TryGetData(Entity entity)
+        {
+            if (!Has(entity)) return nullptr;
+
+            size_t index = aEntityToIndex[entity];
+            return &aComponentArray[index];
+        }
+
+        /*!
         \brief Removes the entity's component data if it exists. Called when an entity is destroyed.
         \param entity The Entity ID to clean up.
         */

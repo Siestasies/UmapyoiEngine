@@ -145,6 +145,18 @@ namespace Uma_ECS
         }
 
         /*!
+        \brief Safe version of GetComponent that returns nullptr when the entity has no component.
+        \param entity The Entity ID to look up.
+        \return Pointer to the component, or nullptr if not found.
+        */
+        template<typename T>
+        T* TryGetComponent(Entity entity)
+        {
+            ComponentArray<T>& component_array = GetComponentArray<T>();
+            return component_array.TryGetData(entity);
+        }
+
+        /*!
         \brief Checks whether the specified entity has a component of the given type.
         \param entity The Entity ID to check.
         \return True if the entity has the component, false otherwise.

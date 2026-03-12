@@ -112,6 +112,12 @@ namespace Uma_ECS
         void DestroyEntity(Entity entity);
 
         /*!
+        \brief Forced destroy entity
+        \param entity The Entity ID to destroy.
+        */
+        void ForcedDestroyEntity(Entity entity);
+
+        /*!
         \brief Checks whether the given entity is currently active.
         \param entity The Entity ID to check.
         \return True if the entity is active.
@@ -387,6 +393,17 @@ namespace Uma_ECS
         T& GetComponent(Entity entity)
         {
             return aComponentManager->GetComponent<T>(entity);
+        }
+
+        /*!
+        \brief Safe version of GetComponent that returns nullptr when the entity has no component.
+        \param entity The Entity ID to look up.
+        \return Pointer to the component, or nullptr if not found.
+        */
+        template<typename T>
+        T* TryGetComponent(Entity entity)
+        {
+            return aComponentManager->TryGetComponent<T>(entity);
         }
 
         /*!
