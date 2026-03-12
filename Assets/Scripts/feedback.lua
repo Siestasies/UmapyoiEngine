@@ -28,11 +28,11 @@ local FADE_START         = 0.55     -- fraction of lifetime when fade begins
 local PUNCH_DURATION     = 0.12     -- seconds for scale pop
 local PUNCH_PEAK         = 1.35     -- max scale multiplier during punch
 
-local FONT_SIZE_NORMAL   = 2.0
-local FONT_SIZE_CRIT     = 3.0
+local FONT_SIZE_NORMAL   = 4.0
+local FONT_SIZE_CRIT     = 5.0
 local FONT_SIZE_AFFINITY = 3.0
-local FONT_SIZE_MANA     = 1.0
-local FONT_SIZE_WARNING  = 1.0
+local FONT_SIZE_MANA     = 3.0
+local FONT_SIZE_WARNING  = 4.0
 
 -- RGBA colour tables
 local COLOR = {
