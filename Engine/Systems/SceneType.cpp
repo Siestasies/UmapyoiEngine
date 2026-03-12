@@ -287,6 +287,7 @@ namespace Uma_Engine
         m_EventSystem = m_SystemManager->GetSystem<EventSystem>();
         m_ResourcesManager = m_SystemManager->GetSystem<ResourcesManager>();
         m_EditorSystem = m_SystemManager->GetSystem<EditorSystem>();
+        m_PlayFabManager = m_SystemManager->GetSystem<PlayFabManager>();
 
         m_LoadProgress = 0.2f;
 
@@ -444,6 +445,7 @@ namespace Uma_Engine
             sign.set(m_Coordinator.GetComponentType<Uma_ECS::LuaScript>());
             m_Coordinator.SetSystemSignature<Uma_ECS::LuaScriptingSystem>(sign);
         }
+        m_LuaScriptingSystem->SetPlayFabManager(m_PlayFabManager);
         m_LuaScriptingSystem->Init(&m_Coordinator, m_EventSystem, m_HybridInputSystem, m_ResourcesManager, m_Graphics, m_Sound);
 
         //Audio system

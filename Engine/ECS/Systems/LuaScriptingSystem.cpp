@@ -394,6 +394,8 @@ namespace Uma_ECS
         RegisterEntityQueries();
         RegisterEntityManipulation();
         RegisterFeedbackAPI();
+
+        RegisterPlayFabAPI();
     }
 
     void LuaScriptingSystem::RegisterEntityManipulation()
@@ -655,6 +657,379 @@ namespace Uma_ECS
                 pEventSystem->Emit<Uma_UI::SpawnFeedbackEvent>(
                     worldX, worldY, value, type);
             });
+    }
+
+    void LuaScriptingSystem::SetPlayFabManager(Uma_Engine::PlayFabManager* pfb)
+    {
+        pPlayFabManager = pfb;
+       /* if (pPlayFabManager && sharedLua)
+        {
+            RegisterPlayFabAPI();
+        }*/
+    }
+
+    void LuaScriptingSystem::RegisterPlayFabAPI()
+    {
+        if (!pPlayFabManager) return;
+
+        // Register LeaderboardPlayerEntry type
+        sharedLua->new_usertype<Uma_Engine::LeaderboardPlayerEntry>("LeaderboardEntry",
+            "entityId",    &Uma_Engine::LeaderboardPlayerEntry::entityId,
+            "displayName", &Uma_Engine::LeaderboardPlayerEntry::displayName,
+            "rank",        &Uma_Engine::LeaderboardPlayerEntry::rank,
+            "score",       &Uma_Engine::LeaderboardPlayerEntry::score
+        );
+
+        // ── State queries ────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_IsReady", [this]() -> bool {
+            return pPlayFabManager && pPlayFabManager->IsReady();
+        });
+
+        sharedLua->set_function("PlayFab_IsLoggedIn", [this]() -> bool {
+            return pPlayFabManager && pPlayFabManager->IsReady() && pPlayFabManager->Player().IsLoggedIn();
+        });
+
+        // ── Authentication ───────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_LoginWithCustomID",
+            [this](const std::string& customId, bool createAccount,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->IsReady()) return;
+
+                Uma_Engine::OnPlayerLoginSuccess successCb = nullptr;
+                Uma_Engine::OnPlayerLoginFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn]() mutable {
+                        auto result = fn();
+                        if (!result.valid()) {
+                            sol::error err = result;
+                            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                                std::string("PlayFab_LoginWithCustomID onSuccess error: ") + err.what());
+                        }
+                    };
+                }
+
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT hr, const std::string& msg) mutable {
+                        auto result = fn(msg);
+                        if (!result.valid()) {
+                            sol::error err = result;
+                            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                                std::string("PlayFab_LoginWithCustomID onFailure error: ") + err.what());
+                        }
+                    };
+                }
+
+                pPlayFabManager->LoginWithCustomID(customId, createAccount, successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_Logout", [this]() {
+            if (pPlayFabManager) pPlayFabManager->Logout();
+        });
+
+        // ── Account ──────────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_GetAccountInfo",
+            [this](sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnKVResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    sol::state_view lua(sharedLua->lua_state());
+                    successCb = [fn, lua](const std::unordered_map<std::string, std::string>& data) mutable {
+                        sol::table t = lua.create_table();
+                        for (auto& [k, v] : data) t[k] = v;
+                        fn(t);
+                    };
+                }
+
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().GetAccountInfo(successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_SetDisplayName",
+            [this](const std::string& name,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnPlayerSuccess successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn]() mutable { fn(); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().SetDisplayName(name, successCb, failureCb);
+            });
+
+        // ── Player Data ──────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_ReadData",
+            [this](const std::string& key,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnStringResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn](const std::string& value) mutable { fn(value); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().ReadData(key, successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_ReadMultipleData",
+            [this](sol::table keysTable,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                std::vector<std::string> keys;
+                for (auto& pair : keysTable)
+                    keys.push_back(pair.second.as<std::string>());
+
+                Uma_Engine::OnKVResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    sol::state_view lua(sharedLua->lua_state());
+                    successCb = [fn, lua](const std::unordered_map<std::string, std::string>& data) mutable {
+                        sol::table t = lua.create_table();
+                        for (auto& [k, v] : data) t[k] = v;
+                        fn(t);
+                    };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().ReadMultipleData(keys, successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_WriteData",
+            [this](const std::string& key, const std::string& value,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnPlayerSuccess successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn]() mutable { fn(); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().WriteData(key, value, successCb, failureCb);
+            });
+
+        // ── Title Data ───────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_GetTitleData",
+            [this](const std::string& key,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnStringResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn](const std::string& value) mutable { fn(value); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().GetTitleData(key, successCb, failureCb);
+            });
+
+        // ── Statistics ───────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_SubmitScore",
+            [this](const std::string& statName, double value,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnPlayerSuccess successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn]() mutable { fn(); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().SubmitScore(statName, value, successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_GetMyStats",
+            [this](const std::string& statName,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnStatResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    successCb = [fn](const std::string& name, double val) mutable { fn(name, val); };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().GetMyStats(statName, successCb, failureCb);
+            });
+
+        // ── Leaderboards ─────────────────────────────────────────────────────
+
+        sharedLua->set_function("PlayFab_GetLeaderboard",
+            [this](const std::string& name, int pageSize, int startPos,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnLeaderboardPlayerResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    sol::state_view lua(sharedLua->lua_state());
+                    successCb = [fn, lua](const std::vector<Uma_Engine::LeaderboardPlayerEntry>& entries) mutable {
+                        sol::table t = lua.create_table(static_cast<int>(entries.size()), 0);
+                        for (size_t i = 0; i < entries.size(); ++i)
+                        {
+                            sol::table entry = lua.create_table(0, 4);
+                            entry["entityId"]    = entries[i].entityId;
+                            entry["displayName"] = entries[i].displayName;
+                            entry["rank"]        = entries[i].rank;
+                            entry["score"]       = entries[i].score;
+                            t[static_cast<int>(i) + 1] = entry;
+                        }
+                        fn(t);
+                    };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().GetLeaderboard(
+                    name, static_cast<uint32_t>(pageSize), static_cast<uint32_t>(startPos),
+                    successCb, failureCb);
+            });
+
+        sharedLua->set_function("PlayFab_GetLeaderboardAroundMe",
+            [this](const std::string& name, int pageSize,
+                   sol::optional<sol::protected_function> onSuccess,
+                   sol::optional<sol::protected_function> onFailure)
+            {
+                if (!pPlayFabManager || !pPlayFabManager->Player().IsLoggedIn()) return;
+
+                Uma_Engine::OnLeaderboardPlayerResult successCb = nullptr;
+                Uma_Engine::OnPlayerFailure failureCb = nullptr;
+
+                if (onSuccess.has_value())
+                {
+                    sol::protected_function fn = onSuccess.value();
+                    sol::state_view lua(sharedLua->lua_state());
+                    successCb = [fn, lua](const std::vector<Uma_Engine::LeaderboardPlayerEntry>& entries) mutable {
+                        sol::table t = lua.create_table(static_cast<int>(entries.size()), 0);
+                        for (size_t i = 0; i < entries.size(); ++i)
+                        {
+                            sol::table entry = lua.create_table(0, 4);
+                            entry["entityId"]    = entries[i].entityId;
+                            entry["displayName"] = entries[i].displayName;
+                            entry["rank"]        = entries[i].rank;
+                            entry["score"]       = entries[i].score;
+                            t[static_cast<int>(i) + 1] = entry;
+                        }
+                        fn(t);
+                    };
+                }
+                if (onFailure.has_value())
+                {
+                    sol::protected_function fn = onFailure.value();
+                    failureCb = [fn](HRESULT, const std::string& msg) mutable { fn(msg); };
+                }
+
+                pPlayFabManager->Player().GetLeaderboardAroundMe(
+                    name, static_cast<uint32_t>(pageSize), successCb, failureCb);
+            });
+
+        Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            "PlayFab API registered in Lua");
     }
 
     void LuaScriptingSystem::RegisterComponentTypes()

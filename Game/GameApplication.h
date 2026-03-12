@@ -56,6 +56,9 @@ namespace Uma_Engine
         bool HandleInterruptions(float deltaTime) override;
 
     private:
+
+        void PlayFabConfiguration();
+
         bool mWasFocused = true;
     };
 }

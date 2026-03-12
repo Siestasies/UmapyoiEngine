@@ -48,7 +48,7 @@ All rights reserved.
 #include "Events/ApplicationEvents.h"
 
 // playfab test WIP
-#include "PlayFab/Test Scripts/PlayFabPlayerTest.cpp"
+//#include "PlayFab/Test Scripts/PlayFabPlayerTest.cpp"
 
 #include "Core/EngineConfigSerializer.h"
 #include "PlayFab/Core/PlayFabConfig.h"
