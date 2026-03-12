@@ -27,7 +27,14 @@
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": []
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/intro.lua",
+                                "scriptName": "intro.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/intro.prefab",
