@@ -221,6 +221,17 @@
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
                             },
+                            "Neutral Slash(BasicAttack)": {
+                                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "PlayerDamageMono": {
                                 "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                                 "isPlaying": false,
