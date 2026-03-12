@@ -519,9 +519,11 @@ void Uma_Engine::PlayFabPlayerManager::OnGetAccountInfoComplete(XAsyncBlock* asy
     {
         auto* info = result->accountInfo;
         std::unordered_map<std::string, std::string> out;
-        out["playFabId"] = info->playFabId ? info->playFabId : "";
-        out["username"]  = info->username  ? info->username  : "";
-        out["created"]   = std::to_string(static_cast<long long>(info->created));
+        out["playFabId"]    = info->playFabId ? info->playFabId : "";
+        out["username"]     = info->username  ? info->username  : "";
+        out["created"]      = std::to_string(static_cast<long long>(info->created));
+        out["displayName"]  = (info->titleInfo && info->titleInfo->displayName)
+                              ? info->titleInfo->displayName : "";
         ctx->onSuccess(out);
     }
 

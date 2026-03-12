@@ -25,6 +25,8 @@ All rights reserved.
 #include <sstream>
 #include <utility>
 #include <XTaskQueue.h>
+#include <random>
+#include <iomanip>
 
 void Uma_Engine::PlayFabManager::SetCredentials(const std::string& titleId, const std::string& devSecretKey, OnAdminSuccess onAdminReady, OnAdminFailure onAdminFailed)
 {
@@ -248,6 +250,30 @@ const Uma_Engine::PlayFabAdminManager& Uma_Engine::PlayFabManager::Admin() const
 const Uma_Engine::PlayFabPlayerManager& Uma_Engine::PlayFabManager::Player() const
 {
 	return *(m_playerManager.get());
+}
+
+std::string Uma_Engine::PlayFabManager::GenerateUUID4()
+{
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<uint64_t> dist;
+
+	uint64_t hi = dist(gen);
+	uint64_t lo = dist(gen);
+
+	// Set version 4 (bits 12-15 of time_hi_and_version)
+	hi = (hi & 0xFFFFFFFFFFFF0FFFULL) | 0x0000000000004000ULL;
+	// Set variant 1 (bits 6-7 of clock_seq_hi)
+	lo = (lo & 0x3FFFFFFFFFFFFFFFULL) | 0x8000000000000000ULL;
+
+	std::ostringstream ss;
+	ss << std::hex << std::setfill('0')
+		<< std::setw(8) << (hi >> 32) << '-'
+		<< std::setw(4) << ((hi >> 16) & 0xFFFF) << '-'
+		<< std::setw(4) << (hi & 0xFFFF) << '-'
+		<< std::setw(4) << (lo >> 48) << '-'
+		<< std::setw(12) << (lo & 0x0000FFFFFFFFFFFFULL);
+	return ss.str();
 }
 
 void Uma_Engine::PlayFabManager::AuthenticateAsTitle()

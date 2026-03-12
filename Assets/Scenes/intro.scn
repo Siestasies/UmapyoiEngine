@@ -6,6 +6,12 @@
             },
             {
                 "path": "assets/cutscene.png"
+            },
+            {
+                "path": "assets/lines.png"
+            },
+            {
+                "path": "assets/cutscene skip button.png"
             }
         ],
         "fonts": [
@@ -70,12 +76,47 @@
                     },
                     "parent": -1,
                     "children": [
-                        1
+                        1,
+                        2,
+                        3
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/intro.prefab",
                     "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 5,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "playfab",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/playfab_authenticate.lua",
+                            "scriptName": "playfab_authenticate.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 }
             }
         }

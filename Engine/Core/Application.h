@@ -108,6 +108,14 @@ namespace Uma_Engine
         */
         static float GetFps() { return mFps; }
 
+        static void StartTimer(bool startNow)
+        {
+            playTime = 0.f;
+            startPlayTimeTimer = startNow;
+        }
+
+        static float GetPlayTime() { return playTime; }
+
     protected:
         /**
          * \brief Override this to register application-specific systems
@@ -249,6 +257,8 @@ namespace Uma_Engine
         inline static bool mGamePause = false;
         inline static bool mCutsceneActive = false;
         inline static float mFps = 0;
+        inline static float playTime = 0.f;
+        inline static bool startPlayTimeTimer = false;
 
     protected:
 
