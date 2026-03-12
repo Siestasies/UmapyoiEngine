@@ -1,3 +1,23 @@
+/*!
+\file   FeedbackTypes.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines configuration constants, colour presets, type tags, and pool slot
+structures for the floating feedback number system used to display damage,
+healing, mana, and warning values in the game UI.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"

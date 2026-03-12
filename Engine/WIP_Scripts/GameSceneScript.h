@@ -1,6 +1,6 @@
 /*!
 \file   GameSceneScript.h
-\par    Project: GAM200
+\par    Project: GAM250
 
 \brief
 Editor behavior script that handles all editor-specific functionality.

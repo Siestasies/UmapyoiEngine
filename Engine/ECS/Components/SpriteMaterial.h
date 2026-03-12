@@ -1,3 +1,25 @@
+/*!
+\file   SpriteMaterial.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Javier Chua Dong Qing (100%)
+\par    E-mail: javierdongqing.chua@digipen.edu
+\par    DigiPen login: javierdongqing.chua
+
+\brief
+Defines the SpriteMaterial ECS component for per-entity shader effect properties.
+
+Stores an effect name key and a map of named material properties (float, int,
+vec2, vec3, vec4) that are passed to the active shader at render time.
+Includes full JSON serialization and deserialization support.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include <string>
 #include <unordered_map>

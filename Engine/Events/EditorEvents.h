@@ -1,3 +1,22 @@
+/*!
+\file   EditorEvents.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines editor-related event types for entity picking, dropping, mode changes,
+transform manipulation via gizmos, and mouse-over-UI state updates.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../../ECS/Core/Types.hpp"

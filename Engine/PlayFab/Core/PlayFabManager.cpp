@@ -1,3 +1,25 @@
+/*!
+\file   PlayFabManager.cpp
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Implementation of PlayFabManager, the engine-level facade for PlayFab integration.
+
+Handles SDK initialization, task queue creation, service configuration, title
+entity authentication via secret key, player login with custom ID, and orderly
+shutdown of all PlayFab resources and async operations.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #include "PlayFabManager.h"
 
 #include <sstream>

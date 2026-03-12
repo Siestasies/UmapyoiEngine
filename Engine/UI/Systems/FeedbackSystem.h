@@ -3,7 +3,7 @@
 \par    Project: GAM250
 \par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Jedrek Lee Jing Wei
 \par    E-mail: jedrekjingwei.lee@digipen.edu

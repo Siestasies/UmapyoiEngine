@@ -1,3 +1,26 @@
+/*!
+\file   Effects.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the EffectClip and Effects UI components for property-based UI animations.
+
+EffectClip represents a single tween that interpolates a UI property (position,
+color, opacity, spritesheet frame) over time with configurable easing, looping,
+and ping-pong playback. Effects aggregates multiple clips with play/stop/reset
+controls and JSON serialization.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"

@@ -1,3 +1,25 @@
+/*!
+\file   HybridInputSystem.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Extends InputSystem with event-driven input dispatching and UI input filtering.
+
+Processes keyboard and mouse input each frame, categorizes events by priority
+(critical, high, normal), and filters game input when UI elements have focus.
+Provides scene viewport mouse coordinate transformation for editor framebuffer mode.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 #include <iostream>
 #include <GLFW/glfw3.h>
