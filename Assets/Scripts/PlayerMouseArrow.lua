@@ -22,13 +22,12 @@ function Update(dt)
     dx = dx / length
     dy = dy / length
     
-    -- rotate arrow to face mouse
-
     local angle = math.atan(dy, dx)
 
     if angle < 0 then
         angle = angle + (2 * math.pi)
     end
 
+    transform.scale.x = playerTransform.scale.x * -1
     transform.rotation.x = angle + (math.pi / 2)
 end

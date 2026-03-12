@@ -51,12 +51,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.098,
-                                    "y": -4.197
+                                    "x": 14.602,
+                                    "y": -36.396
                                 },
                                 "size": {
-                                    "x": 42.798,
-                                    "y": 17.2
+                                    "x": 35.998,
+                                    "y": 8.1
                                 },
                                 "purpose": 2,
                                 "layer": 32,
@@ -66,12 +66,12 @@
                             },
                             {
                                 "offset": {
-                                    "x": -2.5,
-                                    "y": 76.5
+                                    "x": -73.099,
+                                    "y": 16.799
                                 },
                                 "size": {
-                                    "x": 39.9,
-                                    "y": 13.1
+                                    "x": 9.0,
+                                    "y": 52.599
                                 },
                                 "purpose": 2,
                                 "layer": 32,
@@ -81,12 +81,12 @@
                             },
                             {
                                 "offset": {
-                                    "x": -41.2,
-                                    "y": 28.899
+                                    "x": -217.699,
+                                    "y": 13.899
                                 },
                                 "size": {
                                     "x": 7.4,
-                                    "y": 36.298
+                                    "y": 56.198
                                 },
                                 "purpose": 2,
                                 "layer": 32,
@@ -96,12 +96,12 @@
                             },
                             {
                                 "offset": {
-                                    "x": -57.798,
-                                    "y": 27.399
+                                    "x": -361.497,
+                                    "y": 14.699
                                 },
                                 "size": {
                                     "x": 9.5,
-                                    "y": 41.9
+                                    "y": 51.299
                                 },
                                 "purpose": 2,
                                 "layer": 32,
@@ -215,8 +215,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.097,
+                            "height": 0.194
                         }
                     },
                     "class Uma_UI::Canvas": {
@@ -278,10 +278,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.562,
-                            "y": 0.695,
-                            "width": 0.908,
-                            "height": 0.125
+                            "x": 0.527,
+                            "y": 0.749,
+                            "width": 0.853,
+                            "height": 0.135
                         }
                     },
                     "class Uma_UI::Image": {
@@ -347,10 +347,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.562,
-                            "y": 0.695,
-                            "width": 0.903,
-                            "height": 0.113
+                            "x": 0.527,
+                            "y": 0.749,
+                            "width": 0.848,
+                            "height": 0.122
                         }
                     },
                     "class Uma_UI::Image": {
@@ -416,10 +416,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.583,
-                            "y": 0.711,
-                            "width": 0.049,
-                            "height": 0.209
+                            "x": 0.549,
+                            "y": 0.767,
+                            "width": 0.043,
+                            "height": 0.225
                         }
                     },
                     "class Uma_UI::Text": {
@@ -486,10 +486,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.587,
-                            "y": 0.711,
-                            "width": 0.049,
-                            "height": 0.209
+                            "x": 0.553,
+                            "y": 0.767,
+                            "width": 0.043,
+                            "height": 0.225
                         }
                     },
                     "class Uma_UI::Text": {
@@ -556,10 +556,10 @@
                         },
                         "isDirty": false,
                         "computedRect": {
-                            "x": 0.173,
-                            "y": 0.697,
-                            "width": 0.049,
-                            "height": 0.097
+                            "x": 0.163,
+                            "y": 0.751,
+                            "width": 0.046,
+                            "height": 0.105
                         }
                     },
                     "class Uma_UI::Image": {
@@ -584,8 +584,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Blocker Collider",
                         "position": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": -15.899,
+                            "y": -13.699
                         },
                         "rotation": {
                             "x": 0.0,
@@ -621,7 +621,7 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -42.0,
+                                    "x": -41.799,
                                     "y": 29.399
                                 },
                                 "size": {
@@ -713,8 +713,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -790,8 +790,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -867,8 +867,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -880,8 +880,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Blocker Collider_dup",
                         "position": {
-                            "x": -17.5,
-                            "y": 0.0
+                            "x": -159.699,
+                            "y": -15.5
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1009,8 +1009,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1086,8 +1086,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1163,8 +1163,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1176,8 +1176,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Blocker Collider_dup",
                         "position": {
-                            "x": -37.2,
-                            "y": 0.0
+                            "x": -303.7,
+                            "y": -16.0
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1305,8 +1305,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1382,8 +1382,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1459,8 +1459,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1472,8 +1472,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Blocker Collider_dup",
                         "position": {
-                            "x": -59.097,
-                            "y": 0.0
+                            "x": -364.696,
+                            "y": 42.5
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1486,8 +1486,7 @@
                         "parent": 0,
                         "children": [
                             19,
-                            20,
-                            21
+                            20
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -1509,12 +1508,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -42.0,
-                                    "y": 29.399
+                                    "x": -52.7,
+                                    "y": 48.999
                                 },
                                 "size": {
-                                    "x": 15.0,
-                                    "y": 50.0
+                                    "x": 31.0,
+                                    "y": 19.6
                                 },
                                 "purpose": 1,
                                 "layer": 8,
@@ -1537,7 +1536,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Rice Bag_dup",
                         "position": {
-                            "x": -41.7,
+                            "x": -59.9,
                             "y": 49.097
                         },
                         "rotation": {
@@ -1601,8 +1600,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }
@@ -1614,8 +1613,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Rice Bag_dup",
                         "position": {
-                            "x": -41.2,
-                            "y": 34.5
+                            "x": -45.299,
+                            "y": 49.099
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1678,85 +1677,8 @@
                         "computedRect": {
                             "x": 0.0,
                             "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
-                        }
-                    }
-                }
-            },
-            {
-                "id": 21,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "Rice Bag",
-                        "position": {
-                            "x": -41.2,
-                            "y": 17.298
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 20.0,
-                            "y": 20.0
-                        },
-                        "parent": 18,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
-                        "layer": 2,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": false,
-                        "Native": false,
-                        "gridX": 13.0,
-                        "gridY": 11.0,
-                        "cellX": 0.0,
-                        "cellY": 2.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.195
+                            "width": 0.092,
+                            "height": 0.211
                         }
                     }
                 }

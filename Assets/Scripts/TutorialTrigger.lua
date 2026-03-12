@@ -117,7 +117,7 @@ function Update(dt)
         local enemyCount = CountEntitiesWithComponent("Enemy")
         if enemyCount == 2 then
             SetActiveEntity(blockerCollider[4], false)
-            SetMissionText(moveToNext)
+            SetMissionText("Touch the Kappa Shrine")
         end
     end
 

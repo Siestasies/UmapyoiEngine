@@ -13,7 +13,7 @@ function Update(dt)
         time = time - dt
         if time <= 0 then 
             time = 0
-            LoadScene("level_1_v2.scn")
+            LoadScene("level_1_v3.scn")
         end
     end
 end
@@ -22,9 +22,9 @@ end
 function OnTriggerEnter(other, triggerOwner)
     -- trigger fading
     if HasPlayerOn(triggerOwner) or HasPlayerOn(other) then
-        local enemyCount = CountEntitiesWithComponent("Enemy")
-        if enemyCount <= 0 then
+        --local enemyCount = CountEntitiesWithComponent("Enemy")
+        --if enemyCount <= 0 then
             levelEnd = true
-        end
+        --end
     end
 end

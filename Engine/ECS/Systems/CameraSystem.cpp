@@ -71,9 +71,9 @@ namespace Uma_ECS
 
         // Camera shake - LEGACY lol
         // Pixel-perfect snap on the base position
-        float pixelSize = 1.0f / cam_c.mZoom;
-        cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
-        cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
+        //float pixelSize = 1.0f / cam_c.mZoom;
+        //cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
+        //cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
 
         // Update shake timer
         if (cam_c.mShakeTimer > 0.0f)

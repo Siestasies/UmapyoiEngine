@@ -3,6 +3,7 @@ local numberStr
 local number
 local playerID
 local parentObj
+local GparentCollider
 
 function Start()
     -- init references for icon and text, for editing later
@@ -17,6 +18,8 @@ function Start()
 
     playerID = FindEntityWithComponent("Player")
     parentObj = GetParent(EntityID)
+    local GparentObj = GetParent(parentObj)
+    GparentCollider = GetColliderFrom(GparentObj)
 end
 
 function GetFireSlashAttackStat(player)
@@ -92,6 +95,7 @@ function OnClick()
         windAttack.manaCost = windAttack.manaCost - number
     end
 
+    GparentCollider.shapes[2].isActive = false
     SetActiveEntity(parentObj, false)
 end
 
