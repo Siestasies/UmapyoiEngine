@@ -631,30 +631,7 @@ namespace Uma_UI
             Uma_ECS::Entity entity = effectsArray.GetEntity(i);
             auto& effects = effectsArray.GetComponentAt(i);
 
-            // --- playOnEnable: fire once per inactive->active transition ----------
-            bool isNowActive = pCoordinator->IsActiveInHierarchy(entity);
-
-            if (effects.playOnEnable)
-            {
-                if (isNowActive && !effects._wasActiveInHierarchy)
-                {
-                    // Rising edge: entity just became active - restart and play all clips
-                    effects.ResetAll();
-                    effects.PlayAll();
-                }
-                else if (!isNowActive && effects._wasActiveInHierarchy)
-                {
-                    // Falling edge: entity just became inactive - stop so clips
-                    // restart cleanly from the top next time it re-enables.
-                    effects.StopAll();
-                }
-            }
-
-            effects._wasActiveInHierarchy = isNowActive;
-
-            // --- Skip time advancement entirely while inactive ----------------
-            if (!isNowActive)
-                continue;
+            if (effects.playOnEnable) effects.PlayAll();
 
             for (auto& clip : effects.clips)
             {
@@ -706,6 +683,7 @@ namespace Uma_UI
                 rt.isDirty = true;
             }
             break;
+
         case EffectProperty::Scale:
         {
             Vec2 currentScale = LerpVec2(clip.startVec2, clip.endVec2, easedT);
@@ -764,6 +742,11 @@ namespace Uma_UI
                 }
             }
 
+            if (clip.applyToChildren && transformArray.Has(entity))
+            {
+                ApplyScaleToChildren(entity, currentScale, originalSizes, originalFontSizes);
+            }
+
             if (!clip.loop && clip.IsComplete())
             {
                 originalSizes.erase(entity);
@@ -772,55 +755,49 @@ namespace Uma_UI
             break;
         }
         case EffectProperty::ColorTint:
-            // Apply to Image and Text independently - an entity may have both
-            // (e.g. a Button with a background image and a label on the same entity).
             if (imageArray.Has(entity))
             {
                 auto& image = imageArray.GetData(entity);
                 image.color = LerpColor(clip.startColor, clip.endColor, easedT);
             }
-            if (textArray.Has(entity))
+            else if (textArray.Has(entity))
             {
                 auto& text = textArray.GetData(entity);
                 text.color = LerpColor(clip.startColor, clip.endColor, easedT);
             }
             break;
+
         case EffectProperty::Alpha:
-            // Apply to Image and Text independently (same reasoning as ColorTint).
             if (imageArray.Has(entity))
             {
                 auto& image = imageArray.GetData(entity);
                 image.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
-            if (textArray.Has(entity))
+            else if (textArray.Has(entity))
             {
                 auto& text = textArray.GetData(entity);
                 text.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
             break;
+
         case EffectProperty::FillAmount:
-            if (pCoordinator->HasComponent<Uma_UI::Image>(entity))
-                pCoordinator->GetComponent<Uma_UI::Image>(entity).fillAmount =
-                Uma_UI::LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.fillAmount = LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            }
             break;
+
         case EffectProperty::SpritesheetFrame:
-            if (pCoordinator->HasComponent<Uma_UI::Image>(entity))
-                pCoordinator->GetComponent<Uma_UI::Image>(entity).SetFrame(clip.GetCurrentFrame());
+            if (imageArray.Has(entity))
+            {
+                auto& image = imageArray.GetData(entity);
+                image.SetFrame(clip.GetCurrentFrame());
+            }
             break;
+
         default:
             break;
-        }
-
-        // --- Generic applyToChildren: recurse into every child with the same clip ---
-        // Scale already handles its own child sizing above via ApplyScaleToChildren;
-        // all other properties reach children through this shared path.
-        if (clip.applyToChildren && transformArray.Has(entity))
-        {
-            auto& transform = transformArray.GetData(entity);
-            for (Uma_ECS::Entity child : transform.children)
-            {
-                ApplyEffect(child, clip, easedT);
-            }
         }
     }
 

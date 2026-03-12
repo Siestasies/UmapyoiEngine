@@ -38,6 +38,7 @@ All rights reserved.
 #include "../Components/Enemy.h"
 #include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
+#include "../UI/Components/RectTransform.h"
 #include "../UI/Components/Text.h"
 #include "../UI/Components/Dialogue.h"
 #include "../UI/Components/Slider.h"
@@ -657,11 +658,18 @@ namespace Uma_ECS
                     else if (s == "warn" || s == "Warn" || s == "WARN"
                         || s == "warning" || s == "Warning" || s == "WARNING")
                         type = Uma_UI::FeedbackType::Warning;
-                    // else: anything else → Normal
+                    // else: anything else -> Normal
                 }
 
-                pEventSystem->Emit<Uma_UI::SpawnFeedbackEvent>(
-                    worldX, worldY, value, type);
+                Vec2 screenPx = pGraphics->WorldToScreen({ worldX, worldY });
+                Vec2 viewport = pGraphics->GetSceneViewport();
+                sol::protected_function fn = (*sharedLua)["_FeedbackSpawn"];
+
+                float centeredX = screenPx.x - viewport.x * 0.5f;
+                float centeredY = (viewport.y - screenPx.y) - viewport.y * 0.5f;
+
+                if (fn.valid())
+                    fn(centeredX, centeredY, value, typeStr.value_or("normal"));
             });
     }
 
@@ -1349,9 +1357,19 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
 
+        sharedLua->new_usertype<Uma_UI::RectTransform>("RectTransform",
+            "anchoredPosition", &Uma_UI::RectTransform::anchoredPosition,
+            "sizeDelta", &Uma_UI::RectTransform::sizeDelta,
+            "anchorMin", &Uma_UI::RectTransform::anchorMin,
+            "anchorMax", &Uma_UI::RectTransform::anchorMax,
+            "pivot", &Uma_UI::RectTransform::pivot,
+            "isDirty", &Uma_UI::RectTransform::isDirty
+        );
+
         //Register Text component
         sharedLua->new_usertype<Text>("Text",
             "text", &Text::text,
+            "fontSize", &Text::fontSize,
             "color", &Text::color,
             "visible", &Text::visible
         );
@@ -2098,6 +2116,7 @@ namespace Uma_ECS
 
         // first is entity wrapper (like accessing a struct / class)
         // then the direct access method with the entity id
+        using RectTransform = Uma_UI::RectTransform;
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
@@ -2119,10 +2138,11 @@ namespace Uma_ECS
         X(PathFinding)      \
         X(Projectile)       \
         X(Animator)         \
+        X(RectTransform)    \
         X(Text)             \
         X(Image)            \
         X(Effects)          \
-        X(Button)         \
+        X(Button)           \
         X(Dialogue)         \
         X(ParticleEmitter)  \
         X(AudioComponent)   \
@@ -2620,6 +2640,7 @@ namespace Uma_ECS
         // USING MACRO TO DO THE JOB 
         // More efficient
 
+        using RectTransform = Uma_UI::RectTransform;
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
@@ -2637,6 +2658,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Player)           \
         BIND_COMPONENT_GETTER(Enemy)            \
         BIND_COMPONENT_GETTER(Camera)           \
+        BIND_COMPONENT_GETTER(RectTransform)    \
         BIND_COMPONENT_GETTER(Text)             \
         BIND_COMPONENT_GETTER(PathFinding)      \
         BIND_COMPONENT_GETTER(Animator)         \

@@ -18,6 +18,9 @@
             },
             {
                 "path": "assets/main menu fade out.png"
+            },
+            {
+                "path": "assets/cutscene to main menu.png"
             }
         ],
         "fonts": [
@@ -27,13 +30,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "MainMenuBGM",
-                "path": "Assets/sounds/Music/MainMenuBGM.wav",
-                "type": 1
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -93,11 +90,16 @@
             }
         },
         {
+            "id": 20,
+            "isActive": true,
+            "components": {}
+        },
+        {
             "id": 21,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "fade out",
+                    "name": "transition",
                     "position": {
                         "x": 0.0,
                         "y": 0.0
@@ -112,11 +114,11 @@
                     },
                     "parent": -1,
                     "children": [
-                        20
+                        22
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/fade out.prefab",
+                    "prefabPath": "Assets/Prefabs/main_transition.prefab",
                     "isRoot": true
                 }
             }
