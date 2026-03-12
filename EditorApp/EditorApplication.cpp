@@ -35,6 +35,7 @@ All rights reserved.
 #include "Editor/Core/EditorSystem.h"
 #include "Scripts/ImguiManager.h"
 #include "../Editor/Systems/TilemapEditorManager.h"
+#include "../Editor/Systems/PlayFabEditorManager.h"
 #include "PlayFab/Core/PlayFabManager.h"
 
 // imgui
@@ -47,7 +48,7 @@ All rights reserved.
 #include "Events/ApplicationEvents.h"
 
 // playfab test WIP
-#include "PlayFab/Test Scripts/PlayFabPlayerTest.cpp"
+//#include "PlayFab/Test Scripts/PlayFabPlayerTest.cpp"
 
 #include "Core/EngineConfigSerializer.h"
 #include "PlayFab/Core/PlayFabConfig.h"
@@ -74,6 +75,7 @@ namespace Uma_Engine
         mEditorSystem = GetSystemManager()->RegisterSystem<EditorSystem>();
         mImguiManager = GetSystemManager()->RegisterSystem<ImguiManager>();
         mTilemapEditorManager = GetSystemManager()->RegisterSystem<TilemapEditorManager>();
+        mPlayFabEditorManager = GetSystemManager()->RegisterSystem<PlayFabEditorManager>();
     }
 
     /**
@@ -307,7 +309,6 @@ namespace Uma_Engine
         );
 
         playfabManager->Init();
-
         delete config;
     }
 }

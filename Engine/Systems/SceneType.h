@@ -75,6 +75,7 @@ All rights reserved.
 #include "../Core/EventSystem.h"
 #include "../Events/ECSEvents.h"
 #include "../Events/IMGUIEvents.h"
+#include "../PlayFab/Core/PlayFabManager.h"
 
 // Serializer
 #include "Core/GameSerializer.h"
@@ -210,6 +211,7 @@ namespace Uma_Engine
             Uma_Engine::SoundManager* GetSound() { return m_Sound; }
             Uma_Engine::ResourcesManager* GetResourcesManager() { return m_ResourcesManager; }
             Uma_Engine::EventSystem* GetEventSystem() { return m_EventSystem; }
+            Uma_Engine::PlayFabManager* GetPlayFabManager() { return m_PlayFabManager; }
 
         //protected:
             // Engine Systems
@@ -220,6 +222,7 @@ namespace Uma_Engine
             Uma_Engine::ResourcesManager* m_ResourcesManager;
             Uma_Engine::EventSystem* m_EventSystem;
             Uma_Engine::EditorSystem* m_EditorSystem;
+            Uma_Engine::PlayFabManager* m_PlayFabManager;
             Uma_Engine::EngineConfig g_EngineConfig;
 
             // ECS related
@@ -348,5 +351,6 @@ namespace Uma_Engine
             Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
             Uma_Engine::EventSystem* GetEventSystem() { return m_Scene->GetEventSystem(); }
+            //Uma_Engine::PlayFabManager* GetPlayFabManager() { return m_Scene->GetPlayFabManager(); }
     };
 }

@@ -217,14 +217,14 @@ namespace Uma_Engine
                 //  PREREQUISITE: stat definition "TestHighScore" must exist
                 // =============================================================
                 player.SubmitScore(
-                    "TestHighScore", 42000,
+                    "CompletionTime", 42000,
                     [playfabManager, onFail]()
                     {
                         Debugger::Log(WarningLevel::eInfo,
-                            "[PlayerTest | SubmitScore] OK — submitted 42000 to TestHighScore");
+                            "[PlayerTest | SubmitScore] OK — submitted 42000 to CompletionTime");
 
                         playfabManager->Player().GetMyStats(
-                            "TestHighScore",
+                            "CompletionTime",
                             [](const std::string& statName, double value)
                             {
                                 std::ostringstream oss;

@@ -37,6 +37,9 @@ All rights reserved.
 #include "Systems/ResourcesManager.hpp"
 #include "Systems/Graphics.hpp"
 
+// PlayFab
+#include "PlayFab/Core/PlayFabManager.h"
+
 // Events
 #include "Events/CollisionEvent.h"
 #include "Events/AudioEvents.h"
@@ -90,6 +93,13 @@ namespace Uma_ECS
         void InitializeAllScripts();
 
         void StartScripts();
+
+        /**
+         * \brief Sets the PlayFab manager and registers PlayFab Lua API.
+         *        Call after both LuaScriptingSystem::Init() and PlayFabManager::Init().
+         * \param pfb Pointer to the PlayFabManager (may be nullptr to skip)
+         */
+        void SetPlayFabManager(Uma_Engine::PlayFabManager* pfb);
 
         template<typename... Args>
         void CallScriptFunction(Entity entity, std::string scriptName, std::string functionName, Args&&... args)
@@ -330,6 +340,11 @@ namespace Uma_ECS
         void RegisterFeedbackAPI();
 
         /**
+         * \brief Registers PlayFab API functions to Lua
+         */
+        void RegisterPlayFabAPI();
+
+        /**
          * \brief Cleanup handler for entity destruction
          * \param entity Entity being destroyed
          */
@@ -346,6 +361,7 @@ namespace Uma_ECS
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
         Uma_Engine::SoundManager* pSoundManager = nullptr;
+        Uma_Engine::PlayFabManager* pPlayFabManager = nullptr;
 
         // runtime variables
         float lastDeltaTime{};

@@ -34,6 +34,7 @@ All rights reserved.
 #include "Systems/SceneManager.h"
 #include "Systems/Graphics.hpp"
 #include "Systems/TilemapEditorManager.h"
+#include "Systems/PlayFabEditorManager.h"
 #include "ECS/Components/SpriteMaterial.h"
 #include "ECS/Components/Cutscene.h"
 
@@ -137,6 +138,7 @@ namespace Uma_Engine
         // resources manager
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
         pTilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
+        pPlayFabEditorManager = pSystemManager->GetSystem<PlayFabEditorManager>();
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
@@ -181,6 +183,12 @@ namespace Uma_Engine
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
         {
             graphics->UnbindFramebuffer();
+        }
+
+        // ── Main menu bar — rendered before dockspace so WorkPos is adjusted ──
+        if (!fileBrowser.isPrefabEdit())
+        {
+            CreateMainMenuBar();
         }
 
         CreateDockspace();
@@ -278,6 +286,23 @@ namespace Uma_Engine
     }
 
     // ACTUAL EDITOR METHODS
+    void ImguiManager::CreateMainMenuBar()
+    {
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("Tools"))
+            {
+                if (ImGui::MenuItem("PlayFab Manager"))
+                {
+                    if (pPlayFabEditorManager)
+                        pPlayFabEditorManager->ToggleWindow();
+                }
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+    }
+
     void ImguiManager::CreateEditorControlBar()
     {
         if (!m_showEditorControlBar)
@@ -285,7 +310,9 @@ namespace Uma_Engine
 
         ImGuiViewport* viewport = ImGui::GetMainViewport();
         ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y));
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 40));
+        // ── Toolbar (Play/Pause/Stop) below the main menu bar ─────────
+        ImGui::SetNextWindowPos(viewport->WorkPos);
+        ImGui::SetNextWindowSize(ImVec2(viewport->WorkSize.x, 40));
         ImGui::SetNextWindowViewport(viewport->ID);
 
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
@@ -717,10 +744,13 @@ namespace Uma_Engine
 
     void ImguiManager::CreateDockspace()
     {
-        // Create main dockspace window
+        // Create main dockspace window, offset below the toolbar
         ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->WorkPos);
-        ImGui::SetNextWindowSize(viewport->WorkSize);
+        float toolbarHeight = 40.f;
+        ImVec2 dockPos = ImVec2(viewport->WorkPos.x, viewport->WorkPos.y + toolbarHeight);
+        ImVec2 dockSize = ImVec2(viewport->WorkSize.x, viewport->WorkSize.y - toolbarHeight);
+        ImGui::SetNextWindowPos(dockPos);
+        ImGui::SetNextWindowSize(dockSize);
         ImGui::SetNextWindowViewport(viewport->ID);
 
         ImGuiWindowFlags window_flags = /*ImGuiWindowFlags_MenuBar |*/ ImGuiWindowFlags_NoDocking;

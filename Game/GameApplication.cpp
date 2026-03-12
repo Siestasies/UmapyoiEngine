@@ -34,6 +34,11 @@ All rights reserved.
 // Events
 #include "Events/ApplicationEvents.h"
 
+// playfab
+#include "PlayFab/core/PlayFabManager.h"
+#include "PlayFab/core/PlayFabConfig.h"
+#include "Core/EngineConfigSerializer.h"
+
 namespace Uma_Engine
 {
     /**
@@ -115,6 +120,9 @@ namespace Uma_Engine
 
         // Load the scene
         sceneManager->LoadScene("main_menu.scn");
+
+        // init playfab services
+        PlayFabConfiguration();
     }
 
     void GameApplication::PreUpdate(float dt)
@@ -186,5 +194,34 @@ namespace Uma_Engine
             GamePause() = !GamePause();
             GetEventSystem()->Emit<ApplicationGamePauseRequest>(GamePause());
         }
+    }
+
+    void GameApplication::PlayFabConfiguration()
+    {
+        // Checks for a playfab config file. If previously set up, auto-establishes
+        // connection. If no config file is found, the function is skipped.
+        PlayFabConfig* config = new PlayFabConfig{};  // deleted after SetCredentials below
+        EngineConfigSerializer configSerializer;
+        configSerializer.Register(config);
+        configSerializer.load(Uma_FilePath::CONFIG_ROOT + "playfab_dev.json");
+        if (config->titleId.empty()) return;
+
+        PlayFabManager* playfabManager = GetPlayFabManager();
+        playfabManager->SetCredentials(
+            config->titleId,
+            config->secretKey,
+            []()
+            {
+                Debugger::Log(WarningLevel::eInfo, "[PlayfabManager] is ready!");
+            },
+            [](HRESULT hr, const std::string& message)
+            {
+                Debugger::Log(WarningLevel::eInfo, "[PlayfabManager] is not ready!");
+                Debugger::Log(WarningLevel::eInfo, message);
+            }
+        );
+
+        playfabManager->Init();
+        delete config;
     }
 }
