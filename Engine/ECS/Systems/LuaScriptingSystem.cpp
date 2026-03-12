@@ -653,7 +653,7 @@ namespace Uma_ECS
                     else if (s == "warn" || s == "Warn" || s == "WARN"
                         || s == "warning" || s == "Warning" || s == "WARNING")
                         type = Uma_UI::FeedbackType::Warning;
-                    // else: anything else → Normal
+                    // else: anything else -> Normal
                 }
 
                 Vec2 screenPx = pGraphics->WorldToScreen({ worldX, worldY });
