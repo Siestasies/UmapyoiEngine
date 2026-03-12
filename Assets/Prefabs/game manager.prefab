@@ -1789,6 +1789,23 @@
                             28
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -2033,6 +2050,23 @@
                             31
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -2276,6 +2310,23 @@
                             33,
                             34
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -6076,6 +6127,23 @@
                         "children": [
                             80
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [

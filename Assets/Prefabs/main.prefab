@@ -183,7 +183,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -209,6 +221,23 @@
                         "children": [
                             4
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -258,7 +287,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -377,6 +418,23 @@
                             6
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -425,7 +483,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -544,6 +614,23 @@
                             8
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -592,7 +679,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -711,6 +810,23 @@
                             10
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -759,7 +875,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -916,7 +1044,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -991,7 +1131,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -1150,7 +1302,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1248,7 +1412,11 @@
                                     "a": 1.0
                                 },
                                 "startFloat": 0.0,
-                                "endFloat": 1.0
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
                             },
                             {
                                 "name": "",
@@ -1279,7 +1447,11 @@
                                     "a": 1.0
                                 },
                                 "startFloat": 0.0,
-                                "endFloat": 1.0
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
                             }
                         ]
                     }
@@ -1356,7 +1528,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -1523,7 +1707,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,

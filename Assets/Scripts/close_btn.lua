@@ -12,4 +12,6 @@ function OnPointerClick()
     SetActiveEntity(credBtn, true)
     SetActiveEntity(quitBtn, true)
     SetActiveEntity(helpMnl, false)
+
+    GetAudioComponent():Play(EntityID, "Menu Click")
 end
