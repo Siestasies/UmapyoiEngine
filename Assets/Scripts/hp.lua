@@ -2,13 +2,10 @@ local playerEntity = -1
 
 local maxHealth = 0
 
-function Start()
-    -- Cross-entity access
+function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
     maxHealth = GetPlayerFrom(playerEntity).mHealth
-end
-
-function Update(dt)
+    
     local health = GetPlayerFrom(playerEntity).mHealth
 
     local segment = maxHealth / 4

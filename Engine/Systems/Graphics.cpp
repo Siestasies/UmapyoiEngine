@@ -1414,6 +1414,10 @@ namespace Uma_Engine
         glBindVertexArray(mInstanceVAO);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 6, static_cast<GLsizei>(instanceCount));
 
+        // Reset fill uniforms so they don't bleed into subsequent draw calls
+        glUniform1i(fillDirLoc, 0);
+        glUniform1f(fillAmtLoc, 1.0f);
+
         glBindVertexArray(0);
         glBindTexture(GL_TEXTURE_2D, 0);
 
