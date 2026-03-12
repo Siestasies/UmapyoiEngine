@@ -43,20 +43,57 @@ namespace Uma_Engine
     class GameApplication : public Application
     {
     public:
+        /*!
+        \brief Constructs the game application and configures game-mode settings.
+        */
         GameApplication();
         ~GameApplication() override = default;
 
     protected:
+        /*!
+        \brief Registers all runtime systems required for the game build.
+        */
         void RegisterSystems() override;
+
+        /*!
+        \brief Performs pre-initialization setup before systems are initialized.
+        */
         void PreInit() override;
+
+        /*!
+        \brief Performs post-initialization setup after all systems are initialized.
+        */
         void PostInit() override;
+
+        /*!
+        \brief Called before the main update loop each frame.
+        \param dt Delta time in seconds since the last frame.
+        */
         void PreUpdate(float dt) override;
+
+        /*!
+        \brief Called after the main update loop each frame.
+        \param dt Delta time in seconds since the last frame.
+        */
         void PostUpdate(float dt) override;
+
+        /*!
+        \brief Subscribes to engine events such as window focus changes.
+        */
         void SubscribeEvents();
+
+        /*!
+        \brief Handles application interruptions such as window losing focus.
+        \param deltaTime Delta time in seconds since the last frame.
+        \return True if the frame should be skipped due to an interruption.
+        */
         bool HandleInterruptions(float deltaTime) override;
 
     private:
 
+        /*!
+        \brief Loads and applies PlayFab configuration from the config file.
+        */
         void PlayFabConfiguration();
 
         bool mWasFocused = true;

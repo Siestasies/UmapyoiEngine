@@ -48,10 +48,18 @@ namespace Uma_ECS
         */
         void Update(float dt);
 
+        /*!
+        \brief Shuts down the projectile system and releases resources.
+        */
         void Shutdown();
 
     private:
 
+        /*!
+        \brief Handles collision response when a projectile hits a trigger entity.
+        \param self The projectile entity.
+        \param trigger The entity that triggered the collision.
+        */
         void HandleCollision(Entity self, Entity trigger);
 
         Coordinator* pCoordinator = nullptr; //!< Pointer to ECS Coordinator.

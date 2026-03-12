@@ -42,26 +42,39 @@ struct FMOD_VECTOR;
 
 namespace Uma_Engine
 {
+	/*!
+	\brief Holds an OpenGL shader program ID and its source file paths.
+	*/
 	struct Shader
 	{
-		unsigned int shaderProgramID;
-		std::string vertexPath;
-		std::string fragmentPath;
+		unsigned int shaderProgramID;  ///< Compiled OpenGL shader program ID.
+		std::string vertexPath;        ///< File path to the vertex shader source.
+		std::string fragmentPath;      ///< File path to the fragment shader source.
 	};
 
+	/*!
+	\brief Holds an OpenGL texture ID, dimensions, and source file path.
+	*/
     struct Texture
     {
-        unsigned int tex_id;
-		std::string filePath;
-        Vec2 tex_size;
-		float pixelsPerUnit = 100.f; // by default to 100
+        unsigned int tex_id;           ///< OpenGL texture ID.
+		std::string filePath;          ///< Source file path of the texture image.
+        Vec2 tex_size;                 ///< Texture dimensions in pixels.
+		float pixelsPerUnit = 100.f;   ///< Pixels per world unit for size conversion.
 
+		/*!
+		\brief Calculates the native world-space size of the texture.
+		\return Texture size divided by pixelsPerUnit.
+		*/
 		Vec2 GetNativeSize() const
 		{
 			return tex_size / pixelsPerUnit;
 		}
     };
 
+	/*!
+	\brief Categorizes a sound as SFX, BGM, or MASTER for channel group routing.
+	*/
 	enum class SoundType {
 		SFX = 0,
 		BGM,
@@ -69,6 +82,9 @@ namespace Uma_Engine
 		END
 	};
 
+	/*!
+	\brief Wraps FMOD sound and channel pointers with type classification and 3D attributes.
+	*/
 	struct SoundInfo {
 		FMOD_SOUND* sound = nullptr;
 		FMOD_CHANNEL* channel = nullptr;
@@ -82,6 +98,9 @@ namespace Uma_Engine
 		FMOD_DSP* dspLowpass = nullptr;
 	};
 
+	/*!
+	\brief Stores FreeType glyph metrics for a single character.
+	*/
 	struct Character
 	{
 		unsigned int textureID;
@@ -90,6 +109,9 @@ namespace Uma_Engine
 		float  advance; // Offset to advance to next glyph
 	};
 
+	/*!
+	\brief Holds a character map and OpenGL buffers for rendering a loaded font.
+	*/
 	struct FontData
 	{
 		std::map<char, Character> characters;
@@ -99,6 +121,9 @@ namespace Uma_Engine
 		std::string filePath;
 	};
 
+	/*!
+	\brief Enumerates supported shader uniform data types.
+	*/
 	enum class UniformType
 	{
 		Float,
@@ -108,6 +133,9 @@ namespace Uma_Engine
 		Int
 	};
 
+	/*!
+	\brief Describes a single shader uniform variable with name, type, and location.
+	*/
 	struct UniformInfo
 	{
 		std::string name{};
@@ -115,6 +143,9 @@ namespace Uma_Engine
 		int location = -1;
 	};
 
+	/*!
+	\brief Represents a post-process or visual effect shader with auto-reflected uniforms.
+	*/
 	struct ShaderEffect
 	{
 		std::string name{};           // e.g. "dissolve"

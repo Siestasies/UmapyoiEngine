@@ -43,6 +43,11 @@ namespace Uma_Engine
     {
     public:
         virtual ~IWindowSystem() = default;
+
+        /*!
+        \brief Sets the GLFW window pointer for the system.
+        \param window Pointer to the GLFWwindow to associate with this system.
+        */
         virtual void SetWindow(GLFWwindow* window) = 0;
     };
 

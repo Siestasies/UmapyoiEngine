@@ -142,6 +142,12 @@ namespace Uma_ECS
          */
         void DebugRender();
 
+        /*!
+         * \brief Retrieves all entities whose bounding boxes overlap a rectangular area.
+         * \param min Minimum corner of the query rectangle in world space.
+         * \param max Maximum corner of the query rectangle in world space.
+         * \return Set of entities found within the specified area.
+         */
         std::unordered_set<Entity> GetEntitiesInArea(Vec2 min, Vec2 max);
 
     private:
@@ -270,6 +276,12 @@ namespace Uma_ECS
             const BoundingBox& lhs,
             const BoundingBox& rhs);
 
+        /*!
+         * \brief Computes the current world-space bounding box for a specific collider shape on an entity.
+         * \param entity Entity owning the collider.
+         * \param shapeIndex Index of the shape within the entity's collider component.
+         * \return Computed bounding box in world space.
+         */
         BoundingBox ComputeCurrentBounds(Entity entity, size_t shapeIndex);
 
         float cellSize = 300.f;      // Tune based on your game world

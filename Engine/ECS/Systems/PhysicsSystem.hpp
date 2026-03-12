@@ -43,21 +43,67 @@ namespace Uma_ECS
     {
     public:
 
+        /*!
+        \brief Initializes the physics system with a Coordinator reference.
+        \param c Pointer to the ECS Coordinator.
+        */
         inline void Init(Coordinator* c) { gCoordinator = c; }
 
+        /*!
+        \brief Updates physics simulation for all rigid-body entities.
+        \param dt Delta time in seconds since last frame.
+        */
         void Update(float dt);
 
-        // this have to be done before updating in the fixed timestamp
+        /*!
+        \brief Saves previous positions of all physics entities before the fixed-timestep update.
+        */
         void SavePrevPos();
-        void ApplyVelocity(float dt); // Apply velocities to positions
 
+        /*!
+        \brief Applies velocities to positions for all physics entities.
+        \param dt Delta time in seconds for velocity integration.
+        */
+        void ApplyVelocity(float dt);
+
+        /*!
+        \brief Prints debug log information for all physics entities.
+        */
         void PrintLog();
 
+        /*!
+        \brief Applies an instantaneous force to a rigid-body entity.
+        \param entity Entity to apply force to.
+        \param pos World-space position where the force is applied.
+        \param dir Direction vector of the force.
+        \param force Magnitude of the force.
+        \param rotation Rotational force to apply in degrees.
+        */
         void AddForce(Entity entity, Vec2 pos, Vec2 dir, float force, float rotation);
 
-        // Ray Casting
+        /*!
+        \brief Finds all entities within a circular area.
+        \param center World-space center of the circle.
+        \param radius Radius of the overlap circle.
+        \return Set of entities overlapping the circle.
+        */
         std::unordered_set<Entity> OverlapCircle(Vec2 center, float radius);
+
+        /*!
+        \brief Checks whether two entities have an unobstructed line of sight.
+        \param lhs First entity.
+        \param rhs Second entity.
+        \return True if there is a clear line of sight between the two entities.
+        */
         bool LineOfSight(Entity lhs, Entity rhs);
+
+        /*!
+        \brief Casts a ray from an origin in a given direction and returns hit information.
+        \param origin World-space starting point of the ray.
+        \param dir Normalized direction vector of the ray.
+        \param maxDist Maximum distance the ray can travel.
+        \return RaycastHit containing collision point, normal, distance, and entity hit.
+        */
         RaycastHit RayCast(Vec2 origin, Vec2 dir, float maxDist);
 
     private:

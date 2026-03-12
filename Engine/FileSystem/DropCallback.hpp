@@ -15,7 +15,7 @@ received from the GLFW window system. This handler captures dropped file paths
 and stores them for retrieval by the FileBrowser, allowing user-initiated
 imports such as assets, scenes, or external resources.
 
-The class exposes a static callback compatible with GLFW’s drop event system
+The class exposes a static callback compatible with GLFWï¿½s drop event system
 and maintains an internal list of received file paths. Integration with the
 FileBrowser enables editor features such as direct dropping of assets into the
 workspace or project directory.
@@ -35,6 +35,12 @@ namespace Uma_Engine
     class FileDropHandler
     {
     public:
+        /*!
+        \brief GLFW drop callback that captures file paths dragged onto the window.
+        \param window The GLFW window that received the drop event.
+        \param count Number of file paths dropped.
+        \param paths Array of C-string file paths.
+        */
         static void DropCallback(GLFWwindow* window, int count, const char** paths);
 
     private:

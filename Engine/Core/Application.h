@@ -47,7 +47,14 @@ namespace Uma_Engine
     class Application
     {
     public:
+        /*!
+        \brief Constructs the Application with default state.
+        */
         Application();
+
+        /*!
+        \brief Virtual destructor for safe polymorphic cleanup.
+        */
         virtual ~Application();
 
         /**
@@ -83,9 +90,22 @@ namespace Uma_Engine
 
         //PlayFabConfig* GetPlayFabConfig() const { return mPlayFabConfig.get(); }
 
+        /*!
+        \brief Gets a reference to the game pause flag.
+        \return Reference to the static game pause boolean.
+        */
         static bool& GetGamePause() { return mGamePause; }
+
+        /*!
+        \brief Gets a reference to the cutscene active flag.
+        \return Reference to the static cutscene active boolean.
+        */
         static bool& GetCutsceneActive() { return mCutsceneActive; }
 
+        /*!
+        \brief Gets the current frames per second.
+        \return The current FPS value.
+        */
         static float GetFps() { return mFps; }
 
     protected:
@@ -129,25 +149,99 @@ namespace Uma_Engine
 
 
         // Protected access to key systems for derived classes
+
+        /*!
+        \brief Gets the event system.
+        \return Pointer to the EventSystem instance.
+        */
         EventSystem* GetEventSystem() const { return mEventSystem; }
+
+        /*!
+        \brief Gets the hybrid input system.
+        \return Pointer to the HybridInputSystem instance.
+        */
         HybridInputSystem* GetInputSystem() const { return mInputSystem; }
+
+        /*!
+        \brief Gets the scene manager.
+        \return Pointer to the SceneManager instance.
+        */
         SceneManager* GetSceneManager() const { return mSceneManager; }
+
+        /*!
+        \brief Gets the graphics system.
+        \return Pointer to the Graphics instance.
+        */
         Graphics* GetGraphics() const { return mGraphics; }
+
+        /*!
+        \brief Gets the sound manager.
+        \return Pointer to the SoundManager instance.
+        */
         SoundManager* GetSoundManager() const { return mSoundManager; }
+
+        /*!
+        \brief Gets the PlayFab manager.
+        \return Pointer to the PlayFabManager instance.
+        */
         PlayFabManager* GetPlayFabManager() const { return mPlayFabManager; }
+
+        /*!
+        \brief Gets the underlying GLFW window handle.
+        \return Pointer to the GLFWwindow.
+        */
         GLFWwindow* GetGLFWWindow() const;
+
+        /*!
+        \brief Gets a reference to the game pause flag.
+        \return Reference to the static game pause boolean.
+        */
         bool& GamePause() { return mGamePause; }
 
         // helpers
+
+        /*!
+        \brief Sets whether this application instance is running as an editor.
+        \param isEditor True if running as editor, false otherwise.
+        */
         void SetIsEditor(bool isEditor) { mIsEditor = isEditor; }
+
+        /*!
+        \brief Handles application interruptions such as window focus loss.
+        \param deltaTime Time elapsed since last frame.
+        \return True if an interruption was handled and the frame should be skipped.
+        */
         virtual bool HandleInterruptions(float deltaTime) = 0;
 
     private:
+        /*!
+        \brief Initializes debug-only systems such as memory tracking.
+        */
         void InitializeDebugSystems();
+
+        /*!
+        \brief Loads engine configuration from the config files.
+        */
         void LoadConfiguration();
+
+        /*!
+        \brief Creates and initializes the application window.
+        */
         void MakeWindow();
+
+        /*!
+        \brief Registers the core engine systems required by all application types.
+        */
         void RegisterCoreSystems();
+
+        /*!
+        \brief Executes the main game loop, processing updates and rendering each frame.
+        */
         void MainLoop();
+
+        /*!
+        \brief Subscribes the application to relevant engine events.
+        */
         void SubscribeToEvents();
 
         bool mInitialized;

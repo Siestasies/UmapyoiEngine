@@ -39,8 +39,24 @@ namespace Uma_Engine
         //bool enableDebugOverlay = false;
 
         // serializer
-        const char* GetSectionName() const override { return "Playfab_config"; };  // e.g. "entities", "resources"
-        std::string GetSerializerName() const override { return "Playfab_config"; };  // e.g. "resources_manager", "coordinator"
+
+        /*!
+        \brief Returns the JSON section name used for serialization.
+        \return C-string section name "Playfab_config".
+        */
+        const char* GetSectionName() const override { return "Playfab_config"; };
+
+        /*!
+        \brief Returns the serializer identifier name.
+        \return String serializer name "Playfab_config".
+        */
+        std::string GetSerializerName() const override { return "Playfab_config"; };
+
+        /*!
+        \brief Serializes PlayFab configuration fields to a JSON value.
+        \param out JSON value to populate with config data.
+        \param allocator RapidJSON allocator for memory management.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override
         {
             out.SetObject();
@@ -57,6 +73,10 @@ namespace Uma_Engine
             custom.SetString(customId.c_str(), static_cast<rapidjson::SizeType>(customId.length()), allocator);
             out.AddMember("customId", custom, allocator);
         }
+        /*!
+        \brief Deserializes PlayFab configuration fields from a JSON value.
+        \param in JSON value containing the config data to read.
+        */
         void Deserialize(const rapidjson::Value& in) override
         {
             if (in.HasMember("titleId") && in["titleId"].IsString())
@@ -71,6 +91,12 @@ namespace Uma_Engine
             isAdmin = secretKey.empty() == false;
         }
 
+        /*!
+        \brief Serializes a prefab entity. Not used for engine config.
+        \param entity Entity to serialize (unused).
+        \param out JSON value output (unused).
+        \param allocator RapidJSON allocator (unused).
+        */
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override
         {
             // we are not using this function in Engine Config
@@ -79,6 +105,11 @@ namespace Uma_Engine
             (void)allocator;
         }
 
+        /*!
+        \brief Deserializes a prefab entity. Not used for engine config.
+        \param in JSON value input (unused).
+        \return Invalid entity sentinel value.
+        */
         Entity DeserializePrefab(const rapidjson::Value& in) override
         {
             // we are not using this function in Engine Config 

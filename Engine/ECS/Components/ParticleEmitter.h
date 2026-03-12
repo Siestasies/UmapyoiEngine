@@ -73,6 +73,11 @@ namespace Uma_ECS
         bool rotateParticles = false;
         Vec2 rotationSpeedRange = { -90.0f, 90.0f };
 
+        /*!
+        \brief Serialize particle appearance settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -103,6 +108,10 @@ namespace Uma_ECS
             out.AddMember("rotationSpeedRange", rotSpeedVal, allocator);
         }
 
+        /*!
+        \brief Deserialize particle appearance settings from JSON.
+        \param in Input JSON value containing appearance data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("scaleRange") && in["scaleRange"].IsArray())
@@ -154,6 +163,11 @@ namespace Uma_ECS
         bool fadeAtEdges = true; // Fade near screen edges
         float edgeFadeDistance = 150.0f; // Distance from edge to start fading
 
+        /*!
+        \brief Serialize fade settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -165,6 +179,10 @@ namespace Uma_ECS
             out.AddMember("edgeFadeDistance", edgeFadeDistance, allocator);
         }
 
+        /*!
+        \brief Deserialize fade settings from JSON.
+        \param in Input JSON value containing fade data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("fadeIn")) fadeIn = in["fadeIn"].GetBool();
@@ -189,6 +207,11 @@ namespace Uma_ECS
         // Drag (air resistance)
         float drag = 0.0f; // 0 = no drag, 1 = heavy drag
 
+        /*!
+        \brief Serialize particle physics settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -208,6 +231,10 @@ namespace Uma_ECS
             out.AddMember("drag", drag, allocator);
         }
 
+        /*!
+        \brief Deserialize particle physics settings from JSON.
+        \param in Input JSON value containing physics data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("speedRange") && in["speedRange"].IsArray())
@@ -242,6 +269,11 @@ namespace Uma_ECS
         float emissionAngle = 0.0f;      // Center angle (0 = right, 90 = up)
         float emissionSpread = 360.0f;   // Cone width (360 = all directions)
 
+        /*!
+        \brief Serialize spawn settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -256,6 +288,10 @@ namespace Uma_ECS
             out.AddMember("emissionSpread", emissionSpread, allocator);
         }
 
+        /*!
+        \brief Deserialize spawn settings from JSON.
+        \param in Input JSON value containing spawn data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("spawnOffset") && in["spawnOffset"].IsArray())
@@ -282,6 +318,11 @@ namespace Uma_ECS
         bool loop = false; // Loop burst after delay
         float loopDelay = 1.0f; // Delay between burst loops
 
+        /*!
+        \brief Serialize emission settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -290,6 +331,10 @@ namespace Uma_ECS
             out.AddMember("loopDelay", loopDelay, allocator);
         }
 
+        /*!
+        \brief Deserialize emission settings from JSON.
+        \param in Input JSON value containing emission data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("emissionRate")) emissionRate = in["emissionRate"].GetFloat();
@@ -312,6 +357,11 @@ namespace Uma_ECS
         bool spawnAtTop = true; // Spawn new particles at top of screen
         float spawnMargin = 100.0f; // How far above/below screen to spawn
 
+        /*!
+        \brief Serialize screen fill settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -328,6 +378,10 @@ namespace Uma_ECS
             out.AddMember("spawnMargin", spawnMargin, allocator);
         }
 
+        /*!
+        \brief Deserialize screen fill settings from JSON.
+        \param in Input JSON value containing screen fill data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("velocityXRange") && in["velocityXRange"].IsArray())
@@ -377,7 +431,9 @@ namespace Uma_ECS
         Vec2 screenMin = { 0, 0 };
         Vec2 screenMax = { 1920, 1080 };
 
-        // Start/restart the emitter
+        /*!
+        \brief Start or restart the emitter, forcing re-initialization.
+        */
         void Play()
         {
             isActive = true;
@@ -386,13 +442,17 @@ namespace Uma_ECS
             burstTimer = 0.0f;
         }
 
-        // Stop spawning new particles
+        /*!
+        \brief Stop spawning new particles while letting existing ones finish.
+        */
         void Stop()
         {
             isActive = false;
         }
 
-        // Stop and immediately clear all particles
+        /*!
+        \brief Stop the emitter and immediately clear all particles.
+        */
         void StopAndClear()
         {
             isActive = false;
@@ -400,25 +460,35 @@ namespace Uma_ECS
             initialized = false;
         }
 
-        // Pause
+        /*!
+        \brief Pause the emitter, halting particle emission.
+        */
         void Pause()
         {
             isActive = false;
         }
 
-        // Resume from pause
+        /*!
+        \brief Resume the emitter from a paused state.
+        */
         void Resume()
         {
             isActive = true;
         }
 
-        // Check if currently emitting particles
+        /*!
+        \brief Check if the emitter is currently active and emitting particles.
+        \return True if the emitter is active, false otherwise.
+        */
         bool IsPlaying() const
         {
             return isActive;
         }
 
-        // Check if any particles are alive
+        /*!
+        \brief Check if any particles in this emitter are still alive.
+        \return True if at least one particle is active, false otherwise.
+        */
         bool HasActiveParticles() const
         {
             for (const auto& p : particles)
@@ -428,7 +498,10 @@ namespace Uma_ECS
             return false;
         }
 
-        // Get count of active particles
+        /*!
+        \brief Get the number of currently active particles in this emitter.
+        \return Count of active particles.
+        */
         int GetActiveParticleCount() const
         {
             int count = 0;
@@ -439,6 +512,11 @@ namespace Uma_ECS
             return count;
         }
 
+        /*!
+        \brief Serialize emitter instance settings to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -479,6 +557,10 @@ namespace Uma_ECS
             out.AddMember("screenFill", screenFillVal, allocator);
         }
 
+        /*!
+        \brief Deserialize emitter instance settings from JSON.
+        \param in Input JSON value containing emitter data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("mode")) mode = static_cast<EmitterMode>(in["mode"].GetInt());
@@ -505,7 +587,11 @@ namespace Uma_ECS
     {
         std::vector<EmitterInstance> emitters;
 
-        // Add a new emitter
+        /*!
+        \brief Add a new emitter instance to the particle emitter component.
+        \param name Display name for the new emitter.
+        \return Index of the newly added emitter.
+        */
         int AddEmitter(const std::string& name = "New Emitter")
         {
             EmitterInstance emitter;
@@ -515,14 +601,21 @@ namespace Uma_ECS
             return static_cast<int>(emitters.size() - 1);
         }
 
-        // Remove emitter by index
+        /*!
+        \brief Remove an emitter instance by index.
+        \param index Index of the emitter to remove.
+        */
         void RemoveEmitter(int index)
         {
             if (index >= 0 && index < static_cast<int>(emitters.size()))
                 emitters.erase(emitters.begin() + index);
         }
 
-        // Get emitter by index
+        /*!
+        \brief Get a pointer to an emitter instance by index.
+        \param index Index of the emitter to retrieve.
+        \return Pointer to the emitter instance, or nullptr if index is out of range.
+        */
         EmitterInstance* GetEmitter(int index)
         {
             if (index >= 0 && index < static_cast<int>(emitters.size()))
@@ -530,7 +623,11 @@ namespace Uma_ECS
             return nullptr;
         }
 
-        // Get emitter by name
+        /*!
+        \brief Get a pointer to an emitter instance by name.
+        \param name Name of the emitter to retrieve.
+        \return Pointer to the emitter instance, or nullptr if not found.
+        */
         EmitterInstance* GetEmitter(const std::string& name)
         {
             for (auto& e : emitters)
@@ -538,18 +635,33 @@ namespace Uma_ECS
             return nullptr;
         }
 
+        /*!
+        \brief Get the total number of emitter instances.
+        \return Number of emitters.
+        */
         int GetEmitterCount() const { return static_cast<int>(emitters.size()); }
 
+        /*!
+        \brief Start all emitter instances.
+        */
         void PlayAll()
         {
             for (auto& e : emitters) e.Play();
         }
 
+        /*!
+        \brief Stop all emitter instances from spawning new particles.
+        */
         void StopAll()
         {
             for (auto& e : emitters) e.Stop();
         }
 
+        /*!
+        \brief Serialize the particle emitter component to JSON.
+        \param out Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) const
         {
             out.SetObject();
@@ -565,6 +677,10 @@ namespace Uma_ECS
             out.AddMember("emitters", emittersArr, allocator);
         }
 
+        /*!
+        \brief Deserialize the particle emitter component from JSON.
+        \param in Input JSON value containing particle emitter data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             if (in.HasMember("emitters") && in["emitters"].IsArray())

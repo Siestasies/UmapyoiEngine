@@ -41,6 +41,10 @@ namespace Uma_ECS
     {
     public:
 
+        /*!
+        \brief Registers a new ECS system of the given type and returns a shared pointer to it.
+        \return A shared pointer to the newly registered system instance.
+        */
         template<typename T>
         std::shared_ptr<T> RegisterSystem()
         {
@@ -54,6 +58,10 @@ namespace Uma_ECS
             return system;
         }
 
+        /*!
+        \brief Retrieves the registered system of the given type.
+        \return A shared pointer to the system, or nullptr if not found.
+        */
         template<typename T>
         std::shared_ptr<T> GetSystem()
         {
@@ -69,8 +77,12 @@ namespace Uma_ECS
             }
             return std::static_pointer_cast<T>(it->second);
         }
-        
-        template<typename T> 
+
+        /*!
+        \brief Sets the component signature for a registered system, defining which components it requires.
+        \param signature The Signature bitset specifying required components.
+        */
+        template<typename T>
         void SetSignature(Signature signature)
         {
             std::string type_name = std::string(typeid(T).name());
@@ -80,10 +92,22 @@ namespace Uma_ECS
             aSignatures.insert({ type_name, signature });
         }
 
+        /*!
+        \brief Removes a destroyed entity from all registered systems.
+        \param entity The Entity ID that was destroyed.
+        */
         void EntityDestroyed(Entity entity);
 
+        /*!
+        \brief Updates system membership for an entity whose signature has changed.
+        \param entity The Entity ID whose signature changed.
+        \param entitySiganture The entity's new Signature.
+        */
         void EntitySignatureChanged(Entity entity, Signature entitySiganture);
 
+        /*!
+        \brief Removes all entities from all registered systems.
+        */
         void ClearAllEntities();
 
     private:

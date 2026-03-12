@@ -81,10 +81,10 @@ namespace Uma_ECS
 				// is beacause sol::environment is not compatible with being moving around
 				// but my component array remove data by swaping it to the last and pop it to remove
 				// then it caused sol::environment to crash
-				// hence i made it as a shared ptr so it can be moved smoothly 
+				// hence i made it as a shared ptr so it can be moved smoothly
 				// it has more freedom and dont need me to handle the destrruction
 				// fuiyooo
-				
+
 				//check if null (thanks kai yang >:( )
 				/*bool operator!() const noexcept {
 					return !scriptEnv || !isInitialized || hasError;
@@ -92,6 +92,11 @@ namespace Uma_ECS
 
 
 
+				/*!
+				\brief Serialize the Lua script instance to JSON, including path, enabled state, and exposed variables.
+				\param value Output JSON value to populate.
+				\param allocator RapidJSON allocator for creating new values.
+				*/
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{
 						value.SetObject();
@@ -146,6 +151,10 @@ namespace Uma_ECS
 						value.AddMember("exposedVariables", varsArray, allocator);
 				}
 
+				/*!
+				\brief Deserialize the Lua script instance from JSON, restoring path, enabled state, and exposed variables.
+				\param value JSON value containing serialized script instance data.
+				*/
 				void Deserialize(const rapidjson::Value& value)
 				{
 						scriptPath = value["scriptPath"].GetString();
@@ -214,7 +223,10 @@ namespace Uma_ECS
 
 				//std::shared_ptr<sol::state> lua;
 
-				// add script 
+				/*!
+				\brief Add a new script instance by file path.
+				\param scriptPath Path to the Lua script file.
+				*/
 				void AddScript(const std::string& scriptPath)
 				{
 						LuaScriptInstance instance;
@@ -227,7 +239,10 @@ namespace Uma_ECS
 						scripts.push_back(instance);
 				}
 
-				// remove script
+				/*!
+				\brief Remove a script instance by index.
+				\param idx Index of the script to remove.
+				*/
 				void RemoveScript(size_t idx)
 				{
 						if (idx < scripts.size())
@@ -236,7 +251,11 @@ namespace Uma_ECS
 						}
 				}
 
-				// get script 
+				/*!
+				\brief Get a pointer to a script instance by index.
+				\param idx Index of the script to retrieve.
+				\return Pointer to the LuaScriptInstance, or nullptr if index is out of range.
+				*/
 				LuaScriptInstance* GetScript(size_t idx)
 				{
 						if (idx < scripts.size())
@@ -247,7 +266,11 @@ namespace Uma_ECS
 						return nullptr;
 				}
 
-				// get script 
+				/*!
+				\brief Get a pointer to a script instance by its display name.
+				\param name Name of the script to retrieve.
+				\return Pointer to the LuaScriptInstance, or nullptr if not found.
+				*/
 				LuaScriptInstance* GetScriptByName(const std::string& name)
 				{
 						for (LuaScriptInstance& script : scripts)
@@ -261,7 +284,11 @@ namespace Uma_ECS
 						return nullptr;
 				}
 
-				// get script by path
+				/*!
+				\brief Get a pointer to a script instance by its file path.
+				\param path File path of the script to retrieve.
+				\return Pointer to the LuaScriptInstance, or nullptr if not found.
+				*/
 				LuaScriptInstance* GetScriptByPath(const std::string& path)
 				{
 						for (LuaScriptInstance& script : scripts)
@@ -275,6 +302,11 @@ namespace Uma_ECS
 						return nullptr;
 				}
 
+				/*!
+				\brief Serialize the LuaScript component to JSON, including all script instances.
+				\param value Output JSON value to populate.
+				\param allocator RapidJSON allocator for creating new values.
+				*/
 				void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
 				{
 						value.SetObject();
@@ -289,6 +321,10 @@ namespace Uma_ECS
 						value.AddMember("scripts", scriptsArray, allocator);
 				}
 
+				/*!
+				\brief Deserialize the LuaScript component from JSON, restoring all script instances.
+				\param value JSON value containing serialized LuaScript data.
+				*/
 				void Deserialize(const rapidjson::Value& value)
 				{
 						if (value.HasMember("scripts") && value["scripts"].IsArray())

@@ -106,7 +106,17 @@ namespace Uma_Engine
     class Scene
     {
         public:
+            /*!
+            \brief Constructs a Scene with a name, file path, and system manager reference.
+            \param name Display name of the scene.
+            \param filepath File path used for serialization and deserialization.
+            \param sm Pointer to the engine SystemManager for accessing engine systems.
+            */
             Scene(const std::string& name, const std::string& filepath, SystemManager* sm);
+
+            /*!
+            \brief Destroys the scene and releases all associated resources.
+            */
             ~Scene();
 
             // Lifecycle Stuff (called by SceneManager)
@@ -196,21 +206,79 @@ namespace Uma_Engine
             /**
             * \brief Getters for the scene object
             */
+            /*!
+            \brief Gets the current lifecycle state of the scene.
+            \return Current SceneState value.
+            */
             SceneState GetState() const { return m_State; }
+
+            /*!
+            \brief Gets the current async loading progress.
+            \return Load progress as a float from 0.0 to 1.0.
+            */
             float GetLoadProgress() const { return m_LoadProgress; }
+
+            /*!
+            \brief Checks if the scene is fully loaded and running.
+            \return True if the scene state is SCENE_RUNNING.
+            */
             bool IsLoaded() const { return m_State == SceneState::SCENE_RUNNING; }
+
+            /*!
+            \brief Gets the display name of the scene.
+            \return Const reference to the scene name string.
+            */
             const std::string& GetName() const { return m_Name; }
+
+            /*!
+            \brief Gets the file path used for serialization.
+            \return Const reference to the file path string.
+            */
             const std::string& GetFilePath() const { return m_FilePath; }
 
             /**
             * \brief Getters for ECS systems
             */
+            /*!
+            \brief Gets the ECS Coordinator for this scene.
+            \return Reference to the scene's Coordinator.
+            */
             Uma_ECS::Coordinator& GetCoordinator() { return m_Coordinator; }
+
+            /*!
+            \brief Gets the input system.
+            \return Pointer to the HybridInputSystem.
+            */
             Uma_Engine::HybridInputSystem* GetInputSystem() { return m_HybridInputSystem; }
+
+            /*!
+            \brief Gets the graphics system.
+            \return Pointer to the Graphics system.
+            */
             Uma_Engine::Graphics* GetGraphics() { return m_Graphics; }
+
+            /*!
+            \brief Gets the sound manager.
+            \return Pointer to the SoundManager.
+            */
             Uma_Engine::SoundManager* GetSound() { return m_Sound; }
+
+            /*!
+            \brief Gets the resources manager.
+            \return Pointer to the ResourcesManager.
+            */
             Uma_Engine::ResourcesManager* GetResourcesManager() { return m_ResourcesManager; }
+
+            /*!
+            \brief Gets the event system.
+            \return Pointer to the EventSystem.
+            */
             Uma_Engine::EventSystem* GetEventSystem() { return m_EventSystem; }
+
+            /*!
+            \brief Gets the PlayFab manager.
+            \return Pointer to the PlayFabManager.
+            */
             Uma_Engine::PlayFabManager* GetPlayFabManager() { return m_PlayFabManager; }
 
         //protected:
@@ -300,6 +368,10 @@ namespace Uma_Engine
     class SceneScript
     {
         public:
+            /*!
+            \brief Constructs a SceneScript with the given name.
+            \param name Identifier name for this script.
+            */
             SceneScript(const std::string& name) : m_Name(name) {}
             virtual ~SceneScript() = default;
 
@@ -343,13 +415,52 @@ namespace Uma_Engine
             /**
             * \brief Getters for scene ECS systems
             */
+            /*!
+            \brief Gets the ECS Coordinator from the attached scene.
+            \return Reference to the scene's Coordinator.
+            */
             Uma_ECS::Coordinator& GetCoordinator() { return m_Scene->GetCoordinator(); }
+
+            /*!
+            \brief Gets the Lua scripting system from the attached scene.
+            \return Reference to the LuaScriptingSystem.
+            */
             Uma_ECS::LuaScriptingSystem& GetLuascriptingSystem() { return *m_Scene->m_LuaScriptingSystem; }
+
+            /*!
+            \brief Gets the pathfinding system from the attached scene.
+            \return Reference to the PathFindingSystem.
+            */
             Uma_ECS::PathFindingSystem& GetPathFindingSystem() { return *m_Scene->m_PathFindingSystem; }
+
+            /*!
+            \brief Gets the input system from the attached scene.
+            \return Pointer to the HybridInputSystem.
+            */
             Uma_Engine::HybridInputSystem* GetInput() { return m_Scene->GetInputSystem(); }
+
+            /*!
+            \brief Gets the graphics system from the attached scene.
+            \return Pointer to the Graphics system.
+            */
             Uma_Engine::Graphics* GetGraphics() { return m_Scene->GetGraphics(); }
+
+            /*!
+            \brief Gets the sound manager from the attached scene.
+            \return Pointer to the SoundManager.
+            */
             Uma_Engine::SoundManager* GetSound() { return m_Scene->GetSound(); }
+
+            /*!
+            \brief Gets the resources manager from the attached scene.
+            \return Pointer to the ResourcesManager.
+            */
             Uma_Engine::ResourcesManager* GetResources() { return m_Scene->GetResourcesManager(); }
+
+            /*!
+            \brief Gets the event system from the attached scene.
+            \return Pointer to the EventSystem.
+            */
             Uma_Engine::EventSystem* GetEventSystem() { return m_Scene->GetEventSystem(); }
             //Uma_Engine::PlayFabManager* GetPlayFabManager() { return m_Scene->GetPlayFabManager(); }
     };

@@ -51,9 +51,20 @@ namespace Uma_Engine
     class SceneManager : public ISystem
     {
     public:
-        // ISYSTEM OVERRIDES
+        /*!
+        \brief Initializes the SceneManager, setting up internal state and event listeners.
+        */
         void Init() override;
+
+        /*!
+        \brief Updates all active and loading scenes each frame.
+        \param dt Delta time in seconds since the last frame.
+        */
         void Update(float dt) override;
+
+        /*!
+        \brief Shuts down the SceneManager, unloading all scenes and releasing resources.
+        */
         void Shutdown() override;
 
         /**
@@ -119,18 +130,40 @@ namespace Uma_Engine
         * \return A shared pointer to the scene, or nullptr if not found
         */
         std::shared_ptr<Scene> GetScene(const std::string& name);
+        /*!
+        \brief Retrieves the currently active scene.
+        \return A shared pointer to the active scene, or nullptr if no scene is active.
+        */
         std::shared_ptr<Scene> GetActiveScene() { return m_ActiveScene; }
 
-        // Editor camera access
+        /*!
+        \brief Gets a mutable reference to the editor camera.
+        \return A reference to the EditorCamera instance.
+        */
         EditorCamera& GetEditorCamera() { return m_EditorCamera; }
+
+        /*!
+        \brief Gets a const reference to the editor camera.
+        \return A const reference to the EditorCamera instance.
+        */
         const EditorCamera& GetEditorCamera() const { return m_EditorCamera; }
+
+        /*!
+        \brief Checks whether the editor camera is currently in use.
+        \return True if the editor camera is active, false otherwise.
+        */
         bool IsUsingEditorCamera() const { return m_UseEditorCamera; }
 
-        // Editor mode configuration
+        /*!
+        \brief Configures whether the SceneManager operates in editor mode.
+        \param isEditor True to enable editor mode, false for runtime mode.
+        */
         void SetEditorMode(bool isEditor);
 
-        // SCRIPT STUFF
-        // Register a script factory (for creating scripts by name)
+        /*!
+        \brief Registers a script factory so instances can be created by name at runtime.
+        \param scriptName The unique string name to associate with the script type T.
+        */
         template<typename T>
         void RegisterScript(const std::string& scriptName)
         {
@@ -199,18 +232,51 @@ namespace Uma_Engine
         */
         SceneState GetSceneState(const std::string& name) const;
 
-        // Get scene load progress (0.0 to 1.0)
+        /*!
+        \brief Gets the current loading progress of a scene.
+        \param name The name of the scene.
+        \return A float from 0.0 to 1.0 representing the load progress.
+        */
         float GetSceneLoadProgress(const std::string& name) const;
 
+        /*!
+        \brief Gets the names of all scenes known to the manager.
+        \return A vector of scene name strings.
+        */
         std::vector<std::string> GetAllSceneNames() const;
+
+        /*!
+        \brief Gets the names of all currently loaded scenes.
+        \return A vector of loaded scene name strings.
+        */
         std::vector<std::string> GetLoadedSceneNames() const;
+
+        /*!
+        \brief Gets the name of the currently active scene.
+        \return The active scene name, or an empty string if no scene is active.
+        */
         std::string GetActiveSceneName() const;
 
+        /*!
+        \brief Gets the ECS Coordinator associated with the active scene.
+        \return A pointer to the active scene's Coordinator, or nullptr if no scene is active.
+        */
         Uma_ECS::Coordinator* GetActiveSceneCoordinator() const;
 
     private:
+        /*!
+        \brief Processes scenes that are currently loading and advances their load state.
+        */
         void UpdateLoadingScenes();
+
+        /*!
+        \brief Removes scenes that have been fully unloaded from the loaded scenes list.
+        */
         void RemoveUnloadedScenes();
+
+        /*!
+        \brief Renders the SceneManager ImGui debug and editor window.
+        */
         void UpdateIMGUIWindow();
 
         // Script factory type

@@ -44,6 +44,11 @@ namespace Uma_ECS
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the enemy
 
+        /*!
+        \brief Serialize enemy data to JSON, including health, speed, and combat stats.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -60,7 +65,10 @@ namespace Uma_ECS
             value.AddMember("mDefense", mDefense, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserialize enemy data from JSON, restoring health, speed, and combat stats.
+        \param value JSON value containing serialized enemy data.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             if (value.HasMember("mHealth"))

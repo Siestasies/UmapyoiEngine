@@ -15,14 +15,46 @@ namespace Uma_ECS
         std::string effectName{};  // key into ResourcesManager effect map, empty = default
         std::unordered_map<std::string, MaterialValue> properties{};
 
-        // Setters (used by inspector + Lua)
+        /*!
+        \brief Set a float material property.
+        \param name Property name.
+        \param v Float value to set.
+        */
         void SetFloat(const std::string& name, float v) { properties[name] = v; }
+
+        /*!
+        \brief Set a vec2 material property.
+        \param name Property name.
+        \param v Vec2 value to set.
+        */
         void SetVec2(const std::string& name, glm::vec2 v) { properties[name] = v; }
+
+        /*!
+        \brief Set a vec3 material property.
+        \param name Property name.
+        \param v Vec3 value to set.
+        */
         void SetVec3(const std::string& name, glm::vec3 v) { properties[name] = v; }
+
+        /*!
+        \brief Set a vec4 material property.
+        \param name Property name.
+        \param v Vec4 value to set.
+        */
         void SetVec4(const std::string& name, glm::vec4 v) { properties[name] = v; }
+
+        /*!
+        \brief Set an integer material property.
+        \param name Property name.
+        \param v Integer value to set.
+        */
         void SetInt(const std::string& name, int v) { properties[name] = v; }
 
-        // Serialization
+        /*!
+        \brief Serialize sprite material data to JSON, including effect name and all properties.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -83,6 +115,10 @@ namespace Uma_ECS
             value.AddMember("properties", propsArr, allocator);
         }
 
+        /*!
+        \brief Deserialize sprite material data from JSON.
+        \param value JSON value containing serialized material data.
+        */
         void Deserialize(const rapidjson::Value& value)
         {
             if (value.HasMember("effectName"))

@@ -110,17 +110,57 @@ namespace Uma_ECS
 
     private:
 
+        /*!
+        \brief Renders all world-space sprites for the current frame.
+        \param dt Delta time in seconds.
+        */
         void RenderWorldPass(float dt);
+
+        /*!
+        \brief Renders all UI elements for the current frame.
+        \param dt Delta time in seconds.
+        */
         void RenderUIPass(float dt);
 
+        /*!
+        \brief Collects all visible world-space sprites from entities into a list.
+        \param outSprites Output vector to populate with layered sprite data.
+        */
         void GatherWorldSprites(std::vector<LayeredSprite>& outSprites);
+
+        /*!
+        \brief Sorts and draws the collected world-space sprites.
+        \param sprites Vector of layered sprites to render.
+        */
         void RenderWorldSprites(std::vector<LayeredSprite>& sprites);
 
+        /*!
+        \brief Collects all UI draw commands from UI entities into a list.
+        \param outSprites Output vector to populate with UI draw commands.
+        */
         void GatherUIElements(std::vector<UIDrawCommand>& outSprites);
+
+        /*!
+        \brief Sorts and draws the collected UI elements.
+        \param sprites Vector of UI draw commands to render.
+        */
         void RenderUIElements(std::vector<UIDrawCommand>& sprites);
 
+        /*!
+        \brief Recursively collects all child entities of a parent entity.
+        \param parent Parent entity to query.
+        \param childrenList Output vector to populate with child entity IDs.
+        */
         void GetAllChildren(Entity parent, std::vector<Entity>& childrenList);
 
+        /*!
+        \brief Determines whether a sprite is within the camera's visible bounds.
+        \param spritePos World-space position of the sprite.
+        \param spriteScale Scale of the sprite.
+        \param camMin Minimum corner of the camera's visible area.
+        \param camMax Maximum corner of the camera's visible area.
+        \return True if the sprite is at least partially visible.
+        */
         bool IsSpriteVisible(const Vec2& spritePos, const Vec2& spriteScale,
                              const Vec2& camMin, const Vec2& camMax);
 

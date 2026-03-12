@@ -195,7 +195,11 @@ namespace Uma_ECS
         bool hasShield;
         bool isShieldBroken;
 
-        // ===== SERIALIZATION =====
+        /*!
+        \brief Serialize player data to JSON, including health, movement, combat, mana, and attack stats.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -278,6 +282,10 @@ namespace Uma_ECS
             value.AddMember("attackStats", attacksArray, allocator);
         }
 
+        /*!
+        \brief Deserialize player data from JSON, restoring all stats and initializing runtime data.
+        \param value JSON value containing serialized player data.
+        */
         void Deserialize(const rapidjson::Value& value)
         {
             // Health

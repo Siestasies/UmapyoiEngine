@@ -214,6 +214,11 @@ namespace Uma_Engine
         }
 
     private:
+        /*!
+        \brief Processes all input events for the current frame and dispatches or emits them.
+        \param prevMX Previous frame mouse X position for delta calculation.
+        \param prevMY Previous frame mouse Y position for delta calculation.
+        */
         void HandleInputEvents(double prevMX, double prevMY)
         {
             // ================================================================
@@ -456,6 +461,9 @@ namespace Uma_Engine
     class TestEventListener : public EventListenerSystem
     {
     public:
+        /*!
+        \brief Initializes the test event listener and registers for input events.
+        */
         void Init() override
         {
             EventListenerSystem::Init();
@@ -467,6 +475,9 @@ namespace Uma_Engine
         }
 
     protected:
+        /*!
+        \brief Registers subscriptions for keyboard, mouse button, mouse move, and scroll events.
+        */
         void RegisterEventListeners() override
         {
 #ifdef _DEBUG_LOG

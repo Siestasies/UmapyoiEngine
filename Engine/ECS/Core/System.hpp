@@ -33,6 +33,10 @@ namespace Uma_ECS
 
         std::vector<Entity> aEntities;
 
+        /*!
+        \brief Called when an entity is destroyed, allowing systems to perform cleanup.
+        \param entity The entity that was destroyed.
+        */
         virtual void OnEntityDestroyed(Entity entity)
         {
             // Default implementation does nothing

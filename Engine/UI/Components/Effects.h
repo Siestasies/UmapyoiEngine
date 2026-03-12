@@ -8,6 +8,10 @@
 
 namespace Uma_UI
 {
+    /*!
+     * \class EffectClip
+     * \brief A single animation clip that tweens a UI property over time.
+     */
     class EffectClip
     {
     public:
@@ -42,6 +46,9 @@ namespace Uma_UI
         bool isPlaying = false;
         bool hasStarted = false;
 
+        /*!
+         * \brief Resets clip runtime state to initial values.
+         */
         void Reset()
         {
             currentTime = 0.0f;
@@ -49,21 +56,34 @@ namespace Uma_UI
             hasStarted = false;
         }
 
+        /*!
+         * \brief Starts or resumes playback of this clip.
+         */
         void Play()
         {
             isPlaying = true;
         }
 
+        /*!
+         * \brief Pauses playback without resetting the current time.
+         */
         void Pause()
         {
             isPlaying = false;
         }
 
+        /*!
+         * \brief Stops playback and resets to the beginning.
+         */
         void Stop()
         {
             Reset();
         }
 
+        /*!
+         * \brief Computes the normalized progress of the clip.
+         * \return Progress value clamped to [0,1].
+         */
         float GetProgress() const
         {
             if (duration <= 0.0f) return 1.0f;
@@ -103,6 +123,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Checks whether the clip has finished playing.
+         * \return True if playback has completed past delay plus duration.
+         */
         bool IsComplete() const
         {
             if (!hasStarted) return false;
@@ -110,6 +134,10 @@ namespace Uma_UI
         }
     };
 
+    /*!
+     * \class Effects
+     * \brief UI component holding a collection of EffectClip animations.
+     */
     class Effects
     {
     public:
@@ -121,11 +149,18 @@ namespace Uma_UI
         // Never serialized.
         bool _wasActiveInHierarchy = false;
 
+        /*!
+         * \brief Adds an effect clip to the collection.
+         * \param clip The clip to add.
+         */
         void AddClip(const EffectClip& clip)
         {
             clips.push_back(clip);
         }
 
+        /*!
+         * \brief Starts playback of all clips.
+         */
         void PlayAll()
         {
             for (auto& clip : clips)
@@ -134,6 +169,9 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Stops and resets all clips.
+         */
         void StopAll()
         {
             for (auto& clip : clips)
@@ -142,6 +180,9 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Resets all clips to their initial state.
+         */
         void ResetAll()
         {
             for (auto& clip : clips)
@@ -150,6 +191,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Starts playback of a clip at the given index.
+         * \param index Zero-based index of the clip.
+         */
         void PlayClip(size_t index)
         {
             if (index < clips.size())
@@ -158,6 +203,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Pauses a clip at the given index.
+         * \param index Zero-based index of the clip.
+         */
         void PauseClip(size_t index)
         {
             if (index < clips.size())
@@ -166,6 +215,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Stops and resets a clip at the given index.
+         * \param index Zero-based index of the clip.
+         */
         void StopClip(size_t index)
         {
             if (index < clips.size())
@@ -174,6 +227,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Resets a clip at the given index to its initial state.
+         * \param index Zero-based index of the clip.
+         */
         void ResetClip(size_t index)
         {
             if (index < clips.size())
@@ -182,7 +239,11 @@ namespace Uma_UI
             }
         }
 
-        // Query clip state
+        /*!
+         * \brief Queries whether a clip at the given index is currently playing.
+         * \param index Zero-based index of the clip.
+         * \return True if the clip is playing, false if paused, stopped, or index is out of range.
+         */
         bool IsClipPlaying(size_t index) const
         {
             if (index < clips.size())
@@ -192,6 +253,11 @@ namespace Uma_UI
             return false;
         }
 
+        /*!
+         * \brief Queries whether a clip at the given index has completed.
+         * \param index Zero-based index of the clip.
+         * \return True if the clip has finished, false otherwise or if index is out of range.
+         */
         bool IsClipComplete(size_t index) const
         {
             if (index < clips.size())
@@ -201,12 +267,19 @@ namespace Uma_UI
             return false;
         }
 
+        /*!
+         * \brief Returns the number of clips in this Effects component.
+         * \return Number of clips.
+         */
         size_t GetClipCount() const
         {
             return clips.size();
         }
 
-        // Control clips by name
+        /*!
+         * \brief Starts playback of all clips matching the given name.
+         * \param name Name of the clip(s) to play.
+         */
         void PlayClipByName(const std::string& name)
         {
             for (auto& clip : clips)
@@ -218,6 +291,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Pauses all clips matching the given name.
+         * \param name Name of the clip(s) to pause.
+         */
         void PauseClipByName(const std::string& name)
         {
             for (auto& clip : clips)
@@ -229,6 +306,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Stops and resets all clips matching the given name.
+         * \param name Name of the clip(s) to stop.
+         */
         void StopClipByName(const std::string& name)
         {
             for (auto& clip : clips)
@@ -240,6 +321,10 @@ namespace Uma_UI
             }
         }
 
+        /*!
+         * \brief Resets all clips matching the given name to their initial state.
+         * \param name Name of the clip(s) to reset.
+         */
         void ResetClipByName(const std::string& name)
         {
             for (auto& clip : clips)
@@ -251,7 +336,11 @@ namespace Uma_UI
             }
         }
 
-        // Find clip index by name
+        /*!
+         * \brief Finds the index of the first clip matching the given name.
+         * \param name Name of the clip to find.
+         * \return Zero-based index of the clip, or -1 if not found.
+         */
         int FindClipIndexByName(const std::string& name) const
         {
             for (size_t i = 0; i < clips.size(); ++i)
@@ -264,6 +353,11 @@ namespace Uma_UI
             return -1;  // Not found
         }
 
+        /*!
+         * \brief Serializes all clips and settings to a JSON value.
+         * \param jsonValue Output JSON value to populate.
+         * \param allocator RapidJSON allocator for memory management.
+         */
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
             jsonValue.SetObject();
@@ -323,6 +417,10 @@ namespace Uma_UI
             jsonValue.AddMember("clips", clipsArray, allocator);
         }
 
+        /*!
+         * \brief Deserializes all clips and settings from a JSON value.
+         * \param jsonValue Input JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& jsonValue)
         {
             playOnEnable = jsonValue["playOnEnable"].GetBool();

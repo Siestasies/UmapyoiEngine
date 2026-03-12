@@ -107,14 +107,29 @@ namespace Uma_UI
         void Spawn(float worldX, float worldY, const std::string& value = "",
                    FeedbackType type = FeedbackType::Normal);
 
+        /*!
+         * \brief Convenience overload that maps a boolean critical flag to FeedbackType.
+         * \param worldX World-space X position.
+         * \param worldY World-space Y position.
+         * \param value Text to display.
+         * \param isCrit If true, uses Critical type; otherwise Normal.
+         */
         void Spawn(float worldX, float worldY, const std::string& value, bool isCrit)
         {
             Spawn(worldX, worldY, value,
                   isCrit ? FeedbackType::Critical : FeedbackType::Normal);
         }
 
+        /*!
+         * \brief Returns the entity ID of the feedback canvas.
+         * \return Canvas entity ID.
+         */
         Uma_ECS::Entity GetCanvasEntity() const { return mCanvasEntity; }
 
+        /*!
+         * \brief Sets the font path used for feedback text entities.
+         * \param fontPath Relative path to the font file.
+         */
         void SetNumberFont(const std::string& fontPath) { mFontPath = fontPath; }
 
     private:
@@ -133,15 +148,42 @@ namespace Uma_UI
         // Fixed pool
         Slot mPool[FeedbackConfig::kPoolSize]{};
 
-        // Helpers
+        /*!
+         * \brief Converts world-space coordinates to NDC.
+         * \param wx World X position.
+         * \param wy World Y position.
+         * \return Position in NDC space.
+         */
         Vec2  WorldToNDC(float wx, float wy) const;
-        int   AcquireSlot();      // returns index into mPool; evicts furthest-elapsed if full
-        float NextJitter();       // xorshift pseudo-random in [0,1]
+
+        /*!
+         * \brief Acquires a pool slot, evicting the furthest-elapsed slot if full.
+         * \return Index into mPool.
+         */
+        int   AcquireSlot();
+
+        /*!
+         * \brief Generates a pseudo-random jitter value using xorshift.
+         * \return Random float in [0,1].
+         */
+        float NextJitter();
         uint32_t mRandState = 0x9E3779B9u;
 
+        /*!
+         * \brief Creates the shared canvas entity for feedback numbers.
+         */
         void BuildCanvas();
+
+        /*!
+         * \brief Pre-allocates pooled text entities as children of the canvas.
+         */
         void BuildPooledTextEntities();
-        void HideSlot(Slot& slot);  // moves off-screen, alpha=0
+
+        /*!
+         * \brief Hides a slot by moving it off-screen and setting alpha to zero.
+         * \param slot The pool slot to hide.
+         */
+        void HideSlot(Slot& slot);
     };
 
 } // namespace Uma_UI

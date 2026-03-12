@@ -8,6 +8,10 @@
 
 namespace Uma_UI
 {
+	/*!
+	 * \enum SliderDirection
+	 * \brief Direction in which a slider fill progresses.
+	 */
 	enum class SliderDirection
 	{
 		LeftToRight = 0,
@@ -16,6 +20,10 @@ namespace Uma_UI
 		TopToBottom = 3
 	};
 
+	/*!
+	 * \class Slider
+	 * \brief UI component for a draggable slider with configurable range and visual feedback.
+	 */
 	class Slider
 	{
     public:
@@ -46,6 +54,11 @@ namespace Uma_UI
         bool isDragging = false;
         bool isHovered = false;
 
+        /*!
+         * \brief Serializes slider settings to a JSON value.
+         * \param jsonValue Output JSON value to populate.
+         * \param allocator RapidJSON allocator for memory management.
+         */
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
             jsonValue.SetObject();
@@ -86,6 +99,10 @@ namespace Uma_UI
             jsonValue.AddMember("disabledColour", dCol, allocator);
         }
 
+        /*!
+         * \brief Deserializes slider settings from a JSON value.
+         * \param jsonValue Input JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& jsonValue)
         {
             minValue = jsonValue["minValue"].GetFloat();

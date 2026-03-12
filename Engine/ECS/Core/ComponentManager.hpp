@@ -41,11 +41,17 @@ namespace Uma_ECS
     {
     public:
 
-        // copy ctor
         ComponentManager() = default;
+
+        /*!
+        \brief Copy constructor. Deep copies all component type mappings and component arrays.
+        \param other The ComponentManager instance to copy from.
+        */
         ComponentManager(const ComponentManager& other) noexcept;
 
-        // Always register the component before use
+        /*!
+        \brief Registers a new component type, creating its ComponentArray and assigning a unique ComponentType ID.
+        */
         template<typename T>
         void RegisterComponent()
         {
@@ -75,8 +81,12 @@ namespace Uma_ECS
             ++mNextComponentType;
         }
 
+        /*!
+        \brief Returns the unique ComponentType ID for the given component type.
+        \return The ComponentType identifier.
+        */
         template<typename T>
-        ComponentType GetComponentType() 
+        ComponentType GetComponentType()
         {
             std::string type_name = std::string(typeid(T).name());
 
@@ -86,6 +96,11 @@ namespace Uma_ECS
             return aComponentTypes[type_name];
         }
 
+        /*!
+        \brief Returns the ComponentType ID for a component identified by its type name string.
+        \param compType The typeid name string of the component.
+        \return The ComponentType identifier.
+        */
         ComponentType GetComponentType(const std::string& compType)
         {
             assert(aComponentTypes.find(compType) != aComponentTypes.end()
@@ -94,6 +109,11 @@ namespace Uma_ECS
             return aComponentTypes[compType];
         }
 
+        /*!
+        \brief Adds a component to the specified entity's ComponentArray.
+        \param entity The Entity ID to add the component to.
+        \param component The component data to add.
+        */
         template<typename T>
         void AddComponent(Entity entity, const T& component)
         {
@@ -101,13 +121,22 @@ namespace Uma_ECS
             component_array.AddData(entity, component);
         }
 
+        /*!
+        \brief Removes a component from the specified entity.
+        \param entity The Entity ID to remove the component from.
+        */
         template<typename T>
-        void RemoveComponent(Entity entity) 
+        void RemoveComponent(Entity entity)
         {
             ComponentArray<T>& component_array = GetComponentArray<T>();
             component_array.RemoveData(entity);
         }
 
+        /*!
+        \brief Retrieves a reference to the component data for the specified entity.
+        \param entity The Entity ID to get the component from.
+        \return A reference to the component data.
+        */
         template<typename T>
         T& GetComponent(Entity entity)
         {
@@ -115,6 +144,11 @@ namespace Uma_ECS
             return component_array.GetData(entity);
         }
 
+        /*!
+        \brief Checks whether the specified entity has a component of the given type.
+        \param entity The Entity ID to check.
+        \return True if the entity has the component, false otherwise.
+        */
         template<typename T>
         bool HasComponent(Entity entity)
         {
@@ -122,8 +156,17 @@ namespace Uma_ECS
             return component_array.Has(entity);
         }
 
+        /*!
+        \brief Retrieves all entities that have a component matching the given friendly name string.
+        \param componentName The friendly name of the component type.
+        \return A vector of Entity IDs that have the component.
+        */
         std::vector<Entity> GetEntitiesByComponentName(const std::string& componentName);
 
+        /*!
+        \brief Returns a reference to the typed ComponentArray for the given component type.
+        \return A reference to the ComponentArray of type T.
+        */
         template<typename T>
         ComponentArray<T>& GetComponentArray()
         {
@@ -136,10 +179,10 @@ namespace Uma_ECS
             return *std::static_pointer_cast<ComponentArray<T>>(aComponentArrays[type_name]);
         }
 
-        // the  whole friendly name idea here is to provide a easier access for the Lua scripting
-        // when optimising the code please find a way to scrape this
-        // this si kinda ugly
-        // but works for temp solution
+        /*!
+        \brief Registers a human-readable friendly name mapping for the given component type.
+        Used by the Lua scripting system for component lookup by name.
+        */
         template<typename T>
         void RegisterComponentFriendlyName()
         {
@@ -152,6 +195,10 @@ namespace Uma_ECS
             Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debugLog);
         }
         
+        /*!
+        \brief Extracts a short, human-readable name from the full typeid name of a component.
+        \return The friendly name string (class name without namespace or prefix).
+        */
         template<typename T>
         std::string GetFriendlyName()
         {
@@ -171,10 +218,25 @@ namespace Uma_ECS
             return fullName;
         }
 
+        /*!
+        \brief Notifies all ComponentArrays that an entity has been destroyed, removing its data.
+        \param entity The Entity ID that was destroyed.
+        */
         void EntityDestroyed(Entity entity);
 
+        /*!
+        \brief Clones all components from a source entity to a destination entity.
+        \param src The source Entity ID to copy from.
+        \param dest The destination Entity ID to copy to.
+        */
         void CloneEntityComponents(Entity src, Entity dest);
 
+        /*!
+        \brief Serializes all components of an entity into a RapidJSON value.
+        \param entity The Entity ID to serialize.
+        \param comps The RapidJSON value to write component data into.
+        \param allocator The RapidJSON allocator for memory management.
+        */
         void SerializeAll(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) 
         {
             for (auto const& pair : aComponentArrays) 
@@ -183,6 +245,12 @@ namespace Uma_ECS
             }
         }
 
+        /*!
+        \brief Deserializes all components for an entity from a RapidJSON value and returns the resulting signature.
+        \param entity The Entity ID to deserialize components for.
+        \param comps The RapidJSON value containing serialized component data.
+        \return The Signature bitset representing all deserialized components.
+        */
         Signature DeserializeAll(Entity entity, const rapidjson::Value& comps) 
         {
             Signature sign;

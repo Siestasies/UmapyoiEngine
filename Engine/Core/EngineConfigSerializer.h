@@ -38,6 +38,10 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    /*!
+     * \class EngineConfigSerializer
+     * \brief Orchestrates JSON save/load of engine configuration through registered ISerializer instances.
+     */
     class EngineConfigSerializer
     {
     private:
@@ -45,11 +49,19 @@ namespace Uma_Engine
 
     public:
 
+        /*!
+         * \brief Registers a serializer to participate in save/load operations.
+         * \param s Pointer to the serializer to register.
+         */
         void Register(ISerializer* s)
         {
             serializers.push_back(s);
         }
 
+        /*!
+         * \brief Saves all registered serializers to a JSON file.
+         * \param filename Path to the output JSON file.
+         */
         void save(const std::string& filename)
         {
             rapidjson::Document doc;
@@ -79,6 +91,10 @@ namespace Uma_Engine
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
+        /*!
+         * \brief Loads configuration from a JSON file into all registered serializers.
+         * \param filename Path to the input JSON file.
+         */
         void load(const std::string& filename)
         {
             std::ifstream ifs(filename);

@@ -35,7 +35,10 @@ All rights reserved.
 
 namespace Uma_Math
 {
-    // Column proxy for matrix[col][row] access
+    /*!
+     * \class ColumnProxy
+     * \brief Mutable proxy for matrix column access via matrix[col][row] syntax.
+     */
     template <typename T, std::size_t Rows>
     class ColumnProxy
     {
@@ -56,6 +59,10 @@ namespace Uma_Math
         T* m_data;
     };
 
+    /*!
+     * \class ConstColumnProxy
+     * \brief Const proxy for matrix column access via matrix[col][row] syntax.
+     */
     template <typename T, std::size_t Rows>
     class ConstColumnProxy
     {
@@ -71,12 +78,23 @@ namespace Uma_Math
         const T* m_data;
     };
 
+    /*!
+     * \class Matrix2x2
+     * \brief Templated 2x2 matrix with column-major storage.
+     */
     template <typename T = float>
     class Matrix2x2
     {
     public:
-        // Core constructors and Rule of 5
+        /*!
+         * \brief Constructs a 2x2 matrix from individual elements (row-major parameter order, column-major storage).
+         * \param m00 Element at row 0, column 0.
+         * \param m01 Element at row 0, column 1.
+         * \param m10 Element at row 1, column 0.
+         * \param m11 Element at row 1, column 1.
+         */
         constexpr Matrix2x2(T m00 = T{}, T m01 = T{}, T m10 = T{}, T m11 = T{}) : m_data{m00, m10, m01, m11} {}
+        /*! \brief Constructs a 2x2 matrix from two column vectors. \param col0 First column. \param col1 Second column. */
         constexpr Matrix2x2(const Vector2D<T>& col0, const Vector2D<T>& col1) : m_data{col0.x, col0.y, col1.x, col1.y} {}
         constexpr Matrix2x2(const Matrix2x2& other) = default;
         constexpr Matrix2x2(Matrix2x2&& other) noexcept = default;
@@ -166,23 +184,26 @@ namespace Uma_Math
             return *this;
         }
 
-        // Matrix operations
+        /*! \brief Computes the determinant of this 2x2 matrix. \return Determinant value. */
         constexpr T determinant() const noexcept
         {
             return m_data[0] * m_data[3] - m_data[1] * m_data[2];
         }
 
+        /*! \brief Returns the transpose of this 2x2 matrix. \return Transposed matrix. */
         constexpr Matrix2x2 transpose() const noexcept
         {
             return Matrix2x2(m_data[0], m_data[1], m_data[2], m_data[3]);
         }
 
+        /*! \brief Returns the 2x2 identity matrix. \return Identity matrix. */
         static constexpr Matrix2x2 identity() noexcept
         {
             return Matrix2x2(T{1}, T{},
                              T{}, T{1});
         }
 
+        /*! \brief Returns a 2x2 zero matrix. \return Zero matrix. */
         static constexpr Matrix2x2 zero() noexcept
         {
             return Matrix2x2();
@@ -196,6 +217,10 @@ namespace Uma_Math
         template <typename U> friend std::ostream& operator<<(std::ostream& os, const Matrix2x2<U>& mat);
     };
 
+    /*!
+     * \class Matrix3x3
+     * \brief Templated 3x3 matrix with column-major storage.
+     */
     template <typename T = float>
     class Matrix3x3
     {
@@ -307,7 +332,7 @@ namespace Uma_Math
             return *this;
         }
 
-        // Matrix operations
+        /*! \brief Computes the determinant of this 3x3 matrix. \return Determinant value. */
         constexpr T determinant() const noexcept
         {
             return m_data[0] * (m_data[4] * m_data[8] - m_data[5] * m_data[7]) -
@@ -315,6 +340,7 @@ namespace Uma_Math
                    m_data[6] * (m_data[1] * m_data[5] - m_data[2] * m_data[4]);
         }
 
+        /*! \brief Returns the transpose of this 3x3 matrix. \return Transposed matrix. */
         constexpr Matrix3x3 transpose() const noexcept
         {
             return Matrix3x3(m_data[0], m_data[3], m_data[6],
@@ -322,6 +348,7 @@ namespace Uma_Math
                              m_data[2], m_data[5], m_data[8]);
         }
 
+        /*! \brief Returns the 3x3 identity matrix. \return Identity matrix. */
         static constexpr Matrix3x3 identity() noexcept
         {
             return Matrix3x3(T{1}, T{}, T{},
@@ -329,6 +356,7 @@ namespace Uma_Math
                              T{}, T{}, T{1});
         }
 
+        /*! \brief Returns a 3x3 zero matrix. \return Zero matrix. */
         static constexpr Matrix3x3 zero() noexcept
         {
             return Matrix3x3();
@@ -342,6 +370,10 @@ namespace Uma_Math
         template <typename U> friend std::ostream& operator<<(std::ostream& os, const Matrix3x3<U>& mat);
     };
 
+    /*!
+     * \class Matrix4x4
+     * \brief Templated 4x4 matrix with column-major storage.
+     */
     template <typename T = float>
     class Matrix4x4
     {
@@ -453,7 +485,7 @@ namespace Uma_Math
             return *this;
         }
 
-        // Matrix operations
+        /*! \brief Computes the determinant of this 4x4 matrix. \return Determinant value. */
         constexpr T determinant() const noexcept
         {
             // Calculate 2x2 determinants that will be reused
@@ -471,6 +503,7 @@ namespace Uma_Math
             return m00 * c0 - m01 * c1 + m02 * c2 - m03 * c3;
         }
 
+        /*! \brief Returns the transpose of this 4x4 matrix. \return Transposed matrix. */
         constexpr Matrix4x4 transpose() const noexcept
         {
             return Matrix4x4(
@@ -481,6 +514,7 @@ namespace Uma_Math
             );
         }
 
+        /*! \brief Returns the 4x4 identity matrix. \return Identity matrix. */
         static constexpr Matrix4x4 identity() noexcept
         {
             return Matrix4x4(T{1}, T{0}, T{0}, T{0},
@@ -489,6 +523,7 @@ namespace Uma_Math
                              T{0}, T{0}, T{0}, T{1});
         }
 
+        /*! \brief Returns a 4x4 zero matrix. \return Zero matrix. */
         static constexpr Matrix4x4 zero() noexcept
         {
             return Matrix4x4();
@@ -784,7 +819,7 @@ namespace Uma_Math
     template <typename T>
     constexpr bool operator!=(const Matrix4x4<T>& lhs, const Matrix4x4<T>& rhs) { return !(lhs == rhs); }
 
-    // Matrix-Vector multiplication
+    /*! \brief Multiplies a 2x2 matrix by a 2D vector. \param mat The matrix. \param vec The vector. \return Transformed vector. */
     template <typename T>
     constexpr Vector2D<T> operator*(const Matrix2x2<T>& mat, const Vector2D<T>& vec)
     {
@@ -794,6 +829,7 @@ namespace Uma_Math
         );
     }
 
+    /*! \brief Multiplies a 3x3 matrix by a 3D vector. \param mat The matrix. \param vec The vector. \return Transformed vector. */
     template <typename T>
     constexpr Vector3D<T> operator*(const Matrix3x3<T>& mat, const Vector3D<T>& vec)
     {
@@ -806,7 +842,7 @@ namespace Uma_Math
 
     // I don't have Vector4D to perform Matrix4x4 and Vector4D multiplication... yet?
 
-    // Inverse operations (for floating point types)
+    /*! \brief Computes the inverse of a 2x2 matrix. \param mat The matrix to invert. \return Inverted matrix. \throws std::runtime_error if the matrix is singular. */
     template <typename T>
     auto Inverse(const Matrix2x2<T>& mat) -> std::enable_if_t<std::is_floating_point_v<T>, Matrix2x2<T>>
     {
@@ -823,6 +859,7 @@ namespace Uma_Math
         );
     }
 
+    /*! \brief Computes the inverse of a 3x3 matrix. \param mat The matrix to invert. \return Inverted matrix. \throws std::runtime_error if the matrix is singular. */
     template <typename T>
     auto Inverse(const Matrix3x3<T>& mat) -> std::enable_if_t<std::is_floating_point_v<T>, Matrix3x3<T>>
     {
@@ -846,6 +883,7 @@ namespace Uma_Math
         );
     }
 
+    /*! \brief Computes the inverse of a 4x4 matrix. \param m The matrix to invert. \return Inverted matrix. \throws std::runtime_error if the matrix is singular. */
     template <typename T>
     auto Inverse(const Matrix4x4<T>& m) -> std::enable_if_t<std::is_floating_point_v<T>, Matrix4x4<T>>
     {
@@ -924,7 +962,7 @@ namespace Uma_Math
         return result;
     }
 
-    // GLM-style transformation matrices
+    /*! \brief Applies a 2D scale to a 2x2 matrix. \param mat Source matrix. \param v Scale factors. \return Scaled matrix. */
     template <typename T>
     Matrix2x2<T> Scale(const Matrix2x2<T>& mat, const Vector2D<T>& v)
     {
@@ -934,6 +972,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 2D rotation to a 2x2 matrix. \param mat Source matrix. \param angle Rotation angle in radians. \return Rotated matrix. */
     template <typename T>
     Matrix2x2<T> Rotate(const Matrix2x2<T>& mat, T angle)
     {
@@ -952,7 +991,7 @@ namespace Uma_Math
         return result;
     }
 
-    // Matrix3x3 transformations (3D, or 2D homogeneous)
+    /*! \brief Applies a 2D translation to a 3x3 matrix (homogeneous coordinates). \param mat Source matrix. \param v Translation vector. \return Translated matrix. */
     template <typename T>
     Matrix3x3<T> Translate(const Matrix3x3<T>& mat, const Vector2D<T>& v)
     {
@@ -961,6 +1000,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 3D scale to a 3x3 matrix. \param mat Source matrix. \param v Scale factors for each axis. \return Scaled matrix. */
     template <typename T>
     Matrix3x3<T> Scale(const Matrix3x3<T>& mat, const Vector3D<T>& v)
     {
@@ -971,7 +1011,7 @@ namespace Uma_Math
         return result;
     }
 
-    // For 2D homogeneous coordinates (using Matrix3x3)
+    /*! \brief Applies a 2D scale to a 3x3 matrix (homogeneous coordinates). \param mat Source matrix. \param v Scale factors. \return Scaled matrix. */
     template <typename T>
     Matrix3x3<T> Scale(const Matrix3x3<T>& mat, const Vector2D<T>& v)
     {
@@ -982,6 +1022,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 3D rotation about an arbitrary axis to a 3x3 matrix. \param mat Source matrix. \param angle Rotation angle in radians. \param axis Rotation axis (will be normalized). \return Rotated matrix. */
     template <typename T>
     Matrix3x3<T> Rotate(const Matrix3x3<T>& mat, T angle, const Vector3D<T>& axis)
     {
@@ -1015,7 +1056,7 @@ namespace Uma_Math
         return result;
     }
 
-    // For 2D rotation (using Matrix3x3 for homogeneous coordinates)
+    /*! \brief Applies a 2D rotation to a 3x3 matrix (homogeneous coordinates). \param mat Source matrix. \param angle Rotation angle in radians. \return Rotated matrix. */
     template <typename T>
     Matrix3x3<T> Rotate(const Matrix3x3<T>& mat, T angle)
     {
@@ -1042,6 +1083,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 3D translation to a 4x4 matrix. \param mat Source matrix. \param v Translation vector. \return Translated matrix. */
     template <typename T>
     Matrix4x4<T> Translate(const Matrix4x4<T>& mat, const Vector3D<T>& v)
     {
@@ -1050,6 +1092,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 3D scale to a 4x4 matrix. \param mat Source matrix. \param v Scale factors for each axis. \return Scaled matrix. */
     template <typename T>
     Matrix4x4<T> Scale(const Matrix4x4<T>& mat, const Vector3D<T>& v)
     {
@@ -1061,6 +1104,7 @@ namespace Uma_Math
         return result;
     }
 
+    /*! \brief Applies a 3D rotation about an arbitrary axis to a 4x4 matrix. \param mat Source matrix. \param angle Rotation angle in radians. \param axis Rotation axis (will be normalized). \return Rotated matrix. */
     template <typename T>
     Matrix4x4<T> Rotate(const Matrix4x4<T>& mat, T angle, const Vector3D<T>& axis)
     {
@@ -1095,7 +1139,7 @@ namespace Uma_Math
         return result;
     }
 
-    // Stream operators
+    /*! \brief Outputs a 2x2 matrix to a stream. \param os Output stream. \param mat The matrix. \return Reference to the stream. */
     template <typename T>
     std::ostream& operator<<(std::ostream& os, const Matrix2x2<T>& mat)
     {
@@ -1104,6 +1148,7 @@ namespace Uma_Math
         return os;
     }
 
+    /*! \brief Outputs a 3x3 matrix to a stream. \param os Output stream. \param mat The matrix. \return Reference to the stream. */
     template <typename T>
     std::ostream& operator<<(std::ostream& os, const Matrix3x3<T>& mat)
     {
@@ -1113,6 +1158,7 @@ namespace Uma_Math
         return os;
     }
 
+    /*! \brief Outputs a 4x4 matrix to a stream. \param os Output stream. \param m The matrix. \return Reference to the stream. */
     template <typename T>
     std::ostream& operator<<(std::ostream& os, const Matrix4x4<T>& m)
     {

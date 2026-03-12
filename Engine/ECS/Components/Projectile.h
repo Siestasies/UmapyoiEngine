@@ -50,6 +50,11 @@ namespace Uma_ECS
         // currently empty, just to let coordinator to 
         // identify entity with this component to be the player
 
+        /*!
+        \brief Serialize projectile data to JSON, including stats such as damage, speed, and lifetime.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -66,7 +71,10 @@ namespace Uma_ECS
             value.AddMember("mStats", stats, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserialize projectile data from JSON, restoring stats such as damage, speed, and lifetime.
+        \param value JSON value containing serialized projectile data.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             if (value.HasMember("mStats") && value["mStats"].IsObject())

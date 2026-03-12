@@ -45,6 +45,11 @@ namespace Uma_ECS
         float shakeIntensity = 1.0f;
         float targetZoom = 10.0f;
 
+        /*!
+        \brief Serialize a cutscene action to JSON.
+        \param out Output JSON value to populate.
+        \param alloc RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
         {
             out.SetObject();
@@ -58,6 +63,10 @@ namespace Uma_ECS
             out.AddMember("targetZoom", targetZoom, alloc);
         }
 
+        /*!
+        \brief Deserialize a cutscene action from JSON.
+        \param in JSON value containing serialized action data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             type = static_cast<CutsceneActionType>(
@@ -80,6 +89,11 @@ namespace Uma_ECS
         bool hasPlayed = false;
         std::vector<CutsceneAction> actions;
 
+        /*!
+        \brief Serialize the cutscene component to JSON, including play settings and all actions.
+        \param out Output JSON value to populate.
+        \param alloc RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& alloc) const
         {
             out.SetObject();
@@ -96,6 +110,10 @@ namespace Uma_ECS
             out.AddMember("actions", arr, alloc);
         }
 
+        /*!
+        \brief Deserialize the cutscene component from JSON, restoring play settings and all actions.
+        \param in JSON value containing serialized cutscene data.
+        */
         void Deserialize(const rapidjson::Value& in)
         {
             playOnce = in.HasMember("playOnce") ? in["playOnce"].GetBool() : true;

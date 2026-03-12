@@ -24,18 +24,35 @@ namespace Uma_Engine
     // foward declare of System Manager
     class SystemManager;
 
-    // Base system interface - only requires basic lifecycle methods
+    /*!
+     * \class ISystem
+     * \brief Base interface for all engine systems providing lifecycle methods.
+     */
     class ISystem
     {
     public:
         virtual ~ISystem() = default;
 
+        /*!
+         * \brief Initializes the system. Called once after registration.
+         */
         virtual void Init() = 0;
 
+        /*!
+         * \brief Updates the system each frame.
+         * \param dt Delta time in seconds since the last frame.
+         */
         virtual void Update(float dt) = 0;
 
+        /*!
+         * \brief Shuts down the system, releasing any resources.
+         */
         virtual void Shutdown() = 0;
 
+        /*!
+         * \brief Sets the parent system manager reference.
+         * \param sm Pointer to the owning SystemManager.
+         */
         inline void SetSystemManager(SystemManager* sm) { pSystemManager = sm; }
 
     protected:

@@ -6,6 +6,10 @@
 
 namespace Uma_UI
 {
+    /*!
+     * \class Checkbox
+     * \brief UI component for a toggleable checkbox with visual state feedback.
+     */
     class Checkbox
     {
     public:
@@ -38,6 +42,11 @@ namespace Uma_UI
         bool wasHoveredLastFrame = false;
         bool wasPressedWhileHovered = false;
 
+        /*!
+         * \brief Serializes checkbox settings to a JSON value.
+         * \param jsonValue Output JSON value to populate.
+         * \param allocator RapidJSON allocator for memory management.
+         */
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
             jsonValue.SetObject();
@@ -101,6 +110,10 @@ namespace Uma_UI
             jsonValue.AddMember("checkmarkDisabledColour", cmdCol, allocator);
         }
 
+        /*!
+         * \brief Deserializes checkbox settings from a JSON value.
+         * \param jsonValue Input JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& jsonValue)
         {
             isChecked = jsonValue["isChecked"].GetBool();

@@ -26,6 +26,10 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    /*!
+     * \class EngineConfig
+     * \brief Stores engine configuration settings and implements JSON serialization.
+     */
     class EngineConfig : public ISerializer
     {
     public:
@@ -39,6 +43,10 @@ namespace Uma_Engine
         // Window settings
         std::string windowTitle = "My Game Engine";
 
+        /*!
+         * \brief Returns the window mode derived from the fullscreen setting.
+         * \return WindowMode::Fullscreen or WindowMode::Windowed.
+         */
         WindowMode GetWindowMode() const
         {
             return fullscreen ? WindowMode::Fullscreen : WindowMode::Windowed;
@@ -53,9 +61,16 @@ namespace Uma_Engine
         // Debug / development options
         //bool enableDebugOverlay = false;
 
-        // serializer
-        const char* GetSectionName() const override { return "engine_config"; };  // e.g. "entities", "resources"
-        std::string GetSerializerName() const override { return "EngineConfig"; };  // e.g. "resources_manager", "coordinator"
+        /*! \brief Returns the JSON section name for this serializer. \return Section name string. */
+        const char* GetSectionName() const override { return "engine_config"; };
+        /*! \brief Returns a human-readable name for this serializer. \return Serializer name string. */
+        std::string GetSerializerName() const override { return "EngineConfig"; };
+
+        /*!
+         * \brief Serializes engine configuration to a JSON value.
+         * \param out Output JSON value to populate.
+         * \param allocator RapidJSON allocator for memory management.
+         */
         void Serialize(rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override
         {
             out.SetObject();
@@ -70,6 +85,10 @@ namespace Uma_Engine
             title.SetString(windowTitle.c_str(), static_cast<rapidjson::SizeType>(windowTitle.length()), allocator);
             out.AddMember("windowTitle", title, allocator);
         }
+        /*!
+         * \brief Deserializes engine configuration from a JSON value.
+         * \param in Input JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& in) override
         {
             if (in.HasMember("screenWidth") && in["screenWidth"].IsInt())
@@ -91,6 +110,12 @@ namespace Uma_Engine
                 windowTitle = in["windowTitle"].GetString();
         }
 
+        /*!
+         * \brief Prefab serialization stub (not used for engine config).
+         * \param entity Unused entity parameter.
+         * \param out Unused output parameter.
+         * \param allocator Unused allocator parameter.
+         */
         void SerializePrefab(Entity entity, rapidjson::Value& out, rapidjson::Document::AllocatorType& allocator) override
         {
             // we are not using this function in Engine Config
@@ -99,6 +124,11 @@ namespace Uma_Engine
             (void)allocator;
         }
 
+        /*!
+         * \brief Prefab deserialization stub (not used for engine config).
+         * \param in Unused input parameter.
+         * \return Invalid entity ID.
+         */
         Entity DeserializePrefab(const rapidjson::Value& in) override
         {
             // we are not using this function in Engine Config 

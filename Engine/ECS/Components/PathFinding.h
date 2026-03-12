@@ -42,6 +42,11 @@ namespace Uma_ECS{
 		Vec2 goal{ 0.f,0.f };
 		bool enabled = true;
 
+		/*!
+		\brief Serialize pathfinding data to JSON, including update timer and interval.
+		\param value Output JSON value to populate.
+		\param allocator RapidJSON allocator for creating new values.
+		*/
 		void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
 		{
 			value.SetObject();
@@ -50,7 +55,10 @@ namespace Uma_ECS{
 			value.AddMember("pathUpdateInterval", pathUpdateInterval, allocator);
 		}
 
-		// Deserialize from JSON
+		/*!
+		\brief Deserialize pathfinding data from JSON, restoring update timer and interval.
+		\param value JSON value containing serialized pathfinding data.
+		*/
 		void Deserialize(const rapidjson::Value& value) //override
 		{
 			pathUpdateTimer = value["pathUpdateTimer"].GetFloat();
