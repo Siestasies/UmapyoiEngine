@@ -31,6 +31,7 @@ namespace Uma_Engine
     public:
         std::string titleId;
         std::string secretKey;
+        std::string customId;
 
         bool isAdmin;
 
@@ -51,6 +52,10 @@ namespace Uma_Engine
             rapidjson::Value key;
             key.SetString(secretKey.c_str(), static_cast<rapidjson::SizeType>(secretKey.length()), allocator);
             out.AddMember("secretKey", key, allocator);
+
+            rapidjson::Value custom;
+            custom.SetString(customId.c_str(), static_cast<rapidjson::SizeType>(customId.length()), allocator);
+            out.AddMember("customId", custom, allocator);
         }
         void Deserialize(const rapidjson::Value& in) override
         {
@@ -59,6 +64,9 @@ namespace Uma_Engine
 
             if (in.HasMember("secretKey") && in["secretKey"].IsString())
                 secretKey = in["secretKey"].GetString();
+
+            if (in.HasMember("customId") && in["customId"].IsString())
+                customId = in["customId"].GetString();
 
             isAdmin = secretKey.empty() == false;
         }

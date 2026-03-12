@@ -72,6 +72,7 @@ namespace Uma_Engine
     // Forward declaration to avoid circular dependency
     class SceneManager;
     class TilemapEditorManager;
+    class PlayFabEditorManager;
 
     enum class PlayState
     {
@@ -128,6 +129,7 @@ namespace Uma_Engine
         void CreateHierarchyWindow();
         void CreatePrefabHierarchyWindow();
         void CreateInspectorWindow();
+        void CreateMainMenuBar();
         void CreateEditorControlBar();
         void CreatePrefabControlBar();
         void CreateSystemsWindow();
@@ -168,6 +170,7 @@ namespace Uma_Engine
         EventSystem* pEventSystem = nullptr;
         ResourcesManager* pResourcesManager = nullptr;
         TilemapEditorManager* pTilemapEditorManager = nullptr;
+        PlayFabEditorManager* pPlayFabEditorManager = nullptr;
         
         std::vector<std::string> sceneNames;
         std::vector<std::string> scenePaths;

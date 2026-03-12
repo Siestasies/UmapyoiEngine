@@ -59,6 +59,15 @@ add_custom_command(TARGET UmapyoiGame POST_BUILD
     COMMENT "Copying Configs folder next to executable"
 )
 
+# Strip secretKey and customId from the game build's playfab config
+add_custom_command(TARGET UmapyoiGame POST_BUILD
+    COMMAND ${CMAKE_COMMAND}
+        -DSRC=${CONFIG_DIR}/playfab_dev.json
+        -DDST=$<TARGET_FILE_DIR:UmapyoiGame>/Configs/playfab_dev.json
+        -P ${CMAKE_SOURCE_DIR}/cmake/strip_playfab_secrets.cmake
+    COMMENT "Stripping PlayFab secrets from game build config"
+)
+
 # FMOD runtime DLL (Windows only)
 set(FMOD_DLL ${CMAKE_SOURCE_DIR}/Engine/fmod/lib/x64/fmod.dll)
 

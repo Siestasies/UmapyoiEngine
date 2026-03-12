@@ -19,6 +19,7 @@ namespace Uma_Engine
     class EditorSystem;
     class ImguiManager;
     class TilemapEditorManager;
+    class PlayFabEditorManager;
 
     /**
      * \brief Editor application with full editor functionality
@@ -68,6 +69,7 @@ namespace Uma_Engine
         EditorSystem* mEditorSystem;
         ImguiManager* mImguiManager;
         TilemapEditorManager* mTilemapEditorManager;
+        PlayFabEditorManager* mPlayFabEditorManager;
 
         bool mWasFocused = true;
     };

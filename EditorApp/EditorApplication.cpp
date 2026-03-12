@@ -35,6 +35,7 @@ All rights reserved.
 #include "Editor/Core/EditorSystem.h"
 #include "Scripts/ImguiManager.h"
 #include "../Editor/Systems/TilemapEditorManager.h"
+#include "../Editor/Systems/PlayFabEditorManager.h"
 #include "PlayFab/Core/PlayFabManager.h"
 
 // imgui
@@ -74,6 +75,7 @@ namespace Uma_Engine
         mEditorSystem = GetSystemManager()->RegisterSystem<EditorSystem>();
         mImguiManager = GetSystemManager()->RegisterSystem<ImguiManager>();
         mTilemapEditorManager = GetSystemManager()->RegisterSystem<TilemapEditorManager>();
+        mPlayFabEditorManager = GetSystemManager()->RegisterSystem<PlayFabEditorManager>();
     }
 
     /**
