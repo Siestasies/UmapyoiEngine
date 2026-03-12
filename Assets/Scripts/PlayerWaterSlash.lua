@@ -1,7 +1,7 @@
 -- PlayerWaterSlash.lua
 -- Water Slash elemental attack - can stun certain enemies, sets up elemental combo
-
 local audio = nil
+local PlayerStatTrackState = require("PlayerStatTrackState")
 
 ExposedVars = {
     waterSlashAnimationName = "water_slash",
@@ -99,6 +99,7 @@ function state_enter(entity)
         end
     end
 
+    PlayerStatTrackState.incrWaterAttack()
     Log("Water Slash Attack!")
 end
 

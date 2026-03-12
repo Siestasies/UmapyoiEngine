@@ -155,12 +155,14 @@ namespace Uma_ECS
         float   mDashSpeed = 10.f;              // Multiplier for dash
         float   mDashDuration = 0.2f;           // How long dash lasts
         float   mDashCD = 2.f;
+        float   mDashCDMax = 2.f;
 
         // ===== BASIC COMBAT =====
         int     mAttackDamage = 10;
         float   mAttackSpeed = 1.f;
         float   mAttackRange = 20.f;
         int     mDefense = 5;
+        float   mCritDamage = 1.0f;
 
         // ===== MANA SYSTEM =====
         float   mMana = 100.f;
@@ -209,12 +211,14 @@ namespace Uma_ECS
             value.AddMember("mDashSpeed", mDashSpeed, allocator);
             value.AddMember("mDashDuration", mDashDuration, allocator);
             value.AddMember("mDashCD", mDashCD, allocator);
+            value.AddMember("mDashCDMax", mDashCDMax, allocator);
 
             // Combat
             value.AddMember("mAttackDamage", mAttackDamage, allocator);
             value.AddMember("mAttackSpeed", mAttackSpeed, allocator);
             value.AddMember("mAttackRange", mAttackRange, allocator);
             value.AddMember("mDefense", mDefense, allocator);
+            value.AddMember("mCritDamage", mCritDamage, allocator);
 
             // Mana
             value.AddMember("mMana", mMana, allocator);
@@ -295,6 +299,8 @@ namespace Uma_ECS
                 mDashDuration = value["mDashDuration"].GetFloat();
             if (value.HasMember("mDashCD"))
                 mDashCD = value["mDashCD"].GetFloat();
+            if (value.HasMember("mDashCDMax"))
+                mDashCDMax = value["mDashCDMax"].GetFloat();
 
             // Combat
             if (value.HasMember("mAttackDamage"))
@@ -305,6 +311,8 @@ namespace Uma_ECS
                 mAttackRange = value["mAttackRange"].GetFloat();
             if (value.HasMember("mDefense"))
                 mDefense = value["mDefense"].GetInt();
+            if (value.HasMember("mCritDamage"))
+                mCritDamage = value["mCritDamage"].GetFloat();
 
             // Mana
             if (value.HasMember("mMana"))

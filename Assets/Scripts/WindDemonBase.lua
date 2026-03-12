@@ -92,11 +92,11 @@ function HandleCollision(trigger)
             attack.elementType == ElementType.Pyronado then 
                 isEffective = true
                 isFusion = true
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage + playerComp.mCritDamage))
             elseif attack.elementType == ElementType.Fire then
                 isEffective = true
                 isFusion = false
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                OnHurt(playerId, math.floor(playerComp.mAttackDamage + playerComp.mCritDamage))
             else
                 isEffective = false
                 isFusion = false

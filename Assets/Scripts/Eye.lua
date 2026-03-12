@@ -1,10 +1,8 @@
-local animator
 local total
 local children
 local lastThreshold = -1
 
 function Start()
-    animator = GetAnimator()
     children = GetChildrenList(EntityID)
     total = #children
 end
@@ -12,6 +10,7 @@ end
 function Update()
     if total == 0 then return end
 
+    local animator = GetAnimator()
     children = GetChildrenList(EntityID)
     local current = #children
 

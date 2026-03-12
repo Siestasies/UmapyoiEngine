@@ -1,6 +1,8 @@
 -- PlayerSteamBurst.lua
 -- Steam Burst - powerful fusion attack requiring elemental combo (Fire + Water or Water + Fire)
 
+local PlayerStatTrackState = require("PlayerStatTrackState")
+
 ExposedVars = {
     pyronadoAnimationName = "atk_fire_wind",
     pyronadoVFXAnimationName = "fire_wind",
@@ -109,6 +111,7 @@ function state_enter(entity)
     
     FaceTowardsMouse(entity)
 
+    PlayerStatTrackState.incrPyronadoAttack()
     Log("Pyronado Attack!")
 end
 

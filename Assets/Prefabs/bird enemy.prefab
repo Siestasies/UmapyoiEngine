@@ -9,7 +9,7 @@
                         "name": "bird enemy",
                         "position": {
                             "x": 888.114,
-                            "y": -275.184
+                            "y": -275.183
                         },
                         "rotation": {
                             "x": 0.0,
@@ -35,30 +35,33 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 0.23,
+                                "type": 0,
+                                "volume": 0.2,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Damage Scream": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.1,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },

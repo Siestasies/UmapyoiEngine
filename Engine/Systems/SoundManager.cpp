@@ -642,8 +642,8 @@ namespace Uma_Engine {
     void SoundManager::ToggleGroupLowpass(SoundType type, bool enable)
     {
         // Prevent toggling Master if SFX or BGM is active, and vice versa
-        // this is to prevent double filtering of sound groups if individual sound channel have low pass
-        // this guard will not protect it so beware when using it
+        // this is to prevent double filtering of sound groups 
+        // individual sound channel have low pass will not guard against it so beware when using it
         if (enable)
         {
             FMOD_BOOL sfxBypassed, bgmBypassed, masterBypassed;
@@ -688,6 +688,8 @@ namespace Uma_Engine {
             break;
         }
 
+        //this is correct as mentioned above if bypass is false means its being filtered
+        //it is inverted for ease of use for user so when they toggle it on with true it will filter
         FMOD_DSP_SetBypass(*dsp, !enable);
     }
 

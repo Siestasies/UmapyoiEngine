@@ -33,17 +33,16 @@ All rights reserved.
 
 #include <iostream>
 #include <iomanip>
-#include <cmath>
 
 namespace Uma_ECS
 {
     void CameraSystem::Update(float dt)
     {
-        if (aEntities.size() == 0) return;
-
+        (void)dt;
+        if (aEntities.size() == 0)
+            return;
         if (!pCoordinator->IsActiveInHierarchy(aEntities[0]))
             return;
-
         auto& pArray = pCoordinator->GetComponentArray<Player>();
         auto& tfArray = pCoordinator->GetComponentArray<Transform>();
         auto& camArray = pCoordinator->GetComponentArray<Camera>();
@@ -59,19 +58,27 @@ namespace Uma_ECS
         {
             Entity player = pArray.GetEntity(0);
             auto& player_tf = tfArray.GetData(player);
-            cam_tf.position = player_tf.worldPosition;
+
+            // lower speed, more snappier
+            float lerpSpeed = 5.0f;
+            float lerpFactor = lerpSpeed * dt;
+            if (lerpFactor > 1.f)
+                lerpFactor = 1.f;
+
+            cam_tf.position.x += (player_tf.worldPosition.x - cam_tf.position.x) * lerpFactor;
+            cam_tf.position.y += (player_tf.worldPosition.y - cam_tf.position.y) * lerpFactor;
         }
 
+        // Camera shake - LEGACY lol
         // Pixel-perfect snap on the base position
-        float pixelSize = 1.0f / cam_c.mZoom;
-        cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
-        cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
+        //float pixelSize = 1.0f / cam_c.mZoom;
+        //cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
+        //cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
 
         // Update shake timer
         if (cam_c.mShakeTimer > 0.0f)
         {
             cam_c.mShakeTimer -= dt;
-
             if (cam_c.mShakeTimer <= 0.0f)
             {
                 cam_c.mShakeOffset = Vec2(0.0f, 0.0f);
@@ -87,8 +94,10 @@ namespace Uma_ECS
 
         // Apply shake
         cam_tf.position += cam_c.mShakeOffset;
+
+        // Pixel perfect snap
+        float pixelSize = 1.0f / cam_c.mZoom;
+        cam_tf.position.x = std::floor(cam_tf.position.x / pixelSize) * pixelSize;
+        cam_tf.position.y = std::floor(cam_tf.position.y / pixelSize) * pixelSize;
     }
 }
-
-
-

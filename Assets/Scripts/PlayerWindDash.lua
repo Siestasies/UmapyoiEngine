@@ -1,7 +1,7 @@
 -- PlayerWindDash.lua
 -- Fire Slash elemental attack - applies burn and sets up elemental combo
-
 local audio = nil
+local PlayerStatTrackState = require("PlayerStatTrackState")
 
 ExposedVars = {
     WindDashAnimationName = "atk_3",
@@ -87,6 +87,8 @@ function state_enter(entity)
     -- Activate Corresponding Collider
     collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
     PlaySound(WindDashSoundName, 0.9, 0)
+
+    PlayerStatTrackState.incrWindAttack()
     Log("Wind Dash Attack!")
 end
 

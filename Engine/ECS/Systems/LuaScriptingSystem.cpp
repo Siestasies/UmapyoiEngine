@@ -1166,11 +1166,13 @@ namespace Uma_ECS
             "mDashSpeed", &Player::mDashSpeed,
             "mDashDuration", &Player::mDashDuration,
             "mDashCD", &Player::mDashCD,
+            "mDashCDMax", & Player::mDashCDMax,
 
             "mAttackDamage", &Player::mAttackDamage,
             "mAttackSpeed", &Player::mAttackSpeed,
             "mAttackRange", &Player::mAttackRange,
             "mDefense", &Player::mDefense,
+            "mCritDamage", &Player::mCritDamage,
 
             "mMana", &Player::mMana,
             "mMaxMana", &Player::mMaxMana,
@@ -2244,7 +2246,7 @@ namespace Uma_ECS
                 auto& fsm = pCoordinator->GetComponent<FSM>(e);
                 fsm.next = nextState;
             });
-
+        //global audio functions
         sharedLua->set_function("setMasterVolume", [this](float volume) {
             pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
             });
