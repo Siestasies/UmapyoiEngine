@@ -1,4 +1,4 @@
 function OnPointerClick()
     PauseGame(false)
-    GetAudioComponent():Play(EntityID, "Menu Click")
+    GetAudioComponent():play(EntityID, "Menu Click")
 end

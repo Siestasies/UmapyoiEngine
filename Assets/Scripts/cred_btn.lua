@@ -17,5 +17,5 @@ function OnPointerExit()
 end
 
 function OnPointerClick()
-    GetAudioComponent():Play(EntityID, "Menu Click")
+    GetAudioComponent():play(EntityID, "Menu Click")
 end

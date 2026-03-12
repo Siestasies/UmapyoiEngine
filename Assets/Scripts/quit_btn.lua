@@ -30,5 +30,5 @@ function OnPointerClick()
     GetButtonFrom(quitBtn).interactable = false;
 
     SetActiveEntity(cfmMnu, true)
-    GetAudioComponent():Play(EntityID, "Menu Click")
+    GetAudioComponent():play(EntityID, "Menu Click")
 end
