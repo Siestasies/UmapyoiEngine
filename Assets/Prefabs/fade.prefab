@@ -52,7 +52,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Canvas": {
-                        "sortingOrder": 10,
+                        "sortingOrder": 0,
                         "referenceResolution": {
                             "x": 1920.0,
                             "y": 1080.0
@@ -67,7 +67,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "fade bg",
+                        "name": "fade",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -111,26 +111,38 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 10,
+                        "texturePath": "Assets/main menu fade out.png",
+                        "sortingOrder": 20,
                         "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 17.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Effects": {
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "",
-                                "property": 3,
+                                "name": "SpriteAnim",
+                                "property": 5,
                                 "easing": 0,
-                                "duration": 3.0,
+                                "duration": 1.0,
                                 "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
@@ -154,8 +166,12 @@
                                     "b": 1.0,
                                     "a": 1.0
                                 },
-                                "startFloat": 1.0,
-                                "endFloat": 0.0
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 17,
+                                "fps": 24.0,
+                                "pingPong": false
                             }
                         ]
                     }
