@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,16 +17,16 @@
                 "path": "assets/tilemap.png"
             },
             {
-                "path": "assets/int_ss.png"
-            },
-            {
                 "path": "assets/door opening ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/int_ss.png"
             },
             {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -41,10 +41,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -56,10 +56,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/lost hp point.png"
+            },
+            {
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -78,17 +81,32 @@
             },
             {
                 "path": "assets/player ss 3.png"
+            },
+            {
+                "path": "assets/star.png"
+            },
+            {
+                "path": "assets/controlspopup1.png"
+            },
+            {
+                "path": "assets/x escape button.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 2.png"
+            },
+            {
+                "path": "assets/vfx 512 ss 2.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -97,7 +115,13 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -14994,8 +15018,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 187.9,
-                        "y": 119.7
+                        "x": 187.8,
+                        "y": 119.599
                     },
                     "rotation": {
                         "x": 0.0,
@@ -15022,7 +15046,7 @@
                     "name": "player_new",
                     "position": {
                         "x": 187.899,
-                        "y": 119.697
+                        "y": 119.694
                     },
                     "rotation": {
                         "x": 0.0,
@@ -15126,7 +15150,7 @@
                             },
                             "size": {
                                 "x": 34.0,
-                                "y": 81.697
+                                "y": 81.694
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -15201,7 +15225,7 @@
                             },
                             "size": {
                                 "x": 50.798,
-                                "y": 66.197
+                                "y": 66.194
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -15226,7 +15250,7 @@
                         },
                         {
                             "offset": {
-                                "x": -72.197,
+                                "x": -72.194,
                                 "y": -71.8
                             },
                             "size": {
@@ -15358,8 +15382,8 @@
                         },
                         {
                             "offset": {
-                                "x": -82.197,
-                                "y": -65.197
+                                "x": -82.194,
+                                "y": -65.194
                             },
                             "size": {
                                 "x": 51.5,
@@ -15801,9 +15825,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        9,
-                        13,
-                        17
+                        20,
+                        16,
+                        12
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15819,7 +15843,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "lvl1eye2",
                     "position": {
-                        "x": -39.099,
+                        "x": -39.097,
                         "y": 169.1
                     },
                     "rotation": {
@@ -15832,10 +15856,10 @@
                     },
                     "parent": -1,
                     "children": [
-                        22,
-                        26,
-                        30,
-                        34
+                        37,
+                        33,
+                        29,
+                        25
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15864,14 +15888,79 @@
                     },
                     "parent": -1,
                     "children": [
-                        39,
-                        43,
-                        47,
-                        51
+                        54,
+                        50,
+                        46,
+                        42
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/lvl1eye3.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 55,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level 1 Trigger",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        56,
+                        57,
+                        58,
+                        59,
+                        60,
+                        61,
+                        65,
+                        69
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Level 1 Trigger.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 73,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Kappa_Statue",
+                    "position": {
+                        "x": -426.725,
+                        "y": 92.383
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.0,
+                        "y": 5.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        91
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
                     "isRoot": true
                 }
             }
