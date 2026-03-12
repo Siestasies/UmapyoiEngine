@@ -1,0 +1,138 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "cutscene",
+                        "position": {
+                            "x": 1030.816,
+                            "y": -1613.211
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 50.0,
+                                    "y": 12.6
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                                "scriptName": "CutsceneTrigger.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "prefabName",
+                                        "type": 3,
+                                        "value": "Dialogue.prefab",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cutscene.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_UI::Dialogue": {
+                        "sequences": [
+                            {
+                                "id": "Intro",
+                                "lines": [
+                                    {
+                                        "speaker": "Prasanna Ghali",
+                                        "text": "Do you want HLP4?",
+                                        "portrait": ""
+                                    },
+                                    {
+                                        "speaker": "Player",
+                                        "text": "Yes, I miss you Prasanna",
+                                        "portrait": ""
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Cutscene": {
+                        "playOnce": true,
+                        "hasPlayed": false,
+                        "actions": [
+                            {
+                                "type": 1,
+                                "targetX": 982.0,
+                                "targetY": -1363.0,
+                                "duration": 1.0,
+                                "dialogueSequenceId": ""
+                            },
+                            {
+                                "type": 2,
+                                "targetX": 0.0,
+                                "targetY": 0.0,
+                                "duration": 1.0,
+                                "dialogueSequenceId": "Intro"
+                            },
+                            {
+                                "type": 4,
+                                "targetX": 0.0,
+                                "targetY": 0.0,
+                                "duration": 1.0,
+                                "dialogueSequenceId": ""
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [],
+        "fonts": [],
+        "sounds": []
+    }
+}
