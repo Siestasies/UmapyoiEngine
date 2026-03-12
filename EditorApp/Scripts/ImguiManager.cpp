@@ -59,6 +59,8 @@ All rights reserved.
 #include "Editor/Cmds/EntitySetActiveCmd.h"
 #include "Editor/Cmds/EntityAddComponentCmd.h"
 #include "Editor/Cmds/EntityRemoveComponentCmd.h"
+#include "Editor/Cmds/EntityReparentCmd.h"
+#include "Editor/Cmds/EntityReorderCmd.h"
 
 namespace Uma_Engine
 {
@@ -1266,7 +1268,10 @@ namespace Uma_Engine
                 // Don't allow setting parent to itself or to its own children
                 if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
                 {
-                    coordinator.SetParent(droppedEntity, entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityReparentCmd>(
+                        &coordinator, droppedEntity, entity, "Reparent Entity"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
                 }
             }
             ImGui::EndDragDropTarget();
@@ -1348,7 +1353,10 @@ namespace Uma_Engine
 
                         if (currentIndex != targetIndex)
                         {
-                            coordinator.MoveChildInParent(droppedEntity, targetIndex);
+                            auto cmd = std::make_unique<Uma_Editor::EntityReorderCmd>(
+                                &coordinator, droppedEntity, parentEntity, currentIndex, targetIndex, "Reorder Child"
+                            );
+                            commandHistory.ExecuteCommand(std::move(cmd));
                         }
                     }
                 }
@@ -1372,12 +1380,19 @@ namespace Uma_Engine
 
                         if (currentIndex != targetIndex)
                         {
-                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                            auto cmd = std::make_unique<Uma_Editor::EntityReorderCmd>(
+                                &coordinator, droppedEntity, std::nullopt, currentIndex, targetIndex, "Reorder Entity"
+                            );
+                            commandHistory.ExecuteCommand(std::move(cmd));
                         }
                     }
-                    else // disattaching from the parent 
+                    else // detaching from the parent
                     {
-                        coordinator.RemoveParent(droppedEntity);
+                        // Reparent command handles removing from old parent
+                        auto reparentCmd = std::make_unique<Uma_Editor::EntityReparentCmd>(
+                            &coordinator, droppedEntity, std::nullopt, "Detach from Parent"
+                        );
+                        commandHistory.ExecuteCommand(std::move(reparentCmd));
 
                         int currentIndex = coordinator.GetHierarchyIndex(droppedEntity);
                         int targetIndex = insertIndex;
@@ -1390,7 +1405,10 @@ namespace Uma_Engine
 
                         if (currentIndex != targetIndex)
                         {
-                            coordinator.MoveEntityInHierarchy(droppedEntity, targetIndex);
+                            auto reorderCmd = std::make_unique<Uma_Editor::EntityReorderCmd>(
+                                &coordinator, droppedEntity, std::nullopt, currentIndex, targetIndex, "Reorder Entity"
+                            );
+                            commandHistory.ExecuteCommand(std::move(reorderCmd));
                         }
                     }
                 }
@@ -1466,21 +1484,21 @@ namespace Uma_Engine
 
             if (ImGui::MenuItem("Create Child"))
             {
-                Uma_ECS::Entity child = coordinator.CreateEntity();
-                coordinator.AddComponent(child, Uma_ECS::Transform{
-                    .name = std::string("new enity"),
-                    .position = Vec2(0, 0),
-                    .rotation = Vec2(0, 0),
-                    .scale = Vec2(1, 1)
-                    });
-                coordinator.SetParent(child, entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityCreateCmd>(
+                    &coordinator, entity, "Create Child Entity"
+                );
+                Uma_Editor::EntityCreateCmd* rawCmd = cmd.get();
+                commandHistory.ExecuteCommand(std::move(cmd));
+                m_selectedEntity = rawCmd->GetCreatedEntity();
                 m_HierarchyScrollToBottom = true;
             }
 
             if (coordinator.GetParent(m_selectedEntity) != std::nullopt && ImGui::MenuItem("Duplicate"))
             {
-                Entity newEntity = coordinator.DuplicateEntity(entity);
-                coordinator.SetParent(newEntity, coordinator.GetParent(entity).value());
+                auto cmd = std::make_unique<Uma_Editor::EntityDuplicateCmd>(
+                    &coordinator, entity, "Duplicate Entity"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
                 m_HierarchyScrollToBottom = true;
             }
 
@@ -1502,7 +1520,10 @@ namespace Uma_Engine
 
             if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete"))
             {
-                pEventSystem->Emit<DestroyEntityRequestEvent>(entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityDeleteCmd>(
+                    &coordinator, entity, false, "Delete Entity"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
                 if (m_selectedEntity == entity)
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 m_HierarchyScrollToBottom = true;
@@ -1510,7 +1531,10 @@ namespace Uma_Engine
 
             if (coordinator.GetParent(m_selectedEntity) != std::nullopt && transformArray.Size() > 1 && ImGui::MenuItem("Delete with Children"))
             {
-                coordinator.DestroyEntityAndChildren(entity);
+                auto cmd = std::make_unique<Uma_Editor::EntityDeleteCmd>(
+                    &coordinator, entity, true, "Delete Entity and Children"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
                 if (m_selectedEntity == entity)
                     m_selectedEntity = static_cast<Uma_ECS::Entity>(-1);
                 m_HierarchyScrollToBottom = true;
@@ -1533,7 +1557,10 @@ namespace Uma_Engine
                 Uma_ECS::Entity droppedEntity = *(Uma_ECS::Entity*)payload->Data;
                 if (droppedEntity != entity && !IsChildOf(droppedEntity, entity, transformArray))
                 {
-                    coordinator.SetParent(droppedEntity, entity);
+                    auto cmd = std::make_unique<Uma_Editor::EntityReparentCmd>(
+                        &coordinator, droppedEntity, entity, "Reparent Entity"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
                 }
             }
             ImGui::EndDragDropTarget();
@@ -1657,7 +1684,10 @@ namespace Uma_Engine
                     ImGui::Text("Parent: Entity %d", transform.parent.value());
                     if (ImGui::Button("Remove Parent"))
                     {
-                        coordinator.RemoveParent(entity);
+                        auto cmd = std::make_unique<Uma_Editor::EntityReparentCmd>(
+                            &coordinator, entity, std::nullopt, "Remove Parent"
+                        );
+                        commandHistory.ExecuteCommand(std::move(cmd));
                     }
                 }
                 else
@@ -3114,6 +3144,8 @@ namespace Uma_Engine
                 auto& audio = coordinator.GetComponent<Uma_ECS::AudioComponent>(entity);
                 ImGui::Indent();
 
+                BeginComponentEdit(entity, coordinator);
+
                 ImGui::Text("Position: (%.2f, %.2f, %.2f)",
                     audio.position.x, audio.position.y, audio.position.z);
 
@@ -3123,8 +3155,8 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Default Settings");
 
-                ImGui::DragFloat("Default Volume", &audio.defaultVolume, 0.01f, 0.0f, 1.0f);
-                ImGui::Checkbox("Default 3D", &audio.default3D);
+                if (ImGui::DragFloat("Default Volume", &audio.defaultVolume, 0.01f, 0.0f, 1.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::Checkbox("Default 3D", &audio.default3D)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Loaded Sounds: %zu", audio.loadedSounds.size());
@@ -3147,24 +3179,27 @@ namespace Uma_Engine
                         {
                             ImGui::Text("Sound: %s", soundName.c_str());
                             ImGui::Text("Path: %s", soundInstance.path.c_str());
-                            ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
-                            ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
-                            ImGui::Checkbox("Is 3D", &soundInstance.is3D);
+                            if (ImGui::Checkbox("Is Playing", &soundInstance.isPlaying)) m_hasUnsavedEdit = true;
+                            if (ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop)) m_hasUnsavedEdit = true;
+                            if (ImGui::Checkbox("Is 3D", &soundInstance.is3D)) m_hasUnsavedEdit = true;
                             const char* typeNames[] = { "SFX", "BGM"};
                             int currentType = static_cast<int>(soundInstance.type);
                             if (ImGui::Combo("Sound Type", &currentType, typeNames, IM_ARRAYSIZE(typeNames)))
+                            {
                                 soundInstance.type = static_cast<Uma_Engine::SoundType>(currentType);
+                                m_hasUnsavedEdit = true;
+                            }
 
                             ImGui::Separator();
                             ImGui::Text("Sound Properties");
 
-                            ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f);
-                            ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f);
+                            if (ImGui::DragFloat("Volume", &soundInstance.volume, 0.01f, 0.0f, 1.0f)) m_hasUnsavedEdit = true;
+                            if (ImGui::DragFloat("Pitch", &soundInstance.pitch, 0.01f, 0.1f, 3.0f)) m_hasUnsavedEdit = true;
 
                             if (soundInstance.is3D)
                             {
-                                ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance);
-                                ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f);
+                                if (ImGui::DragFloat("Min Distance", &soundInstance.minDistance, 1.0f, 0.0f, soundInstance.maxDistance)) m_hasUnsavedEdit = true;
+                                if (ImGui::DragFloat("Max Distance", &soundInstance.maxDistance, 10.0f, soundInstance.minDistance, 10000.0f)) m_hasUnsavedEdit = true;
                             }
 
                             ImGui::Separator();
@@ -3215,22 +3250,25 @@ namespace Uma_Engine
                             if (!instances.empty()) {
                                 auto& reprInstance = instances[0];
                                 ImGui::Text("Path: %s", reprInstance.path.c_str());
-                                ImGui::Checkbox("Should Loop", &reprInstance.shouldLoop);
-                                ImGui::Checkbox("Is 3D", &reprInstance.is3D);
+                                if (ImGui::Checkbox("Should Loop", &reprInstance.shouldLoop)) m_hasUnsavedEdit = true;
+                                if (ImGui::Checkbox("Is 3D", &reprInstance.is3D)) m_hasUnsavedEdit = true;
                                 const char* typeNames[] = { "SFX", "BGM" };
                                 int currentType = static_cast<int>(reprInstance.type);
                                 if (ImGui::Combo("Sound Type", &currentType, typeNames, IM_ARRAYSIZE(typeNames)))
+                                {
                                     reprInstance.type = static_cast<Uma_Engine::SoundType>(currentType);
+                                    m_hasUnsavedEdit = true;
+                                }
 
                                 ImGui::Separator();
                                 ImGui::Text("Properties (first instance)");
 
-                                ImGui::DragFloat("Volume", &reprInstance.volume, 0.01f, 0.0f, 1.0f);
-                                ImGui::DragFloat("Pitch", &reprInstance.pitch, 0.01f, 0.1f, 3.0f);
+                                if (ImGui::DragFloat("Volume", &reprInstance.volume, 0.01f, 0.0f, 1.0f)) m_hasUnsavedEdit = true;
+                                if (ImGui::DragFloat("Pitch", &reprInstance.pitch, 0.01f, 0.1f, 3.0f)) m_hasUnsavedEdit = true;
 
                                 if (reprInstance.is3D) {
-                                    ImGui::DragFloat("Min Distance", &reprInstance.minDistance, 1.0f, 0.0f, reprInstance.maxDistance);
-                                    ImGui::DragFloat("Max Distance", &reprInstance.maxDistance, 10.0f, reprInstance.minDistance, 10000.0f);
+                                    if (ImGui::DragFloat("Min Distance", &reprInstance.minDistance, 1.0f, 0.0f, reprInstance.maxDistance)) m_hasUnsavedEdit = true;
+                                    if (ImGui::DragFloat("Max Distance", &reprInstance.maxDistance, 10.0f, reprInstance.minDistance, 10000.0f)) m_hasUnsavedEdit = true;
                                 }
                             }
 
@@ -3401,10 +3439,12 @@ namespace Uma_Engine
                     }
                     pendingRemoves.clear();
                     removeLoaded.clear();
-                    //m_hasUnsavedEdit = true;
+                    m_hasUnsavedEdit = true;
                     ImGui::GetCurrentWindow()->Flags &= ~ImGuiWindowFlags_UnsavedDocument;
                     hasPendingEdit = false;
                 }
+
+                EndComponentEdit(entity, coordinator, "AudioComponent");
 
                 ImGui::Unindent();
             }
@@ -3452,8 +3492,10 @@ namespace Uma_Engine
                 auto& pathfinding = coordinator.GetComponent<Uma_ECS::PathFinding>(entity);
                 ImGui::Indent();
 
+                BeginComponentEdit(entity, coordinator);
+
                 ImGui::Text("Path Update Settings");
-                ImGui::DragFloat("Update Interval", &pathfinding.pathUpdateInterval, 0.01f, 0.01f, 5.0f);
+                if (ImGui::DragFloat("Update Interval", &pathfinding.pathUpdateInterval, 0.01f, 0.01f, 5.0f)) m_hasUnsavedEdit = true;
 
                 ImGui::Separator();
                 ImGui::Text("Goal Position");
@@ -3462,6 +3504,7 @@ namespace Uma_Engine
                 if (ImGui::DragFloat2("Goal", goalPos, 0.1f))
                 {
                     pathfinding.goal = Vec2(goalPos[0], goalPos[1]);
+                    m_hasUnsavedEdit = true;
                 }
 
                 ImGui::Separator();
@@ -3487,6 +3530,8 @@ namespace Uma_Engine
                     ImGui::TextDisabled("No path points");
                 }
 
+                EndComponentEdit(entity, coordinator, "PathFinding");
+
                 ImGui::Unindent();
             }
         }
@@ -3511,10 +3556,13 @@ namespace Uma_Engine
 
                 ImGui::Indent();
 
+                BeginComponentEdit(entity, coordinator);
+
                 // Add Emitter button
                 if (ImGui::Button("Add Emitter"))
                 {
                     component.AddEmitter("New Emitter");
+                    m_hasUnsavedEdit = true;
                 }
 
                 ImGui::Separator();
@@ -3540,6 +3588,7 @@ namespace Uma_Engine
                         if (ImGui::MenuItem("Remove Emitter"))
                         {
                             component.RemoveEmitter(i);
+                            m_hasUnsavedEdit = true;
                             ImGui::EndPopup();
                             ImGui::PopID();
                             break; // Exit loop after removal
@@ -3558,6 +3607,7 @@ namespace Uma_Engine
                         if (ImGui::InputText("Name", nameBuffer, sizeof(nameBuffer)))
                         {
                             emitter->name = nameBuffer;
+                            m_hasUnsavedEdit = true;
                         }
 
                         // Control Buttons
@@ -3581,7 +3631,7 @@ namespace Uma_Engine
                         ImGui::PopStyleVar();
 
                         // Active Checkbox
-                        ImGui::Checkbox("Active", &emitter->isActive);
+                        if (ImGui::Checkbox("Active", &emitter->isActive)) m_hasUnsavedEdit = true;
 
                         // Emission Mode
                         const char* modes[] = { "Burst", "Continuous", "ScreenFill" };
@@ -3589,10 +3639,11 @@ namespace Uma_Engine
                         if (ImGui::Combo("Emission Mode", &currentMode, modes, IM_ARRAYSIZE(modes)))
                         {
                             emitter->mode = static_cast<Uma_ECS::EmitterMode>(currentMode);
+                            m_hasUnsavedEdit = true;
                         }
 
                         // Max Particles
-                        ImGui::DragInt("Max Particles", &emitter->maxParticles, 1.0f, 1, 10000);
+                        if (ImGui::DragInt("Max Particles", &emitter->maxParticles, 1.0f, 1, 10000)) m_hasUnsavedEdit = true;
 
                         ImGui::Text("Texture Path: %s", emitter->texturePath.c_str());
 
@@ -3709,10 +3760,11 @@ namespace Uma_Engine
                         if (ImGui::Combo("Render Layer", &currentRenderLayer, renderLayerNames, IM_ARRAYSIZE(renderLayerNames)))
                         {
                             emitter->renderLayer = (1u << currentRenderLayer);
+                            m_hasUnsavedEdit = true;
                         }
 
                         ImGui::Text("Render Order");
-                        ImGui::InputInt("##Particle Render Order", &emitter->renderOrder, 1, 0, 0);
+                        if (ImGui::InputInt("##Particle Render Order", &emitter->renderOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
 
                         ImGui::Separator();
 
@@ -3722,32 +3774,32 @@ namespace Uma_Engine
                             ImGui::Indent();
 
                             // Scale Range
-                            ImGui::DragFloat2("Scale Range", &emitter->appearance.scaleRange.x, 0.01f, 0.01f, 10.0f, "%.2f");
+                            if (ImGui::DragFloat2("Scale Range", &emitter->appearance.scaleRange.x, 0.01f, 0.01f, 10.0f, "%.2f")) m_hasUnsavedEdit = true;
 
                             // Start Color
-                            ImGui::ColorEdit3("Start Color", &emitter->appearance.startColor.x);
+                            if (ImGui::ColorEdit3("Start Color", &emitter->appearance.startColor.x)) m_hasUnsavedEdit = true;
 
                             // End Color
-                            ImGui::ColorEdit3("End Color", &emitter->appearance.endColor.x);
+                            if (ImGui::ColorEdit3("End Color", &emitter->appearance.endColor.x)) m_hasUnsavedEdit = true;
 
                             // Color Lerp
-                            ImGui::Checkbox("Color Lerp", &emitter->appearance.colorLerp);
+                            if (ImGui::Checkbox("Color Lerp", &emitter->appearance.colorLerp)) m_hasUnsavedEdit = true;
 
                             // Random Opacity
-                            ImGui::Checkbox("Random Opacity", &emitter->appearance.randomOpacity);
+                            if (ImGui::Checkbox("Random Opacity", &emitter->appearance.randomOpacity)) m_hasUnsavedEdit = true;
                             if (emitter->appearance.randomOpacity)
                             {
                                 ImGui::Indent();
-                                ImGui::DragFloat2("Opacity Range", &emitter->appearance.opacityRange.x, 0.01f, 0.0f, 1.0f, "%.2f");
+                                if (ImGui::DragFloat2("Opacity Range", &emitter->appearance.opacityRange.x, 0.01f, 0.0f, 1.0f, "%.2f")) m_hasUnsavedEdit = true;
                                 ImGui::Unindent();
                             }
 
                             // Rotate Particles
-                            ImGui::Checkbox("Rotate Particles", &emitter->appearance.rotateParticles);
+                            if (ImGui::Checkbox("Rotate Particles", &emitter->appearance.rotateParticles)) m_hasUnsavedEdit = true;
                             if (emitter->appearance.rotateParticles)
                             {
                                 ImGui::Indent();
-                                ImGui::DragFloat2("Rotation Speed Range", &emitter->appearance.rotationSpeedRange.x, 1.0f, -360.0f, 360.0f, "%.1f deg/s");
+                                if (ImGui::DragFloat2("Rotation Speed Range", &emitter->appearance.rotationSpeedRange.x, 1.0f, -360.0f, 360.0f, "%.1f deg/s")) m_hasUnsavedEdit = true;
                                 ImGui::Unindent();
                             }
 
@@ -3760,22 +3812,22 @@ namespace Uma_Engine
                             ImGui::Indent();
 
                             // Fade In
-                            ImGui::Checkbox("Fade In", &emitter->fade.fadeIn);
+                            if (ImGui::Checkbox("Fade In", &emitter->fade.fadeIn)) m_hasUnsavedEdit = true;
                             if (emitter->fade.fadeIn)
                             {
                                 ImGui::Indent();
-                                ImGui::DragFloat("Fade In Duration", &emitter->fade.fadeInDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
+                                if (ImGui::DragFloat("Fade In Duration", &emitter->fade.fadeInDuration, 0.01f, 0.01f, 5.0f, "%.2f sec")) m_hasUnsavedEdit = true;
                                 ImGui::Unindent();
                             }
 
                             // Fade Out (only for Burst/Continuous)
                             if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
                             {
-                                ImGui::Checkbox("Fade Out", &emitter->fade.fadeOut);
+                                if (ImGui::Checkbox("Fade Out", &emitter->fade.fadeOut)) m_hasUnsavedEdit = true;
                                 if (emitter->fade.fadeOut)
                                 {
                                     ImGui::Indent();
-                                    ImGui::DragFloat("Fade Out Duration", &emitter->fade.fadeOutDuration, 0.01f, 0.01f, 5.0f, "%.2f sec");
+                                    if (ImGui::DragFloat("Fade Out Duration", &emitter->fade.fadeOutDuration, 0.01f, 0.01f, 5.0f, "%.2f sec")) m_hasUnsavedEdit = true;
                                     ImGui::Unindent();
                                 }
                             }
@@ -3783,11 +3835,11 @@ namespace Uma_Engine
                             // Fade At Edges (only for ScreenFill)
                             if (emitter->mode == Uma_ECS::EmitterMode::ScreenFill)
                             {
-                                ImGui::Checkbox("Fade At Edges", &emitter->fade.fadeAtEdges);
+                                if (ImGui::Checkbox("Fade At Edges", &emitter->fade.fadeAtEdges)) m_hasUnsavedEdit = true;
                                 if (emitter->fade.fadeAtEdges)
                                 {
                                     ImGui::Indent();
-                                    ImGui::DragFloat("Edge Fade Distance", &emitter->fade.edgeFadeDistance, 1.0f, 0.0f, 500.0f, "%.1f");
+                                    if (ImGui::DragFloat("Edge Fade Distance", &emitter->fade.edgeFadeDistance, 1.0f, 0.0f, 500.0f, "%.1f")) m_hasUnsavedEdit = true;
                                     ImGui::Unindent();
                                 }
                             }
@@ -3801,19 +3853,19 @@ namespace Uma_Engine
                             ImGui::Indent();
 
                             // Speed Range
-                            ImGui::DragFloat2("Speed Range", &emitter->physics.speedRange.x, 0.1f, 0.0f, 1000.0f, "%.1f");
+                            if (ImGui::DragFloat2("Speed Range", &emitter->physics.speedRange.x, 0.1f, 0.0f, 1000.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                             // Lifetime Range (not shown for ScreenFill)
                             if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
                             {
-                                ImGui::DragFloat2("Lifetime Range", &emitter->physics.lifetimeRange.x, 0.01f, 0.01f, 100.0f, "%.2f sec");
+                                if (ImGui::DragFloat2("Lifetime Range", &emitter->physics.lifetimeRange.x, 0.01f, 0.01f, 100.0f, "%.2f sec")) m_hasUnsavedEdit = true;
                             }
 
                             // Gravity
-                            ImGui::DragFloat2("Gravity", &emitter->physics.gravity.x, 0.1f, -500.0f, 500.0f, "%.1f");
+                            if (ImGui::DragFloat2("Gravity", &emitter->physics.gravity.x, 0.1f, -500.0f, 500.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                             // Drag
-                            ImGui::DragFloat("Drag", &emitter->physics.drag, 0.01f, 0.0f, 10.0f, "%.2f");
+                            if (ImGui::DragFloat("Drag", &emitter->physics.drag, 0.01f, 0.0f, 10.0f, "%.2f")) m_hasUnsavedEdit = true;
 
                             ImGui::Unindent();
                         }
@@ -3826,18 +3878,18 @@ namespace Uma_Engine
                             // Spawn Offset (not shown for ScreenFill)
                             if (emitter->mode != Uma_ECS::EmitterMode::ScreenFill)
                             {
-                                ImGui::DragFloat2("Spawn Offset", &emitter->spawn.spawnOffset.x, 1.0f, -1000.0f, 1000.0f, "%.1f");
+                                if (ImGui::DragFloat2("Spawn Offset", &emitter->spawn.spawnOffset.x, 1.0f, -1000.0f, 1000.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                                 // Spawn Radius
-                                ImGui::DragFloat("Spawn Radius", &emitter->spawn.spawnRadius, 1.0f, 0.0f, 500.0f, "%.1f");
+                                if (ImGui::DragFloat("Spawn Radius", &emitter->spawn.spawnRadius, 1.0f, 0.0f, 500.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                                 // Emission Cone
-                                ImGui::Checkbox("Use Emission Cone", &emitter->spawn.useEmissionCone);
+                                if (ImGui::Checkbox("Use Emission Cone", &emitter->spawn.useEmissionCone)) m_hasUnsavedEdit = true;
                                 if (emitter->spawn.useEmissionCone)
                                 {
                                     ImGui::Indent();
-                                    ImGui::DragFloat("Emission Angle", &emitter->spawn.emissionAngle, 1.0f, 0.0f, 360.0f, "%.1f deg");
-                                    ImGui::DragFloat("Emission Spread", &emitter->spawn.emissionSpread, 1.0f, 0.0f, 360.0f, "%.1f deg");
+                                    if (ImGui::DragFloat("Emission Angle", &emitter->spawn.emissionAngle, 1.0f, 0.0f, 360.0f, "%.1f deg")) m_hasUnsavedEdit = true;
+                                    if (ImGui::DragFloat("Emission Spread", &emitter->spawn.emissionSpread, 1.0f, 0.0f, 360.0f, "%.1f deg")) m_hasUnsavedEdit = true;
                                     ImGui::Unindent();
                                 }
                             }
@@ -3853,17 +3905,17 @@ namespace Uma_Engine
                             // Continuous Mode Emission Rate
                             if (emitter->mode == Uma_ECS::EmitterMode::Continuous)
                             {
-                                ImGui::DragFloat("Emission Rate", &emitter->emission.emissionRate, 1.0f, 1.0f, 1000.0f, "%.1f particles/sec");
+                                if (ImGui::DragFloat("Emission Rate", &emitter->emission.emissionRate, 1.0f, 1.0f, 1000.0f, "%.1f particles/sec")) m_hasUnsavedEdit = true;
                             }
 
                             // Burst Mode Loop Settings
                             if (emitter->mode == Uma_ECS::EmitterMode::Burst)
                             {
-                                ImGui::Checkbox("Loop", &emitter->emission.loop);
+                                if (ImGui::Checkbox("Loop", &emitter->emission.loop)) m_hasUnsavedEdit = true;
                                 if (emitter->emission.loop)
                                 {
                                     ImGui::Indent();
-                                    ImGui::DragFloat("Loop Delay", &emitter->emission.loopDelay, 0.1f, 0.0f, 60.0f, "%.1f sec");
+                                    if (ImGui::DragFloat("Loop Delay", &emitter->emission.loopDelay, 0.1f, 0.0f, 60.0f, "%.1f sec")) m_hasUnsavedEdit = true;
                                     ImGui::Unindent();
                                 }
                             }
@@ -3879,14 +3931,14 @@ namespace Uma_Engine
                                 ImGui::Indent();
 
                                 // Velocity Ranges
-                                ImGui::DragFloat2("Velocity X Range", &emitter->screenFill.velocityXRange.x, 1.0f, -500.0f, 500.0f, "%.1f");
-                                ImGui::DragFloat2("Velocity Y Range", &emitter->screenFill.velocityYRange.x, 1.0f, -500.0f, 500.0f, "%.1f");
+                                if (ImGui::DragFloat2("Velocity X Range", &emitter->screenFill.velocityXRange.x, 1.0f, -500.0f, 500.0f, "%.1f")) m_hasUnsavedEdit = true;
+                                if (ImGui::DragFloat2("Velocity Y Range", &emitter->screenFill.velocityYRange.x, 1.0f, -500.0f, 500.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                                 // Spawn At Top
-                                ImGui::Checkbox("Spawn At Top", &emitter->screenFill.spawnAtTop);
+                                if (ImGui::Checkbox("Spawn At Top", &emitter->screenFill.spawnAtTop)) m_hasUnsavedEdit = true;
 
                                 // Spawn Margin
-                                ImGui::DragFloat("Spawn Margin", &emitter->screenFill.spawnMargin, 1.0f, 0.0f, 1000.0f, "%.1f");
+                                if (ImGui::DragFloat("Spawn Margin", &emitter->screenFill.spawnMargin, 1.0f, 0.0f, 1000.0f, "%.1f")) m_hasUnsavedEdit = true;
 
                                 ImGui::Unindent();
                             }
@@ -3908,6 +3960,10 @@ namespace Uma_Engine
 
                     ImGui::PopID();
                 }
+
+                EndComponentEdit(entity, coordinator, "ParticleEmitter");
+
+                ImGui::Unindent();
             }
         }
         else if (type == coordinator.GetComponentType<Uma_UI::RectTransform>())
@@ -7219,9 +7275,16 @@ namespace Uma_Engine
         static char textureBuffer[256];
         strncpy(textureBuffer, tf.name.c_str(), 255);
         textureBuffer[255] = '\0';
+
+        BeginComponentEdit(m_selectedEntity, coordinator);
         if (ImGui::InputText("##name", textureBuffer, 256))
         {
             tf.name = textureBuffer;
+            m_hasUnsavedEdit = true;
+        }
+        if (ImGui::IsItemDeactivatedAfterEdit())
+        {
+            EndComponentEdit(m_selectedEntity, coordinator, "Rename", true);
         }
 
         ImGui::Separator();
