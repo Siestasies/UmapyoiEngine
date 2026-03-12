@@ -77,8 +77,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
     bool hasPlayer = false;
     float maxAgentRadius = cellSize; // Initialize with minimum
 
-    if (showDebug) DebugDraw();
-
     // Calculate maximum agent radius across ALL entities
     for (auto const& entity : aEntities)
     {
@@ -115,7 +113,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
             if (initGoal && pfArray.Has(entity)) {
                 auto& pf = pfArray.GetData(entity);
-                pf.goal = tf.position;
+                pf.goal = tf.worldPosition;
                 if (playerArray.Has(entity) && collider.shapes.size() > 1 && collider.shapes[1].isActive) {
                     // For player, use shapes[1]
                     const auto& navShape = collider.shapes[1];
@@ -183,10 +181,23 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
             std::uniform_real_distribution<float> dist(0.0f, pf.pathUpdateInterval);
             pf.pathUpdateTimer = dist(rng);
             staggeredEntities.insert(entity);
+
+            // Initialize goal for dynamically spawned entities
+            if (!pf.haveLastGoal) {
+                pf.goal = tf.worldPosition;  // stand still until goal is explicitly set
+            }
         }
 
         bool isPlayer = playerArray.Has(entity);
         bool isEnemy = enemyArray.Has(entity);
+
+        //if enemy has no speed no need to update
+        if (isEnemy && enemyArray.GetData(entity).mSpeed <= 0.0f) {
+            rb.velocity = Vec2(0, 0);
+            pf.reachedGoal = true;
+            pf.hasValidPath = false;
+            continue;
+        }
 
         // Calculate current position with collider offset
         //Vec2 currentPos = tf.position;
@@ -203,7 +214,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
         //    }
         //}
 
-        Vec2 currentPos = tf.position;
+        Vec2 currentPos = tf.worldPosition;
         if (colArray.Has(entity)) {
             const auto& collider = colArray.GetData(entity);
             //use shapes[1] for pathfinding position
@@ -212,7 +223,7 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
                     collider.shapes[1].offset.x * tf.scale.x,
                     collider.shapes[1].offset.y * tf.scale.y
                 };
-                currentPos = tf.position + worldOffset;
+                currentPos = tf.worldPosition + worldOffset;
             }
         }
 
@@ -347,9 +358,6 @@ void Uma_ECS::PathFindingSystem::Update(float dt)
 
 }
 
-
-
-
 void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float maxAgentRadius)
 {
     std::unordered_set<Uma_Navigation::GridCell, Uma_Navigation::GridCellHash> blocked;
@@ -401,7 +409,7 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float max
                 shape.offset.y * transform.scale.y
             };
 
-            Vec2 shapeCenter = transform.position + worldOffset;
+            Vec2 shapeCenter = transform.worldPosition + worldOffset;
             Vec2 halfSize = scaledSize * 0.5f;
 
             int minX = static_cast<int>(std::floor((shapeCenter.x - halfSize.x) / cellSize));
@@ -431,9 +439,6 @@ void Uma_ECS::PathFindingSystem::RebuildPathfinder(const Vec2& center, float max
     gridPathfinder->ComputeClearances(maxClearanceRadius);
 }
 
-
-
-
 void Uma_ECS::PathFindingSystem::Shutdown()
 {
     delete gridPathfinder;
@@ -442,74 +447,4 @@ void Uma_ECS::PathFindingSystem::Shutdown()
 
     //to be removed later
     pEventSystem->UnsubscribeSystem<PathFindingSystem>();
-}
-
-void Uma_ECS::PathFindingSystem::DebugDraw()
-{
-    if (!pGraphics) return;
-
-    auto& tfArray = pCoordinator->GetComponentArray<Transform>();
-    auto& pfArray = pCoordinator->GetComponentArray<PathFinding>();
-    //auto& colliderArray = pCoordinator->GetComponentArray<Collider>();
-
-    // 1. Draw all collider bounding boxes
-    //auto colliderEntities = pCoordinator->GetEntitiesByComponent<Collider>();
-    //for (auto entity : colliderEntities) {
-    //    if (!tfArray.Has(entity)) continue;
-
-    //    const auto& transform = tfArray.GetData(entity);
-    //    const auto& collider = colliderArray.GetData(entity);
-
-    //    for (const auto& shape : collider.shapes) {
-    //        if (!shape.isActive) continue;
-
-    //        // Draw collider bounds in red for walls, yellow for player
-    //        float r = (entity == playerID) ? 1.0f : 1.0f;
-    //        float g = (entity == playerID) ? 1.0f : 0.0f;
-    //        float b = 0.0f;
-
-    //        pGraphics->DrawDebugRect(transform.position, shape.size, r, g, b);
-    //    }
-    //}
-
-    // 2. Draw blocked grid cells (optional - can be expensive)
-    if (gridPathfinder && true) { // Set to true to enable
-        const auto& blockedCells = gridPathfinder->GetBlockedCells();
-        for (const auto& cell : blockedCells) {
-            Vec2 cellCenter(cell.x * cellSize + cellSize * 0.5f,
-                cell.y * cellSize + cellSize * 0.5f);
-            Vec2 cellSizeVec(cellSize, cellSize);
-            pGraphics->DrawDebugRect(cellCenter, cellSizeVec, 0.5f, 0.0f, 0.0f);
-        }
-    }
-
-    // 3. Draw paths and goals for all pathfinding entities
-    for (auto const& entity : aEntities)
-    {
-        auto& tf = tfArray.GetData(entity);
-        auto& pf = pfArray.GetData(entity);
-
-        // Draw goal position in green
-        Vec2 goalMarkerSize(8.0f, 8.0f);
-        pGraphics->DrawDebugRect(pf.goal, goalMarkerSize, 0.0f, 1.0f, 0.0f);
-
-        // Draw path waypoints
-        if (pf.hasValidPath && !pf.path.empty()) {
-            for (size_t i = pf.pathIndex; i < pf.path.size(); ++i) {
-                Vec2 waypointSize(4.0f, 4.0f);
-
-                // Current waypoint in cyan, others in blue
-                if (i == pf.pathIndex) {
-                    pGraphics->DrawDebugRect(pf.path[i], waypointSize, 0.0f, 1.0f, 1.0f);
-                }
-                else {
-                    pGraphics->DrawDebugRect(pf.path[i], waypointSize, 0.3f, 0.3f, 1.0f);
-                }
-            }
-        }
-
-        // Draw current position in white
-        Vec2 posMarkerSize(6.0f, 6.0f);
-        pGraphics->DrawDebugRect(tf.position, posMarkerSize, 1.0f, 1.0f, 1.0f);
-    }
 }

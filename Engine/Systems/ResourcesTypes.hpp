@@ -65,6 +65,7 @@ namespace Uma_Engine
 	enum class SoundType {
 		SFX = 0,
 		BGM,
+		MASTER,
 		END
 	};
 
@@ -76,6 +77,9 @@ namespace Uma_Engine
 
 		FMOD_VECTOR pos{};
 		FMOD_VECTOR vel{};
+
+		//to toggle to low pass from normal audio
+		FMOD_DSP* dspLowpass = nullptr;
 	};
 
 	struct Character
@@ -93,5 +97,29 @@ namespace Uma_Engine
 		unsigned int VBO = 0;
 		unsigned int fontSize = 0;
 		std::string filePath;
+	};
+
+	enum class UniformType
+	{
+		Float,
+		Vec2,
+		Vec3,
+		Vec4,
+		Int
+	};
+
+	struct UniformInfo
+	{
+		std::string name{};
+		UniformType type = UniformType::Float;
+		int location = -1;
+	};
+
+	struct ShaderEffect
+	{
+		std::string name{};           // e.g. "dissolve"
+		std::string fragPath{};       // e.g. "Assets/Shaders/Effects/dissolve.frag"
+		unsigned int shaderProgramID = 0;
+		std::vector<UniformInfo> uniforms{};  // auto-reflected, excludes image/projection
 	};
 }

@@ -63,6 +63,7 @@ namespace Uma_Engine
             RenderSounds();
             RenderPrefabs();
             RenderShaders();  // Read-only display for automated management
+            RenderEffectShaders();
 
             ImGui::End();
         }
@@ -356,6 +357,90 @@ namespace Uma_Engine
                             m_ResourcesManager->UnloadPrefab(toDelete);
                         }
                     }
+                }
+
+                ImGui::Unindent();
+            }
+        }
+
+        /**
+         * \brief Renders effect shaders section with creation, refresh, and edit controls
+         */
+        void RenderEffectShaders()
+        {
+            if (ImGui::CollapsingHeader("Effect Shaders"))
+            {
+                ImGui::Indent();
+
+                // New effect + Refresh buttons
+                static char newEffectName[128] = "";
+                ImGui::InputTextWithHint("##NewEffectName", "Enter effect name", newEffectName, sizeof(newEffectName));
+                ImGui::SameLine();
+                if (ImGui::Button("+ New Effect"))
+                {
+                    std::string name(newEffectName);
+                    if (!name.empty())
+                    {
+                        m_ResourcesManager->CreateEffectShaderFile(name);
+                        newEffectName[0] = '\0';
+                    }
+                }
+                if (ImGui::Button("Refresh"))
+                {
+                    m_ResourcesManager->RefreshEffectShaders();
+                }
+
+                ImGui::Spacing();
+
+                auto effectNames = m_ResourcesManager->GetEffectShaderNames();
+
+                if (effectNames.empty())
+                {
+                    ImGui::TextDisabled("No effect shaders loaded");
+                }
+                else
+                {
+                    if (ImGui::BeginTable("EffectsTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+                    {
+                        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+                        ImGui::TableSetupColumn("Fragment Path", ImGuiTableColumnFlags_WidthStretch);
+                        ImGui::TableSetupColumn("Uniforms", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 50.0f);
+                        ImGui::TableHeadersRow();
+
+                        for (const auto& name : effectNames)
+                        {
+                            const auto* effect = m_ResourcesManager->GetEffect(name);
+                            if (!effect) continue;
+
+                            ImGui::TableNextRow();
+
+                            ImGui::TableSetColumnIndex(0);
+                            ImGui::Text("%s", name.c_str());
+
+                            ImGui::TableSetColumnIndex(1);
+                            ImGui::TextWrapped("%s", effect->fragPath.c_str());
+
+                            ImGui::TableSetColumnIndex(2);
+                            if (effect->shaderProgramID != 0)
+                                ImGui::Text("%zu", effect->uniforms.size());
+                            else
+                                ImGui::TextColored(ImVec4(1, 0.3f, 0.3f, 1), "ERR");
+
+                            ImGui::TableSetColumnIndex(3);
+                            ImGui::PushID(name.c_str());
+                            if (ImGui::SmallButton("Edit"))
+                            {
+                                ShellExecuteA(NULL, "open", "code", effect->fragPath.c_str(), NULL, SW_HIDE);
+                            }
+                            ImGui::PopID();
+                        }
+
+                        ImGui::EndTable();
+                    }
+
+                    ImGui::Spacing();
+                    ImGui::TextDisabled("Total: %zu effect(s)", effectNames.size());
                 }
 
                 ImGui::Unindent();

@@ -1,0 +1,120 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "eye",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": true,
+                        "gridX": 13.0,
+                        "gridY": 12.0,
+                        "cellX": 1.0,
+                        "cellY": 9.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/Eye.lua",
+                                "scriptName": "Eye.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "eye1",
+                        "clips": [
+                            {
+                                "name": "eye2",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 131,
+                                "frameCount": 1,
+                                "speed": 10.0,
+                                "loop": true,
+                                "texturePath": "Assets/PROPS ANIMATION.png"
+                            },
+                            {
+                                "name": "eye1",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 130,
+                                "frameCount": 1,
+                                "speed": 10.0,
+                                "loop": true,
+                                "texturePath": "Assets/PROPS ANIMATION.png"
+                            },
+                            {
+                                "name": "eye3",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 132,
+                                "frameCount": 1,
+                                "speed": 10.0,
+                                "loop": true,
+                                "texturePath": "Assets/PROPS ANIMATION.png"
+                            },
+                            {
+                                "name": "eye4",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 134,
+                                "frameCount": 1,
+                                "speed": 10.0,
+                                "loop": true,
+                                "texturePath": "Assets/PROPS ANIMATION.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/eye.prefab",
+                        "isRoot": true
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/props animation.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

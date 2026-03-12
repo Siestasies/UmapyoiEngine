@@ -68,7 +68,8 @@ namespace Uma_ECS
             Uma_Engine::EventSystem* e, 
             Uma_Engine::HybridInputSystem* i, 
             Uma_Engine::ResourcesManager* r,
-            Uma_Engine::Graphics* g);
+            Uma_Engine::Graphics* g,
+            Uma_Engine::SoundManager* s);
 
         /**
          * \brief Updates all active Lua scripts with delta time
@@ -344,6 +345,7 @@ namespace Uma_ECS
         Coordinator* pCoordinator = nullptr;
         Uma_Engine::ResourcesManager* pResourcesManager = nullptr;
         Uma_Engine::Graphics* pGraphics = nullptr;
+        Uma_Engine::SoundManager* pSoundManager = nullptr;
 
         // runtime variables
         float lastDeltaTime{};

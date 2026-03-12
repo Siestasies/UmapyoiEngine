@@ -66,17 +66,6 @@ namespace Uma_ECS
         */
         void Shutdown();
 
-        /**
-        * @brief Draw debug visualization for the pathfinding data.
-        *
-        * When showDebug is true, renders grid cells, obstacles, and/or paths
-        * using the graphics interface.
-        */
-        void DebugDraw();
-
-        // Toggle to enable/disable debug rendering of navigation data.
-        bool showDebug = false;
-
     private:
         // ECS coordinator used to query entities and components.
         Coordinator* pCoordinator = nullptr;

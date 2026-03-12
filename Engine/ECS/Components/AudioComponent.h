@@ -17,6 +17,8 @@ All content (C) 2025 DigiPen Institute of Technology Singapore.
 All rights reserved.
 */
 
+using SoundType = Uma_Engine::SoundType;
+
 namespace Uma_ECS
 {
     struct SoundInstance
@@ -28,14 +30,15 @@ namespace Uma_ECS
         bool isPlaying = false;
         bool shouldLoop = false;
         bool is3D = true;
+        SoundType type = SoundType::SFX;
 
         bool isFading = false;
         FMOD_CHANNEL* fadeHandle = nullptr;
 
         // Optional: per-sound overrides
         float pitch = 1.0f;
-        float minDistance = 100.0f;
-        float maxDistance = 1000.0f;
+        float minDistance = 30.0f;
+        float maxDistance = 80.0f;
     };
 
 	struct AudioComponent {
@@ -71,6 +74,7 @@ namespace Uma_ECS
                 soundVal.AddMember("isPlaying", instance.isPlaying, allocator);
                 soundVal.AddMember("shouldLoop", instance.shouldLoop, allocator);
                 soundVal.AddMember("is3D", instance.is3D, allocator);
+                soundVal.AddMember("type", static_cast<int>(instance.type), allocator);
                 soundVal.AddMember("volume", instance.volume, allocator);
                 soundVal.AddMember("pitch", instance.pitch, allocator);
                 soundVal.AddMember("minDistance", instance.minDistance, allocator);
@@ -85,12 +89,10 @@ namespace Uma_ECS
         * \param value
         * \return nothing
         */
-        void Deserialize(const rapidjson::Value& value) //override
+        void Deserialize(const rapidjson::Value& value)
         {
-            // Full reset
             loadedSounds.clear();
 
-            // Restore loadedSounds (reconstructs from saved data)
             if (value.HasMember("loadedSounds") && value["loadedSounds"].IsObject()) {
                 for (rapidjson::SizeType i = 0; i < value["loadedSounds"].MemberCount(); i++) {
                     auto& member = value["loadedSounds"].MemberBegin()[i];
@@ -113,15 +115,17 @@ namespace Uma_ECS
                         instance.minDistance = member.value["minDistance"].GetFloat();
                         instance.maxDistance = member.value["maxDistance"].GetFloat();
 
+                        instance.type = member.value.HasMember("type") ? static_cast<Uma_Engine::SoundType>(member.value["type"].GetInt()) : Uma_Engine::SoundType::SFX;
+
                         loadedSounds.emplace(std::move(name), std::move(instance));
                     }
                 }
             }
 
-            // Restore defaults
             defaultVolume = value["defaultVolume"].GetFloat();
             default3D = value["default3D"].GetBool();
         }
+
 
         // Helper methods
         bool HasSound(const std::string& soundName) const

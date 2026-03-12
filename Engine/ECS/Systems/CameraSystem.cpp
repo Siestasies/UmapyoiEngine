@@ -51,6 +51,9 @@ namespace Uma_ECS
         auto& cam_tf = tfArray.GetData(camera);
         auto& cam_c = camArray.GetData(camera);
 
+        // Strip previous shake offset to recover the true base position
+        cam_tf.position -= cam_c.mShakeOffset;
+
         if (cam_c.followPlayer && pArray.Size() > 0)
         {
             Entity player = pArray.GetEntity(0);
@@ -67,6 +70,12 @@ namespace Uma_ECS
         }
 
         // Camera shake - LEGACY lol
+        // Pixel-perfect snap on the base position
+        float pixelSize = 1.0f / cam_c.mZoom;
+        cam_tf.position.x = std::round(cam_tf.position.x / pixelSize) * pixelSize;
+        cam_tf.position.y = std::round(cam_tf.position.y / pixelSize) * pixelSize;
+
+        // Update shake timer
         if (cam_c.mShakeTimer > 0.0f)
         {
             cam_c.mShakeTimer -= dt;
@@ -83,6 +92,7 @@ namespace Uma_ECS
             }
         }
 
+        // Apply shake
         cam_tf.position += cam_c.mShakeOffset;
 
         // Pixel perfect snap

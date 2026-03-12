@@ -252,18 +252,22 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
 Uma_ECS::Entity Uma_ECS::CollisionSystem::GetPhysicsEntity(Entity entity, ComponentArray<Transform>& tfArray, ComponentArray<RigidBody>& rbArray)
 {
     Entity curr = entity;
+    Entity lastFound = static_cast<Entity>(-1);
 
-    // Walk up to find root entity
+    // Check the entity itself
+    if (rbArray.Has(curr))
+        lastFound = curr;
+
+    // Walk up, keep overwriting with each RigidBody found
     while (tfArray.Has(curr) && tfArray.GetData(curr).parent.has_value())
     {
         curr = tfArray.GetData(curr).parent.value();
+
+        if (rbArray.Has(curr))
+            lastFound = curr;  //keeps overwriting — ends up with highest ancestor
     }
 
-    // Only return root if it has RigidBody, otherwise return invalid
-    if (rbArray.Has(curr))
-        return curr;
-
-    return static_cast<Entity>(-1);  // Return invalid if no physics
+    return lastFound;
 }
 
 void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
@@ -294,8 +298,7 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     bool e2HasRb = (physicsEntity2 != static_cast<Entity>(-1));
 
     // Skip if both static (optimization)
-    if (!e1HasRb && !e2HasRb)
-        return;
+    //if (!e1HasRb && !e2HasRb) return;
 
     // Get components from physics entities
     Transform* tf1 = e1HasRb ? &tfArray.GetData(physicsEntity1) : nullptr;
@@ -305,7 +308,7 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
     RigidBody* rb2 = e2HasRb ? &rbArray.GetData(physicsEntity2) : nullptr;
 
     // Handle case where one entity doesn't have physics
-    if (!tf1 || !tf2) return;
+    //if (!tf1 || !tf2) return;
 
     // Narrow phase: check all shape pairs
     for (size_t i = 0; i < c1.shapes.size(); ++i)
@@ -330,6 +333,10 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
             // Purpose filtering
             if (!ShouldPurposesCollide(shape1.purpose, shape2.purpose))
                 continue;
+
+            bool isTriggerPair = (shape1.purpose == ColliderPurpose::Trigger || shape2.purpose == ColliderPurpose::Trigger);
+            if (!isTriggerPair && (!tf1 || !tf2)) continue;  // physics needs valid transforms
+            if (!isTriggerPair && !e1HasRb && !e2HasRb) continue;  // physics needs at least one rb
 
             // Broadphase: test with swept bounds (prevents tunneling)
             if (CollisionIntersection_RectRect_Static(c1.bounds[i], c2.bounds[j]))

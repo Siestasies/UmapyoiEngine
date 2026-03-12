@@ -144,7 +144,7 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
                     continue;
                 }
 
-                if (instIt->is3D && !instIt->isFading) {
+                if (instIt->is3D) {
                     pSoundManager->UpdateChannel3DPosition(instIt->channel, ac.position, ac.velocity);
                 }
 
@@ -168,20 +168,24 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
 
 SoundInfo* Uma_ECS::AudioSystem::GetSoundInfo(Entity entity, const std::string& soundName) {
     if (!pResourcesManager) return nullptr;
+
     AudioComponent audio = pCoordinator->GetComponent<AudioComponent>(entity);
-    if (!audio.HasLoadedSound(soundName)) {
-        return nullptr;
+    if (!audio.HasLoadedSound(soundName)) return nullptr;
+
+    auto& instance = audio.loadedSounds[soundName];
+
+    if (pResourcesManager->HasSound(soundName)) {
+        SoundInfo* existing = pResourcesManager->GetSound(soundName);
+
+        if (existing && existing->type != instance.type) {
+            pResourcesManager->UnloadSound(soundName);
+        }
+        else {
+            return existing;
+        }
     }
-    //if dont have load it
-    if (!pResourcesManager->HasSound(soundName)) {
-        auto& instance = audio.loadedSounds[soundName];
-        if(instance.is3D)
-            pResourcesManager->LoadSound(soundName, audio.loadedSounds[soundName].path, SoundType::SFX);
-        else
-            pResourcesManager->LoadSound(soundName, audio.loadedSounds[soundName].path, SoundType::BGM);
-    }
+    pResourcesManager->LoadSound(soundName, instance.path, instance.type, instance.is3D);
     return pResourcesManager->GetSound(soundName);
-    
 }
 
 void Uma_ECS::AudioSystem::OnEntityDestroyed(Entity entity)
@@ -233,8 +237,11 @@ void Uma_ECS::AudioSystem::PlayEntitySound(Entity entity, const std::string& sou
     FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstance(info, audio.loadedSounds[soundName].shouldLoop, audio.loadedSounds[soundName].volume, pos, is3D);
 
     if (channel) {
+        info->channel = channel;
         audio.loadedSounds[soundName].channel = channel;
         audio.activeSounds[soundName].push_back(audio.loadedSounds[soundName]);
+        if(is3D)
+            FMOD_Channel_Set3DMinMaxDistance(info->channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
     }
 }
 
@@ -287,15 +294,22 @@ void Uma_ECS::AudioSystem::PlayOneShotAtEntity(Entity entity, const std::string&
     auto& tf = tfArray.GetData(entity);
     FMOD_VECTOR pos = { tf.position.x, tf.position.y, 0.0f };
 
-    pSoundManager->PlayOneShotAt(GetSoundInfo(entity, soundName), pos, audio.loadedSounds[soundName].volume, audio.loadedSounds[soundName].is3D);
+    FMOD_CHANNEL* channel = pSoundManager->PlayOneShotAt(GetSoundInfo(entity, soundName), pos, audio.loadedSounds[soundName].volume, audio.loadedSounds[soundName].is3D);
+
+    if (channel && audio.loadedSounds[soundName].is3D)
+        FMOD_Channel_Set3DMinMaxDistance(channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
 }
 
 //the entity for this is just a container to hold all the audio files
 void Uma_ECS::AudioSystem::PlayOneShotAtPosition(Entity entity, float x, float y, const std::string& soundName, float volume, bool is3D)
 {
     FMOD_VECTOR pos = { x, y, 0.0f };
+    auto& audio = pCoordinator->GetComponentArray<AudioComponent>().GetData(entity);
 
-    pSoundManager->PlayOneShotAt(GetSoundInfo(entity, soundName), pos, volume, is3D);
+    FMOD_CHANNEL* channel = pSoundManager->PlayOneShotAt(GetSoundInfo(entity, soundName), pos, volume, is3D);
+
+    if (channel && is3D)
+        FMOD_Channel_Set3DMinMaxDistance(channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
 }
 
 void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime) {
@@ -316,13 +330,19 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
     bool is3D = audio.loadedSounds[soundName].is3D;
     bool shouldLoop = audio.loadedSounds[soundName].shouldLoop;
     float volume = audio.loadedSounds[soundName].volume;
+    Uma_Engine::SoundType type = audio.loadedSounds[soundName].type;
 
     // Play SILENT, then fade in
     FMOD_CHANNEL* channel = pSoundManager->PlaySoundInstanceFaded(
         info, shouldLoop, volume, pos, is3D, fadeInTime
     );
+    info->channel = channel;
 
     if (channel) {
+
+        if (is3D)
+            FMOD_Channel_Set3DMinMaxDistance(channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
+
         audio.activeSounds[soundName].emplace_back(SoundInstance{
             channel,                    // channel
             soundName,                  // soundName
@@ -331,6 +351,7 @@ void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string
             false,                      // isPlaying
             shouldLoop,                 // shouldLoop
             is3D,                       // is3D
+            type,                       // sound type
             true,                       // isFading
             channel                     // fadeHandle
             });
@@ -365,6 +386,18 @@ void Uma_ECS::AudioSystem::FadeOutEntity(Entity entity, float fadeOutTime) {
             }
         }
     }
+}
+
+void Uma_ECS::AudioSystem::toggleLowpass(Entity entity, const std::string& soundName, bool dulled) {
+    SoundInfo* info = GetSoundInfo(entity,soundName);
+    if (!info || !info->dspLowpass) return;
+
+    pSoundManager->ToggleLowpass(info, dulled);
+}
+
+void Uma_ECS::AudioSystem::toggleLowpass(SoundType type, bool dulled) {
+    //toggle lowpass for the whole group type
+    pSoundManager->ToggleGroupLowpass(type, dulled);
 }
 
 

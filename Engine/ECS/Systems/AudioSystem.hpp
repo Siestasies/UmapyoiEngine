@@ -128,6 +128,22 @@ namespace Uma_ECS
          */
         void FadeOutEntity(Entity entity, float fadeOutTime = 1.0f);
 
+        /*!
+         * \brief Toggles a low-pass filter on a specific sound instance owned by an entity.
+         * \param entity    The entity holding this sound channel
+         * \param soundName The name key identifying the sound within the entity's sound map.
+         * \param dulled    If true, applies a muffled low-pass cutoff (1000 Hz);
+         *                  if false, restores a near-full-range cutoff (22000 Hz).
+         */
+        void toggleLowpass(Entity entity, const std::string& soundName, bool dulled);
+
+        /*!
+         * \brief Toggles a low-pass filter on an entire sound group bus.
+         * \param type   The bus to target: SoundType::SFX, SoundType::BGM, or SoundType::MASTER.
+         * \param dulled If true, activates the low-pass DSP on the specified bus;
+         *               if false, bypasses it.
+         */
+        void toggleLowpass(SoundType type, bool dulled);
 
     private:
 

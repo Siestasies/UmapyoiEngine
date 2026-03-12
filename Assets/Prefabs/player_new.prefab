@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 56.09,
-                            "y": -161.199
+                            "x": 66.835,
+                            "y": -169.279
                         },
                         "rotation": {
                             "x": 0.0,
@@ -33,13 +33,13 @@
                         "mSpeed": 50.0,
                         "mDashSpeed": 2.0,
                         "mDashDuration": 0.2,
-                        "mDashCD": 0.68,
+                        "mDashCD": -0.0,
                         "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 10.0,
                         "mDefense": 5,
                         "mCritDamage": 1.0,
-                        "mMana": 25.201,
+                        "mMana": 100.0,
                         "mMaxMana": 100.0,
                         "mManaRegenRate": 20.0,
                         "mNeutralAttackManaGain": 5,
@@ -173,6 +173,7 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
@@ -183,7 +184,8 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
+                                "type": 0,
+                                "volume": 0.439,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -193,6 +195,7 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
@@ -203,26 +206,7 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
-                            },
-                            "Neutral Slash(BasicAttack)": {
-                                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
-                            },
-                            "FireSlash": {
-                                "path": "Assets/sounds/Player Wav/FireSlash.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
@@ -233,6 +217,29 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
+                                "type": 0,
+                                "volume": 0.259,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "FireSlash": {
+                                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.5,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 1000.0
+                            },
+                            "PlayerDamageMono": {
+                                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
@@ -243,7 +250,8 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 0.34,
+                                "type": 0,
+                                "volume": 0.81,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -253,7 +261,8 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 0.209,
+                                "type": 0,
+                                "volume": 0.079,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -263,7 +272,8 @@
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
-                                "volume": 0.409,
+                                "type": 0,
+                                "volume": 0.337,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -1492,7 +1502,7 @@
                         ],
                         "nextId": 13,
                         "current": "PlayerAttack",
-                        "next": "PlayerIdle"
+                        "next": ""
                     }
                 }
             },

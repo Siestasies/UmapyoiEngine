@@ -63,6 +63,8 @@ namespace Uma_Engine
         void ImguiStartFrame();
         void ImguiRender();
 
+        void PlayFabConfiguration();
+
         EditorSystem* mEditorSystem;
         ImguiManager* mImguiManager;
         TilemapEditorManager* mTilemapEditorManager;

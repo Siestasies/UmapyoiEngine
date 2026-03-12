@@ -1,4 +1,4 @@
-/*!
+﻿/*!
 \file   EditorApplication.cpp
 \par    Project: GAM200
 \par    Course: CSD2401
@@ -35,6 +35,7 @@ All rights reserved.
 #include "Editor/Core/EditorSystem.h"
 #include "Scripts/ImguiManager.h"
 #include "../Editor/Systems/TilemapEditorManager.h"
+#include "PlayFab/Core/PlayFabManager.h"
 
 // imgui
 #include "imgui.h"
@@ -44,6 +45,12 @@ All rights reserved.
 
 // Events
 #include "Events/ApplicationEvents.h"
+
+// playfab test WIP
+#include "PlayFab/Test Scripts/PlayFabPlayerTest.cpp"
+
+#include "Core/EngineConfigSerializer.h"
+#include "PlayFab/Core/PlayFabConfig.h"
 
 namespace Uma_Engine
 {
@@ -216,6 +223,9 @@ namespace Uma_Engine
 
         // Load the default scene
         sceneManager->LoadScene("tutorial.scn");
+
+        // load and configure playfab
+        PlayFabConfiguration();
     }
 
     bool EditorApplication::HandleInterruptions(float deltaTime)
@@ -269,5 +279,35 @@ namespace Uma_Engine
     {
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void EditorApplication::PlayFabConfiguration()
+    {
+        // Checks for a playfab config file. If previously set up, auto-establishes
+        // connection. If no config file is found, the function is skipped.
+        PlayFabConfig* config = new PlayFabConfig{};  // deleted after SetCredentials below
+        EngineConfigSerializer configSerializer;
+        configSerializer.Register(config);
+        configSerializer.load(Uma_FilePath::CONFIG_ROOT + "playfab_dev.json");
+        if (config->titleId.empty()) return;
+
+        PlayFabManager* playfabManager = GetPlayFabManager();
+        playfabManager->SetCredentials(
+            config->titleId,
+            config->secretKey,
+            []()
+            {
+                Debugger::Log(WarningLevel::eInfo, "[PlayfabManager] is ready!");
+            },
+            [](HRESULT hr, const std::string& message)
+            {
+                Debugger::Log(WarningLevel::eInfo, "[PlayfabManager] is not ready!");
+                Debugger::Log(WarningLevel::eInfo, message);
+            }
+        );
+
+        playfabManager->Init();
+
+        delete config;
     }
 }

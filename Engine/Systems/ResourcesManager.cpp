@@ -35,6 +35,10 @@ All rights reserved.
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <filesystem>
+#include <fstream>
+#include <sstream>
+#include <glad/glad.h>
 
 namespace Uma_Engine
 {
@@ -47,6 +51,8 @@ namespace Uma_Engine
         assert(mSound != nullptr && "Error: Sound system failed to initialize");
 
         std::cout << "ResourcesManager initialized" << std::endl;
+
+        LoadAllEffectShaders();
     }
 
     void ResourcesManager::SetCoordinator(Uma_ECS::Coordinator* coordinator)
@@ -250,6 +256,7 @@ namespace Uma_Engine
             typeVal.SetInt(static_cast<int>(sound.second.type));
             soundObj.AddMember("type", typeVal, allocator);
 
+
             audioArr.PushBack(soundObj, allocator);
         }
         out.AddMember("sounds", audioArr, allocator);
@@ -323,7 +330,7 @@ namespace Uma_Engine
                     std::string path = sndVal["path"].GetString();
                     SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
 
-                    LoadSound(name, path, type);
+                    //LoadSound(name, path, type);
                 }
             }
         }
@@ -344,10 +351,10 @@ namespace Uma_Engine
         }
     }
 
-    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type) 
+    bool ResourcesManager::LoadSound(const std::string& name,const std::string& path,SoundType type,bool is3D) 
     {
         if (!HasSound(name)) {
-            SoundInfo temp = mSound->loadSound(path, type);
+            SoundInfo temp = mSound->loadSound(path, type, is3D);
             if (temp.sound == nullptr) return false;
             mSoundList[name] = temp;
             return true;
@@ -361,7 +368,7 @@ namespace Uma_Engine
 
         if (sound)
         {
-            mSound->unloadSound(mSoundList.find(name)->second.sound);
+            mSound->unloadSound(mSoundList.find(name)->second);
             mSoundList.erase(name);
         }
     }
@@ -392,10 +399,6 @@ namespace Uma_Engine
         // already loaded
         if (it != mSoundList.end())
             return &it->second;
-
-        // try load if path provided
-        if (!path.empty() && LoadSound(name, path, SoundType::SFX))
-            return &mSoundList.find(name)->second;
 
         return nullptr;
     }
@@ -740,5 +743,188 @@ namespace Uma_Engine
     const std::unordered_map<std::string, std::shared_ptr<rapidjson::Document>>& ResourcesManager::GetLoadedPrefabs() const
     {
         return mPrefabs;
+    }
+
+    void ResourcesManager::ReflectUniforms(ShaderEffect& effect)
+    {
+        effect.uniforms.clear();
+        GLuint program = effect.shaderProgramID;
+        if (program == 0) return;
+
+        GLint count = 0;
+        glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &count);
+
+        // Skip engine-managed uniforms
+        static const std::unordered_set<std::string> skip = {
+            "image", "projection", "uTime"
+        };
+
+        for (GLint i = 0; i < count; i++)
+        {
+            char name[256];
+            GLsizei length;
+            GLint size;
+            GLenum glType;
+            glGetActiveUniform(program, i, sizeof(name), &length, &size, &glType, name);
+
+            std::string uName(name);
+            if (skip.count(uName)) continue;
+
+            UniformInfo info;
+            info.name = uName;
+            info.location = glGetUniformLocation(program, name);
+
+            switch (glType)
+            {
+            case GL_FLOAT:      info.type = UniformType::Float; break;
+            case GL_FLOAT_VEC2: info.type = UniformType::Vec2;  break;
+            case GL_FLOAT_VEC3: info.type = UniformType::Vec3;  break;
+            case GL_FLOAT_VEC4: info.type = UniformType::Vec4;  break;
+            case GL_INT:        info.type = UniformType::Int;    break;
+            default: continue;  // skip unsupported types
+            }
+
+            effect.uniforms.push_back(info);
+        }
+    }
+
+    void ResourcesManager::LoadAllEffectShaders()
+    {
+        const std::string effectDir = "Assets/Shaders/Effects";
+
+        if (!std::filesystem::exists(effectDir) ||
+            !std::filesystem::is_directory(effectDir))
+        {
+            std::cout << "No Effects shader directory found at: " << effectDir << std::endl;
+            return;
+        }
+
+        for (const auto& entry : std::filesystem::directory_iterator(effectDir))
+        {
+            if (entry.is_regular_file() && entry.path().extension() == ".frag")
+            {
+                std::string effectName = entry.path().stem().string();
+                std::string fragPath = entry.path().string();
+                // Normalize to forward slashes
+                std::replace(fragPath.begin(), fragPath.end(), '\\', '/');
+
+                LoadEffectShader(effectName, fragPath);
+            }
+        }
+    }
+
+    bool ResourcesManager::LoadEffectShader(const std::string& effectName, const std::string& fragPath)
+    {
+        // Reuse the instanced vertex shader, effect shaders only override the fragment stage
+        const std::string vertPath = "Assets/Shaders/instanced.vert";
+
+        Shader shaderData = mGraphics->LoadShaderFromFile(vertPath, fragPath);
+
+        ShaderEffect effect;
+        effect.name = effectName;
+        effect.fragPath = fragPath;
+        effect.shaderProgramID = shaderData.shaderProgramID;
+
+        if (effect.shaderProgramID != 0)
+        {
+            ReflectUniforms(effect);
+            std::cout << "Effect shader loaded: " << effectName
+                << " (" << effect.uniforms.size() << " uniforms)" << std::endl;
+        }
+        else
+        {
+            std::cerr << "Effect shader FAILED to compile: " << effectName << std::endl;
+        }
+
+        // Store even if compilation failed (shaderProgramID == 0) so the UI can show the error state
+        mEffects[effectName] = std::move(effect);
+        return effect.shaderProgramID != 0;
+    }
+
+    void ResourcesManager::RefreshEffectShaders()
+    {
+        // Unload existing effect shader programs
+        for (auto& [name, effect] : mEffects)
+        {
+            if (effect.shaderProgramID != 0)
+            {
+                mGraphics->UnloadShader(effect.shaderProgramID);
+            }
+        }
+        mEffects.clear();
+
+        // Reload all from disk
+        LoadAllEffectShaders();
+    }
+
+    bool ResourcesManager::CreateEffectShaderFile(const std::string& effectName)
+    {
+        const std::string effectDir = "Assets/Shaders/Effects";
+        std::filesystem::create_directories(effectDir);
+
+        std::string filePath = effectDir + "/" + effectName + ".frag";
+
+        if (std::filesystem::exists(filePath))
+        {
+            std::cerr << "Effect shader file already exists: " << filePath << std::endl;
+            return false;
+        }
+
+        // Write a starter template that matches the instanced vertex shader outputs
+        std::ofstream file(filePath);
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to create effect shader file: " << filePath << std::endl;
+            return false;
+        }
+
+        file << "#version 450 core\n"
+            << "in vec2 TexCoords;\n"
+            << "in vec4 Tint;\n"
+            << "out vec4 color;\n"
+            << "\n"
+            << "uniform sampler2D image;\n"
+            << "uniform float uTime;\n"
+            << "\n"
+            << "// Add your custom uniforms here, e.g.:\n"
+            << "// uniform float intensity;\n"
+            << "\n"
+            << "void main()\n"
+            << "{\n"
+            << "    vec4 texColor = texture(image, TexCoords);\n"
+            << "    color = vec4(texColor.rgb * Tint.rgb, texColor.a * Tint.a);\n"
+            << "}\n";
+
+        file.close();
+
+        // Immediately compile so it shows up in the effect list
+        std::string normalizedPath = filePath;
+        std::replace(normalizedPath.begin(), normalizedPath.end(), '\\', '/');
+        LoadEffectShader(effectName, normalizedPath);
+
+        return true;
+    }
+
+    std::vector<std::string> ResourcesManager::GetEffectShaderNames() const
+    {
+        std::vector<std::string> names;
+        names.reserve(mEffects.size());
+        for (const auto& [name, effect] : mEffects)
+        {
+            names.push_back(name);
+        }
+        return names;
+    }
+
+    bool ResourcesManager::EffectShaderFileExists(const std::string& effectName) const
+    {
+        std::string filePath = "Assets/Shaders/Effects/" + effectName + ".frag";
+        return std::filesystem::exists(filePath);
+    }
+
+    const ShaderEffect* ResourcesManager::GetEffect(const std::string& effectName) const
+    {
+        auto it = mEffects.find(effectName);
+        return (it != mEffects.end()) ? &it->second : nullptr;
     }
 }

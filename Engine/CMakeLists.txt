@@ -83,6 +83,8 @@ target_link_libraries(Uma_Engine
         freetype
 )
 
+target_link_libraries(Uma_Engine PUBLIC PlayFabServices PlayFabCore libHttpClient)
+
 # Include directories
 target_include_directories(Uma_Engine
     PUBLIC
