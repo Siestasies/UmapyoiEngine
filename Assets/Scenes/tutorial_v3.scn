@@ -65,6 +65,9 @@
                 "path": "assets/lost hp point.png"
             },
             {
+                "path": "assets/environment/kappa gem forming_0023.png"
+            },
+            {
                 "path": "assets/fire ability icon.png"
             },
             {
@@ -75,6 +78,39 @@
             },
             {
                 "path": "assets/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/star.png"
+            },
+            {
+                "path": "assets/controlspopup1.png"
+            },
+            {
+                "path": "assets/x escape button.png"
+            },
+            {
+                "path": "assets/controlspopup2.png"
+            },
+            {
+                "path": "assets/controlspopup3.png"
+            },
+            {
+                "path": "assets/vfx 512 ss 3.png"
+            },
+            {
+                "path": "assets/player ss 3.png"
+            },
+            {
+                "path": "assets/vfx 512 ss 2.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
+            },
+            {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
+                "path": "assets/skill tree/plus hp skill.png"
             }
         ],
         "fonts": [
@@ -94,7 +130,43 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "FireCyclone",
+                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -199,13 +271,7 @@
                         "x": 0.0,
                         "y": 0.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": 0.0,
-                        "y": 0.0,
-                        "width": 2.0,
-                        "height": 2.0
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Canvas": {
                     "sortingOrder": 999,
@@ -260,13 +326,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -326,13 +386,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -392,13 +446,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -458,13 +506,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -524,13 +566,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -590,13 +626,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -656,13 +686,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -722,13 +746,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -788,13 +806,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -854,13 +866,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -920,13 +926,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -986,13 +986,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1052,13 +1046,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1118,13 +1106,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1184,13 +1166,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1250,13 +1226,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1316,13 +1286,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1382,13 +1346,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1448,13 +1406,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1514,13 +1466,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1580,13 +1526,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1646,13 +1586,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1712,13 +1646,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1778,13 +1706,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1844,13 +1766,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1910,13 +1826,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -1976,13 +1886,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -2042,13 +1946,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -2108,13 +2006,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -2174,13 +2066,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -2240,13 +2126,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -2306,13 +2186,7 @@
                         "x": 200.0,
                         "y": 80.0
                     },
-                    "isDirty": false,
-                    "computedRect": {
-                        "x": -17.419,
-                        "y": -33.723,
-                        "width": 0.348,
-                        "height": 0.269
-                    }
+                    "isDirty": true
                 },
                 "class Uma_UI::Text": {
                     "text": "",
@@ -13697,7 +13571,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 56.1,
+                        "x": 56.0,
                         "y": -161.199
                     },
                     "rotation": {
@@ -14218,68 +14092,6 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "static bird",
-                    "position": {
-                        "x": -110.899,
-                        "y": -57.597
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 0.689,
-                        "y": 1.519
-                    },
-                    "parent": -1,
-                    "children": [
-                        40,
-                        41,
-                        42
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/static bird.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 43,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "static bird",
-                    "position": {
-                        "x": 31.5,
-                        "y": -57.597
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 0.689,
-                        "y": 1.519
-                    },
-                    "parent": -1,
-                    "children": [
-                        44,
-                        45,
-                        46
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/static bird.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 47,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
                     "name": "tut room eye",
                     "position": {
                         "x": -232.998,
@@ -14295,7 +14107,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        51
+                        43
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -14305,7 +14117,7 @@
             }
         },
         {
-            "id": 52,
+            "id": 44,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14324,12 +14136,111 @@
                     },
                     "parent": -1,
                     "children": [
-                        60,
-                        56
+                        52,
+                        48
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/tut room eye 2.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 53,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Tutorial Trigger",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        54,
+                        55,
+                        56,
+                        57,
+                        58,
+                        59,
+                        63,
+                        67,
+                        71,
+                        81,
+                        77
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 82,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Kappa_Statue",
+                    "position": {
+                        "x": -321.725,
+                        "y": 85.983
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.0,
+                        "y": 5.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        100
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 104,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Tutorial Popup1",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        103,
+                        102,
+                        101
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Tutorial Popup1.prefab",
                     "isRoot": true
                 }
             }

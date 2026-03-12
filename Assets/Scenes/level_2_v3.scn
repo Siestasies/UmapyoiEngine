@@ -2,34 +2,34 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/int_ss.png"
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/door opening ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/int_ss.png"
             },
             {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -59,10 +59,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
+                "path": "assets/lost hp point.png"
+            },
+            {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -75,17 +78,20 @@
             },
             {
                 "path": "assets/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/star.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -17162,7 +17168,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "map collider 1",
                     "position": {
-                        "x": -280.908,
+                        "x": -280.907,
                         "y": 157.272
                     },
                     "rotation": {
@@ -17195,7 +17201,7 @@
                     "shapes": [
                         {
                             "offset": {
-                                "x": -127.198,
+                                "x": -127.194,
                                 "y": 20.899
                             },
                             "size": {
@@ -17240,7 +17246,7 @@
                         },
                         {
                             "offset": {
-                                "x": -71.098,
+                                "x": -71.097,
                                 "y": -83.8
                             },
                             "size": {
@@ -17259,7 +17265,7 @@
                                 "y": 48.2
                             },
                             "size": {
-                                "x": 51.098,
+                                "x": 51.097,
                                 "y": 120.0
                             },
                             "purpose": 1,
@@ -17271,7 +17277,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 83.098
+                                "y": 83.097
                             },
                             "size": {
                                 "x": 140.0,
@@ -17286,7 +17292,7 @@
                         {
                             "offset": {
                                 "x": 64.5,
-                                "y": 38.598
+                                "y": 38.597
                             },
                             "size": {
                                 "x": 33.5,
@@ -17301,7 +17307,7 @@
                         {
                             "offset": {
                                 "x": -0.6,
-                                "y": -98.698
+                                "y": -98.694
                             },
                             "size": {
                                 "x": 130.0,
@@ -17350,7 +17356,7 @@
                             },
                             "size": {
                                 "x": 36.798,
-                                "y": 95.098
+                                "y": 95.097
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -17406,7 +17412,7 @@
                         {
                             "offset": {
                                 "x": 592.5,
-                                "y": -98.698
+                                "y": -98.694
                             },
                             "size": {
                                 "x": 33.4,
@@ -17555,7 +17561,71 @@
             }
         },
         {
-            "id": 5,
+            "id": 58,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level 2 Trigger",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        59,
+                        60,
+                        61,
+                        62,
+                        63,
+                        64,
+                        68
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Level 2 Trigger.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 72,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Kappa_Statue",
+                    "position": {
+                        "x": 284.075,
+                        "y": 46.18
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.0,
+                        "y": 5.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        90
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 91,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17574,26 +17644,26 @@
                     },
                     "parent": -1,
                     "children": [
-                        7,
-                        27,
-                        30
+                        101,
+                        97,
+                        94
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/eye.prefab",
+                    "prefabPath": "Assets/Prefabs/lvl2eye1.prefab",
                     "isRoot": true
                 }
             }
         },
         {
-            "id": 6,
+            "id": 102,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "lvl2eye2",
                     "position": {
                         "x": -180.699,
-                        "y": 46.099
+                        "y": 46.097
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17605,20 +17675,20 @@
                     },
                     "parent": -1,
                     "children": [
-                        11,
-                        15,
-                        19,
-                        23,
-                        33,
-                        36,
-                        39,
-                        42,
-                        46,
-                        50
+                        139,
+                        135,
+                        131,
+                        127,
+                        123,
+                        120,
+                        117,
+                        114,
+                        110,
+                        106
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/eye.prefab",
+                    "prefabPath": "Assets/Prefabs/lvl2eye2.prefab",
                     "isRoot": true
                 }
             }
