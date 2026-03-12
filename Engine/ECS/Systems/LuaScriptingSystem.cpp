@@ -39,9 +39,10 @@ All rights reserved.
 #include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
 #include "../UI/Components/Text.h"
+#include "../UI/Components/Dialogue.h"
 #include "../UI/Components/Slider.h"
 #include "../UI/Components/Checkbox.h"
-#include "../UI/Components/Dialogue.h"
+#include "../UI/Components/Button.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/SpriteMaterial.h"
 #include "../Components/Cutscene.h"
@@ -788,7 +789,7 @@ namespace Uma_ECS
 
             "mSpeed", &Player::mSpeed,
             "mDashSpeed", &Player::mDashSpeed,
-            "mDashDuration", &Player::mDashDuration,  // NEW - needed for dash state
+            "mDashDuration", &Player::mDashDuration,
             "mDashCD", &Player::mDashCD,
 
             "mAttackDamage", &Player::mAttackDamage,
@@ -799,7 +800,7 @@ namespace Uma_ECS
             "mMana", &Player::mMana,
             "mMaxMana", &Player::mMaxMana,
             "mManaRegenRate", &Player::mManaRegenRate,
-            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,  // NEW - needed for attack mana gain
+            "mNeutralAttackManaGain", &Player::mNeutralAttackManaGain,
 
             "isStunned", &Player::isStunned,
             "stunedTimer", &Player::stunedTimer,
@@ -928,6 +929,7 @@ namespace Uma_ECS
         //Register Text component
         sharedLua->new_usertype<Text>("Text",
             "text", &Text::text,
+            "color", &Text::color,
             "visible", &Text::visible
         );
 
@@ -942,14 +944,17 @@ namespace Uma_ECS
         // Register Image
         sharedLua->new_usertype<Image>("Image",
             "textureName", &Image::texturePath,
-            "sortingOrder", &Image::sortingOrder, "color", sol::property(
+            "sortingOrder", &Image::sortingOrder,
+            "fillAmount", &Image::fillAmount,
+            "color", sol::property(
                 [](Image& img) -> Uma_UI::Color& {
                     return img.color;
                 },
                 [](Image& img, const Uma_UI::Color& c) {
                     img.color = c;
                 }
-            )
+            ),
+            "change", &Image::change
         );
 
         sharedLua->new_enum<Uma_UI::SliderDirection>("SliderDirection",
@@ -1112,7 +1117,14 @@ namespace Uma_ECS
             }
         );
 
-        // ── Dialogue ──────────────────────────────────────────────────────────
+        sharedLua->new_usertype<Uma_UI::Button>("Button",
+            "interactable", &Uma_UI::Button::interactable,
+            "currentState", &Uma_UI::Button::currentState,
+            "normalColour", &Uma_UI::Button::normalColour,
+            "hoverColour", &Uma_UI::Button::hoverColour,
+            "pressedColour", &Uma_UI::Button::pressedColour,
+            "disabledColour", &Uma_UI::Button::disabledColour
+        );
 
         // Register DialogueLine so Lua can read fields off returned line tables
         sharedLua->new_usertype<Uma_UI::DialogueLine>("DialogueLine",
@@ -1666,10 +1678,11 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Cutscene = Uma_ECS::Cutscene;
+        using Button = Uma_UI::Button;
+        using Dialogue = Uma_UI::Dialogue;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
-        using Dialogue = Uma_UI::Dialogue;
-        using Cutscene = Uma_ECS::Cutscene;
 
        // Component list macro
 #define COMPONENT_LIST      \
@@ -1686,6 +1699,8 @@ namespace Uma_ECS
         X(Text)             \
         X(Image)            \
         X(Effects)          \
+        X(Button)         \
+        X(Dialogue)         \
         X(ParticleEmitter)  \
         X(AudioComponent)   \
         X(Slider)           \
@@ -1870,6 +1885,24 @@ namespace Uma_ECS
         sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
             pSoundManager->setChannelGroupVolume(volume, type);
             });
+
+        //============ get volume==========================================================
+        sharedLua->set_function("getSFXVolume", [this]() {
+            return pSoundManager->getChannelGroupVolume(Uma_Engine::SoundType::SFX);
+            });
+
+        sharedLua->set_function("getBGMVolume", [this]() {
+            return pSoundManager->getChannelGroupVolume(Uma_Engine::SoundType::BGM);
+            });
+
+        sharedLua->set_function("getGroupVolume", [this](Uma_Engine::SoundType type) {
+            return pSoundManager->getChannelGroupVolume(type);
+            });
+
+        sharedLua->set_function("getMasterVolume", [this]() {
+            return pSoundManager->getChannelGroupVolume(Uma_Engine::SoundType::MASTER);
+            });
+
         sharedLua->set_function("toggleGroupLowpass", [this](const std::string& groupName, bool enable)
             {
                 SoundType type;
@@ -2159,6 +2192,7 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
+        using Button = Uma_UI::Button;
         using Slider = Uma_UI::Slider;
         using Checkbox = Uma_UI::Checkbox;
         using Dialogue = Uma_UI::Dialogue;
@@ -2178,13 +2212,14 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Image)            \
         BIND_COMPONENT_GETTER(ParticleEmitter)  \
         BIND_COMPONENT_GETTER(Effects)          \
+        BIND_COMPONENT_GETTER(Button)           \
         BIND_COMPONENT_GETTER(Dialogue)         \
         BIND_COMPONENT_GETTER(AudioComponent)   \
         BIND_COMPONENT_GETTER(SpriteMaterial)   \
         BIND_COMPONENT_GETTER(Cutscene)         \
         BIND_COMPONENT_GETTER(Slider)           \
         BIND_COMPONENT_GETTER(Checkbox)         \
-        //BIND_COMPONENT_GETTER(Projectile)\
+        //BIND_COMPONENT_GETTER(Projectile)     \
 
 #define BIND_COMPONENT_GETTER(ComponentType) \
     env.set_function("Get" #ComponentType, [this, entity]() -> ComponentType* { \

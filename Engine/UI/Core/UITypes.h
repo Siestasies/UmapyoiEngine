@@ -212,7 +212,8 @@ namespace Uma_UI
         Scale,             // RectTransform.sizeDelta
         ColorTint,         // Image.color
         Alpha,             // Image.color.a / Text.color.a
-        FillAmount         // For progress bars, radial fills
+        FillAmount,         // For progress bars, radial fills
+        SpritesheetFrame
     };
 
     struct DialogueLine

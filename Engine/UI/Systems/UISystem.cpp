@@ -33,6 +33,7 @@ All rights reserved.
 #include "../Events/LuaScriptingEvents.h"
 
 #include "../ECS/Systems/LuaScriptingSystem.hpp"
+#include "Debugging/Debugger.hpp"
 
 #include "Systems/ResourcesTypes.hpp"
 #include "HybridInputSystem.h"
@@ -60,7 +61,7 @@ namespace Uma_UI
     }
 
     /*!
-     * \brief Updates the UI system through explicit passes: Layout and Input.
+     * \brief Updates the UI system through explicit passes: Layout, Effects and Input.
      * \param dt Delta time in seconds.
      */
     void UISystem::Update(float dt)
@@ -73,6 +74,7 @@ namespace Uma_UI
 
         Vec2 screenSize = pGraphics->GetSceneViewport();
         if (screenSize != mScreenSize) mScreenSize = screenSize, MarkAllDirty();
+
         LayoutPass();
         EffectsPass(dt);
     }
@@ -122,6 +124,15 @@ namespace Uma_UI
             auto& canvas = pCoordinator->GetComponent<Canvas>(canvasEntity);
             canvas.scaleFactor = ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y); // Need to fix this.
 
+            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            //    "LayoutPass | Screen: " + std::to_string((int)mScreenSize.x) + "x" + std::to_string((int)mScreenSize.y));
+
+            //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+            //    "LayoutPass | ScaleMode: " + std::to_string((int)canvas.scaleMode) +
+            //    " | RefRes: " + std::to_string((int)canvas.referenceResolution.x) + "x" + std::to_string((int)canvas.referenceResolution.y) +
+            //    " | MatchWidthOrHeight: " + std::to_string(canvas.matchWidthOrHeight) +
+            //    " | CanvasScale: " + std::to_string(ComputeCanvasScale(canvas, mScreenSize.x, mScreenSize.y)));
+
             // Recursively compute layout for this canvas's children
             ComputeLayoutRecursive(canvasEntity, GetScreenRect(), canvas.scaleFactor);
         }
@@ -149,7 +160,7 @@ namespace Uma_UI
             if (visited.count(current))
             {
                 std::cerr << "UISystem: Circular parent-child relationship detected for entity: "
-                          << current << std::endl;
+                    << current << std::endl;
                 continue;
             }
             visited.insert(current);
@@ -164,6 +175,14 @@ namespace Uma_UI
                     rectTransform.computedRect = ComputeRectInNDC(
                         rectTransform, curParentRect, canvasScale, mScreenSize.x, mScreenSize.y);
                     rectTransform.isDirty = false;
+
+                    //Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
+                    //    "Layout entity: " + std::to_string(current) +
+                    //    " | rect center=(" + std::to_string(rectTransform.computedRect.x) + ", " + std::to_string(rectTransform.computedRect.y) + ")" +
+                    //    " size=(" + std::to_string(rectTransform.computedRect.width) + ", " + std::to_string(rectTransform.computedRect.height) + ")" +
+                    //    " | parentRect center=(" + std::to_string(curParentRect.x) + ", " + std::to_string(curParentRect.y) + ")" +
+                    //    " size=(" + std::to_string(curParentRect.width) + ", " + std::to_string(curParentRect.height) + ")");
+
                 }
             }
 
@@ -306,7 +325,6 @@ namespace Uma_UI
                     button.currentState = Uma_UI::ButtonState::Hovered;
                     if (!button.scriptName.empty())
                     {
-                        system->CallScriptFunction(entity, button.scriptName, "OnClick");
                         system->CallScriptFunction(entity, button.scriptName, "OnPointerClick");
                         system->CallScriptFunction(entity, button.scriptName, "OnPointerUp");
                     }
@@ -613,7 +631,30 @@ namespace Uma_UI
             Uma_ECS::Entity entity = effectsArray.GetEntity(i);
             auto& effects = effectsArray.GetComponentAt(i);
 
-            if (effects.playOnEnable) effects.PlayAll();
+            // --- playOnEnable: fire once per inactive->active transition ----------
+            bool isNowActive = pCoordinator->IsActiveInHierarchy(entity);
+
+            if (effects.playOnEnable)
+            {
+                if (isNowActive && !effects._wasActiveInHierarchy)
+                {
+                    // Rising edge: entity just became active - restart and play all clips
+                    effects.ResetAll();
+                    effects.PlayAll();
+                }
+                else if (!isNowActive && effects._wasActiveInHierarchy)
+                {
+                    // Falling edge: entity just became inactive - stop so clips
+                    // restart cleanly from the top next time it re-enables.
+                    effects.StopAll();
+                }
+            }
+
+            effects._wasActiveInHierarchy = isNowActive;
+
+            // --- Skip time advancement entirely while inactive ----------------
+            if (!isNowActive)
+                continue;
 
             for (auto& clip : effects.clips)
             {
@@ -665,7 +706,6 @@ namespace Uma_UI
                 rt.isDirty = true;
             }
             break;
-
         case EffectProperty::Scale:
         {
             Vec2 currentScale = LerpVec2(clip.startVec2, clip.endVec2, easedT);
@@ -724,11 +764,6 @@ namespace Uma_UI
                 }
             }
 
-            if (clip.applyToChildren && transformArray.Has(entity))
-            {
-                ApplyScaleToChildren(entity, currentScale, originalSizes, originalFontSizes);
-            }
-
             if (!clip.loop && clip.IsComplete())
             {
                 originalSizes.erase(entity);
@@ -737,33 +772,55 @@ namespace Uma_UI
             break;
         }
         case EffectProperty::ColorTint:
+            // Apply to Image and Text independently - an entity may have both
+            // (e.g. a Button with a background image and a label on the same entity).
             if (imageArray.Has(entity))
             {
                 auto& image = imageArray.GetData(entity);
                 image.color = LerpColor(clip.startColor, clip.endColor, easedT);
             }
-            else if (textArray.Has(entity))
+            if (textArray.Has(entity))
             {
                 auto& text = textArray.GetData(entity);
                 text.color = LerpColor(clip.startColor, clip.endColor, easedT);
             }
             break;
-
         case EffectProperty::Alpha:
+            // Apply to Image and Text independently (same reasoning as ColorTint).
             if (imageArray.Has(entity))
             {
                 auto& image = imageArray.GetData(entity);
                 image.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
-            else if (textArray.Has(entity))
+            if (textArray.Has(entity))
             {
                 auto& text = textArray.GetData(entity);
                 text.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
             break;
-
+        case EffectProperty::FillAmount:
+            if (pCoordinator->HasComponent<Uma_UI::Image>(entity))
+                pCoordinator->GetComponent<Uma_UI::Image>(entity).fillAmount =
+                Uma_UI::LerpFloat(clip.startFloat, clip.endFloat, easedT);
+            break;
+        case EffectProperty::SpritesheetFrame:
+            if (pCoordinator->HasComponent<Uma_UI::Image>(entity))
+                pCoordinator->GetComponent<Uma_UI::Image>(entity).SetFrame(clip.GetCurrentFrame());
+            break;
         default:
             break;
+        }
+
+        // --- Generic applyToChildren: recurse into every child with the same clip ---
+        // Scale already handles its own child sizing above via ApplyScaleToChildren;
+        // all other properties reach children through this shared path.
+        if (clip.applyToChildren && transformArray.Has(entity))
+        {
+            auto& transform = transformArray.GetData(entity);
+            for (Uma_ECS::Entity child : transform.children)
+            {
+                ApplyEffect(child, clip, easedT);
+            }
         }
     }
 
@@ -1030,10 +1087,10 @@ namespace Uma_UI
 
         Uma_UI::Color background = (!checkbox.interactable) ? checkbox.disabledColour : (checkbox.isChecked) ? checkbox.checkedColour :
             ((checkbox.currentState == CheckboxState::Normal) ? checkbox.normalColour :
-             (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoverColour :
-             (checkbox.currentState == CheckboxState::Pressed) ? checkbox.pressedColour :
-             (checkbox.currentState == CheckboxState::Disabled) ? checkbox.disabledColour : 
-              checkbox.normalColour);
+                (checkbox.currentState == CheckboxState::Hovered) ? checkbox.hoverColour :
+                (checkbox.currentState == CheckboxState::Pressed) ? checkbox.pressedColour :
+                (checkbox.currentState == CheckboxState::Disabled) ? checkbox.disabledColour :
+                checkbox.normalColour);
 
         Uma_UI::Color checkmark = (!checkbox.interactable) ? checkbox.checkmarkDisabledColour : checkbox.checkmarkNormalColour;
 

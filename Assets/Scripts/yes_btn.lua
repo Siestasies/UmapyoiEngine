@@ -1,0 +1,3 @@
+function OnPointerClick()
+    CloseApplication()
+end

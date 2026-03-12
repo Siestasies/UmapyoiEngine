@@ -110,11 +110,11 @@ namespace Uma_Engine
         pEventSystem->Subscribe<SceneInfoRequest, ImguiManager>([this](const SceneInfoRequest& e)
             { sceneNames = e.sceneNames; scenePaths = e.scenePaths; activeSceneIndex = e.activeSceneIndex; });
         pEventSystem->Subscribe<UpdateImguiPlayModeEvent, ImguiManager>([this](const UpdateImguiPlayModeEvent& e)
-             { 
+            {
                 m_playState = e.isPlayMode ? PlayState::Playing : PlayState::Stopped;
             });
         pEventSystem->Subscribe<ReturnDuplicatedRequestEvent, ImguiManager>([this](const ReturnDuplicatedRequestEvent& e)
-            { 
+            {
                 m_selectedEntity = e.entity;
                 m_HierarchyScrollToBottom = true;
             });
@@ -124,7 +124,7 @@ namespace Uma_Engine
                 m_HierarchyScrollToBottom = true;
             });
         pEventSystem->Subscribe<EntityPickedEvent, ImguiManager>([this](const EntityPickedEvent& e)
-            { 
+            {
                 (void)e;
                 m_selectedEntity = e.entity;
             });
@@ -206,7 +206,7 @@ namespace Uma_Engine
                 );
             }
         }
-        
+
         if (fileBrowser.isPrefabEdit())
         {
             CreatePrefabControlBar();
@@ -473,10 +473,10 @@ namespace Uma_Engine
         CreateHierarchyWindow();
         CreateInspectorWindow();
         CreateEditorCameraWindow();
-		CreateSystemsWindow();
-		//CreateEntityDebugWindow();
-		CreateConsoleWindow();
-		//CreateEntityPropertyWindow();
+        CreateSystemsWindow();
+        //CreateEntityDebugWindow();
+        CreateConsoleWindow();
+        //CreateEntityPropertyWindow();
 
         /*auto graphics = pSystemManager->GetSystem<Graphics>();
         if (graphics && graphics->GetRenderTarget() == Uma_Engine::RenderTarget::Framebuffer)
@@ -586,8 +586,8 @@ namespace Uma_Engine
             ImDrawList* drawList = ImGui::GetWindowDrawList();
 
             auto& coordinator = pSystemManager->GetSystem<SceneManager>()->GetActiveScene()->GetCoordinator();
-          
-            if (coordinator.HasComponent<Uma_ECS::Tilemap>(m_selectedEntity)) 
+
+            if (coordinator.HasComponent<Uma_ECS::Tilemap>(m_selectedEntity))
             {
                 auto& transform = coordinator.GetComponent<Uma_ECS::Transform>(m_selectedEntity);
                 pTilemapEditorManager->RenderSceneOverlay(drawList, transform, imagePos);
@@ -1016,7 +1016,7 @@ namespace Uma_Engine
                 entity,
                 isActive,
                 isActive ? "Enable " + GetEntityDisplayName(entity, coordinator)
-                         : "Disable " + GetEntityDisplayName(entity, coordinator)
+                : "Disable " + GetEntityDisplayName(entity, coordinator)
             );
             commandHistory.ExecuteCommand(std::move(cmd));
         }
@@ -1060,7 +1060,7 @@ namespace Uma_Engine
                     auto cmd = std::make_unique<Uma_Editor::EntitySnapshotCmd>(
                         &newCoordinator,
                         std::move(m_snapshotBeforeEdit),
-                        std::move(snapshotAfter),       
+                        std::move(snapshotAfter),
                         "Transform Edit"
                     );
 
@@ -1098,7 +1098,7 @@ namespace Uma_Engine
 
                 // Access through raw pointer (still valid, owned by command history now)
                 m_selectedEntity = rawCmd->GetCreatedEntity();
-               
+
                 m_HierarchyScrollToBottomFrames = 2;
             }
 
@@ -1869,7 +1869,7 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Render Order");
                 if (ImGui::InputInt("##Sprite Sorting Order", &sprite.renderOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
-                
+
 
                 ImGui::Separator();
                 ImGui::Text("Color & Alpha");
@@ -2510,7 +2510,7 @@ namespace Uma_Engine
 
                                 // Convert to lowercase for comparison
                                 std::transform(ext.begin(), ext.end(), ext.begin(),
-                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                                 if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                                 {
@@ -2786,7 +2786,7 @@ namespace Uma_Engine
 
                 ImGui::Unindent();
             }
-            }
+        }
         else if (type == coordinator.GetComponentType<Uma_ECS::LuaScript>())
         {
             if (ImGui::CollapsingHeader("LuaScript"))
@@ -3083,19 +3083,19 @@ namespace Uma_Engine
 
                 auto& audio = coordinator.GetComponent<Uma_ECS::AudioComponent>(entity);
                 ImGui::Indent();
-            
+
                 ImGui::Text("Position: (%.2f, %.2f, %.2f)",
                     audio.position.x, audio.position.y, audio.position.z);
-            
+
                 ImGui::Text("Velocity: (%.2f, %.2f, %.2f)",
                     audio.velocity.x, audio.velocity.y, audio.velocity.z);
-            
+
                 ImGui::Separator();
                 ImGui::Text("Default Settings");
-            
+
                 ImGui::DragFloat("Default Volume", &audio.defaultVolume, 0.01f, 0.0f, 1.0f);
                 ImGui::Checkbox("Default 3D", &audio.default3D);
-            
+
                 ImGui::Separator();
                 ImGui::Text("Loaded Sounds: %zu", audio.loadedSounds.size());
 
@@ -3351,7 +3351,7 @@ namespace Uma_Engine
                     }
                     ImGui::EndPopup();
                 }
-        
+
                 ImGui::Separator();
                 if (!audio.loopingSoundName.empty())
                 {
@@ -3375,7 +3375,7 @@ namespace Uma_Engine
                     ImGui::GetCurrentWindow()->Flags &= ~ImGuiWindowFlags_UnsavedDocument;
                     hasPendingEdit = false;
                 }
-        
+
                 ImGui::Unindent();
             }
         }
@@ -3421,25 +3421,25 @@ namespace Uma_Engine
 
                 auto& pathfinding = coordinator.GetComponent<Uma_ECS::PathFinding>(entity);
                 ImGui::Indent();
-            
+
                 ImGui::Text("Path Update Settings");
                 ImGui::DragFloat("Update Interval", &pathfinding.pathUpdateInterval, 0.01f, 0.01f, 5.0f);
-            
+
                 ImGui::Separator();
                 ImGui::Text("Goal Position");
-            
+
                 float goalPos[2] = { pathfinding.goal.x, pathfinding.goal.y };
                 if (ImGui::DragFloat2("Goal", goalPos, 0.1f))
                 {
                     pathfinding.goal = Vec2(goalPos[0], goalPos[1]);
                 }
-            
+
                 ImGui::Separator();
                 ImGui::Text("Path Info");
-            
+
                 ImGui::Text("Path Length: %zu", pathfinding.path.size());
                 ImGui::Text("Current Index: %u", pathfinding.pathIndex);
-            
+
                 if (!pathfinding.path.empty())
                 {
                     if (ImGui::TreeNode("Path Points"))
@@ -3456,7 +3456,7 @@ namespace Uma_Engine
                 {
                     ImGui::TextDisabled("No path points");
                 }
-            
+
                 ImGui::Unindent();
             }
         }
@@ -3625,7 +3625,7 @@ namespace Uma_Engine
 
                                 // Convert to lowercase for comparison
                                 std::transform(ext.begin(), ext.end(), ext.begin(),
-                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                                    [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                                 if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                                 {
@@ -3898,13 +3898,241 @@ namespace Uma_Engine
 
                 auto& rectTransform = coordinator.GetComponent<Uma_UI::RectTransform>(entity);
                 ImGui::Indent();
-            
+
                 // Begin tracking
                 BeginComponentEdit(entity, coordinator);
-            
+
                 ImGui::Text("Anchors");
                 ImGui::Separator();
-            
+
+                // Anchor Preset Picker
+                {
+                    struct PresetEntry
+                    {
+                        const char* tooltip;
+                        Uma_UI::AnchorPreset(*fn)();
+                    };
+
+                    static const PresetEntry presets[4][3] =
+                    {
+                        { { "Top Left",    Uma_UI::AnchorPreset::TopLeft    }, { "Top Center",    Uma_UI::AnchorPreset::TopCenter    }, { "Top Right",    Uma_UI::AnchorPreset::TopRight    } },
+                        { { "Mid Left",    Uma_UI::AnchorPreset::MiddleLeft }, { "Mid Center",    Uma_UI::AnchorPreset::MiddleCenter }, { "Mid Right",    Uma_UI::AnchorPreset::MiddleRight } },
+                        { { "Bot Left",    Uma_UI::AnchorPreset::BottomLeft }, { "Bot Center",    Uma_UI::AnchorPreset::BottomCenter }, { "Bot Right",    Uma_UI::AnchorPreset::BottomRight } },
+                        { { "Stretch H",   Uma_UI::AnchorPreset::StretchHorizontal }, { "Stretch V", Uma_UI::AnchorPreset::StretchVertical }, { "Stretch All", Uma_UI::AnchorPreset::StretchAll } },
+                    };
+
+                    auto matchesPreset = [&](const Uma_UI::AnchorPreset& p) -> bool
+                        {
+                            return rectTransform.anchorMin.x == p.anchorMin.x
+                                && rectTransform.anchorMin.y == p.anchorMin.y
+                                && rectTransform.anchorMax.x == p.anchorMax.x
+                                && rectTransform.anchorMax.y == p.anchorMax.y;
+                        };
+
+                    // Draws a miniature anchor diagram into a cell using ImDrawList.
+                    // parentMin/parentMax: pixel bounds of the outer "parent" box.
+                    // preset: the anchor config to visualise.
+                    // col_dim: dim line colour, col_anchor: anchor marker colour.
+                    auto drawAnchorDiagram = [&](
+                        ImDrawList* dl,
+                        ImVec2 parentMin, ImVec2 parentMax,
+                        const Uma_UI::AnchorPreset& p,
+                        ImU32 col_bg, ImU32 col_border,
+                        ImU32 col_anchor, ImU32 col_child)
+                        {
+                            float pw = parentMax.x - parentMin.x;
+                            float ph = parentMax.y - parentMin.y;
+
+                            // Parent box
+                            dl->AddRectFilled(parentMin, parentMax, col_bg);
+                            dl->AddRect(parentMin, parentMax, col_border);
+
+                            // Anchor point(s) in pixel space.
+                            // Note: Y is flipped ? anchorMin.y=0 is bottom in UI space, but top in screen space.
+                            float axMin = parentMin.x + p.anchorMin.x * pw;
+                            float ayMin = parentMax.y - p.anchorMin.y * ph; // flip Y
+                            float axMax = parentMin.x + p.anchorMax.x * pw;
+                            float ayMax = parentMax.y - p.anchorMax.y * ph; // flip Y
+
+                            bool stretchH = (p.anchorMin.x != p.anchorMax.x);
+                            bool stretchV = (p.anchorMin.y != p.anchorMax.y);
+
+                            if (stretchH || stretchV)
+                            {
+                                // Draw stretch lines across the parent
+                                if (stretchH)
+                                    dl->AddLine(ImVec2(axMin, parentMin.y + ph * 0.5f),
+                                        ImVec2(axMax, parentMin.y + ph * 0.5f), col_anchor, 1.5f);
+                                if (stretchV)
+                                    dl->AddLine(ImVec2(parentMin.x + pw * 0.5f, ayMax),
+                                        ImVec2(parentMin.x + pw * 0.5f, ayMin), col_anchor, 1.5f);
+
+                                // Child rect fills anchor span
+                                float childL = stretchH ? axMin : parentMin.x + pw * 0.15f;
+                                float childR = stretchH ? axMax : parentMax.x - pw * 0.15f;
+                                float childT = stretchV ? ayMax : parentMin.y + ph * 0.25f;
+                                float childB = stretchV ? ayMin : parentMax.y - ph * 0.25f;
+                                dl->AddRectFilled(ImVec2(childL, childT), ImVec2(childR, childB), col_child);
+
+                                // Arrow heads on stretch lines
+                                const float ar = 2.5f;
+                                if (stretchH)
+                                {
+                                    float my = parentMin.y + ph * 0.5f;
+                                    dl->AddTriangleFilled(ImVec2(axMin, my), ImVec2(axMin + ar, my - ar), ImVec2(axMin + ar, my + ar), col_anchor);
+                                    dl->AddTriangleFilled(ImVec2(axMax, my), ImVec2(axMax - ar, my - ar), ImVec2(axMax - ar, my + ar), col_anchor);
+                                }
+                                if (stretchV)
+                                {
+                                    float mx = parentMin.x + pw * 0.5f;
+                                    dl->AddTriangleFilled(ImVec2(mx, ayMin), ImVec2(mx - ar, ayMin - ar), ImVec2(mx + ar, ayMin - ar), col_anchor);
+                                    dl->AddTriangleFilled(ImVec2(mx, ayMax), ImVec2(mx - ar, ayMax + ar), ImVec2(mx + ar, ayMax + ar), col_anchor);
+                                }
+                            }
+                            else
+                            {
+                                // Point anchor ? draw crosshair at anchor point
+                                float cx = axMin;
+                                float cy = ayMin;
+                                dl->AddLine(ImVec2(cx - 3, cy), ImVec2(cx + 3, cy), col_anchor, 1.5f);
+                                dl->AddLine(ImVec2(cx, cy - 3), ImVec2(cx, cy + 3), col_anchor, 1.5f);
+
+                                // Child rect offset from anchor via pivot
+                                float cw = pw * 0.45f;
+                                float ch = ph * 0.45f;
+                                float childL = cx + (0.0f - p.pivot.x) * cw;
+                                float childT = cy + (p.pivot.y - 1.0f) * ch;
+                                dl->AddRectFilled(
+                                    ImVec2(childL, childT),
+                                    ImVec2(childL + cw, childT + ch),
+                                    col_child);
+                            }
+                        };
+
+                    // Preset button: "Anchor Presets" opens a popup
+                    if (ImGui::Button("Anchor Presets##AnchorPresetBtn"))
+                        ImGui::OpenPopup("AnchorPresetPopup");
+
+                    if (ImGui::BeginPopup("AnchorPresetPopup"))
+                    {
+                        ImGui::TextDisabled("Anchor Presets");
+                        ImGui::Separator();
+                        ImGui::Spacing();
+
+                        ImDrawList* dl = ImGui::GetWindowDrawList();
+                        const float cell = 46.0f;  // cell size in pixels
+                        const float pad = 4.0f;   // padding inside cell
+                        const float diagSz = cell - pad * 2.0f;
+                        const int   cols = 3;
+                        const int   rows = 4;
+
+                        ImU32 col_bg = IM_COL32(40, 40, 44, 255);
+                        ImU32 col_border = IM_COL32(90, 90, 100, 255);
+                        ImU32 col_anchor = IM_COL32(100, 200, 255, 255);
+                        ImU32 col_child = IM_COL32(80, 140, 200, 120);
+                        ImU32 col_active_bg = IM_COL32(60, 120, 200, 255);
+                        ImU32 col_hover_bg = IM_COL32(55, 55, 65, 255);
+
+                        for (int row = 0; row < rows; ++row)
+                        {
+                            if (row == 3)
+                            {
+                                ImGui::Spacing();
+                                ImGui::Separator();
+                                ImGui::Spacing();
+                            }
+
+                            for (int col = 0; col < cols; ++col)
+                            {
+                                if (col > 0) ImGui::SameLine(0.0f, 4.0f);
+
+                                Uma_UI::AnchorPreset p = presets[row][col].fn();
+                                bool active = matchesPreset(p);
+
+                                // Invisible button to capture hover/click
+                                std::string btnId = "##APCell_" + std::to_string(row) + "_" + std::to_string(col);
+                                ImVec2 cellMin = ImGui::GetCursorScreenPos();
+                                ImVec2 cellMax = ImVec2(cellMin.x + cell, cellMin.y + cell);
+
+                                bool hovered = false;
+                                bool clicked = ImGui::InvisibleButton(btnId.c_str(), ImVec2(cell, cell));
+                                hovered = ImGui::IsItemHovered();
+
+                                // Background
+                                ImU32 bgCol = active ? col_active_bg : (hovered ? col_hover_bg : col_bg);
+                                dl->AddRectFilled(cellMin, cellMax, bgCol, 4.0f);
+                                dl->AddRect(cellMin, cellMax,
+                                    active ? IM_COL32(120, 180, 255, 255) : IM_COL32(70, 70, 80, 255),
+                                    4.0f, 0, active ? 1.5f : 1.0f);
+
+                                // Anchor diagram inside cell
+                                ImVec2 diagMin = ImVec2(cellMin.x + pad, cellMin.y + pad);
+                                ImVec2 diagMax = ImVec2(diagMin.x + diagSz, diagMin.y + diagSz);
+                                drawAnchorDiagram(dl, diagMin, diagMax, p,
+                                    active ? IM_COL32(30, 70, 130, 255) : col_bg,
+                                    active ? IM_COL32(140, 200, 255, 200) : col_border,
+                                    active ? IM_COL32(255, 255, 255, 255) : col_anchor,
+                                    active ? IM_COL32(180, 220, 255, 160) : col_child);
+
+                                if (clicked)
+                                {
+                                    rectTransform.ApplyPreset(p);
+                                    rectTransform.isDirty = true;
+                                    m_hasUnsavedEdit = true;
+                                    ImGui::CloseCurrentPopup();
+                                }
+
+                                if (hovered)
+                                    ImGui::SetTooltip("%s\nanchorMin=(%.1f, %.1f)  anchorMax=(%.1f, %.1f)\npivot=(%.1f, %.1f)",
+                                        presets[row][col].tooltip,
+                                        p.anchorMin.x, p.anchorMin.y,
+                                        p.anchorMax.x, p.anchorMax.y,
+                                        p.pivot.x, p.pivot.y);
+                            }
+                        }
+
+                        ImGui::Spacing();
+                        ImGui::EndPopup();
+                    }
+
+                    // Small inline preview of the current anchor next to the button
+                    ImGui::SameLine();
+                    {
+                        ImDrawList* dl = ImGui::GetWindowDrawList();
+                        ImVec2 pos = ImGui::GetCursorScreenPos();
+                        const float sz = 20.0f;
+                        ImVec2 pMin = ImVec2(pos.x, pos.y + 1.0f);
+                        ImVec2 pMax = ImVec2(pos.x + sz, pos.y + sz - 1.0f);
+                        Uma_UI::AnchorPreset cur = { rectTransform.anchorMin, rectTransform.anchorMax, rectTransform.pivot };
+                        ImGui::Dummy(ImVec2(sz + 2.0f, sz));
+                        dl->AddRectFilled(pMin, pMax, IM_COL32(40, 40, 44, 255), 2.0f);
+                        dl->AddRect(pMin, pMax, IM_COL32(90, 90, 100, 255), 2.0f);
+
+                        float pw = pMax.x - pMin.x;
+                        float ph = pMax.y - pMin.y;
+                        float axMin = pMin.x + cur.anchorMin.x * pw;
+                        float ayMin = pMax.y - cur.anchorMin.y * ph;
+                        float axMax = pMin.x + cur.anchorMax.x * pw;
+                        float ayMax = pMax.y - cur.anchorMax.y * ph;
+                        bool strH = cur.anchorMin.x != cur.anchorMax.x;
+                        bool strV = cur.anchorMin.y != cur.anchorMax.y;
+                        ImU32 ac = IM_COL32(100, 200, 255, 255);
+                        if (strH || strV)
+                        {
+                            if (strH) dl->AddLine(ImVec2(axMin, pMin.y + ph * 0.5f), ImVec2(axMax, pMin.y + ph * 0.5f), ac, 1.5f);
+                            if (strV) dl->AddLine(ImVec2(pMin.x + pw * 0.5f, ayMax), ImVec2(pMin.x + pw * 0.5f, ayMin), ac, 1.5f);
+                        }
+                        else
+                        {
+                            dl->AddLine(ImVec2(axMin - 3, ayMin), ImVec2(axMin + 3, ayMin), ac, 1.5f);
+                            dl->AddLine(ImVec2(axMin, ayMin - 3), ImVec2(axMin, ayMin + 3), ac, 1.5f);
+                        }
+                    }
+
+                    ImGui::Spacing();
+                }
+                // End Anchor Preset Picker
+
                 float anchorMin[2] = { rectTransform.anchorMin.x, rectTransform.anchorMin.y };
                 if (ImGui::DragFloat2("Anchor Min", anchorMin, 0.01f, 0.0f, 1.0f))
                 {
@@ -3912,7 +4140,7 @@ namespace Uma_Engine
                     rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 float anchorMax[2] = { rectTransform.anchorMax.x, rectTransform.anchorMax.y };
                 if (ImGui::DragFloat2("Anchor Max", anchorMax, 0.01f, 0.0f, 1.0f))
                 {
@@ -3920,11 +4148,11 @@ namespace Uma_Engine
                     rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 ImGui::Spacing();
                 ImGui::Text("Position & Size");
                 ImGui::Separator();
-            
+
                 float pivot[2] = { rectTransform.pivot.x, rectTransform.pivot.y };
                 if (ImGui::DragFloat2("Pivot", pivot, 0.01f, 0.0f, 1.0f))
                 {
@@ -3932,7 +4160,7 @@ namespace Uma_Engine
                     rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 float anchoredPos[2] = { rectTransform.anchoredPosition.x, rectTransform.anchoredPosition.y };
                 if (ImGui::DragFloat2("Anchored Position", anchoredPos, 1.0f))
                 {
@@ -3940,7 +4168,7 @@ namespace Uma_Engine
                     rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 float sizeDelta[2] = { rectTransform.sizeDelta.x, rectTransform.sizeDelta.y };
                 if (ImGui::DragFloat2("Size Delta", sizeDelta, 1.0f))
                 {
@@ -3948,16 +4176,16 @@ namespace Uma_Engine
                     rectTransform.isDirty = true;
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 ImGui::Spacing();
                 ImGui::Text("Computed Rect (Read-Only)");
                 ImGui::Separator();
                 ImGui::Text("X: %.2f, Y: %.2f", rectTransform.computedRect.x, rectTransform.computedRect.y);
                 ImGui::Text("Width: %.2f, Height: %.2f", rectTransform.computedRect.width, rectTransform.computedRect.height);
-            
+
                 // End tracking
                 EndComponentEdit(entity, coordinator, "RectTransform");
-            
+
                 ImGui::Unindent();
             }
         }
@@ -4118,6 +4346,57 @@ namespace Uma_Engine
                     }
                 }
 
+                ImGui::Separator();
+                ImGui::Text("Sprite Sheet");
+
+                // Grid dimensions
+                float gridArray[2] = { image.spriteSheetGrid.x, image.spriteSheetGrid.y };
+                if (ImGui::DragFloat2("Grid (Cols x Rows)", gridArray, 1.0f, 1.0f, 100.0f, "%.0f"))
+                {
+                    image.spriteSheetGrid.x = gridArray[0];
+                    image.spriteSheetGrid.y = gridArray[1];
+                    // Clamp current cell to new grid bounds
+                    image.spriteCell.x = std::min(image.spriteCell.x, image.spriteSheetGrid.x - 1.0f);
+                    image.spriteCell.y = std::min(image.spriteCell.y, image.spriteSheetGrid.y - 1.0f);
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Active cell
+                float cellArray[2] = { image.spriteCell.x, image.spriteCell.y };
+                if (ImGui::DragFloat2("Cell (Col, Row)", cellArray, 1.0f, 0.0f,
+                    std::max(image.spriteSheetGrid.x - 1.0f, 0.0f), "%.0f"))
+                {
+                    image.spriteCell.x = std::min(cellArray[0], image.spriteSheetGrid.x - 1.0f);
+                    image.spriteCell.y = std::min(cellArray[1], image.spriteSheetGrid.y - 1.0f);
+                    m_hasUnsavedEdit = true;
+                }
+
+                // Flat frame index (convenience alias)
+                int frameIndex = image.GetFrame();
+                int totalFrames = static_cast<int>(image.spriteSheetGrid.x * image.spriteSheetGrid.y);
+                if (ImGui::DragInt("Frame Index", &frameIndex, 1.0f, 0, totalFrames - 1))
+                {
+                    image.SetFrame(frameIndex);
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Row-major flat index. Synced with Cell (Col, Row) above.");
+                }
+
+                // UV offset (fine-tuning within a cell)
+                float offsetArray[2] = { image.spriteOffset.x, image.spriteOffset.y };
+                if (ImGui::DragFloat2("UV Offset", offsetArray, 0.001f, -1.0f, 1.0f, "%.4f"))
+                {
+                    image.spriteOffset.x = offsetArray[0];
+                    image.spriteOffset.y = offsetArray[1];
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::IsItemHovered())
+                {
+                    ImGui::SetTooltip("Fine UV offset applied on top of the cell position.");
+                }
+
                 // Texture info
                 ImGui::Separator();
                 if (image.texture)
@@ -4137,100 +4416,100 @@ namespace Uma_Engine
 
                 ImGui::Unindent();
             }
-            }
+        }
         else if (type == coordinator.GetComponentType<Uma_UI::Button>())
         {
-           if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
-           {
-               if (ImGui::Button("Remove Component##Button"))
-               {
-                   auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Button>>(
-                       &coordinator,
-                       entity,
-                       "Remove Button"
-                   );
-                   commandHistory.ExecuteCommand(std::move(cmd));
+            if (ImGui::CollapsingHeader("Button", ImGuiTreeNodeFlags_DefaultOpen))
+            {
+                if (ImGui::Button("Remove Component##Button"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_UI::Button>>(
+                        &coordinator,
+                        entity,
+                        "Remove Button"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
 
-                   return true;
-               }
+                    return true;
+                }
 
-               auto& button = coordinator.GetComponent<Uma_UI::Button>(entity);
-               ImGui::Indent();
-           
-               // Begin tracking
-               BeginComponentEdit(entity, coordinator);
-           
-               if (ImGui::Checkbox("Interactable", &button.interactable))
-               {
-                   m_hasUnsavedEdit = true;
-               }
-           
-               ImGui::Spacing();
-               ImGui::Text("Current State: %s",
-                   button.currentState == Uma_UI::ButtonState::Normal ? "Normal" :
-                   button.currentState == Uma_UI::ButtonState::Hovered ? "Hovered" :
-                   button.currentState == Uma_UI::ButtonState::Pressed ? "Pressed" : "Disabled");
-           
-               ImGui::Separator();
+                auto& button = coordinator.GetComponent<Uma_UI::Button>(entity);
+                ImGui::Indent();
 
-               
-               static char imageTextureBuffer[256];
-               strncpy(imageTextureBuffer, button.scriptName.c_str(), 255);
-               imageTextureBuffer[255] = '\0';
-               if (ImGui::InputText("Script Name", imageTextureBuffer, 256))
-               {
-                   button.scriptName = imageTextureBuffer;
-                   m_hasUnsavedEdit = true;
-               }
-               ImGui::Separator();
+                // Begin tracking
+                BeginComponentEdit(entity, coordinator);
 
-               ImGui::Text("Button Colors");
-           
-               float normalColor[4] = { button.normalColour.r, button.normalColour.g, button.normalColour.b, button.normalColour.a };
-               if (ImGui::ColorEdit4("Normal Color", normalColor))
-               {
-                   button.normalColour.r = normalColor[0];
-                   button.normalColour.g = normalColor[1];
-                   button.normalColour.b = normalColor[2];
-                   button.normalColour.a = normalColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               float hoverColor[4] = { button.hoverColour.r, button.hoverColour.g, button.hoverColour.b, button.hoverColour.a };
-               if (ImGui::ColorEdit4("Hover Color", hoverColor))
-               {
-                   button.hoverColour.r = hoverColor[0];
-                   button.hoverColour.g = hoverColor[1];
-                   button.hoverColour.b = hoverColor[2];
-                   button.hoverColour.a = hoverColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               float pressedColor[4] = { button.pressedColour.r, button.pressedColour.g, button.pressedColour.b, button.pressedColour.a };
-               if (ImGui::ColorEdit4("Pressed Color", pressedColor))
-               {
-                   button.pressedColour.r = pressedColor[0];
-                   button.pressedColour.g = pressedColor[1];
-                   button.pressedColour.b = pressedColor[2];
-                   button.pressedColour.a = pressedColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               float disabledColor[4] = { button.disabledColour.r, button.disabledColour.g, button.disabledColour.b, button.disabledColour.a };
-               if (ImGui::ColorEdit4("Disabled Color", disabledColor))
-               {
-                   button.disabledColour.r = disabledColor[0];
-                   button.disabledColour.g = disabledColor[1];
-                   button.disabledColour.b = disabledColor[2];
-                   button.disabledColour.a = disabledColor[3];
-                   m_hasUnsavedEdit = true;
-               }
-           
-               // End tracking
-               EndComponentEdit(entity, coordinator, "Button");
-           
-               ImGui::Unindent();
-           }
+                if (ImGui::Checkbox("Interactable", &button.interactable))
+                {
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::Spacing();
+                ImGui::Text("Current State: %s",
+                    button.currentState == Uma_UI::ButtonState::Normal ? "Normal" :
+                    button.currentState == Uma_UI::ButtonState::Hovered ? "Hovered" :
+                    button.currentState == Uma_UI::ButtonState::Pressed ? "Pressed" : "Disabled");
+
+                ImGui::Separator();
+
+
+                static char imageTextureBuffer[256];
+                strncpy(imageTextureBuffer, button.scriptName.c_str(), 255);
+                imageTextureBuffer[255] = '\0';
+                if (ImGui::InputText("Script Name", imageTextureBuffer, 256))
+                {
+                    button.scriptName = imageTextureBuffer;
+                    m_hasUnsavedEdit = true;
+                }
+                ImGui::Separator();
+
+                ImGui::Text("Button Colors");
+
+                float normalColor[4] = { button.normalColour.r, button.normalColour.g, button.normalColour.b, button.normalColour.a };
+                if (ImGui::ColorEdit4("Normal Color", normalColor))
+                {
+                    button.normalColour.r = normalColor[0];
+                    button.normalColour.g = normalColor[1];
+                    button.normalColour.b = normalColor[2];
+                    button.normalColour.a = normalColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float hoverColor[4] = { button.hoverColour.r, button.hoverColour.g, button.hoverColour.b, button.hoverColour.a };
+                if (ImGui::ColorEdit4("Hover Color", hoverColor))
+                {
+                    button.hoverColour.r = hoverColor[0];
+                    button.hoverColour.g = hoverColor[1];
+                    button.hoverColour.b = hoverColor[2];
+                    button.hoverColour.a = hoverColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float pressedColor[4] = { button.pressedColour.r, button.pressedColour.g, button.pressedColour.b, button.pressedColour.a };
+                if (ImGui::ColorEdit4("Pressed Color", pressedColor))
+                {
+                    button.pressedColour.r = pressedColor[0];
+                    button.pressedColour.g = pressedColor[1];
+                    button.pressedColour.b = pressedColor[2];
+                    button.pressedColour.a = pressedColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                float disabledColor[4] = { button.disabledColour.r, button.disabledColour.g, button.disabledColour.b, button.disabledColour.a };
+                if (ImGui::ColorEdit4("Disabled Color", disabledColor))
+                {
+                    button.disabledColour.r = disabledColor[0];
+                    button.disabledColour.g = disabledColor[1];
+                    button.disabledColour.b = disabledColor[2];
+                    button.disabledColour.a = disabledColor[3];
+                    m_hasUnsavedEdit = true;
+                }
+
+                // End tracking
+                EndComponentEdit(entity, coordinator, "Button");
+
+                ImGui::Unindent();
+            }
         }
         else if (type == coordinator.GetComponentType<Uma_UI::Slider>())
         {
@@ -4662,7 +4941,7 @@ namespace Uma_Engine
                     checkbox.currentState == Uma_UI::CheckboxState::Hovered ? "Hovered" :
                     checkbox.currentState == Uma_UI::CheckboxState::Pressed ? "Pressed" : "Disabled");
 
-                
+
                 // Checkmark Entity (Required)
                 ImGui::Text("Checkmark:");
                 ImGui::SameLine(120);
@@ -4874,10 +5153,10 @@ namespace Uma_Engine
 
                 auto& canvas = coordinator.GetComponent<Uma_UI::Canvas>(entity);
                 ImGui::Indent();
-            
+
                 // Begin tracking
                 BeginComponentEdit(entity, coordinator);
-            
+
                 if (ImGui::DragInt("Sorting Order", &canvas.sortingOrder, 1.0f, -100, 100))
                 {
                     if (coordinator.HasComponent<Uma_UI::RectTransform>(entity))
@@ -4886,10 +5165,10 @@ namespace Uma_Engine
                     }
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 ImGui::Separator();
                 ImGui::Text("Reference Resolution");
-            
+
                 float refResolution[2] = { canvas.referenceResolution.x, canvas.referenceResolution.y };
                 if (ImGui::DragFloat2("Resolution", refResolution, 1.0f, 1.0f, 10000.0f, "%.0f"))
                 {
@@ -4900,10 +5179,10 @@ namespace Uma_Engine
                     }
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 ImGui::Separator();
                 ImGui::Text("Scale Mode");
-            
+
                 const char* scaleModes[] = { "Constant Pixel Size", "Scale With Screen Size", "Constant Physical Size" };
                 int currentScaleMode = static_cast<int>(canvas.scaleMode);
                 if (ImGui::Combo("Scale Mode", &currentScaleMode, scaleModes, IM_ARRAYSIZE(scaleModes)))
@@ -4915,7 +5194,7 @@ namespace Uma_Engine
                     }
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 if (canvas.scaleMode == Uma_UI::CanvasScaleMode::ScaleWithScreenSize)
                 {
                     if (ImGui::SliderFloat("Match Width/Height", &canvas.matchWidthOrHeight, 0.0f, 1.0f, "%.2f"))
@@ -4928,14 +5207,14 @@ namespace Uma_Engine
                     }
                     ImGui::TextDisabled("0 = Match Width, 1 = Match Height");
                 }
-            
+
                 ImGui::Separator();
                 ImGui::Text("Runtime Info");
                 ImGui::Text("Scale Factor: %.3f", canvas.scaleFactor);
-            
+
                 // End tracking
                 EndComponentEdit(entity, coordinator, "Canvas");
-            
+
                 ImGui::Unindent();
             }
         }
@@ -4958,10 +5237,10 @@ namespace Uma_Engine
                 auto& text = coordinator.GetComponent<Uma_UI::Text>(entity);
 
                 ImGui::Indent();
-            
+
                 // Begin tracking
                 BeginComponentEdit(entity, coordinator);
-            
+
                 static char textContentBuffer[1024];
                 strncpy(textContentBuffer, text.text.c_str(), 1023);
                 textContentBuffer[1023] = '\0';
@@ -4975,10 +5254,10 @@ namespace Uma_Engine
                 ImGui::Separator();
                 ImGui::Text("Sorting Order");
                 if (ImGui::InputInt("##Text Sorting Order", &text.sortingOrder, 1, 0, 0)) m_hasUnsavedEdit = true;
-            
+
                 ImGui::Separator();
                 ImGui::Text("Font Settings");
-            
+
                 ImGui::Separator();
                 ImGui::Text("Font Settings");
 
@@ -5075,15 +5354,15 @@ namespace Uma_Engine
 
                 // Move cursor past the drop zone
                 ImGui::SetCursorScreenPos(ImVec2(cursorPos.x, cursorPos.y + dropZoneSize.y + 5.0f));
-            
+
                 if (ImGui::DragFloat("Font Size", &text.fontSize, 1.0f, 1.0f, 200.0f, "%.1f"))
                 {
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 ImGui::Separator();
                 ImGui::Text("Appearance");
-            
+
                 float textColor[4] = { text.color.r, text.color.g, text.color.b, text.color.a };
                 if (ImGui::ColorEdit4("Text Color", textColor))
                 {
@@ -5093,7 +5372,7 @@ namespace Uma_Engine
                     text.color.a = textColor[3];
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 const char* alignments[] = { "Left", "Center", "Right" };
                 int currentAlignment = static_cast<int>(text.alignment);
                 if (ImGui::Combo("Alignment", &currentAlignment, alignments, IM_ARRAYSIZE(alignments)))
@@ -5101,15 +5380,15 @@ namespace Uma_Engine
                     text.alignment = static_cast<Uma_UI::TextAlignment>(currentAlignment);
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 if (ImGui::Checkbox("Text Visible", &text.visible))
                 {
                     m_hasUnsavedEdit = true;
                 }
-            
+
                 // End tracking
                 EndComponentEdit(entity, coordinator, "Text");
-            
+
                 ImGui::Unindent();
             }
         }
@@ -5229,6 +5508,40 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
+                ImGui::SameLine();
+                if (ImGui::Button("Fill Bar"))
+                {
+                    Uma_UI::EffectClip fillBar;
+                    fillBar.name = "FillBar";
+                    fillBar.property = Uma_UI::EffectProperty::FillAmount;
+                    fillBar.easing = Uma_UI::EasingType::EaseOutQuad;
+                    fillBar.duration = 1.0f;
+                    fillBar.delay = 0.0f;
+                    fillBar.loop = false;
+                    fillBar.startFloat = 0.0f;
+                    fillBar.endFloat = 1.0f;
+                    effects.clips.push_back(fillBar);
+                    m_hasUnsavedEdit = true;
+                }
+
+                ImGui::SameLine();
+                if (ImGui::Button("Sprite Anim"))
+                {
+                    Uma_UI::EffectClip spriteAnim;
+                    spriteAnim.name = "SpriteAnim";
+                    spriteAnim.property = Uma_UI::EffectProperty::SpritesheetFrame;
+                    spriteAnim.easing = Uma_UI::EasingType::Linear;
+                    spriteAnim.duration = 1.0f;
+                    spriteAnim.delay = 0.0f;
+                    spriteAnim.loop = true;
+                    spriteAnim.startFrame = 0;
+                    spriteAnim.endFrame = 7;
+                    spriteAnim.fps = 12.0f;
+                    spriteAnim.pingPong = false;
+                    effects.clips.push_back(spriteAnim);
+                    m_hasUnsavedEdit = true;
+                }
+
                 ImGui::Separator();
 
                 // Display each clip
@@ -5264,7 +5577,7 @@ namespace Uma_Engine
                         ImGui::Separator();
 
                         // Property Type
-                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha" };
+                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha", "Fill Amount", "Spritesheet Frame" };
                         int currentProperty = static_cast<int>(clip.property);
                         if (ImGui::Combo("Property", &currentProperty, properties, IM_ARRAYSIZE(properties)))
                         {
@@ -5301,6 +5614,15 @@ namespace Uma_Engine
                         if (ImGui::Checkbox("Loop", &clip.loop))
                         {
                             m_hasUnsavedEdit = true;
+                        }
+
+                        if (ImGui::Checkbox("Apply to Children", &clip.applyToChildren))
+                        {
+                            m_hasUnsavedEdit = true;
+                        }
+                        if (ImGui::IsItemHovered())
+                        {
+                            ImGui::SetTooltip("Recursively apply this effect to all child entities.");
                         }
 
                         ImGui::Separator();
@@ -5346,15 +5668,6 @@ namespace Uma_Engine
                                 m_hasUnsavedEdit = true;
                             }
 
-                            // Apply to children checkbox
-                            if (ImGui::Checkbox("Apply to Children", &clip.applyToChildren))
-                            {
-                                m_hasUnsavedEdit = true;
-                            }
-                            if (ImGui::IsItemHovered())
-                            {
-                                ImGui::SetTooltip("When enabled, scale will also affect all child UI elements recursively");
-                            }
                             break;
                         }
                         case Uma_UI::EffectProperty::ColorTint:
@@ -5382,15 +5695,63 @@ namespace Uma_Engine
                         }
                         case Uma_UI::EffectProperty::Alpha:
                         {
-                            if (ImGui::DragFloat("Start", &clip.startFloat, 0.01f))
+                            if (ImGui::DragFloat("Start Alpha", &clip.startFloat, 0.01f, 0.0f, 1.0f))
                             {
                                 m_hasUnsavedEdit = true;
                             }
 
-                            if (ImGui::DragFloat("End", &clip.endFloat, 0.01f))
+                            if (ImGui::DragFloat("End Alpha", &clip.endFloat, 0.01f, 0.0f, 1.0f))
                             {
                                 m_hasUnsavedEdit = true;
                             }
+                            ImGui::TextDisabled("Applies to Image and/or Text on this entity.");
+                            break;
+                        }
+                        case Uma_UI::EffectProperty::FillAmount:
+                        {
+                            if (ImGui::DragFloat("Start Fill", &clip.startFloat, 0.01f, 0.0f, 1.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            if (ImGui::DragFloat("End Fill", &clip.endFloat, 0.01f, 0.0f, 1.0f))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            ImGui::TextDisabled("Requires Image with Fill Direction set.");
+                            break;
+                        }
+                        case Uma_UI::EffectProperty::SpritesheetFrame:
+                        {
+                            if (ImGui::DragInt("Start Frame", &clip.startFrame, 1.0f, 0, 1000))
+                            {
+                                clip.endFrame = std::max(clip.endFrame, clip.startFrame);
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            if (ImGui::DragInt("End Frame", &clip.endFrame, 1.0f, clip.startFrame, 1000))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            if (ImGui::DragFloat("FPS", &clip.fps, 0.5f, 0.1f, 120.0f, "%.1f"))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            if (ImGui::Checkbox("Ping Pong", &clip.pingPong))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                            {
+                                ImGui::SetTooltip("Play forward then in reverse, alternating each loop.");
+                            }
+
+                            // Live frame preview
+                            ImGui::TextDisabled("Preview frame: %d", clip.GetCurrentFrame());
+                            ImGui::TextDisabled("Total frames: %d", clip.endFrame - clip.startFrame + 1);
+                            ImGui::TextDisabled("Requires Image with Sprite Sheet Grid set.");
                             break;
                         }
                         }
@@ -5488,7 +5849,7 @@ namespace Uma_Engine
                 // Begin tracking
                 BeginComponentEdit(entity, coordinator);
 
-                // ?? Sequence list ????????????????????????????????????????????
+                // Sequence list
                 ImGui::Text("Sequences (%zu)", dialogueData.sequences.size());
                 ImGui::Separator();
 
@@ -5554,7 +5915,7 @@ namespace Uma_Engine
                         ImGui::Separator();
                         ImGui::Text("Lines (%zu)", seq.lines.size());
 
-                        // ?? Lines ????????????????????????????????????????????
+                        // Lines
                         for (int lineIdx = 0; lineIdx < static_cast<int>(seq.lines.size()); ++lineIdx)
                         {
                             auto& line = seq.lines[lineIdx];
@@ -5724,7 +6085,7 @@ namespace Uma_Engine
 
                 ImGui::Separator();
 
-                // ?? Add new sequence ?????????????????????????????????????????
+                // Add new sequence
                 ImGui::Text("New Sequence ID:");
                 ImGui::SetNextItemWidth(-80.0f);
                 ImGui::InputText("##newSeqId", newSeqIdBuffer, 128);
@@ -6314,7 +6675,7 @@ namespace Uma_Engine
 
                             // Convert to lowercase for comparison
                             std::transform(ext.begin(), ext.end(), ext.begin(),
-                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+                                [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
 
                             if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
                             {
@@ -6751,14 +7112,14 @@ namespace Uma_Engine
         bool didUndoOrRedo = false;
 
         // Ctrl+Z = Undo
-        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Z)) 
+        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Z))
         {
             commandHistory.Undo();
             didUndoOrRedo = true;
         }
 
         // Ctrl+Y = Redo
-        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Y)) 
+        if (InputSystem::KeyDown(GLFW_KEY_LEFT_CONTROL) && InputSystem::KeyPressed(GLFW_KEY_Y))
         {
             commandHistory.Redo();
             didUndoOrRedo = true;
@@ -7132,9 +7493,9 @@ namespace Uma_Engine
                     m_selectedEntity,
                     Uma_ECS::Tilemap{},
                     "Add Tilemap"
-                    );
+                );
                 commandHistory.ExecuteCommand(std::move(cmd));
-                
+
                 // by default add one layer
                 auto& tilemap = coordinator.GetComponent<Uma_ECS::Tilemap>(m_selectedEntity);
                 tilemap.CreateLayer(

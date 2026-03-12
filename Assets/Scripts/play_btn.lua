@@ -1,42 +1,21 @@
-local time = 0
-local clicked = false
-local image
-local fadeState
-
-function Start()
-    fadeState = require("fadeState")
-end
-
 function OnPointerEnter()
-    if HasEffects() then
-        local effects = GetEffects()
-        effects:Play("HoverEnter")
-    end
+    local child = GetChildren(EntityID, 0)
+    local text = GetTextFrom(child)
+    text.color.r = 0.953
+    text.color.g = 0.859
+    text.color.b = 0.757
+    text.color.a = 1.0
 end
 
 function OnPointerExit()
-    if HasEffects() then
-        local effects = GetEffects()
-        effects:StopAll()
-        effects:Play("HoverExit")
-    end
+    local child = GetChildren(EntityID, 0)
+    local text = GetTextFrom(child)
+    text.color.r = 0.792
+    text.color.g = 0.651
+    text.color.b = 0.584
+    text.color.a = 1.0
 end
 
-
-function OnClick()
-    PlaySound("startbtn_sound", 0.8, 0)
-    fadeState.setFading(true)
-    clicked = true
-end
-
-function Update(dt)
-    -- timer 1 sec to let fade first
-    if clicked then
-        time = time + dt
-        if time >= 1 then
-            time = 0
-            clicked = false
-            LoadScene("spawn_map_v2.scn")
-        end
-    end
+function OnPointerClick()
+    LoadScene("spawn_map_v2.scn")
 end

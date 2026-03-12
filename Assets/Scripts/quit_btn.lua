@@ -1,29 +1,33 @@
-local time = 0
-local clicked = false
-
 function OnPointerEnter()
-    local effects = GetEffects()
-    effects:Play("HoverEnter")
+    local child = GetChildren(EntityID, 0)
+    local text = GetTextFrom(child)
+    text.color.r = 0.953
+    text.color.g = 0.859
+    text.color.b = 0.757
+    text.color.a = 1.0
 end
 
 function OnPointerExit()
-    local effects = GetEffects()
-    effects:StopAll()
-    effects:Play("HoverExit")
+    local child = GetChildren(EntityID, 0)
+    local text = GetTextFrom(child)
+    text.color.r = 0.792
+    text.color.g = 0.651
+    text.color.b = 0.584
+    text.color.a = 1.0
 end
 
-function OnClick()
-    PlaySound("quitbtn_sound", 1.0, 0)
-    clicked = true
-end
+function OnPointerClick()
+    local canvas = GetParent(EntityID)
+    local playBtn = GetChildren(canvas, 1)
+    local helpBtn = GetChildren(canvas, 2)
+    local credBtn = GetChildren(canvas, 3)
+    local quitBtn = GetChildren(canvas, 4)
+    local cfmMnu = GetChildren(canvas, 6)
 
-function Update(dt)
-    if clicked then
-        time = time + dt
-        if time > 1 then
-            time = 0
-            clicked = false
-            CloseApplication()
-        end
-    end
+    GetButtonFrom(playBtn).interactable = false;
+    GetButtonFrom(helpBtn).interactable = false;
+    GetButtonFrom(credBtn).interactable = false;
+    GetButtonFrom(quitBtn).interactable = false;
+
+    SetActiveEntity(cfmMnu, true)
 end

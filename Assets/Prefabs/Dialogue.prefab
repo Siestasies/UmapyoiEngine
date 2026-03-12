@@ -33,12 +33,12 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "pivot": {
                             "x": 0.5,
@@ -52,13 +52,7 @@
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "width": 0.0,
-                            "height": 0.0
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Canvas": {
                         "sortingOrder": 10,
@@ -76,13 +70,23 @@
                                 "lines": [
                                     {
                                         "speaker": "Player",
-                                        "text": "Nice cock",
+                                        "text": "Rest in peace my granny",
+                                        "portrait": "Assets/dialogue player UI sprite.png"
+                                    },
+                                    {
+                                        "speaker": "Player",
+                                        "text": "She got hit by a bazooka",
+                                        "portrait": "Assets/dialogue player UI sprite.png"
+                                    },
+                                    {
+                                        "speaker": "Enemy",
+                                        "text": "Kaboom",
                                         "portrait": "Assets/statue.png"
                                     },
                                     {
-                                        "speaker": "Boss",
-                                        "text": "Nice tits",
-                                        "portrait": ""
+                                        "speaker": "Enemy",
+                                        "text": "Kablow",
+                                        "portrait": "Assets/statue.png"
                                     }
                                 ]
                             }
@@ -119,12 +123,12 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.216,
-                            "y": 0.039
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.958,
-                            "y": 0.379
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "pivot": {
                             "x": 0.5,
@@ -132,27 +136,21 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -275.0
+                            "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 2000.0,
-                            "y": 405.0
+                            "x": 1920.0,
+                            "y": 1080.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": -0.553,
-                            "width": 1.929,
-                            "height": 0.814
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/dialogue ui box.png",
                         "sortingOrder": 1,
                         "color": {
-                            "r": 0.0,
+                            "r": 1.0,
                             "g": 1.0,
-                            "b": 0.0,
+                            "b": 1.0,
                             "a": 0.8
                         },
                         "visible": true,
@@ -189,41 +187,35 @@
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
                             "x": 0.5,
-                            "y": 0.5
+                            "y": 0.0
                         },
                         "anchorMax": {
                             "x": 0.5,
-                            "y": 0.5
+                            "y": 0.0
                         },
                         "pivot": {
                             "x": 0.5,
-                            "y": 0.5
+                            "y": 0.0
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 0.0
+                            "y": 180.0
                         },
                         "sizeDelta": {
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": -0.553,
-                            "width": 0.0,
-                            "height": 0.0
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
-                        "text": "",
+                        "text": "All roads lead to me",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
-                        "fontSize": 1.5,
+                        "fontSize": 2.0,
                         "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -260,45 +252,26 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.059,
-                            "y": 0.36
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.28,
-                            "y": 0.46
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "pivot": {
-                            "x": 0.0,
+                            "x": 0.5,
                             "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": -600.0,
-                            "y": -75.0
+                            "x": -425.0,
+                            "y": 260.0
                         },
                         "sizeDelta": {
                             "x": 500.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.578,
-                            "y": -0.15,
-                            "width": 0.482,
-                            "height": 0.201
-                        }
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 2,
-                        "color": {
-                            "r": 1.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.8
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "isDirty": true
                     }
                 }
             },
@@ -348,23 +321,17 @@
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.578,
-                            "y": -0.114,
-                            "width": 0.482,
-                            "height": 0.201
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
-                        "text": "",
+                        "text": "Faker",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 3.0,
+                        "fontSize": 2.0,
                         "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -399,35 +366,29 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.699,
+                            "x": 1.0,
                             "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.949,
-                            "y": 0.699
+                            "x": 1.0,
+                            "y": 0.0
                         },
                         "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": 600.0,
-                            "y": -100.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 800.0,
                             "y": 800.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.578,
-                            "y": -0.201,
-                            "width": 0.771,
-                            "height": 1.609
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -468,40 +429,34 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.898,
-                            "y": 0.07
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.949,
-                            "y": 0.2
+                            "x": 0.5,
+                            "y": 0.0
                         },
                         "pivot": {
                             "x": 0.5,
-                            "y": 0.5
+                            "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": 900.0,
-                            "y": -375.0
+                            "x": 675.0,
+                            "y": 75.0
                         },
                         "sizeDelta": {
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.868,
-                            "y": -0.754,
-                            "width": 0.096,
-                            "height": 0.201
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/dialogue end icon.png",
                         "sortingOrder": 2,
                         "color": {
                             "r": 1.0,
-                            "g": 0.3,
-                            "b": 0.3,
+                            "g": 1.0,
+                            "b": 0.215,
                             "a": 1.0
                         },
                         "visible": true,

@@ -95,6 +95,7 @@ local function ApplyLine(line)
     ShowImg(ePortrait, hasPortrait)
     if hasPortrait then
         local img = GetImageFrom(ePortrait)
+        img.change = true;
         if img then img.textureName = line.portrait end
     end
 

@@ -87,7 +87,7 @@ namespace Uma_Engine
         {
             const auto& transform = transformArray.GetData(entity);
 
-            Vec2 size(50.0f, 50.0f);
+            Vec2 size(0.0f, 0.0f);
             if (spriteArray.Has(entity))
             {
                 const auto& sprite = spriteArray.GetData(entity);
