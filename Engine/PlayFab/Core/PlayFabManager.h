@@ -243,6 +243,9 @@ namespace Uma_Engine
         PlayFabPlayerManager& Player();
         const PlayFabPlayerManager& Player() const;
 
+        // healper to generate UUID4 for customid usage
+        std::string GenerateUUID4();
+
 
     private:
         // ── Async context structs ─────────────────────────────────────────────

@@ -344,6 +344,8 @@ namespace Uma_ECS
          */
         void RegisterPlayFabAPI();
 
+        void RegisterConfigSerializer();
+
         /**
          * \brief Cleanup handler for entity destruction
          * \param entity Entity being destroyed

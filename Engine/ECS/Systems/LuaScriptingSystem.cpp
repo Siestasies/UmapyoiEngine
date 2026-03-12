@@ -59,6 +59,10 @@ All rights reserved.
 #include "Core/FilePaths.h"
 #include "Application.h"
 
+//playfab
+#include "PlayFab/Core/PlayFabConfig.h"
+#include "../Engine/Core/EngineConfigSerializer.h"
+
 namespace Uma_ECS
 {
     
@@ -397,6 +401,7 @@ namespace Uma_ECS
         RegisterFeedbackAPI();
 
         RegisterPlayFabAPI();
+        RegisterConfigSerializer();
     }
 
     void LuaScriptingSystem::RegisterEntityManipulation()
@@ -680,6 +685,11 @@ namespace Uma_ECS
             "rank",        &Uma_Engine::LeaderboardPlayerEntry::rank,
             "score",       &Uma_Engine::LeaderboardPlayerEntry::score
         );
+
+        // helper
+        sharedLua->set_function("PlayFab_GenerateUUID4", [this]() -> std::string {
+            return pPlayFabManager->GenerateUUID4();
+            });
 
         // ── State queries ────────────────────────────────────────────────────
 
@@ -1031,6 +1041,42 @@ namespace Uma_ECS
 
         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo,
             "PlayFab API registered in Lua");
+    }
+
+    void LuaScriptingSystem::RegisterConfigSerializer()
+    {
+        using namespace Uma_Engine;
+
+        sharedLua->new_usertype<PlayFabConfig>("PlayFabConfig",
+            "titleId", &PlayFabConfig::titleId,
+            "secretKey", &PlayFabConfig::secretKey,
+            "customId", &PlayFabConfig::customId
+        );
+
+        sharedLua->set_function("PlayFabConfigSerializer_Save",
+            [this](const std::string& filename,
+                const PlayFabConfig& c)
+            {
+                Uma_Engine::PlayFabConfig config = c;
+                Uma_Engine::EngineConfigSerializer serializer;
+                serializer.Register(&config);
+               
+                serializer.save(Uma_FilePath::CONFIG_ROOT + filename);
+            });
+
+        sharedLua->set_function("PlayFabConfigSerializer_Load",
+            [this](const std::string& filename)
+            -> PlayFabConfig
+            {
+                Uma_Engine::PlayFabConfig config;
+                Uma_Engine::EngineConfigSerializer serializer;
+                serializer.Register(&config);
+
+                serializer.load(Uma_FilePath::CONFIG_ROOT + filename);
+
+                return config;
+            });
+            
     }
 
     void LuaScriptingSystem::RegisterComponentTypes()
@@ -2162,6 +2208,14 @@ namespace Uma_ECS
         // Add time access
         sharedLua->set_function("GetDeltaTime", [this]() {
             return lastDeltaTime; // Store in class
+            });
+
+        sharedLua->set_function("GetPlayTime", [this]() -> float{
+            return Uma_Engine::Application::GetPlayTime(); // Store in class
+            });
+
+        sharedLua->set_function("StartPlayTime", [this](bool startNow) {
+            return Uma_Engine::Application::StartTimer(startNow); // Store in class
             });
 
         // play audio
