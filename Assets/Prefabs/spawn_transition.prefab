@@ -25,7 +25,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/tut_transition.prefab",
+                        "prefabPath": "Assets/Prefabs/spawn_transition.prefab",
                         "isRoot": true
                     },
                     "class Uma_UI::RectTransform": {
@@ -84,7 +84,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/tut_transition.prefab",
+                        "prefabPath": "Assets/Prefabs/spawn_transition.prefab",
                         "isRoot": false
                     },
                     "class Uma_UI::RectTransform": {
