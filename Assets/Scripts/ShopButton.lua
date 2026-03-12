@@ -3,6 +3,7 @@ local numberStr
 local number
 local playerID
 local parentObj
+local GparentObj
 local GparentCollider
 
 function Start()
@@ -18,7 +19,7 @@ function Start()
 
     playerID = FindEntityWithComponent("Player")
     parentObj = GetParent(EntityID)
-    local GparentObj = GetParent(parentObj)
+    GparentObj = GetParent(parentObj)
     GparentCollider = GetColliderFrom(GparentObj)
 end
 
@@ -74,11 +75,12 @@ function GetWindSlashAttackStat(player)
     return nil
 end
 
-function OnClick()
+function OnPointerClick()
     player = GetPlayerFrom(playerID)
 
     -- BALANCED IN Shop.lua
     if stat == "Increase Max HP" then
+        Log("xxxxxxxxxxxxxxxxxxxxxxxxxxxx INCREASE MAX HP")
         player.mMaxHealth = player.mMaxHealth + number
     elseif stat == "Increase Move Speed" then
         player.mSpeed = player.mSpeed + number
@@ -95,6 +97,7 @@ function OnClick()
         windAttack.manaCost = windAttack.manaCost - number
     end
 
+    GparentCollider = GetColliderFrom(GparentObj)
     GparentCollider.shapes[2].isActive = false
     SetActiveEntity(parentObj, false)
 end

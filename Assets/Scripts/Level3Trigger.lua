@@ -50,7 +50,7 @@ function Update(dt)
     local KilledEnemies = TotalEnemyCount - CurrEnemyCount
 
     if triggerCount == 1 then
-        if KilledEnemies >= math.floor(Room1EnemyCount) then
+        if KilledEnemies >= 6 then
             SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[1], false)
         end
@@ -58,6 +58,7 @@ function Update(dt)
 end
 
 function RoomTriggerInit()
+    collider = GetCollider()
     collider.shapes[triggerCount+1].isActive = false
     triggerCount = triggerCount + 1
 end

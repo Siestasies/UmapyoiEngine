@@ -2,34 +2,34 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/player_ss.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -59,13 +59,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -81,17 +81,32 @@
             },
             {
                 "path": "assets/star.png"
+            },
+            {
+                "path": "assets/wind vfx spritesheet.png"
+            },
+            {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
+            },
+            {
+                "path": "assets/skill tree/plus hp skill.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -100,7 +115,63 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
+                "type": 0
+            },
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDamage",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonAttack(Charge)",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -17114,8 +17185,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": -406.0,
-                        "y": 128.0
+                        "x": -416.399,
+                        "y": 135.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17141,8 +17212,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": -406.0,
-                        "y": 128.0
+                        "x": -416.399,
+                        "y": 135.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17561,7 +17632,7 @@
             }
         },
         {
-            "id": 58,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17580,13 +17651,13 @@
                     },
                     "parent": -1,
                     "children": [
-                        59,
-                        60,
-                        61,
-                        62,
-                        63,
-                        64,
-                        68
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        15
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -17596,36 +17667,7 @@
             }
         },
         {
-            "id": 72,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "Kappa_Statue",
-                    "position": {
-                        "x": 284.075,
-                        "y": 46.18
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 5.0,
-                        "y": 5.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        90
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 91,
+            "id": 38,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17644,9 +17686,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        101,
-                        97,
-                        94
+                        48,
+                        44,
+                        41
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -17656,7 +17698,7 @@
             }
         },
         {
-            "id": 102,
+            "id": 49,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17675,20 +17717,49 @@
                     },
                     "parent": -1,
                     "children": [
-                        139,
-                        135,
-                        131,
-                        127,
-                        123,
-                        120,
-                        117,
-                        114,
-                        110,
-                        106
+                        86,
+                        82,
+                        78,
+                        74,
+                        70,
+                        67,
+                        64,
+                        61,
+                        57,
+                        53
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/lvl2eye2.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 20,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Kappa_Statue",
+                    "position": {
+                        "x": 285.2,
+                        "y": 43.882
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.0,
+                        "y": 5.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        35
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
                     "isRoot": true
                 }
             }

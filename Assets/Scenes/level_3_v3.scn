@@ -2,34 +2,34 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -59,13 +59,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -89,18 +89,27 @@
                 "path": "assets/wind vfx spritesheet.png"
             },
             {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
                 "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
+            },
+            {
+                "path": "assets/skill tree/plus hp skill.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -111,13 +120,13 @@
         ],
         "sounds": [
             {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
                 "type": 0
             },
             {
-                "name": "Water Demon Charge",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
                 "type": 0
             },
             {
@@ -136,6 +145,11 @@
                 "type": 0
             },
             {
+                "name": "WindDemonAttack(Charge)",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                "type": 0
+            },
+            {
                 "name": "WaterSlash",
                 "path": "Assets/sounds/Player Wav/WaterSlash.wav",
                 "type": 0
@@ -146,23 +160,23 @@
                 "type": 0
             },
             {
-                "name": "WindDemonAttack(Charge)",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
-                "type": 0
-            },
-            {
                 "name": "FireSlash",
                 "path": "Assets/sounds/Player Wav/FireSlash.wav",
                 "type": 0
             },
             {
-                "name": "SteamBurst",
-                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
                 "type": 0
             },
             {
-                "name": "Fire Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
                 "type": 0
             },
             {
@@ -176,8 +190,8 @@
                 "type": 0
             },
             {
-                "name": "Fire Demon Shoot Fireball",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
                 "type": 0
             }
         ],
@@ -17357,7 +17371,7 @@
                         {
                             "offset": {
                                 "x": -17.0,
-                                "y": -66.196
+                                "y": -66.195
                             },
                             "size": {
                                 "x": 62.298,
@@ -17477,7 +17491,7 @@
                         {
                             "offset": {
                                 "x": 73.0,
-                                "y": -113.196
+                                "y": -113.195
                             },
                             "size": {
                                 "x": 28.1,
@@ -17506,7 +17520,7 @@
                         },
                         {
                             "offset": {
-                                "x": 100.196,
+                                "x": 100.195,
                                 "y": 28.298
                             },
                             "size": {
@@ -17521,7 +17535,7 @@
                         },
                         {
                             "offset": {
-                                "x": 100.196,
+                                "x": 100.195,
                                 "y": -49.798
                             },
                             "size": {
@@ -17621,7 +17635,7 @@
                     "name": "water enemy",
                     "position": {
                         "x": -296.898,
-                        "y": 101.197
+                        "y": 101.196
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17833,8 +17847,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Kappa_Statue",
                     "position": {
-                        "x": -19.424,
-                        "y": 77.282
+                        "x": -19.423,
+                        "y": 77.281
                     },
                     "rotation": {
                         "x": 0.0,

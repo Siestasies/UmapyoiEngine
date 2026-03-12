@@ -87,6 +87,8 @@ end
 
 function RoomTriggerInit()
     -- +1 because lua starts from 1
+    collider = GetCollider()
+     Log("xxxxxxxxxxxxxxxxxxxxxx" .. #collider.shapes)
     local shapeIndex = triggerCount + 1
     collider.shapes[shapeIndex].isActive = false
     triggerCount = triggerCount + 1

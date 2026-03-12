@@ -50,7 +50,7 @@ function OnTriggerEnter()
     -- change text for 3rd mission
     elseif triggerCount == 2 then
         RoomTriggerInit()
-        SetMissionText(missionText)
+        SetMissionText("touch the kappa statue")
 
     -- change text for 4th mission
     elseif triggerCount == 3 then
@@ -86,6 +86,7 @@ function Update(dt)
 end
 
 function RoomTriggerInit()
+    collider = GetCollider()
     collider.shapes[triggerCount+1].isActive = false
     triggerCount = triggerCount + 1
 end
