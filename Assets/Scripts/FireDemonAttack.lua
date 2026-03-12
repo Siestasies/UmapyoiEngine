@@ -100,7 +100,7 @@ function state_update(entity, dt)
 
             projectile.mStats.damage = enemy.mAttackDamage
             --PlayEntitySound(entity, "fire_enemy_attack", false, 0.3)
-            audio:play(entity,"Fire Demon Shoot Fireball")
+            audio:play(entity,"FireEnemyAttack")
 
             if angle < 0 then angle = angle + 360 end
 

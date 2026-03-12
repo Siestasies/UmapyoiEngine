@@ -96,7 +96,7 @@ void Uma_ECS::AudioSystem::UpdateListener(float dt)
         auto& tf = tfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        FMOD_VECTOR listenerPos = { tf.position.x, tf.position.y, 0.0f };
+        FMOD_VECTOR listenerPos = { tf.worldPosition.x, tf.worldPosition.y, 0.0f };
         FMOD_VECTOR listenerVel = { rb.velocity.x, rb.velocity.y, 0.0f };
         FMOD_VECTOR listenerForward = { 0.0f, 0.0f, 1.0f };
         FMOD_VECTOR listenerUp = { 0.0f, 1.0f, 0.0f };
@@ -127,7 +127,7 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
         auto& tf = tfArray.GetData(entity);
         auto& rb = rbArray.GetData(entity);
 
-        FMOD_VECTOR newPosition = { tf.position.x, tf.position.y, 0.0f };
+        FMOD_VECTOR newPosition = { tf.worldPosition.x, tf.worldPosition.y, 0.0f };
         FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f };
         ac.position = newPosition;
         ac.velocity = velocity;

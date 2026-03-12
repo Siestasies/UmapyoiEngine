@@ -15,3 +15,7 @@ function OnPointerExit()
     text.color.b = 0.584
     text.color.a = 1.0
 end
+
+function OnPointerClick()
+    GetAudioComponent():play(EntityID, "Menu Click")
+end
