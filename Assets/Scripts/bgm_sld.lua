@@ -12,4 +12,5 @@ end
 function OnValueChanged()
     local sld = GetSliderFrom(EntityID)
     -- sld.value
+    setBGMVolume(sld.value)
 end

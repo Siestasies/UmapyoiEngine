@@ -1,3 +1,5 @@
+local originalVolume
+
 function Start()
     local bg = GetChildren(EntityID, 0)
     local cmk = GetChildren(EntityID, 1)
@@ -5,9 +7,17 @@ function Start()
     local cbx = GetCheckboxFrom(EntityID)
     cbx.background = bg;
     cbx.checkmark = cmk;
+
+    originalVolume = 0
 end
 
 function OnToggle()
     local cbx = GetCheckboxFrom(EntityID)
     -- cbx.isChecked
+    if cbx.isChecked == true then
+        originalVolume = getSFXVolume()
+        setSFXVolume(0)
+    else
+        setSFXVolume(originalVolume)
+    end
 end

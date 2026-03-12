@@ -12,4 +12,5 @@ end
 function OnValueChanged()
     local sld = GetSliderFrom(EntityID)
     -- sld.value
+    setMasterVolume(sld.value)
 end

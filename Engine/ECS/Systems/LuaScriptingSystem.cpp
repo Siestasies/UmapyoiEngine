@@ -1731,14 +1731,7 @@ namespace Uma_ECS
         sharedLua->set_function("setGroupVolume", [this](float volume, Uma_Engine::SoundType type) {
             pSoundManager->setChannelGroupVolume(volume, type);
             });
-<<<<<<< Updated upstream
-        sharedLua->set_function("toggleLowpass", [this](const std::string& name, bool dulled) {
-            pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(name, dulled);
-            });
-=======
-        sharedLua->set_function("setMasterVolume", [this](float volume) {
-            pSoundManager->setChannelGroupVolume(volume, Uma_Engine::SoundType::MASTER);
-            });
+
         //============ get volume==========================================================
         sharedLua->set_function("getSFXVolume", [this]() {
             return pSoundManager->getChannelGroupVolume(Uma_Engine::SoundType::SFX);
@@ -1756,7 +1749,6 @@ namespace Uma_ECS
             return pSoundManager->getChannelGroupVolume(Uma_Engine::SoundType::MASTER);
             });
 
->>>>>>> Stashed changes
         sharedLua->set_function("toggleGroupLowpass", [this](const std::string& groupName, bool enable)
             {
                 SoundType type;
