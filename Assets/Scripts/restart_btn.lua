@@ -1,0 +1,3 @@
+function OnPointerClick()
+    ReloadScene()
+end
