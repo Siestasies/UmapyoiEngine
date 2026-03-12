@@ -3150,7 +3150,7 @@ namespace Uma_Engine
                             ImGui::Checkbox("Is Playing", &soundInstance.isPlaying);
                             ImGui::Checkbox("Should Loop", &soundInstance.shouldLoop);
                             ImGui::Checkbox("Is 3D", &soundInstance.is3D);
-                            const char* typeNames[] = { "SFX", "BGM"};
+                            const char* typeNames[] = { "SFX", "BGM" };
                             int currentType = static_cast<int>(soundInstance.type);
                             if (ImGui::Combo("Sound Type", &currentType, typeNames, IM_ARRAYSIZE(typeNames)))
                                 soundInstance.type = static_cast<Uma_Engine::SoundType>(currentType);
@@ -5137,6 +5137,16 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
+                float checkedColour[4] = { checkbox.checkedColour.r, checkbox.checkedColour.g, checkbox.checkedColour.b, checkbox.checkedColour.a };
+                if (ImGui::ColorEdit4("Checked Colour", checkedColour))
+                {
+                    checkbox.checkedColour.r = checkedColour[0];
+                    checkbox.checkedColour.g = checkedColour[1];
+                    checkbox.checkedColour.b = checkedColour[2];
+                    checkbox.checkedColour.a = checkedColour[3];
+                    m_hasUnsavedEdit = true;
+                }
+
                 ImGui::Separator();
 
                 ImGui::Text("Checkmark Colors");
@@ -6794,10 +6804,10 @@ namespace Uma_Engine
                             ImGui::Separator();
                             if (ImGui::MenuItem("Delete", nullptr, false, tilemap.layers.size() > 1))
                             {
-                               /* tilemap.RemoveLayer(static_cast<int>(i));
-                                ImGui::PopID();
-                                ImGui::EndPopup();
-                                if (layerOpen) ImGui::TreePop();*/
+                                /* tilemap.RemoveLayer(static_cast<int>(i));
+                                 ImGui::PopID();
+                                 ImGui::EndPopup();
+                                 if (layerOpen) ImGui::TreePop();*/
 
                                 layerToDelete = static_cast<int>(i);
 

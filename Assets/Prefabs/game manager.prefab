@@ -4292,7 +4292,7 @@
             },
             {
                 "id": 55,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "options",
@@ -4552,33 +4552,33 @@
                         "checkmarkEntity": 55,
                         "scriptName": "master_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
+                            "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.501
                         },
                         "pressedColour": {
                             "r": 0.698,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.698
                         },
                         "disabledColour": {
-                            "r": 0.5,
+                            "r": 0.898,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.898
                         },
                         "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "checkmarkNormalColour": {
@@ -4588,10 +4588,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 1.0,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.501
                         }
                     }
                 }
@@ -4803,7 +4803,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -5031,7 +5031,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
@@ -5263,33 +5263,33 @@
                         "checkmarkEntity": 61,
                         "scriptName": "bgm_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
+                            "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.501
                         },
                         "pressedColour": {
                             "r": 0.698,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.698
                         },
                         "disabledColour": {
-                            "r": 0.5,
+                            "r": 0.898,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.898
                         },
                         "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "checkmarkNormalColour": {
@@ -5299,10 +5299,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 1.0,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.501
                         }
                     }
                 }
@@ -5514,7 +5514,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -5742,7 +5742,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
@@ -5974,33 +5974,33 @@
                         "checkmarkEntity": 55,
                         "scriptName": "sfx_cbx.lua",
                         "normalColour": {
-                            "r": 1.0,
+                            "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.898,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.501
                         },
                         "pressedColour": {
                             "r": 0.698,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 1.0
+                            "a": 0.698
                         },
                         "disabledColour": {
-                            "r": 0.5,
+                            "r": 0.898,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.898
                         },
                         "checkedColour": {
-                            "r": 0.2,
-                            "g": 0.6,
-                            "b": 1.0,
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
                             "a": 1.0
                         },
                         "checkmarkNormalColour": {
@@ -6010,10 +6010,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 1.0,
+                            "r": 0.501,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.5
+                            "a": 0.501
                         }
                     }
                 }
@@ -6225,7 +6225,7 @@
                             "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 550.0,
+                            "x": 600.0,
                             "y": 50.0
                         },
                         "isDirty": true
@@ -6453,7 +6453,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 275.0,
+                            "x": 300.0,
                             "y": 0.0
                         },
                         "sizeDelta": {
