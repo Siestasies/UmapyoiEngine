@@ -4,7 +4,7 @@ local maxHealth = 0
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
-    maxHealth = GetPlayerFrom(playerEntity).mHealth
+    maxHealth = GetPlayerFrom(playerEntity).mMaxHealth
     
     local health = GetPlayerFrom(playerEntity).mHealth
 

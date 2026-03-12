@@ -8,27 +8,30 @@ local playerEntity = -1
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
     local player = GetPlayerFrom(playerEntity)
+    local health = player.mHealth
     local paused = IsGamePause()
-    if player.mHealth > 0 then
-        if paused == true then
-            toggleGroupLowpass("MASTER", true)
-            local child = GetChildren(EntityID, 1)
-            SetActiveEntity(child, true) -- pause
-            return
-        else
-            toggleGroupLowpass("MASTER", false)
+    if IsEntityValid(playerEntity) then
+        if health > 0 then
+            if paused == true then
+                toggleGroupLowpass("MASTER", true)
+                local child = GetChildren(EntityID, 1)
+                SetActiveEntity(child, true) -- pause
+                return
+            else
+                toggleGroupLowpass("MASTER", false)
 
-            local child = GetChildren(EntityID, 1)
-            SetActiveEntity(child, false)
+                local child = GetChildren(EntityID, 1)
+                SetActiveEntity(child, false)
+            end
         end
     end
 
     if IsEntityValid(playerEntity) then
-        if player.mHealth <= 0 then
+        if health <= 0 then
             for i = 1, 4 do
                 local child = GetChildren(EntityID, i)
                 if i == 3 then
-                    SetActiveEntity(child, true)
+                    SetActiveEntity(child, true) -- game over
                 else
                     SetActiveEntity(child, false)
                 end
