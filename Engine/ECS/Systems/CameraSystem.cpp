@@ -65,8 +65,8 @@ namespace Uma_ECS
             if (lerpFactor > 1.f)
                 lerpFactor = 1.f;
 
-            cam_tf.position.x += (player_tf.worldPosition.x - cam_tf.position.x) * lerpFactor;
-            cam_tf.position.y += (player_tf.worldPosition.y - cam_tf.position.y) * lerpFactor;
+            cam_tf.position.x += (player_tf.worldPosition.x - cam_tf.position.x) /** lerpFactor*/;
+            cam_tf.position.y += (player_tf.worldPosition.y - cam_tf.position.y) /** lerpFactor*/;
         }
 
         // Camera shake - LEGACY lol

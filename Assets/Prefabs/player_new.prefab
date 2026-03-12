@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 66.835,
-                            "y": -169.279
+                            "x": 1036.291,
+                            "y": -1639.791
                         },
                         "rotation": {
                             "x": 0.0,
@@ -20,10 +20,7 @@
                             "y": 0.75
                         },
                         "parent": -1,
-                        "children": [
-                            1,
-                            2
-                        ]
+                        "children": []
                     },
                     "struct Uma_ECS::Player": {
                         "mHealth": 100,
@@ -34,6 +31,7 @@
                         "mDashSpeed": 2.0,
                         "mDashDuration": 0.2,
                         "mDashCD": -0.0,
+                        "mDashCDMax": 2.0,
                         "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 10.0,
@@ -212,17 +210,6 @@
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
                             },
-                            "PlayerDamageMono": {
-                                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.259,
-                                "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
-                            },
                             "FireSlash": {
                                 "path": "Assets/sounds/Player Wav/FireSlash.wav",
                                 "isPlaying": false,
@@ -240,7 +227,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.259,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -1306,16 +1293,6 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "normal_atk",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 0,
-                                "frameCount": 5,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
                                 "name": "idle",
                                 "framesX": 8,
                                 "framesY": 8,
@@ -1326,21 +1303,11 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "atk_wind",
+                                "name": "normal_atk",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 24,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "hurt",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 16,
-                                "frameCount": 3,
+                                "startFrame": 0,
+                                "frameCount": 5,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1356,11 +1323,21 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "atk_water",
+                                "name": "hurt",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 32,
-                                "frameCount": 7,
+                                "startFrame": 16,
+                                "frameCount": 3,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
+                                "name": "atk_wind",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 24,
+                                "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1371,6 +1348,16 @@
                                 "framesY": 5,
                                 "startFrame": 8,
                                 "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
+                                "name": "atk_water",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 32,
+                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1435,9 +1422,9 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "PlayerBase.lua",
+                                "name": "PlayerFireSlash.lua",
                                 "isActive": true,
-                                "scriptIndex": 0
+                                "scriptIndex": 5
                             },
                             {
                                 "name": "PlayerRun.lua",
@@ -1445,14 +1432,14 @@
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "PlayerFireSlash.lua",
+                                "name": "PlayerBase.lua",
                                 "isActive": true,
-                                "scriptIndex": 5
+                                "scriptIndex": 0
                             },
                             {
-                                "name": "PlayerIdle.lua",
+                                "name": "PlayerDeath.lua",
                                 "isActive": true,
-                                "scriptIndex": 1
+                                "scriptIndex": 4
                             },
                             {
                                 "name": "PlayerWhirlpool.lua",
@@ -1460,9 +1447,9 @@
                                 "scriptIndex": 12
                             },
                             {
-                                "name": "PlayerDeath.lua",
+                                "name": "PlayerIdle.lua",
                                 "isActive": true,
-                                "scriptIndex": 4
+                                "scriptIndex": 1
                             },
                             {
                                 "name": "PlayerHurt.lua",
@@ -1505,129 +1492,12 @@
                         "next": ""
                     }
                 }
-            },
-            {
-                "id": 1,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "new entity",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 0,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/player_new.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 2,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "arrow parent",
-                        "position": {
-                            "x": 0.0,
-                            "y": -10.0
-                        },
-                        "rotation": {
-                            "x": -1.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 0,
-                        "children": [
-                            3
-                        ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/PlayerMouseArrow.lua",
-                                "scriptName": "PlayerMouseArrow.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/player_new.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 3,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "arrow",
-                        "position": {
-                            "x": 0.0,
-                            "y": 10.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 5.0,
-                            "y": 5.0
-                        },
-                        "parent": 2,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/star.png",
-                        "layer": 1,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.399,
-                            0.0,
-                            0.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/player_new.prefab",
-                        "isRoot": false
-                    }
-                }
             }
         ],
         "rootEntity": 0
     },
     "resources": {
         "textures": [
-            {
-                "path": "assets/star.png"
-            },
             {
                 "path": "assets/player ss 1.png"
             }

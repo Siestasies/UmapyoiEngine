@@ -1,15 +1,26 @@
-local playerTransform
+--local playerTransform
 local transform
+local playerId
 
 function Start()
-    player = FindEntityWithComponent("Player")
-    playerTransform = GetTransformFrom(player)
+    playerId = FindEntityWithComponent("Player")
+    --playerTransform = GetTransformFrom(player)
     transform = GetTransform()
 end
 
 function Update(dt)
-    local playerPos = playerTransform.position
+    local playerTf = GetTransformFrom(playerId)
+    local collider = GetColliderFrom(playerId)
+
+    if not playerTf then return end
+
+    local shape = collider.shapes[1]
+    local myPos = Vec2(playerTf.position.x, playerTf.position.y + shape.offset.y)
+
+    local playerPos = myPos
     local mousePos = GetMouseWorldPosition()
+
+    transform.position = playerPos
 
     -- direction from player to mouse
     local dx = mousePos.x - playerPos.x
@@ -22,12 +33,12 @@ function Update(dt)
     dx = dx / length
     dy = dy / length
     
-    local angle = math.atan(dy, dx)
+    local angle = math.atan(dy, -dx)
 
     if angle < 0 then
         angle = angle + (2 * math.pi)
     end
 
-    transform.scale.x = playerTransform.scale.x * -1
+    --transform.scale.x = playerTf.scale.x * -1
     transform.rotation.x = angle + (math.pi / 2)
 end
