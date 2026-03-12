@@ -34,7 +34,7 @@ namespace Uma_UI
     {
     public:
         // State
-        bool isChecked = false;
+        bool isChecked = true;
         bool interactable = true;
 
         // Visual settings
