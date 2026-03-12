@@ -17,7 +17,8 @@ ExposedVars = {
     bulletsPerVolley = 5,
     volleyInterval = 1.5,
     sweepSpeed = 40.0,
-    patternSwitchTime = 6.0
+    patternSwitchTime = 6.0,
+    finalTransformationTime = 5.0
 }
 
 local bulletTimer = 0.0
@@ -34,6 +35,8 @@ local sweepDir = 1
 -- Totem tracking
 local totemIds = {}
 local totemsAlive = 0
+local finalPhase = false
+local finalTransformationItr = 1
 
 function state_enter(entity)
     Log("Boss Phase 2: Bullet hell + Totems")
@@ -77,6 +80,21 @@ function state_update(entity, dt)
     bossTransform = GetTransform()
     if not bossTransform then return end
 
+    if finalPhase then 
+        ExposedVars.finalTransformationTime = ExposedVars.finalTransformationTime - dt
+        if animator and animator.animator:HasFinished() then
+            finalTransformationItr = finalTransformationItr + 1;
+            if finalTransformationItr == 2 then
+                animator.animator:Play("final_phase_transition2", false)
+            elseif finalTransformationItr == 3 then
+                animator.animator:Play("final_phase_transition3", false)
+            end
+        end
+        if ExposedVars.finalTransformationTime <= 0 then
+            ChangeState(entity, "BossPhase3")
+        end
+    end
+
     -- Spawn totems after delay
     if not totemsSpawned then
         totemSpawnTimer = totemSpawnTimer - dt
@@ -87,6 +105,15 @@ function state_update(entity, dt)
     end
 
     -- ============ TRACK TOTEM DEATHS ============
+    if KeyPressed(KEY_N) then
+        for i, totemId in ipairs(totemIds) do
+            if IsEntityValid(totemId) then
+                local totemEnemy = GetEnemyFrom(totemId)
+                totemEnemy.mHealth = 0;
+            end
+        end
+    end
+
     if totemsSpawned and totemsAlive > 0 then
         local alive = 0
         for i, totemId in ipairs(totemIds) do
@@ -105,29 +132,31 @@ function state_update(entity, dt)
 
         if totemsAlive <= 0 then
             Log("All totems destroyed! Transitioning to phase 3...")
-            ChangeState(entity, "BossPhase3")
+            if animator then
+                animator.animator:Play("final_phase_transition1", false)
+            end
             return
         end
-    end
-
-    -- ============ BULLET PATTERNS ============
-
-    patternTimer = patternTimer + dt
-    if patternTimer >= ExposedVars.patternSwitchTime then
-        patternTimer = 0.0
-        currentPattern = currentPattern + 1
-        if currentPattern > 3 then
-            currentPattern = 1
+        
+        -- ============ BULLET PATTERNS ============
+        
+        patternTimer = patternTimer + dt
+        if patternTimer >= ExposedVars.patternSwitchTime then
+            patternTimer = 0.0
+            currentPattern = currentPattern + 1
+            if currentPattern > 3 then
+                currentPattern = 1
+            end
+            Log("Boss switching to pattern: " .. tostring(currentPattern))
         end
-        Log("Boss switching to pattern: " .. tostring(currentPattern))
-    end
-
-    if currentPattern == 1 then
-        UpdateFanPattern(entity, dt)
-    elseif currentPattern == 2 then
-        UpdateSweepPattern(entity, dt)
-    elseif currentPattern == 3 then
-        UpdateRainPattern(entity, dt)
+        
+        if currentPattern == 1 then
+            UpdateFanPattern(entity, dt)
+        elseif currentPattern == 2 then
+            UpdateSweepPattern(entity, dt)
+        elseif currentPattern == 3 then
+            UpdateRainPattern(entity, dt)
+        end
     end
 end
 

@@ -88,6 +88,15 @@ function state_update(entity, dt)
     end
 
     -- ============ TRACK ELITE DEATHS ============
+    if KeyPressed(KEY_N) then
+        for i, eliteId in ipairs(eliteIds) do
+            if IsEntityValid(eliteId) then
+                local eliteEnemy = GetEnemyFrom(eliteId)
+                eliteEnemy.mHealth = 0;
+            end
+        end
+    end
+    
     local alive = 0
     for i, eliteId in ipairs(eliteIds) do
         if IsEntityValid(eliteId) then

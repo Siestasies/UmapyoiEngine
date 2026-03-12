@@ -65,7 +65,7 @@ function state_enter(entity)
 
     if HasAnimator() then
         animator = GetAnimator()
-        animator.animator:Play("phase3_intro", false)
+        animator.animator:Play("idle2", true)
     end
 
     -- Ensure colliders are active for direct damage

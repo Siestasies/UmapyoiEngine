@@ -179,6 +179,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "revealTime",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -369,6 +377,14 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "finalTransformationTime",
+                                        "type": 0,
+                                        "value": 5.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             },
@@ -500,6 +516,36 @@
                         "initialClip": "idle",
                         "clips": [
                             {
+                                "name": "final_phase_transition2",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 8,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 3.png"
+                            },
+                            {
+                                "name": "idle2",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 16,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/boss ss 1.png"
+                            },
+                            {
+                                "name": "boss_reveal_to_idle",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 56,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 1.png"
+                            },
+                            {
                                 "name": "idle",
                                 "framesX": 8,
                                 "framesY": 8,
@@ -508,6 +554,36 @@
                                 "speed": 24.0,
                                 "loop": true,
                                 "texturePath": "Assets/Sprites/boss ss 1.png"
+                            },
+                            {
+                                "name": "boss_reveal",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 32,
+                                "frameCount": 17,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 1.png"
+                            },
+                            {
+                                "name": "final_phase_transition1",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 0,
+                                "frameCount": 7,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 3.png"
+                            },
+                            {
+                                "name": "final_phase_transition3",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 24,
+                                "frameCount": 8,
+                                "speed": 10.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 3.png"
                             }
                         ]
                     },
@@ -564,16 +640,16 @@
                     "struct Uma_ECS::Transform": {
                         "name": "vfx",
                         "position": {
-                            "x": 250.0,
-                            "y": -156.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 1.5,
-                            "y": 1.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "parent": 0,
                         "children": []
@@ -604,14 +680,14 @@
                         "initialClip": "",
                         "clips": [
                             {
-                                "name": "splash",
+                                "name": "boss_reveal",
                                 "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 8,
-                                "speed": 24.0,
+                                "framesY": 8,
+                                "startFrame": 48,
+                                "frameCount": 16,
+                                "speed": 10.0,
                                 "loop": false,
-                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                                "texturePath": "Assets/Sprites/magic circle ss.png"
                             }
                         ]
                     },

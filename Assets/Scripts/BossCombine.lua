@@ -4,7 +4,8 @@
 -- plays a combining animation, then reveals the boss and transitions to Phase 2.
 
 ExposedVars = {
-    combineTime = 5.0,
+    combineTime = 3.0,
+    revealTime = 2.0,
     roomScaleMultiplier = 1.5
 }
 
@@ -13,6 +14,7 @@ local hasCombined = false
 local animator = nil
 local cameraId = -1
 local eliteCorpses = {}
+local vfx
 
 function state_enter(entity)
     Log("Boss Combine: Elites merging...")
@@ -49,7 +51,7 @@ function state_enter(entity)
         end
     end
 
-    Log("Found " .. tostring(#eliteCorpses) .. " elite corpses for combine")
+    Log("Found " .. tostring(#eliteCorpses) .. " elite corpses to combine")
 
     -- Start particle effects on corpses
     for i, corpseId in ipairs(eliteCorpses) do
@@ -72,6 +74,8 @@ function state_enter(entity)
     if audio then
         audio:play(entity, "Boss Combine")
     end
+
+    vfx = GetChildren(entity, 0)
 end
 
 function state_update(entity, dt)
@@ -124,6 +128,14 @@ function state_update(entity, dt)
         if animator then
             animator.animator:Play("boss_reveal", false)
         end
+        local vfxAnimator = GetAnimatorFrom( vfx )
+        if vfxAnimator then 
+            vfxAnimator.animator:Play("boss_reveal", false)
+        end
+        if vfx then 
+            SetActiveEntity(vfx, true)
+        end
+
 
         -- Camera zoom out and lock
         if cameraId ~= -1 and IsEntityValid(cameraId) then
@@ -146,10 +158,24 @@ function state_update(entity, dt)
         end
 
         Log("Boss has formed! Transitioning to Phase 2...")
-        ChangeState(entity, "BossPhase2")
     end
+    
+    if hasCombined then
+        if revealTime <= 0 then 
+            ChangeState(entity, "BossPhase2")
+        else
+            if animator and animator.animator:HasFinished then
+                vfxAnimator.animator:Play("boss_reveal", false)
+            end
+            revealTime = revealTime - dt;
+        end
+    end
+
 end
 
 function state_exit(entity)
+    if vfx then 
+            SetActiveEntity(vfx, false)
+    end
     Log("Boss Combine: Complete")
 end
