@@ -117,8 +117,8 @@
         ],
         "sounds": [
             {
-                "name": "Fire Demon Shoot Fireball",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             }
         ],
@@ -15905,42 +15905,6 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "Level 1 Trigger",
-                    "position": {
-                        "x": 57.499,
-                        "y": -79.833
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        56,
-                        57,
-                        58,
-                        59,
-                        60,
-                        61,
-                        65,
-                        69
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/Level 1 Trigger.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 73,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
                     "name": "Kappa_Statue",
                     "position": {
                         "x": -426.725,
@@ -15956,12 +15920,292 @@
                     },
                     "parent": -1,
                     "children": [
-                        91
+                        73
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
                     "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 74,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "mission field",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        75,
+                        76
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/mission field.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 77,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "tut_door",
+                    "position": {
+                        "x": -409.154,
+                        "y": 154.075
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 2.0,
+                        "y": 2.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        78
+                    ]
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": true,
+                    "loadedSounds": {
+                        "SFX_Stage_Transition": {
+                            "path": "Assets/sounds/SFX_Stage_Transition.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        }
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "texturePath": "Assets/door opening ss.png",
+                    "layer": 2,
+                    "order": 10,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": true,
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 1,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": -4.098
+                            },
+                            "size": {
+                                "x": 12.399,
+                                "y": 4.697
+                            },
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/stage_transition.lua",
+                            "scriptName": "stage_transition.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "fade in.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "nextScene",
+                                    "type": 3,
+                                    "value": "level_2_v3.scn",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/tut_door_control.lua",
+                            "scriptName": "tut_door_control.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Animator": {
+                    "autoPlay": false,
+                    "initialClip": "door idle",
+                    "clips": [
+                        {
+                            "name": "door open",
+                            "framesX": 5,
+                            "framesY": 4,
+                            "startFrame": 0,
+                            "frameCount": 16,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/door opening ss.png"
+                        },
+                        {
+                            "name": "door idle",
+                            "framesX": 5,
+                            "framesY": 4,
+                            "startFrame": 0,
+                            "frameCount": 1,
+                            "speed": 10.0,
+                            "loop": false,
+                            "texturePath": "Assets/door opening ss.png"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 78,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "tut_door_inner",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 13.05,
+                        "y": 8.538
+                    },
+                    "parent": 77,
+                    "children": []
+                },
+                "struct Uma_ECS::Sprite": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "layer": 2,
+                    "order": 0,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": true,
+                    "Native": false,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
+                    "tintColor": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "alpha": 1.0
+                }
+            }
+        },
+        {
+            "id": 79,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "player_handler",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/playfab_timer_control.lua",
+                            "scriptName": "playfab_timer_control.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "timer_mode",
+                                    "type": 0,
+                                    "value": 1.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "debug",
+                                    "type": 0,
+                                    "value": 0.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
                 }
             }
         }
