@@ -2,10 +2,13 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/whitepixel.png"
+            },
+            {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,19 +20,19 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/props animation.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/sprite_sheet_17.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/pause menu.png"
             },
             {
-                "path": "assets/pause menu.png"
+                "path": "assets/exterior_environment_fence_with_water.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -41,13 +44,19 @@
                 "path": "assets/floor_tatami.png"
             },
             {
+                "path": "assets/sprites/boss ss 1.png"
+            },
+            {
+                "path": "assets/fire bird.png"
+            },
+            {
                 "path": "assets/whole castle.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -56,39 +65,87 @@
                 "path": "assets/water ability icon.png"
             },
             {
-                "path": "assets/wind ability icon.png"
+                "path": "assets/hover button ui white.png"
             },
             {
-                "path": "assets/whole boss level.png"
+                "path": "assets/wind ability icon.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
             },
             {
+                "path": "assets/whole boss level.png"
+            },
+            {
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/player ss 3.png"
+                "path": "assets/water side.png"
             },
             {
-                "path": "assets/water side.png"
+                "path": "assets/player ss 3.png"
             },
             {
                 "path": "assets/m5 exterior.png"
             },
             {
                 "path": "assets/water corner.png"
+            },
+            {
+                "path": "assets/sprites/elite crown.png"
+            },
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/mana bar empty.png"
+            },
+            {
+                "path": "assets/mana bar full.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/sprites/magic circle ss.png"
+            },
+            {
+                "path": "assets/fire enemy shadow.png"
+            },
+            {
+                "path": "assets/sprites/boss ss 3.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
+                "path": "assets/sprites/totems ss.png"
+            },
+            {
+                "path": "assets/sprites/boss totem tileset.png"
+            },
+            {
+                "path": "assets/sprites/boss proj.png"
+            },
+            {
+                "path": "assets/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/sprites/boss ss 2.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -99,13 +156,38 @@
         ],
         "sounds": [
             {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                "type": 0
+            },
+            {
                 "name": "Neutral Slash(BasicAttack)",
                 "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             },
             {
-                "name": "PlayerDash",
-                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
                 "type": 0
             }
         ],
@@ -5037,7 +5119,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": -95.947,
+                        "x": -95.946,
                         "y": -305.108
                     },
                     "rotation": {
@@ -5064,8 +5146,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": -95.9,
-                        "y": -305.1
+                        "x": -96.0,
+                        "y": -305.2
                     },
                     "rotation": {
                         "x": 0.0,
@@ -5085,13 +5167,13 @@
             }
         },
         {
-            "id": 13,
+            "id": 3,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "map colliders",
                     "position": {
-                        "x": -96.363,
+                        "x": -96.362,
                         "y": -177.272
                     },
                     "rotation": {
@@ -5124,7 +5206,7 @@
                     "shapes": [
                         {
                             "offset": {
-                                "x": -71.199,
+                                "x": -71.198,
                                 "y": -50.5
                             },
                             "size": {
@@ -5140,7 +5222,7 @@
                         {
                             "offset": {
                                 "x": 72.0,
-                                "y": -50.299
+                                "y": -50.298
                             },
                             "size": {
                                 "x": 130.0,
@@ -5155,10 +5237,10 @@
                         {
                             "offset": {
                                 "x": -119.0,
-                                "y": 24.299
+                                "y": 24.298
                             },
                             "size": {
-                                "x": 33.599,
+                                "x": 33.598,
                                 "y": 180.0
                             },
                             "purpose": 1,
@@ -5184,7 +5266,7 @@
                         },
                         {
                             "offset": {
-                                "x": 119.099,
+                                "x": 119.098,
                                 "y": 21.6
                             },
                             "size": {
@@ -5243,6 +5325,74 @@
                             "autoFitToSprite": false
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 4,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Boss Enemy",
+                    "position": {
+                        "x": -95.944,
+                        "y": -150.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 30.0,
+                        "y": 30.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        5,
+                        6,
+                        8,
+                        10,
+                        12,
+                        13
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 14,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "game manager",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        15,
+                        39,
+                        51,
+                        58,
+                        69,
+                        106
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/game manager.prefab",
+                    "isRoot": true
                 }
             }
         }
