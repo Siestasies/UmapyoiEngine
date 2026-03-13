@@ -32,86 +32,11 @@
                             18,
                             21,
                             25,
-                            29
-                        ]
-                    },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 0.0,
-                        "fric_coeff": 0.0
-                    },
-                    "struct Uma_ECS::Collider": {
-                        "defaultLayer": 1,
-                        "defaultMask": 64,
-                        "showBBox": false,
-                        "shapes": [
-                            {
-                                "offset": {
-                                    "x": 14.602,
-                                    "y": -36.395
-                                },
-                                "size": {
-                                    "x": 35.998,
-                                    "y": 8.1
-                                },
-                                "purpose": 2,
-                                "layer": 32,
-                                "colliderMask": 2,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": -73.097,
-                                    "y": 16.798
-                                },
-                                "size": {
-                                    "x": 9.0,
-                                    "y": 52.597
-                                },
-                                "purpose": 2,
-                                "layer": 32,
-                                "colliderMask": 2,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": -217.699,
-                                    "y": 13.899
-                                },
-                                "size": {
-                                    "x": 7.4,
-                                    "y": 56.198
-                                },
-                                "purpose": 2,
-                                "layer": 32,
-                                "colliderMask": 2,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": -361.497,
-                                    "y": 14.699
-                                },
-                                "size": {
-                                    "x": 9.5,
-                                    "y": 51.298
-                                },
-                                "purpose": 2,
-                                "layer": 32,
-                                "colliderMask": 2,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            }
+                            29,
+                            30,
+                            31,
+                            32,
+                            33
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -1677,7 +1602,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1941,8 +1866,8 @@
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/static bird.prefab",
-                        "isRoot": true
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
                     },
                     "struct Uma_ECS::ParticleEmitter": {
                         "emitters": [
@@ -2110,7 +2035,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
@@ -2158,7 +2083,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
@@ -2216,7 +2141,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
@@ -2278,7 +2203,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -2542,8 +2467,8 @@
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/static bird.prefab",
-                        "isRoot": true
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
                     },
                     "struct Uma_ECS::ParticleEmitter": {
                         "emitters": [
@@ -2711,7 +2636,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
@@ -2759,7 +2684,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
@@ -2817,13 +2742,317 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
                     }
                 }
             },
             {
                 "id": 29,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "trigger room 1_dup",
+                        "position": {
+                            "x": 57.499,
+                            "y": -79.833
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -42.097,
+                                    "y": 52.4
+                                },
+                                "size": {
+                                    "x": 44.4,
+                                    "y": 13.899
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -117.097,
+                                    "y": 99.194
+                                },
+                                "size": {
+                                    "x": 13.3,
+                                    "y": 67.3
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 30,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "trigger room 1",
+                        "position": {
+                            "x": -85.358,
+                            "y": -82.208
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -2.5,
+                                    "y": 98.8
+                                },
+                                "size": {
+                                    "x": 14.3,
+                                    "y": 81.694
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -119.8,
+                                    "y": 99.194
+                                },
+                                "size": {
+                                    "x": 15.6,
+                                    "y": 67.3
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 31,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "trigger room 1_dup_dup",
+                        "position": {
+                            "x": -231.8,
+                            "y": -79.833
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -0.5,
+                                    "y": 96.597
+                                },
+                                "size": {
+                                    "x": 17.399,
+                                    "y": 72.194
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -115.694,
+                                    "y": 99.194
+                                },
+                                "size": {
+                                    "x": 13.3,
+                                    "y": 67.3
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 32,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "trigger room 1_dup_dup_dup",
+                        "position": {
+                            "x": -374.2,
+                            "y": -79.833
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": true,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": -0.5,
+                                    "y": 96.597
+                                },
+                                "size": {
+                                    "x": 17.399,
+                                    "y": 72.194
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": -40.5,
+                                    "y": 184.899
+                                },
+                                "size": {
+                                    "x": 77.597,
+                                    "y": 14.5
+                                },
+                                "purpose": 2,
+                                "layer": 32,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 33,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2842,9 +3071,9 @@
                         },
                         "parent": 0,
                         "children": [
-                            30,
-                            31,
-                            32
+                            34,
+                            35,
+                            36
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -2886,7 +3115,7 @@
                 }
             },
             {
-                "id": 30,
+                "id": 34,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2903,7 +3132,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 29,
+                        "parent": 33,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -2961,7 +3190,7 @@
                 }
             },
             {
-                "id": 31,
+                "id": 35,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2978,7 +3207,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 29,
+                        "parent": 33,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -3025,7 +3254,7 @@
                 }
             },
             {
-                "id": 32,
+                "id": 36,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3042,7 +3271,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 29,
+                        "parent": 33,
                         "children": []
                     },
                     "struct Uma_ECS::LuaScript": {

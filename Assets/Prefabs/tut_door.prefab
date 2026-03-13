@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "tut_door",
                         "position": {
-                            "x": -361.288,
-                            "y": 121.946
+                            "x": -361.287,
+                            "y": 121.945
                         },
                         "rotation": {
                             "x": 0.0,
@@ -23,6 +23,23 @@
                         "children": [
                             1
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Stage_Transition": {
+                                "path": "Assets/sounds/SFX_Stage_Transition.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/door opening ss.png",
@@ -65,11 +82,11 @@
                             {
                                 "offset": {
                                     "x": 0.0,
-                                    "y": -4.099
+                                    "y": -4.098
                                 },
                                 "size": {
                                     "x": 12.399,
-                                    "y": 4.699
+                                    "y": 4.698
                                 },
                                 "purpose": 2,
                                 "layer": 32,
@@ -160,7 +177,7 @@
                         },
                         "scale": {
                             "x": 13.05,
-                            "y": 8.539
+                            "y": 8.538
                         },
                         "parent": 0,
                         "children": []

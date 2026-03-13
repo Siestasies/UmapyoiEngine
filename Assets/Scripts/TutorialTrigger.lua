@@ -6,6 +6,8 @@ local PlayerStatTrackState = require("PlayerStatTrackState")
 local triggerCount
 local blockerCollider = {}
 local tutorialEnemies = {}
+local rooms_trigger_id = {}
+local curr_room = 0
 
 ExposedVars = {
     missionText = "",
@@ -36,6 +38,11 @@ function Start()
     tutorialEnemies[1] = children[10]
     tutorialEnemies[2] = children[11]
 
+    rooms_trigger_id[1] = children[12]
+    rooms_trigger_id[2] = children[13]
+    rooms_trigger_id[3] = children[14]
+    rooms_trigger_id[4] = children[15]
+
     -- mission text refs
     missionTextComponent = GetTextFrom(children[3])
     missionTextComponent2 = GetTextFrom(children[4])
@@ -47,42 +54,65 @@ function Start()
     PlayerStatTrackState.SetWhirlpoolAttackCount(0)
     PlayerStatTrackState.SetSteamburstAttackCount(0)
     PlayerStatTrackState.SetPassedTrigger(0)
-    
-    --SpawnPrefab("Tutorial Popup1.prefab", Vec2(0,0))
 end
 
-function OnTriggerEnter()
-    -- disable collider so cannot retrigger the same mission
-    -- change text for 1st mission
-    if triggerCount == 0 then
-        RoomTriggerInit()
-        SetMissionText(missionText)
-        SpawnPrefab("Tutorial Popup2.prefab", Vec2(0,0))
-    -- change text for 2nd mission
-    elseif triggerCount == 1 then
-        RoomTriggerInit()
-        SetMissionText(missionText4)
-        SpawnPrefab("Tutorial Popup3.prefab", Vec2(0,0))
-    -- change text for 3rd mission
-    elseif triggerCount == 2 then
-        RoomTriggerInit()
-        SetMissionText(missionText7)
-
-    -- change text for 4th mission
-    elseif triggerCount == 3 then
-        RoomTriggerInit()
-        SetMissionText(missionText7)
+--- Check if any shape on a collider is currently triggered
+---@param col Collider
+---@return boolean
+local function IsAnyShapeTriggered(col)
+    for i = 1, #col.shapes do
+        if col.shapes[i].isTriggered then
+            return true
+        end
     end
+    return false
 end
 
 function Update(dt)
-    -- update missions to cast each skill once, sequentially for trigger 1,2
-    -- eg, cast fire, cast water, cast wind, next level
-    -- trigger 3 all enemy die
-    -- trigger 4 all enemy die
+    -- Room 1: detect entry (only once)
+    if curr_room < 1 then
+        local room1_trigger = GetColliderFrom(rooms_trigger_id[1])
+        if room1_trigger and IsAnyShapeTriggered(room1_trigger) then
+            curr_room = 1
+            RoomTriggerInit()
+            SetMissionText(missionText)
+            SpawnPrefab("Tutorial Popup2.prefab", Vec2(0,0))
+        end
+    end
 
-    -- if player use each elemental skills at least 3x
-    if PlayerStatTrackState.GetPassedTrigger() == 1 then
+    -- Room 2: detect entry (only once)
+    if curr_room < 2 then
+        local room2_trigger = GetColliderFrom(rooms_trigger_id[2])
+        if room2_trigger and IsAnyShapeTriggered(room2_trigger) then
+            curr_room = 2
+            RoomTriggerInit()
+            SetMissionText(missionText4)
+            SpawnPrefab("Tutorial Popup3.prefab", Vec2(0,0))
+        end
+    end
+
+    -- Room 3: detect entry (only once)
+    if curr_room < 3 then
+        local room3_trigger = GetColliderFrom(rooms_trigger_id[3])
+        if room3_trigger and IsAnyShapeTriggered(room3_trigger) then
+            curr_room = 3
+            RoomTriggerInit()
+            SetMissionText(missionText7)
+        end
+    end
+
+    -- Room 4: detect entry (only once)
+    if curr_room < 4 then
+        local room4_trigger = GetColliderFrom(rooms_trigger_id[4])
+        if room4_trigger and IsAnyShapeTriggered(room4_trigger) then
+            curr_room = 4
+            RoomTriggerInit()
+            SetMissionText(missionText7)
+        end
+    end
+
+    -- Room 1 mission: use each basic element 3x
+    if curr_room == 1 then
         local fire = PlayerStatTrackState.GetFireAttackCount()
         local water = PlayerStatTrackState.GetWaterAttackCount()
         local wind = PlayerStatTrackState.GetWindAttackCount()
@@ -92,15 +122,15 @@ function Update(dt)
             SetActiveEntity(blockerCollider[1], false)
             DestroyWithChildren(tutorialEnemies[1])
         elseif water >= 3 and fire >= 3 then
-            SetMissionText(missionText3 .. (3-wind) .. " times")  -- wind
+            SetMissionText(missionText3 .. (3-wind) .. " times")
         elseif fire >= 3 then
-            SetMissionText(missionText2 .. (3-water) .. " times")  -- water
-        else 
-            SetMissionText(missionText .. (3-fire) .. " times")  -- fire
+            SetMissionText(missionText2 .. (3-water) .. " times")
+        else
+            SetMissionText(missionText .. (3-fire) .. " times")
         end
-        -- missionText use fire set in OnTriggerEnter
 
-    elseif PlayerStatTrackState.GetPassedTrigger() == 2 then
+    -- Room 2 mission: use each combo element 3x
+    elseif curr_room == 2 then
         local pyro = PlayerStatTrackState.GetPyronadoAttackCount()
         local whirl = PlayerStatTrackState.GetWhirlpoolAttackCount()
         local steam = PlayerStatTrackState.GetSteamburstAttackCount()
@@ -108,38 +138,34 @@ function Update(dt)
         if steam >= 3 and whirl >= 3 and pyro >= 3 then
             SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[2], false)
-            DestroyWithChildren(tutorialEnemies[2], false)
+            DestroyWithChildren(tutorialEnemies[2])
         elseif whirl >= 3 and pyro >= 3 then
-            SetMissionText(missionText6 .. (3-steam) .. " times")  -- steamburst
+            SetMissionText(missionText6 .. (3-steam) .. " times")
         elseif pyro >= 3 then
-            SetMissionText(missionText5 .. (3-whirl) .. " times")  -- whirlpool
-        else 
-            SetMissionText(missionText4 .. (3-pyro) .. " times")  -- pyronado
+            SetMissionText(missionText5 .. (3-whirl) .. " times")
+        else
+            SetMissionText(missionText4 .. (3-pyro) .. " times")
         end
 
-    -- when only specifically <<2>> enemies left
-    -- assuming player killed 1 at the third tutorial
-    elseif PlayerStatTrackState.GetPassedTrigger() == 3 then
+    -- Room 3: kill enemies down to 2
+    elseif curr_room == 3 then
         local enemyCount = CountEntitiesWithComponent("Enemy")
         if enemyCount == 2 then
             SetActiveEntity(blockerCollider[3], false)
             SetMissionText(moveToNext)
         end
 
-    -- when only specifically <<0>> enemies left
-    -- assuming player killed last 2 at the fourth tutorial
-    elseif PlayerStatTrackState.GetPassedTrigger() == 4 then
+    -- Room 4: kill all remaining enemies
+    elseif curr_room == 4 then
         local enemyCount = CountEntitiesWithComponent("Enemy")
         if enemyCount == 0 then
             SetActiveEntity(blockerCollider[4], false)
             SetMissionText("Touch the Kappa Shrine")
         end
     end
-
 end
 
 function RoomTriggerInit()
-    collider.shapes[triggerCount+1].isActive = false
     PlayerStatTrackState.incrPassedTrigger()
     triggerCount = triggerCount + 1
 end
