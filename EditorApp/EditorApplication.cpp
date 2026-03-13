@@ -303,6 +303,7 @@ namespace Uma_Engine
             },
             [](HRESULT hr, const std::string& message)
             {
+                (void)hr;
                 Debugger::Log(WarningLevel::eInfo, "[PlayfabManager] is not ready!");
                 Debugger::Log(WarningLevel::eInfo, message);
             }

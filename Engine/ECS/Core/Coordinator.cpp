@@ -600,35 +600,11 @@ namespace Uma_ECS
             // Serialize components
             rapidjson::Value comps(rapidjson::kObjectType);
 
-            // If this is a prefab instance root, only serialize Transform and Prefab components
-            if (HasComponent<Prefab>(en))
-            {
-                auto& prefabComp = GetComponent<Prefab>(en);
-                if (prefabComp.isRoot && !prefabComp.prefabPath.empty())
-                {
-                    // Only serialize Transform and Prefab - everything else comes from the prefab file
-                    if (HasComponent<Transform>(en))
-                    {
-                        rapidjson::Value transformComp(rapidjson::kObjectType);
-                        GetComponent<Transform>(en).Serialize(transformComp, allocator);
-                        comps.AddMember("struct Uma_ECS::Transform", transformComp, allocator);
-                    }
-
-                    rapidjson::Value prefabCompVal(rapidjson::kObjectType);
-                    prefabComp.Serialize(prefabCompVal, allocator);
-                    comps.AddMember("struct Uma_ECS::Prefab", prefabCompVal, allocator);
-                }
-                else
-                {
-                    // Regular entity - serialize all components
-                    aComponentManager->SerializeAll(en, comps, allocator);
-                }
-            }
-            else
-            {
-                // Regular entity - serialize all components
-                aComponentManager->SerializeAll(en, comps, allocator);
-            }
+            // Serialize all components for every entity (including prefab instance roots).
+            // For prefab roots the full component data acts as scene-level overrides:
+            // on load the prefab file provides the defaults and these values are
+            // applied on top, so any per-instance tweaks survive save/load.
+            aComponentManager->SerializeAll(en, comps, allocator);
 
             entityObj.AddMember("components", comps, allocator);
             out.PushBack(entityObj, allocator);
@@ -713,7 +689,7 @@ namespace Uma_ECS
 
                 if (isPrefabInstance)
                 {
-                    // This is a prefab instance - only read transform and load from prefab file
+                    // Load the prefab file first (provides default components for entire hierarchy)
                     rapidjson::Value emptyOverride(rapidjson::kObjectType);
                     const rapidjson::Value* transformOverride = &emptyOverride;
 
@@ -722,8 +698,14 @@ namespace Uma_ECS
                         transformOverride = &comps["struct Uma_ECS::Transform"];
                     }
 
-                    // Load prefab instance with transform override
                     LoadPrefabInstance(prefabPath, newID, *transformOverride);
+
+                    // Apply ALL scene-level component overrides on top of the prefab defaults.
+                    // DeserializeAll handles both "update existing" and "add new" cases,
+                    // so any per-instance tweaks saved in the scene file are restored here.
+                    Signature prefabSign = aEntityManager->GetSignature(newID);
+                    Signature overrideSign = aComponentManager->DeserializeAll(newID, comps);
+                    aEntityManager->SetSignature(newID, prefabSign | overrideSign);
                 }
                 else
                 {
