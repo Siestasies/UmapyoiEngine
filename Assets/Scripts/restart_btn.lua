@@ -1,4 +1,4 @@
 function OnPointerClick()
     PauseGame(false)
-    ReloadScene()
+    RestartScene()
 end
