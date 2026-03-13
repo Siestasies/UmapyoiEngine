@@ -4343,7 +4343,7 @@
             },
             {
                 "id": 55,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "options",
@@ -4609,10 +4609,10 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         },
                         "pressedColour": {
                             "r": 0.698,
@@ -4639,10 +4639,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         }
                     }
                 }
@@ -5320,10 +5320,10 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         },
                         "pressedColour": {
                             "r": 0.698,
@@ -5350,10 +5350,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         }
                     }
                 }
@@ -6031,10 +6031,10 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         },
                         "pressedColour": {
                             "r": 0.698,
@@ -6061,10 +6061,10 @@
                             "a": 1.0
                         },
                         "checkmarkDisabledColour": {
-                            "r": 0.501,
+                            "r": 0.5,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.501
+                            "a": 0.5
                         }
                     }
                 }
