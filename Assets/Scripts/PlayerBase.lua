@@ -101,7 +101,7 @@ function Update(dt)
     -- Check for dash input (Shift key)
     if MouseButtonPressed(MOUSE_RIGHT) and not player.isStunned then
         if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
+            ChangeState(EntityID, "PlayerDash")
             return
         end
         Log("Dash Failed")
@@ -109,7 +109,7 @@ function Update(dt)
 
     if KeyPressed(KEY_SHIFT) and not player.isStunned then
         if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
+            ChangeState(EntityID, "PlayerDash")
             return
         end
     end
