@@ -9,7 +9,7 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
-\co-author  Javier Chua Dong Qing (Changed texture and font + add shader and prefab)
+\co-author  Javier Chua Dong Qing (Changed texture and font + add shader and prefab, Effect Shaders)
 \par        E-mail: javierdongqing.chua@digipen.edu
 \par        DigiPen login: javierdongqing.chua
 

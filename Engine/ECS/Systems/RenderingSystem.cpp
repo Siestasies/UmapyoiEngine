@@ -9,7 +9,7 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
-\co-author Javier Chua Dong Qing (EditorCamera, Animator, FlipScale, Particle Layering)
+\co-author Javier Chua Dong Qing (EditorCamera, Animator, FlipScale, Particle Layering, SpriteMaterial effect shader)
 \par       E-mail: javierdongqing.chua@digipen.edu
 \par       DigiPen login: javierdongqing.chua
 

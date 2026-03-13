@@ -9,7 +9,7 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
-\co-author Javier Chua Dong Qing (Auto loading assets refactor)
+\co-author Javier Chua Dong Qing (Auto loading assets refactor, Effect shader)
 \par       E-mail: javierdongqing.chua@digipen.edu
 \par       DigiPen login: javierdongqing.chua
 

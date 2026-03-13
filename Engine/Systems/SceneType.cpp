@@ -13,6 +13,10 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
+\co-author  Javier Chua Dong Qing (Cutscene)
+\par        E-mail: javierdongqing.chua@digipen.edu
+\par        DigiPen login: javierdongqing.chua
+
 \brief
 This file implements the definitions for a base class of scene in that
 anything that wants to be a scene should inherit from this class.
