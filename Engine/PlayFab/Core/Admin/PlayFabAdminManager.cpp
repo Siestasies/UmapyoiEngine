@@ -1,9 +1,9 @@
 /*!
 \file   PlayFabAdminManager.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men
 \par    E-mail: waimen.leong@digipen.edu
@@ -192,22 +192,30 @@ void Uma_Engine::PlayFabAdminManager::CreateStatisticDefinition(
     OnAdminSuccess                         onSuccess,
     OnAdminFailure                         onFailure)
 {
+    // Version config controls how stat history works. Manual reset means
+    // versions only increment when we explicitly call IncrementStatisticVersion,
+    // and maxQueryableVersions=1 means only the current version is queryable.
     PFVersionConfiguration versionCfg{};
     versionCfg.resetInterval = PFResetInterval::Manual;
     versionCfg.maxQueryableVersions = 1;
 
+    // A statistic can have multiple "columns" (e.g. score + time), each
+    // with its own aggregation method (Min, Max, Sum, Last, etc.).
+    // We only use a single column per stat.
     PFStatisticsStatisticColumn column{};
-    column.name = columnName.c_str(); // column name is distinct from stat name
+    column.name = columnName.c_str();
     column.aggregationMethod = aggregation;
 
     const PFStatisticsStatisticColumn* columnPtrs[1] = { &column };
 
+    // entityType = "title_player_account" means this stat tracks per-player
+    // values (as opposed to "title" for global stats or "group" for guilds).
     PFStatisticsCreateStatisticDefinitionRequest request{};
     request.name = name.c_str();
     request.entityType = "title_player_account";
     request.columns = columnPtrs;
     request.columnsCount = 1;
-    request.versionConfiguration = &versionCfg; // optional — omit for a stat with no auto-reset
+    request.versionConfiguration = &versionCfg;
 
     auto* ctx = new NoPayloadContext{ std::move(onSuccess), std::move(onFailure) };
     ctx->async.queue = nullptr;
@@ -535,12 +543,17 @@ void Uma_Engine::PlayFabAdminManager::CreateLeaderboardDefinition(
 
     const PFLeaderboardsLeaderboardColumn* columnPtr = &column;
 
-    // versionConfiguration is required (not _Maybenull_).
-    // maxQueryableVersions must be >= 1 — PlayFab rejects 0 with E_PF_INVALID_PARAMS.
+    // versionConfiguration is required (not nullable in the SDK). Manual
+    // reset means the leaderboard only resets when we call
+    // IncrementLeaderboardVersion. maxQueryableVersions must be >= 1,
+    // PlayFab rejects 0 with E_PF_INVALID_PARAMS.
     PFVersionConfiguration versionCfg{};
     versionCfg.resetInterval = PFResetInterval::Manual;
     versionCfg.maxQueryableVersions = 1;
 
+    // sizeLimit caps how many entries the leaderboard stores. Entries
+    // beyond this are dropped based on sort direction. entityType =
+    // "title_player_account" means this is a per-player leaderboard.
     PFLeaderboardsCreateLeaderboardDefinitionRequest request{};
     request.name = name.c_str();
     request.entityType = "title_player_account";
@@ -646,6 +659,9 @@ void Uma_Engine::PlayFabAdminManager::GetLeaderboardAroundEntity(
     }
 }
 
+// Directly writes/overwrites a player's leaderboard entry. Unlike
+// SubmitScore (player-side), this uses the title entity handle so it
+// can write on behalf of any player given their entityId.
 void Uma_Engine::PlayFabAdminManager::UpdateLeaderboardEntries(
     const std::string& leaderboardName,
     const std::string& entityId,
@@ -654,12 +670,16 @@ void Uma_Engine::PlayFabAdminManager::UpdateLeaderboardEntries(
     OnAdminSuccess     onSuccess,
     OnAdminFailure     onFailure)
 {
+    // Same pointer-to-pointer pattern as statistics: the SDK takes an
+    // array of score strings even though we only submit one column.
     const char* scorePtr = score.c_str();
 
     PFLeaderboardsLeaderboardEntryUpdate entry{};
     entry.entityId = entityId.c_str();
     entry.scores = &scorePtr;
     entry.scoresCount = 1;
+    // metadata is optional freeform text stored alongside the entry
+    // (e.g. replay data, build version). Pass nullptr to omit.
     entry.metadata = metadata.empty() ? nullptr : metadata.c_str();
 
     const PFLeaderboardsLeaderboardEntryUpdate* entryPtr = &entry;
@@ -878,6 +898,9 @@ void Uma_Engine::PlayFabAdminManager::ExecuteFunction(
     }
 }
 
+// SetTitleData calls are rate-limited by PlayFab (one write at a time per
+// title). Instead of firing them all concurrently and getting 429 errors,
+// we push each write into a FIFO queue and drain it one at a time.
 void Uma_Engine::PlayFabAdminManager::QueueTitleData(const std::string& key, const std::string& value, OnAdminSuccess onSuccess, OnAdminFailure onFailure)
 {
     TitleDataWriteCommand cmd{
@@ -890,6 +913,10 @@ void Uma_Engine::PlayFabAdminManager::QueueTitleData(const std::string& key, con
     m_titleDataQueue.push(cmd);
 }
 
+// Called every frame. If nothing is in flight and the queue isn't empty,
+// pop the next write and send it. The completion callback clears the
+// in-flight flag, which lets the next Update() tick pick up the next item.
+// This serialises writes without blocking the game loop.
 void Uma_Engine::PlayFabAdminManager::Update()
 {
     if (m_titleDataWriteInFlight || m_titleDataQueue.empty()) return;
@@ -907,7 +934,7 @@ void Uma_Engine::PlayFabAdminManager::Update()
         [this, cmd](HRESULT hr, const std::string& msg) {
             m_titleDataWriteInFlight = false;
             if (cmd.onFailure) cmd.onFailure(hr, msg);
-            // queue is NOT cleared — remaining commands still attempt
+            // queue is NOT cleared ï¿½ remaining commands still attempt
         }
     );
 }
@@ -946,12 +973,14 @@ void Uma_Engine::PlayFabAdminManager::OnExecuteFunctionComplete(XAsyncBlock* asy
         return;
     }
 
-    // If the Azure Function itself reported an error, surface it as a failure
+    // The HTTP call succeeded, but the Azure Function can still report its
+    // own application-level error in result->error. We surface that as a
+    // failure so callers don't have to check two different error paths.
     if (result->error)
     {
         std::string errMsg = "[ExecuteFunction] Azure Function error: ";
         errMsg += result->error->error ? result->error->error : "unknown";
-        errMsg += " — ";
+        errMsg += " ï¿½ ";
         errMsg += result->error->message ? result->error->message : "";
         DispatchError(E_FAIL, errMsg, ctx->onFailure);
         delete ctx;
@@ -1011,6 +1040,9 @@ void Uma_Engine::PlayFabAdminManager::DispatchError(
 {
     if (!onFailure) return;
 
+    // Uses an immediately-invoked lambda (IIFE) to convert the HRESULT
+    // to an 8-digit uppercase hex string inline during concatenation,
+    // avoiding a separate temporary variable.
     std::string msg = "[PlayFabAdminManager] " + context
         + " failed: 0x" + [](HRESULT h) {
         char buf[12];

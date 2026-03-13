@@ -1,3 +1,26 @@
+/*!
+\file   PlayFabRestTest.cpp
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Leong Wai Men (100%)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
+
+\brief
+Temporary test script for verifying PlayFab REST API integration.
+
+Contains a standalone test function that authenticates with a secret key,
+writes title data, and pumps the task queue to completion. Includes commented
+reference code for testing admin manager features such as title data, statistics,
+leaderboards, and cloud script execution.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 // Temporary test — delete before shipping
 #include <httpClient/httpClient.h>
 #include <XAsync.h>

@@ -1,9 +1,9 @@
 /*!
 \file   LuaScriptingSystem.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -90,8 +90,14 @@ namespace Uma_ECS
          */
         void Restart();
 
+        /*!
+         * \brief Initializes all Lua scripts on all entities that have a LuaScript component.
+         */
         void InitializeAllScripts();
 
+        /*!
+         * \brief Calls the Start function on all initialized Lua scripts to begin execution.
+         */
         void StartScripts();
 
         /**
@@ -101,6 +107,14 @@ namespace Uma_ECS
          */
         void SetPlayFabManager(Uma_Engine::PlayFabManager* pfb);
 
+        /*!
+         * \brief Calls a named function on a specific script attached to an entity.
+         * \tparam Args Variadic argument types to forward to the Lua function.
+         * \param entity Entity owning the script.
+         * \param scriptName Name of the script instance to target.
+         * \param functionName Name of the Lua function to invoke.
+         * \param args Arguments to pass to the Lua function.
+         */
         template<typename... Args>
         void CallScriptFunction(Entity entity, std::string scriptName, std::string functionName, Args&&... args)
         {
@@ -231,6 +245,14 @@ namespace Uma_ECS
             Entity other,
             const char* callbackName);
 
+        /*!
+         * \brief Notifies scripts of a trigger event by calling a specified callback function.
+         * \param scriptArray Component array containing LuaScript components.
+         * \param owner Entity that owns the scripts to notify.
+         * \param other Other entity involved in the trigger event.
+         * \param triggerOwner Entity that owns the trigger collider.
+         * \param callbackName Name of the Lua callback function to invoke.
+         */
         void NotifyTriggerScripts(
             ComponentArray<LuaScript>& scriptArray,
             Entity owner,
@@ -343,6 +365,8 @@ namespace Uma_ECS
          * \brief Registers PlayFab API functions to Lua
          */
         void RegisterPlayFabAPI();
+
+        void RegisterConfigSerializer();
 
         /**
          * \brief Cleanup handler for entity destruction

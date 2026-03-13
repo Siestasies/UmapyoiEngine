@@ -717,6 +717,9 @@ function CreateEntity() end
 ---@param entity Entity
 function DestroyEntity(entity) end
 
+---@param entity Entity
+function ForcedDestroyEntity(entity) end
+
 ---@param child Entity
 ---@param parent Entity
 function SetParent(child, parent) end
@@ -1049,6 +1052,12 @@ function GetDeltaTime() end
 
 ---@return number
 function GetFps() end
+
+---@return number
+function GetPlayTime() end
+
+---@param startNow boolean
+function StartPlayTime(startNow) end
 
 ---@param isPause boolean
 function PauseGame(isPause) end
@@ -1392,6 +1401,26 @@ function PlayFab_GetLeaderboard(name, pageSize, startPos, onSuccess, onFailure) 
 ---@param onSuccess? fun(entries: LeaderboardEntry[])
 ---@param onFailure? fun(msg: string)
 function PlayFab_GetLeaderboardAroundMe(name, pageSize, onSuccess, onFailure) end
+
+---@return string
+function PlayFab_GenerateUUID4() end
+
+-- =============================================================================
+--  playfab config serialization
+-- =============================================================================
+
+---@class PlayFabConfig
+---@field titleId string
+---@field secretKey string
+---@field customId string
+
+---@param filename string
+---@param c PlayFabConfig
+function PlayFabConfigSerializer_Save(filename, c) end
+
+---@param filename string
+---@return PlayFabConfig
+function PlayFabConfigSerializer_Load(filename) end
 
 -- =============================================================================
 --  Script Lifecycle (implement these in your scripts)

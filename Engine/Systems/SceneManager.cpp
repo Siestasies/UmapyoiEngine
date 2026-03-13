@@ -1,9 +1,9 @@
 /*!
 \file    SceneManager.cpp
-\par     Project: GAM200
-\par     Course: CSD2401
+\par     Project: GAM250
+\par     Course: CSD2451
 \par     Section A
-\par     Software Engineering Project 3
+\par     Software Engineering Project 4
 
 \author Shahir Rasid (Everything else)
 \par     E-mail: b.muhammadshahir@digipen.edu
@@ -79,6 +79,12 @@ namespace Uma_Engine
                 (void)e;
                 playMode = PLAYMODE::PM_STOP;
                 Application::GetCutsceneActive() = false;
+
+                // Clear collision tracking so the next Play treats all overlaps as Enter events
+                if (m_ActiveScene && m_ActiveScene->m_CollisionSystem)
+                {
+                    m_ActiveScene->m_CollisionSystem->ResetCollisionState();
+                }
             }
         );
 
@@ -94,6 +100,12 @@ namespace Uma_Engine
 
                 // Step 2: Restore the cached state
                 m_ActiveScene->GetCoordinator().RestoreState();
+
+                // Step 2.5: Clear collision state so overlapping entities trigger Enter events
+                if (m_ActiveScene->m_CollisionSystem)
+                {
+                    m_ActiveScene->m_CollisionSystem->ResetCollisionState();
+                }
 
                 // Step 3: Force transform system to update world positions
                 if (m_ActiveScene->m_TransformSystem)

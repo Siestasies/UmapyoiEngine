@@ -5,6 +5,7 @@ local missionTextComponent2
 local PlayerStatTrackState = require("PlayerStatTrackState")
 local triggerCount
 local blockerCollider = {}
+local tutorialEnemies = {}
 
 ExposedVars = {
     missionText = "",
@@ -25,11 +26,17 @@ function Start()
     triggerCount = 0
 
     children = GetChildrenList(EntityID)
+    -- stage blockers ref
     blockerCollider[1] = children[6]
     blockerCollider[2] = children[7]
     blockerCollider[3] = children[8]
     blockerCollider[4] = children[9]
 
+    -- static enemy refs
+    tutorialEnemies[1] = children[10]
+    tutorialEnemies[2] = children[11]
+
+    -- mission text refs
     missionTextComponent = GetTextFrom(children[3])
     missionTextComponent2 = GetTextFrom(children[4])
 
@@ -40,6 +47,8 @@ function Start()
     PlayerStatTrackState.SetWhirlpoolAttackCount(0)
     PlayerStatTrackState.SetSteamburstAttackCount(0)
     PlayerStatTrackState.SetPassedTrigger(0)
+    
+    --SpawnPrefab("Tutorial Popup1.prefab", Vec2(0,0))
 end
 
 function OnTriggerEnter()
@@ -48,12 +57,12 @@ function OnTriggerEnter()
     if triggerCount == 0 then
         RoomTriggerInit()
         SetMissionText(missionText)
-
+        SpawnPrefab("Tutorial Popup2.prefab", Vec2(0,0))
     -- change text for 2nd mission
     elseif triggerCount == 1 then
         RoomTriggerInit()
         SetMissionText(missionText4)
-
+        SpawnPrefab("Tutorial Popup3.prefab", Vec2(0,0))
     -- change text for 3rd mission
     elseif triggerCount == 2 then
         RoomTriggerInit()
@@ -81,10 +90,13 @@ function Update(dt)
         if wind >= 3 and water >= 3 and fire >= 3 then
             SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[1], false)
+            DestroyWithChildren(tutorialEnemies[1])
         elseif water >= 3 and fire >= 3 then
-            SetMissionText(missionText3)  -- wind
+            SetMissionText(missionText3 .. (3-wind) .. " times")  -- wind
         elseif fire >= 3 then
-            SetMissionText(missionText2)  -- water
+            SetMissionText(missionText2 .. (3-water) .. " times")  -- water
+        else 
+            SetMissionText(missionText .. (3-fire) .. " times")  -- fire
         end
         -- missionText use fire set in OnTriggerEnter
 
@@ -96,26 +108,29 @@ function Update(dt)
         if steam >= 3 and whirl >= 3 and pyro >= 3 then
             SetMissionText(moveToNext)
             SetActiveEntity(blockerCollider[2], false)
+            DestroyWithChildren(tutorialEnemies[2], false)
         elseif whirl >= 3 and pyro >= 3 then
-            SetMissionText(missionText6)  -- steamburst
+            SetMissionText(missionText6 .. (3-steam) .. " times")  -- steamburst
         elseif pyro >= 3 then
-            SetMissionText(missionText5)  -- whirlpool
+            SetMissionText(missionText5 .. (3-whirl) .. " times")  -- whirlpool
+        else 
+            SetMissionText(missionText4 .. (3-pyro) .. " times")  -- pyronado
         end
 
-    -- when only specifically <<4>> enemies left
+    -- when only specifically <<2>> enemies left
     -- assuming player killed 1 at the third tutorial
     elseif PlayerStatTrackState.GetPassedTrigger() == 3 then
         local enemyCount = CountEntitiesWithComponent("Enemy")
-        if enemyCount == 4 then
+        if enemyCount == 2 then
             SetActiveEntity(blockerCollider[3], false)
             SetMissionText(moveToNext)
         end
 
-    -- when only specifically <<2>> enemies left
+    -- when only specifically <<0>> enemies left
     -- assuming player killed last 2 at the fourth tutorial
     elseif PlayerStatTrackState.GetPassedTrigger() == 4 then
         local enemyCount = CountEntitiesWithComponent("Enemy")
-        if enemyCount == 2 then
+        if enemyCount == 0 then
             SetActiveEntity(blockerCollider[4], false)
             SetMissionText("Touch the Kappa Shrine")
         end

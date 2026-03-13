@@ -1,9 +1,9 @@
 /*!
 \file   SoundManager.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Koh Kai Yang (100%)
 \par    E-mail: k.kaiyang@digipen.edu
@@ -49,13 +49,33 @@ namespace Uma_Engine
 		class SoundManager : public ISystem 
 		{
 				public:
+				/*!
+				\brief Constructs the SoundManager and initializes FMOD pointers to null.
+				*/
 				SoundManager();
+
+				/*!
+				\brief Destroys the SoundManager and releases all FMOD resources.
+				*/
 				~SoundManager();
 
 				// Initialize and cleanup
+
+				/*!
+				\brief Initializes the FMOD sound system and creates channel groups.
+				*/
 				void Init() override;
+
+				/*!
+				\brief Shuts down the FMOD system and releases all loaded sounds.
+				*/
 				void Shutdown() override;
-				void Update(float dt) override; // Call this every frame
+
+				/*!
+				\brief Updates the FMOD system each frame, including 3D listener and fades.
+				\param dt Delta time in seconds since the last frame.
+				*/
+				void Update(float dt) override;
 
 				// Sound loading and management
 				/*!
@@ -162,7 +182,7 @@ namespace Uma_Engine
 				 * \brief Plays a one-shot sound at a 3D position.
 				 * \param info Sound resource and metadata to play.
 				 * \param pos World-space position of the sound.
-				 * \param volume Initial playback volume (0.0–1.0).
+				 * \param volume Initial playback volume (0.0ï¿½1.0).
 				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
 				 */
 				FMOD_CHANNEL* PlayOneShotAt(SoundInfo* info, const FMOD_VECTOR& pos, float volume = 1.0f, bool is3D = true);
@@ -171,7 +191,7 @@ namespace Uma_Engine
 				 * \brief Starts a sound instance and returns its channel.
 				 * \param info Sound resource and metadata to play.
 				 * \param loop Whether the sound should loop.
-				 * \param volume Initial playback volume (0.0–1.0).
+				 * \param volume Initial playback volume (0.0ï¿½1.0).
 				 * \param pos World-space position of the sound.
 				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
 				 * \return The FMOD channel used to play this sound.
@@ -202,7 +222,7 @@ namespace Uma_Engine
 				/*!
 				 * \brief Starts a volume fade operation on a channel.
 				 * \param channel Channel to fade.
-				 * \param targetVolume Volume to reach at the end of the fade (0.0–1.0).
+				 * \param targetVolume Volume to reach at the end of the fade (0.0ï¿½1.0).
 				 * \param duration Duration of the fade in seconds.
 				 * \param fadeOut If true, fade from current volume down; if false, fade up to targetVolume.
 				 */
@@ -218,7 +238,7 @@ namespace Uma_Engine
 				 * \brief Plays a sound instance and fades it in to a target volume.
 				 * \param info Sound resource and metadata to play.
 				 * \param loop Whether the sound should loop.
-				 * \param targetVolume Volume to reach at the end of the fade-in (0.0–1.0).
+				 * \param targetVolume Volume to reach at the end of the fade-in (0.0ï¿½1.0).
 				 * \param pos World-space position of the sound.
 				 * \param is3D Whether to play the sound in 3D (true) or as 2D (false).
 				 * \param fadeInTime Duration of the fade-in in seconds.

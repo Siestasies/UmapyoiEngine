@@ -1,9 +1,9 @@
 /*!
 \file   PlayFabPlayerManager.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men
 \par    E-mail: waimen.leong@digipen.edu
@@ -29,6 +29,11 @@ All rights reserved.
 
 namespace
 {
+    // Converts the raw SDK leaderboard response into our engine-friendly
+    // LeaderboardPlayerEntry vector. The SDK response contains C-style
+    // nullable pointers for every field, so each one needs a null check.
+    // We only grab the first score column (scores[0]) because our
+    // leaderboards are single-column.
     std::vector<Uma_Engine::LeaderboardPlayerEntry> ParsePlayerLeaderboard(
         const PFLeaderboardsGetEntityLeaderboardResponse* response)
     {
@@ -81,6 +86,9 @@ bool Uma_Engine::PlayFabPlayerManager::IsLoggedIn() const
 //  Private helpers
 // =============================================================================
 
+// Returns true when the player is NOT logged in (i.e. the guard triggers).
+// Callers use this as an early-out: if (GuardLoggedIn(...)) { error; return; }
+// The callerName parameter is unused but kept for potential future logging.
 bool Uma_Engine::PlayFabPlayerManager::GuardLoggedIn(const char* /*callerName*/) const
 {
     return m_playerEntityHandle == nullptr;
@@ -332,18 +340,23 @@ void Uma_Engine::PlayFabPlayerManager::SubmitScore(
         return;
     }
 
+    // The SDK expects scores as an array of C-string pointers, even for a
+    // single numeric value. We truncate to int64 because PlayFab statistics
+    // are integer-only, then convert to string for the API.
     std::string scoreStr = std::to_string(static_cast<int64_t>(value));
     const char* scorePtr = scoreStr.c_str();
 
     PFStatisticsStatisticUpdate statUpdate{};
     statUpdate.name        = statName.c_str();
-    statUpdate.scores      = &scorePtr;
+    statUpdate.scores      = &scorePtr;    // pointer-to-pointer (array of 1)
     statUpdate.scoresCount = 1;
 
+    // Same pointer-to-pointer indirection: the request takes an array of
+    // StatisticUpdate pointers so multiple stats can be updated at once.
     const PFStatisticsStatisticUpdate* statUpdatePtr = &statUpdate;
 
     PFStatisticsUpdateStatisticsRequest request{};
-    request.entity          = nullptr;    // uses the entity from the handle
+    request.entity          = nullptr;    // nullptr = use the entity from the handle
     request.statistics      = &statUpdatePtr;
     request.statisticsCount = 1;
 
@@ -447,7 +460,15 @@ void Uma_Engine::PlayFabPlayerManager::GetLeaderboardAroundMe(
         return;
     }
 
-    // Retrieve the player's entity key from the handle so the request knows "who is me".
+    // The "around entity" API needs an explicit PFEntityKey (id + type) so
+    // the server knows which player to centre the leaderboard on.
+    // The SDK stores this inside the opaque PFEntityHandle, but we can't
+    // access it directly. Instead we use the two-call pattern:
+    //   1. PFEntityGetEntityKeySize  — ask how many bytes the serialised key needs
+    //   2. PFEntityGetEntityKey      — write the key into our buffer and get a
+    //                                  pointer into that buffer
+    // The returned entityKey pointer is only valid as long as entityKeyBuf
+    // is alive, so the buffer must outlive the async launch below.
     size_t entityKeyBufSize = 0;
     PFEntityGetEntityKeySize(m_playerEntityHandle, &entityKeyBufSize);
     std::vector<uint8_t> entityKeyBuf(entityKeyBufSize);
@@ -485,6 +506,9 @@ void Uma_Engine::PlayFabPlayerManager::OnGetAccountInfoComplete(XAsyncBlock* asy
 {
     auto* ctx = reinterpret_cast<GetAccountInfoContext*>(async->context);
 
+    // Check whether the async operation itself succeeded before trying to
+    // read the result. wait=false because we're already in the callback
+    // (the operation has finished by definition).
     HRESULT hr = XAsyncGetStatus(async, false);
     if (FAILED(hr))
     {
@@ -493,6 +517,11 @@ void Uma_Engine::PlayFabPlayerManager::OnGetAccountInfoComplete(XAsyncBlock* asy
         return;
     }
 
+    // PlayFab result retrieval follows a two-call pattern:
+    //   1. GetResultSize — ask how many bytes the result payload needs
+    //   2. GetResult     — deserialise into a caller-owned buffer
+    // The result pointer points into our buffer, so the buffer must stay
+    // alive for as long as we read from result.
     size_t bufferSize = 0;
     hr = PFAccountManagementClientGetAccountInfoGetResultSize(async, &bufferSize);
     if (FAILED(hr))
@@ -519,9 +548,11 @@ void Uma_Engine::PlayFabPlayerManager::OnGetAccountInfoComplete(XAsyncBlock* asy
     {
         auto* info = result->accountInfo;
         std::unordered_map<std::string, std::string> out;
-        out["playFabId"] = info->playFabId ? info->playFabId : "";
-        out["username"]  = info->username  ? info->username  : "";
-        out["created"]   = std::to_string(static_cast<long long>(info->created));
+        out["playFabId"]    = info->playFabId ? info->playFabId : "";
+        out["username"]     = info->username  ? info->username  : "";
+        out["created"]      = std::to_string(static_cast<long long>(info->created));
+        out["displayName"]  = (info->titleInfo && info->titleInfo->displayName)
+                              ? info->titleInfo->displayName : "";
         ctx->onSuccess(out);
     }
 
@@ -768,6 +799,10 @@ void Uma_Engine::PlayFabPlayerManager::OnGetMyStatsComplete(XAsyncBlock* async)
 
     if (ctx->onSuccess)
     {
+        // The response contains all statistics for the entity, not just
+        // the one we asked for (the SDK doesn't support server-side
+        // filtering by name). We scan through to find the matching stat
+        // and only report that one back to the caller.
         for (uint32_t i = 0; i < result->statisticsCount; ++i)
         {
             const PFStatisticsEntityStatisticValue* val = result->statistics[i].value;

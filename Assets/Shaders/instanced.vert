@@ -7,6 +7,7 @@ layout (location = 6) in vec4 instanceTint; // <vec3 tintColor, float alpha>
 out vec2 TexCoords;    // UV-transformed coords for texture sampling
 out vec2 RawTexCoords; // Raw [0,1] quad UVs for fill clipping
 out vec4 Tint;
+flat out vec4 CellUV;  // UV cell bounds for effect shaders (offset.xy, size.zw)
 
 uniform mat4 projection;
 
@@ -22,6 +23,9 @@ void main()
 
     // Pass tint to fragment shader
     Tint = instanceTint;
+
+    // Pass UV cell bounds to effect shaders
+    CellUV = instanceUV;
 
     gl_Position = projection * instanceModel * vec4(vertex.xy, 0.0, 1.0);
 }

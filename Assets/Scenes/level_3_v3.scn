@@ -2,34 +2,34 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -59,10 +59,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
+                "path": "assets/lost hp point.png"
+            },
+            {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -75,17 +78,38 @@
             },
             {
                 "path": "assets/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/star.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 2.png"
+            },
+            {
+                "path": "assets/wind vfx spritesheet.png"
+            },
+            {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
+            },
+            {
+                "path": "assets/skill tree/plus hp skill.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -94,7 +118,83 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonAttack(Charge)",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "type": 0
+            },
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Shoot Fireball",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDamage",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -17225,7 +17325,7 @@
                         },
                         {
                             "offset": {
-                                "x": -103.098,
+                                "x": -103.097,
                                 "y": -61.9
                             },
                             "size": {
@@ -17271,11 +17371,11 @@
                         {
                             "offset": {
                                 "x": -17.0,
-                                "y": -66.198
+                                "y": -66.195
                             },
                             "size": {
                                 "x": 62.298,
-                                "y": 38.598
+                                "y": 38.597
                             },
                             "purpose": 1,
                             "layer": 8,
@@ -17391,7 +17491,7 @@
                         {
                             "offset": {
                                 "x": 73.0,
-                                "y": -113.198
+                                "y": -113.195
                             },
                             "size": {
                                 "x": 28.1,
@@ -17420,7 +17520,7 @@
                         },
                         {
                             "offset": {
-                                "x": 100.198,
+                                "x": 100.195,
                                 "y": 28.298
                             },
                             "size": {
@@ -17435,7 +17535,7 @@
                         },
                         {
                             "offset": {
-                                "x": 100.198,
+                                "x": 100.195,
                                 "y": -49.798
                             },
                             "size": {
@@ -17532,97 +17632,10 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "lvl3eye1",
-                    "position": {
-                        "x": -281.2,
-                        "y": -7.699
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        15
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/eye.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 5,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "lvl3eye2",
-                    "position": {
-                        "x": -280.899,
-                        "y": 249.5
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        7
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/eye.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 6,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "lvl3eye3",
-                    "position": {
-                        "x": -152.38,
-                        "y": 152.857
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        23
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/eye.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 11,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
                     "name": "water enemy",
                     "position": {
-                        "x": -296.899,
-                        "y": 101.199
+                        "x": -296.898,
+                        "y": 101.196
                     },
                     "rotation": {
                         "x": 0.0,
@@ -17634,9 +17647,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        12,
-                        13,
-                        14
+                        5,
+                        6,
+                        7
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -17646,7 +17659,7 @@
             }
         },
         {
-            "id": 19,
+            "id": 8,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17665,9 +17678,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        20,
-                        21,
-                        22
+                        9,
+                        10,
+                        11
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -17677,7 +17690,7 @@
             }
         },
         {
-            "id": 26,
+            "id": 12,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17696,12 +17709,162 @@
                     },
                     "parent": -1,
                     "children": [
-                        27,
-                        28
+                        13,
+                        14
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/wind enemy.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 15,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Level 3 Trigger",
+                    "position": {
+                        "x": 57.499,
+                        "y": -79.833
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        16,
+                        17,
+                        18,
+                        19,
+                        20,
+                        21
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Level 3 Trigger.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 25,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "lvl3eye1",
+                    "position": {
+                        "x": -281.2,
+                        "y": -7.697
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        29
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/lvl3eye1.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 30,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "lvl3eye2",
+                    "position": {
+                        "x": -280.898,
+                        "y": 249.5
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        34
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/lvl3eye2.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 35,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "lvl3eye3",
+                    "position": {
+                        "x": -152.38,
+                        "y": 152.856
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        38
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/lvl3eye3.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 39,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "Kappa_Statue",
+                    "position": {
+                        "x": -19.423,
+                        "y": 77.281
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.0,
+                        "y": 5.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        57
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
                     "isRoot": true
                 }
             }

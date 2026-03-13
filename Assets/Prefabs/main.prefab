@@ -268,11 +268,11 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -150.0
+                            "y": -125.0
                         },
                         "sizeDelta": {
-                            "x": 800.0,
-                            "y": 140.0
+                            "x": 750.0,
+                            "y": 115.0
                         },
                         "isDirty": true
                     },
@@ -370,8 +370,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 12.0
+                            "x": -7.5,
+                            "y": 7.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -383,7 +383,7 @@
                         "text": "Play",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
-                        "fontSize": 2.5,
+                        "fontSize": 2.4,
                         "colour": {
                             "r": 0.791,
                             "g": 0.648,
@@ -464,11 +464,11 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -230.0
+                            "y": -200.0
                         },
                         "sizeDelta": {
-                            "x": 800.0,
-                            "y": 140.0
+                            "x": 750.0,
+                            "y": 115.0
                         },
                         "isDirty": true
                     },
@@ -566,8 +566,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 12.0
+                            "x": -7.5,
+                            "y": 7.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -579,7 +579,7 @@
                         "text": "How to play",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
-                        "fontSize": 2.5,
+                        "fontSize": 2.0,
                         "colour": {
                             "r": 0.791,
                             "g": 0.648,
@@ -660,11 +660,11 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -310.0
+                            "y": -275.0
                         },
                         "sizeDelta": {
-                            "x": 800.0,
-                            "y": 140.0
+                            "x": 750.0,
+                            "y": 115.0
                         },
                         "isDirty": true
                     },
@@ -762,8 +762,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 12.0
+                            "x": 7.5,
+                            "y": 7.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -775,7 +775,7 @@
                         "text": "Credits",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 1,
-                        "fontSize": 2.5,
+                        "fontSize": 2.0,
                         "colour": {
                             "r": 0.791,
                             "g": 0.648,
@@ -856,11 +856,11 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -390.0
+                            "y": -350.0
                         },
                         "sizeDelta": {
-                            "x": 800.0,
-                            "y": 140.0
+                            "x": 750.0,
+                            "y": 115.0
                         },
                         "isDirty": true
                     },
@@ -958,8 +958,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 12.0
+                            "x": 7.5,
+                            "y": 7.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -971,7 +971,7 @@
                         "text": "Quit",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.5,
+                        "fontSize": 2.0,
                         "colour": {
                             "r": 0.791,
                             "g": 0.648,

@@ -1,9 +1,9 @@
 /*!
 \file   Prefab.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -36,6 +36,11 @@ namespace Uma_ECS
         // (useful for multi-entity prefab hierarchies)
         bool isRoot = true;
 
+        /*!
+        \brief Serialize prefab data to JSON, including the prefab file path and root flag.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -47,6 +52,10 @@ namespace Uma_ECS
             value.AddMember("isRoot", isRoot, allocator);
         }
 
+        /*!
+        \brief Deserialize prefab data from JSON, restoring the prefab file path and root flag.
+        \param value JSON value containing serialized prefab data.
+        */
         void Deserialize(const rapidjson::Value& value)
         {
             if (value.HasMember("prefabPath"))

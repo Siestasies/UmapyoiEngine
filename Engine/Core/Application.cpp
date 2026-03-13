@@ -320,6 +320,11 @@ namespace Uma_Engine
                 mWindow->ToggleFullscreen();
             }
 
+            if (startPlayTimeTimer)
+            {
+                playTime += deltaTime;
+            }
+
             // pre update
             PreUpdate(deltaTime);
 

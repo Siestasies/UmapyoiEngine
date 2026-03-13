@@ -1,10 +1,10 @@
 #pragma once
 /*!
 \file   ProjectileSystem.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -48,10 +48,18 @@ namespace Uma_ECS
         */
         void Update(float dt);
 
+        /*!
+        \brief Shuts down the projectile system and releases resources.
+        */
         void Shutdown();
 
     private:
 
+        /*!
+        \brief Handles collision response when a projectile hits a trigger entity.
+        \param self The projectile entity.
+        \param trigger The entity that triggered the collision.
+        */
         void HandleCollision(Entity self, Entity trigger);
 
         Coordinator* pCoordinator = nullptr; //!< Pointer to ECS Coordinator.

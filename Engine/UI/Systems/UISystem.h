@@ -1,9 +1,9 @@
 /*!
 \file   UISystem.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Jedrek Lee Jing Wei (100%)
 \par    E-mail: jedrekjingwei.lee@digipen.edu
@@ -89,6 +89,10 @@ namespace Uma_UI
          */
         void InputPass();
 
+        /*!
+         * \brief Third pass: Advances and applies all active UI effect animations.
+         * \param dt Delta time in seconds.
+         */
         void EffectsPass(float dt);
 
         /*!
@@ -212,12 +216,33 @@ namespace Uma_UI
          */
         void UpdateButtonVisual(Uma_ECS::Entity entity);
 
+        /*!
+         * \brief Updates slider visual state based on interaction state.
+         * \param entity The slider entity to update.
+         */
         void UpdateSliderVisual(Uma_ECS::Entity entity);
 
+        /*!
+         * \brief Updates checkbox visual state based on interaction state.
+         * \param entity The checkbox entity to update.
+         */
         void UpdateCheckboxVisual(Uma_ECS::Entity entity);
 
+        /*!
+         * \brief Applies an effect clip's interpolated value to the target entity.
+         * \param entity The entity to apply the effect to.
+         * \param clip The effect clip being processed.
+         * \param easedT The eased interpolation value [0,1].
+         */
         void ApplyEffect(Uma_ECS::Entity entity, EffectClip& clip, float easedT);
 
+        /*!
+         * \brief Recursively applies a scale multiplier to an entity's children.
+         * \param entity The parent entity whose children will be scaled.
+         * \param scaleMultiplier Scale factor to apply to sizeDelta.
+         * \param originalSizes Map to cache original sizes for restoration.
+         * \param originalFontSizes Map to cache original font sizes for restoration.
+         */
         void ApplyScaleToChildren(Uma_ECS::Entity entity, const Vec2& scaleMultiplier, std::map<Uma_ECS::Entity, Vec2>& originalSizes, std::map<Uma_ECS::Entity, float>& originalFontSizes);
 
         /*!

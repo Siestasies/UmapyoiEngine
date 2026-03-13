@@ -1,9 +1,9 @@
 /*!
 \file   Graphics.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Javier Chua Dong Qing (100%)
 \par    E-mail: javierdongqing.chua@digipen.edu
@@ -683,7 +683,18 @@ namespace Uma_Engine
          */
         int GetSceneFBHeight() const { return mSceneFBHeight; }
 
+        /*!
+        \brief Loads and compiles a shader program from vertex and fragment shader files.
+        \param vertexPath File path to the vertex shader source.
+        \param fragmentPath File path to the fragment shader source.
+        \return Shader struct containing the compiled program ID and source paths.
+        */
         Shader LoadShaderFromFile(const std::string& vertexPath, const std::string& fragmentPath);
+
+        /*!
+        \brief Unloads and deletes a shader program.
+        \param shaderID OpenGL shader program ID to delete.
+        */
         void UnloadShader(unsigned int shaderID);
     };
 }

@@ -1,3 +1,22 @@
+/*!
+\file   Slider.h
+\par    Project: GAM250
+\par    Course: CSD2451
+\par    Section A
+\par    Software Engineering Project 4
+
+\author Jedrek Lee Jing Wei (100%)
+\par    E-mail: jedrekjingwei.lee@digipen.edu
+\par    DigiPen login: jedrekjingwei.lee
+
+\brief
+Defines the Slider UI component for draggable range controls with configurable
+direction, value range, visual feedback colours, and JSON serialization support.
+
+All content (C) 2025 DigiPen Institute of Technology Singapore.
+All rights reserved.
+*/
+
 #pragma once
 
 #include "../Core/UITypes.h"
@@ -8,6 +27,10 @@
 
 namespace Uma_UI
 {
+	/*!
+	 * \enum SliderDirection
+	 * \brief Direction in which a slider fill progresses.
+	 */
 	enum class SliderDirection
 	{
 		LeftToRight = 0,
@@ -16,6 +39,10 @@ namespace Uma_UI
 		TopToBottom = 3
 	};
 
+	/*!
+	 * \class Slider
+	 * \brief UI component for a draggable slider with configurable range and visual feedback.
+	 */
 	class Slider
 	{
     public:
@@ -46,6 +73,11 @@ namespace Uma_UI
         bool isDragging = false;
         bool isHovered = false;
 
+        /*!
+         * \brief Serializes slider settings to a JSON value.
+         * \param jsonValue Output JSON value to populate.
+         * \param allocator RapidJSON allocator for memory management.
+         */
         void Serialize(rapidjson::Value& jsonValue, rapidjson::Document::AllocatorType& allocator) const
         {
             jsonValue.SetObject();
@@ -86,6 +118,10 @@ namespace Uma_UI
             jsonValue.AddMember("disabledColour", dCol, allocator);
         }
 
+        /*!
+         * \brief Deserializes slider settings from a JSON value.
+         * \param jsonValue Input JSON value to read from.
+         */
         void Deserialize(const rapidjson::Value& jsonValue)
         {
             minValue = jsonValue["minValue"].GetFloat();

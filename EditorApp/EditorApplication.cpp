@@ -217,14 +217,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
         // Create the editor scene and configure it
-        auto editorScene = sceneManager->CreateScene("tutorial.scn", "tutorial.scn");
+        auto editorScene = sceneManager->CreateScene("tutorial_v2.scn", "tutorial_v2.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        sceneManager->AttachScriptToScene("tutorial.scn", "GameBehaviour");
-        sceneManager->AttachScriptToScene("tutorial.scn", "EditorBehaviour");
+        sceneManager->AttachScriptToScene("tutorial_v2.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("tutorial_v2.scn", "EditorBehaviour");
 
         // Load the default scene
-        sceneManager->LoadScene("tutorial.scn");
+        sceneManager->LoadScene("tutorial_v2.scn");
 
         // load and configure playfab
         PlayFabConfiguration();

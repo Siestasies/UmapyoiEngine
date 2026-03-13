@@ -1,9 +1,9 @@
 /*!
 \file   Collider.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -61,7 +61,9 @@ namespace Uma_ECS
         // Runtime data
         std::vector<BoundingBox> bounds;
 
-        // Constructor with default shape
+        /*!
+        \brief Construct a Collider with a default auto-fitting physics shape.
+        */
         Collider()
         {
             shapes.push_back(ColliderShape{
@@ -73,26 +75,57 @@ namespace Uma_ECS
             bounds.resize(1);
         }
 
+        /*!
+        \brief Get the effective collision layer for a shape, falling back to default if unset.
+        \param index Index of the collider shape.
+        \return The collision layer bitmask for the specified shape.
+        */
         inline LayerMask GetEffectiveLayer(size_t index) const
         {
             if (index >= shapes.size()) return defaultLayer;
             return shapes[index].layer != CL_NONE ? shapes[index].layer : defaultLayer;
         }
 
+        /*!
+        \brief Get the effective collision mask for a shape, falling back to default if unset.
+        \param index Index of the collider shape.
+        \return The collision mask bitmask for the specified shape.
+        */
         inline LayerMask GetEffectiveMask(size_t index) const
         {
             if (index >= shapes.size()) return defaultMask;
             return shapes[index].colliderMask != CL_NONE ? shapes[index].colliderMask : defaultMask;
         }
 
-        // Direct access helpers
+        /*!
+        \brief Get a mutable reference to the primary (first) collider shape.
+        \return Reference to the primary ColliderShape.
+        */
         inline ColliderShape& GetPrimaryShape() { return shapes[0]; }
+
+        /*!
+        \brief Get a const reference to the primary (first) collider shape.
+        \return Const reference to the primary ColliderShape.
+        */
         inline const ColliderShape& GetPrimaryShape() const { return shapes[0]; }
 
+        /*!
+        \brief Get a mutable reference to the primary (first) bounding box.
+        \return Reference to the primary BoundingBox.
+        */
         inline BoundingBox& GetPrimaryBounds() { return bounds[0]; }
+
+        /*!
+        \brief Get a const reference to the primary (first) bounding box.
+        \return Const reference to the primary BoundingBox.
+        */
         inline const BoundingBox& GetPrimaryBounds() const { return bounds[0]; }
 
-        // Serialize/Deserialize updated below
+        /*!
+        \brief Serialize collider data to JSON, including all shapes and layer masks.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const
         {
             value.SetObject();
@@ -127,6 +160,10 @@ namespace Uma_ECS
             value.AddMember("shapes", shapesArray, allocator);
         }
 
+        /*!
+        \brief Deserialize collider data from JSON, rebuilding shapes and bounds.
+        \param value JSON value containing serialized collider data.
+        */
         void Deserialize(const rapidjson::Value& value)
         {
             if (value.HasMember("defaultLayer"))

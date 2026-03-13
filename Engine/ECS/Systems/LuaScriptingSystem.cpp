@@ -1,9 +1,9 @@
 /*!
 \file   LuaScriptingSystem.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -38,6 +38,7 @@ All rights reserved.
 #include "../Components/Enemy.h"
 #include "../Components/ParticleEmitter.h"
 #include "../Components/FSM.h"
+#include "../UI/Components/RectTransform.h"
 #include "../UI/Components/Text.h"
 #include "../UI/Components/Dialogue.h"
 #include "../UI/Components/Slider.h"
@@ -58,6 +59,10 @@ All rights reserved.
 #include <rapidjson/istreamwrapper.h>
 #include "Core/FilePaths.h"
 #include "Application.h"
+
+//playfab
+#include "PlayFab/Core/PlayFabConfig.h"
+#include "../Engine/Core/EngineConfigSerializer.h"
 
 namespace Uma_ECS
 {
@@ -162,6 +167,7 @@ namespace Uma_ECS
                     if (!script.isInitialized)
                     {
                         InitializeEntityScript(entity, script);
+                        CallLuaFunction(script, "Start");
                     }
 
                     //CallLuaFunction(script, "OnEnable");
@@ -170,6 +176,7 @@ namespace Uma_ECS
                 if (!script.isInitialized)
                 {
                     InitializeEntityScript(entity, script);
+                    CallLuaFunction(script, "Start");
                 }
 
                 if (script.isVariableDirty) // oni update when there is changes being made
@@ -397,6 +404,7 @@ namespace Uma_ECS
         RegisterFeedbackAPI();
 
         RegisterPlayFabAPI();
+        RegisterConfigSerializer();
     }
 
     void LuaScriptingSystem::RegisterEntityManipulation()
@@ -436,6 +444,21 @@ namespace Uma_ECS
                 }
             });
 
+        sharedLua->set_function("ForcedDestroyEntity", [&](const Entity& entity)
+            {
+                try
+                {
+                    pCoordinator->ForcedDestroyEntity(entity);
+                    std::string debug = "destroyed entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+                catch (...)
+                {
+                    std::string debug = "failed to destroy entity : " + std::to_string(entity);
+                    Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, debug);
+                }
+            });
+
         sharedLua->set_function("SetParent", [&](Entity child, Entity parent) {
             try {
                 pCoordinator->SetParent(child, parent);
@@ -449,6 +472,16 @@ namespace Uma_ECS
         sharedLua->set_function("RemoveParent", [&](Entity child) {
             try {
                 pCoordinator->RemoveParent(child);
+            }
+            catch (...) {
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
+                    "Failed to remove parent");
+            }
+            });
+
+        sharedLua->set_function("RemoveParentSpecial", [&](Entity child) {
+            try {
+                pCoordinator->RemoveParentSpecial(child);
             }
             catch (...) {
                 Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
@@ -592,7 +625,6 @@ namespace Uma_ECS
                             auto& tf = pCoordinator->GetComponent<Transform>(rootEntity);
                             tf.position = pos;
                         }
-
                         // Log success
                         Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eInfo, "Spawned prefab: " + prefabName);
                     }
@@ -652,11 +684,18 @@ namespace Uma_ECS
                     else if (s == "warn" || s == "Warn" || s == "WARN"
                         || s == "warning" || s == "Warning" || s == "WARNING")
                         type = Uma_UI::FeedbackType::Warning;
-                    // else: anything else → Normal
+                    // else: anything else -> Normal
                 }
 
-                pEventSystem->Emit<Uma_UI::SpawnFeedbackEvent>(
-                    worldX, worldY, value, type);
+                Vec2 screenPx = pGraphics->WorldToScreen({ worldX, worldY });
+                Vec2 viewport = pGraphics->GetSceneViewport();
+                sol::protected_function fn = (*sharedLua)["_FeedbackSpawn"];
+
+                float centeredX = screenPx.x - viewport.x * 0.5f;
+                float centeredY = (viewport.y - screenPx.y) - viewport.y * 0.5f;
+
+                if (fn.valid())
+                    fn(centeredX, centeredY, value, typeStr.value_or("normal"));
             });
     }
 
@@ -680,6 +719,11 @@ namespace Uma_ECS
             "rank",        &Uma_Engine::LeaderboardPlayerEntry::rank,
             "score",       &Uma_Engine::LeaderboardPlayerEntry::score
         );
+
+        // helper
+        sharedLua->set_function("PlayFab_GenerateUUID4", [this]() -> std::string {
+            return pPlayFabManager->GenerateUUID4();
+            });
 
         // ── State queries ────────────────────────────────────────────────────
 
@@ -1033,6 +1077,42 @@ namespace Uma_ECS
             "PlayFab API registered in Lua");
     }
 
+    void LuaScriptingSystem::RegisterConfigSerializer()
+    {
+        using namespace Uma_Engine;
+
+        sharedLua->new_usertype<PlayFabConfig>("PlayFabConfig",
+            "titleId", &PlayFabConfig::titleId,
+            "secretKey", &PlayFabConfig::secretKey,
+            "customId", &PlayFabConfig::customId
+        );
+
+        sharedLua->set_function("PlayFabConfigSerializer_Save",
+            [this](const std::string& filename,
+                const PlayFabConfig& c)
+            {
+                Uma_Engine::PlayFabConfig config = c;
+                Uma_Engine::EngineConfigSerializer serializer;
+                serializer.Register(&config);
+               
+                serializer.save(Uma_FilePath::CONFIG_ROOT + filename);
+            });
+
+        sharedLua->set_function("PlayFabConfigSerializer_Load",
+            [this](const std::string& filename)
+            -> PlayFabConfig
+            {
+                Uma_Engine::PlayFabConfig config;
+                Uma_Engine::EngineConfigSerializer serializer;
+                serializer.Register(&config);
+
+                serializer.load(Uma_FilePath::CONFIG_ROOT + filename);
+
+                return config;
+            });
+            
+    }
+
     void LuaScriptingSystem::RegisterComponentTypes()
     {
         // Register Transform
@@ -1303,9 +1383,19 @@ namespace Uma_ECS
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
 
+        sharedLua->new_usertype<Uma_UI::RectTransform>("RectTransform",
+            "anchoredPosition", &Uma_UI::RectTransform::anchoredPosition,
+            "sizeDelta", &Uma_UI::RectTransform::sizeDelta,
+            "anchorMin", &Uma_UI::RectTransform::anchorMin,
+            "anchorMax", &Uma_UI::RectTransform::anchorMax,
+            "pivot", &Uma_UI::RectTransform::pivot,
+            "isDirty", &Uma_UI::RectTransform::isDirty
+        );
+
         //Register Text component
         sharedLua->new_usertype<Text>("Text",
             "text", &Text::text,
+            "fontSize", &Text::fontSize,
             "color", &Text::color,
             "visible", &Text::visible
         );
@@ -2052,6 +2142,7 @@ namespace Uma_ECS
 
         // first is entity wrapper (like accessing a struct / class)
         // then the direct access method with the entity id
+        using RectTransform = Uma_UI::RectTransform;
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
@@ -2073,10 +2164,11 @@ namespace Uma_ECS
         X(PathFinding)      \
         X(Projectile)       \
         X(Animator)         \
+        X(RectTransform)    \
         X(Text)             \
         X(Image)            \
         X(Effects)          \
-        X(Button)         \
+        X(Button)           \
         X(Dialogue)         \
         X(ParticleEmitter)  \
         X(AudioComponent)   \
@@ -2162,6 +2254,14 @@ namespace Uma_ECS
         // Add time access
         sharedLua->set_function("GetDeltaTime", [this]() {
             return lastDeltaTime; // Store in class
+            });
+
+        sharedLua->set_function("GetPlayTime", [this]() -> float{
+            return Uma_Engine::Application::GetPlayTime(); // Store in class
+            });
+
+        sharedLua->set_function("StartPlayTime", [this](bool startNow) {
+            return Uma_Engine::Application::StartTimer(startNow); // Store in class
             });
 
         // play audio
@@ -2566,6 +2666,7 @@ namespace Uma_ECS
         // USING MACRO TO DO THE JOB 
         // More efficient
 
+        using RectTransform = Uma_UI::RectTransform;
         using Text = Uma_UI::Text;
         using Image = Uma_UI::Image;
         using Effects = Uma_UI::Effects;
@@ -2583,6 +2684,7 @@ namespace Uma_ECS
         BIND_COMPONENT_GETTER(Player)           \
         BIND_COMPONENT_GETTER(Enemy)            \
         BIND_COMPONENT_GETTER(Camera)           \
+        BIND_COMPONENT_GETTER(RectTransform)    \
         BIND_COMPONENT_GETTER(Text)             \
         BIND_COMPONENT_GETTER(PathFinding)      \
         BIND_COMPONENT_GETTER(Animator)         \

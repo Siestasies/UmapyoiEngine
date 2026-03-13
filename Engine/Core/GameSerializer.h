@@ -1,9 +1,9 @@
 /*!
 \file   GameSerializer.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -55,11 +55,19 @@ namespace Uma_Engine
 
     public:
 
-        void Register(ISerializer* s) 
+        /*!
+        \brief Registers a serializer to participate in save/load operations.
+        \param s Pointer to the ISerializer implementation to register.
+        */
+        void Register(ISerializer* s)
         {
             serializers.push_back(s);
         }
 
+        /*!
+        \brief Serializes all registered serializers into a unified JSON file.
+        \param filename Path to the output file to write.
+        */
         void save(const std::string& filename)
         {
             rapidjson::Document doc;
@@ -89,6 +97,10 @@ namespace Uma_Engine
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
+        /*!
+        \brief Loads and deserializes a JSON file, distributing sections to registered serializers.
+        \param filename Path to the input file to read. If the file does not exist, a copy of the base scene is created.
+        */
         void load(const std::string& filename)
         {
             // Use std::filesystem to explicitly check if the file exists
@@ -181,6 +193,11 @@ namespace Uma_Engine
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
+        /*!
+        \brief Serializes an entity and its hierarchy as a prefab to a JSON file.
+        \param entity The root entity of the prefab to serialize.
+        \param filename Path to the output prefab file.
+        */
         void savePrefab(Entity entity, const std::string& filename)
         {
             rapidjson::Document doc;
@@ -283,8 +300,12 @@ namespace Uma_Engine
             Debugger::Log(WarningLevel::eCritical, ss.str());
         }
 
-        // Returns the root world Entity of the loaded prefab.
-        // loadingStack is used internally for cycle detection across recursive calls.
+        /*!
+        \brief Loads a prefab from a JSON file, instantiating its entity hierarchy into the world.
+        \param filename Path to the prefab file to load.
+        \param loadingStack Used internally for cycle detection across recursive calls. Pass nullptr for top-level calls.
+        \return The root world Entity of the loaded prefab, or (Entity)-1 on failure.
+        */
         Uma_ECS::Entity loadPrefab(const std::string& filename,
             std::unordered_set<std::string>* loadingStack = nullptr)
         {
@@ -426,6 +447,9 @@ namespace Uma_Engine
             return outerRoot;
         }
 
+        /*!
+        \brief Clears all registered serializers, releasing their references.
+        */
         void ShutDown()
         {
             serializers.clear();

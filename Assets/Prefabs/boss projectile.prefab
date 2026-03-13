@@ -1,0 +1,108 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "boss projectile",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": -90.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 2.5,
+                            "y": 2.5
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/boss proj.png",
+                        "layer": 128,
+                        "order": 0,
+                        "flipX": true,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": true,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 2,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 1.5,
+                                    "y": 1.5
+                                },
+                                "purpose": 2,
+                                "layer": 16,
+                                "colliderMask": 2,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/boss projectile.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::Projectile": {
+                        "mStats": {
+                            "type": 0,
+                            "damage": 10,
+                            "speed": 20.0,
+                            "fadeOVerTime": true,
+                            "fadeAfterAnimEnded": false,
+                            "lifeTime": 5.0
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/sprites/boss proj.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

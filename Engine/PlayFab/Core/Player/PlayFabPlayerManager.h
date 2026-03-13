@@ -1,9 +1,9 @@
 /*!
 \file   PlayFabPlayerManager.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men
 \par    E-mail: waimen.leong@digipen.edu
@@ -369,15 +369,64 @@ namespace Uma_Engine
 
         // ── Static async callbacks ────────────────────────────────────────────
 
+        /*!
+        \brief  Completion callback for GetAccountInfo async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetAccountInfoComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for SetDisplayName async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnSetDisplayNameComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for ReadData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnReadDataComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for ReadMultipleData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnReadMultipleDataComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for WriteData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnWriteDataComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for GetTitleData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetTitleDataComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for SubmitScore async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnSubmitScoreComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for GetMyStats async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetMyStatsComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for GetLeaderboard async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetLeaderboardComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for GetLeaderboardAroundMe async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetLeaderboardAroundMeComplete(XAsyncBlock* async);
 
 

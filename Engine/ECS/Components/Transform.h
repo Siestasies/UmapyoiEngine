@@ -1,9 +1,9 @@
 /*!
 \file   Transform.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -56,6 +56,11 @@ namespace Uma_ECS
 
         bool isDirty = true;
 
+        /*!
+        \brief Serialize transform data to JSON, including position, rotation, scale, and hierarchy.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -102,7 +107,10 @@ namespace Uma_ECS
             value.AddMember("children", childrenArr, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserialize transform data from JSON, restoring position, rotation, scale, and hierarchy.
+        \param value JSON value containing serialized transform data.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             if (value.HasMember("name"))

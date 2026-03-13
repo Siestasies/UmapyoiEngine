@@ -11,6 +11,18 @@ function Update(dt)
 
     local segment = maxHealth / 4
 
+    if health <= (maxHealth * 0.25) then
+        if HasChildren(EntityID, 4) then
+            local bg = GetChildren(EntityID, 4)
+            SetActiveEntity(bg, true);
+        end
+    else
+        if HasChildren(EntityID, 4) then
+            local bg = GetChildren(EntityID, 4)
+            SetActiveEntity(bg, false);
+        end
+    end
+
     for i = 0, 3 do
         if HasChildren(EntityID, i) then
             local bg = GetChildren(EntityID, i)

@@ -1,9 +1,9 @@
 /*!
 \file   RigidBody.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -37,6 +37,11 @@ namespace Uma_ECS
         float accel_strength{};   // acceleration (for tweak)
         float fric_coeff{};       // friction
 
+        /*!
+        \brief Serialize rigid body data to JSON, including velocity, acceleration, and physics properties.
+        \param value Output JSON value to populate.
+        \param allocator RapidJSON allocator for creating new values.
+        */
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
@@ -57,7 +62,10 @@ namespace Uma_ECS
             value.AddMember("fric_coeff", fric_coeff, allocator);
         }
 
-        // Deserialize from JSON
+        /*!
+        \brief Deserialize rigid body data from JSON, restoring velocity, acceleration, and physics properties.
+        \param value JSON value containing serialized rigid body data.
+        */
         void Deserialize(const rapidjson::Value& value) //override
         {
             const auto& vel = value["velocity"];

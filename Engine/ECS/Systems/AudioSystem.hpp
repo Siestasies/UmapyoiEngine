@@ -4,7 +4,7 @@
 \par    Project: GAM250
 \par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Koh Kai Yang (100%)
 \par    E-mail: k.kaiyang@digipen.edu
@@ -92,7 +92,7 @@ namespace Uma_ECS
          * \param x X-coordinate of sound position.
          * \param y Y-coordinate of sound position.
          * \param soundName Name of the sound resource to play.
-         * \param volume Playback volume (0.0–1.0).
+         * \param volume Playback volume (0.0ï¿½1.0).
          * \param is3D Whether to play as 3D spatialized sound.
          */
         void PlayOneShotAtPosition(Entity entity, float x, float y, const std::string& soundName, float volume, bool is3D);
@@ -147,7 +147,16 @@ namespace Uma_ECS
 
     private:
 
+        /*!
+         * \brief Updates the audio listener position and orientation based on the listener entity's transform.
+         * \param dt Delta time in seconds since last frame.
+         */
         void UpdateListener(float dt);
+
+        /*!
+         * \brief Updates all audio emitter components, synchronizing positions and playback state with the sound manager.
+         * \param dt Delta time in seconds since last frame.
+         */
         void UpdateAudioEmitters(float dt);
 
         Coordinator* pCoordinator = nullptr;

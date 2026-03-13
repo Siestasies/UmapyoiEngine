@@ -1,10 +1,10 @@
 #pragma once
 /*!
 \file   FileBrowser.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author     Lai Jun Siang (Initial FileSystem)
 \par        E-mail: lai.j@digipen.edu
@@ -62,6 +62,10 @@ namespace Uma_Engine
         uintmax_t size;
         fs::file_time_type last_modified;
 
+        /*!
+        \brief Constructs a File from a filesystem directory entry.
+        \param entry The directory entry to extract file information from.
+        */
         File(const fs::directory_entry& entry)
             : name(entry.path().filename().string())
             , path(entry.path().string())
@@ -89,6 +93,10 @@ namespace Uma_Engine
     class FileBrowser
     {
     public:
+        /*!
+        \brief Constructs the FileBrowser rooted at the given directory path.
+        \param root_path The root directory path to browse. Defaults to the asset root.
+        */
         FileBrowser(const std::string& root_path = Uma_FilePath::ASSET_ROOT)
             : mCurrPath(fs::absolute(root_path))
             , eSortMode(SortMode::Name)
@@ -102,6 +110,9 @@ namespace Uma_Engine
             RefreshDirectory();
         }
 
+        /*!
+        \brief Destructor that unloads all cached textures and default icons.
+        */
         ~FileBrowser()
         {
             UnloadAllTextures();
@@ -115,6 +126,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Renders the file browser ImGui window, handling file drops, paste operations, and feedback display.
+        */
         void Render() {
             // Lock mutex to ensure thread-safe logging
             std::lock_guard<std::mutex> lock(mFileSysMutex);
@@ -207,6 +221,11 @@ namespace Uma_Engine
             ImGui::End();
         }
 
+        /*!
+        \brief Checks whether a file exists at the given filepath by scanning its parent directory.
+        \param filepath The path to the file to check.
+        \return True if the file exists, false otherwise.
+        */
         static bool fileExists(std::string filepath)
         {
             if (!fs::exists(filepath))
@@ -224,6 +243,10 @@ namespace Uma_Engine
             return false;
         }
 
+        /*!
+        \brief Sets the event system and subscribes to directory refresh events.
+        \param es Pointer to the EventSystem to use for event communication.
+        */
         void setEventSystem(EventSystem* es)
         {
             pEventSystem = es;
@@ -235,36 +258,64 @@ namespace Uma_Engine
               });
         }
 
+        /*!
+        \brief Returns whether the file browser is currently in prefab editing mode.
+        \return True if in prefab edit mode, false otherwise.
+        */
         bool isPrefabEdit()
         {
             return mPrefabEdit;
         }
 
+        /*!
+        \brief Sets the prefab editing mode flag.
+        \param edit True to enable prefab edit mode, false to disable.
+        */
         void setIsPrefabEdit(bool edit)
         {
             mPrefabEdit = edit;
         }
 
+        /*!
+        \brief Gets the name of the prefab currently being edited.
+        \return The prefab name string.
+        */
         std::string getPrefabName()
         {
             return mPrefabName;
         }
 
+        /*!
+        \brief Gets the name of the scene used for prefab editing.
+        \return The prefab editor scene name string.
+        */
         std::string getPrefabSceneName()
         {
             return mPrefabSceneName;
         }
 
+        /*!
+        \brief Stores the name of the scene that was active before entering prefab edit mode.
+        \param name The previous scene name to save.
+        */
         void setPrevSceneName(std::string name)
         {
             mPrevSceneName = name;
         }
 
+        /*!
+        \brief Gets the name of the scene that was active before entering prefab edit mode.
+        \return The previous scene name string.
+        */
         std::string getPrevSceneName()
         {
             return mPrevSceneName;
         }
 
+        /*!
+        \brief Sets the graphics system pointer and loads default file/folder icons.
+        \param graphics Pointer to the Graphics system used for texture loading.
+        */
         void setGraphicsSystem(Graphics* graphics)
         {
             pGraphics = graphics;
@@ -319,12 +370,19 @@ namespace Uma_Engine
         size_t mMaxLoadsPerFrame = 2;
         float mIconSize = 64.0f;
 
+        /*!
+        \brief Sets the feedback message displayed at the bottom of the file browser and resets the display timer.
+        \param msg The feedback message to display.
+        */
         void SetFeedback(const std::string& msg)
         {
             feedback = msg;
             mFeedbackTimer = mFeedbackDuration;
         }
 
+        /*!
+        \brief Loads the default file and folder icon textures from the Assets/Icons directory.
+        */
         void LoadDefaultIcons()
         {
             if (!pGraphics) return;
@@ -337,6 +395,9 @@ namespace Uma_Engine
             mDefaultFolderIcon = folderIcon.tex_id;
         }
 
+        /*!
+        \brief Unloads all cached file preview textures and clears the texture load queue.
+        */
         void UnloadAllTextures()
         {
             if (!pGraphics) return;
@@ -351,6 +412,11 @@ namespace Uma_Engine
             while (!mLoadQueue.empty()) mLoadQueue.pop();
         }
 
+        /*!
+        \brief Checks whether the given file extension corresponds to a supported image format.
+        \param ext The file extension string (e.g., ".png", ".jpg").
+        \return True if the extension is a recognized image type, false otherwise.
+        */
         bool IsImageFile(const std::string& ext)
         {
             static const std::unordered_set<std::string> imageExts =
@@ -364,6 +430,11 @@ namespace Uma_Engine
             return imageExts.count(lowerExt) > 0;
         }
 
+        /*!
+        \brief Formats a byte count into a human-readable string with appropriate units (B, KB, MB, GB, TB).
+        \param bytes The file size in bytes.
+        \return A formatted string representing the file size.
+        */
         std::string FormatFileSize(uintmax_t bytes)
         {
             const char* units[] = { "B", "KB", "MB", "GB", "TB" };
@@ -391,6 +462,10 @@ namespace Uma_Engine
             return std::string(buffer);
         }
 
+        /*!
+        \brief Queues an image file for deferred texture loading, skipping duplicates.
+        \param filepath The path to the image file to queue for loading.
+        */
         void QueueTextureLoad(const std::string& filepath)
         {
             // Skip if already loaded
@@ -407,6 +482,9 @@ namespace Uma_Engine
             mLoadQueue.push(filepath);
         }
 
+        /*!
+        \brief Processes the texture load queue, loading up to mMaxLoadsPerFrame textures per call.
+        */
         void ProcessTextureQueue()
         {
             if (!pGraphics) return;
@@ -431,6 +509,11 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Gets the appropriate texture ID for a file entry, returning a default icon if not yet loaded.
+        \param file The file entry to get a texture for.
+        \return The OpenGL texture ID to use for display.
+        */
         GLuint GetFileTexture(const File& file)
         {
             // Folders use folder icon
@@ -451,6 +534,9 @@ namespace Uma_Engine
             return mDefaultFileIcon;
         }
 
+        /*!
+        \brief Refreshes the current directory listing, unloading old textures and re-scanning files.
+        */
         void RefreshDirectory() {
             // Unload old directory textures
             UnloadAllTextures();
@@ -474,6 +560,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Sorts the file list according to the current sort mode and direction, with directories always first.
+        */
         void SortFiles() {
             std::sort(aFiles.begin(), aFiles.end(), [this](const File& a, const File& b) {
                 // Directories always first
@@ -503,6 +592,9 @@ namespace Uma_Engine
                 });
         }
 
+        /*!
+        \brief Renders the navigation bar with up-directory, path display, refresh, and upload buttons.
+        */
         void RenderNavigationBar() {
             // Up directory button
             if (ImGui::Button("^ Up") && !(mCurrPath == fs::absolute(".")) && mCurrPath.has_parent_path()) {
@@ -582,6 +674,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Renders the filter input, sort mode selector, sort direction toggle, and view mode toggle.
+        */
         void RenderFilterBar() {
             ImGui::SetNextItemWidth(200);
             ImGui::InputText("Filter", mFilter, IM_ARRAYSIZE(mFilter));
@@ -621,6 +716,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Renders the file list area, delegating to either icon view or list view based on the current view mode.
+        */
         void RenderFileList() {
             bDoubleClick = false;
 
@@ -645,6 +743,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Renders the color-coded feedback message bar with a timed auto-clear.
+        */
         void RenderFeedback()
         {
             // Update timer
@@ -687,6 +788,10 @@ namespace Uma_Engine
             ImGui::PopStyleVar();
         }
 
+        /*!
+        \brief Opens a script file in the system's default external editor.
+        \param filepath The path to the script file to open.
+        */
         void OpenScriptInExternalEditor(const std::string& filepath)
         {
 #ifdef _WIN32
@@ -703,6 +808,11 @@ namespace Uma_Engine
 #endif
         }
 
+        /*!
+        \brief Handles double-click actions on a file entry (navigate folders, load scenes, edit prefabs, open scripts).
+        \param file The file entry that was double-clicked.
+        \return True if the action requires breaking out of the file list loop, false otherwise.
+        */
         bool FileDoubleClickHandler(const File& file)
         {
             if (file.isFolder) {
@@ -746,6 +856,10 @@ namespace Uma_Engine
             return false;
         }
 
+        /*!
+        \brief Opens a native file dialog for the user to select a file to upload.
+        \return The selected file path, or an empty string if the dialog was cancelled.
+        */
         std::string OpenFileDialog()
         {
 #ifdef _WIN32
@@ -771,6 +885,9 @@ namespace Uma_Engine
             return std::string();
         }
 
+        /*!
+        \brief Renders files as a grid of icons with thumbnails, selection, drag-and-drop, and context menus.
+        */
         void RenderIconView()
         {
             // Grid layout settings
@@ -1131,6 +1248,9 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+        \brief Renders files as a selectable list with drag-and-drop, context menus, and hover tooltips.
+        */
         void RenderListView() {
             for (const auto& entry : aFiles) {
                 // Apply filter

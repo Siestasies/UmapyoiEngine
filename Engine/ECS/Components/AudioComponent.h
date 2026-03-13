@@ -1,10 +1,10 @@
 #pragma once
 /*!
 \file   AudioComponent.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Koh Kai Yang (100%)
 \par    E-mail: k.kaiyang@digipen.edu
@@ -127,40 +127,70 @@ namespace Uma_ECS
         }
 
 
-        // Helper methods
+        /*!
+        \brief Check if a sound with the given name exists in active sounds.
+        \param soundName Name of the sound to look up.
+        \return True if the sound is found in active sounds, false otherwise.
+        */
         bool HasSound(const std::string& soundName) const
         {
             return activeSounds.find(soundName) != activeSounds.end();
         }
 
+        /*!
+        \brief Get the list of active sound instances for the given sound name.
+        \param soundName Name of the sound to retrieve.
+        \return Pointer to the vector of SoundInstance, or nullptr if not found.
+        */
         std::vector<SoundInstance>* GetSound(const std::string& soundName)
         {
             auto it = activeSounds.find(soundName);
             return (it != activeSounds.end()) ? &it->second : nullptr;
         }
 
+        /*!
+        \brief Remove a sound from the active sounds map by name.
+        \param soundName Name of the sound to remove.
+        */
         void RemoveSound(const std::string& soundName)
         {
             activeSounds.erase(soundName);
         }
 
+        /*!
+        \brief Get the number of distinct active sounds on this entity.
+        \return Count of active sound entries.
+        */
         size_t GetActiveSoundCount() const
         {
             return activeSounds.size();
         }
 
-        //for loaded sounds
+        /*!
+        \brief Get a pointer to a loaded sound instance by name.
+        \param soundName Name of the loaded sound to retrieve.
+        \return Pointer to the SoundInstance, or nullptr if not found.
+        */
         SoundInstance* GetLoadedSound(const std::string& soundName)
         {
             auto it = loadedSounds.find(soundName);
             return (it != loadedSounds.end()) ? &it->second : nullptr;
         }
 
+        /*!
+        \brief Check if a sound with the given name exists in loaded sounds.
+        \param soundName Name of the sound to look up.
+        \return True if the sound is found in loaded sounds, false otherwise.
+        */
         bool HasLoadedSound(const std::string& soundName) const
         {
             return loadedSounds.find(soundName) != loadedSounds.end();
         }
 
+        /*!
+        \brief Remove a sound from the loaded sounds map by name.
+        \param soundName Name of the loaded sound to remove.
+        */
         void RemoveLoadedSound(const std::string& soundName)
         {
             loadedSounds.erase(soundName);

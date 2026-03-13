@@ -1,9 +1,9 @@
 /*!
 \file   RectTransform.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Jedrek Lee Jing Wei (100%)
 \par    E-mail: jedrekjingwei.lee@digipen.edu
@@ -105,7 +105,7 @@ namespace Uma_UI
             size.AddMember("y", sizeDelta.y, allocator);
             value.AddMember("sizeDelta", size, allocator);
 
-            // computedRect is resolution-dependent — never persist it.
+            // computedRect is resolution-dependent, never persist it.
             // Always mark dirty on load so layout recomputes for the actual viewport.
             value.AddMember("isDirty", true, allocator);
         }
@@ -136,7 +136,7 @@ namespace Uma_UI
             sizeDelta.x = size["x"].GetFloat();
             sizeDelta.y = size["y"].GetFloat();
 
-            // Always recompute on load — computedRect is viewport-dependent.
+            // Always recompute on load, computedRect is viewport-dependent.
             computedRect = Uma_UI::Rect();
             isDirty = true;
         }

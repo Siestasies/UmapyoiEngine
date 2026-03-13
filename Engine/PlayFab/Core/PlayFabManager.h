@@ -1,9 +1,9 @@
 /*!
 \file   PlayFabManager.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men
 \par    E-mail: waimen.leong@digipen.edu
@@ -242,6 +242,9 @@ namespace Uma_Engine
         */
         PlayFabPlayerManager& Player();
         const PlayFabPlayerManager& Player() const;
+
+        // healper to generate UUID4 for customid usage
+        std::string GenerateUUID4();
 
 
     private:

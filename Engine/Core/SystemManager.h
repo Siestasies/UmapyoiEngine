@@ -1,9 +1,9 @@
 /*!
 \file   SystemManager.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Shahir Rasid (100%)
 \par    E-mail: b.muhammadshahir@digipen.edu
@@ -30,10 +30,17 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    /*!
+     * \class SystemManager
+     * \brief Manages the lifecycle and per-frame updating of all engine systems.
+     */
     class SystemManager
     {
     public:
-        // Adds a system to the manager
+        /*!
+         * \brief Registers and constructs a new system of the given type.
+         * \return Pointer to the newly created system.
+         */
         template <typename T>
         T* RegisterSystem()
         {
@@ -48,7 +55,9 @@ namespace Uma_Engine
             return ptr;
         }
 
-        // Initialize all systems
+        /*!
+         * \brief Initializes all registered systems in order.
+         */
         void Init()
         {
             for (auto& system : systems)
@@ -57,7 +66,10 @@ namespace Uma_Engine
             }
         }
 
-        // Set window for systems that need it
+        /*!
+         * \brief Passes the GLFW window handle to all systems that implement IWindowSystem.
+         * \param window Pointer to the GLFW window.
+         */
         void SetWindow(GLFWwindow* window)
         {
             for (auto& system : systems)
@@ -69,6 +81,10 @@ namespace Uma_Engine
             }
         }
 
+        /*!
+         * \brief Updates all systems. Profiles per-system timing once per second.
+         * \param dt Delta time in seconds.
+         */
         void Update(float dt)
         {
             static double timeCheck = 0.0;
@@ -110,7 +126,9 @@ namespace Uma_Engine
             }
         }
 
-        // Shutdown all systems
+        /*!
+         * \brief Shuts down all registered systems in order.
+         */
         void Shutdown()
         {
             for (auto& system : systems)
@@ -119,7 +137,10 @@ namespace Uma_Engine
             }
         }
 
-        // Get a system by type
+        /*!
+         * \brief Retrieves a registered system by its type.
+         * \return Pointer to the system, or nullptr if not found.
+         */
         template<typename T>
         T* GetSystem()
         {
@@ -133,10 +154,23 @@ namespace Uma_Engine
             return nullptr;
         }
 
-        // get timing stuff for
+        /*!
+         * \brief Returns the total profiled update time from the last measurement interval.
+         * \return Total time in milliseconds.
+         */
         double GetLastTotalTime() const { return lastTotalTime; }
+
+        /*!
+         * \brief Returns per-system profiled timings from the last measurement interval.
+         * \return Vector of per-system durations in milliseconds.
+         */
         const std::vector<double>& GetLastTimings() const { return timings; }
 
+        /*!
+         * \brief Returns the demangled type name of a system at the given index.
+         * \param index Index of the system in registration order.
+         * \return System type name string.
+         */
         std::string GetSystemName(size_t index)
         {
             return typeid(*systems[index].get()).name();

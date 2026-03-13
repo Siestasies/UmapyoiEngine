@@ -1,9 +1,9 @@
 /*!
 \file   ProjectileSystem.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -60,9 +60,11 @@ namespace Uma_ECS
 
     void ProjectileSystem::HandleCollision(Entity self, Entity trigger)
     {
-        auto& colliderB = pCoordinator->GetComponent<Collider>(trigger);
+        auto* colliderB = pCoordinator->TryGetComponent<Collider>(trigger);
 
-        if (colliderB.GetPrimaryShape().layer == CL_WALL)
+        if (!colliderB) return;
+
+        if (colliderB->GetPrimaryShape().layer == CL_WALL)
         {
             pCoordinator->DestroyEntityAndChildren(self);
         }

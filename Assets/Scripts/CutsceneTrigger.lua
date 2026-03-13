@@ -87,6 +87,7 @@ local isTyping       = false
 local blinkTimer     = 0.0
 local blinkOn        = true
 local skipFrames     = 0
+local cooldownTimer  = 0
 
 -- Helpers
 local function ShowImg(e, visible)
@@ -115,13 +116,17 @@ local function ApplyLine(line)
     local hasPortrait = line.portrait and line.portrait ~= ""
 
     ShowImg(eName,      hasSpeaker)
+    ShowImg(eNameField, hasSpeaker)  -- must also toggle entity active, not just text.visible
     ShowTxt(eNameField, hasSpeaker)
     if hasSpeaker then SetNameText(line.speaker) end
 
     ShowImg(ePortrait, hasPortrait)
     if hasPortrait then
         local img = GetImageFrom(ePortrait)
-        if img then img.textureName = line.portrait end
+        if img then
+            img.textureName = line.portrait
+            img.change = true
+        end
     end
 
     fullText   = line.text or ""
@@ -146,7 +151,9 @@ local function CloseDialogue()
     dialogueLines  = {}
     lineIndex      = 0
     isTyping       = false
-    SetActiveEntity(dialogueRoot, false)
+    if dialogueRoot ~= -1 then
+        SetActiveEntity(dialogueRoot, false)
+    end
 end
 
 local function AdvanceDialogueLine()
@@ -158,7 +165,42 @@ local function AdvanceDialogueLine()
     end
 end
 
+-- Resolve child entity handles from the dialogue prefab
+local function ResolveDialogueChildren()
+    if dialogueRoot == -1 then return false end
+
+    ePanel    = GetChildren(dialogueRoot, 0)
+    eName     = GetChildren(dialogueRoot, 1)
+    ePortrait = GetChildren(dialogueRoot, 2)
+    eContinue = GetChildren(dialogueRoot, 3)
+
+    if ePanel ~= -1 then
+        eTextField = GetChildren(ePanel, 0)
+    end
+    if eName ~= -1 then
+        eNameField = GetChildren(eName, 0)
+    end
+
+    -- Check that critical children were found
+    return ePanel ~= -1 and eTextField ~= -1
+end
+
 local function OpenDialogue(seqId)
+    if dialogueRoot == -1 then
+        Log("[CutsceneTrigger] Cannot play dialogue: dialogue prefab not spawned")
+        dialogueActive = false
+        return
+    end
+
+    -- Re-resolve children if they weren't ready at spawn time
+    if ePanel == -1 then
+        if not ResolveDialogueChildren() then
+            Log("[CutsceneTrigger] Cannot play dialogue: children not resolved")
+            dialogueActive = false
+            return
+        end
+    end
+
     -- Read dialogue data from the cutscene owner entity (not the prefab)
     local seq = GetDialogueSequence(ownerEntity, seqId)
     if not seq or #seq == 0 then
@@ -172,30 +214,79 @@ local function OpenDialogue(seqId)
     skipFrames     = 2
     dialogueActive = true
 
+    -- Activate the root and ALL children explicitly so nothing stays hidden
     SetActiveEntity(dialogueRoot, true)
+    if ePanel     ~= -1 then SetActiveEntity(ePanel, true) end
+    if eTextField  ~= -1 then SetActiveEntity(eTextField, true) end
+    if eName       ~= -1 then SetActiveEntity(eName, true) end
+    if eNameField  ~= -1 then SetActiveEntity(eNameField, true) end
+    if ePortrait   ~= -1 then SetActiveEntity(ePortrait, true) end
+    if eContinue   ~= -1 then SetActiveEntity(eContinue, true) end
+
     ApplyLine(dialogueLines[1])
 end
 
+-- Spawn the dialogue prefab (only when cutscene triggers, not in Start)
+local function SpawnDialoguePrefab()
+    if dialogueRoot ~= -1 then return true end
+
+    dialogueRoot = SpawnPrefab(prefabName, Vec2(0, 0))
+
+    if dialogueRoot == -1 then
+        LogError("[CutsceneTrigger] Failed to spawn: " .. tostring(prefabName))
+        return false
+    end
+
+    ResolveDialogueChildren()
+    SetActiveEntity(dialogueRoot, false)
+    return true
+end
+
+-- Destroy the dialogue prefab (cleanup after cutscene finishes)
+local function DestroyDialoguePrefab()
+    if dialogueRoot ~= -1 then
+        DestroyWithChildren(dialogueRoot)
+        dialogueRoot = -1
+        ePanel       = -1
+        eTextField   = -1
+        eName        = -1
+        eNameField   = -1
+        ePortrait    = -1
+        eContinue    = -1
+    end
+end
+
+-- Forward declarations for mutual recursion
+local NextAction
+local BeginAction
+
 -- Move to next action in the cutscene
-local function NextAction()
+NextAction = function()
     actionIndex = actionIndex + 1
     if actionIndex > #actions then
         -- Cutscene finished
         isPlaying = false
         actionIndex = 0
+        cooldownTimer = 1.0  -- prevent immediate re-trigger from OnTrigger
         SetCutsceneActive(false)
         SetCutscenePlayed(ownerEntity, true)
-        Log("[CutsceneTrigger] Cutscene finished")
+        DestroyDialoguePrefab()
+        Log("[CutsceneTrigger] Cutscene finished on entity " .. tostring(EntityID))
         return
     end
     BeginAction()
 end
 
 -- Start the current action
-function BeginAction()
+BeginAction = function()
     local action = actions[actionIndex]
     if not action then
         isPlaying = false
+        actionIndex = 0
+        cooldownTimer = 1.0
+        SetCutsceneActive(false)
+        DestroyDialoguePrefab()
+        Log("[CutsceneTrigger] Nil action at index, force-ending cutscene")
         return
     end
 
@@ -213,6 +304,11 @@ function BeginAction()
         lerpTargetY = action.targetY
         lerpDuration = action.duration
         lerpTimer = 0
+        if lerpDuration <= 0 then
+            SetCameraPosition(cameraEntity, lerpTargetX, lerpTargetY)
+            NextAction()
+            return
+        end
 
     elseif aType == ACT_PLAY_DIALOGUE then
         OpenDialogue(action.dialogueSequenceId)
@@ -222,12 +318,21 @@ function BeginAction()
 
     elseif aType == ACT_WAIT then
         waitTimer = action.duration
+        if waitTimer <= 0 then
+            NextAction()
+            return
+        end
 
     elseif aType == ACT_LERP_ZOOM then
         zoomStart = GetCameraZoom(cameraEntity)
         zoomTarget = action.targetZoom
         zoomDuration = action.duration
         zoomTimer = 0
+        if zoomDuration <= 0 then
+            SetCameraZoom(cameraEntity, zoomTarget)
+            NextAction()
+            return
+        end
 
     elseif aType == ACT_RETURN_CAMERA then
         SetCameraZoom(cameraEntity, 10)
@@ -243,36 +348,45 @@ end
 -- Lifecycle
 
 function Start()
-    -- Spawn dialogue prefab
-    dialogueRoot = SpawnPrefab(prefabName, Vec2(0, 0))
+    -- Reset all state in case Lua locals survived from a previous play session
+    dialogueRoot = -1
+    ePanel       = -1
+    eTextField   = -1
+    eName        = -1
+    eNameField   = -1
+    ePortrait    = -1
+    eContinue    = -1
 
-    if dialogueRoot == -1 then
-        LogError("[CutsceneTrigger] Failed to spawn: " .. tostring(prefabName))
-        return
-    end
+    isPlaying      = false
+    actions        = {}
+    actionIndex    = 0
+    ownerEntity    = -1
+    dialogueActive = false
+    dialogueLines  = {}
+    lineIndex      = 0
+    cooldownTimer  = 1.0  -- prevent immediate re-trigger if player starts inside collider
 
-    ePanel    = GetChildren(dialogueRoot, 0)
-    eName     = GetChildren(dialogueRoot, 1)
-    ePortrait = GetChildren(dialogueRoot, 2)
-    eContinue = GetChildren(dialogueRoot, 3)
-
-    if ePanel ~= -1 then
-        eTextField = GetChildren(ePanel, 0)
-    end
-    if eName ~= -1 then
-        eNameField = GetChildren(eName, 0)
-    end
-
-    SetActiveEntity(dialogueRoot, false)
+    -- Safety net: clear cutscene flag in case Shutdown didn't run or flag persisted
+    SetCutsceneActive(false)
 
     cameraEntity = FindCameraEntity()
-
-    Log("[CutsceneTrigger] Ready. Camera=" .. tostring(cameraEntity))
+    Log("[CutsceneTrigger] Ready. Entity=" .. tostring(EntityID) .. " Camera=" .. tostring(cameraEntity))
 end
 
 function Update(dt)
-    if not isPlaying then return end
-    if dialogueRoot == -1 then return end
+    -- Keep camera entity up to date in case it was recreated
+    cameraEntity = FindCameraEntity()
+
+    if cooldownTimer > 0 then
+        cooldownTimer = cooldownTimer - dt
+    end
+    if not isPlaying then
+        -- Ensure camera follows the player only when no cutscene is active globally
+        if not IsCutsceneActive() and cameraEntity ~= -1 then
+            SetCameraFollow(cameraEntity, true)
+        end
+        return
+    end
 
     local action = actions[actionIndex]
     if not action then return end
@@ -366,9 +480,11 @@ function Update(dt)
     end
 end
 
--- Trigger: start cutscene when player enters
-function OnTriggerEnter(other, triggerOwner)
+-- Shared logic to start a cutscene from a trigger event
+local function TryStartCutscene(other, triggerOwner)
     if isPlaying then return end
+    if IsCutsceneActive() then return end
+    if cooldownTimer > 0 then return end
 
     if HasPlayerOn(triggerOwner) or HasPlayerOn(other) then
         -- Determine which entity is the trigger owner (has the Cutscene component)
@@ -379,16 +495,19 @@ function OnTriggerEnter(other, triggerOwner)
             cutsceneOwner = other
             cutscene = GetCutsceneFrom(cutsceneOwner)
         end
-        if not cutscene then
-            Log("[CutsceneTrigger] No Cutscene component found")
-            return
-        end
+        if not cutscene then return end
 
         if cutscene.playOnce and cutscene.hasPlayed then
             return
         end
 
         ownerEntity = cutsceneOwner
+
+        -- Spawn dialogue prefab on demand (only one exists at a time)
+        if not SpawnDialoguePrefab() then
+            Log("[CutsceneTrigger] Failed to spawn dialogue prefab, aborting cutscene")
+            return
+        end
 
         -- Load actions
         actions = GetCutsceneActions(ownerEntity)
@@ -402,7 +521,41 @@ function OnTriggerEnter(other, triggerOwner)
         cameraEntity = FindCameraEntity()
         SetCutsceneActive(true)
 
-        Log("[CutsceneTrigger] Starting cutscene with " .. #actions .. " actions")
+        Log("[CutsceneTrigger] Starting cutscene on entity " .. tostring(EntityID) .. " owner=" .. tostring(ownerEntity) .. " actions=" .. #actions)
         BeginAction()
     end
+end
+
+-- Trigger: start cutscene when player enters
+function OnTriggerEnter(other, triggerOwner)
+    TryStartCutscene(other, triggerOwner)
+end
+
+-- Handle ongoing trigger overlap: if the player was already inside this
+-- trigger while another cutscene was playing, OnTriggerEnter was consumed.
+-- Once that cutscene finishes, this fires and starts the pending cutscene.
+function OnTrigger(other, triggerOwner)
+    TryStartCutscene(other, triggerOwner)
+end
+
+function Shutdown()
+    if isPlaying then
+        isPlaying = false
+        SetCutsceneActive(false)
+    end
+    CloseDialogue()
+    DestroyDialoguePrefab()
+
+    actions       = {}
+    actionIndex   = 0
+    ownerEntity   = -1
+    cooldownTimer = 0
+end
+
+function OnDestroy()
+    if isPlaying then
+        isPlaying = false
+        SetCutsceneActive(false)
+    end
+    DestroyDialoguePrefab()
 end

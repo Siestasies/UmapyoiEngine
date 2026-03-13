@@ -1,10 +1,10 @@
 #pragma once
 /*!
 \file   GridPathfinder.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Koh Kai Yang (100%)
 \par    E-mail: k.kaiyang@digipen.edu
@@ -101,8 +101,16 @@ namespace Uma_Navigation {
         explicit GridPathfinder(float cellSize = 2.0f);
 
         //helper functions
-        // @brief Get current number of blocked cells.
+        /*!
+        \brief Get current number of blocked cells.
+        \return Number of blocked cells in the grid.
+        */
         int GetBlockedCellCount() const { return static_cast<int>(blockedCells.size()); }
+
+        /*!
+        \brief Get the size of each grid cell in world units.
+        \return Cell size in world units.
+        */
         float GetCellSize() const { return cellSize; }
         
         //getter and setter and clearing blocked cells

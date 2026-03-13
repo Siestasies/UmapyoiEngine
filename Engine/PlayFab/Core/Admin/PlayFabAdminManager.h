@@ -1,9 +1,9 @@
 /*!
 \file   PlayFabAdminManager.h
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men
 \par    E-mail: waimen.leong@digipen.edu
@@ -611,12 +611,29 @@ namespace Uma_Engine
             OnAdminFailure      onFailure = nullptr
         );
 
-        // QueueTitleData just pushes — no async launched yet
+        /*!
+        \brief  Queues a TitleData write for deferred execution.
+
+        Pushes a key-value pair onto the internal write queue without
+        launching an async operation immediately. The queued writes are
+        drained one at a time by Update().
+
+        \param  key         The TitleData key to write.
+        \param  value       The string value to store.
+        \param  onSuccess   Optional per-key success callback.
+        \param  onFailure   Optional per-key failure callback.
+        */
         void QueueTitleData(const std::string& key, const std::string& value,
             OnAdminSuccess onSuccess = nullptr,
             OnAdminFailure onFailure = nullptr);
 
-        // Called from PlayFabManager::Update()
+        /*!
+        \brief  Processes queued TitleData writes and polls async operations.
+
+        Called every frame from PlayFabManager::Update(). Drains the
+        internal write queue one entry at a time to avoid concurrent
+        edit errors on the PlayFab backend.
+        */
         void Update();
 
 
@@ -724,21 +741,71 @@ namespace Uma_Engine
         // ── Static completion callbacks ───────────────────────────────────────
 
         // TitleData
+
+        /*!
+        \brief  Completion callback for GetTitleData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetTitleDataComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for SetTitleData async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnSetTitleDataComplete(XAsyncBlock* async);
 
         // Statistics
+
+        /*!
+        \brief  Completion callback for async operations that return no payload.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnNoPayloadComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for GetStatistics async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetStatisticsComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for IncrementStatisticVersion async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnIncrementStatVersionComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for ListStatisticDefinitions async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnListStatDefinitionsComplete(XAsyncBlock* async);
 
         // Leaderboards
+
+        /*!
+        \brief  Completion callback for GetLeaderboard async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnGetLeaderboardComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for IncrementLeaderboardVersion async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnIncrementLBVersionComplete(XAsyncBlock* async);
+
+        /*!
+        \brief  Completion callback for ListLeaderboardDefinitions async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnListLBDefinitionsComplete(XAsyncBlock* async);
 
         // CloudScript
+
+        /*!
+        \brief  Completion callback for ExecuteFunction async operation.
+        \param  async  Pointer to the completed XAsyncBlock.
+        */
         static void CALLBACK OnExecuteFunctionComplete(XAsyncBlock* async);
 
 
@@ -774,6 +841,17 @@ namespace Uma_Engine
             OnAdminFailure onFailure;
         };
 
+        /*!
+        \brief  Sends a single SetTitleData request from the internal queue.
+
+        Called internally by Update() to process one queued write at a time.
+        On completion the next queued entry is dispatched.
+
+        \param  key         The TitleData key to write.
+        \param  value       The string value to store.
+        \param  onSuccess   Optional callback on success.
+        \param  onFailure   Optional callback on failure.
+        */
         void ProcessSetTitleDataQueue(
             const std::string& key,
             const std::string& value,

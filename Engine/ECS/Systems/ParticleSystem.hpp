@@ -1,9 +1,9 @@
 /*!
 \file    ParticleSystem.hpp
-\par     Project: GAM200
-\par     Course: CSD2401
+\par     Project: GAM250
+\par     Course: CSD2451
 \par     Section A
-\par     Software Engineering Project 3
+\par     Software Engineering Project 4
 
 \author Javier Chua Dong Qing (100%)
 \par     E-mail: javierdongqing.chua@digipen.edu
@@ -61,10 +61,34 @@ namespace Uma_ECS
         std::default_random_engine generator;
         std::uniform_real_distribution<float> distribution{ 0.0f, 1.0f };
 
-        // Particle functions
+        /*!
+        \brief Spawns a new particle from the given emitter at a world position.
+        \param emitter Emitter instance providing spawn rules and properties.
+        \param emitterPos World-space position where the particle is spawned.
+        */
         void SpawnParticle(EmitterInstance& emitter, const Vec2& emitterPos);
+
+        /*!
+        \brief Spawns a particle that fills the screen area, used for ambient effects.
+        \param emitter Emitter instance providing spawn rules and properties.
+        \param initialSpawn True if this is the initial batch spawn on emitter creation.
+        */
         void SpawnScreenFillParticle(EmitterInstance& emitter, bool initialSpawn = false);
+
+        /*!
+        \brief Updates a single particle's physics, lifetime, and visual properties.
+        \param p Reference to the particle to update.
+        \param emitter Emitter instance owning this particle.
+        \param dt Delta time in seconds since last frame.
+        */
         void UpdateParticle(Particle& p, EmitterInstance& emitter, float dt);
+
+        /*!
+        \brief Generates a random float within a range.
+        \param min Minimum value (inclusive).
+        \param max Maximum value (inclusive).
+        \return Random float between min and max.
+        */
         float Random(float min, float max);
     };
 }

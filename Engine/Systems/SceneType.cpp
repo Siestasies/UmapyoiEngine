@@ -1,9 +1,9 @@
 /*!
 \file   SceneType.cpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Shahir Rasid (everything else)
 \par    E-mail: b.muhammadshahir@digipen.edu
@@ -572,24 +572,17 @@ namespace Uma_Engine
     {
         bool cutscene = Uma_Engine::Application::GetCutsceneActive();
 
-        // Skip gameplay systems during cutscenes
-        if (!cutscene)
-        {
-            if (m_PlayerController)
-                m_PlayerController->Update(m_FixedTimeStep);
+        if (m_PlayerController)
+            m_PlayerController->Update(m_FixedTimeStep);
 
-            if (m_PathFindingSystem)
-                m_PathFindingSystem->Update(m_FixedTimeStep);
-        }
+        if (m_PathFindingSystem)
+            m_PathFindingSystem->Update(m_FixedTimeStep);
 
         if (m_PhysicsSystem)
             m_PhysicsSystem->Update(m_FixedTimeStep);
 
-        if (!cutscene)
-        {
-            if (m_ProjectileSystem)
-                m_ProjectileSystem->Update(m_FixedTimeStep);
-        }
+        if (m_ProjectileSystem)
+            m_ProjectileSystem->Update(m_FixedTimeStep);
 
         if (m_TransformSystem)
             m_TransformSystem->UpdateWorldTransform();

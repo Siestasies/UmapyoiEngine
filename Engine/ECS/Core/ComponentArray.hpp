@@ -1,9 +1,9 @@
 /*!
 \file   ComponentArray.hpp
-\par    Project: GAM200
-\par    Course: CSD2401
+\par    Project: GAM250
+\par    Course: CSD2451
 \par    Section A
-\par    Software Engineering Project 3
+\par    Software Engineering Project 4
 
 \author Leong Wai Men (100%)
 \par    E-mail: waimen.leong@digipen.edu
@@ -35,23 +35,67 @@ All rights reserved.
 
 namespace Uma_ECS
 {
+    /*!
+    \brief Abstract base class for polymorphic component array storage.
+    Enables the ComponentManager to store different typed ComponentArrays in a single container.
+    */
     class BaseComponentArray
     {
     public:
         virtual ~BaseComponentArray() = default;
-        virtual void DestroyEntity(Entity entity) = 0; // detroy of entity shd be handled by the child
 
+        /*!
+        \brief Removes all component data associated with the given entity.
+        \param entity The Entity ID to destroy data for.
+        */
+        virtual void DestroyEntity(Entity entity) = 0;
+
+        /*!
+        \brief Checks whether the given entity has a component in this array.
+        \param entity The Entity ID to check.
+        \return True if the entity has this component type.
+        */
         virtual bool Has(Entity entity) const = 0;
+
+        /*!
+        \brief Copies the component data from a source entity to a destination entity.
+        \param src The source Entity ID.
+        \param dest The destination Entity ID.
+        */
         virtual void CloneComponent(Entity src, Entity dest) = 0;
+
+        /*!
+        \brief Returns all entities that have a component in this array.
+        \return A vector of Entity IDs.
+        */
         virtual std::vector<Entity> GetAllEntities() const = 0;
 
-        virtual std::shared_ptr<BaseComponentArray> CloneArray() const = 0; // for clonming the whole array
+        /*!
+        \brief Creates a deep copy of this entire component array.
+        \return A shared pointer to the cloned BaseComponentArray.
+        */
+        virtual std::shared_ptr<BaseComponentArray> CloneArray() const = 0;
 
-        // NEW: Allow components to opt-out of cloning
+        /*!
+        \brief Returns whether this component type should be cloned during entity duplication.
+        \return True if the component should be cloned (default), false to skip.
+        */
         virtual bool ShouldClone() const { return true; }
 
-        // serialization and deserialization
+        /*!
+        \brief Serializes the component data for an entity into a RapidJSON value.
+        \param entity The Entity ID to serialize.
+        \param comps The RapidJSON value to write into.
+        \param allocator The RapidJSON allocator.
+        */
         virtual void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) = 0;
+
+        /*!
+        \brief Deserializes component data for an entity from a RapidJSON value.
+        \param entity The Entity ID to deserialize for.
+        \param comps The RapidJSON value containing component data.
+        \return The typeid name string of the deserialized component, or empty if not found.
+        */
         virtual std::string Deserialize(Entity entity, const rapidjson::Value& comps) = 0;
     };
 
@@ -60,13 +104,21 @@ namespace Uma_ECS
     {
     public:
 
+        /*!
+        \brief Default constructor. Initializes entity-index mappings to invalid values.
+        */
         ComponentArray()
         {
             aEntityToIndex.fill(MAX_ENTITIES);
             aIndexToEntity.fill(MAX_ENTITIES);
         }
 
-        // Add / Remove Component from the array
+        /*!
+        \brief Adds a component to the packed array for the given entity.
+        \param entity The Entity ID to add the component to.
+        \param component The component data to store.
+        \return EC_None on success, EC_ComponentAlreadyExists if the entity already has this component.
+        */
         ECSErrorCode AddData(Entity entity, const T& component)
         {
 #ifndef NDEBUG
@@ -87,6 +139,11 @@ namespace Uma_ECS
             return ECSErrorCode::EC_None;
         }
 
+        /*!
+        \brief Removes the component for the given entity, swapping with the last element to maintain packing.
+        \param entity The Entity ID to remove the component from.
+        \return EC_None on success, EC_ComponentNotFound if the entity doesn't have this component.
+        */
         ECSErrorCode RemoveData(Entity entity)
         {
 #ifndef NDEBUG
@@ -117,6 +174,11 @@ namespace Uma_ECS
             return ECSErrorCode::EC_None;
         }
 
+        /*!
+        \brief Retrieves a reference to the component data for the given entity.
+        \param entity The Entity ID to get data for.
+        \return A reference to the component.
+        */
         T& GetData(Entity entity)
         {
             assert(Has(entity) && "ERROR : Entity doesnt contain this data.");
@@ -125,7 +187,23 @@ namespace Uma_ECS
             return aComponentArray[index];
         }
 
-        // Destroy of entity
+        /*!
+        \brief Safe version of GetData that returns nullptr when the entity has no component.
+        \param entity The Entity ID to look up.
+        \return Pointer to the component, or nullptr if not found.
+        */
+        T* TryGetData(Entity entity)
+        {
+            if (!Has(entity)) return nullptr;
+
+            size_t index = aEntityToIndex[entity];
+            return &aComponentArray[index];
+        }
+
+        /*!
+        \brief Removes the entity's component data if it exists. Called when an entity is destroyed.
+        \param entity The Entity ID to clean up.
+        */
         void DestroyEntity(Entity entity) override
         {
             if (Has(entity))
@@ -134,23 +212,40 @@ namespace Uma_ECS
             }
         }
 
-        // helper functions that directly access the array
-        // This is for optimisation
+        /*!
+        \brief Returns the number of components currently stored in the array.
+        \return The component count.
+        */
         size_t Size() const
         {
             return mSize;
         }
 
-        Entity GetEntity(size_t index) 
+        /*!
+        \brief Returns the Entity ID at the given packed array index.
+        \param index The array index to look up.
+        \return The Entity ID at that index.
+        */
+        Entity GetEntity(size_t index)
         {
             return aIndexToEntity[index];
         }
 
+        /*!
+        \brief Returns a reference to the component at the given packed array index.
+        \param index The array index to access.
+        \return A reference to the component data.
+        */
         T& GetComponentAt(size_t index)
         {
             return aComponentArray[index];
         }
 
+        /*!
+        \brief Checks whether the given entity has a component in this array.
+        \param entity The Entity ID to check.
+        \return True if the entity has this component type.
+        */
         bool Has(Entity entity) const override
         {
             if (entity >= MAX_ENTITIES) return false;
@@ -159,6 +254,11 @@ namespace Uma_ECS
             return (index < mSize && aIndexToEntity[index] == entity);
         }
 
+        /*!
+        \brief Copies the component from a source entity to a destination entity.
+        \param src The source Entity ID.
+        \param dest The destination Entity ID.
+        */
         void CloneComponent(Entity src, Entity dest) override
         {
             assert(Has(src) && "Error : src entity doesn't contain this component type.");
@@ -167,6 +267,10 @@ namespace Uma_ECS
             AddData(dest, component);
         }
 
+        /*!
+        \brief Returns all entities that currently have this component type.
+        \return A vector of Entity IDs.
+        */
         std::vector<Entity> GetAllEntities() const override
         {
             std::vector<Entity> result;
@@ -180,7 +284,11 @@ namespace Uma_ECS
             return result;
         }
 
-        std::shared_ptr<BaseComponentArray> CloneArray() const override 
+        /*!
+        \brief Creates a deep copy of this entire component array including all data and mappings.
+        \return A shared pointer to the cloned ComponentArray.
+        */
+        std::shared_ptr<BaseComponentArray> CloneArray() const override
         {
             auto copy = std::make_shared<ComponentArray<T>>();
             copy->aComponentArray = this->aComponentArray;
@@ -190,7 +298,12 @@ namespace Uma_ECS
             return copy;
         }
 
-        // serialization and deserialization
+        /*!
+        \brief Serializes the component for the given entity into a RapidJSON value.
+        \param entity The Entity ID to serialize.
+        \param comps The RapidJSON value to write into.
+        \param allocator The RapidJSON allocator.
+        */
         void Serialize(Entity entity, rapidjson::Value& comps, rapidjson::Document::AllocatorType& allocator) override
         {
             if (!Has(entity)) return; // entity not exists
@@ -201,6 +314,12 @@ namespace Uma_ECS
             comps.AddMember(rapidjson::StringRef(typeid(T).name()), componentObj, allocator);
         }
 
+        /*!
+        \brief Deserializes the component for the given entity from a RapidJSON value.
+        \param entity The Entity ID to deserialize for.
+        \param comps The RapidJSON value containing component data.
+        \return The typeid name string of the component if found, or empty string otherwise.
+        */
         std::string Deserialize(Entity entity, const rapidjson::Value& comps) override
         {
             std::string compType = "";

@@ -1,0 +1,327 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Tutorial Popup3",
+                        "position": {
+                            "x": 57.499,
+                            "y": -79.833
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": [
+                            1,
+                            2,
+                            3
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Popup3.prefab",
+                        "isRoot": true
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Canvas": {
+                        "sortingOrder": 2,
+                        "referenceResolution": {
+                            "x": 1920.0,
+                            "y": 1080.0
+                        },
+                        "scaleMode": 1,
+                        "matchWidthOrHeight": 0.5
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "img",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Popup3.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 750.0,
+                            "y": 750.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/ControlsPopup3.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "close text",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Popup3.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -270.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "Press esc to close",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "close button",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/CloseTutorialPopupButton.lua",
+                                "scriptName": "CloseTutorialPopupButton.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Popup3.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 325.0,
+                            "y": 310.0
+                        },
+                        "sizeDelta": {
+                            "x": 250.0,
+                            "y": 250.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/x escape button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Button": {
+                        "interactable": true,
+                        "scriptName": "CloseTutorialPopupButton.lua",
+                        "normalColour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "hoverColour": {
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
+                            "a": 1.0
+                        },
+                        "pressedColour": {
+                            "r": 0.699,
+                            "g": 0.699,
+                            "b": 0.699,
+                            "a": 1.0
+                        },
+                        "disabledColour": {
+                            "r": 0.5,
+                            "g": 0.5,
+                            "b": 0.5,
+                            "a": 0.5
+                        }
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [],
+        "fonts": [],
+        "sounds": []
+    }
+}
