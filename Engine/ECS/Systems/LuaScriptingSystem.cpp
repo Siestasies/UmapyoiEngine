@@ -9,6 +9,10 @@
 \par    E-mail: waimen.leong@digipen.edu
 \par    DigiPen login: waimen.leong
 
+\co-author  Javier Chua Dong Qing (SpriteMaterial, Cutscene)
+\par        E-mail: javierdongqing.chua@digipen.edu
+\par        DigiPen login: javierdongqing.chua
+
 \brief
 Defines Lua scripting system for entity behavior execution and script lifecycle management.
 

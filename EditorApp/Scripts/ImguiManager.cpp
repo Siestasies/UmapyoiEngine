@@ -15,7 +15,7 @@
 
 \co-author  Javier Chua Dong Qing (EditorCamera, Drag and drop font,texture,
                                    UI Image, Particle Emitter and SoundComponent
-                                    with duplicate/file check)
+                                    with duplicate/file check, SpriteMaterial and Cutscene)
 \par        E-mail: javierdongqing.chua@digipen.edu
 \par        DigiPen login: javierdongqing.chua
 
