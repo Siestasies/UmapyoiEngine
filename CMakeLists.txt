@@ -27,6 +27,9 @@ file(MAKE_DIRECTORY "${CMAKE_SOURCE_DIR}/Logs")
 # Find OpenGL
 find_package(OpenGL REQUIRED)
 
+# Disable TLS verification for FetchContent downloads (workaround for SSL revocation check failures)
+set(CMAKE_TLS_VERIFY OFF)
+
 # Download GLFW
 include(FetchContent)
 FetchContent_Declare(

@@ -27,7 +27,7 @@ function Start()
                             local timeText = GetTextFrom(childrenOfEntry[2])
                             local rankText = GetTextFrom(childrenOfEntry[3])
                             nameText.text = results[i].displayName
-                            timeText.text = tostring(math.tointeger(results[i].score) .. "s")
+                            timeText.text = tostring(math.tointeger(results[i].score))
                             rankText.text = tostring(results[i].rank) .. ","
                         end
 
@@ -39,7 +39,7 @@ function Start()
                             local timeText = GetTextFrom(childrenOfEntry[2])
                             local rankText = GetTextFrom(childrenOfEntry[3])
                             nameText.text = results[i].displayName
-                            timeText.text = tostring(math.tointeger(results[i].score) .. "s")
+                            timeText.text = tostring(math.tointeger(results[i].score))
                             rankText.text = tostring(results[i].rank) .. ","
                         end
                     end

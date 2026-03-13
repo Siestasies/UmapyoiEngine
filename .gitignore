@@ -25,6 +25,7 @@ _deps/
 *.cmake
 !CMakeLists.txt
 !cmake/
+!cmake/*.cmake
 
 # ========================================
 # Visual Studio Files
