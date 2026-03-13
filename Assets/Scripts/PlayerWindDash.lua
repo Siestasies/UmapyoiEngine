@@ -90,6 +90,12 @@ function state_enter(entity)
 
     PlayerStatTrackState.incrWindAttack()
     Log("Wind Dash Attack!")
+
+    local collider = GetCollider()
+    if collider then
+        shape = collider.shapes[1]
+        shape.isActive = false;
+    end
 end
 
 function state_update(entity, dt)
@@ -184,6 +190,13 @@ function state_exit(entity)
     if attackStat then 
         collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
     end
+
+    local collider = GetCollider()
+    if collider then
+        shape = collider.shapes[1]
+        shape.isActive = true;
+    end
+
     StopSound(WindDashSoundName);
 end
 
