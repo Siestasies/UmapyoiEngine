@@ -90,6 +90,12 @@ function state_enter(entity)
     player.mDashCD = player.mDashCDMax;
 
     FaceTowardsMouse(entity)
+
+    local collider = GetCollider()
+    if collider then
+        shape = collider.shapes[1]
+        shape.isActive = false;
+    end
 end
 
 function state_update(entity, dt)
@@ -159,6 +165,11 @@ function state_exit(entity)
     -- Reset state-local variables
     dashTimer = 0
     dashDirection = Vec2(0, 0)
+    local collider = GetCollider()
+    if collider then
+        shape = collider.shapes[1]
+        shape.isActive = true;
+    end
 end
 
 -- Helper function to dash towards mouse

@@ -67,11 +67,9 @@ function Update(dt)
         if enemy.mHealth <= 0  and not isDead then
             isDead = true
         end
-        
+
         if placeholderSprite then
-            if enemy.mHealth <= 0 then
-                -- dead
-            elseif enemy.mHealth <= 30 then
+            if enemy.mHealth <= 30 then
                 placeholderSprite.spriteCell.x = 0.0
             elseif enemy.mHealth <= 60 then
                 placeholderSprite.spriteCell.x = 1.0
