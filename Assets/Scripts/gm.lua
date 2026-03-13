@@ -4,6 +4,7 @@ local playerEntity = -1
 -- function Start()
 --     levelEndState = require("levelEndState")    
 -- end
+local wasPaused = false
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
@@ -14,11 +15,15 @@ function Update(dt)
         if health > 0 then
             if paused == true then
                 toggleGroupLowpass("MASTER", true)
+                wasPaused = true
                 local child = GetChildren(EntityID, 1)
                 SetActiveEntity(child, true) -- pause
                 return
             else
-                toggleGroupLowpass("MASTER", false)
+                if wasPaused == true then
+                    toggleGroupLowpass("MASTER", false)
+                    wasPaused = false
+                end
 
                 local child = GetChildren(EntityID, 1)
                 SetActiveEntity(child, false)
