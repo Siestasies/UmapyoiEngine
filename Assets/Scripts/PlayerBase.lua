@@ -110,21 +110,21 @@ end
 
 -- Collision handling for damage
 function OnCollisionEnter(other)
-    if not HasPlayer() then return end
-    
-    local player = GetPlayer()
-    if not player then return end
-    
-    -- Check invulnerability
-    if player.isInvulnerable then return end
-    
-    -- Check if hit by enemy
-    if HasEnemyOn(other) then
-        local enemy = GetEnemyFrom(other)
-        if enemy then
-            TakeDamage(enemy.mAttackDamage)
-        end
-    end
+    --if not HasPlayer() then return end
+    --
+    --local player = GetPlayer()
+    --if not player then return end
+    --
+    ---- Check invulnerability
+    --if player.isInvulnerable then return end
+    --
+    ---- Check if hit by enemy
+    --if HasEnemyOn(other) then
+    --    local enemy = GetEnemyFrom(other)
+    --    if enemy then
+    --        TakeDamage(enemy.mAttackDamage)
+    --    end
+    --end
 end
 
 function OnTriggerEnter(other, triggerOwner)

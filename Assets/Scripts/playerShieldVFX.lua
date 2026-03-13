@@ -45,6 +45,7 @@ end
 
 function BeginDie()
     if isDying then return end
+    Log("SHIELD: BeginDie called")
 
     local player = GetPlayerFrom(GetParent(EntityID))
     player.hasShield = false
@@ -94,6 +95,7 @@ function Update(dt)
 end
 
 function OnDestroy()
+    Log("SHIELD: OnDestroy called, isDying=" .. tostring(isDying) .. " deathTimer=" .. tostring(deathTimer))
     RestoreParentCollider()
 end
 
@@ -117,6 +119,7 @@ function NeutralizeProjectile(projEntity)
 end
 
 function HandleCollision(trigger)
+    Log("SHIELD: HandleCollision trigger=" .. tostring(trigger) .. " hasProj=" .. tostring(HasProjectileOn(trigger)) .. " hasEnemy=" .. tostring(HasEnemyOn(trigger)))
     -- Block projectiles even while dying
     if HasProjectileOn(trigger) then
         if IsEntityValid(trigger) then
