@@ -572,11 +572,8 @@ namespace Uma_Engine
     {
         bool cutscene = Uma_Engine::Application::GetCutsceneActive();
 
-        if (!cutscene)
-        {
-            if (m_PlayerController)
-                m_PlayerController->Update(m_FixedTimeStep);
-        }
+        if (m_PlayerController)
+            m_PlayerController->Update(m_FixedTimeStep);
 
         if (m_PathFindingSystem)
             m_PathFindingSystem->Update(m_FixedTimeStep);
