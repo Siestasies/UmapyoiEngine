@@ -1900,7 +1900,9 @@ namespace Uma_ECS
             "layer", &ColliderShape::layer,
             "colliderMask", &ColliderShape::colliderMask,
             "isActive", &ColliderShape::isActive,
-            "autoFitToSprite", &ColliderShape::autoFitToSprite
+            "autoFitToSprite", &ColliderShape::autoFitToSprite,
+            "isColliding", sol::readonly(&ColliderShape::isColliding),
+            "isTriggered", sol::readonly(&ColliderShape::isTriggered)
         );
 
         // ===================================================================

@@ -48,6 +48,8 @@ namespace Uma_ECS
         LayerMask colliderMask = CL_NONE;
         bool isActive = true;
         bool autoFitToSprite = false;  // Add this per-shape flag
+        bool isColliding = false;      // Runtime: true if in physics collision this frame
+        bool isTriggered = false;      // Runtime: true if in trigger overlap this frame
     };
 
     struct Collider

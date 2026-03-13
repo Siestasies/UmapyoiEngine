@@ -166,6 +166,20 @@ void Uma_ECS::CollisionSystem::UpdateCollision(float dt)
     previousTriggers = std::move(currentTriggers);
     currentTriggers.clear();
 
+    // Reset per-shape collision/trigger flags for this frame
+    for (auto const& entity : aEntities)
+    {
+        if (!pCoordinator->IsActiveInHierarchy(entity))
+            continue;
+
+        auto& collider = cArray.GetData(entity);
+        for (auto& shape : collider.shapes)
+        {
+            shape.isColliding = false;
+            shape.isTriggered = false;
+        }
+    }
+
     if (persistentGrid.empty())
     {
         // reserve at least 512 grids
@@ -346,6 +360,22 @@ void Uma_ECS::CollisionSystem::CheckEntityPairCollision(
                     ? ComputeCurrentBounds(e1, i) : c1.bounds[i];
                 BoundingBox currentBox2 = (shape2.purpose != ColliderPurpose::Trigger)
                     ? ComputeCurrentBounds(e2, j) : c2.bounds[j];
+
+                // Set per-shape collision/trigger flags
+                if (isTriggerPair)
+                {
+                    // Only set if actual overlap (triggers re-check inside HandleShapeCollision)
+                    if (CollisionIntersection_RectRect_Static(currentBox1, currentBox2))
+                    {
+                        c1.shapes[i].isTriggered = true;
+                        c2.shapes[j].isTriggered = true;
+                    }
+                }
+                else
+                {
+                    c1.shapes[i].isColliding = true;
+                    c2.shapes[j].isColliding = true;
+                }
 
                 // Pass both original collider entities (for events) and physics entities (for resolution)
                 HandleShapeCollision(
