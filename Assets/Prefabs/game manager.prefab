@@ -35,7 +35,16 @@
                                 "scriptPath": "Assets/Scripts/gm.lua",
                                 "scriptName": "gm.lua",
                                 "isEnabled": true,
-                                "exposedVariables": []
+                                "exposedVariables": [
+                                    {
+                                        "name": "isBossRoom",
+                                        "type": 2,
+                                        "value": true,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -3199,9 +3208,9 @@
                             "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.899,
-                            "g": 0.899,
-                            "b": 0.899,
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -3375,7 +3384,7 @@
                         "text": "Next\n",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 4,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
