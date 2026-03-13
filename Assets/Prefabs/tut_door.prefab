@@ -42,7 +42,7 @@
                             "CombatGameplayBGM": {
                                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                                 "isPlaying": false,
-                                "shouldLoop": false,
+                                "shouldLoop": true,
                                 "is3D": false,
                                 "type": 1,
                                 "volume": 0.1,
