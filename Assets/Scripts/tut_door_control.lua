@@ -16,10 +16,7 @@ end
 function Update(dt)
 
     local enemiesAlive = CountEntitiesWithComponent("Enemy")
-
-    Log("enemies left : " .. enemiesAlive)
-
-
+    
     if enemiesAlive <= 0 then
 
         local animator = GetAnimatorFrom(EntityID)

@@ -226,8 +226,8 @@
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
-                            "GameStart": {
-                                "path": "Assets/sounds/GameStart.wav",
+                            "Menu Click": {
+                                "path": "Assets/sounds/Menu Click.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": false,
@@ -1241,7 +1241,7 @@
             },
             {
                 "id": 14,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "cfm mnu",
@@ -1292,13 +1292,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/quit menu box.png",
                         "sortingOrder": 5,
                         "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1518,13 +1518,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/red button.png",
                         "sortingOrder": 6,
                         "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1546,10 +1546,10 @@
                         "interactable": true,
                         "scriptName": "yes_btn.lua",
                         "normalColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
                         },
                         "hoverColour": {
                             "r": 0.898,
@@ -1558,9 +1558,9 @@
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -1697,13 +1697,13 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/red button.png",
                         "sortingOrder": 6,
                         "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -1725,10 +1725,10 @@
                         "interactable": true,
                         "scriptName": "no_btn.lua",
                         "normalColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
                         },
                         "hoverColour": {
                             "r": 0.898,
@@ -1737,9 +1737,9 @@
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "disabledColour": {
