@@ -1,16 +1,17 @@
-local playerEntity = -1
--- local levelEndState
+ExposedVars = {
+    isBossRoom = true
+}
 
--- function Start()
---     levelEndState = require("levelEndState")    
--- end
+local playerEntity = -1
 local wasPaused = false
+local gameOverTimer = 0.0  -- was 1.0, caused immediate trigger on first frame
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
     local player = GetPlayerFrom(playerEntity)
     local health = player.mHealth
     local paused = IsGamePause()
+
     if IsEntityValid(playerEntity) then
         if health > 0 then
             if paused == true then
@@ -24,7 +25,6 @@ function Update(dt)
                     toggleGroupLowpass("MASTER", false)
                     wasPaused = false
                 end
-
                 local child = GetChildren(EntityID, 1)
                 SetActiveEntity(child, false)
             end
@@ -46,12 +46,15 @@ function Update(dt)
         end
     end
 
-    -- if levelEndState.getLevelEnd() then
-    --         local child = GetChildren(EntityID, 2)
-    --         SetActiveEntity(child, true) -- complete
-    --     else
-    --         local child = GetChildren(EntityID, 2)
-    --         SetActiveEntity(child, false) -- complete
-    --     end
-    -- end
+    if isBossRoom == true then
+        gameOverTimer = gameOverTimer + dt
+        if gameOverTimer >= 1 then
+            local numEnemy = CountEntitiesWithComponent("Enemy")
+            if numEnemy <= 0 then
+                local child = GetChildren(EntityID, 2)
+                SetActiveEntity(child, true) -- complete
+                gameOverTimer = 0.0
+            end
+        end
+    end
 end

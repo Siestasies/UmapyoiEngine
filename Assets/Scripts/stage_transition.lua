@@ -6,6 +6,10 @@ ExposedVars = {
 local prefabRoot = -1
 local effects
 
+function Start()
+    GetAudioComponent():playFaded(EntityID, "CombatGameplayBGM", 1.5)
+end
+
 function Update(dt)
 
     -- simpler approach
@@ -40,5 +44,6 @@ function OnTriggerEnter(other, triggerOwner)
         end
 
         GetAudioComponent():play(EntityID,"SFX_Stage_Transition")
+        GetAudioComponent():fadeOut(EntityID,"CombatGameplayBGM",1.5)
     end
 end

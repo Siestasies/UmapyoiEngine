@@ -8,7 +8,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Boss Enemy",
                         "position": {
-                            "x": 250.0,
+                            "x": -95.944,
                             "y": -150.0
                         },
                         "rotation": {
@@ -32,7 +32,52 @@
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
                         "default3D": true,
-                        "loadedSounds": {}
+                        "loadedSounds": {
+                            "SFX_Boss_Transform2": {
+                                "path": "Assets/sounds/Boss SFX/SFX_Boss_Transform2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_Boss_Hurt2": {
+                                "path": "Assets/sounds/Boss SFX/SFX_Boss_Hurt2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_Boss_Spawn2": {
+                                "path": "Assets/sounds/Boss SFX/SFX_Boss_Spawn2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_Boss_Attack": {
+                                "path": "Assets/sounds/Boss SFX/SFX_Boss_Attack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/boss ss 1.png",
@@ -586,6 +631,16 @@
                                 "speed": 10.0,
                                 "loop": false,
                                 "texturePath": "Assets/Sprites/boss ss 3.png"
+                            },
+                            {
+                                "name": "death",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 48,
+                                "frameCount": 16,
+                                "speed": 10.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 2.png"
                             }
                         ]
                     },

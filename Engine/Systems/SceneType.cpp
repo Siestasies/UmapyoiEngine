@@ -570,7 +570,7 @@ namespace Uma_Engine
 
     void Scene::FixedUpdateECSSystems()
     {
-        bool cutscene = Uma_Engine::Application::GetCutsceneActive();
+        Uma_Engine::Application::GetCutsceneActive();
 
         if (m_PlayerController)
             m_PlayerController->Update(m_FixedTimeStep);

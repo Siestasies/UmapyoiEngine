@@ -1,6 +1,6 @@
 ExposedVars = {
     totemElement = 1,
-    initialDelay = 1.0,
+    initialDelay = 2.0,
     enemyHurtEffectDuration = 0.5
 }
 
@@ -41,6 +41,8 @@ function Start()
     end
     initialDelayTimer = initialDelay
     enemyHurtEffectTimer = enemyHurtEffectDuration
+
+    GetAudioComponent():play(EntityID, "SFX_Totems_Spawn")
 end
 
 function Update(dt)
@@ -101,7 +103,6 @@ function OnDestroy()
 end
 
 function OnTriggerEnter(other, triggerOwner)
-    Log("TotemHITTTTTTTTTTTTTTTTTTTTTTTTTTTT")
     if totemElement == 1 then
         HandleDamageIfWind(triggerOwner)
     elseif totemElement == 2 then
@@ -110,6 +111,7 @@ function OnTriggerEnter(other, triggerOwner)
         HandleDamageIfWater(triggerOwner)
     end
     --Log("totem is hit")
+    GetAudioComponent():play(EntityID, "SFX_Totems_Damage")
 end
 
 function OnTriggerExit(other)

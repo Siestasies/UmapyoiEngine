@@ -7,7 +7,7 @@ ExposedVars = {
     eliteFirePrefab = "Elite Fire.prefab",
     eliteWindPrefab = "Elite Wind.prefab",
     eliteCount = 3,
-    spawnRadius = 120.0,
+    spawnRadius = 30.0,
     spawnDelay = 0.5
 }
 
@@ -49,8 +49,8 @@ function state_update(entity, dt)
 
         local bossPos = bossTransform.worldPosition
         local spawnedIds = {}
-        local angleStep = (2 * math.pi) / ExposedVars.eliteCount
-
+        local angleStep = math.pi / (ExposedVars.eliteCount - 1)
+        
         for i = 0, ExposedVars.eliteCount - 1 do
             local angle = angleStep * i
             local spawnPos = Vec2(

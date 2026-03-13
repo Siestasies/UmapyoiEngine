@@ -177,9 +177,9 @@
                             {
                                 "name": "",
                                 "property": 3,
-                                "easing": 2,
+                                "easing": 0,
                                 "duration": 0.0,
-                                "delay": 1.5,
+                                "delay": 3.5,
                                 "loop": false,
                                 "applyToChildren": false,
                                 "startVec2": {

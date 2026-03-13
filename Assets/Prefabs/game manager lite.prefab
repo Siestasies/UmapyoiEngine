@@ -39,7 +39,7 @@
                                     {
                                         "name": "isBossRoom",
                                         "type": 2,
-                                        "value": true,
+                                        "value": false,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -49,7 +49,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "prefabPath": "Assets/Prefabs/game manager lite.prefab",
                         "isRoot": true
                     }
                 }

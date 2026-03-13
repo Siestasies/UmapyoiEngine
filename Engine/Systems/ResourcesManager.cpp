@@ -328,9 +328,6 @@ namespace Uma_Engine
                 {
                     std::string name = sndVal["name"].GetString();
                     std::string path = sndVal["path"].GetString();
-                    SoundType type = static_cast<SoundType>(sndVal["type"].GetInt());
-
-                    //LoadSound(name, path, type);
                 }
             }
         }
@@ -394,6 +391,8 @@ namespace Uma_Engine
 
     SoundInfo* ResourcesManager::GetSound(const std::string& name, const std::string& path)
     {
+        (void)path;
+
         auto it = mSoundList.find(name);
 
         // already loaded

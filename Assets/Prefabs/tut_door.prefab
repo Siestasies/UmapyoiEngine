@@ -38,6 +38,17 @@
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
+                            },
+                            "CombatGameplayBGM": {
+                                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 1,
+                                "volume": 0.1,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },

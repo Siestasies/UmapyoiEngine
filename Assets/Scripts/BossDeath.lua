@@ -78,7 +78,7 @@ function state_update(entity, dt)
     if deathTimer <= 0 then
         hasFinished = true
         Log("Boss destroyed!")
-        DestroyEntity(entity)
+        DestroyWithChildren(entity)
     end
 end
 

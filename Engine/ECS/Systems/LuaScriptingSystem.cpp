@@ -764,6 +764,7 @@ namespace Uma_ECS
                 {
                     sol::protected_function fn = onFailure.value();
                     failureCb = [fn](HRESULT hr, const std::string& msg) mutable {
+                        (void)hr;
                         auto result = fn(msg);
                         if (!result.valid()) {
                             sol::error err = result;

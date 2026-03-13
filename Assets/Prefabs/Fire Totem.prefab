@@ -16,8 +16,8 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 20.0,
-                            "y": 20.0
+                            "x": 15.0,
+                            "y": 15.0
                         },
                         "parent": -1,
                         "children": [
@@ -25,6 +25,34 @@
                             2,
                             3
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Totem_Damage": {
+                                "path": "Assets/sounds/STAGE EFFECTS/SFX_Totem_Damage.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_Totems_Spawn": {
+                                "path": "Assets/sounds/STAGE EFFECTS/SFX_Totems_Spawn.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/totems ss.png",

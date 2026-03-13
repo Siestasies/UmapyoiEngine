@@ -643,7 +643,14 @@ namespace Uma_UI
             Uma_ECS::Entity entity = effectsArray.GetEntity(i);
             auto& effects = effectsArray.GetComponentAt(i);
 
-            if (effects.playOnEnable) effects.PlayAll();
+            if (effects.playOnEnable)
+            {
+                for (auto& clip : effects.clips)
+                {
+                    if (!clip.isPlaying && !clip.hasStarted)
+                        clip.Play();
+                }
+            }
 
             for (auto& clip : effects.clips)
             {
