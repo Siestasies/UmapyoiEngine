@@ -9,7 +9,7 @@
                         "name": "lvl2eye2",
                         "position": {
                             "x": -180.699,
-                            "y": 46.098
+                            "y": 46.097
                         },
                         "rotation": {
                             "x": 0.0,
@@ -32,6 +32,23 @@
                             30,
                             34
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Eye_Close": {
+                                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 100.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/PROPS ANIMATION.png",
@@ -850,7 +867,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": 60.098,
+                            "x": 60.097,
                             "y": 28.2
                         },
                         "rotation": {
@@ -3058,7 +3075,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -3069,7 +3086,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.3,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -3653,7 +3670,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -3664,7 +3681,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.3,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -4248,7 +4265,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -4259,7 +4276,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.3,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -4816,7 +4833,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": 86.598,
+                            "x": 86.597,
                             "y": 0.0
                         },
                         "rotation": {
@@ -4866,7 +4883,18 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.1,
+                                "volume": 0.5,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "FireEnemyAttack": {
+                                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -5467,7 +5495,18 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.1,
+                                "volume": 0.5,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "FireEnemyAttack": {
+                                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -6068,7 +6107,18 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.1,
+                                "volume": 0.5,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "FireEnemyAttack": {
+                                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0

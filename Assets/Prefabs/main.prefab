@@ -226,8 +226,8 @@
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
-                            "Menu Click": {
-                                "path": "Assets/sounds/Menu Click.wav",
+                            "GameStart": {
+                                "path": "Assets/sounds/GameStart.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": false,

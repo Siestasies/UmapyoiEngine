@@ -25,6 +25,23 @@
                             5
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Eye_Close": {
+                                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 100.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
@@ -116,7 +133,7 @@
                         "name": "static bird",
                         "position": {
                             "x": -20.6,
-                            "y": -6.191
+                            "y": -6.19
                         },
                         "rotation": {
                             "x": 0.0,
@@ -165,7 +182,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -766,7 +783,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0

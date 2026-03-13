@@ -24,6 +24,23 @@
                             1
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Eye_Close": {
+                                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 100.0,
+                                "maxDistance": 100.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
@@ -142,10 +159,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.23,
+                                "volume": 0.1,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
@@ -155,8 +172,8 @@
                                 "type": 0,
                                 "volume": 1.0,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             },
                             "Fire Demon Damage Scream": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
@@ -164,10 +181,10 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
-                                "minDistance": 100.0,
-                                "maxDistance": 1000.0
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
