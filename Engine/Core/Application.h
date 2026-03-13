@@ -110,7 +110,7 @@ namespace Uma_Engine
 
         static void StartTimer(bool startNow)
         {
-            playTime = 0.f;
+            playTime = (startNow == true) ? 0.f : playTime;
             startPlayTimeTimer = startNow;
         }
 

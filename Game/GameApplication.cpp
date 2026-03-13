@@ -112,14 +112,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<GameSceneScript>("GameBehaviour");
 
         // Create and setup default game scene
-        auto gameScene = sceneManager->CreateScene("main_menu.scn", "main_menu.scn");
+        auto gameScene = sceneManager->CreateScene("intro.scn", "intro.scn");
         gameScene->g_EngineConfig = *GetConfig();
 
         // Attach game script to scene
-        sceneManager->AttachScriptToScene("main_menu.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("intro.scn", "GameBehaviour");
 
         // Load the scene
-        sceneManager->LoadScene("main_menu.scn");
+        sceneManager->LoadScene("intro.scn");
 
         // init playfab services
         PlayFabConfiguration();
