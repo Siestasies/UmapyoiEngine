@@ -2345,6 +2345,7 @@ namespace Uma_Engine
                 if (ImGui::DragFloat("Speed", &player.mSpeed, 0.1f, 0.0f, 20.f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Dash Speed", &player.mDashSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Dash CD", &player.mDashCD, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Max Dash CD", &player.mDashCDMax, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragInt("Atk Dmg", &player.mAttackDamage, 0.1f, 0, 100)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Atk Spd", &player.mAttackSpeed, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;
                 if (ImGui::DragFloat("Atk Range", &player.mAttackRange, 0.1f, 0.0f, 100.0f)) m_hasUnsavedEdit = true;

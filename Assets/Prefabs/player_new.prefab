@@ -31,7 +31,7 @@
                         "mDashSpeed": 2.0,
                         "mDashDuration": 0.2,
                         "mDashCD": -0.0,
-                        "mDashCDMax": 2.0,
+                        "mDashCDMax": 0.6,
                         "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 10.0,
