@@ -21,7 +21,8 @@
                         },
                         "parent": -1,
                         "children": [
-                            1
+                            1,
+                            2
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -143,7 +144,7 @@
                                 "property": 5,
                                 "easing": 0,
                                 "duration": 1.5,
-                                "delay": 0.0,
+                                "delay": 2.0,
                                 "loop": false,
                                 "applyToChildren": false,
                                 "startVec2": {
@@ -179,6 +180,121 @@
                                 "easing": 2,
                                 "duration": 0.0,
                                 "delay": 1.5,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 1.0,
+                                "endFloat": 0.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "fade",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main_transition.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "sortingOrder": 20,
+                        "color": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Effects": {
+                        "playOnEnable": true,
+                        "clips": [
+                            {
+                                "name": "",
+                                "property": 3,
+                                "easing": 1,
+                                "duration": 2.0,
+                                "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
                                 "startVec2": {

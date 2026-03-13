@@ -1819,7 +1819,7 @@
             },
             {
                 "id": 25,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "pause",
@@ -2106,13 +2106,13 @@
                             "y": -200.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -2140,21 +2140,21 @@
                         "interactable": true,
                         "scriptName": "cont_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -2367,13 +2367,13 @@
                             "y": -300.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -2401,15 +2401,15 @@
                         "interactable": true,
                         "scriptName": "opt_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -2628,13 +2628,13 @@
                             "y": -400.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -2662,15 +2662,15 @@
                         "interactable": true,
                         "scriptName": "return_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
                             "a": 1.0
                         },
                         "pressedColour": {
@@ -3665,13 +3665,13 @@
                             "y": -200.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -3699,21 +3699,21 @@
                         "interactable": true,
                         "scriptName": "restart_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -3909,13 +3909,13 @@
                             "y": -300.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -3943,21 +3943,21 @@
                         "interactable": true,
                         "scriptName": "opt_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -4153,13 +4153,13 @@
                             "y": -400.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 800.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "",
+                        "texturePath": "Assets/hover button UI white.png",
                         "sortingOrder": 3,
                         "color": {
                             "r": 1.0,
@@ -4187,21 +4187,21 @@
                         "interactable": true,
                         "scriptName": "return_btn.lua",
                         "normalColour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.0
+                        },
+                        "hoverColour": {
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
                             "a": 1.0
                         },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
                         "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -5234,8 +5234,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 12.5,
-                            "y": 8.0
+                            "x": 27.5,
+                            "y": 10.0
                         },
                         "sizeDelta": {
                             "x": 0.0,
@@ -5247,7 +5247,7 @@
                         "text": "100",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 22,
-                        "fontSize": 1.0,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -6075,8 +6075,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 12.5,
-                            "y": 8.0
+                            "x": 27.5,
+                            "y": 10.0
                         },
                         "sizeDelta": {
                             "x": 0.0,
@@ -6088,7 +6088,7 @@
                         "text": "100",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 22,
-                        "fontSize": 1.0,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 1.0,
                             "g": 1.0,
@@ -6916,8 +6916,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 12.5,
-                            "y": 8.0
+                            "x": 27.5,
+                            "y": 10.0
                         },
                         "sizeDelta": {
                             "x": 0.0,
@@ -6929,7 +6929,7 @@
                         "text": "100\n",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 22,
-                        "fontSize": 1.0,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 1.0,
                             "g": 1.0,

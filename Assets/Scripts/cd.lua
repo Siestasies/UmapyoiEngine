@@ -12,7 +12,7 @@ function Update(dt)
             if HasChildren(skill, 0) then
                 local fill = GetChildren(skill, 0)
 
-                GetImageFrom(fill).fillAmount = 0.5
+                GetImageFrom(fill).fillAmount = 0
             end
         end
     end
