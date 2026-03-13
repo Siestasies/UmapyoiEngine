@@ -47,6 +47,9 @@
                 "path": "assets/sound settings bodx.png"
             },
             {
+                "path": "assets/props_animation.png"
+            },
+            {
                 "path": "assets/floor_tatami.png"
             },
             {
@@ -123,6 +126,9 @@
             },
             {
                 "path": "assets/x escape button.png"
+            },
+            {
+                "path": "assets/star.png"
             }
         ],
         "fonts": [

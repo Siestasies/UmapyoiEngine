@@ -132,38 +132,8 @@
         ],
         "sounds": [
             {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "TyphoonGuard",
-                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
-                "type": 0
-            },
-            {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "SteamBurst",
-                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
-                "type": 0
-            },
-            {
-                "name": "FireCyclone",
-                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
-                "type": 0
-            },
-            {
-                "name": "Fire Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                 "type": 0
             }
         ],
@@ -13571,8 +13541,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 56.0,
-                        "y": -161.199
+                        "x": 72.099,
+                        "y": -143.6
                     },
                     "rotation": {
                         "x": 0.0,
@@ -13598,15 +13568,15 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": 56.09,
-                        "y": -161.199
+                        "x": 72.19,
+                        "y": -143.564
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": -0.75,
+                        "x": 0.75,
                         "y": 0.75
                     },
                     "parent": -1,
@@ -13622,7 +13592,7 @@
         },
         {
             "id": 36,
-            "isActive": true,
+            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "new entity",
@@ -14175,6 +14145,7 @@
                         63,
                         67,
                         71,
+                        85,
                         81,
                         77
                     ]
@@ -14186,7 +14157,7 @@
             }
         },
         {
-            "id": 82,
+            "id": 86,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14205,7 +14176,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        100
+                        104
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -14215,7 +14186,7 @@
             }
         },
         {
-            "id": 104,
+            "id": 105,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14234,9 +14205,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        103,
-                        102,
-                        101
+                        106,
+                        107,
+                        108
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
