@@ -22,6 +22,23 @@
                         "parent": -1,
                         "children": []
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_Stage_Transition": {
+                                "path": "Assets/sounds/SFX_Stage_Transition.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
                             "x": 0.0,

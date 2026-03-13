@@ -38,5 +38,7 @@ function OnTriggerEnter(other, triggerOwner)
             local child = GetChildren(prefabRoot, 0)
             effects = GetEffectsFrom(child)
         end
+
+        GetAudioComponent():play(EntityID,"SFX_Stage_Transition")
     end
 end

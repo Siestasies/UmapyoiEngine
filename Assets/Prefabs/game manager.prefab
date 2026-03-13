@@ -4343,7 +4343,7 @@
             },
             {
                 "id": 55,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "options",
