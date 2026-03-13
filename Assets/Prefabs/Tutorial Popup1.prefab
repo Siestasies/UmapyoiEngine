@@ -113,7 +113,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/ControlsPopup1.png",
+                        "texturePath": "Assets/ControlsPopup3.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,

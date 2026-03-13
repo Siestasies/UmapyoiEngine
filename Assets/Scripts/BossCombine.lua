@@ -81,6 +81,10 @@ end
 function state_update(entity, dt)
     combineTimer = combineTimer - dt
 
+    if HasRigidBody() then
+        GetRigidBody().velocity = Vec2(0.0, 0.0)
+    end
+
     -- Lerp corpses toward boss center
     local bossTransform = GetTransform()
     if bossTransform then
