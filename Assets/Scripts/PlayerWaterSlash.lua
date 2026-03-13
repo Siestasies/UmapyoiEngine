@@ -241,7 +241,7 @@ function FaceTowardsMouse(entity)
 end
 
 -- Helper function to move player slightly towards mouse when attacking
-function getDashDirection(player)
+function getAttackDirection(player)
 
 
     local transform = GetTransform()
