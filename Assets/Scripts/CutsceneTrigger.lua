@@ -1,7 +1,7 @@
 --[[
 \file   CutsceneTrigger.lua
 \par    Project: GAM250
-\par    Course: CSD2401
+\par    Course: CSD2451
 \par    Section A
 
 \author Javier Chua Dong Qing (100%)
