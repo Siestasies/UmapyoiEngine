@@ -28,6 +28,7 @@ function Update()
             animator.animator:Play("eye3", false)  -- 25% remain
         elseif threshold == 0 then
             animator.animator:Play("eye4", false)  -- all dead
+            GetAudioComponent():play(EntityID, "SFX_Eye_Close")
         end
     end
 end
