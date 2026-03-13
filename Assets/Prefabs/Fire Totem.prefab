@@ -73,7 +73,7 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 0.0
+                        "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
                         "velocity": {
@@ -231,7 +231,7 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 0.0
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Fire Totem.prefab",
@@ -282,7 +282,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Fire Totem.prefab",
                         "isRoot": false
                     }
                 }
@@ -340,7 +340,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Fire Totem.prefab",
                         "isRoot": false
                     }
                 }

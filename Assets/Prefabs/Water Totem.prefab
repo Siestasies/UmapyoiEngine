@@ -56,7 +56,7 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/totems ss.png",
-                        "layer": 1,
+                        "layer": 8,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
@@ -234,7 +234,7 @@
                         "alpha": 0.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Fire Totem.prefab",
+                        "prefabPath": "Assets/Prefabs/Water Totem.prefab",
                         "isRoot": false
                     }
                 }
@@ -282,7 +282,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Water Totem.prefab",
                         "isRoot": false
                     }
                 }
@@ -340,7 +340,7 @@
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/Water Totem.prefab",
                         "isRoot": false
                     }
                 }
