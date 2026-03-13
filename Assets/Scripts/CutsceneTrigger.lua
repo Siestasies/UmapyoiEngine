@@ -320,8 +320,8 @@ function Update(dt)
         cooldownTimer = cooldownTimer - dt
     end
     if not isPlaying then
-        -- Ensure camera always follows the player when no cutscene is active
-        if cameraEntity ~= -1 then
+        -- Ensure camera follows the player only when no cutscene is active globally
+        if not IsCutsceneActive() and cameraEntity ~= -1 then
             SetCameraFollow(cameraEntity, true)
         end
         return
