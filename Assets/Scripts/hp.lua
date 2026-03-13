@@ -1,6 +1,7 @@
 local playerEntity = -1
 
 local maxHealth = 0
+local belowQuater = false;
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
@@ -25,5 +26,13 @@ function Update(dt)
                 GetImageFrom(fill).fillAmount = amount
             end
         end
+    end
+
+    if belowQuater == false and health <= segment then
+        toggleGroupLowpass("MASTER", true)
+        belowQuater = true
+    elseif belowQuater == true and health > segment then
+        toggleGroupLowpass("MASTER", false)
+        belowQuater = false
     end
 end
