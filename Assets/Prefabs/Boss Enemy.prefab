@@ -8,7 +8,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Boss Enemy",
                         "position": {
-                            "x": 250.0,
+                            "x": -95.944,
                             "y": -150.0
                         },
                         "rotation": {
@@ -586,6 +586,16 @@
                                 "speed": 10.0,
                                 "loop": false,
                                 "texturePath": "Assets/Sprites/boss ss 3.png"
+                            },
+                            {
+                                "name": "death",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 48,
+                                "frameCount": 16,
+                                "speed": 10.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 2.png"
                             }
                         ]
                     },

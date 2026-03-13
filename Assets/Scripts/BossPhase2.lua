@@ -3,9 +3,9 @@
 -- Spawns totems, tracks their deaths, transitions to Phase 3 when all destroyed.
 
 ExposedVars = {
-    topOffsetY = 200.0,
+    topOffsetY = 50.0,
     --bulletInterval = 0.2,
-    bulletInterval = 10000000000,
+    bulletInterval = 100,
     bulletSpeed = 100.0,
     bulletDamage = 15,
     bulletPrefab = "boss projectile.prefab",
@@ -19,7 +19,7 @@ ExposedVars = {
     volleyInterval = 1.5,
     sweepSpeed = 40.0,
     patternSwitchTime = 6.0,
-    finalTransformationTime = 5.0
+    finalTransformationTime = 3.5
 }
 
 local bulletTimer = 0.0
@@ -32,12 +32,18 @@ local currentPattern = 1
 local patternTimer = 0.0
 local sweepAngle = 0.0
 local sweepDir = 1
+local targetY = 0.0
+local isMoving = false
 
 -- Totem tracking
 local totemIds = {}
 local totemsAlive = 0
 local finalPhase = false
 local finalTransformationItr = 1
+
+local totemPos1 = Vec2(-160, -159)
+local totemPos2 = Vec2(-96 , -175.5)
+local totemPos3 = Vec2(-32 , -159)
 
 function state_enter(entity)
     Log("Boss Phase 2: Bullet hell + Totems")
@@ -55,7 +61,8 @@ function state_enter(entity)
     -- Position boss at top of room
     bossTransform = GetTransform()
     if bossTransform then
-        bossTransform.worldPosition.y = bossTransform.worldPosition.y + ExposedVars.topOffsetY
+        targetY = bossTransform.position.y + ExposedVars.topOffsetY
+        isMoving = true
     end
 
     if HasRigidBody() then
@@ -81,6 +88,21 @@ function state_update(entity, dt)
     bossTransform = GetTransform()
     if not bossTransform then return end
 
+    if HasRigidBody() then
+        GetRigidBody().velocity = Vec2(0.0, 0.0)
+    end
+
+    if isMoving then
+        local dy = targetY - bossTransform.position.y
+        if math.abs(dy) < 1.0 then
+            bossTransform.position.y = targetY
+            isMoving = false
+        else
+            bossTransform.position.y = bossTransform.position.y + dy * dt * 3.0
+        end
+        return
+    end
+
     if finalPhase then 
         ExposedVars.finalTransformationTime = ExposedVars.finalTransformationTime - dt
         if animator and animator.animator:HasFinished() then
@@ -91,7 +113,7 @@ function state_update(entity, dt)
                 animator.animator:Play("final_phase_transition3", false)
             end
         end
-        if ExposedVars.finalTransformationTime <= 0 then
+        if ExposedVars.finalTransformationTime <= 0 and not isMoving then
             ChangeState(entity, "BossPhase3")
         end
     end
@@ -137,6 +159,8 @@ function state_update(entity, dt)
                 animator.animator:Play("final_phase_transition1", false)
             end
             finalPhase = true
+            isMoving = true
+            targetY = bossTransform.position.y - ExposedVars.topOffsetY
             return
         end
         
@@ -285,21 +309,19 @@ function SpawnTotems(entity)
     local totemCount = ExposedVars.totemCount
 
     for i = 1, totemCount do
-        local fraction = (i - 1) / math.max(1, totemCount - 1)
-        local offsetX = (fraction - 0.5) * 300.0
-        local spawnPos = Vec2(
-            bossPos.x + offsetX,
-            bossPos.y - ExposedVars.topOffsetY * 0.8
-        )
+        local spawnPos
         local totemId
             if i == 1 then
-                totemId = SpawnPrefab(ExposedVars.waterTotemPrefab, spawnPos)
+                spawnPos = totemPos1
+                totemId = SpawnPrefab(ExposedVars.waterTotemPrefab, totemPos1)
                 --SetParent(eliteId, entity)
             elseif i == 2 then
-                totemId = SpawnPrefab(ExposedVars.fireTotemPrefab, spawnPos)
+                spawnPos = totemPos2
+                totemId = SpawnPrefab(ExposedVars.windTotemPrefab, totemPos2)
                 --SetParent(eliteId, entity)
             else
-                totemId = SpawnPrefab(ExposedVars.windTotemPrefab, spawnPos)
+                spawnPos = totemPos3
+                totemId = SpawnPrefab(ExposedVars.fireTotemPrefab, totemPos3)
                 --SetParent(eliteId, entity)
             end
         if totemId ~= -1 then

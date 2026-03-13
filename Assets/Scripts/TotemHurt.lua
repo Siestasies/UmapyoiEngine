@@ -1,6 +1,6 @@
 ExposedVars = {
     totemElement = 1,
-    initialDelay = 1.0,
+    initialDelay = 2.0,
     enemyHurtEffectDuration = 0.5
 }
 
@@ -101,7 +101,6 @@ function OnDestroy()
 end
 
 function OnTriggerEnter(other, triggerOwner)
-    Log("TotemHITTTTTTTTTTTTTTTTTTTTTTTTTTTT")
     if totemElement == 1 then
         HandleDamageIfWind(triggerOwner)
     elseif totemElement == 2 then

@@ -3,17 +3,17 @@
 -- Boss death is handled by BossBase checking HP when boss is visible.
 
 ExposedVars = {
-    bulletSpeed = 200.0,
+    bulletSpeed = 50.0,
     bulletDamage = 20,
     bulletPrefab = "boss projectile.prefab",
     patternSwitchTime = 5.0,
     spiralSpeed = 120.0,
-    spiralBulletInterval = 0.08,
+    spiralBulletInterval = 0.2,
     burstCount = 12,
-    burstInterval = 2.0,
+    burstInterval = 1.0,
     crossCount = 4,
     crossRotateSpeed = 30.0,
-    crossBulletInterval = 0.12,
+    crossBulletInterval = 0.3,
     enrageHealthPercent = 0.3,
     enrageSpeedMult = 1.5
 }
@@ -82,40 +82,25 @@ function state_enter(entity)
     if audio then
         audio:play(entity, "Boss Phase3 Music")
     end
+
+    -- hp bar
+    local bar = GetChildren(entity, 1)
+    SetActiveEntity(bar, true)
+    local bar = GetChildren(entity, 2)
+    SetActiveEntity(bar, true)
 end
 
 function state_update(entity, dt)
     bossTransform = GetTransform()
     if not bossTransform then return end
 
-    -- Enrage check
-    if not isEnraged and HasEnemy() then
-        local enemy = GetEnemy()
-        if enemy and enemy.mMaxHealth > 0 then
-            local healthPercent = enemy.mHealth / enemy.mMaxHealth
-            if healthPercent <= ExposedVars.enrageHealthPercent then
-                isEnraged = true
-                speedMultiplier = ExposedVars.enrageSpeedMult
-                Log("Boss ENRAGED!")
-
-                if HasSprite() then
-                    local spriteComp = GetSprite()
-                    spriteComp.tintColor = Vec3(1.0, 0.3, 0.3)
-                end
-
-                local audio = GetAudioComponent()
-                if audio then
-                    audio:play(entity, "Boss Enrage")
-                end
-            end
-        end
+    if HasRigidBody() then
+        GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
 
-    -- Play idle anim after intro finishes
-    if animator and animator.animator:HasFinished() then
-        if animator.animator:GetCurrentClip() == "phase3_intro" then
-            animator.animator:Play("idle", true)
-        end
+    if KeyPressed(KEY_N) and HasEnemy() then
+        local enemy = GetEnemy()
+        enemy.mHealth = 0
     end
 
     -- Pattern switching
