@@ -18,5 +18,5 @@ end
 
 function OnPointerClick()
     LoadScene("spawn_map_v2.scn")
-    GetAudioComponent():play(EntityID, "Menu Click")
+    GetAudioComponent():play(EntityID, "GameStart")
 end
