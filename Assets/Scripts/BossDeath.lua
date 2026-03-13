@@ -65,7 +65,7 @@ function state_update(entity, dt)
     explosionTimer = explosionTimer + dt
     if explosionTimer >= ExposedVars.explosionInterval then
         explosionTimer = 0.0
-        SpawnDeathExplosion(entity)
+        --SpawnDeathExplosion(entity)
     end
 
     -- Flash sprite

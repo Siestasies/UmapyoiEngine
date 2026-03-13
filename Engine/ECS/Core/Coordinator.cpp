@@ -700,12 +700,32 @@ namespace Uma_ECS
 
                     LoadPrefabInstance(prefabPath, newID, *transformOverride);
 
+                    // Save the hierarchy that LoadPrefabInstance set up (remapped to world IDs)
+                    auto& preTfArray = aComponentManager->GetComponentArray<Transform>();
+                    std::optional<Entity> savedParent;
+                    std::vector<Entity> savedChildren;
+                    if (preTfArray.Has(newID))
+                    {
+                        auto& preTf = preTfArray.GetData(newID);
+                        savedParent = preTf.parent;
+                        savedChildren = preTf.children;
+                    }
+
                     // Apply ALL scene-level component overrides on top of the prefab defaults.
                     // DeserializeAll handles both "update existing" and "add new" cases,
                     // so any per-instance tweaks saved in the scene file are restored here.
                     Signature prefabSign = aEntityManager->GetSignature(newID);
                     Signature overrideSign = aComponentManager->DeserializeAll(newID, comps);
                     aEntityManager->SetSignature(newID, prefabSign | overrideSign);
+
+                    // Restore the remapped hierarchy — DeserializeAll overwrites Transform's
+                    // parent/children with stale prefab-space IDs from the scene file.
+                    if (preTfArray.Has(newID))
+                    {
+                        auto& postTf = preTfArray.GetData(newID);
+                        postTf.parent = savedParent;
+                        postTf.children = savedChildren;
+                    }
                 }
                 else
                 {
