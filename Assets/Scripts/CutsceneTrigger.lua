@@ -87,6 +87,7 @@ local isTyping       = false
 local blinkTimer     = 0.0
 local blinkOn        = true
 local skipFrames     = 0
+local cooldownTimer  = 0
 
 -- Helpers
 local function ShowImg(e, visible)
@@ -225,13 +226,18 @@ local function DestroyDialoguePrefab()
     end
 end
 
+-- Forward declarations for mutual recursion
+local NextAction
+local BeginAction
+
 -- Move to next action in the cutscene
-local function NextAction()
+NextAction = function()
     actionIndex = actionIndex + 1
     if actionIndex > #actions then
         -- Cutscene finished
         isPlaying = false
         actionIndex = 0
+        cooldownTimer = 1.0  -- prevent immediate re-trigger from OnTrigger
         SetCutsceneActive(false)
         SetCutscenePlayed(ownerEntity, true)
         DestroyDialoguePrefab()
@@ -242,7 +248,7 @@ local function NextAction()
 end
 
 -- Start the current action
-function BeginAction()
+BeginAction = function()
     local action = actions[actionIndex]
     if not action then
         isPlaying = false
@@ -263,6 +269,11 @@ function BeginAction()
         lerpTargetY = action.targetY
         lerpDuration = action.duration
         lerpTimer = 0
+        if lerpDuration <= 0 then
+            SetCameraPosition(cameraEntity, lerpTargetX, lerpTargetY)
+            NextAction()
+            return
+        end
 
     elseif aType == ACT_PLAY_DIALOGUE then
         OpenDialogue(action.dialogueSequenceId)
@@ -278,6 +289,11 @@ function BeginAction()
         zoomTarget = action.targetZoom
         zoomDuration = action.duration
         zoomTimer = 0
+        if zoomDuration <= 0 then
+            SetCameraZoom(cameraEntity, zoomTarget)
+            NextAction()
+            return
+        end
 
     elseif aType == ACT_RETURN_CAMERA then
         SetCameraZoom(cameraEntity, 10)
@@ -300,7 +316,16 @@ function Start()
 end
 
 function Update(dt)
-    if not isPlaying then return end
+    if cooldownTimer > 0 then
+        cooldownTimer = cooldownTimer - dt
+    end
+    if not isPlaying then
+        -- Ensure camera always follows the player when no cutscene is active
+        if cameraEntity ~= -1 then
+            SetCameraFollow(cameraEntity, true)
+        end
+        return
+    end
 
     local action = actions[actionIndex]
     if not action then return end
@@ -398,6 +423,7 @@ end
 local function TryStartCutscene(other, triggerOwner)
     if isPlaying then return end
     if IsCutsceneActive() then return end
+    if cooldownTimer > 0 then return end
 
     if HasPlayerOn(triggerOwner) or HasPlayerOn(other) then
         -- Determine which entity is the trigger owner (has the Cutscene component)
@@ -417,7 +443,10 @@ local function TryStartCutscene(other, triggerOwner)
         ownerEntity = cutsceneOwner
 
         -- Spawn dialogue prefab on demand (only one exists at a time)
-        SpawnDialoguePrefab()
+        if not SpawnDialoguePrefab() then
+            Log("[CutsceneTrigger] Failed to spawn dialogue prefab, aborting cutscene")
+            return
+        end
 
         -- Load actions
         actions = GetCutsceneActions(ownerEntity)
@@ -449,5 +478,9 @@ function OnTrigger(other, triggerOwner)
 end
 
 function OnDestroy()
+    if isPlaying then
+        isPlaying = false
+        SetCutsceneActive(false)
+    end
     DestroyDialoguePrefab()
 end
