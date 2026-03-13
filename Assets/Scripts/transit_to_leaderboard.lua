@@ -1,4 +1,6 @@
 function OnPointerClick()
+
+    StartPlayTime(false)
     PauseGame(false)
     LoadScene("leaderboard.scn")
 
