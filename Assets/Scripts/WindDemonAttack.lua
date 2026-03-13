@@ -24,6 +24,7 @@ function state_enter(entity)
 
     ChargeCD = ExposedVars.chargeTime
     HoverTime = 0.0
+    isAttacking = false
 
     GetRigidBody().velocity = Vec2(0.0, 0.0)
     GetPathFinding().enabled = false
@@ -105,9 +106,18 @@ function state_update(entity, dt)
                 spriteComp.flipX = (angle >= 90 and angle <= 270)
             end
 
+            local dist = math.sqrt(dx * dx + dy * dy)
+            local offsetDist = 6.0
+            local spawnX = transform.worldPosition.x
+            local spawnY = transform.worldPosition.y
+            if dist > 0 then
+                spawnX = spawnX + (dir.x / dist) * offsetDist
+                spawnY = spawnY + (dir.y / dist) * offsetDist
+            end
+
             AddForce(
                 prefab,
-                Vec2(transform.worldPosition.x, transform.worldPosition.y),
+                Vec2(spawnX, spawnY),
                 dir,
                 projectile.mStats.speed,
                 angle - 180
@@ -126,6 +136,7 @@ function state_update(entity, dt)
 end
 
 function state_exit(entity)
+    isAttacking = false
     GetPathFinding().enabled = true
 end
 

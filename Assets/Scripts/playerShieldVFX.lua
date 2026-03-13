@@ -1,65 +1,71 @@
-
 local animator    = nil
-local isAlive     = true
-local isDying     = false
 local initialized = false
 local parentID    = nil
 local shape       = nil
-local lifeTime = 8.0
+local isAlive     = true
+local isDying     = false
+local deathTimer  = 0.0
+local deathDuration = 0.5
+local lifeTime    = 8.0
 
 function Start()
 end
 
 function Init()
     if initialized then return end
-    if not HasAnimator() then return end  -- retry next frame if not ready
+    if not HasAnimator() then return end
 
     animator = GetAnimator()
     parentID = GetParent(EntityID)
 
+    -- Disable parent collider while shield is active
     if parentID then
         local collider = GetColliderFrom(parentID)
         if collider then
             shape = collider.shapes[1]
-            shape.isActive = false;
+            shape.isActive = false
         end
     end
 
     local player = GetPlayerFrom(parentID)
-
     player.hasShield = true
     player.isShieldBroken = false
 
     initialized = true
 end
 
+-- Re-enable parent collider
+function RestoreParentCollider()
+    if not parentID then return end
+    local collider = GetColliderFrom(parentID)
+    if collider then
+        collider.shapes[1].isActive = true
+    end
+end
+
 function BeginDie()
     if isDying then return end
 
-    local playerID = GetParent(EntityID)
-    local player = GetPlayerFrom(playerID)
-    
+    local player = GetPlayerFrom(GetParent(EntityID))
     player.hasShield = false
     player.isShieldBroken = false
 
     isDying = true
     isAlive = false
-    animator.animator:Play("shield down", true)
-    --Log("WATER SHIELD: BeginDie called, playing shield down")
+    deathTimer = deathDuration
+    animator.animator:Play("shield down", false)
 end
 
 function Update(dt)
     Init()
-    if not initialized then return end  -- don't run anything until ready
+    if not initialized then return end
 
     animator = GetAnimator()
 
-    --Log("WATER SHIELD clip: " .. tostring(animator.animator:GetCurrentClip()) .. " | finished: " .. tostring(animator.animator:HasFinished()) .. " | isDying: " .. tostring(isDying))
-
     -- Shield up -> shielding transition
-    if isAlive and
-    animator.animator:GetCurrentClip() == "shield up" and
-    animator.animator:HasFinished() then
+    if isAlive
+    and animator.animator:GetCurrentClip() == "shield up"
+    and animator.animator:HasFinished() then
         if shape then
             local transform = GetTransform()
             transform.position = Vec2(0, shape.offset.y)
@@ -67,39 +73,28 @@ function Update(dt)
         animator.animator:Play("shielding", true)
     end
 
-    -- Only tick lifetime after fully initialized
+    -- Tick lifetime and check for shield break
     if isAlive then
         lifeTime = lifeTime - dt
 
-        local playerID = GetParent(EntityID)
-        local player = GetPlayerFrom(playerID)
-
-        if lifeTime <= 0 then
-            BeginDie()
-        elseif player.hasShield and player.isShieldBroken then
+        local player = GetPlayerFrom(GetParent(EntityID))
+        if lifeTime <= 0 or (player.hasShield and player.isShieldBroken) then
             BeginDie()
         end
     end
 
-    -- Only destroy after shield down has actually started AND finished
-    if isDying and
-    animator.animator:GetCurrentClip() == "shield down" and
-    animator.animator:HasFinished() then
-        Log("WATER SHIELD: destroying")
-
-        if parentID then
-            local collider = GetColliderFrom(parentID)
-            if collider then
-                shape = collider.shapes[1]
-                shape.isActive = true;
-            end
+    -- Count down death timer then destroy
+    if isDying then
+        deathTimer = deathTimer - dt
+        if deathTimer <= 0 then
+            RestoreParentCollider()
+            DestroyEntity(EntityID)
         end
-
-        DestroyEntity(EntityID)
     end
 end
 
 function OnDestroy()
+    RestoreParentCollider()
 end
 
 function OnCollisionEnter(other)
@@ -108,14 +103,32 @@ end
 function OnCollisionExit(other)
 end
 
-function HandleCollision(trigger)
-    if not isAlive then return end
+function NeutralizeProjectile(projEntity)
+    -- Move offscreen and disable collider instead of DestroyEntity
+    -- to avoid race conditions with the deletion queue
+    local projTf = GetTransformFrom(projEntity)
+    if projTf then
+        projTf.position = Vec2(10000, 10000)
+    end
+    local projCollider = GetColliderFrom(projEntity)
+    if projCollider then
+        projCollider.shapes[1].isActive = false
+    end
+end
 
-    if HasEnemyOn(trigger) then
-        BeginDie()
-    elseif HasProjectileOn(trigger) then
-        DestroyEntity(trigger)
-        BeginDie()
+function HandleCollision(trigger)
+    -- Block projectiles even while dying
+    if HasProjectileOn(trigger) then
+        if IsEntityValid(trigger) then
+            NeutralizeProjectile(trigger)
+        end
+        if isAlive then
+            BeginDie()
+        end
+    elseif HasEnemyOn(trigger) then
+        if isAlive then
+            BeginDie()
+        end
     end
 end
 
