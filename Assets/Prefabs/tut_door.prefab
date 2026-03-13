@@ -8,8 +8,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "tut_door",
                         "position": {
-                            "x": -361.287,
-                            "y": 121.945
+                            "x": -361.286,
+                            "y": 121.944
                         },
                         "rotation": {
                             "x": 0.0,
@@ -35,6 +35,17 @@
                                 "is3D": true,
                                 "type": 0,
                                 "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "CombatGameplayBGM": {
+                                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 1,
+                                "volume": 0.1,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -86,7 +97,7 @@
                                 },
                                 "size": {
                                     "x": 12.399,
-                                    "y": 4.698
+                                    "y": 4.697
                                 },
                                 "purpose": 2,
                                 "layer": 32,
