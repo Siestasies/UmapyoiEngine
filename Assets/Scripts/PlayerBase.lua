@@ -97,6 +97,22 @@ function Update(dt)
     --    local transform = GetTransformFrom(EntityID)
     --    SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, math.ceil(manaGain), "managain")
     end
+
+    -- Check for dash input (Shift key)
+    if MouseButtonPressed(MOUSE_RIGHT) and not player.isStunned then
+        if player.mDashCD <= 0 then
+            ChangeState(entity, "PlayerDash")
+            return
+        end
+        Log("Dash Failed")
+    end
+
+    if KeyPressed(KEY_SHIFT) and not player.isStunned then
+        if player.mDashCD <= 0 then
+            ChangeState(entity, "PlayerDash")
+            return
+        end
+    end
     
     -- Debug logging
     if debugMode then

@@ -80,11 +80,23 @@ function state_enter(entity)
             rb.velocity = Vec2(0, 0)
         end
     end
-
-    
     
     -- Face towards mouse position
     FaceTowardsMouse(entity)
+
+    local attackDir = getAttackDirection(player)
+
+    -- Activate Corresponding Collider
+    collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
+    
+    -- Apply attack/dash velocity
+    local moveSpeed = player.mSpeed * 0.2
+    if HasRigidBody() then
+        local rb = GetRigidBody()
+        if rb then
+            rb.velocity = Vec2(attackDir.x * moveSpeed, attackDir.y * moveSpeed)
+        end
+    end
 
     audio = GetAudioComponent()
     audio:play(EntityID, "Neutral Slash(BasicAttack)")
@@ -109,39 +121,28 @@ function state_update(entity, dt)
     -- Update timers
     attackTimer = attackTimer - dt
     
-    -- Perform damage check at attack midpoint (if not already done)
-    if not attackPerformed and attackTimer < (attackDuration * 0.8) then
-        Log("Normal Attack!")
-        attackPerformed = true
-        -- Activate Corresponding collider
-
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = true
-
-        canCombo = true  -- Enable combo window after hit
-    end
-    
-    -- Check for combo input during combo window
-    if canCombo and MouseButtonPressed(MOUSE_LEFT) then
-        -- Queue up next attack in combo
-        player.currAttackIndex = currentCombo  -- Will be incremented on next state_enter
-        comboTimer = comboWindowDuration
-    end
+    ---- Check for combo input during combo window
+    --if canCombo and MouseButtonPressed(MOUSE_LEFT) then
+    --    -- Queue up next attack in combo
+    --    player.currAttackIndex = currentCombo  -- Will be incremented on next state_enter
+    --    comboTimer = comboWindowDuration
+    --end
     
     -- Attack animation finished
     if attackTimer <= 0 then
-        -- Check if combo was queued
-        if comboTimer > 0 then
-            -- Immediately go to next attack
-            ChangeState(entity, "PlayerAttack")
-            return
-        end
-        
-        -- Reset combo
-        player.currAttackIndex = 0
-        if collider == nil and HasCollider() then
-            collider = GetCollider()
-        end
-        collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
+        ---- Check if combo was queued
+        --if comboTimer > 0 then
+        --    -- Immediately go to next attack
+        --    ChangeState(entity, "PlayerAttack")
+        --    return
+        --end
+        --
+        ---- Reset combo
+        --player.currAttackIndex = 0
+        --if collider == nil and HasCollider() then
+        --    collider = GetCollider()
+        --end
+        --collider.shapes[attackStat.triggerColliderIndex+2].isActive = false
         
         -- Check for movement input to transition smoothly
         local moveX = 0
@@ -206,4 +207,30 @@ function FaceTowardsMouse(entity)
         --myScale.x = 1.0 * myScale.x
         transform.scale.x = -1.0 * transform.scale.x
     end
+end
+
+-- Helper function to move player slightly towards mouse when attacking
+function getAttackDirection(player)
+    if not HasTransform() then return end
+    if not HasSprite() then return end
+    
+    local transform = GetTransform()
+    --local sprite = GetSprite()
+    
+    if not transform then return end
+    
+    local mousePos = GetMouseWorldPosition()
+    local myPos = transform.position
+    local direction = Vec2(1, 0)
+    
+    -- Determine direction based on mouse position and player postion
+    direction = mousePos - myPos
+    
+    -- Normalize direction
+    local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
+    if length > 0 then
+        direction = Vec2(direction.x / length, direction.y / length)
+    end
+
+    return direction
 end

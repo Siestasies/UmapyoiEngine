@@ -47,22 +47,6 @@ function state_update(entity, dt)
         return
     end
     
-    -- Check for dash input (Shift key)
-    if MouseButtonPressed(MOUSE_RIGHT) then
-        if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
-            return
-        end
-        Log("Dash Failed")
-    end
-
-    if KeyPressed(KEY_SHIFT) then
-        if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
-            return
-        end
-    end
-    
     -- Check for basic attack input (Left mouse button)
     if MouseButtonPressed(MOUSE_LEFT) then
         ChangeState(entity, "PlayerAttack")

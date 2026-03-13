@@ -68,21 +68,6 @@ rb.velocity = targetVel
         transform.scale.x = -1.0 * transform.scale.x
     end
     
-    -- Check for dash input (Shift key)
-    if KeyPressed(KEY_SHIFT) then
-        if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
-            return
-        end
-    end
-
-    if MouseButtonPressed(MOUSE_RIGHT) then
-        if player.mDashCD <= 0 then
-            ChangeState(entity, "PlayerDash")
-            return
-        end
-    end
-    
     -- Check for attack input while moving
     if MouseButtonPressed(MOUSE_LEFT) then
         ChangeState(entity, "PlayerAttack")
