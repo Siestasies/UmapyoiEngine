@@ -41,6 +41,8 @@ function Start()
     end
     initialDelayTimer = initialDelay
     enemyHurtEffectTimer = enemyHurtEffectDuration
+
+    GetAudioComponent():play(EntityID, "SFX_Totems_Spawn")
 end
 
 function Update(dt)
@@ -109,6 +111,7 @@ function OnTriggerEnter(other, triggerOwner)
         HandleDamageIfWater(triggerOwner)
     end
     --Log("totem is hit")
+    GetAudioComponent():play(EntityID, "SFX_Totems_Damage")
 end
 
 function OnTriggerExit(other)

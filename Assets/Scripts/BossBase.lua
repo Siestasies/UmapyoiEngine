@@ -178,8 +178,7 @@ function OnHurt(player, damage)
         SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense))
     end
 
-    audio = GetAudioComponent()
-    audio:play(EntityID, "Boss Damage")
+    GetAudioComponent():play(EntityID, "SFX_Boss_Hurt2")
 end
 
 function OnTriggerEnter(other, triggerOwner)
