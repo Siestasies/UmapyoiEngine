@@ -46,6 +46,7 @@ function state_enter(entity)
         collider = GetCollider()
     end
 
+    FaceTowardsMouse(player)
     attackStat = GetWindDashAttackStat(player)
     
     -- Check mana cost
@@ -75,7 +76,7 @@ function state_enter(entity)
     originalInvulnerable = player.isInvulnerable
     player.isInvulnerable = true
     
-    getDashDirection(player)
+    dashDirection = getDashDirection(player)
     
     -- Play animation and sound
     animator.animator:Play(WindDashAnimationName, true)
@@ -267,26 +268,30 @@ end
 
 -- Helper function to dash towards mouse
 function getDashDirection(player)
-    if not HasTransform() then return end
-    if not HasSprite() then return end
-    
+
+
     local transform = GetTransform()
-    --local sprite = GetSprite()
-    
+    local collider = GetCollider()
+
+    local shape = collider.shapes[1]
+
     if not transform then return end
-    
+
     local mousePos = GetMouseWorldPosition()
-    local myPos = transform.position
-    local direction = Vec2(1, 0)
-    
-    -- Determine direction based on mouse position and player postion
-    direction = mousePos - myPos
+    local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+
+    -- Direction from player to mouse
+    local dx = mousePos.x - myPos.x
+    local dy = mousePos.y - myPos.y
+    local len = math.sqrt(dx * dx + dy * dy)
+    if len == 0 then len = 1 end
+    local dir = Vec2(dx / len, dy / len)
     
     -- Normalize direction
-    local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
+    local length = math.sqrt(dir.x * dir.x + dir.y * dir.y)
     if length > 0 then
-        dashDirection = Vec2(direction.x / length, direction.y / length)
+        dir = Vec2(dir.x / length, dir.y / length)
     end
 
-    return direction
+    return dir
 end
