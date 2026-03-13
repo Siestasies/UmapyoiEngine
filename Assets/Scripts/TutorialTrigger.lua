@@ -76,7 +76,10 @@ function Update(dt)
             curr_room = 1
             RoomTriggerInit()
             SetMissionText(missionText)
-            SpawnPrefab("Tutorial Popup2.prefab", Vec2(0,0))
+            local prefab = SpawnPrefab("Tutorial Popup2.prefab", Vec2(10000,10000))
+            SetParent(prefab, EntityID)
+            local tf = GetTransformFrom(prefab)
+            tf.position = Vec2(0,0)
         end
     end
 
@@ -87,7 +90,10 @@ function Update(dt)
             curr_room = 2
             RoomTriggerInit()
             SetMissionText(missionText4)
-            SpawnPrefab("Tutorial Popup3.prefab", Vec2(0,0))
+            local prefab = SpawnPrefab("Tutorial Popup3.prefab", Vec2(10000,10000))
+            SetParent(prefab, EntityID)
+            local tf = GetTransformFrom(prefab)
+            tf.position = Vec2(0,0)
         end
     end
 
