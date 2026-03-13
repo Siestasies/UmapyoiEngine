@@ -28,11 +28,11 @@ local FADE_START         = 0.55     -- fraction of lifetime when fade begins
 local PUNCH_DURATION     = 0.12     -- seconds for scale pop
 local PUNCH_PEAK         = 1.35     -- max scale multiplier during punch
 
-local FONT_SIZE_NORMAL   = 4.0
+local FONT_SIZE_NORMAL   = 3.0
 local FONT_SIZE_CRIT     = 5.0
-local FONT_SIZE_AFFINITY = 3.0
-local FONT_SIZE_MANA     = 3.0
-local FONT_SIZE_WARNING  = 4.0
+local FONT_SIZE_AFFINITY = 4.0
+local FONT_SIZE_MANA     = 2.0
+local FONT_SIZE_WARNING  = 2.0
 
 -- RGBA colour tables
 local COLOR = {
@@ -43,7 +43,7 @@ local COLOR = {
     PlayerHit = { r=1.00, g=0.20, b=0.20 },
     ManaSpend = { r=0.40, g=0.60, b=1.00 },
     ManaGain  = { r=0.55, g=0.85, b=1.00 },
-    Warning   = { r=1.00, g=0.65, b=0.10 },
+    Warning   = { r=1.00, g=0.20, b=0.20 },
 }
 
 local FONT_PATH = "Assets/Fonts/Fujimaru-Regular.ttf"
