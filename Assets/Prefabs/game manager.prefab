@@ -24,9 +24,9 @@
                             1,
                             25,
                             37,
-                            44,
-                            55,
-                            92
+                            43,
+                            54,
+                            91
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -1819,7 +1819,7 @@
             },
             {
                 "id": 25,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "pause",
@@ -3115,7 +3115,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "return btn",
+                        "name": "next btn",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -3131,19 +3131,11 @@
                         "parent": 37,
                         "children": [
                             41,
-                            42,
-                            43
+                            42
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/return_btn.lua",
-                                "scriptName": "return_btn.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
+                        "scripts": []
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -3167,19 +3159,19 @@
                             "y": -350.0
                         },
                         "sizeDelta": {
-                            "x": 500.0,
-                            "y": 75.0
+                            "x": 600.0,
+                            "y": 120.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/red button.png",
                         "sortingOrder": 3,
                         "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -3199,30 +3191,30 @@
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "return_btn.lua",
+                        "scriptName": "",
                         "normalColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
                         },
                         "hoverColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
+                            "r": 0.899,
+                            "g": 0.899,
+                            "b": 0.899,
+                            "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
+                            "r": 0.699,
+                            "g": 0.699,
+                            "b": 0.699,
+                            "a": 1.0
                         },
                         "disabledColour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
+                            "r": 0.5,
+                            "g": 0.5,
+                            "b": 0.5,
+                            "a": 0.5
                         }
                     },
                     "class Uma_UI::Effects": {
@@ -3272,7 +3264,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "return txt",
+                        "name": "next txt",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -3316,7 +3308,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Text": {
-                        "text": "Return to main",
+                        "text": "Next",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 5,
                         "fontSize": 2.0,
@@ -3336,7 +3328,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "return shd",
+                        "name": "next shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -3380,10 +3372,10 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Text": {
-                        "text": "Return to main",
+                        "text": "Next\n",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 4,
-                        "fontSize": 2.049,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -3397,81 +3389,6 @@
             },
             {
                 "id": 43,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "btn img",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 40,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 650.0,
-                            "y": 550.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/red button.png",
-                        "sortingOrder": 3,
-                        "color": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    }
-                }
-            },
-            {
-                "id": 44,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3490,10 +3407,10 @@
                         },
                         "parent": 0,
                         "children": [
+                            44,
                             45,
-                            46,
-                            49,
-                            52
+                            48,
+                            51
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -3535,7 +3452,7 @@
                 }
             },
             {
-                "id": 45,
+                "id": 44,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3552,7 +3469,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 44,
+                        "parent": 43,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -3610,7 +3527,7 @@
                 }
             },
             {
-                "id": 46,
+                "id": 45,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3627,10 +3544,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 44,
+                        "parent": 43,
                         "children": [
-                            47,
-                            48
+                            46,
+                            47
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -3726,7 +3643,7 @@
                 }
             },
             {
-                "id": 47,
+                "id": 46,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3743,7 +3660,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 46,
+                        "parent": 45,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -3790,7 +3707,7 @@
                 }
             },
             {
-                "id": 48,
+                "id": 47,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3807,7 +3724,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 46,
+                        "parent": 45,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -3854,7 +3771,7 @@
                 }
             },
             {
-                "id": 49,
+                "id": 48,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3871,10 +3788,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 44,
+                        "parent": 43,
                         "children": [
-                            50,
-                            51
+                            49,
+                            50
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -3970,7 +3887,7 @@
                 }
             },
             {
-                "id": 50,
+                "id": 49,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -3987,7 +3904,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 49,
+                        "parent": 48,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4034,7 +3951,7 @@
                 }
             },
             {
-                "id": 51,
+                "id": 50,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4051,7 +3968,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 49,
+                        "parent": 48,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4098,7 +4015,7 @@
                 }
             },
             {
-                "id": 52,
+                "id": 51,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4115,10 +4032,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 44,
+                        "parent": 43,
                         "children": [
-                            53,
-                            54
+                            52,
+                            53
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -4214,7 +4131,7 @@
                 }
             },
             {
-                "id": 53,
+                "id": 52,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4231,7 +4148,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 52,
+                        "parent": 51,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4278,7 +4195,7 @@
                 }
             },
             {
-                "id": 54,
+                "id": 53,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4295,7 +4212,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 52,
+                        "parent": 51,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4342,7 +4259,7 @@
                 }
             },
             {
-                "id": 55,
+                "id": 54,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4361,7 +4278,7 @@
                         },
                         "parent": 0,
                         "children": [
-                            56
+                            55
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4403,7 +4320,7 @@
                 }
             },
             {
-                "id": 56,
+                "id": 55,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4420,12 +4337,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 55,
+                        "parent": 54,
                         "children": [
-                            57,
-                            68,
-                            79,
-                            90
+                            56,
+                            67,
+                            78,
+                            89
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4483,7 +4400,7 @@
                 }
             },
             {
-                "id": 57,
+                "id": 56,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4500,11 +4417,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 56,
+                        "parent": 55,
                         "children": [
-                            58,
-                            61,
-                            67
+                            57,
+                            60,
+                            66
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4537,7 +4454,7 @@
                 }
             },
             {
-                "id": 58,
+                "id": 57,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4554,10 +4471,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 57,
+                        "parent": 56,
                         "children": [
-                            59,
-                            60
+                            58,
+                            59
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -4649,7 +4566,7 @@
                 }
             },
             {
-                "id": 59,
+                "id": 58,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4666,7 +4583,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 58,
+                        "parent": 57,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4724,7 +4641,7 @@
                 }
             },
             {
-                "id": 60,
+                "id": 59,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4741,7 +4658,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 58,
+                        "parent": 57,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4799,7 +4716,7 @@
                 }
             },
             {
-                "id": 61,
+                "id": 60,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4816,11 +4733,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 57,
+                        "parent": 56,
                         "children": [
+                            61,
                             62,
-                            63,
-                            64
+                            63
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -4893,7 +4810,7 @@
                 }
             },
             {
-                "id": 62,
+                "id": 61,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4910,7 +4827,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 61,
+                        "parent": 60,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4968,7 +4885,7 @@
                 }
             },
             {
-                "id": 63,
+                "id": 62,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4985,7 +4902,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 61,
+                        "parent": 60,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5043,7 +4960,7 @@
                 }
             },
             {
-                "id": 64,
+                "id": 63,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5060,10 +4977,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 61,
+                        "parent": 60,
                         "children": [
-                            65,
-                            66
+                            64,
+                            65
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5121,7 +5038,7 @@
                 }
             },
             {
-                "id": 65,
+                "id": 64,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5138,7 +5055,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 64,
+                        "parent": 63,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5196,7 +5113,7 @@
                 }
             },
             {
-                "id": 66,
+                "id": 65,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5213,7 +5130,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 64,
+                        "parent": 63,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5260,7 +5177,7 @@
                 }
             },
             {
-                "id": 67,
+                "id": 66,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5277,7 +5194,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 57,
+                        "parent": 56,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5324,7 +5241,7 @@
                 }
             },
             {
-                "id": 68,
+                "id": 67,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5341,11 +5258,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 56,
+                        "parent": 55,
                         "children": [
-                            69,
-                            72,
-                            78
+                            68,
+                            71,
+                            77
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5378,7 +5295,7 @@
                 }
             },
             {
-                "id": 69,
+                "id": 68,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5395,10 +5312,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 68,
+                        "parent": 67,
                         "children": [
-                            70,
-                            71
+                            69,
+                            70
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -5490,7 +5407,7 @@
                 }
             },
             {
-                "id": 70,
+                "id": 69,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5507,7 +5424,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 69,
+                        "parent": 68,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5565,7 +5482,7 @@
                 }
             },
             {
-                "id": 71,
+                "id": 70,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5582,7 +5499,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 69,
+                        "parent": 68,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5640,7 +5557,7 @@
                 }
             },
             {
-                "id": 72,
+                "id": 71,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5657,11 +5574,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 68,
+                        "parent": 67,
                         "children": [
+                            72,
                             73,
-                            74,
-                            75
+                            74
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -5734,7 +5651,7 @@
                 }
             },
             {
-                "id": 73,
+                "id": 72,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5751,7 +5668,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 72,
+                        "parent": 71,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5809,7 +5726,7 @@
                 }
             },
             {
-                "id": 74,
+                "id": 73,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5826,7 +5743,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 72,
+                        "parent": 71,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5884,7 +5801,7 @@
                 }
             },
             {
-                "id": 75,
+                "id": 74,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5901,10 +5818,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 72,
+                        "parent": 71,
                         "children": [
-                            76,
-                            77
+                            75,
+                            76
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5962,7 +5879,7 @@
                 }
             },
             {
-                "id": 76,
+                "id": 75,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5979,7 +5896,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 75,
+                        "parent": 74,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6037,7 +5954,7 @@
                 }
             },
             {
-                "id": 77,
+                "id": 76,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6054,7 +5971,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 75,
+                        "parent": 74,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6101,7 +6018,7 @@
                 }
             },
             {
-                "id": 78,
+                "id": 77,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6118,7 +6035,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 68,
+                        "parent": 67,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6165,7 +6082,7 @@
                 }
             },
             {
-                "id": 79,
+                "id": 78,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6182,11 +6099,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 56,
+                        "parent": 55,
                         "children": [
-                            80,
-                            83,
-                            89
+                            79,
+                            82,
+                            88
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6219,7 +6136,7 @@
                 }
             },
             {
-                "id": 80,
+                "id": 79,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6236,10 +6153,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 79,
+                        "parent": 78,
                         "children": [
-                            81,
-                            82
+                            80,
+                            81
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -6331,7 +6248,7 @@
                 }
             },
             {
-                "id": 81,
+                "id": 80,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6348,7 +6265,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 80,
+                        "parent": 79,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6406,7 +6323,7 @@
                 }
             },
             {
-                "id": 82,
+                "id": 81,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6423,7 +6340,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 80,
+                        "parent": 79,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6481,7 +6398,7 @@
                 }
             },
             {
-                "id": 83,
+                "id": 82,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6498,11 +6415,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 79,
+                        "parent": 78,
                         "children": [
+                            83,
                             84,
-                            85,
-                            86
+                            85
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -6575,7 +6492,7 @@
                 }
             },
             {
-                "id": 84,
+                "id": 83,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6592,7 +6509,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 83,
+                        "parent": 82,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6650,7 +6567,7 @@
                 }
             },
             {
-                "id": 85,
+                "id": 84,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6667,7 +6584,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 83,
+                        "parent": 82,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6725,7 +6642,7 @@
                 }
             },
             {
-                "id": 86,
+                "id": 85,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6742,10 +6659,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 83,
+                        "parent": 82,
                         "children": [
-                            87,
-                            88
+                            86,
+                            87
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6803,7 +6720,7 @@
                 }
             },
             {
-                "id": 87,
+                "id": 86,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6820,7 +6737,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 86,
+                        "parent": 85,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6878,7 +6795,7 @@
                 }
             },
             {
-                "id": 88,
+                "id": 87,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6895,7 +6812,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 86,
+                        "parent": 85,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6942,7 +6859,7 @@
                 }
             },
             {
-                "id": 89,
+                "id": 88,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6959,7 +6876,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 79,
+                        "parent": 78,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7006,7 +6923,7 @@
                 }
             },
             {
-                "id": 90,
+                "id": 89,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7023,9 +6940,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 56,
+                        "parent": 55,
                         "children": [
-                            91
+                            90
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -7113,7 +7030,7 @@
                 }
             },
             {
-                "id": 91,
+                "id": 90,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7130,7 +7047,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 90,
+                        "parent": 89,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7188,7 +7105,7 @@
                 }
             },
             {
-                "id": 92,
+                "id": 91,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7207,6 +7124,7 @@
                         },
                         "parent": 0,
                         "children": [
+                            92,
                             93,
                             94,
                             95,
@@ -7237,8 +7155,7 @@
                             120,
                             121,
                             122,
-                            123,
-                            124
+                            123
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -7290,7 +7207,7 @@
                 }
             },
             {
-                "id": 93,
+                "id": 92,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7307,7 +7224,71 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 93,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 2",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7358,7 +7339,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 2",
+                        "name": "feedback txt 3",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7371,7 +7352,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7422,7 +7403,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 3",
+                        "name": "feedback txt 4",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7435,7 +7416,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7486,7 +7467,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 4",
+                        "name": "feedback txt 5",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7499,7 +7480,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7550,7 +7531,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 5",
+                        "name": "feedback txt 6",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7563,7 +7544,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7614,7 +7595,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 6",
+                        "name": "feedback txt 7",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7627,7 +7608,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7678,7 +7659,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 7",
+                        "name": "feedback txt 8",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7691,7 +7672,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7742,7 +7723,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 8",
+                        "name": "feedback txt 9",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -7755,7 +7736,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7806,70 +7787,6 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 9",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 92,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
-                        },
-                        "sizeDelta": {
-                            "x": 200.0,
-                            "y": 80.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 2.0,
-                        "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 102,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "feedback txt 10",
                         "position": {
                             "x": 0.0,
@@ -7883,7 +7800,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7930,7 +7847,7 @@
                 }
             },
             {
-                "id": 103,
+                "id": 102,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7947,7 +7864,71 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 103,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 12",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7998,7 +7979,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 12",
+                        "name": "feedback txt 13",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8011,7 +7992,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8062,7 +8043,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 13",
+                        "name": "feedback txt 14",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8075,7 +8056,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8126,7 +8107,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 14",
+                        "name": "feedback txt 15",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8139,7 +8120,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8190,7 +8171,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 15",
+                        "name": "feedback txt 16",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8203,7 +8184,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8254,7 +8235,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 16",
+                        "name": "feedback txt 17",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8267,7 +8248,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8318,7 +8299,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 17",
+                        "name": "feedback txt 18",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8331,7 +8312,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8382,7 +8363,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 18",
+                        "name": "feedback txt 19",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8395,7 +8376,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8446,7 +8427,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 19",
+                        "name": "feedback txt 20",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8459,7 +8440,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8510,7 +8491,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 20",
+                        "name": "feedback txt 21",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8523,7 +8504,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8574,7 +8555,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 21",
+                        "name": "feedback txt 22",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8587,7 +8568,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8638,7 +8619,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 22",
+                        "name": "feedback txt 23",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8651,7 +8632,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8702,7 +8683,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 23",
+                        "name": "feedback txt 24",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8715,7 +8696,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8766,7 +8747,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 24",
+                        "name": "feedback txt 25",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8779,7 +8760,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8830,7 +8811,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 25",
+                        "name": "feedback txt 26",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8843,7 +8824,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8894,7 +8875,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 26",
+                        "name": "feedback txt 27",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8907,7 +8888,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8958,7 +8939,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 27",
+                        "name": "feedback txt 28",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -8971,7 +8952,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9022,7 +9003,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 28",
+                        "name": "feedback txt 29",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -9035,7 +9016,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9086,7 +9067,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 29",
+                        "name": "feedback txt 30",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -9099,7 +9080,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9150,7 +9131,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 30",
+                        "name": "feedback txt 31",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -9163,7 +9144,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9214,70 +9195,6 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 31",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 92,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
-                        },
-                        "sizeDelta": {
-                            "x": 200.0,
-                            "y": 80.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 2.0,
-                        "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 124,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "feedback txt 32",
                         "position": {
                             "x": 0.0,
@@ -9291,7 +9208,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
