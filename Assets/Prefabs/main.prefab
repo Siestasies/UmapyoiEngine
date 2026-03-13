@@ -1241,7 +1241,7 @@
             },
             {
                 "id": 14,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "cfm mnu",
@@ -1379,81 +1379,6 @@
                         },
                         "alignment": 1,
                         "visible": true
-                    },
-                    "class Uma_UI::Effects": {
-                        "playOnEnable": true,
-                        "clips": [
-                            {
-                                "name": "",
-                                "property": 1,
-                                "easing": 3,
-                                "duration": 1.0,
-                                "delay": 0.0,
-                                "loop": true,
-                                "applyToChildren": false,
-                                "startVec2": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "endVec2": {
-                                    "x": 1.1,
-                                    "y": 1.1
-                                },
-                                "startColor": {
-                                    "r": 1.0,
-                                    "g": 1.0,
-                                    "b": 1.0,
-                                    "a": 1.0
-                                },
-                                "endColor": {
-                                    "r": 1.0,
-                                    "g": 1.0,
-                                    "b": 1.0,
-                                    "a": 1.0
-                                },
-                                "startFloat": 0.0,
-                                "endFloat": 1.0,
-                                "startFrame": 0,
-                                "endFrame": 0,
-                                "fps": 12.0,
-                                "pingPong": false
-                            },
-                            {
-                                "name": "",
-                                "property": 1,
-                                "easing": 3,
-                                "duration": 1.0,
-                                "delay": 1.0,
-                                "loop": true,
-                                "applyToChildren": false,
-                                "startVec2": {
-                                    "x": 1.1,
-                                    "y": 1.1
-                                },
-                                "endVec2": {
-                                    "x": 1.0,
-                                    "y": 1.0
-                                },
-                                "startColor": {
-                                    "r": 1.0,
-                                    "g": 1.0,
-                                    "b": 1.0,
-                                    "a": 1.0
-                                },
-                                "endColor": {
-                                    "r": 1.0,
-                                    "g": 1.0,
-                                    "b": 1.0,
-                                    "a": 1.0
-                                },
-                                "startFloat": 0.0,
-                                "endFloat": 1.0,
-                                "startFrame": 0,
-                                "endFrame": 0,
-                                "fps": 12.0,
-                                "pingPong": false
-                            }
-                        ]
                     }
                 }
             },
