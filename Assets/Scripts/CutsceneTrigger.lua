@@ -123,7 +123,10 @@ local function ApplyLine(line)
     ShowImg(ePortrait, hasPortrait)
     if hasPortrait then
         local img = GetImageFrom(ePortrait)
-        if img then img.textureName = line.portrait end
+        if img then
+            img.textureName = line.portrait
+            img.change = true
+        end
     end
 
     fullText   = line.text or ""
@@ -361,7 +364,7 @@ function Start()
     dialogueActive = false
     dialogueLines  = {}
     lineIndex      = 0
-    cooldownTimer  = 0
+    cooldownTimer  = 1.0  -- prevent immediate re-trigger if player starts inside collider
 
     -- Safety net: clear cutscene flag in case Shutdown didn't run or flag persisted
     SetCutsceneActive(false)
