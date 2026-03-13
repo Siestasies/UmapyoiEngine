@@ -121,16 +121,24 @@ void Uma_ECS::AudioSystem::UpdateAudioEmitters(float dt)
         if (!pCoordinator->IsActiveInHierarchy(entity))
             continue;
 
-        if (!tfArray.Has(entity) || !rbArray.Has(entity))
-            continue;
+        //if (!tfArray.Has(entity) || !rbArray.Has(entity)) continue;
 
-        auto& tf = tfArray.GetData(entity);
-        auto& rb = rbArray.GetData(entity);
+        if (tfArray.Has(entity) && rbArray.Has(entity)) {
+            auto& tf = tfArray.GetData(entity);
+            auto& rb = rbArray.GetData(entity);
 
-        FMOD_VECTOR newPosition = { tf.worldPosition.x, tf.worldPosition.y, 0.0f };
-        FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f };
-        ac.position = newPosition;
-        ac.velocity = velocity;
+            FMOD_VECTOR newPosition = { tf.worldPosition.x, tf.worldPosition.y, 0.0f };
+            FMOD_VECTOR velocity = { rb.velocity.x, rb.velocity.y, 0.0f };
+            ac.position = newPosition;
+            ac.velocity = velocity;
+        }
+        else if (tfArray.Has(entity))
+        {
+            // static entity — position only, zero velocity
+            auto& tf = tfArray.GetData(entity);
+            ac.position = { tf.worldPosition.x, tf.worldPosition.y, 0.0f };
+            ac.velocity = { 0.0f, 0.0f, 0.0f };
+        }
 
         for (auto groupIt = ac.activeSounds.begin(); groupIt != ac.activeSounds.end(); ) {
             auto& instances = groupIt->second;
