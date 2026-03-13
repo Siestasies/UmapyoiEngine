@@ -5,6 +5,7 @@ local playerEntity = -1
 --     levelEndState = require("levelEndState")    
 -- end
 local wasPaused = false
+local gameOverTimer = 1.0
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
@@ -43,6 +44,17 @@ function Update(dt)
             end
             PauseGame(true)
             return
+        end
+    end
+
+    gameOverTimer = gameOverTimer + dt
+    if gameOverTimer >= 1 then
+        local numEnemy = 1
+        numEnemy = CountEntitiesWithComponent("Enemy")
+        if numEnemy <= 0 then
+            local child = GetChildren(EntityID, 2)
+            SetActiveEntity(child, true) -- complete
+            gameOverTimer = 0.0
         end
     end
 
