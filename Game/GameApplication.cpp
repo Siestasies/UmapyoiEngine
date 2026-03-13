@@ -102,6 +102,9 @@ namespace Uma_Engine
         // Fullscreen mode for game runtime
         GetWindow()->SetWindowMode(WindowMode::Fullscreen);
 
+        // init playfab services
+        PlayFabConfiguration();
+
         // Get scene manager
         SceneManager* sceneManager = GetSceneManager();
 
@@ -121,8 +124,6 @@ namespace Uma_Engine
         // Load the scene
         sceneManager->LoadScene("intro.scn");
 
-        // init playfab services
-        PlayFabConfiguration();
     }
 
     void GameApplication::PreUpdate(float dt)
