@@ -26,5 +26,7 @@ function OnTriggerEnter(other)
             
             SetActiveEntity(children[1], true)
         end
+
+        GetAudioComponent():play(EntityID,"KappaInteract")
     end
 end
