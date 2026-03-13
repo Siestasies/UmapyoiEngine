@@ -5,8 +5,21 @@ if exist build rmdir /s /q build
 mkdir build
 cd build
 
-echo Configuring with CMake...
-cmake .. -G "Visual Studio 17 2022" -A x64
+echo.
+echo Select Visual Studio version:
+echo 1. Visual Studio 2026
+echo 2. Visual Studio 2022
+echo.
+choice /c 12 /n /m "Enter your choice (1-2): "
+
+if %errorlevel%==1 (
+    set "VS_GENERATOR=Visual Studio 18 2026"
+) else (
+    set "VS_GENERATOR=Visual Studio 17 2022"
+)
+
+echo Configuring with CMake using %VS_GENERATOR%...
+cmake .. -G "%VS_GENERATOR%" -A x64
 if %errorlevel% neq 0 (
     echo CMake configuration failed!
     pause
