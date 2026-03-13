@@ -6799,7 +6799,7 @@
             },
             {
                 "id": 86,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "feedback",
