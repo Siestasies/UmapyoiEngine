@@ -4,7 +4,7 @@ function Start()
 
     local playTime = GetPlayTime()
 
-    PlayFab_SubmitScore("CompletionTime", math.tointeger(playTime),
+    PlayFab_SubmitScore("CompletionTime", math.floor(playTime),
     function()
 
         Log("My play time : " .. playTime)
@@ -27,7 +27,7 @@ function Start()
                             local timeText = GetTextFrom(childrenOfEntry[2])
                             local rankText = GetTextFrom(childrenOfEntry[3])
                             nameText.text = results[i].displayName
-                            timeText.text = tostring(math.tointeger(results[i].score))
+                            timeText.text = tostring(math.tointeger(results[i].score) .. "s")
                             rankText.text = tostring(results[i].rank) .. ","
                         end
 
@@ -39,7 +39,7 @@ function Start()
                             local timeText = GetTextFrom(childrenOfEntry[2])
                             local rankText = GetTextFrom(childrenOfEntry[3])
                             nameText.text = results[i].displayName
-                            timeText.text = tostring(math.tointeger(results[i].score))
+                            timeText.text = tostring(math.tointeger(results[i].score) .. "s")
                             rankText.text = tostring(results[i].rank) .. ","
                         end
                     end
