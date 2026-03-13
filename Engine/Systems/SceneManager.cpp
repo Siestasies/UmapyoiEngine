@@ -92,6 +92,8 @@ namespace Uma_Engine
             [&](const ResetSceneRequest& e) {
                 (void)e;
 
+                if (!m_ActiveScene) return;
+
                 // Step 1: Stop all audio before restoring state
                 if (m_ActiveScene->m_AudioSystem)
                 {
@@ -164,7 +166,8 @@ namespace Uma_Engine
         pEventSystem->Subscribe<SaveCurrSceneRequest, SceneManager>(
             [this](const SaveCurrSceneRequest& e) {
                 (void)e;
-                SaveScene(m_ActiveScene->GetName());
+                if (m_ActiveScene)
+                    SaveScene(m_ActiveScene->GetName());
             }
         );
 
@@ -240,6 +243,9 @@ namespace Uma_Engine
         //std::cout << "use editor cam : " << (m_UseEditorCamera ? "yes" : "no") << std::endl;
         // Update loading scenes first
         UpdateLoadingScenes();
+
+        // Mark that we're updating — scene load/unload requests will be deferred
+        m_IsUpdating = true;
 
         // Update active scene
         if (m_ActiveScene && m_ActiveScene->IsLoaded())
@@ -323,15 +329,22 @@ namespace Uma_Engine
                 m_ActiveScene->UpdateSelective(0.f);
             }
         }
-   
+
         // Update all loaded scenes if using additive loading
-        for (auto& scene : m_LoadedScenes)
+        // Copy the vector so that scene updates that trigger load/unload
+        // don't invalidate our iterator
+        auto loadedScenesCopy = m_LoadedScenes;
+        for (auto& scene : loadedScenesCopy)
         {
             if (scene != m_ActiveScene && scene->IsLoaded())
             {
                 scene->Update(dt);
             }
         }
+
+        // Done updating — process any deferred scene operations
+        m_IsUpdating = false;
+        ProcessPendingOps();
 
         // Clean up unloaded scenes
         RemoveUnloadedScenes();
@@ -382,6 +395,14 @@ namespace Uma_Engine
 
     std::shared_ptr<Scene> SceneManager::LoadScene(const std::string& name, bool additive)
     {
+        // If we're mid-iteration in Update(), defer this operation
+        if (m_IsUpdating)
+        {
+            m_PendingOps.push_back({ PendingSceneOp::Type::Load, name, additive });
+            std::cout << "Scene '" << name << "' load deferred (update in progress)" << std::endl;
+            return nullptr;
+        }
+
         if (isUnloading)
         {
             std::cout << "A scene is unloading... try again later.\n";
@@ -488,6 +509,14 @@ namespace Uma_Engine
 
     void SceneManager::UnloadScene(const std::string& name)
     {
+        // If we're mid-iteration in Update(), defer this operation
+        if (m_IsUpdating)
+        {
+            m_PendingOps.push_back({ PendingSceneOp::Type::Unload, name, false });
+            std::cout << "Scene '" << name << "' unload deferred (update in progress)" << std::endl;
+            return;
+        }
+
         isUnloading = true;
 
         pEventSystem->Emit<SceneUnloadedEvent>(name);
@@ -734,7 +763,7 @@ namespace Uma_Engine
 
     Uma_ECS::Coordinator* SceneManager::GetActiveSceneCoordinator() const
     {
-        return &m_ActiveScene->GetCoordinator();
+        return m_ActiveScene ? &m_ActiveScene->GetCoordinator() : nullptr;
     }
 
     void SceneManager::UpdateLoadingScenes()
@@ -800,6 +829,27 @@ namespace Uma_Engine
         }
         EventSystem* eventSystem = pSystemManager->GetSystem<EventSystem>();
         eventSystem->Emit<SceneInfoRequest>(vec, vec2, index);
+    }
+
+    void SceneManager::ProcessPendingOps()
+    {
+        // Process all deferred scene operations
+        // Copy the queue in case processing triggers more ops
+        auto ops = std::move(m_PendingOps);
+        m_PendingOps.clear();
+
+        for (auto& op : ops)
+        {
+            switch (op.type)
+            {
+            case PendingSceneOp::Type::Load:
+                LoadScene(op.name, op.additive);
+                break;
+            case PendingSceneOp::Type::Unload:
+                UnloadScene(op.name);
+                break;
+            }
+        }
     }
 
     void SceneManager::SetEditorMode(bool isEditor)

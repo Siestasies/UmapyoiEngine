@@ -293,6 +293,21 @@ namespace Uma_Engine
         bool mGamePause = false;
 
         bool isUnloading = false;
+        bool m_IsUpdating = false;
+
+        // Deferred scene operations (queued when modifications happen during Update)
+        struct PendingSceneOp
+        {
+            enum class Type { Load, Unload } type;
+            std::string name;
+            bool additive = false;
+        };
+        std::vector<PendingSceneOp> m_PendingOps;
+
+        /*!
+        \brief Processes any scene operations that were deferred during Update.
+        */
+        void ProcessPendingOps();
 
         // Event system
         EventSystem* pEventSystem;
