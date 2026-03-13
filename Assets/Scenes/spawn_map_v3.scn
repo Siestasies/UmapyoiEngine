@@ -2,10 +2,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,37 +17,37 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/main menu fade out.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
-                "path": "assets/sprite_sheet_17.png"
+                "path": "assets/main menu fade out.png"
             },
             {
                 "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/sprite_sheet_17.png"
             },
             {
                 "path": "assets/pause menu.png"
             },
             {
+                "path": "assets/exterior_environment_fence_with_water.png"
+            },
+            {
                 "path": "assets/player ss 1.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/sound settings bodx.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/floor_tatami.png"
@@ -56,10 +56,10 @@
                 "path": "assets/whole castle.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -77,10 +77,10 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/player ss 3.png"
+                "path": "assets/water side.png"
             },
             {
-                "path": "assets/water side.png"
+                "path": "assets/player ss 3.png"
             },
             {
                 "path": "assets/m5 exterior.png"
@@ -133,13 +133,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -20431,6 +20431,33 @@
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/spawn_transition.prefab",
+                    "isRoot": true
+                }
+            }
+        },
+        {
+            "id": 136,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "portal",
+                    "position": {
+                        "x": -120.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/tut_portal.prefab",
                     "isRoot": true
                 }
             }
