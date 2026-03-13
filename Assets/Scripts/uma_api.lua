@@ -265,6 +265,8 @@ ColliderPurpose = {
 ---@field colliderMask integer
 ---@field isActive boolean
 ---@field autoFitToSprite boolean
+---@field isColliding boolean   @ (read-only) true if in physics collision this frame
+---@field isTriggered boolean   @ (read-only) true if in trigger overlap this frame
 
 ---@class Collider
 ---@field shapes ColliderShape[]
