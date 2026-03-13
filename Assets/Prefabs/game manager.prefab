@@ -3144,7 +3144,14 @@
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
-                        "scripts": []
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/transit_to_leaderboard.lua",
+                                "scriptName": "transit_to_leaderboard.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -3173,34 +3180,9 @@
                         },
                         "isDirty": true
                     },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/red button.png",
-                        "sortingOrder": 3,
-                        "color": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    },
                     "class Uma_UI::Button": {
                         "interactable": true,
-                        "scriptName": "",
+                        "scriptName": "transit_to_leaderboard.lua",
                         "normalColour": {
                             "r": 1.0,
                             "g": 1.0,
