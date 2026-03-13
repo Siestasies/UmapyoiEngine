@@ -26,6 +26,7 @@ function Start()
     end
     if HasAnimator() then
         animator = GetAnimator()
+        animator.animator:Play("spawn", false)
     end
     local childId = GetChildren(EntityID, 0)
     if IsEntityValid(childId) and HasSpriteOn(childId) then
@@ -46,21 +47,28 @@ function Start()
 end
 
 function Update(dt)
-    if animator and animator.animator:HasFinished() and initialDelayTimer <= 0 then
+    if HasRigidBody() then
+        GetRigidBody().velocity = Vec2(0.0, 0.0)
+    end
+    
+    if animator and animator.animator:HasFinished() and animator.animator:GetCurrentClip() == "spawn" and initialDelayTimer <= 0 then
         if HasSprite() then
             local sprite = GetSprite()
             sprite.alpha = 0.0
         end
+        if placeholderSprite then
+            placeholderSprite.alpha = 1
+        end
     else
         initialDelayTimer = initialDelayTimer - dt
     end
+    
     if enemy then
         if enemy.mHealth <= 0  and not isDead then
             isDead = true
         end
         
         if placeholderSprite then
-            placeholderSprite.alpha = 1
             if enemy.mHealth <= 0 then
                 -- dead
             elseif enemy.mHealth <= 30 then
