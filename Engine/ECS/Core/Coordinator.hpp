@@ -203,6 +203,12 @@ namespace Uma_ECS
         \param child The child Entity ID to unparent.
         */
         void RemoveParent(Entity child);
+        
+         /*!
+        \brief Also removes the parent relationship from a child entity, making it a root entity. But the position stays the same instead of using world.
+        \param child The child Entity ID to unparent.
+        */
+        void RemoveParentSpecial(Entity child);
 
         /*!
         \brief Returns the parent entity of the given entity, if one exists.

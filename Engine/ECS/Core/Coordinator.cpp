@@ -339,6 +339,30 @@ namespace Uma_ECS
         childTf.isDirty = true;
     }
 
+    void Coordinator::RemoveParentSpecial(Entity child)
+    {
+        auto& childTf = GetComponent<Transform>(child);
+
+        if (!childTf.parent.has_value())
+        {
+            // this entity doesnt have any parent
+            Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning,
+                "Entity doesnt have any parent");
+            return;
+        }
+
+        // have a parent
+        auto& parentTf = GetComponent<Transform>(childTf.parent.value());
+        auto it = std::find(std::begin(parentTf.children), std::end(parentTf.children), child);
+        if (it != std::end(parentTf.children))
+        {
+            parentTf.children.erase(it);
+        }
+
+        childTf.parent = std::nullopt;
+        childTf.isDirty = true;
+    }
+
     std::optional<Entity> Coordinator::GetParent(Entity entity)
     {
         if (!aEntityManager->IsEntityActive(entity))
