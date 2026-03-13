@@ -19,7 +19,8 @@
 \par        E-mail: javierdongqing.chua@digipen.edu
 \par        DigiPen login: javierdongqing.chua
 
-\author     Leong Wai Men (Display Component modify, Bug fix for loading scene / play stop)
+\author     Leong Wai Men   (Display Component modify, Bug fix for loading scene / play stop,
+                             Playfab UI interface, control bar modification(tools button on top left))
 \par        E-mail: waimen.leong@digipen.edu
 \par        DigiPen login: waimen.leong
 
