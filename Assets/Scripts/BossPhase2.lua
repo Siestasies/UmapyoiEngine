@@ -45,6 +45,8 @@ local totemPos1 = Vec2(-160, -159)
 local totemPos2 = Vec2(-96 , -175.5)
 local totemPos3 = Vec2(-32 , -159)
 
+local wasNotFinalPhase = true;
+
 function state_enter(entity)
     Log("Boss Phase 2: Bullet hell + Totems")
 
@@ -80,7 +82,7 @@ function state_enter(entity)
 
     local audio = GetAudioComponent()
     if audio then
-        audio:play(entity, "Boss Phase2 Music")
+        audio:play(entity, "SFX_Boss_Spawn2")
     end
 end
 
@@ -158,6 +160,10 @@ function state_update(entity, dt)
             if animator then
                 animator.animator:Play("final_phase_transition1", false)
             end
+            if wasNotFinalPhase == true then
+                GetAudioComponent():play(entity, "SFX_Boss_Spawn2")
+                wasNotFinalPhase = false
+            end
             finalPhase = true
             isMoving = true
             targetY = bossTransform.position.y - ExposedVars.topOffsetY
@@ -230,7 +236,7 @@ function UpdateFanPattern(entity, dt)
 
     local audio = GetAudioComponent()
     if audio then
-        audio:play(entity, "Boss Shoot")
+        audio:play(entity, "SFX_Boss_Attack")
     end
 end
 

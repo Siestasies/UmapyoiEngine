@@ -174,7 +174,7 @@ function UpdateRadialBurst(entity, dt)
 
     local audio = GetAudioComponent()
     if audio then
-        audio:play(entity, "Boss Burst")
+        audio:play(entity, "SFX_Boss_Attack")
     end
 end
 
