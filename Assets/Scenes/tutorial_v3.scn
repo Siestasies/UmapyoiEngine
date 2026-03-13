@@ -2,34 +2,34 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,10 +44,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -59,13 +59,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -101,10 +101,10 @@
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/skill tree/skill frame.png"
+                "path": "assets/vfx 512 ss 2.png"
             },
             {
-                "path": "assets/vfx 512 ss 2.png"
+                "path": "assets/skill tree/skill frame.png"
             },
             {
                 "path": "assets/skill tree/skill tree menu frame.png"
@@ -115,13 +115,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -130,7 +130,53 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "Neutral Slash(BasicAttack)",
+                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "type": 0
+            },
+            {
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "FireCyclone",
+                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Eye_Close",
+                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -161,7 +207,7 @@
     },
     "entities": [
         {
-            "id": 33,
+            "id": 0,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -11521,14 +11567,14 @@
             }
         },
         {
-            "id": 34,
+            "id": 1,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
                         "x": 72.099,
-                        "y": -143.6
+                        "y": -173.3
                     },
                     "rotation": {
                         "x": 0.0,
@@ -11548,14 +11594,14 @@
             }
         },
         {
-            "id": 35,
+            "id": 2,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
                         "x": 72.19,
-                        "y": -143.563
+                        "y": -173.263
                     },
                     "rotation": {
                         "x": 0.0,
@@ -11567,7 +11613,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        36
+                        3
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -11577,7 +11623,7 @@
             }
         },
         {
-            "id": 36,
+            "id": 3,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -11594,13 +11640,13 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 35,
+                    "parent": 2,
                     "children": []
                 }
             }
         },
         {
-            "id": 37,
+            "id": 4,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -11777,7 +11823,7 @@
             }
         },
         {
-            "id": 38,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12044,7 +12090,7 @@
             }
         },
         {
-            "id": 39,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12063,7 +12109,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        43
+                        10
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12073,7 +12119,7 @@
             }
         },
         {
-            "id": 44,
+            "id": 11,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12092,8 +12138,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        52,
-                        48
+                        19,
+                        15
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12103,7 +12149,7 @@
             }
         },
         {
-            "id": 53,
+            "id": 20,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12122,22 +12168,22 @@
                     },
                     "parent": -1,
                     "children": [
-                        54,
-                        55,
-                        56,
-                        57,
-                        58,
-                        59,
-                        63,
-                        67,
-                        71,
-                        74,
-                        78,
-                        82,
-                        83,
-                        84,
-                        85,
-                        89
+                        21,
+                        22,
+                        23,
+                        24,
+                        25,
+                        26,
+                        30,
+                        34,
+                        38,
+                        41,
+                        45,
+                        49,
+                        50,
+                        51,
+                        52,
+                        56
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12147,7 +12193,7 @@
             }
         },
         {
-            "id": 90,
+            "id": 57,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12166,7 +12212,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        108
+                        75
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -12176,7 +12222,7 @@
             }
         },
         {
-            "id": 112,
+            "id": 76,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -12195,7 +12241,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        111
+                        77
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
