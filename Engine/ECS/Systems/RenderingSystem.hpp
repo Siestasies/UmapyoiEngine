@@ -108,6 +108,16 @@ namespace Uma_ECS
         */
         void SetUpdateCamera(bool update) { mUpdateCamera = update; }
 
+        /*!
+        \brief Renders world-space sprites only (no UI). Call before the light pass.
+        */
+        void RenderWorld(float dt, bool enableCullMode = false);
+
+        /*!
+        \brief Renders screen-space UI elements only. Call after the light pass.
+        */
+        void RenderUI(float dt);
+
     private:
 
         /*!
