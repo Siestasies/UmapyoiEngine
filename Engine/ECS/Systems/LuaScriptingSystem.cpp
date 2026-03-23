@@ -530,6 +530,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("SetActiveEntity", [this](Uma_ECS::Entity entity, bool isActive)
             {
+                if (!pCoordinator) return;
                 if (pCoordinator->HasActiveEntity(entity))
                 {
                     pCoordinator->SetActive(entity, isActive);
@@ -538,6 +539,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("GetActiveEntity", [this](Uma_ECS::Entity entity) -> bool
             {
+                if (!pCoordinator) return false;
                 return  pCoordinator->IsActiveInHierarchy(entity);
             });
 
