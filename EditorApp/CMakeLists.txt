@@ -65,7 +65,7 @@ file(GLOB EDITOR_APP_ROOT_SOURCES
  )
 
 # Create the UmapyoiEditor executable
-add_executable(UmapyoiEditor WIN32 ${EDITOR_APP_SOURCES} ${EDITOR_APP_HEADERS})
+add_executable(UmapyoiEditor ${EDITOR_APP_SOURCES} ${EDITOR_APP_HEADERS})
 
 add_compile_definitions(PROJECT_ROOT="${CMAKE_SOURCE_DIR}")
 

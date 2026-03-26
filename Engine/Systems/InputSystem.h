@@ -19,6 +19,7 @@ All rights reserved.
 
 #pragma once
 #include <vector>
+#include <unordered_map>
 
 //#include <GLFW/glfw3.h>   // needed for GLFW_KEY_LAST, GLFW_MOUSE_BUTTON_LAST
 
@@ -28,6 +29,8 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    struct ControllerInput;
+
     class InputSystem : public ISystem, public IWindowSystem
     {
     public:
@@ -207,6 +210,14 @@ namespace Uma_Engine
          */
         static const char* GetKeyName(int key);
 
+        void SetUpSDLControllerDB();
+
+        static void ControllerConnectionCallback(int id, int event);
+
+        static bool GetControllerButtonInput(int key, int action, int controllerId = 0);
+
+        static float GetControllerAxesInput(int axis, int controllerId = 0);
+
     private:
         // Static state
         static std::vector<bool> sKeys;
@@ -215,6 +226,9 @@ namespace Uma_Engine
         static std::vector<bool> sMouseButtonsPrevFrame;
         static double sMouseX, sMouseY;
         static double sScrollX, sScrollY;
+
+        //static std::vector<bool> sGamepadActive;
+        static std::unordered_map<int, std::unique_ptr<ControllerInput>> sActiveController;
 
         // Instance data
         GLFWwindow* mWindow;
