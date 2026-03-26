@@ -48,14 +48,14 @@ function state_update(entity, dt)
     end
     
     -- Check for basic attack input (Left mouse button)
-    if MouseButtonPressed(MOUSE_LEFT) then
-        ChangeState(entity, "PlayerAttack")
-        return
-    end
+    --if MouseButtonPressed(MOUSE_LEFT) then
+    --    ChangeState(entity, "PlayerAttack")
+    --    return
+    --end
 
     local transform = GetTransformFrom(EntityID)
 
-    if KeyPressed(KEY_R) then
+    if KeyPressed(KEY_L) then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerWindDash")
@@ -67,7 +67,7 @@ function state_update(entity, dt)
     end
     
     -- Check for Fire Slash (Q key or configurable)
-    if KeyPressed(KEY_Q) then
+    if KeyPressed(KEY_J) then
         -- Check if player has enough mana for fire slash
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerFireSlash")
@@ -79,7 +79,7 @@ function state_update(entity, dt)
     end
     
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) then
+    if KeyPressed(KEY_K) then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWaterSlash")
             return

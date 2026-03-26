@@ -86,7 +86,7 @@ function state_enter(entity)
     end
     
     -- Face towards mouse
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     local attackDir = getAttackDirection(player)
 
@@ -122,7 +122,7 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
     local transform = GetTransformFrom(EntityID)
 
-    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_L) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerPyronado")
@@ -134,7 +134,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_K) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerSteamBurst")
             return
