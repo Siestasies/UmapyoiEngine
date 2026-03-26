@@ -1,8 +1,14 @@
+local PlayerRef = nil
+local GodMode = false
+
 function Start()
-    
+    PlayerRef = GetPlayerFrom(FindEntityWithComponent("Player"))
+    GodMode = false
 end
 
 function Update(dt)
+    
+
     --transition the levels
     if KeyReleased(KEY_1) then
         LoadScene("tutorial_v3.scn")
@@ -16,5 +22,29 @@ function Update(dt)
         LoadScene("boss_map.scn")
     end
 
+    --player cheats
+    --god mode
+    if KeyReleased(KEY_0) then
+        GodMode = not GodMode
+        if GodMode == true then
+            PlayerRef.mHealth = 100000
+            PlayerRef.mMana = 100000
+            PlayerRef.mAttackDamage = 100000
+        else
+            PlayerRef.mHealth = PlayerRef.mMaxHealth
+            PlayerRef.mMana = PlayerRef.mMaxMana
+            PlayerRef.mAttackDamage = 40
+        end
+    end
+
+    --clear all enemies
+    if KeyReleased(KEY_9) then
+        local enemies = FindEntitiesWithComponent("Enemy")
+        for i = 1, #enemies do
+            local enemy = GetEntity(enemies[i])
+            if not enemy.isValid then return end
+            enemy:GetEnemy().mHealth = 0
+        end
+    end
 
 end
