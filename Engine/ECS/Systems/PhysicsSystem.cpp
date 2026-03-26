@@ -34,8 +34,65 @@ All rights reserved.
 #include <cmath>
 #include <algorithm>
 
+#include "HybridInputSystem.h"
+
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_PRESS, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_REPEAT, 0);
+    Uma_Engine::HybridInputSystem::GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_RELEASE, 0);
+
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_X, 0);
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_Y, 0);
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_X, 0);
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_Y, 0);
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, 0);
+    Uma_Engine::HybridInputSystem::GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, 0);
+
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();
     auto& tfArray = gCoordinator->GetComponentArray<Transform>();
 
