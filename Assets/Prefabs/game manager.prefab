@@ -45,6 +45,12 @@
                                         "isSlider": false
                                     }
                                 ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                                "scriptName": "Cheat_code.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
                             }
                         ]
                     },

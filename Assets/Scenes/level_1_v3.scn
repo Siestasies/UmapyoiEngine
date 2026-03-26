@@ -17671,8 +17671,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Kappa_Statue",
                     "position": {
-                        "x": -426.725,
-                        "y": 92.383
+                        "x": -127.199,
+                        "y": 133.483
                     },
                     "rotation": {
                         "x": 0.0,

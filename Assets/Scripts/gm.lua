@@ -5,6 +5,7 @@ ExposedVars = {
 local playerEntity = -1
 local wasPaused = false
 local gameOverTimer = 0.0  -- was 1.0, caused immediate trigger on first frame
+local EscWasPressed = false
 
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
@@ -12,9 +13,15 @@ function Update(dt)
     local health = player.mHealth
     local paused = IsGamePause()
 
+    if KeyPressed(KEY_ESCAPE) then
+        if EscWasPressed == false and paused == true then return end
+
+        EscWasPressed = true
+    end
+
     if IsEntityValid(playerEntity) then
         if health > 0 then
-            if paused == true then
+            if paused == true and EscWasPressed == true then
                 toggleGroupLowpass("MASTER", true)
                 wasPaused = true
                 local child = GetChildren(EntityID, 1)
@@ -24,6 +31,7 @@ function Update(dt)
                 if wasPaused == true then
                     toggleGroupLowpass("MASTER", false)
                     wasPaused = false
+                    EscWasPressed = false
                 end
                 local child = GetChildren(EntityID, 1)
                 SetActiveEntity(child, false)

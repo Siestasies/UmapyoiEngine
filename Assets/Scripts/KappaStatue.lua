@@ -28,5 +28,6 @@ function OnTriggerEnter(other)
         end
 
         GetAudioComponent():play(EntityID,"KappaInteract")
+        PauseGame(true)
     end
 end
