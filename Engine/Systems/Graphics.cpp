@@ -134,6 +134,16 @@ namespace Uma_Engine
         UpdateProjectionMatrix();
         InitSceneFramebuffer(1280, 720);
 
+        // Load light shaders
+        {
+            auto lightShader = LoadShaderFromFile("Assets/Shaders/light.vert", "Assets/Shaders/light.frag");
+            mLightShaderProgram = lightShader.shaderProgramID;
+
+            auto compositeShader = LoadShaderFromFile("Assets/Shaders/lightcomposite.vert", "Assets/Shaders/lightcomposite.frag");
+            mLightCompositeShaderProgram = compositeShader.shaderProgramID;
+        }
+        InitLightFramebuffer(1280, 720);
+
         std::cout << "Graphics system initialized successfully!" << std::endl;
         mInitialized = true;
 
@@ -193,6 +203,12 @@ namespace Uma_Engine
                 glDeleteFramebuffers(1, &mSceneFramebuffer);
                 glDeleteTextures(1, &mSceneTexture);
                 glDeleteRenderbuffers(1, &mSceneDepthBuffer);
+            }
+
+            if (mLightFramebuffer != 0)
+            {
+                glDeleteFramebuffers(1, &mLightFramebuffer);
+                glDeleteTextures(1, &mLightTexture);
             }
 
             // Clean up renderers
@@ -1719,5 +1735,134 @@ namespace Uma_Engine
         }
 
         return shader;
+    }
+
+    void Graphics::InitLightFramebuffer(int width, int height)
+    {
+        if (width <= 0 || height <= 0) return;
+        mLightFBWidth = width;
+        mLightFBHeight = height;
+
+        glGenFramebuffers(1, &mLightFramebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, mLightFramebuffer);
+
+        glGenTextures(1, &mLightTexture);
+        glBindTexture(GL_TEXTURE_2D, mLightTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mLightTexture, 0);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            std::cerr << "ERROR: Light framebuffer is not complete" << std::endl;
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void Graphics::ResizeLightFramebuffer(int width, int height)
+    {
+        if (width <= 0 || height <= 0) return;
+        if (width == mLightFBWidth && height == mLightFBHeight) return;
+
+        if (mLightFramebuffer != 0)
+        {
+            glDeleteFramebuffers(1, &mLightFramebuffer);
+            glDeleteTextures(1, &mLightTexture);
+            mLightFramebuffer = 0;
+            mLightTexture = 0;
+        }
+        InitLightFramebuffer(width, height);
+    }
+
+    void Graphics::BeginLightPass(float ambientR, float ambientG, float ambientB)
+    {
+        if (!mInitialized) return;
+
+        // Match light FBO size to current render target
+        int w, h;
+        if (mRenderTarget == RenderTarget::Framebuffer)
+        {
+            w = mSceneFBWidth;
+            h = mSceneFBHeight;
+        }
+        else
+        {
+            w = mViewportWidth;
+            h = mViewportHeight;
+        }
+
+        if (mLightFramebuffer == 0 || mLightFBWidth != w || mLightFBHeight != h)
+            ResizeLightFramebuffer(w, h);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, mLightFramebuffer);
+        glViewport(0, 0, mLightFBWidth, mLightFBHeight);
+
+        // Clear to ambient color (the darkness level)
+        glClearColor(ambientR, ambientG, ambientB, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Additive blending for light accumulation
+        glBlendFunc(GL_ONE, GL_ONE);
+    }
+
+    void Graphics::DrawLight(const Vec2& worldPos, float radius, const Vec3& color,
+                             float intensity, float innerRadius)
+    {
+        if (!mInitialized || mLightShaderProgram == 0) return;
+
+        glUseProgram(mLightShaderProgram);
+
+        // Build model: translate to world pos, scale by diameter (quad is -0.5 to 0.5)
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(worldPos.x, worldPos.y, 0.0f));
+        model = glm::scale(model, glm::vec3(radius * 2.0f, radius * 2.0f, 1.0f));
+
+        glUniformMatrix4fv(glGetUniformLocation(mLightShaderProgram, "model"), 1, GL_FALSE, &model[0][0]);
+        glUniformMatrix4fv(glGetUniformLocation(mLightShaderProgram, "projection"), 1, GL_FALSE, &mProjectionMatrix[0][0]);
+        glUniform3f(glGetUniformLocation(mLightShaderProgram, "lightColor"), color.x, color.y, color.z);
+        glUniform1f(glGetUniformLocation(mLightShaderProgram, "intensity"), intensity);
+        glUniform1f(glGetUniformLocation(mLightShaderProgram, "innerRadius"), innerRadius);
+
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+    }
+
+    void Graphics::EndLightPassAndComposite()
+    {
+        if (!mInitialized) return;
+
+        // Restore standard blending
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // Re-bind the scene FBO (or default framebuffer for game mode)
+        if (mRenderTarget == RenderTarget::Framebuffer)
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, mSceneFramebuffer);
+            glViewport(0, 0, mSceneFBWidth, mSceneFBHeight);
+        }
+        else
+        {
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, mViewportWidth, mViewportHeight);
+        }
+
+        // Draw fullscreen quad with light map using multiplicative blending
+        glBlendFunc(GL_DST_COLOR, GL_ZERO);
+
+        glUseProgram(mLightCompositeShaderProgram);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, mLightTexture);
+        glUniform1i(glGetUniformLocation(mLightCompositeShaderProgram, "lightMap"), 0);
+
+        glBindVertexArray(mVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        // Restore standard alpha blending for UI pass
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 }

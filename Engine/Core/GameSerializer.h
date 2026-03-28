@@ -416,12 +416,15 @@ namespace Uma_Engine
                     handledEntities.insert(ne);
             }
 
-            // Destroy every embedded nested prefab entity (queued; not immediate)
-            for (const auto& info : nestedPrefabs)
-                coordPtr->DestroyEntityAndChildren(info.embeddedEntity);
+            // Destroy every embedded nested prefab entity and flush queue only if needed
+            if (!nestedPrefabs.empty())
+            {
+                for (const auto& info : nestedPrefabs)
+                    coordPtr->DestroyEntityAndChildren(info.embeddedEntity);
 
-            // Flush the deletion queue so IDs are freed before we load replacements
-            coordPtr->ProcessDeletionQueue();
+                // Flush the deletion queue so IDs are freed before we load replacements
+                coordPtr->ProcessDeletionQueue();
+            }
 
             // Recursively load each nested prefab from its own file and re-attach
             for (const auto& info : nestedPrefabs)
