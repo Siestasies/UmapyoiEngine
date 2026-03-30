@@ -105,6 +105,8 @@ namespace Uma_Engine
 
         m_PathFindingSystem->Shutdown();
 
+        m_FSMSystem->Shutdown();
+
         // Unload resources
         if (m_ResourcesManager)
         {
@@ -523,7 +525,7 @@ namespace Uma_Engine
 
             m_Coordinator.SetSystemSignature<Uma_ECS::FSMSystem>(sign);
         }
-        m_FSMSystem->Init(&m_Coordinator);
+        m_FSMSystem->Init(&m_Coordinator, m_EventSystem);
 
         InitializeUISystem();
 

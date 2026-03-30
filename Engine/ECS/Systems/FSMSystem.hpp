@@ -27,14 +27,16 @@ namespace Uma_ECS
     {
     private:
         Coordinator* pCoordinator = nullptr;
-
+        Uma_Engine::EventSystem* pEventSystem = nullptr;
+        bool GamePaused = false;
+        bool WasPaused = false;
     public:
         /*!
         * \brief passes reference of coordinator to this component update
         * \param coordinator pointer
         * \return nothing
         */
-        void Init(Coordinator* c);
+        void Init(Coordinator* c, Uma_Engine::EventSystem* es);
         
         /*!
         * \brief runs update for the states
@@ -42,5 +44,10 @@ namespace Uma_ECS
         * \return nothing
         */
         void Update(float dt);
+
+        /*!
+         * \brief releases the event
+         */
+        void Shutdown();
     };
 }
