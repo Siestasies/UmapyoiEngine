@@ -15,7 +15,7 @@ function Update(dt)
     -- simpler approach
 
     if effects and effects:IsClipComplete(0) then
-        LoadScene(ExposedVars.nextScene)
+        LoadScene(nextScene)
     end
 
     -- versatile approach
