@@ -190,11 +190,11 @@ namespace Uma_Engine
     {
         (void)dt;
 
-        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
-        {
-            GamePause() = !GamePause();
-            GetEventSystem()->Emit<ApplicationGamePauseRequest>(GamePause());
-        }
+        //if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        //{
+        //    GamePause() = !GamePause();
+        //    GetEventSystem()->Emit<ApplicationGamePauseRequest>(GamePause());
+        //}
     }
 
     void GameApplication::PlayFabConfiguration()

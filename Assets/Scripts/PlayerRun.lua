@@ -59,7 +59,7 @@ function state_update(entity, dt)
         targetVel = targetVel * 0.7071 -- 1/sqrt(2)
     end
 
-rb.velocity = targetVel
+    rb.velocity = targetVel
     
     -- Flip sprite based on direction
     if rb.velocity.x < 0 and transform.scale.x > 0 then
@@ -68,31 +68,41 @@ rb.velocity = targetVel
         transform.scale.x = -1.0 * transform.scale.x
     end
     
-    -- Check for attack input while moving
-    if MouseButtonPressed(MOUSE_LEFT) then
-        ChangeState(entity, "PlayerAttack")
-        return
+    if KeyPressed(KEY_L) or 
+        GetControllerButtonInput(BTN_A, BTN_PRESS, 0) then
+        -- Check if player has enough mana for wind dash
+        if CanUseElementalAttack(player, "wind") then
+            ChangeState(entity, "PlayerWindDash")
+            return
+        else
+            Log("Not enough mana for Wind Dash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Wind Dash!", "warning")
+        end
     end
     
-    if KeyPressed(KEY_Q) and KeyPressed(KEY_E) then
-        ChangeState(entity, "PlayerSteamBurst")
-        return
+    -- Check for Fire Slash (Q key or configurable)
+    if KeyPressed(KEY_K) or 
+        GetControllerButtonInput(BTN_B, BTN_PRESS, 0) then
+        -- Check if player has enough mana for fire slash
+        if CanUseElementalAttack(player, "fire") then
+            ChangeState(entity, "PlayerFireSlash")
+            return
+        else
+            Log("Not enough mana for Fire Slash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Fire Slash!", "warning")
+        end
     end
     
-    -- Check for elemental attacks
-    if KeyPressed(KEY_Q) then
-        ChangeState(entity, "PlayerFireSlash")
-        return
-    end
-    
-    if KeyPressed(KEY_E) then
-        ChangeState(entity, "PlayerWaterSlash")
-        return
-    end
-
-    if KeyPressed(KEY_R) then
-        ChangeState(entity, "PlayerWindDash")
-        return
+    -- Check for Water Slash (E key)
+    if KeyPressed(KEY_J) or 
+        GetControllerButtonInput(BTN_Y, BTN_PRESS, 0) then
+        if CanUseElementalAttack(player, "water") then
+            ChangeState(entity, "PlayerWaterSlash")
+            return
+        else
+            Log("Not enough mana for Water Slash!")
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Water Slash!", "warning")
+        end
     end
     
 end
@@ -100,4 +110,29 @@ end
 function state_exit(entity)
     GetAudioComponent():fadeOut(EntityID, "footsteps", 0.5)
     Log("Player exited Run state")
+end
+
+-- Helper function to check if elemental attack can be used
+function CanUseElementalAttack(player, elementType)
+    if not player then return false end
+    
+    -- Find the attack stats for this element
+    local attackStats = player.attackStats
+    if not attackStats then return false end
+    
+    for i = 1, #attackStats do
+        local attack = attackStats[i]
+        if attack then
+            -- Check element type and mana cost
+            if elementType == "fire" and attack.elementType == ElementType.Fire then
+                return player.mMana >= attack.manaCost
+            elseif elementType == "water" and attack.elementType == ElementType.Water then
+                return player.mMana >= attack.manaCost
+            elseif elementType == "wind" and attack.elementType == ElementType.Wind then
+                return player.mMana >= attack.manaCost
+            end
+        end
+    end
+    
+    return nil
 end

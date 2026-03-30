@@ -118,7 +118,8 @@ function state_update(entity, dt)
     -- Update timer
     attackTimer = attackTimer - dt
 
-    if KeyPressed(KEY_L) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_L) or GetControllerButtonInput(BTN_A, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerWhirlpool")
@@ -130,7 +131,8 @@ function state_update(entity, dt)
     end
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_J) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_K) or GetControllerButtonInput(BTN_B, BTN_PRESS, 0))
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerSteamBurst")
             return

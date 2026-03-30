@@ -121,7 +121,8 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_J) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_K) or GetControllerButtonInput(BTN_B, BTN_PRESS, 0))
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerPyronado")
             return
@@ -132,7 +133,8 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_K) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_J) or GetControllerButtonInput(BTN_Y, BTN_PRESS, 0))
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWhirlpool")
             return
