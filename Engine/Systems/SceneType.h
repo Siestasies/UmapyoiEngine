@@ -36,6 +36,7 @@ All rights reserved.
 #include "ECS/Systems/ProjectileSystem.hpp"
 #include "ECS/Systems/TilemapSystem.hpp"
 #include "ECS/Systems/FSMSystem.hpp"
+#include "ECS/Systems/LightSystem.hpp"
 
 // ECS Components
 #include "ECS/Components/Transform.h"
@@ -310,6 +311,7 @@ namespace Uma_Engine
             std::shared_ptr<Uma_ECS::ProjectileSystem> m_ProjectileSystem;
             std::shared_ptr<Uma_ECS::TilemapSystem> m_TilemapSystem;
             std::shared_ptr<Uma_ECS::FSMSystem> m_FSMSystem;
+            std::shared_ptr<Uma_ECS::LightSystem> m_LightSystem;
 
             // ECS UI related
             std::shared_ptr<Uma_UI::UISystem> m_UISystem;

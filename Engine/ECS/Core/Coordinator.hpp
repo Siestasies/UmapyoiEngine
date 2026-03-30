@@ -66,6 +66,8 @@ All rights reserved.
 #include "../Components/FSM.h"
 #include "../Components/SpriteMaterial.h"
 #include "../Components/Cutscene.h"
+#include "../Components/Light2D.h"
+#include "../Components/SceneLighting.h"
 
 #include <unordered_set>
 
@@ -487,6 +489,8 @@ namespace Uma_ECS
             CHECK_COMPONENT(SpriteMaterial)
             CHECK_COMPONENT(Uma_UI::Dialogue)
             CHECK_COMPONENT(Cutscene)
+            CHECK_COMPONENT(Light2D)
+            CHECK_COMPONENT(SceneLighting)
 #undef CHECK_COMPONENT
         }
 

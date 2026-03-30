@@ -165,7 +165,13 @@ namespace Uma_Engine
             m_UISystem->Update(dt);
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt, false);
+            m_RenderingSystem->RenderWorld(dt, false);
+
+        if (m_LightSystem)
+            m_LightSystem->Update(dt);
+
+        if (m_RenderingSystem)
+            m_RenderingSystem->RenderUI(dt);
 
         if (m_ParticleSystem)
             m_ParticleSystem->Update(dt);
@@ -360,6 +366,8 @@ namespace Uma_Engine
         m_Coordinator.RegisterComponent<Uma_ECS::FSM>();
         m_Coordinator.RegisterComponent<Uma_ECS::SpriteMaterial>();
         m_Coordinator.RegisterComponent<Uma_ECS::Cutscene>();
+        m_Coordinator.RegisterComponent<Uma_ECS::Light2D>();
+        m_Coordinator.RegisterComponent<Uma_ECS::SceneLighting>();
 
         // Player Controller System
         m_PlayerController = m_Coordinator.RegisterSystem<Uma_ECS::PlayerControllerSystem>();
@@ -423,6 +431,16 @@ namespace Uma_Engine
             m_Coordinator.SetSystemSignature<Uma_ECS::RenderingSystem>(sign);
         }
         m_RenderingSystem->Init(m_Graphics, m_ResourcesManager, &m_Coordinator);
+
+        // Light System
+        m_LightSystem = m_Coordinator.RegisterSystem<Uma_ECS::LightSystem>();
+        {
+            Uma_ECS::Signature sign;
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Light2D>());
+            sign.set(m_Coordinator.GetComponentType<Uma_ECS::Transform>());
+            m_Coordinator.SetSystemSignature<Uma_ECS::LightSystem>(sign);
+        }
+        m_LightSystem->Init(m_Graphics, &m_Coordinator);
 
         // Camera System
         m_CameraSystem = m_Coordinator.RegisterSystem<Uma_ECS::CameraSystem>();
@@ -554,7 +572,13 @@ namespace Uma_Engine
             m_UISystem->InputPass();
 
         if (m_RenderingSystem)
-            m_RenderingSystem->Update(dt, true);
+            m_RenderingSystem->RenderWorld(dt, true);
+
+        if (m_LightSystem)
+            m_LightSystem->Update(dt);
+
+        if (m_RenderingSystem)
+            m_RenderingSystem->RenderUI(dt);
 
         if (m_TilemapSystem)
             m_TilemapSystem->Update(dt);

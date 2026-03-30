@@ -43,6 +43,8 @@ All rights reserved.
 #include "ECS/Components/Prefab.h"
 #include "ECS/Components/Projectile.h"
 #include "ECS/Components/Tilemap.h"
+#include "ECS/Components/Light2D.h"
+#include "ECS/Components/SceneLighting.h"
 
 // UI Components
 #include "UI/Components/Canvas.h"

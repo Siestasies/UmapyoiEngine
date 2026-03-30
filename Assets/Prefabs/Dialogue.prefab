@@ -155,7 +155,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -398,7 +410,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -461,7 +485,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             }
@@ -469,7 +505,14 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/dialogue ui box.png"
+            },
+            {
+                "path": "assets/dialogue end icon.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }

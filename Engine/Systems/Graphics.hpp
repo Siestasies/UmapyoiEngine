@@ -176,6 +176,13 @@ namespace Uma_Engine
         int mSceneFBWidth, mSceneFBHeight;
         RenderTarget mRenderTarget;
 
+        // Light map framebuffer
+        GLuint mLightFramebuffer = 0;
+        GLuint mLightTexture = 0;
+        int mLightFBWidth = 0, mLightFBHeight = 0;
+        GLuint mLightShaderProgram = 0;
+        GLuint mLightCompositeShaderProgram = 0;
+
         // Viewport size
         int mViewportWidth, mViewportHeight;
 
@@ -187,6 +194,8 @@ namespace Uma_Engine
         const std::string SHADER_DEBUG = "system_debug";
         const std::string SHADER_TEXT = "system_text";
         const std::string SHADER_SHAPE = "system_shape";
+        const std::string SHADER_LIGHT = "system_light";
+        const std::string SHADER_LIGHT_COMPOSITE = "system_light_composite";
 
 
         // Helper functions
@@ -696,5 +705,22 @@ namespace Uma_Engine
         \param shaderID OpenGL shader program ID to delete.
         */
         void UnloadShader(unsigned int shaderID);
+
+        // Light map operations
+
+        // Initializes the light framebuffer (FBO + texture) at the given resolution
+        void InitLightFramebuffer(int width, int height);
+
+        // Recreates the light framebuffer when the viewport size changes
+        void ResizeLightFramebuffer(int width, int height);
+
+        // Binds the light FBO, clears it to the ambient color, and prepares additive blending
+        void BeginLightPass(float ambientR, float ambientG, float ambientB);
+
+        // Renders a single point light as an additive quad with falloff from innerRadius to radius
+        void DrawLight(const Vec2& worldPos, float radius, const Vec3& color, float intensity, float innerRadius);
+
+        // Ends the light pass and composites the light map onto the scene via multiply blending
+        void EndLightPassAndComposite();
     };
 }
