@@ -2937,6 +2937,8 @@ namespace Uma_ECS
         sharedLua->set("KEY_TAB", GLFW_KEY_TAB);
         sharedLua->set("KEY_BACKSPACE", GLFW_KEY_BACKSPACE);
         sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
+        sharedLua->set("KEY_LALT", GLFW_KEY_LEFT_ALT);
+        sharedLua->set("KEY_RALT", GLFW_KEY_RIGHT_ALT);
     }
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)

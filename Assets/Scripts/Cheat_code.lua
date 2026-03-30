@@ -1,5 +1,6 @@
 local PlayerRef = nil
 local GodMode = false
+local SecretToggle = false
 
 function Start()
     PlayerRef = GetPlayerFrom(FindEntityWithComponent("Player"))
@@ -7,7 +8,14 @@ function Start()
 end
 
 function Update(dt)
-    
+    if KeyDown(KEY_LALT) and KeyDown(KEY_RALT) and not bothAltsActive then
+        SecretToggle = not SecretToggle
+        bothAltsActive = true
+    elseif not (KeyDown(KEY_LALT) and KeyDown(KEY_RALT)) then
+        bothAltsActive = false
+    end
+
+    if not SecretToggle then return end
 
     --transition the levels
     if KeyReleased(KEY_1) then
