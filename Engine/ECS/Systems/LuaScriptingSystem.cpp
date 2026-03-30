@@ -2887,6 +2887,22 @@ namespace Uma_ECS
 
             return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{ 0, 0 };
             });
+
+        // controller 
+        sharedLua->set_function("GetControllerButtonInput", [this](int key, int action, int controller_id) -> bool
+            {
+                return Uma_Engine::HybridInputSystem::GetControllerButtonInput(key, action, 0);
+            });
+
+        sharedLua->set_function("GetControllerAxesInput", [this](int axis, int controller_id) -> float
+            {
+                return Uma_Engine::HybridInputSystem::GetControllerAxesInput(axis, 0);
+            });
+
+        sharedLua->set_function("IsControllerConnected", [this](int controller_id) -> bool
+            {
+                return Uma_Engine::HybridInputSystem::IsControllerConnected(controller_id);
+            });
     }
 
     void LuaScriptingSystem::RegisterKeyConstants()
@@ -2937,6 +2953,46 @@ namespace Uma_ECS
         sharedLua->set("KEY_TAB", GLFW_KEY_TAB);
         sharedLua->set("KEY_BACKSPACE", GLFW_KEY_BACKSPACE);
         sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
+
+        sharedLua->set("BTN_A", GLFW_GAMEPAD_BUTTON_A);
+        sharedLua->set("BTN_B", GLFW_GAMEPAD_BUTTON_B);
+        sharedLua->set("BTN_X", GLFW_GAMEPAD_BUTTON_X);
+        sharedLua->set("BTN_Y", GLFW_GAMEPAD_BUTTON_Y);
+
+        sharedLua->set("BTN_CROSS", GLFW_GAMEPAD_BUTTON_CROSS   );
+        sharedLua->set("BTN_CIRCLE", GLFW_GAMEPAD_BUTTON_CIRCLE  );
+        sharedLua->set("BTN_SQUARE", GLFW_GAMEPAD_BUTTON_SQUARE  ); 
+        sharedLua->set("BTN_TRIANGLE", GLFW_GAMEPAD_BUTTON_TRIANGLE);
+
+        sharedLua->set("BTN_LB", GLFW_GAMEPAD_BUTTON_LEFT_BUMPER );
+        sharedLua->set("BTN_RB", GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER);
+        
+        sharedLua->set("BTN_BACK", GLFW_GAMEPAD_BUTTON_BACK );
+        sharedLua->set("BTN_START", GLFW_GAMEPAD_BUTTON_START);
+        sharedLua->set("BTN_GUIDE", GLFW_GAMEPAD_BUTTON_GUIDE);
+
+        sharedLua->set("BTN_LEFT_THUMB", GLFW_GAMEPAD_BUTTON_LEFT_THUMB );
+        sharedLua->set("BTN_RIGHT_THUMB", GLFW_GAMEPAD_BUTTON_RIGHT_THUMB);
+        
+        sharedLua->set("BTN_UP", GLFW_GAMEPAD_BUTTON_DPAD_UP   );
+        sharedLua->set("BTN_RIGHT", GLFW_GAMEPAD_BUTTON_DPAD_RIGHT);
+        sharedLua->set("BTN_DOWN", GLFW_GAMEPAD_BUTTON_DPAD_DOWN );
+        sharedLua->set("BTN_LEFT", GLFW_GAMEPAD_BUTTON_DPAD_LEFT );
+
+        sharedLua->set("AXIS_LEFT_X", GLFW_GAMEPAD_AXIS_LEFT_X);
+        sharedLua->set("AXIS_LEFT_Y", GLFW_GAMEPAD_AXIS_LEFT_Y);
+
+        sharedLua->set("AXIS_RIGHT_X", GLFW_GAMEPAD_AXIS_RIGHT_X);
+        sharedLua->set("AXIS_RIGHT_Y", GLFW_GAMEPAD_AXIS_RIGHT_Y);
+
+        sharedLua->set("AXIS_LEFT_TRIGGER", GLFW_GAMEPAD_AXIS_LEFT_TRIGGER);
+        sharedLua->set("AXIS_RIGHT_TRIGGER", GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER);
+
+        // contrller action
+        sharedLua->set("BTN_PRESS", GLFW_PRESS);
+        sharedLua->set("BTN_HOLD", GLFW_REPEAT);
+        sharedLua->set("BTN_RELEASE", GLFW_RELEASE);
+
     }
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)

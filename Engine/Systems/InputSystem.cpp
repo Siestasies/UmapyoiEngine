@@ -470,6 +470,49 @@ namespace Uma_Engine
         }
     }
 
+    const char* InputSystem::GetControllerButtonName(int btn)
+    {
+        switch (btn)
+        {
+        
+        case GLFW_GAMEPAD_BUTTON_B: return "B";
+        case GLFW_GAMEPAD_BUTTON_A: return "A";
+        case GLFW_GAMEPAD_BUTTON_Y: return "Y";
+        case GLFW_GAMEPAD_BUTTON_X: return "X";
+
+        case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER: return "LB"; case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER: return "RB";
+        case GLFW_GAMEPAD_BUTTON_LEFT_THUMB: return "LEFT_THUMB"; case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB: return "RIGHT_THUMB";
+
+        case GLFW_GAMEPAD_BUTTON_BACK: return "BACK";
+        case GLFW_GAMEPAD_BUTTON_START: return "START";
+        case GLFW_GAMEPAD_BUTTON_GUIDE: return "GUIDE";
+
+        case GLFW_GAMEPAD_BUTTON_DPAD_UP: return "DPAD_UP";
+        case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT: return "DPAD_RIGHT";
+        case GLFW_GAMEPAD_BUTTON_DPAD_DOWN: return "DPAD_DOWN";
+        case GLFW_GAMEPAD_BUTTON_DPAD_LEFT: return "DPAD_LEFT";
+
+        default: return "UNKNOWN";
+        }
+    }
+
+    const char* InputSystem::GetControllerAxisName(int axis)
+    {
+        switch (axis)
+        {
+
+        case GLFW_GAMEPAD_AXIS_LEFT_X: return "LEFT_X";
+        case GLFW_GAMEPAD_AXIS_LEFT_Y: return "LEFT_Y";
+        case GLFW_GAMEPAD_AXIS_RIGHT_X: return "RIGHT_X";
+        case GLFW_GAMEPAD_AXIS_RIGHT_Y: return "RIGHT_Y";
+
+        case GLFW_GAMEPAD_AXIS_LEFT_TRIGGER: return "LEFT_TRIGGER";
+        case GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER: return "RIGHT_TRIGGER";
+
+        default: return "UNKNOWN";
+        }
+    }
+
     void InputSystem::SetUpSDLControllerDB()
     {
         std::ifstream ifs(Uma_FilePath::CONFIG_ROOT + "/gamecontrollerdb.txt");
@@ -523,6 +566,11 @@ namespace Uma_Engine
                 sActiveController.erase(id);
             }
         }
+    }
+
+    const bool InputSystem::IsControllerConnected(int id)
+    {
+        return sActiveController.contains(id);
     }
 
     bool InputSystem::GetControllerButtonInput(int key, int action, int controllerId)

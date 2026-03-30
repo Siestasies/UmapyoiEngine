@@ -210,9 +210,15 @@ namespace Uma_Engine
          */
         static const char* GetKeyName(int key);
 
+        static const char* GetControllerButtonName(int btn);
+
+        static const char* GetControllerAxisName(int axis);
+
         void SetUpSDLControllerDB();
 
         static void ControllerConnectionCallback(int id, int event);
+
+        static const bool IsControllerConnected(int id);
 
         static bool GetControllerButtonInput(int key, int action, int controllerId = 0);
 

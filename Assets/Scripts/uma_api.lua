@@ -1179,7 +1179,7 @@ function ClearAttackStats(player) end
 function GetAttackStatsCount(player) end
 
 -- =============================================================================
---  Global Functions — Input
+--  Global Functions — Input (Keyboard & Mouse)
 -- =============================================================================
 
 ---@return Vec2
@@ -1331,6 +1331,90 @@ MOUSE_LEFT = 0
 MOUSE_RIGHT = 0
 ---@type integer
 MOUSE_MIDDLE = 0
+
+-- =============================================================================
+--  Global Functions — Input (Controller)
+-- =============================================================================
+
+---@param button integer
+---@param action integer
+---@param controller_id integer
+---@return boolean
+function GetControllerButtonInput(button, action, controller_id) end
+
+---@param axis integer
+---@param controller_id integer
+---@return number
+function GetControllerAxesInput(axis, controller_id) end
+
+---@param controller_id integer
+---@return boolean
+function IsControllerConnected(controller_id) end
+
+---@type integer
+BTN_A = 0
+---@type integer
+BTN_B = 1
+---@type integer
+BTN_X = 2
+---@type integer
+BTN_Y = 3
+
+---@type integer
+BTN_CROSS = 0
+---@type integer
+BTN_CIRCLE = 1
+---@type integer
+BTN_SQUARE = 2
+---@type integer
+BTN_TRIANGLE = 3
+
+---@type integer
+BTN_LB = 4
+---@type integer
+BTN_RB = 5
+
+---@type integer
+BTN_BACK = 6
+---@type integer
+BTN_START = 7
+---@type integer
+BTN_GUIDE = 8
+
+---@type integer
+BTN_LEFT_THUMB = 9
+---@type integer
+BTN_RIGHT_THUMB = 10
+
+---@type integer
+BTN_UP = 11
+---@type integer
+BTN_RIGHT = 12
+---@type integer
+BTN_DOWN = 13
+---@type integer
+BTN_LEFT = 14
+
+---@type integer
+BTN_PRESS = 1
+---@type integer
+BTN_HOLD = 2
+---@type integer
+BTN_RELEASE = 0
+
+---@type integer
+AXIS_LEFT_X = 0
+---@type integer
+AXIS_LEFT_Y = 1
+---@type integer
+AXIS_RIGHT_X = 2
+---@type integer
+AXIS_RIGHT_Y = 3
+---@type integer
+AXIS_LEFT_TRIGGER = 4
+---@type integer
+AXIS_RIGHT_TRIGGER = 5
+
 
 -- =============================================================================
 --  Global Functions — PlayFab
