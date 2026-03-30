@@ -73,6 +73,17 @@ namespace Uma_ECS
         RenderUIPass(dt);
     }
 
+    void RenderingSystem::RenderWorld(float dt, bool enableCullMode)
+    {
+        isCullMode = enableCullMode;
+        RenderWorldPass(dt);
+    }
+
+    void RenderingSystem::RenderUI(float dt)
+    {
+        RenderUIPass(dt);
+    }
+
     void RenderingSystem::RenderWorldPass(float dt)
     {
         (void)dt;

@@ -48,7 +48,7 @@ namespace Uma_ECS
         void Shutdown();
 
         /*!
-         * \brief Stops all audio currently playing from a specific entity.
+         * \brief Stops all audio currently playing from all entity.
          * \param entity Entity whose audio to stop.
          */
         void StopAllEntityAudio();

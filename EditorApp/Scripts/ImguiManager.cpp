@@ -3492,6 +3492,90 @@ namespace Uma_Engine
                 ImGui::Unindent();
             }
         }
+        else if (type == coordinator.GetComponentType<Uma_ECS::Light2D>())
+        {
+            if (ImGui::CollapsingHeader("Light2D"))
+            {
+                if (ImGui::Button("Remove Component##Light2D"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::Light2D>>(
+                        &coordinator,
+                        entity,
+                        "Remove Light2D"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& light = coordinator.GetComponent<Uma_ECS::Light2D>(entity);
+                ImGui::Indent();
+
+                BeginComponentEdit(entity, coordinator);
+
+                float col[3] = { light.color.x, light.color.y, light.color.z };
+                if (ImGui::ColorEdit3("Color", col))
+                {
+                    light.color = Vec3(col[0], col[1], col[2]);
+                    m_hasUnsavedEdit = true;
+                }
+
+                if (ImGui::DragFloat("Radius", &light.radius, 0.1f, 0.01f, 100.0f))
+                    m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Intensity", &light.intensity, 0.01f, 0.0f, 10.0f))
+                    m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Inner Radius", &light.innerRadius, 0.01f, 0.0f, 1.0f))
+                    m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                ImGui::Text("Flicker");
+                if (ImGui::DragFloat("Flicker Speed", &light.flickerSpeed, 0.1f, 0.0f, 20.0f))
+                    m_hasUnsavedEdit = true;
+                if (ImGui::DragFloat("Flicker Amount", &light.flickerAmount, 0.01f, 0.0f, 5.0f))
+                    m_hasUnsavedEdit = true;
+
+                ImGui::Separator();
+                if (ImGui::Checkbox("Enabled", &light.enabled))
+                    m_hasUnsavedEdit = true;
+
+                EndComponentEdit(entity, coordinator, "Light2D");
+
+                ImGui::Unindent();
+            }
+        }
+        else if (type == coordinator.GetComponentType<Uma_ECS::SceneLighting>())
+        {
+            if (ImGui::CollapsingHeader("SceneLighting"))
+            {
+                if (ImGui::Button("Remove Component##SceneLighting"))
+                {
+                    auto cmd = std::make_unique<Uma_Editor::EntityRemoveComponentCmd<Uma_ECS::SceneLighting>>(
+                        &coordinator,
+                        entity,
+                        "Remove SceneLighting"
+                    );
+                    commandHistory.ExecuteCommand(std::move(cmd));
+                    return true;
+                }
+
+                auto& sl = coordinator.GetComponent<Uma_ECS::SceneLighting>(entity);
+                ImGui::Indent();
+
+                BeginComponentEdit(entity, coordinator);
+
+                float col[3] = { sl.ambientColor.x, sl.ambientColor.y, sl.ambientColor.z };
+                if (ImGui::ColorEdit3("Ambient Color", col))
+                {
+                    sl.ambientColor = Vec3(col[0], col[1], col[2]);
+                    m_hasUnsavedEdit = true;
+                }
+                if (ImGui::DragFloat("Ambient Strength", &sl.ambientStrength, 0.01f, 0.0f, 5.0f))
+                    m_hasUnsavedEdit = true;
+
+                EndComponentEdit(entity, coordinator, "SceneLighting");
+
+                ImGui::Unindent();
+            }
+        }
         else if (type == coordinator.GetComponentType<Uma_ECS::ParticleEmitter>())
         {
             if (ImGui::CollapsingHeader("ParticleEmitter", ImGuiTreeNodeFlags_DefaultOpen))
@@ -7392,6 +7476,26 @@ namespace Uma_Engine
                 commandHistory.ExecuteCommand(std::move(cmd));
 
                 pEventSystem->Emit<CallPathFindToBake>();
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Light2D>()) && ImGui::MenuItem("Light2D"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::Light2D>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::Light2D{},
+                    "Add Light2D"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
+            }
+            if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::SceneLighting>()) && ImGui::MenuItem("SceneLighting"))
+            {
+                auto cmd = std::make_unique<Uma_Editor::EntityAddComponentCmd<Uma_ECS::SceneLighting>>(
+                    &coordinator,
+                    m_selectedEntity,
+                    Uma_ECS::SceneLighting{},
+                    "Add SceneLighting"
+                );
+                commandHistory.ExecuteCommand(std::move(cmd));
             }
             if (!coordinator.GetEntitySignature(m_selectedEntity).test(coordinator.GetComponentType<Uma_ECS::Projectile>()) && ImGui::MenuItem("Projectile"))
             {

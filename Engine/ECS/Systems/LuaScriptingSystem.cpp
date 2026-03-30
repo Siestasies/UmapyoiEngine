@@ -530,6 +530,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("SetActiveEntity", [this](Uma_ECS::Entity entity, bool isActive)
             {
+                if (!pCoordinator) return;
                 if (pCoordinator->HasActiveEntity(entity))
                 {
                     pCoordinator->SetActive(entity, isActive);
@@ -538,6 +539,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("GetActiveEntity", [this](Uma_ECS::Entity entity) -> bool
             {
+                if (!pCoordinator) return false;
                 return  pCoordinator->IsActiveInHierarchy(entity);
             });
 
@@ -2400,6 +2402,16 @@ namespace Uma_ECS
 
                 pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
             });
+
+        sharedLua->set_function("StopEntityAudio", [this](Uma_ECS::Entity entity) {
+            pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
+            });
+        sharedLua->set_function("StopEntityAudioByName", [this](Uma_ECS::Entity entity, const std::string& name) {
+            pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity, name);
+            });
+        sharedLua->set_function("StopAllAudio", [this]() {
+            pCoordinator->GetSystem<AudioSystem>()->StopAllEntityAudio();
+            });
     }
 
 
@@ -2940,25 +2952,27 @@ namespace Uma_ECS
             std::string keyName = std::string("KEY_") + std::to_string(i);
             sharedLua->set(keyName, GLFW_KEY_0 + i);
         }
-
+        
         // Register function keys F1-F12
         for (int i = 1; i <= 12; ++i) {
             std::string keyName = std::string("KEY_F") + std::to_string(i);
             sharedLua->set(keyName, GLFW_KEY_F1 + (i - 1));
         }
-
+        
         // Other common keys
         sharedLua->set("KEY_ESCAPE", GLFW_KEY_ESCAPE);
         sharedLua->set("KEY_ENTER", GLFW_KEY_ENTER);
         sharedLua->set("KEY_TAB", GLFW_KEY_TAB);
         sharedLua->set("KEY_BACKSPACE", GLFW_KEY_BACKSPACE);
         sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
-
+        sharedLua->set("KEY_LALT", GLFW_KEY_LEFT_ALT);
+        sharedLua->set("KEY_RALT", GLFW_KEY_RIGHT_ALT);
+        
         sharedLua->set("BTN_A", GLFW_GAMEPAD_BUTTON_A);
         sharedLua->set("BTN_B", GLFW_GAMEPAD_BUTTON_B);
         sharedLua->set("BTN_X", GLFW_GAMEPAD_BUTTON_X);
         sharedLua->set("BTN_Y", GLFW_GAMEPAD_BUTTON_Y);
-
+        
         sharedLua->set("BTN_CROSS", GLFW_GAMEPAD_BUTTON_CROSS   );
         sharedLua->set("BTN_CIRCLE", GLFW_GAMEPAD_BUTTON_CIRCLE  );
         sharedLua->set("BTN_SQUARE", GLFW_GAMEPAD_BUTTON_SQUARE  ); 
@@ -2992,7 +3006,6 @@ namespace Uma_ECS
         sharedLua->set("BTN_PRESS", GLFW_PRESS);
         sharedLua->set("BTN_HOLD", GLFW_REPEAT);
         sharedLua->set("BTN_RELEASE", GLFW_RELEASE);
-
     }
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)

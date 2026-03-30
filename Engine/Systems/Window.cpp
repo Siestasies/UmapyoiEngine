@@ -67,18 +67,17 @@ namespace Uma_Engine
         GLFWmonitor* monitor = nullptr;
         if (mMode == WindowMode::Fullscreen)
         {
-            monitor = glfwGetPrimaryMonitor();
-            const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+            // Use borderless fullscreen (windowed at monitor resolution)
+            GLFWmonitor* primary = glfwGetPrimaryMonitor();
+            const GLFWvidmode* mode = glfwGetVideoMode(primary);
             mWidth = mode->width;
             mHeight = mode->height;
-            glfwWindowHint(GLFW_RED_BITS, mode->redBits);
-            glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
-            glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
-            glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+            glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
         }
         else if (mMode == WindowMode::Maximized)
         {
-            glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+            // Create as plain windowed, EditorApplication will maximize later
+            mMode = WindowMode::Windowed;
         }
 
         mWindow = glfwCreateWindow(mWidth, mHeight, mTitle.c_str(), monitor, nullptr);
@@ -96,8 +95,8 @@ namespace Uma_Engine
         {
             GLFWmonitor* primaryMonitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* videoMode = glfwGetVideoMode(primaryMonitor);
-            int xpos = (videoMode->width - mWidth) / 2;
-            int ypos = (videoMode->height - mHeight) / 2;
+            int xpos = (videoMode->width - mWindowedWidth) / 2;
+            int ypos = (videoMode->height - mWindowedHeight) / 2;
             glfwSetWindowPos(mWindow, xpos, ypos);
         }
 
@@ -208,18 +207,34 @@ namespace Uma_Engine
             GLFWmonitor* monitor = glfwGetPrimaryMonitor();
             const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
-            // Switch to fullscreen
-            glfwSetWindowMonitor(mWindow, monitor, 0, 0,
-                videoMode->width, videoMode->height,
-                videoMode->refreshRate);
+            if (mIsEditorMode)
+            {
+                // Editor: exclusive fullscreen
+                glfwSetWindowMonitor(mWindow, monitor, 0, 0,
+                    videoMode->width, videoMode->height,
+                    videoMode->refreshRate);
+            }
+            else
+            {
+                // Game: borderless fullscreen
+                glfwSetWindowAttrib(mWindow, GLFW_DECORATED, GLFW_FALSE);
+                glfwSetWindowMonitor(mWindow, nullptr, 0, 0,
+                    videoMode->width, videoMode->height,
+                    GLFW_DONT_CARE);
+            }
 
             mWidth = videoMode->width;
             mHeight = videoMode->height;
         }
         else if (mMode == WindowMode::Maximized)
         {
-            // Switch to windowed mode first
-            glfwSetWindowMonitor(mWindow, nullptr, 0, 0,
+            // Set centered position so the restore target is sensible
+            GLFWmonitor* mon = glfwGetPrimaryMonitor();
+            const GLFWvidmode* vid = glfwGetVideoMode(mon);
+            int xpos = (vid->width - mWindowedWidth) / 2;
+            int ypos = (vid->height - mWindowedHeight) / 2;
+
+            glfwSetWindowMonitor(mWindow, nullptr, xpos, ypos,
                 mWindowedWidth, mWindowedHeight,
                 GLFW_DONT_CARE);
 
@@ -236,7 +251,8 @@ namespace Uma_Engine
             int xpos = (videoMode->width - mWindowedWidth) / 2;
             int ypos = (videoMode->height - mWindowedHeight) / 2;
 
-            // Switch to windowed mode
+            // Restore decorations and switch to windowed mode
+            glfwSetWindowAttrib(mWindow, GLFW_DECORATED, GLFW_TRUE);
             glfwSetWindowMonitor(mWindow, nullptr, xpos, ypos,
                 mWindowedWidth, mWindowedHeight,
                 GLFW_DONT_CARE);

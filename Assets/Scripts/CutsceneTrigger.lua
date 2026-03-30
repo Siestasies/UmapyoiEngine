@@ -112,22 +112,24 @@ local inputCooldown  = 0.0  -- seconds to ignore input after dialogue opens
 -- Helpers
 -------------------------------------------------------------------------------
 local function ShowImg(e, visible)
-    if e == -1 then return end
+    if e == -1 or not IsEntityValid(e) then return end
     SetActiveEntity(e, visible)
 end
 
 local function ShowTxt(e, visible)
-    if e == -1 then return end
+    if e == -1 or not IsEntityValid(e) then return end
     local t = GetTextFrom(e)
     if t then t.visible = visible end
 end
 
 local function SetBodyText(str)
+    if eTextField == -1 or not IsEntityValid(eTextField) then return end
     local t = GetTextFrom(eTextField)
     if t then t.text = str end
 end
 
 local function SetNameText(str)
+    if eNameField == -1 or not IsEntityValid(eNameField) then return end
     local t = GetTextFrom(eNameField)
     if t then t.text = str end
 end
@@ -175,7 +177,7 @@ local function CloseDialogue()
     dialogueLines  = {}
     lineIndex      = 0
     isTyping       = false
-    if dialogueRoot ~= -1 then
+    if dialogueRoot ~= -1 and IsEntityValid(dialogueRoot) then
         SetActiveEntity(dialogueRoot, false)
     end
 end
@@ -192,8 +194,15 @@ end
 -------------------------------------------------------------------------------
 -- Dialogue prefab management
 -------------------------------------------------------------------------------
+local function ChildrenValid()
+    return ePanel     ~= -1 and IsEntityValid(ePanel)
+       and eTextField ~= -1 and IsEntityValid(eTextField)
+       and eName      ~= -1 and IsEntityValid(eName)
+       and eNameField ~= -1 and IsEntityValid(eNameField)
+end
+
 local function ResolveDialogueChildren()
-    if dialogueRoot == -1 then return false end
+    if dialogueRoot == -1 or not IsEntityValid(dialogueRoot) then return false end
 
     ePanel    = GetChildren(dialogueRoot, 0)
     eName     = GetChildren(dialogueRoot, 1)
@@ -208,6 +217,7 @@ local function ResolveDialogueChildren()
     end
 
     return ePanel ~= -1 and eTextField ~= -1
+       and eName ~= -1 and eNameField ~= -1
 end
 
 local function OpenDialogue(seqId)
@@ -217,7 +227,8 @@ local function OpenDialogue(seqId)
         return
     end
 
-    if ePanel == -1 then
+    -- Re-resolve children only if cached handles are stale
+    if not ChildrenValid() then
         if not ResolveDialogueChildren() then
             Log("[CutsceneTrigger] Cannot play dialogue: children not resolved")
             dialogueActive = false
@@ -237,19 +248,29 @@ local function OpenDialogue(seqId)
     inputCooldown  = 0.15  -- 150ms grace period to avoid click-through
     dialogueActive = true
 
-    SetActiveEntity(dialogueRoot, true)
-    if ePanel      ~= -1 then SetActiveEntity(ePanel, true) end
-    if eTextField   ~= -1 then SetActiveEntity(eTextField, true) end
-    if eName        ~= -1 then SetActiveEntity(eName, true) end
-    if eNameField   ~= -1 then SetActiveEntity(eNameField, true) end
-    if ePortrait    ~= -1 then SetActiveEntity(ePortrait, true) end
-    if eContinue    ~= -1 then SetActiveEntity(eContinue, true) end
+    if IsEntityValid(dialogueRoot) then SetActiveEntity(dialogueRoot, true) end
+    if ePanel      ~= -1 and IsEntityValid(ePanel)      then SetActiveEntity(ePanel, true) end
+    if eTextField   ~= -1 and IsEntityValid(eTextField)  then SetActiveEntity(eTextField, true) end
+    if eName        ~= -1 and IsEntityValid(eName)       then SetActiveEntity(eName, true) end
+    if eNameField   ~= -1 and IsEntityValid(eNameField)  then SetActiveEntity(eNameField, true) end
+    if ePortrait    ~= -1 and IsEntityValid(ePortrait)   then SetActiveEntity(ePortrait, true) end
+    if eContinue    ~= -1 and IsEntityValid(eContinue)   then SetActiveEntity(eContinue, true) end
 
     ApplyLine(dialogueLines[1])
 end
 
 local function SpawnDialoguePrefab()
-    if dialogueRoot ~= -1 then return true end
+    if dialogueRoot ~= -1 then
+        if IsEntityValid(dialogueRoot) then return true end
+        -- Entity was destroyed externally; reset handles
+        dialogueRoot = -1
+        ePanel       = -1
+        eTextField   = -1
+        eName        = -1
+        eNameField   = -1
+        ePortrait    = -1
+        eContinue    = -1
+    end
 
     dialogueRoot = SpawnPrefab(prefabName, Vec2(0, 0))
     if dialogueRoot == -1 then
@@ -264,7 +285,9 @@ end
 
 local function DestroyDialoguePrefab()
     if dialogueRoot ~= -1 then
-        DestroyWithChildren(dialogueRoot)
+        if IsEntityValid(dialogueRoot) then
+            DestroyWithChildren(dialogueRoot)
+        end
         dialogueRoot = -1
         ePanel       = -1
         eTextField   = -1
@@ -287,7 +310,9 @@ local function EndCutscene(reason)
     actionIndex = 0
     actions     = {}
     SetCutsceneActive(false)
-    SetCutscenePlayed(ownerEntity, true)
+    if ownerEntity ~= -1 and IsEntityValid(ownerEntity) then
+        SetCutscenePlayed(ownerEntity, true)
+    end
     CloseDialogue()
     DestroyDialoguePrefab()
     Log("[CutsceneTrigger] Cutscene finished (" .. reason .. ") entity=" .. tostring(EntityID))
@@ -406,6 +431,7 @@ local function TryStartCutscene(other, triggerOwner)
     actionIndex = 1
     cameraEntity = FindCameraEntity()
     SetCutsceneActive(true)
+    StopEntityAudio(FindEntityWithComponent("Player"))
 
     Log("[CutsceneTrigger] Starting cutscene entity=" .. tostring(EntityID)
         .. " owner=" .. tostring(ownerEntity)
@@ -528,6 +554,10 @@ function Start()
     SetCutsceneActive(false)
 
     cameraEntity = FindCameraEntity()
+
+    -- Pre-spawn dialogue prefab so textures/fonts have time to load
+    SpawnDialoguePrefab()
+
     Log("[CutsceneTrigger] Ready. Entity=" .. tostring(EntityID) .. " Camera=" .. tostring(cameraEntity))
 end
 
@@ -542,7 +572,12 @@ function Update(dt)
         -- Another cutscene was active when the player entered this trigger.
         -- Poll until the global flag clears, then start ours.
         if not IsCutsceneActive() then
-            if not TryStartCutscene(pendingOther, pendingOwner) then
+            if not IsEntityValid(pendingOther) or not IsEntityValid(pendingOwner) then
+                -- Stored entities were destroyed while waiting; abandon
+                state = STATE_IDLE
+                pendingOther = -1
+                pendingOwner = -1
+            elseif not TryStartCutscene(pendingOther, pendingOwner) then
                 -- Can't start (playOnce already played, etc.) — go idle
                 state = STATE_DONE
             end
@@ -554,9 +589,10 @@ function Update(dt)
         return
 
     elseif state == STATE_DONE then
-        -- Cutscene finished; restore camera follow if no other cutscene took over
-        if not IsCutsceneActive() and cameraEntity ~= -1 then
+        -- Cutscene finished; restore camera follow once, then go idle
+        if not IsCutsceneActive() and cameraEntity ~= -1 and IsEntityValid(cameraEntity) then
             SetCameraFollow(cameraEntity, true)
+            state = STATE_IDLE
         end
         return
     end

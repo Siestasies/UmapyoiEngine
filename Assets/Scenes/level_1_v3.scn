@@ -15320,6 +15320,17 @@
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
+                        },
+                        "footsteps": {
+                            "path": "Assets/sounds/footsteps.wav",
+                            "isPlaying": false,
+                            "shouldLoop": true,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
                         }
                     }
                 },
@@ -17671,7 +17682,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Kappa_Statue",
                     "position": {
-                        "x": -127.199,
+                        "x": -127.197,
                         "y": 133.483
                     },
                     "rotation": {
@@ -18255,6 +18266,12 @@
                                     "isSlider": false
                                 }
                             ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                            "scriptName": "Cheat_code.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
                         }
                     ]
                 },

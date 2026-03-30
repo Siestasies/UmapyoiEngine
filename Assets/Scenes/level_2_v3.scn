@@ -130,93 +130,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "WindDemonAttack(Charge)",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
-                "type": 0
-            },
-            {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "Water Demon Charge",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
-                "type": 0
-            },
-            {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "Water Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
-                "type": 0
-            },
-            {
-                "name": "Water Demon ChargenAttack",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
-                "type": 0
-            },
-            {
-                "name": "PlayerDamageMono",
-                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
-                "type": 0
-            },
-            {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "WaterDemonSuicide",
-                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
-                "type": 0
-            },
-            {
-                "name": "WindDemonDamage",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
-                "type": 0
-            },
-            {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                "type": 0
-            },
-            {
-                "name": "KappaInteract",
-                "path": "Assets/sounds/KappaSFX/KappaInteract.wav",
-                "type": 0
-            },
-            {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "WindDemonDeath",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
-                "type": 0
-            },
-            {
-                "name": "SFX_Eye_Close",
-                "path": "Assets/sounds/SFX_Eye_Close.wav",
-                "type": 0
-            },
-            {
-                "name": "Fire Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
-                "type": 0
-            },
-            {
-                "name": "FireEnemyAttack",
-                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
-                "type": 0
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -17524,6 +17438,17 @@
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
+                        },
+                        "footsteps": {
+                            "path": "Assets/sounds/footsteps.wav",
+                            "isPlaying": false,
+                            "shouldLoop": true,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
                         }
                     }
                 },
@@ -19416,7 +19341,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "Kappa_Statue",
                     "position": {
-                        "x": -75.199,
+                        "x": -75.197,
                         "y": 84.981
                     },
                     "rotation": {
@@ -19950,6 +19875,12 @@
                                     "isSlider": false
                                 }
                             ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                            "scriptName": "Cheat_code.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
                         }
                     ]
                 },

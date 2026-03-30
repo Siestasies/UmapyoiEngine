@@ -970,8 +970,25 @@ namespace Uma_ECS
                 }
             }
 
-            // Note: Animator uses sprite sheets which are already tracked via Sprite component
-            // Note: Fonts would be tracked here if we had a Text/Label component
+            // Check for UI Image component (uses textures)
+            if (HasComponent<Uma_UI::Image>(entity))
+            {
+                auto& image = GetComponent<Uma_UI::Image>(entity);
+                if (!image.texturePath.empty())
+                {
+                    outResources.textures.insert(image.texturePath);
+                }
+            }
+
+            // Check for UI Text component (uses fonts)
+            if (HasComponent<Uma_UI::Text>(entity))
+            {
+                auto& text = GetComponent<Uma_UI::Text>(entity);
+                if (!text.fontPath.empty())
+                {
+                    outResources.fonts.insert(text.fontPath);
+                }
+            }
         }
     }
 
@@ -1399,10 +1416,13 @@ namespace Uma_ECS
                 handledEntities.insert(ne);
         }
 
-        // Destroy stale embedded entities
-        for (const auto& info : nestedPrefabs)
-            DestroyEntityAndChildren(info.embeddedEntity);
-        ProcessDeletionQueue();
+        // Destroy stale embedded entities and reload nested prefabs
+        if (!nestedPrefabs.empty())
+        {
+            for (const auto& info : nestedPrefabs)
+                DestroyEntityAndChildren(info.embeddedEntity);
+            ProcessDeletionQueue();
+        }
 
         // Reload each nested prefab fresh from its own file and re-attach
         for (const auto& info : nestedPrefabs)
