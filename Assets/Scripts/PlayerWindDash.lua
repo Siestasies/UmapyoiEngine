@@ -46,7 +46,7 @@ function state_enter(entity)
         collider = GetCollider()
     end
 
-    FaceTowardsMouse(player)
+    --FaceTowardsMouse(player)
     attackStat = GetWindDashAttackStat(player)
     
     -- Check mana cost
@@ -76,8 +76,13 @@ function state_enter(entity)
     originalInvulnerable = player.isInvulnerable
     player.isInvulnerable = true
     
-    dashDirection = getDashDirection(player)
-    
+    --dashDirection = getDashDirection(player)
+    if transform.scale.x < 0 then --left
+        dashDirection = Vec2(-1, 0)
+    else
+        dashDirection = Vec2(1, 0)
+    end
+
     -- Play animation and sound
     animator.animator:Play(WindDashAnimationName, true)
     audio = GetAudioComponent()
@@ -116,7 +121,7 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_J) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerPyronado")
             return
@@ -127,7 +132,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_K) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWhirlpool")
             return

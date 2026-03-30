@@ -86,7 +86,7 @@ function state_enter(entity)
     end
     
     -- Face towards mouse
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     local attackDir = getAttackDirection(player)
 

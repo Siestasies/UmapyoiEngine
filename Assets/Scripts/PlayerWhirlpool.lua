@@ -132,7 +132,7 @@ function state_enter(entity)
         end
     end
     
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     PlayerStatTrackState.incrWhirlpoolAttack()
 end

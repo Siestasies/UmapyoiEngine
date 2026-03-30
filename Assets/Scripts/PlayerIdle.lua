@@ -50,10 +50,10 @@ function state_update(entity, dt)
     end
     
     -- Check for basic attack input (Left mouse button)
-    if MouseButtonPressed(MOUSE_LEFT) then
-        ChangeState(entity, "PlayerAttack")
-        return
-    end
+    --if MouseButtonPressed(MOUSE_LEFT) then
+    --    ChangeState(entity, "PlayerAttack")
+    --    return
+    --end
 
     local transform = GetTransformFrom(EntityID)
 

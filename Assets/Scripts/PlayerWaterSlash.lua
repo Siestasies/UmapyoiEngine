@@ -83,7 +83,7 @@ function state_enter(entity)
     end
     
     -- Face towards mouse
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     attackDir = getAttackDirection(player)
 
@@ -118,7 +118,7 @@ function state_update(entity, dt)
     -- Update timer
     attackTimer = attackTimer - dt
 
-    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_L) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerWhirlpool")
@@ -130,7 +130,7 @@ function state_update(entity, dt)
     end
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if KeyPressed(KEY_J) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerSteamBurst")
             return

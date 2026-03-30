@@ -114,7 +114,11 @@ function state_enter(entity)
 
     -- Spawn offset in front of player
     local spawnOffset = 14.0  -- adjust this value to taste
-    local spawnPos = Vec2(myPos.x + dir.x * spawnOffset, myPos.y + dir.y * spawnOffset)
+    --local spawnPos = Vec2(myPos.x + dir.x * spawnOffset, myPos.y + dir.y * spawnOffset)
+    local spawnPos = Vec2(myPos.x + spawnOffset, myPos.y)
+    if transform.scale.x < 0 then
+        spawnPos = Vec2(myPos.x - spawnOffset, myPos.y)
+    end
 
     local prefab = SpawnPrefab(vfxPrefab, spawnPos)
     local projectile = GetProjectileFrom(prefab)
@@ -125,11 +129,14 @@ function state_enter(entity)
     -- Rotate the prefab to face the direction
     local prefabTransform = GetTransformFrom(prefab)
     if prefabTransform then
-        prefabTransform.rotation.x = angle
+        --Log("XXXXXXXXXXX SCALE: " ..transform.scale.x)
+        if transform.scale.x < 0 then
+            prefabTransform.scale.x = -1
+        end
     end
 
     if spriteComp then
-        spriteComp.flipX = (angle >= 90 and angle <= 270)
+        --spriteComp.flipX = (angle >= 90 and angle <= 270)
     end
     --###################################################################################
     --###################################################################################
@@ -143,7 +150,7 @@ function state_enter(entity)
         end
     end
     
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     PlayerStatTrackState.incrSteamburstAttack()
 end
