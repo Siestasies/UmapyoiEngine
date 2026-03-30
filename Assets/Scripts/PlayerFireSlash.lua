@@ -122,7 +122,8 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
     local transform = GetTransformFrom(EntityID)
 
-    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_L) or GetControllerButtonInput(BTN_A, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerPyronado")
@@ -134,7 +135,8 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_J) or GetControllerButtonInput(BTN_Y, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerSteamBurst")
             return

@@ -42,10 +42,11 @@ function state_update(entity, dt)
     local targetVel = Vec2(0, 0)
     local speed = 50
 
-    if KeyDown(KEY_W) then targetVel.y = targetVel.y + speed end
-    if KeyDown(KEY_S) then targetVel.y = targetVel.y - speed end
-    if KeyDown(KEY_A) then targetVel.x = targetVel.x - speed end
-    if KeyDown(KEY_D) then targetVel.x = targetVel.x + speed end
+    local deadZone = 0.25
+    if KeyDown(KEY_W) or GetControllerAxesInput(AXIS_LEFT_Y, 0) < -deadZone then targetVel.y = targetVel.y + speed end
+    if KeyDown(KEY_S) or GetControllerAxesInput(AXIS_LEFT_Y, 0) > deadZone  then targetVel.y = targetVel.y - speed end
+    if KeyDown(KEY_A) or GetControllerAxesInput(AXIS_LEFT_X, 0) < -deadZone then targetVel.x = targetVel.x - speed end
+    if KeyDown(KEY_D) or GetControllerAxesInput(AXIS_LEFT_X, 0) > deadZone  then targetVel.x = targetVel.x + speed end
 
     if targetVel.x == 0 and targetVel.y == 0 then
         rb.velocity = Vec2(0, 0)
