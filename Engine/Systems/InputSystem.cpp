@@ -595,10 +595,11 @@ namespace Uma_Engine
         {
             if (con->currState.buttons[key] == GLFW_PRESS && con->prevState.buttons[key] == GLFW_RELEASE)
             {
+#ifdef _DEBUG_LOG
                 std::stringstream ss{ "" };
                 ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: PRESSED";
                 Debugger::Log(WarningLevel::eInfo, ss.str());
-
+#endif
                 result = true;
             }
             break;
@@ -607,10 +608,11 @@ namespace Uma_Engine
         {
             if (con->currState.buttons[key] == GLFW_PRESS && con->prevState.buttons[key] == GLFW_PRESS)
             {
+#ifdef _DEBUG_LOG
                 std::stringstream ss{ "" };
                 ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: HOLD";
                 Debugger::Log(WarningLevel::eInfo, ss.str());
-
+#endif
                 result = true;
             }
             break;
@@ -619,10 +621,11 @@ namespace Uma_Engine
         {
             if (con->prevState.buttons[key] == GLFW_PRESS && con->currState.buttons[key] == GLFW_RELEASE)
             {
+#ifdef _DEBUG_LOG
                 std::stringstream ss{ "" };
                 ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: RELEASED";
                 Debugger::Log(WarningLevel::eInfo, ss.str());
-
+#endif
                 result = true;
             }
             break;
@@ -645,15 +648,19 @@ namespace Uma_Engine
 
         if (axis <= GLFW_GAMEPAD_AXIS_RIGHT_Y && std::abs(con->currState.axes[axis]) > 0.15f)  // only log if outside deadzone
         {
+#ifdef _DEBUG_LOG
             std::stringstream ss{ "" };
             ss << "Controller " << controllerId << " Axis [" << axisNames[axis] << "]: " << con->currState.axes[axis];
             Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
         }
         else if (axis > GLFW_GAMEPAD_AXIS_RIGHT_Y && con->currState.axes[axis] > -1)
         {
+#ifdef _DEBUG_LOG
             std::stringstream ss{ "" };
             ss << "Controller " << controllerId << " Axis [" << axisNames[axis] << "]: " << con->currState.axes[axis];
             Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
         }
 
         return con->currState.axes[axis];
