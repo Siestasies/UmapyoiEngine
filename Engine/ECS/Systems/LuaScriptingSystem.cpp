@@ -2402,6 +2402,16 @@ namespace Uma_ECS
 
                 pCoordinator->GetSystem<AudioSystem>()->toggleLowpass(type, enable);
             });
+
+        sharedLua->set_function("StopEntityAudio", [this](Uma_ECS::Entity entity) {
+            pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
+            });
+        sharedLua->set_function("StopEntityAudioByName", [this](Uma_ECS::Entity entity, const std::string& name) {
+            pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity, name);
+            });
+        sharedLua->set_function("StopAllAudio", [this]() {
+            pCoordinator->GetSystem<AudioSystem>()->StopAllEntityAudio();
+            });
     }
 
 

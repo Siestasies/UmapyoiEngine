@@ -13,11 +13,10 @@ function state_enter(entity)
     -- Play run animation
     if HasAnimator() then
         animator = GetAnimator()
-        Log("IM RUNNNNNNING")
     end
 
     animator.animator:Play("walk", false)
-    
+    GetAudioComponent():playFaded(EntityID, "footsteps", 0.5)
 end
 
 function state_update(entity, dt)
@@ -98,5 +97,6 @@ rb.velocity = targetVel
 end
 
 function state_exit(entity)
+    GetAudioComponent():fadeOut(EntityID, "footsteps", 0.5)
     Log("Player exited Run state")
 end

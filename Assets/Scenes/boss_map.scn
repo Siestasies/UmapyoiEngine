@@ -154,18 +154,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                "type": 0
-            },
-            {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -5388,6 +5377,17 @@
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
+                        },
+                        "footsteps": {
+                            "path": "Assets/sounds/footsteps.wav",
+                            "isPlaying": false,
+                            "shouldLoop": true,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
                         }
                     }
                 },
@@ -6684,7 +6684,7 @@
                     "shapes": [
                         {
                             "offset": {
-                                "x": -71.196,
+                                "x": -71.194,
                                 "y": -50.5
                             },
                             "size": {

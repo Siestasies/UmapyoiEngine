@@ -431,6 +431,7 @@ local function TryStartCutscene(other, triggerOwner)
     actionIndex = 1
     cameraEntity = FindCameraEntity()
     SetCutsceneActive(true)
+    StopEntityAudio(FindEntityWithComponent("Player"))
 
     Log("[CutsceneTrigger] Starting cutscene entity=" .. tostring(EntityID)
         .. " owner=" .. tostring(ownerEntity)
