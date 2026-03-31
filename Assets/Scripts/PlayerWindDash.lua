@@ -77,8 +77,43 @@ function state_enter(entity)
     player.isInvulnerable = true
     
     --dashDirection = getDashDirection(player)
-    if transform.scale.x < 0 then --left
-        dashDirection = Vec2(-1, 0)
+    --if transform.scale.x < 0 then --left
+    --    dashDirection = Vec2(-1, 0)
+    --else
+    --    dashDirection = Vec2(1, 0)
+    --end
+    local moveX = 0
+    local moveY = 0
+    local deadZone = 0.25
+    if (KeyDown(KEY_W) or GetControllerAxesInput(AXIS_LEFT_Y, 0) < -deadZone) then moveY = moveY + 1 end
+    if (KeyDown(KEY_S) or GetControllerAxesInput(AXIS_LEFT_Y, 0) > deadZone ) then moveY = moveY - 1 end
+    if (KeyDown(KEY_A) or GetControllerAxesInput(AXIS_LEFT_X, 0) < -deadZone) then moveX = moveX - 1 end
+    if (KeyDown(KEY_D) or GetControllerAxesInput(AXIS_LEFT_X, 0) > deadZone ) then moveX = moveX + 1 end
+    
+    -- If no input, dash in facing direction
+    if moveX == 0 and moveY == 0 then
+        if HasSprite() then
+            local sprite = GetSprite()
+            if sprite then
+                --moveX = sprite.flipX and -1 or 1
+                local playerTransform = GetTransformFrom(EntityID)
+                if playerTransform.scale.x <= 0 then
+                    moveX = -1
+                else
+                    moveX = 1
+                end
+            else
+                moveX = 1
+            end
+        else
+            moveX = 1
+        end
+    end
+    
+    -- Normalize direction
+    local length = math.sqrt(moveX * moveX + moveY * moveY)
+    if length > 0 then
+        dashDirection = Vec2(moveX / length, moveY / length)
     else
         dashDirection = Vec2(1, 0)
     end

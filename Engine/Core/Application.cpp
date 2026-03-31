@@ -217,6 +217,8 @@ namespace Uma_Engine
 
         // Register EVENT-ENHANCED INPUT SYSTEM
         mInputSystem = mSystemManager->RegisterSystem<HybridInputSystem>();
+        mControllerInteractionAccept = mConfig->controller_interaction_accept;
+        mControllerInteractionCancel = mConfig->controller_interaction_cancel;
 
         // Register test event listener (for debugging)
         mSystemManager->RegisterSystem<TestEventListener>();

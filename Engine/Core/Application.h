@@ -260,6 +260,9 @@ namespace Uma_Engine
         inline static float playTime = 0.f;
         inline static bool startPlayTimeTimer = false;
 
+        inline static int mControllerInteractionAccept = 0;
+        inline static int mControllerInteractionCancel = 1;
+
     protected:
 
         std::unique_ptr<Window> mWindow;

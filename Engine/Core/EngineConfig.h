@@ -40,6 +40,10 @@ namespace Uma_Engine
         bool vsync = true;
         int fps = 60;
 
+        // controller button for select / cancel interaction
+        int controller_interaction_accept = 0;
+        int controller_interaction_cancel = 1;
+
         // Window settings
         std::string windowTitle = "My Game Engine";
 
@@ -81,6 +85,9 @@ namespace Uma_Engine
             out.AddMember("fullscreen", fullscreen, allocator);
             out.AddMember("vsync", vsync, allocator);
 
+            out.AddMember("controller_interaction_accept", controller_interaction_accept, allocator);
+            out.AddMember("controller_interaction_cancel", controller_interaction_cancel, allocator);
+
             rapidjson::Value title;
             title.SetString(windowTitle.c_str(), static_cast<rapidjson::SizeType>(windowTitle.length()), allocator);
             out.AddMember("windowTitle", title, allocator);
@@ -108,6 +115,12 @@ namespace Uma_Engine
 
             if (in.HasMember("windowTitle") && in["windowTitle"].IsString())
                 windowTitle = in["windowTitle"].GetString();
+
+            if (in.HasMember("controller_interaction_accept") && in["controller_interaction_accept"].IsString())
+                controller_interaction_accept = in["controller_interaction_accept"].GetInt();
+
+            if (in.HasMember("controller_interaction_cancel") && in["controller_interaction_cancel"].IsString())
+                controller_interaction_cancel = in["controller_interaction_cancel"].GetInt();
         }
 
         /*!

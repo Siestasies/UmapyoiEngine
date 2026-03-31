@@ -20,11 +20,11 @@ function Update(dt)
         escConsumed = false
     end
 
-    if not KeyPressed(KEY_ESCAPE) then
+    if not (KeyPressed(KEY_ESCAPE) or GetControllerButtonInput(BTN_START, BTN_PRESS, 0))then
         escConsumed = false
     end
 
-    if KeyPressed(KEY_ESCAPE) and not escConsumed then
+    if (KeyPressed(KEY_ESCAPE) or GetControllerButtonInput(BTN_START, BTN_PRESS, 0)) and not escConsumed then
         escConsumed = true
         if pausedByEscape then
             pausedByEscape = false
