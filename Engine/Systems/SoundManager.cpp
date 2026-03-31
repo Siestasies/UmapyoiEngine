@@ -148,21 +148,23 @@ namespace Uma_Engine {
             Debugger::Log(WarningLevel::eWarning, "Audio Manager did not subscribe to the audio events");
         }
 
-        result = FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, &pLowpassMaster);
-        if (result != FMOD_OK) {
-            std::cerr << "Failed to create lowpass DSP: " << FMOD_ErrorString(result) << std::endl;
-            return;
-        }
         auto CreateLowpass = [&](FMOD_CHANNELGROUP* group, FMOD_DSP** dsp) {
             FMOD_System_CreateDSPByType(pFmodSystem, FMOD_DSP_TYPE_LOWPASS_SIMPLE, dsp);
-            FMOD_DSP_SetParameterFloat(*dsp, FMOD_DSP_LOWPASS_SIMPLE_CUTOFF, 500.0f);
+            FMOD_DSP_SetParameterFloat(*dsp, FMOD_DSP_LOWPASS_SIMPLE_CUTOFF, 22000.0f);
             FMOD_ChannelGroup_AddDSP(group, FMOD_CHANNELCONTROL_DSP_HEAD, *dsp);
-            FMOD_DSP_SetBypass(*dsp, true); // Off by default
+            FMOD_DSP_SetBypass(*dsp, false);
             };
 
         CreateLowpass(Master, &pLowpassMaster);
         CreateLowpass(SFX, &pLowpassSFX);
         CreateLowpass(BGM, &pLowpassBGM);
+
+        FMOD_DSP_SetBypass(pLowpassSFX, 0);  // never bypass
+        FMOD_DSP_SetBypass(pLowpassBGM, 0);
+        FMOD_DSP_SetBypass(pLowpassMaster, 0);
+        FMOD_DSP_SetParameterFloat(pLowpassSFX, FMOD_DSP_LOWPASS_CUTOFF, 22000.0f);
+        FMOD_DSP_SetParameterFloat(pLowpassBGM, FMOD_DSP_LOWPASS_CUTOFF, 22000.0f);
+        FMOD_DSP_SetParameterFloat(pLowpassMaster, FMOD_DSP_LOWPASS_CUTOFF, 22000.0f);
 
         return;
     }
@@ -178,6 +180,22 @@ namespace Uma_Engine {
     void SoundManager::Update(float dt)
     {
         UpdateFades(dt);
+
+        const float SWEEP_RATE = 420000.0f; // covers full 21000 Hz range in ~50ms
+
+        auto Sweep = [&](float& current, float target, FMOD_DSP* dsp) {
+            if (!dsp || current == target) return;
+            float delta = SWEEP_RATE * dt;
+            if (current < target)
+                current = (current + delta >= target) ? target : current + delta;
+            else
+                current = (current - delta <= target) ? target : current - delta;
+            FMOD_DSP_SetParameterFloat(dsp, FMOD_DSP_LOWPASS_SIMPLE_CUTOFF, current);
+            };
+
+        Sweep(m_sfxCutoffCurrent, m_sfxCutoffTarget, pLowpassSFX);
+        Sweep(m_bgmCutoffCurrent, m_bgmCutoffTarget, pLowpassBGM);
+        Sweep(m_masterCutoffCurrent, m_masterCutoffTarget, pLowpassMaster);
 
         if (pFmodSystem) {
             FMOD_System_Set3DListenerAttributes(
@@ -628,69 +646,39 @@ namespace Uma_Engine {
     }
 
     void SoundManager::ToggleLowpass(SoundInfo* info, bool enable) {
-        //check if the audio channel exist
         if (!info || !info->channel || !info->dspLowpass) return;
-
-        //toggle lowpass cutoff values
-        float cutoff;
-        if (enable) cutoff = 1000.0f;
-        else cutoff = 22000.0f;
-        FMOD_DSP_SetParameterFloat(info->dspLowpass, FMOD_DSP_LOWPASS_CUTOFF, cutoff);
-        FMOD_System_Update(pFmodSystem);
+        // Just set the target — the Update() loop will sweep toward it
+        info->targetLowpassCutoff = enable ? 1000.0f : 22000.0f;
     }
 
-    void SoundManager::ToggleGroupLowpass(SoundType type, bool enable)
-    {
-        // Prevent toggling Master if SFX or BGM is active, and vice versa
-        // this is to prevent double filtering of sound groups 
-        // individual sound channel have low pass will not guard against it so beware when using it
-        if (enable)
-        {
-            FMOD_BOOL sfxBypassed, bgmBypassed, masterBypassed;
-            FMOD_DSP_GetBypass(pLowpassSFX, &sfxBypassed);
-            FMOD_DSP_GetBypass(pLowpassBGM, &bgmBypassed);
-            FMOD_DSP_GetBypass(pLowpassMaster, &masterBypassed);
+    void SoundManager::ToggleGroupLowpass(SoundType type, bool enable) {
+        // Guard: check targets instead of bypass state
+        if (enable) {
+            bool sfxActive = m_sfxCutoffTarget < 20000.0f;
+            bool bgmActive = m_bgmCutoffTarget < 20000.0f;
+            bool masterActive = m_masterCutoffTarget < 20000.0f;
 
-            // bypass=false means active (not bypassed = enabled)
-            bool sfxActive = !sfxBypassed;
-            bool bgmActive = !bgmBypassed;
-            bool masterActive = !masterBypassed;
-
-            if (type == SoundType::MASTER && (sfxActive || bgmActive))
-            {
+            if (type == SoundType::MASTER && (sfxActive || bgmActive)) {
                 Debugger::Log(WarningLevel::eWarning,
-                    "Cannot enable Master lowpass while SFX or BGM lowpass is active — would double-filter.");
+                    "Cannot enable Master lowpass while SFX or BGM lowpass is active.");
                 return;
             }
-            if ((type == SoundType::SFX || type == SoundType::BGM) && masterActive)
-            {
+            if ((type == SoundType::SFX || type == SoundType::BGM) && masterActive) {
                 Debugger::Log(WarningLevel::eWarning,
-                    "Cannot enable SFX/BGM lowpass while Master lowpass is active — would double-filter.");
+                    "Cannot enable SFX/BGM lowpass while Master lowpass is active.");
                 return;
             }
         }
 
-        FMOD_DSP** dsp = nullptr;
-        switch (type)
-        {
-        case SoundType::SFX:
-            dsp = &pLowpassSFX;
-            break;
-        case SoundType::BGM:
-            dsp = &pLowpassBGM;
-            break;
-        case SoundType::MASTER:
-            dsp = &pLowpassMaster;
-            break;
+        float target = enable ? 1000.0f : 22000.0f;
+        switch (type) {
+        case SoundType::SFX:    m_sfxCutoffTarget = target; break;
+        case SoundType::BGM:    m_bgmCutoffTarget = target; break;
+        case SoundType::MASTER: m_masterCutoffTarget = target; break;
         default:
             Debugger::Log(WarningLevel::eWarning, "ToggleGroupLowpass: unknown SoundType.");
-            return;
             break;
         }
-
-        //this is correct as mentioned above if bypass is false means its being filtered
-        //it is inverted for ease of use for user so when they toggle it on with true it will filter
-        FMOD_DSP_SetBypass(*dsp, !enable);
     }
 
 }
