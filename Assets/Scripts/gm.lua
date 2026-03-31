@@ -39,8 +39,10 @@ function Update(dt)
     if IsEntityValid(playerEntity) then
         if health > 0 then
             if pausedByEscape then
-                toggleGroupLowpass("MASTER", true)
-                wasPaused = true
+                if not wasPaused then
+                    toggleGroupLowpass("MASTER", true)
+                    wasPaused = true
+                end
                 local child = GetChildren(EntityID, 1)
                 SetActiveEntity(child, true)   -- pause menu
                 return

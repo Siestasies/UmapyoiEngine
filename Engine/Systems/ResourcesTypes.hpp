@@ -96,6 +96,9 @@ namespace Uma_Engine
 
 		//to toggle to low pass from normal audio
 		FMOD_DSP* dspLowpass = nullptr;
+
+		float currentLowpassCutoff = 22000.0f;
+		float targetLowpassCutoff = 22000.0f;
 	};
 
 	/*!
