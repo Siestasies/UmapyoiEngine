@@ -1,0 +1,128 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "snow",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/snow.prefab",
+                        "isRoot": true
+                    },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": [
+                            {
+                                "mode": 2,
+                                "maxParticles": 100,
+                                "isActive": true,
+                                "renderLayer": 1,
+                                "renderOrder": 0,
+                                "texturePath": "Assets/snow particle 1.png",
+                                "appearance": {
+                                    "scaleRange": [
+                                        0.5,
+                                        1.5
+                                    ],
+                                    "startColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "endColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "colorLerp": false,
+                                    "randomOpacity": false,
+                                    "opacityRange": [
+                                        0.5,
+                                        1.0
+                                    ],
+                                    "rotateParticles": true,
+                                    "rotationSpeedRange": [
+                                        -90.0,
+                                        90.0
+                                    ]
+                                },
+                                "fade": {
+                                    "fadeIn": false,
+                                    "fadeInDuration": 0.3,
+                                    "fadeOut": true,
+                                    "fadeOutDuration": 0.5,
+                                    "fadeAtEdges": true,
+                                    "edgeFadeDistance": 150.0
+                                },
+                                "physics": {
+                                    "speedRange": [
+                                        5.0,
+                                        0.0
+                                    ],
+                                    "lifetimeRange": [
+                                        1.0,
+                                        3.0
+                                    ],
+                                    "gravity": [
+                                        0.0,
+                                        -5.0
+                                    ],
+                                    "drag": 0.0
+                                },
+                                "spawn": {
+                                    "spawnOffset": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "spawnRadius": 0.0,
+                                    "useEmissionCone": false,
+                                    "emissionAngle": 0.0,
+                                    "emissionSpread": 360.0
+                                },
+                                "emission": {
+                                    "emissionRate": 50.0,
+                                    "loop": false,
+                                    "loopDelay": 1.0
+                                },
+                                "screenFill": {
+                                    "velocityXRange": [
+                                        -20.0,
+                                        20.0
+                                    ],
+                                    "velocityYRange": [
+                                        -150.0,
+                                        -80.0
+                                    ],
+                                    "spawnAtTop": true,
+                                    "spawnMargin": 100.0
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [],
+        "fonts": [],
+        "sounds": []
+    }
+}
