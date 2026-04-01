@@ -108,13 +108,3 @@ end
 
 function OnPointerExit()
 end
-
-function Update(dt)
-    if GetActiveEntity(GetParent(EntityID)) then
-        Log("WHY")
-    end
-    -- if GetParent().isActive == true and IsGamePause() == false then
-    --     PauseGame(true)
-    --     Log("WHY")
-    -- end
-end
