@@ -1393,7 +1393,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/fire ability icon.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 0.0,
@@ -1545,7 +1545,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/water ability icon.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 0.0,
@@ -1697,7 +1697,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                        "texturePath": "Assets/wind ability icon.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 0.0,
@@ -9267,7 +9267,38 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/lost hp point.png"
+            },
+            {
+                "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/mana bar empty.png"
+            },
+            {
+                "path": "assets/mana bar full.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/fire ability icon.png"
+            },
+            {
+                "path": "assets/wind ability icon.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }
