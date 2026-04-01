@@ -2948,6 +2948,12 @@ namespace Uma_ECS
             {
                 return Uma_Engine::HybridInputSystem::IsControllerConnected(controller_id);
             });
+
+        // universal
+        sharedLua->set_function("GetCurrentInputMethod", [this]() -> int
+            {
+                return Uma_Engine::HybridInputSystem::GetCurrentInputMethod();
+            });
     }
 
     void LuaScriptingSystem::RegisterKeyConstants()

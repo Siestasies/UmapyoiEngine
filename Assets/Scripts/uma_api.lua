@@ -1434,6 +1434,11 @@ function GetControllerAxesInput(axis, controller_id) end
 ---@return boolean
 function IsControllerConnected(controller_id) end
 
+-- 0 is keyboard and mouse
+-- 1 is controller
+---@return integer
+function GetCurrentInputMethod() end
+
 ---@type integer
 BTN_A = 0
 ---@type integer

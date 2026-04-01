@@ -7,6 +7,9 @@ local helpScrn
 local isCfmTurnedOn
 local cfmScrn
 
+local controllerInputIndicator
+local isControllerInputIndicatorActive
+
 function Start()
 
     local children = GetChildrenList(EntityID)
@@ -27,6 +30,9 @@ function Start()
 
     cfmScrn = children[7]
 
+    controllerInputIndicator = children[8]
+    isControllerInputIndicatorActive = false
+
 end
 
 function Update(dt)
@@ -34,6 +40,13 @@ function Update(dt)
     isHelpTurnedOn = GetActiveEntity(helpScrn)
     isCfmTurnedOn = GetActiveEntity(cfmScrn)
 
+    if GetCurrentInputMethod() == 1 and not isControllerInputIndicatorActive then
+        SetActiveEntity(controllerInputIndicator, true) 
+        isControllerInputIndicatorActive = true
+    elseif GetCurrentInputMethod() == 0 and isControllerInputIndicatorActive then
+        SetActiveEntity(controllerInputIndicator, false) 
+        isControllerInputIndicatorActive = false
+    end
 
     if (isHelpTurnedOn or isCfmTurnedOn) and nav:getActive() == true then 
         nav:setActive(false)
