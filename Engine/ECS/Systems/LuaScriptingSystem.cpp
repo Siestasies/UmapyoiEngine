@@ -138,15 +138,23 @@ namespace Uma_ECS
         for (auto const& entity : aEntities)
         {
             if (!pCoordinator->IsActiveInHierarchy(entity))
+            {
+                auto& scriptComponent = scriptArray.GetData(entity);
+                for (auto& script : scriptComponent.scripts)
+                {
+                    if (script.hasError || !script.isInitialized)
+                        continue;
+
+                    if (script.wasEnabledLastFrame)
+                    {
+                        CallLuaFunction(script, "OnDisable");
+                        script.wasEnabledLastFrame = false;
+                    }
+                }
                 continue;
+            }
 
             auto& scriptComponent = scriptArray.GetData(entity);
-
-            // Initialize scripts if needed
-            /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
-            {
-                InitializeEntityScripts(entity, scriptComponent);
-            }*/
 
             // update each script instance
             for (auto& script : scriptComponent.scripts)
@@ -2596,6 +2604,7 @@ namespace Uma_ECS
                         CallLuaFunction(script, "OnDisable");
                     }
                     script.isEnabled = e.isActive;
+                    script.wasEnabledLastFrame = e.isActive;
                 }
             }
         );
