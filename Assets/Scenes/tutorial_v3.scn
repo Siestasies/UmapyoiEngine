@@ -2,37 +2,37 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
-            },
-            {
-                "path": "assets/player_ss.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/snow particle 1.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/int_ss.png"
+                "path": "assets/player_ss.png"
+            },
+            {
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/door opening ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/int_ss.png"
             },
             {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -47,10 +47,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -62,13 +62,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -80,10 +80,10 @@
                 "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/tutorial box wind.png"
+                "path": "assets/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/vfx 512 ss 1.png"
+                "path": "assets/tutorial box wind.png"
             },
             {
                 "path": "assets/star.png"
@@ -98,10 +98,10 @@
                 "path": "assets/controlspopup2.png"
             },
             {
-                "path": "assets/controlspopup3.png"
+                "path": "assets/mana bar full.png"
             },
             {
-                "path": "assets/mana bar full.png"
+                "path": "assets/controlspopup3.png"
             },
             {
                 "path": "assets/vfx 512 ss 3.png"
@@ -110,22 +110,25 @@
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/vfx 512 ss 2.png"
+                "path": "assets/skill tree/skill frame.png"
             },
             {
-                "path": "assets/skill tree/skill frame.png"
+                "path": "assets/vfx 512 ss 2.png"
             },
             {
                 "path": "assets/skill tree/skill tree menu frame.png"
             },
             {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
                 "path": "assets/skill tree/plus hp skill.png"
             },
             {
-                "path": "assets/tutorial box fire.png"
+                "path": "assets/dialogue ui box.png"
             },
             {
-                "path": "assets/dialogue ui box.png"
+                "path": "assets/tutorial box fire.png"
             },
             {
                 "path": "assets/dialogue player ui sprite.png"
@@ -144,17 +147,20 @@
             },
             {
                 "path": "assets/tutorial box water.png"
+            },
+            {
+                "path": "assets/wind vfx spritesheet.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -165,13 +171,23 @@
         ],
         "sounds": [
             {
+                "name": "WindDemonAttack(Charge)",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                "type": 0
+            },
+            {
                 "name": "CombatGameplayBGM",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
             },
             {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
                 "type": 0
             },
             {
@@ -180,8 +196,23 @@
                 "type": 0
             },
             {
-                "name": "SFX_Eye_Close",
-                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                "name": "FireSlash",
+                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "SteamBurst",
+                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDamage",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                "type": 0
+            },
+            {
+                "name": "FireCyclone",
+                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
                 "type": 0
             },
             {
@@ -190,18 +221,33 @@
                 "type": 0
             },
             {
-                "name": "Fire Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
-                "type": 0
-            },
-            {
                 "name": "WindSlash",
                 "path": "Assets/sounds/Player Wav/WindSlash.wav",
                 "type": 0
             },
             {
-                "name": "SteamBurst",
-                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "name": "Fire Demon Damage Scream",
+                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "FireEnemyAttack",
+                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Eye_Close",
+                "path": "Assets/sounds/SFX_Eye_Close.wav",
                 "type": 0
             }
         ],
@@ -11601,8 +11647,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 72.099,
-                        "y": -173.3
+                        "x": 72.5,
+                        "y": -175.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -11628,8 +11674,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "player_new",
                     "position": {
-                        "x": 72.19,
-                        "y": -173.263
+                        "x": 72.5,
+                        "y": -175.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -11832,13 +11878,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -11854,13 +11900,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -12926,6 +12972,16 @@
                     "initialClip": "idle",
                     "clips": [
                         {
+                            "name": "normal_atk",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 0,
+                            "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -12936,11 +12992,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "normal_atk",
+                            "name": "atk_wind",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "hurt",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 16,
+                            "frameCount": 3,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -12956,21 +13022,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "hurt",
+                            "name": "atk_water",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_wind",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -12981,16 +13037,6 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_water",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13055,9 +13101,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -13065,14 +13111,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -13080,9 +13126,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -13151,7 +13197,7 @@
         },
         {
             "id": 4,
-            "isActive": false,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "map collider 1",
@@ -13531,7 +13577,7 @@
                         },
                         {
                             "offset": {
-                                "x": -74.199,
+                                "x": -74.194,
                                 "y": 83.3
                             },
                             "size": {
@@ -13576,7 +13622,7 @@
                         },
                         {
                             "offset": {
-                                "x": -269.998,
+                                "x": -269.997,
                                 "y": 160.0
                             },
                             "size": {
@@ -13600,8 +13646,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "tut room eye",
                     "position": {
-                        "x": -232.998,
-                        "y": -22.857
+                        "x": -280.0,
+                        "y": 100.0
                     },
                     "rotation": {
                         "x": 0.0,
@@ -13613,7 +13659,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        10
+                        202,
+                        205,
+                        212
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -13717,131 +13765,7 @@
             }
         },
         {
-            "id": 11,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "tut room eye 2",
-                    "position": {
-                        "x": -284.165,
-                        "y": 117.309
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        19,
-                        15
-                    ]
-                },
-                "struct Uma_ECS::AudioComponent": {
-                    "defaultVolume": 1.0,
-                    "default3D": true,
-                    "loadedSounds": {
-                        "SFX_Eye_Close": {
-                            "path": "Assets/sounds/SFX_Eye_Close.wav",
-                            "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
-                            "volume": 1.0,
-                            "pitch": 1.0,
-                            "minDistance": 100.0,
-                            "maxDistance": 100.0
-                        }
-                    }
-                },
-                "struct Uma_ECS::Sprite": {
-                    "texturePath": "Assets/PROPS ANIMATION.png",
-                    "layer": 2,
-                    "order": 0,
-                    "flipX": false,
-                    "flipY": false,
-                    "autoFlip": true,
-                    "Native": true,
-                    "gridX": 13.0,
-                    "gridY": 12.0,
-                    "cellX": 1.0,
-                    "cellY": 9.0,
-                    "offsetX": 0.0,
-                    "offsetY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/Eye.lua",
-                            "scriptName": "Eye.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Animator": {
-                    "autoPlay": true,
-                    "initialClip": "eye1",
-                    "clips": [
-                        {
-                            "name": "eye2",
-                            "framesX": 13,
-                            "framesY": 11,
-                            "startFrame": 131,
-                            "frameCount": 1,
-                            "speed": 10.0,
-                            "loop": true,
-                            "texturePath": "Assets/PROPS ANIMATION.png"
-                        },
-                        {
-                            "name": "eye1",
-                            "framesX": 13,
-                            "framesY": 11,
-                            "startFrame": 130,
-                            "frameCount": 1,
-                            "speed": 10.0,
-                            "loop": true,
-                            "texturePath": "Assets/PROPS ANIMATION.png"
-                        },
-                        {
-                            "name": "eye3",
-                            "framesX": 13,
-                            "framesY": 11,
-                            "startFrame": 132,
-                            "frameCount": 1,
-                            "speed": 10.0,
-                            "loop": true,
-                            "texturePath": "Assets/PROPS ANIMATION.png"
-                        },
-                        {
-                            "name": "eye4",
-                            "framesX": 13,
-                            "framesY": 11,
-                            "startFrame": 134,
-                            "frameCount": 1,
-                            "speed": 10.0,
-                            "loop": true,
-                            "texturePath": "Assets/PROPS ANIMATION.png"
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/tut room eye 2.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 20,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13860,21 +13784,18 @@
                     },
                     "parent": -1,
                     "children": [
-                        21,
-                        22,
-                        23,
+                        8,
+                        12,
+                        16,
+                        20,
                         24,
-                        25,
-                        26,
-                        30,
-                        34,
+                        27,
+                        31,
+                        35,
                         38,
-                        41,
-                        45,
-                        49,
-                        50,
-                        51,
-                        52
+                        39,
+                        40,
+                        41
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -13885,57 +13806,17 @@
                             "isEnabled": true,
                             "exposedVariables": [
                                 {
-                                    "name": "missionText",
+                                    "name": "waterPrompt",
                                     "type": 3,
-                                    "value": "Use fire skill ",
+                                    "value": "Use Water Slash",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
                                 },
                                 {
-                                    "name": "missionText2",
+                                    "name": "steamPrompt",
                                     "type": 3,
-                                    "value": "Use water skill  ",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "missionText4",
-                                    "type": 3,
-                                    "value": "Use pyronado skill ",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "missionText3",
-                                    "type": 3,
-                                    "value": "Use wind skill ",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "missionText5",
-                                    "type": 3,
-                                    "value": "Use Whirlpool skill ",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "missionText6",
-                                    "type": 3,
-                                    "value": "Use Steam Burst skill ",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "missionText7",
-                                    "type": 3,
-                                    "value": "Kill the enemies",
+                                    "value": "Use Steamburst",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -13944,6 +13825,70 @@
                                     "name": "moveToNext",
                                     "type": 3,
                                     "value": "Move to the next room",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "firePrompt",
+                                    "type": 3,
+                                    "value": "Use Fire Slash",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "windPrompt",
+                                    "type": 3,
+                                    "value": "Use Wind Dash",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "whirlPrompt",
+                                    "type": 3,
+                                    "value": "Use Whirlpool",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "pyroPrompt",
+                                    "type": 3,
+                                    "value": "Use Pyronado",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "killPrompt",
+                                    "type": 3,
+                                    "value": "Defeat the enemy",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "killWaterPrompt",
+                                    "type": 3,
+                                    "value": "Defeat the Water enemy",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "killWindPrompt",
+                                    "type": 3,
+                                    "value": "Defeat the Wind enemy",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "killFirePrompt",
+                                    "type": 3,
+                                    "value": "Defeat the Fire enemy",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -13958,12 +13903,12 @@
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
-                        "x": 0.5,
-                        "y": 0.5
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "anchorMax": {
-                        "x": 0.5,
-                        "y": 0.5
+                        "x": 1.0,
+                        "y": 1.0
                     },
                     "pivot": {
                         "x": 0.5,
@@ -13991,7 +13936,12 @@
             }
         },
         {
-            "id": 57,
+            "id": 42,
+            "isActive": true,
+            "components": {}
+        },
+        {
+            "id": 43,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14010,7 +13960,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        75
+                        61
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14215,7 +14165,7 @@
             }
         },
         {
-            "id": 76,
+            "id": 62,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14234,7 +14184,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        77
+                        63
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14306,7 +14256,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": -4.098
+                                "y": -4.397
                             },
                             "size": {
                                 "x": 12.399,
@@ -14386,7 +14336,7 @@
             }
         },
         {
-            "id": 78,
+            "id": 64,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14498,7 +14448,7 @@
             }
         },
         {
-            "id": 79,
+            "id": 65,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14646,7 +14596,7 @@
             }
         },
         {
-            "id": 80,
+            "id": 66,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14794,7 +14744,7 @@
             }
         },
         {
-            "id": 81,
+            "id": 67,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14937,7 +14887,7 @@
             }
         },
         {
-            "id": 82,
+            "id": 68,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14955,7 +14905,9 @@
                         "y": 1.0
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        209
+                    ]
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -15075,8 +15027,8 @@
             }
         },
         {
-            "id": 83,
-            "isActive": false,
+            "id": 69,
+            "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "game manager",
@@ -15094,12 +15046,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        84,
-                        108,
-                        120,
-                        126,
-                        137,
-                        174
+                        70,
+                        94,
+                        106,
+                        112,
+                        123,
+                        160
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -15134,7 +15086,7 @@
             }
         },
         {
-            "id": 207,
+            "id": 193,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15153,7 +15105,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        208
+                        194
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15195,7 +15147,7 @@
             }
         },
         {
-            "id": 209,
+            "id": 195,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15214,7 +15166,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        210
+                        196
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15257,7 +15209,7 @@
             }
         },
         {
-            "id": 210,
+            "id": 196,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15274,7 +15226,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 209,
+                    "parent": 195,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15301,7 +15253,7 @@
             }
         },
         {
-            "id": 211,
+            "id": 197,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15320,7 +15272,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        212
+                        198
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15363,7 +15315,7 @@
             }
         },
         {
-            "id": 212,
+            "id": 198,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15380,7 +15332,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 211,
+                    "parent": 197,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15407,7 +15359,7 @@
             }
         },
         {
-            "id": 213,
+            "id": 199,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15426,7 +15378,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        214
+                        200
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15469,7 +15421,7 @@
             }
         },
         {
-            "id": 214,
+            "id": 200,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15486,7 +15438,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 213,
+                    "parent": 199,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15513,7 +15465,7 @@
             }
         },
         {
-            "id": 53,
+            "id": 201,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15626,6 +15578,547 @@
                             "autoFitToSprite": false
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 209,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy",
+                    "position": {
+                        "x": 888.114,
+                        "y": -275.183
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 0.689,
+                        "y": 1.519
+                    },
+                    "parent": 68,
+                    "children": [
+                        210,
+                        211
+                    ]
+                },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": true,
+                    "loadedSounds": {
+                        "Fire Demon Shoot Fireball": {
+                            "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "Fire Demon Charge": {
+                            "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "Fire Demon Damage Scream": {
+                            "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 0.5,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "FireEnemyAttack": {
+                            "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 0.4,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        }
+                    }
+                },
+                "struct Uma_ECS::Sprite": {
+                    "texturePath": "Assets/fire bird.png",
+                    "layer": 16,
+                    "order": 0,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": true,
+                    "Native": true,
+                    "gridX": 0.0,
+                    "gridY": 0.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": -0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 500.0,
+                    "fric_coeff": 5.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": -2.2,
+                                "y": 2.0
+                            },
+                            "size": {
+                                "x": 10.6,
+                                "y": 3.7
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 18,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": -2.0,
+                                "y": -3.4
+                            },
+                            "size": {
+                                "x": 10.8,
+                                "y": 1.399
+                            },
+                            "purpose": 0,
+                            "layer": 4,
+                            "colliderMask": 8,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonBase.lua",
+                            "scriptName": "FireDemonBase.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "enemyHurtEffectDuration",
+                                    "type": 0,
+                                    "value": 0.5,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
+                            "scriptName": "FireDemonIdle.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "chaseEnterRange",
+                                    "type": 0,
+                                    "value": 20.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonChase.lua",
+                            "scriptName": "FireDemonChase.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "attackEnterRange",
+                                    "type": 0,
+                                    "value": 8.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "chaseExitRange",
+                                    "type": 0,
+                                    "value": 25.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
+                            "scriptName": "FireDemonAttack.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "chargeTime",
+                                    "type": 0,
+                                    "value": 2.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "attackRange",
+                                    "type": 0,
+                                    "value": 5.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "HoverSpd",
+                                    "type": 0,
+                                    "value": 1.5,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "attackExitRange",
+                                    "type": 0,
+                                    "value": 12.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
+                            "scriptName": "FireDemonStunned.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "StunnedDuration",
+                                    "type": 0,
+                                    "value": 3.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/FireDemonDead.lua",
+                            "scriptName": "FireDemonDead.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "deathDuration",
+                                    "type": 0,
+                                    "value": 2.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Enemy": {
+                    "mHealth": 100,
+                    "mMaxHealth": 100,
+                    "mHealthRegenRate": 1.0,
+                    "mSpeed": 10.0,
+                    "mAttackDamage": 15,
+                    "mAttackSpeed": 1.5,
+                    "mAttackRange": 20.0,
+                    "mDefense": 5
+                },
+                "struct Uma_ECS::Animator": {
+                    "autoPlay": true,
+                    "initialClip": "idle",
+                    "clips": [
+                        {
+                            "name": "charging_atk",
+                            "framesX": 11,
+                            "framesY": 4,
+                            "startFrame": 11,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": ""
+                        },
+                        {
+                            "name": "idle",
+                            "framesX": 11,
+                            "framesY": 4,
+                            "startFrame": 0,
+                            "frameCount": 10,
+                            "speed": 10.0,
+                            "loop": true,
+                            "texturePath": ""
+                        },
+                        {
+                            "name": "die",
+                            "framesX": 11,
+                            "framesY": 4,
+                            "startFrame": 33,
+                            "frameCount": 11,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": ""
+                        },
+                        {
+                            "name": "attack",
+                            "framesX": 11,
+                            "framesY": 4,
+                            "startFrame": 22,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": ""
+                        }
+                    ]
+                },
+                "struct Uma_ECS::PathFinding": {
+                    "pathUpdateTimer": 0.133,
+                    "pathUpdateInterval": 0.5
+                },
+                "struct Uma_ECS::ParticleEmitter": {
+                    "emitters": [
+                        {
+                            "mode": 1,
+                            "maxParticles": 3,
+                            "isActive": false,
+                            "renderLayer": 16,
+                            "renderOrder": 100,
+                            "texturePath": "Assets/star.png",
+                            "appearance": {
+                                "scaleRange": [
+                                    4.0,
+                                    4.0
+                                ],
+                                "startColor": [
+                                    1.0,
+                                    1.0,
+                                    0.5
+                                ],
+                                "endColor": [
+                                    1.0,
+                                    1.0,
+                                    1.0
+                                ],
+                                "colorLerp": true,
+                                "randomOpacity": true,
+                                "opacityRange": [
+                                    0.699,
+                                    1.0
+                                ],
+                                "rotateParticles": true,
+                                "rotationSpeedRange": [
+                                    -180.0,
+                                    180.0
+                                ]
+                            },
+                            "fade": {
+                                "fadeIn": true,
+                                "fadeInDuration": 0.2,
+                                "fadeOut": true,
+                                "fadeOutDuration": 0.3,
+                                "fadeAtEdges": true,
+                                "edgeFadeDistance": 150.0
+                            },
+                            "physics": {
+                                "speedRange": [
+                                    0.0,
+                                    0.0
+                                ],
+                                "lifetimeRange": [
+                                    1.0,
+                                    1.0
+                                ],
+                                "gravity": [
+                                    2.0,
+                                    2.0
+                                ],
+                                "drag": 0.0
+                            },
+                            "spawn": {
+                                "spawnOffset": [
+                                    0.0,
+                                    0.3
+                                ],
+                                "spawnRadius": 5.0,
+                                "useEmissionCone": false,
+                                "emissionAngle": 0.0,
+                                "emissionSpread": 360.0
+                            },
+                            "emission": {
+                                "emissionRate": 3.0,
+                                "loop": false,
+                                "loopDelay": 0.0
+                            },
+                            "screenFill": {
+                                "velocityXRange": [
+                                    -20.0,
+                                    20.0
+                                ],
+                                "velocityYRange": [
+                                    -150.0,
+                                    -80.0
+                                ],
+                                "spawnAtTop": true,
+                                "spawnMargin": 100.0
+                            }
+                        }
+                    ]
+                },
+                "struct Uma_ECS::FSM": {
+                    "states": [
+                        {
+                            "name": "FireDemonIdle.lua",
+                            "isActive": true,
+                            "scriptIndex": 0
+                        },
+                        {
+                            "name": "FireDemonDead.lua",
+                            "isActive": true,
+                            "scriptIndex": 4
+                        },
+                        {
+                            "name": "FireDemonChase.lua",
+                            "isActive": true,
+                            "scriptIndex": 1
+                        },
+                        {
+                            "name": "FireDemonAttack.lua",
+                            "isActive": true,
+                            "scriptIndex": 2
+                        },
+                        {
+                            "name": "FireDemonStunned.lua",
+                            "isActive": true,
+                            "scriptIndex": 3
+                        }
+                    ],
+                    "nextId": 5,
+                    "current": "FireDemonIdle",
+                    "next": ""
+                }
+            }
+        },
+        {
+            "id": 210,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "bird enemy child",
+                    "position": {
+                        "x": -1.7,
+                        "y": 4.006
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 5.059,
+                        "y": 3.38
+                    },
+                    "parent": 209,
+                    "children": []
+                },
+                "struct Uma_ECS::Sprite": {
+                    "texturePath": "Assets/fire enemy shadow.png",
+                    "layer": 16,
+                    "order": 0,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": false,
+                    "Native": true,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
+                    "tintColor": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "alpha": 1.0
+                }
+            }
+        },
+        {
+            "id": 211,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "hp fill",
+                    "position": {
+                        "x": 0.0,
+                        "y": 4.8
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 15.0,
+                        "y": 0.699
+                    },
+                    "parent": 209,
+                    "children": []
+                },
+                "struct Uma_ECS::Sprite": {
+                    "texturePath": "Assets/whitePixel.png",
+                    "layer": 128,
+                    "order": 20,
+                    "flipX": false,
+                    "flipY": false,
+                    "autoFlip": true,
+                    "Native": false,
+                    "gridX": 1.0,
+                    "gridY": 1.0,
+                    "cellX": 0.0,
+                    "cellY": 0.0,
+                    "offsetX": 0.0,
+                    "offsetY": 0.0,
+                    "tintColor": [
+                        0.442,
+                        0.442,
+                        0.442
+                    ],
+                    "alpha": 1.0
                 }
             }
         }

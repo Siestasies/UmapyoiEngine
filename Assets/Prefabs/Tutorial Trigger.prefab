@@ -22,21 +22,17 @@
                         "parent": -1,
                         "children": [
                             1,
-                            2,
-                            3,
-                            4,
                             5,
-                            6,
-                            10,
-                            14,
-                            18,
-                            21,
-                            25,
-                            29,
-                            30,
+                            9,
+                            13,
+                            17,
+                            20,
+                            24,
+                            28,
                             31,
                             32,
-                            33
+                            33,
+                            34
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -47,57 +43,17 @@
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "missionText",
+                                        "name": "waterPrompt",
                                         "type": 3,
-                                        "value": "Use fire skill ",
+                                        "value": "Use Water Slash",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "missionText2",
+                                        "name": "steamPrompt",
                                         "type": 3,
-                                        "value": "Use water skill  ",
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "missionText4",
-                                        "type": 3,
-                                        "value": "Use pyronado skill ",
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "missionText3",
-                                        "type": 3,
-                                        "value": "Use wind skill ",
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "missionText5",
-                                        "type": 3,
-                                        "value": "Use Whirlpool skill ",
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "missionText6",
-                                        "type": 3,
-                                        "value": "Use Steam Burst skill ",
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "missionText7",
-                                        "type": 3,
-                                        "value": "Kill the enemies",
+                                        "value": "Use Steamburst",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -106,6 +62,46 @@
                                         "name": "moveToNext",
                                         "type": 3,
                                         "value": "Move to the next room",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "firePrompt",
+                                        "type": 3,
+                                        "value": "Use Fire Slash",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "windPrompt",
+                                        "type": 3,
+                                        "value": "Use Wind Dash",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "whirlPrompt",
+                                        "type": 3,
+                                        "value": "Use Whirlpool",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "pyroPrompt",
+                                        "type": 3,
+                                        "value": "Use Pyronado",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "killPrompt",
+                                        "type": 3,
+                                        "value": "Defeat the enemy",
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -120,12 +116,12 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "pivot": {
                             "x": 0.5,
@@ -171,7 +167,10 @@
                             "y": 1.0
                         },
                         "parent": 0,
-                        "children": []
+                        "children": [
+                            2,
+                            4
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
@@ -179,24 +178,24 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 1.0,
+                            "y": 1.0
                         },
                         "anchoredPosition": {
-                            "x": 569.0,
-                            "y": 355.0
+                            "x": -50.0,
+                            "y": -225.0
                         },
                         "sizeDelta": {
-                            "x": 920.0,
-                            "y": 64.0
+                            "x": 900.0,
+                            "y": 100.0
                         },
                         "isDirty": true
                     },
@@ -204,10 +203,10 @@
                         "texturePath": "Assets/whitePixel.png",
                         "sortingOrder": 0,
                         "color": {
-                            "r": 0.112,
-                            "g": 0.09,
-                            "b": 0.09,
-                            "a": 1.0
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -232,10 +231,10 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "bg",
+                        "name": "mission text",
                         "position": {
-                            "x": 0.0,
-                            "y": 0.0
+                            "x": 57.499,
+                            "y": -79.833
                         },
                         "rotation": {
                             "x": 0.0,
@@ -245,8 +244,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0,
-                        "children": []
+                        "parent": 1,
+                        "children": [
+                            3
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
@@ -254,51 +255,40 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "anchoredPosition": {
-                            "x": 569.0,
-                            "y": 355.0
+                            "x": 125.0,
+                            "y": -42.5
                         },
                         "sizeDelta": {
-                            "x": 915.0,
-                            "y": 58.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "isDirty": true
                     },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
+                    "class Uma_UI::Text": {
+                        "text": "no missions yet",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 0,
-                        "color": {
-                            "r": 0.344,
-                            "g": 0.017,
-                            "b": 0.017,
+                        "fontSize": 1.5,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
+                        "alignment": 0,
+                        "visible": true
                     }
                 }
             },
@@ -320,7 +310,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0,
+                        "parent": 2,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -329,7 +319,7 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 1.0,
+                            "x": 0.5,
                             "y": 0.5
                         },
                         "anchorMax": {
@@ -337,101 +327,37 @@
                             "y": 0.5
                         },
                         "pivot": {
-                            "x": 0.479,
-                            "y": 0.0
+                            "x": 0.5,
+                            "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 566.0,
-                            "y": 310.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
-                            "x": 100.0,
-                            "y": 107.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "isDirty": true
                     },
                     "class Uma_UI::Text": {
                         "text": "no missions yet",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "sortingOrder": -1,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
                             "a": 1.0
                         },
-                        "alignment": 1,
+                        "alignment": 0,
                         "visible": true
                     }
                 }
             },
             {
                 "id": 4,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "mission text",
-                        "position": {
-                            "x": 57.499,
-                            "y": -79.833
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 0,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 1.0,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.479,
-                            "y": 0.0
-                        },
-                        "anchoredPosition": {
-                            "x": 570.0,
-                            "y": 310.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 107.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "no missions yet",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 2.0,
-                        "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 5,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -448,7 +374,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 0,
+                        "parent": 1,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -457,20 +383,20 @@
                     },
                     "class Uma_UI::RectTransform": {
                         "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
+                            "x": 0.0,
+                            "y": 1.0
                         },
                         "anchoredPosition": {
-                            "x": 176.0,
-                            "y": 356.0
+                            "x": 50.0,
+                            "y": -22.5
                         },
                         "sizeDelta": {
                             "x": 50.0,
@@ -506,11 +432,11 @@
                 }
             },
             {
-                "id": 6,
+                "id": 5,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "Blocker Collider",
+                        "name": "Blocker Collider 1",
                         "position": {
                             "x": -15.899,
                             "y": -13.699
@@ -525,9 +451,9 @@
                         },
                         "parent": 0,
                         "children": [
+                            6,
                             7,
-                            8,
-                            9
+                            8
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -571,7 +497,7 @@
                 }
             },
             {
-                "id": 7,
+                "id": 6,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -588,7 +514,78 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 6,
+                        "parent": 5,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    }
+                }
+            },
+            {
+                "id": 7,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.2,
+                            "y": 34.5
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 5,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -646,10 +643,10 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "Rice Bag_dup",
+                        "name": "Rice Bag",
                         "position": {
                             "x": -41.2,
-                            "y": 34.5
+                            "y": 17.298
                         },
                         "rotation": {
                             "x": 0.0,
@@ -659,7 +656,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 6,
+                        "parent": 5,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -717,78 +714,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "Rice Bag",
-                        "position": {
-                            "x": -41.2,
-                            "y": 17.298
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 20.0,
-                            "y": 20.0
-                        },
-                        "parent": 6,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
-                        "layer": 2,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": false,
-                        "Native": false,
-                        "gridX": 13.0,
-                        "gridY": 11.0,
-                        "cellX": 0.0,
-                        "cellY": 2.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
-                    }
-                }
-            },
-            {
-                "id": 10,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "Blocker Collider_dup",
+                        "name": "Blocker Collider 2",
                         "position": {
                             "x": -159.699,
                             "y": -15.5
@@ -803,9 +729,9 @@
                         },
                         "parent": 0,
                         "children": [
+                            10,
                             11,
-                            12,
-                            13
+                            12
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -841,6 +767,54 @@
                                 "autoFitToSprite": false
                             }
                         ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 10,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "Rice Bag_dup",
+                        "position": {
+                            "x": -41.7,
+                            "y": 49.097
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "parent": 9,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "layer": 2,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": false,
+                        "Native": false,
+                        "gridX": 13.0,
+                        "gridY": 11.0,
+                        "cellX": 0.0,
+                        "cellY": 2.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
@@ -855,77 +829,6 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Rice Bag_dup",
                         "position": {
-                            "x": -41.7,
-                            "y": 49.097
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 20.0,
-                            "y": 20.0
-                        },
-                        "parent": 10,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
-                        "layer": 2,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": false,
-                        "Native": false,
-                        "gridX": 13.0,
-                        "gridY": 11.0,
-                        "cellX": 0.0,
-                        "cellY": 2.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
-                    }
-                }
-            },
-            {
-                "id": 12,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "Rice Bag_dup",
-                        "position": {
                             "x": -41.2,
                             "y": 34.5
                         },
@@ -937,7 +840,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 10,
+                        "parent": 9,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -964,34 +867,11 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 13,
+                "id": 12,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1008,7 +888,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 10,
+                        "parent": 9,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1035,38 +915,15 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 14,
+                "id": 13,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "Blocker Collider_dup",
+                        "name": "Blocker Collider 3",
                         "position": {
                             "x": -303.7,
                             "y": -16.0
@@ -1081,9 +938,9 @@
                         },
                         "parent": 0,
                         "children": [
+                            14,
                             15,
-                            16,
-                            17
+                            16
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -1127,7 +984,7 @@
                 }
             },
             {
-                "id": 15,
+                "id": 14,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1144,7 +1001,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 14,
+                        "parent": 13,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1171,34 +1028,11 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 16,
+                "id": 15,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1215,7 +1049,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 14,
+                        "parent": 13,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1242,34 +1076,11 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 17,
+                "id": 16,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1286,7 +1097,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 14,
+                        "parent": 13,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1313,38 +1124,15 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 18,
+                "id": 17,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "Blocker Collider_dup",
+                        "name": "Blocker Collider 4",
                         "position": {
                             "x": -364.696,
                             "y": 42.5
@@ -1359,8 +1147,8 @@
                         },
                         "parent": 0,
                         "children": [
-                            19,
-                            20
+                            18,
+                            19
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
@@ -1404,7 +1192,7 @@
                 }
             },
             {
-                "id": 19,
+                "id": 18,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1421,7 +1209,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 18,
+                        "parent": 17,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1448,34 +1236,11 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 20,
+                "id": 19,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1492,7 +1257,7 @@
                             "x": 20.0,
                             "y": 20.0
                         },
-                        "parent": 18,
+                        "parent": 17,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -1519,41 +1284,18 @@
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
                         "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
                     }
                 }
             },
             {
-                "id": 21,
+                "id": 20,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "static bird",
+                        "name": "static fire enemy",
                         "position": {
-                            "x": -26.298,
-                            "y": 19.701
+                            "x": -167.5,
+                            "y": 20.0
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1565,26 +1307,15 @@
                         },
                         "parent": 0,
                         "children": [
+                            21,
                             22,
-                            23,
-                            24
+                            23
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
-                            "Fire Demon Shoot Fireball": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.1,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
                             "Fire Demon Charge": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
                                 "isPlaying": false,
@@ -1592,6 +1323,17 @@
                                 "is3D": true,
                                 "type": 0,
                                 "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Fire Demon Shoot Fireball": {
+                                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.1,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1611,14 +1353,14 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/fire bird.png",
-                        "layer": 16,
+                        "layer": 1,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
                         "Native": true,
-                        "gridX": 0.0,
-                        "gridY": 0.0,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -1806,12 +1548,12 @@
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
+                        "mHealth": 500,
+                        "mMaxHealth": 500,
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 0.0,
-                        "mAttackDamage": 15,
-                        "mAttackSpeed": 100000.0,
+                        "mAttackDamage": 0,
+                        "mAttackSpeed": 9.99999944211969e27,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -1820,16 +1562,6 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "charging_atk",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 11,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": ""
-                            },
-                            {
                                 "name": "idle",
                                 "framesX": 11,
                                 "framesY": 4,
@@ -1837,6 +1569,16 @@
                                 "frameCount": 10,
                                 "speed": 10.0,
                                 "loop": true,
+                                "texturePath": ""
+                            },
+                            {
+                                "name": "charging_atk",
+                                "framesX": 11,
+                                "framesY": 4,
+                                "startFrame": 11,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
                                 "texturePath": ""
                             },
                             {
@@ -1993,7 +1735,7 @@
                 }
             },
             {
-                "id": 22,
+                "id": 21,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -2010,7 +1752,7 @@
                             "x": 5.059,
                             "y": 3.38
                         },
-                        "parent": 21,
+                        "parent": 20,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -2031,6 +1773,54 @@
                             1.0,
                             1.0,
                             1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 22,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 4.8
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 15.0,
+                            "y": 0.699
+                        },
+                        "parent": 20,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 128,
+                        "order": 20,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.442,
+                            0.442,
+                            0.442
                         ],
                         "alpha": 1.0
                     },
@@ -2045,54 +1835,6 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp fill",
-                        "position": {
-                            "x": 0.0,
-                            "y": 4.8
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 15.0,
-                            "y": 0.699
-                        },
-                        "parent": 21,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.442,
-                            0.442,
-                            0.442
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 24,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "hp fill_dup",
                         "position": {
                             "x": 0.0,
@@ -2106,7 +1848,7 @@
                             "x": 15.0,
                             "y": 0.699
                         },
-                        "parent": 21,
+                        "parent": 20,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -2147,79 +1889,40 @@
                 }
             },
             {
-                "id": 25,
+                "id": 24,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "static bird",
+                        "name": "static water enemy",
                         "position": {
-                            "x": -168.899,
-                            "y": 20.201
+                            "x": -310.0,
+                            "y": 20.0
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.689,
-                            "y": 1.519
+                            "x": 30.0,
+                            "y": 30.0
                         },
                         "parent": 0,
                         "children": [
+                            25,
                             26,
-                            27,
-                            28
+                            27
                         ]
                     },
-                    "struct Uma_ECS::AudioComponent": {
-                        "defaultVolume": 1.0,
-                        "default3D": true,
-                        "loadedSounds": {
-                            "Fire Demon Shoot Fireball": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.1,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Fire Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Fire Demon Damage Scream": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.5,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            }
-                        }
-                    },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire bird.png",
-                        "layer": 16,
+                        "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
+                        "layer": 1,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
-                        "Native": true,
-                        "gridX": 0.0,
-                        "gridY": 0.0,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -2237,11 +1940,11 @@
                             "y": 0.0
                         },
                         "acceleration": {
-                            "x": -0.0,
+                            "x": 0.0,
                             "y": 0.0
                         },
-                        "accel_strength": 500.0,
-                        "fric_coeff": 5.0
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
@@ -2250,12 +1953,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.2,
-                                    "y": 2.0
+                                    "x": 0.0,
+                                    "y": -0.2
                                 },
                                 "size": {
-                                    "x": 10.6,
-                                    "y": 3.7
+                                    "x": 0.6,
+                                    "y": 0.5
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -2265,17 +1968,32 @@
                             },
                             {
                                 "offset": {
-                                    "x": -2.0,
-                                    "y": -3.4
+                                    "x": 0.0,
+                                    "y": -0.4
                                 },
                                 "size": {
-                                    "x": 10.8,
-                                    "y": 1.399
+                                    "x": 0.5,
+                                    "y": 0.2
                                 },
                                 "purpose": 0,
                                 "layer": 4,
                                 "colliderMask": 8,
                                 "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -0.3
+                                },
+                                "size": {
+                                    "x": 1.5,
+                                    "y": 1.5
+                                },
+                                "purpose": 2,
+                                "layer": 4,
+                                "colliderMask": 2,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             }
                         ]
@@ -2283,8 +2001,31 @@
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonBase.lua",
-                                "scriptName": "FireDemonBase.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonIdle.lua",
+                                "scriptName": "WaterDemonIdle.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "ChaseRange",
+                                        "type": 0,
+                                        "value": 8.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "chaseEnterRange",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WaterDemonBase.lua",
+                                "scriptName": "WaterDemonBase.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -2298,48 +2039,18 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
-                                "scriptName": "FireDemonIdle.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonAttack.lua",
+                                "scriptName": "WaterDemonAttack.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "chaseEnterRange",
+                                        "name": "attackRange",
                                         "type": 0,
-                                        "value": 20.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/FireDemonChase.lua",
-                                "scriptName": "FireDemonChase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "attackEnterRange",
-                                        "type": 0,
-                                        "value": 8.0,
+                                        "value": 16.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
-                                    {
-                                        "name": "chaseExitRange",
-                                        "type": 0,
-                                        "value": 25.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
-                                "scriptName": "FireDemonAttack.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
                                     {
                                         "name": "chargeTime",
                                         "type": 0,
@@ -2349,17 +2060,17 @@
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "attackRange",
+                                        "name": "HoverSpd",
                                         "type": 0,
-                                        "value": 5.0,
+                                        "value": 1.5,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "HoverSpd",
+                                        "name": "damageDuration",
                                         "type": 0,
-                                        "value": 1.5,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -2375,14 +2086,30 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
-                                "scriptName": "FireDemonStunned.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonChase.lua",
+                                "scriptName": "WaterDemonChase.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "StunnedDuration",
+                                        "name": "ChaseRange",
                                         "type": 0,
-                                        "value": 3.0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "chaseExitRange",
+                                        "type": 0,
+                                        "value": 35.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackEnterRange",
+                                        "type": 0,
+                                        "value": 1000.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -2390,8 +2117,685 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonDead.lua",
-                                "scriptName": "FireDemonDead.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonStunned.lua",
+                                "scriptName": "WaterDemonStunned.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "StunnedDuration",
+                                        "type": 0,
+                                        "value": 10.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WaterDemonSuicide.lua",
+                                "scriptName": "WaterDemonSuicide.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "explosionTimer",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "damageLinger",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Enemy": {
+                        "mHealth": 500,
+                        "mMaxHealth": 500,
+                        "mHealthRegenRate": 1.0,
+                        "mSpeed": 0.0,
+                        "mAttackDamage": 0,
+                        "mAttackSpeed": 1.0000000200408773e21,
+                        "mAttackRange": 0.0,
+                        "mDefense": 5
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "idle",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 0,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "charging_atk",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 13,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "walking",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 16,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "shield_broken",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 0,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                            },
+                            {
+                                "name": "charging_explode",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 16,
+                                "frameCount": 2,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                            },
+                            {
+                                "name": "atk",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 48,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "explode",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 24,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::PathFinding": {
+                        "pathUpdateTimer": 0.0,
+                        "pathUpdateInterval": 0.5
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    },
+                    "struct Uma_ECS::ParticleEmitter": {
+                        "emitters": [
+                            {
+                                "mode": 1,
+                                "maxParticles": 8,
+                                "isActive": false,
+                                "renderLayer": 16,
+                                "renderOrder": 100,
+                                "texturePath": "Assets/star.png",
+                                "appearance": {
+                                    "scaleRange": [
+                                        0.3,
+                                        0.5
+                                    ],
+                                    "startColor": [
+                                        1.0,
+                                        1.0,
+                                        0.5
+                                    ],
+                                    "endColor": [
+                                        1.0,
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "colorLerp": true,
+                                    "randomOpacity": true,
+                                    "opacityRange": [
+                                        0.699,
+                                        1.0
+                                    ],
+                                    "rotateParticles": true,
+                                    "rotationSpeedRange": [
+                                        -180.0,
+                                        180.0
+                                    ]
+                                },
+                                "fade": {
+                                    "fadeIn": true,
+                                    "fadeInDuration": 0.2,
+                                    "fadeOut": true,
+                                    "fadeOutDuration": 0.3,
+                                    "fadeAtEdges": true,
+                                    "edgeFadeDistance": 150.0
+                                },
+                                "physics": {
+                                    "speedRange": [
+                                        80.0,
+                                        120.0
+                                    ],
+                                    "lifetimeRange": [
+                                        2.0,
+                                        3.0
+                                    ],
+                                    "gravity": [
+                                        0.0,
+                                        0.0
+                                    ],
+                                    "drag": 0.0
+                                },
+                                "spawn": {
+                                    "spawnOffset": [
+                                        0.0,
+                                        0.3
+                                    ],
+                                    "spawnRadius": 0.5,
+                                    "useEmissionCone": false,
+                                    "emissionAngle": 0.0,
+                                    "emissionSpread": 360.0
+                                },
+                                "emission": {
+                                    "emissionRate": 3.0,
+                                    "loop": false,
+                                    "loopDelay": 0.0
+                                },
+                                "screenFill": {
+                                    "velocityXRange": [
+                                        -20.0,
+                                        20.0
+                                    ],
+                                    "velocityYRange": [
+                                        -150.0,
+                                        -80.0
+                                    ],
+                                    "spawnAtTop": true,
+                                    "spawnMargin": 100.0
+                                }
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::FSM": {
+                        "states": [
+                            {
+                                "name": "WaterDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
+                            },
+                            {
+                                "name": "WaterDemonSuicide.lua",
+                                "isActive": true,
+                                "scriptIndex": 5
+                            },
+                            {
+                                "name": "WaterDemonAttack.lua",
+                                "isActive": true,
+                                "scriptIndex": 2
+                            },
+                            {
+                                "name": "WaterDemonChase.lua",
+                                "isActive": true,
+                                "scriptIndex": 3
+                            },
+                            {
+                                "name": "WaterDemonStunned.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
+                            }
+                        ],
+                        "nextId": 6,
+                        "current": "",
+                        "next": ""
+                    }
+                }
+            },
+            {
+                "id": 25,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "vfx",
+                        "position": {
+                            "x": 0.0,
+                            "y": -0.2
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.5,
+                            "y": 1.5
+                        },
+                        "parent": 24,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
+                        "layer": 16,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "splash",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 26,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.1
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 24,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.442,
+                            0.442,
+                            0.442
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 27,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "hp fill_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.1
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 0.8,
+                            "y": 0.07
+                        },
+                        "parent": 24,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            0.33,
+                            0.045,
+                            0.045
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
+                                "scriptName": "EnemyHealthBar.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 28,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "static wind enemy",
+                        "position": {
+                            "x": -25.0,
+                            "y": 20.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 30.0,
+                            "y": 30.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            29,
+                            30
+                        ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "WindDemonAttack(Charge)": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "WindDemonDamage": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "WindDemonDeath": {
+                                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.25,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
+                    "struct Uma_ECS::Sprite": {
+                        "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
+                        "layer": 1,
+                        "order": 0,
+                        "flipX": false,
+                        "flipY": false,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 1.0,
+                        "gridY": 1.0,
+                        "cellX": 0.0,
+                        "cellY": 0.0,
+                        "offsetX": 0.0,
+                        "offsetY": 0.0,
+                        "tintColor": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ],
+                        "alpha": 1.0
+                    },
+                    "struct Uma_ECS::RigidBody": {
+                        "velocity": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "acceleration": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
+                    },
+                    "struct Uma_ECS::Collider": {
+                        "defaultLayer": 1,
+                        "defaultMask": 64,
+                        "showBBox": false,
+                        "shapes": [
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "size": {
+                                    "x": 0.3,
+                                    "y": 0.5
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 18,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -0.4
+                                },
+                                "size": {
+                                    "x": 0.5,
+                                    "y": 0.2
+                                },
+                                "purpose": 0,
+                                "layer": 4,
+                                "colliderMask": 8,
+                                "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -0.5
+                                },
+                                "size": {
+                                    "x": 1.5,
+                                    "y": 0.799
+                                },
+                                "purpose": 2,
+                                "layer": 4,
+                                "colliderMask": 2,
+                                "isActive": false,
+                                "autoFitToSprite": false
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonBase.lua",
+                                "scriptName": "WindDemonBase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "enemyHurtEffectDuration",
+                                        "type": 0,
+                                        "value": 0.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonIdle.lua",
+                                "scriptName": "WindDemonIdle.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "chaseEnterRange",
+                                        "type": 0,
+                                        "value": 20.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonChase.lua",
+                                "scriptName": "WindDemonChase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "chaseExitRange",
+                                        "type": 0,
+                                        "value": 25.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackEnterRange",
+                                        "type": 0,
+                                        "value": 8.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonAttack.lua",
+                                "scriptName": "WindDemonAttack.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "HoverSpd",
+                                        "type": 0,
+                                        "value": 1.5,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "chargeTime",
+                                        "type": 0,
+                                        "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "meleeRange",
+                                        "type": 0,
+                                        "value": 4.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "dashSpeed",
+                                        "type": 0,
+                                        "value": 10.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackExitRange",
+                                        "type": 0,
+                                        "value": 12.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonDead.lua",
+                                "scriptName": "WindDemonDead.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -2403,17 +2807,32 @@
                                         "isSlider": false
                                     }
                                 ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WindDemonStunned.lua",
+                                "scriptName": "WindDemonStunned.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "StunnedDuration",
+                                        "type": 0,
+                                        "value": 10.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
                             }
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
+                        "mHealth": 500,
+                        "mMaxHealth": 500,
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 0.0,
-                        "mAttackDamage": 15,
-                        "mAttackSpeed": 100000.0,
-                        "mAttackRange": 20.0,
+                        "mAttackDamage": 0,
+                        "mAttackSpeed": 9.999999884841548e26,
+                        "mAttackRange": 0.0,
                         "mDefense": 5
                     },
                     "struct Uma_ECS::Animator": {
@@ -2421,49 +2840,69 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "charging_atk",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 11,
+                                "name": "charging_atk2",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 32,
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
                             },
                             {
                                 "name": "idle",
-                                "framesX": 11,
-                                "framesY": 4,
+                                "framesX": 8,
+                                "framesY": 6,
                                 "startFrame": 0,
-                                "frameCount": 10,
-                                "speed": 10.0,
-                                "loop": true,
-                                "texturePath": ""
-                            },
-                            {
-                                "name": "die",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 33,
-                                "frameCount": 11,
+                                "frameCount": 12,
                                 "speed": 24.0,
-                                "loop": false,
-                                "texturePath": ""
+                                "loop": true,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
                             },
                             {
-                                "name": "attack",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 22,
+                                "name": "charging_atk1",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 16,
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "atk1",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 24,
+                                "frameCount": 4,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "atk2",
+                                "framesX": 8,
+                                "framesY": 6,
+                                "startFrame": 40,
+                                "frameCount": 4,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 1.png"
+                            },
+                            {
+                                "name": "dead",
+                                "framesX": 8,
+                                "framesY": 3,
+                                "startFrame": 0,
+                                "frameCount": 24,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Wind Enemy Spritesheets 2.png"
                             }
                         ]
                     },
                     "struct Uma_ECS::PathFinding": {
-                        "pathUpdateTimer": 0.133,
+                        "pathUpdateTimer": 0.0,
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
@@ -2562,110 +3001,62 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "FireDemonIdle.lua",
+                                "name": "WindDemonIdle.lua",
                                 "isActive": true,
                                 "scriptIndex": 0
                             },
                             {
-                                "name": "FireDemonDead.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
-                            },
-                            {
-                                "name": "FireDemonChase.lua",
+                                "name": "WindDemonChase.lua",
                                 "isActive": true,
                                 "scriptIndex": 1
                             },
                             {
-                                "name": "FireDemonAttack.lua",
+                                "name": "WindDemonAttack.lua",
                                 "isActive": true,
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "FireDemonStunned.lua",
+                                "name": "WindDemonDead.lua",
                                 "isActive": true,
                                 "scriptIndex": 3
+                            },
+                            {
+                                "name": "WindDemonStunned.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
                             }
                         ],
                         "nextId": 5,
-                        "current": "FireDemonIdle",
+                        "current": "",
                         "next": ""
                     }
                 }
             },
             {
-                "id": 26,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "bird enemy child",
-                        "position": {
-                            "x": -1.7,
-                            "y": 4.006
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 5.059,
-                            "y": 3.38
-                        },
-                        "parent": 25,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire enemy shadow.png",
-                        "layer": 16,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": false,
-                        "Native": true,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Trigger.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 27,
+                "id": 29,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "hp fill",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.638,
+                            "y": 0.07
                         },
-                        "parent": 25,
+                        "parent": 28,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
                         "layer": 128,
-                        "order": 20,
+                        "order": 19,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -2690,24 +3081,24 @@
                 }
             },
             {
-                "id": 28,
+                "id": 30,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
+                        "name": "hp fill overlay",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.4
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.638,
+                            "y": 0.07
                         },
-                        "parent": 25,
+                        "parent": 28,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
@@ -2748,11 +3139,11 @@
                 }
             },
             {
-                "id": 29,
+                "id": 31,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "trigger room 1_dup",
+                        "name": "trigger room 1",
                         "position": {
                             "x": 57.499,
                             "y": -79.833
@@ -2824,11 +3215,11 @@
                 }
             },
             {
-                "id": 30,
+                "id": 32,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "trigger room 1",
+                        "name": "trigger room 2",
                         "position": {
                             "x": -85.358,
                             "y": -82.208
@@ -2900,11 +3291,11 @@
                 }
             },
             {
-                "id": 31,
+                "id": 33,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "trigger room 1_dup_dup",
+                        "name": "trigger room 3",
                         "position": {
                             "x": -231.8,
                             "y": -79.833
@@ -2976,11 +3367,11 @@
                 }
             },
             {
-                "id": 32,
+                "id": 34,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "trigger room 1_dup_dup_dup",
+                        "name": "trigger room 4",
                         "position": {
                             "x": -374.2,
                             "y": -79.833
@@ -3050,321 +3441,6 @@
                         "isRoot": false
                     }
                 }
-            },
-            {
-                "id": 33,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "Tutorial Popup1",
-                        "position": {
-                            "x": 57.499,
-                            "y": -79.833
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 0,
-                        "children": [
-                            34,
-                            35,
-                            36
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Popup1.prefab",
-                        "isRoot": true
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Canvas": {
-                        "sortingOrder": 2,
-                        "referenceResolution": {
-                            "x": 1920.0,
-                            "y": 1080.0
-                        },
-                        "scaleMode": 1,
-                        "matchWidthOrHeight": 0.5
-                    }
-                }
-            },
-            {
-                "id": 34,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "img",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 33,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Popup1.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 750.0,
-                            "y": 750.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/ControlsPopup3.png",
-                        "sortingOrder": 0,
-                        "color": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    }
-                }
-            },
-            {
-                "id": 35,
-                "isActive": false,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "close text",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 33,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Popup1.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": -270.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "Press esc to close",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 2.0,
-                        "colour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 36,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "close button",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 33,
-                        "children": []
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/CloseTutorialPopupButton.lua",
-                                "scriptName": "CloseTutorialPopupButton.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Tutorial Popup1.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 325.0,
-                            "y": 310.0
-                        },
-                        "sizeDelta": {
-                            "x": 250.0,
-                            "y": 250.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/x escape button.png",
-                        "sortingOrder": 0,
-                        "color": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    },
-                    "class Uma_UI::Button": {
-                        "interactable": true,
-                        "scriptName": "CloseTutorialPopupButton.lua",
-                        "normalColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
-                        "pressedColour": {
-                            "r": 0.699,
-                            "g": 0.699,
-                            "b": 0.699,
-                            "a": 1.0
-                        },
-                        "disabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
-                            "a": 0.5
-                        }
-                    }
-                }
             }
         ],
         "rootEntity": 0
@@ -3372,16 +3448,28 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/star.png"
+            },
+            {
                 "path": "assets/fire bird.png"
             },
             {
                 "path": "assets/props_animation.png"
             },
             {
+                "path": "assets/wind enemy spritesheets 1.png"
+            },
+            {
                 "path": "assets/fire enemy shadow.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             }
         ],
         "fonts": [],
