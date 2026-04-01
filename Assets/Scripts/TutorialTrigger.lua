@@ -91,9 +91,6 @@ function Update(dt)
             curr_room = 1
             RoomTriggerInit()
             SetMissionText(killWindPrompt)
-            local prefab = SpawnPrefab("Tutorial Popup2.prefab", Vec2(10000, 10000))
-            SetParent(prefab, EntityID)
-            GetTransformFrom(prefab).position = Vec2(0, 0)
         end
     end
 
@@ -103,9 +100,6 @@ function Update(dt)
             curr_room = 2
             RoomTriggerInit()
             SetMissionText(killFirePrompt)
-            local prefab = SpawnPrefab("Tutorial Popup3.prefab", Vec2(10000, 10000))
-            SetParent(prefab, EntityID)
-            GetTransformFrom(prefab).position = Vec2(0, 0)
         end
     end
 
