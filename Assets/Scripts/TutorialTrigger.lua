@@ -27,7 +27,7 @@ ExposedVars = {
     killWindPrompt  = "Defeat the Wind enemy",
     killFirePrompt  = "Defeat the Fire enemy",
     killWaterPrompt = "Defeat the Water enemy",
-    moveToNext      = "Move to the next room",
+    moveToNext      = "Defeat all enemies and proceed",
 }
 
 function Start()
