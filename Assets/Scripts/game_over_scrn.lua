@@ -30,7 +30,7 @@ function Update(dt)
     if isOptionTurnedOn and nav:getActive() == true then 
         nav:setActive(false)
     elseif not isOptionTurnedOn and nav:getActive() == false then
-        Focused(2)
+        Focused()
     end
 
     nav:update(dt)
@@ -38,7 +38,7 @@ function Update(dt)
 end
 
 function OnEnable()
-    Focused(1)
+    Focused()
     Log("pause enabled")
 end
 
@@ -47,7 +47,7 @@ function OnDisable()
     Log("pause disabled")
 end
 
-function Focused(index)
+function Focused()
     nav:setActive(true)
-    nav:setFocused(index)
+    nav:setFocused(1)
 end

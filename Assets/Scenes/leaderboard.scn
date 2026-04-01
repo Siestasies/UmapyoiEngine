@@ -17,6 +17,9 @@
                 "path": "assets/water ability icon.png"
             },
             {
+                "path": "assets/hover button ui white.png"
+            },
+            {
                 "path": "assets/wind ability icon.png"
             },
             {
@@ -27,17 +30,23 @@
             },
             {
                 "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -100,6 +109,9 @@
                         22,
                         30
                     ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": []
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -2029,6 +2041,31 @@
                     },
                     "isDirty": true
                 },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hover button UI white.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0,
+                    "spriteSheetGrid": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "spriteCell": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "spriteOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
                 "class Uma_UI::Button": {
                     "interactable": true,
                     "scriptName": "return_btn.lua",
@@ -2051,10 +2088,10 @@
                         "a": 1.0
                     },
                     "disabledColour": {
-                        "r": 0.5,
-                        "g": 0.5,
-                        "b": 0.5,
-                        "a": 0.5
+                        "r": 0.501,
+                        "g": 0.501,
+                        "b": 0.501,
+                        "a": 0.0
                     }
                 }
             }

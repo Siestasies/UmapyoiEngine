@@ -86,6 +86,16 @@
                             14
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/main_menu_scrn.lua",
+                                "scriptName": "main_menu_scrn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
                         "isRoot": false
@@ -1006,6 +1016,16 @@
                             12
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/help_scrn.lua",
+                                "scriptName": "help_scrn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
                         "isRoot": false
@@ -1264,6 +1284,16 @@
                             18
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/exit_cfm_scrn.lua",
+                                "scriptName": "exit_cfm_scrn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/main.prefab",
                         "isRoot": false
@@ -1387,185 +1417,6 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "yes btn",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 14,
-                        "children": [
-                            17
-                        ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/yes_btn.lua",
-                                "scriptName": "yes_btn.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/main.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 150.0,
-                            "y": -50.0
-                        },
-                        "sizeDelta": {
-                            "x": 200.0,
-                            "y": 75.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/red button.png",
-                        "sortingOrder": 6,
-                        "color": {
-                            "r": 0.698,
-                            "g": 0.698,
-                            "b": 0.698,
-                            "a": 1.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    },
-                    "class Uma_UI::Button": {
-                        "interactable": true,
-                        "scriptName": "yes_btn.lua",
-                        "normalColour": {
-                            "r": 0.698,
-                            "g": 0.698,
-                            "b": 0.698,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
-                            "r": 0.898,
-                            "g": 0.898,
-                            "b": 0.898,
-                            "a": 1.0
-                        },
-                        "pressedColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
-                            "a": 1.0
-                        },
-                        "disabledColour": {
-                            "r": 0.5,
-                            "g": 0.5,
-                            "b": 0.5,
-                            "a": 0.5
-                        }
-                    }
-                }
-            },
-            {
-                "id": 17,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "yes txt",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 16,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/main.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 5.0
-                        },
-                        "sizeDelta": {
-                            "x": 100.0,
-                            "y": 100.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "Yes",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 6,
-                        "fontSize": 1.0,
-                        "colour": {
-                            "r": 1.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 18,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
                         "name": "no btn",
                         "position": {
                             "x": 0.0,
@@ -1581,7 +1432,7 @@
                         },
                         "parent": 14,
                         "children": [
-                            19
+                            17
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -1650,21 +1501,21 @@
                         "interactable": true,
                         "scriptName": "no_btn.lua",
                         "normalColour": {
-                            "r": 0.698,
-                            "g": 0.698,
-                            "b": 0.698,
-                            "a": 1.0
-                        },
-                        "hoverColour": {
                             "r": 0.898,
                             "g": 0.898,
                             "b": 0.898,
                             "a": 1.0
                         },
+                        "hoverColour": {
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
+                        },
                         "pressedColour": {
-                            "r": 1.0,
-                            "g": 1.0,
-                            "b": 1.0,
+                            "r": 0.341,
+                            "g": 0.341,
+                            "b": 0.341,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -1677,7 +1528,7 @@
                 }
             },
             {
-                "id": 19,
+                "id": 17,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1694,7 +1545,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 18,
+                        "parent": 16,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1739,12 +1590,210 @@
                         "visible": true
                     }
                 }
+            },
+            {
+                "id": 18,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "yes btn",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 14,
+                        "children": [
+                            19
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/yes_btn.lua",
+                                "scriptName": "yes_btn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 150.0,
+                            "y": -50.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 75.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/red button.png",
+                        "sortingOrder": 6,
+                        "color": {
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Button": {
+                        "interactable": true,
+                        "scriptName": "yes_btn.lua",
+                        "normalColour": {
+                            "r": 0.898,
+                            "g": 0.898,
+                            "b": 0.898,
+                            "a": 1.0
+                        },
+                        "hoverColour": {
+                            "r": 0.698,
+                            "g": 0.698,
+                            "b": 0.698,
+                            "a": 1.0
+                        },
+                        "pressedColour": {
+                            "r": 0.339,
+                            "g": 0.339,
+                            "b": 0.339,
+                            "a": 1.0
+                        },
+                        "disabledColour": {
+                            "r": 0.5,
+                            "g": 0.5,
+                            "b": 0.5,
+                            "a": 0.5
+                        }
+                    }
+                }
+            },
+            {
+                "id": 19,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "yes txt",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 18,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 5.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "Yes",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 6,
+                        "fontSize": 1.0,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
             }
         ],
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/main menu.png"
+            },
+            {
+                "path": "assets/hover button indicator ui.png"
+            },
+            {
+                "path": "assets/howtoplay.png"
+            },
+            {
+                "path": "assets/red button.png"
+            },
+            {
+                "path": "assets/quit menu box.png"
+            },
+            {
+                "path": "assets/floor_tatami.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }

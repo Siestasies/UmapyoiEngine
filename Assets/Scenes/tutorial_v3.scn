@@ -2,37 +2,40 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/snow particle 1.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/snow particle 1.png"
+            },
+            {
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
+            },
+            {
+                "path": "assets/sound settings bodx.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,13 +47,16 @@
                 "path": "assets/fire enemy shadow.png"
             },
             {
+                "path": "assets/full volume.png"
+            },
+            {
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -62,19 +68,25 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
             },
             {
+                "path": "assets/red button.png"
+            },
+            {
                 "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/wind ability icon.png"
@@ -92,13 +104,16 @@
                 "path": "assets/x escape button.png"
             },
             {
+                "path": "assets/sliding controller.png"
+            },
+            {
                 "path": "assets/controlspopup2.png"
             },
             {
-                "path": "assets/mana bar full.png"
+                "path": "assets/controlspopup3.png"
             },
             {
-                "path": "assets/controlspopup3.png"
+                "path": "assets/mana bar full.png"
             },
             {
                 "path": "assets/vfx 512 ss 3.png"
@@ -107,10 +122,13 @@
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/skill tree/skill frame.png"
+                "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
                 "path": "assets/vfx 512 ss 2.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
             },
             {
                 "path": "assets/skill tree/skill tree menu frame.png"
@@ -135,17 +153,32 @@
             },
             {
                 "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/empty volume.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-sole-100.png"
+            },
+            {
+                "path": "assets/stage cleared ui.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -154,23 +187,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                "type": 0
-            },
-            {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
-                "type": 0
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -11607,7 +11624,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        3
+                        3,
+                        4,
+                        5
                     ]
                 },
                 "struct Uma_ECS::Player": {
@@ -11798,13 +11817,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -11820,13 +11839,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -12903,16 +12922,6 @@
                     "initialClip": "idle",
                     "clips": [
                         {
-                            "name": "normal_atk",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -12923,21 +12932,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_wind",
+                            "name": "normal_atk",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "hurt",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
+                            "startFrame": 0,
+                            "frameCount": 5,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -12953,11 +12952,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_water",
+                            "name": "hurt",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
+                            "startFrame": 16,
+                            "frameCount": 3,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_wind",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -12968,6 +12977,16 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_water",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13032,9 +13051,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -13042,14 +13061,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -13057,9 +13076,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -13099,12 +13118,12 @@
                     ],
                     "nextId": 13,
                     "current": "PlayerAttack",
-                    "next": ""
+                    "next": "PlayerIdle"
                 }
             }
         },
         {
-            "id": 3,
+            "id": 5,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13127,7 +13146,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13304,7 +13323,7 @@
             }
         },
         {
-            "id": 5,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13571,7 +13590,7 @@
             }
         },
         {
-            "id": 6,
+            "id": 8,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13590,7 +13609,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        10
+                        12
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -13694,7 +13713,7 @@
             }
         },
         {
-            "id": 11,
+            "id": 13,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13713,8 +13732,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        19,
-                        15
+                        21,
+                        17
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -13818,7 +13837,7 @@
             }
         },
         {
-            "id": 20,
+            "id": 22,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13837,22 +13856,22 @@
                     },
                     "parent": -1,
                     "children": [
-                        21,
-                        22,
                         23,
                         24,
                         25,
                         26,
-                        30,
-                        34,
-                        38,
-                        41,
-                        45,
-                        49,
-                        50,
+                        27,
+                        28,
+                        32,
+                        36,
+                        40,
+                        43,
+                        47,
                         51,
                         52,
-                        56
+                        53,
+                        54,
+                        58
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -13969,7 +13988,7 @@
             }
         },
         {
-            "id": 57,
+            "id": 59,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13988,7 +14007,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        75
+                        77
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14193,7 +14212,7 @@
             }
         },
         {
-            "id": 76,
+            "id": 78,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14212,7 +14231,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        77
+                        79
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14293,7 +14312,7 @@
                             "purpose": 2,
                             "layer": 32,
                             "colliderMask": 2,
-                            "isActive": true,
+                            "isActive": false,
                             "autoFitToSprite": false
                         }
                     ]
@@ -14364,7 +14383,7 @@
             }
         },
         {
-            "id": 78,
+            "id": 80,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14476,7 +14495,7 @@
             }
         },
         {
-            "id": 79,
+            "id": 81,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14624,7 +14643,7 @@
             }
         },
         {
-            "id": 80,
+            "id": 82,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14772,7 +14791,7 @@
             }
         },
         {
-            "id": 81,
+            "id": 83,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14915,7 +14934,7 @@
             }
         },
         {
-            "id": 82,
+            "id": 84,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15053,7 +15072,7 @@
             }
         },
         {
-            "id": 83,
+            "id": 85,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15072,12 +15091,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        84,
-                        108,
-                        120,
-                        126,
-                        137,
-                        174
+                        86,
+                        110,
+                        122,
+                        128,
+                        139,
+                        176
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -15112,7 +15131,7 @@
             }
         },
         {
-            "id": 207,
+            "id": 209,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15131,7 +15150,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        208
+                        210
                     ]
                 },
                 "struct Uma_ECS::Prefab": {

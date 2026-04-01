@@ -9,7 +9,7 @@
                         "name": "Kappa_Statue",
                         "position": {
                             "x": -321.725,
-                            "y": 94.782
+                            "y": 94.781
                         },
                         "rotation": {
                             "x": 0.0,
@@ -257,6 +257,12 @@
                             {
                                 "scriptPath": "Assets/Scripts/Shop.lua",
                                 "scriptName": "Shop.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/shop_scrn.lua",
+                                "scriptName": "shop_scrn.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
                             }
@@ -1667,6 +1673,9 @@
         "textures": [
             {
                 "path": "assets/environment/kappa gem forming_0023.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
             }
         ],
         "fonts": [],

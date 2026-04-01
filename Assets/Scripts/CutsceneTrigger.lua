@@ -511,7 +511,7 @@ local function UpdateAction(dt)
 
         -- Advance on click / enter
         if inputCooldown <= 0 then
-            local advance = MouseButtonPressed(MOUSE_LEFT) or KeyPressed(KEY_ENTER)
+            local advance = MouseButtonPressed(MOUSE_LEFT) or KeyPressed(KEY_ENTER) or KeyPressed(KEY_SPACE) or GetControllerButtonInput(BTN_A, BTN_PRESS, 0)
             if advance then
                 if isTyping then
                     FinishTyping()
