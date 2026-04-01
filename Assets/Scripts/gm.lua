@@ -8,6 +8,10 @@ local gameOverTimer = 0.0
 local pausedByEscape = false
 local escConsumed = false
 
+function Start()
+    PauseGame(false)
+end
+
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
     local player = GetPlayerFrom(playerEntity)

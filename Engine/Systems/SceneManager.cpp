@@ -265,7 +265,7 @@ namespace Uma_Engine
                         m_ActiveScene->m_RenderingSystem->SetUpdateCamera(false);
                     }
 
-                    std::cout << "Switched to editor camera" << std::endl;
+                    //std::cout << "Switched to editor camera" << std::endl;
                 }
             }
             else
@@ -283,7 +283,7 @@ namespace Uma_Engine
                     m_ActiveScene->m_RenderingSystem->SetUpdateCamera(true);
                 }
 
-                std::cout << "Switched to game camera" << std::endl;
+                //std::cout << "Switched to game camera" << std::endl;
             }
 
             // Update editor camera if active

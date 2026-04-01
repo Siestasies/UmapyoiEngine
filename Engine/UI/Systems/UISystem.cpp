@@ -228,6 +228,10 @@ namespace Uma_UI
      */
     void UISystem::InputPass()
     {
+        //std::cout << "input method : " << Uma_Engine::HybridInputSystem::GetCurrentInputMethod() << std::endl;
+
+        //if (Uma_Engine::HybridInputSystem::GetCurrentInputMethod() == 1) return;
+        
         mMouseConsumedThisFrame = false;
         mMousePositionScreen = Uma_Engine::HybridInputSystem::GetSceneMousePosition();
 
@@ -305,6 +309,8 @@ namespace Uma_UI
                 UpdateButtonVisual(entity);
                 continue;
             }
+
+            if (Uma_Engine::HybridInputSystem::GetCurrentInputMethod() == 1) continue;
 
             bool isHovered = (entity == hitEntity);
 
@@ -914,6 +920,43 @@ namespace Uma_UI
             {
                 MarkEntityAndChildrenDirty(child);
             }
+        }
+    }
+
+    void UISystem::SimulateButtonAction(const Uma_ECS::Entity& buttonId, ButtonState state)
+    {
+        if (!pCoordinator->HasComponent<Button>(buttonId)) return;
+
+        switch (state)
+        {
+        case ButtonState::Normal:
+        {
+            Button& btn = pCoordinator->GetComponent<Button>(buttonId);
+            btn.currentState = ButtonState::Normal;
+
+            UpdateButtonVisual(buttonId);
+
+            break;
+        }
+        case ButtonState::Hovered:
+        {
+            Button& btn = pCoordinator->GetComponent<Button>(buttonId);
+            btn.currentState = ButtonState::Hovered;
+
+            UpdateButtonVisual(buttonId);
+
+            break;
+        }
+        case ButtonState::Pressed:
+        {
+            auto system = pCoordinator->GetSystem<Uma_ECS::LuaScriptingSystem>();
+
+            Button& btn = pCoordinator->GetComponent<Button>(buttonId);
+
+            system->CallScriptFunction(buttonId, btn.scriptName, "OnPointerClick");
+
+            break;
+        }
         }
     }
 

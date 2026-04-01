@@ -224,6 +224,8 @@ namespace Uma_Engine
 
         static float GetControllerAxesInput(int axis, int controllerId = 0);
 
+        static int GetCurrentInputMethod();
+
     private:
         // Static state
         static std::vector<bool> sKeys;
@@ -232,6 +234,7 @@ namespace Uma_Engine
         static std::vector<bool> sMouseButtonsPrevFrame;
         static double sMouseX, sMouseY;
         static double sScrollX, sScrollY;
+        static int sCurrInputMethod;
 
         //static std::vector<bool> sGamepadActive;
         static std::unordered_map<int, std::unique_ptr<ControllerInput>> sActiveController;

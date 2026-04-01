@@ -40,12 +40,36 @@ namespace Uma_Engine
     struct ControllerInput
     {
         GLFWgamepadstate currState;
-        GLFWgamepadstate prevState;
+        GLFWgamepadstate prevState; 
+        bool anyButtonPressed = false;
+        bool anyAxisChanged = false;
+        float axisThreshold = 0.1f;
 
         void UpdateState(const GLFWgamepadstate& state)
         {
             prevState = currState;
             currState = state;
+
+            anyButtonPressed = false;
+            for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++)
+            {
+                if (currState.buttons[i] == GLFW_PRESS &&
+                    prevState.buttons[i] == GLFW_RELEASE)
+                {
+                    anyButtonPressed = true;
+                    break;
+                }
+            }
+
+            anyAxisChanged = false;
+            for (int i = 0; i < GLFW_GAMEPAD_AXIS_LAST; i++)
+            {
+                if (std::abs(currState.axes[i] - prevState.axes[i]) > axisThreshold)
+                {
+                    anyAxisChanged = true;
+                    break;
+                }
+            }
         }
     };
 
@@ -59,6 +83,8 @@ namespace Uma_Engine
     double InputSystem::sMouseY = 0.0;
     double InputSystem::sScrollX = 0.0;
     double InputSystem::sScrollY = 0.0;
+
+    int InputSystem::sCurrInputMethod = 0;
 
     InputSystem::InputSystem() : mWindow(nullptr) {}
 
@@ -134,6 +160,12 @@ namespace Uma_Engine
         // Update mouse position
         double xpos, ypos;
         glfwGetCursorPos(mWindow, &xpos, &ypos);
+
+        if (xpos != sMouseX || ypos != sMouseY)
+        {
+            sCurrInputMethod = 0;
+        }
+
         sMouseX = xpos;
         sMouseY = ypos;
 
@@ -191,6 +223,9 @@ namespace Uma_Engine
             if (glfwGetGamepadState(id, &state))
             {
                 controller->UpdateState(state);
+
+                if (controller->anyAxisChanged || controller->anyButtonPressed)
+                    sCurrInputMethod = 1;
             }
         }
 
@@ -275,6 +310,8 @@ namespace Uma_Engine
     {
         (void)window; (void)mods; (void)scancode;
 
+        sCurrInputMethod = 0;
+
         if (key >= 0 && key <= GLFW_KEY_LAST)
         {
             if (action == GLFW_PRESS) {
@@ -301,6 +338,8 @@ namespace Uma_Engine
     void InputSystem::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
         (void)window; (void)mods;
+
+        sCurrInputMethod = 0;
 
         if (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST)
         {
@@ -664,5 +703,10 @@ namespace Uma_Engine
         }
 
         return con->currState.axes[axis];
+    }
+
+    int InputSystem::GetCurrentInputMethod()
+    {
+        return sCurrInputMethod;
     }
 }

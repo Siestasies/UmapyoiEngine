@@ -5,7 +5,8 @@
       "Bash(python3:*)",
       "Bash(git -C /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine log --all --oneline | grep -i \"controller\\\\|gamepad\" | head -20)",
       "Bash(git -C /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine branch -a)",
-      "Bash(git -C /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine show controller_support:Engine/Systems/InputSystem.h 2>/dev/null | head -100)"
+      "Bash(git -C /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine show controller_support:Engine/Systems/InputSystem.h 2>/dev/null | head -100)",
+      "Bash(find /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine/Assets -type f -name \"*.lua\" 2>/dev/null | head -20)"
     ]
   }
 }

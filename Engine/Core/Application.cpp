@@ -333,11 +333,19 @@ namespace Uma_Engine
             // Update all systems
             mSystemManager->Update(deltaTime);
 
+            // Update Curr input method
+
+
             // Let derived class perform custom update logic
             PostUpdate(deltaTime);
 
             // Swap front and back buffers
             glfwSwapBuffers(mWindow->GetGLFWWindow());
         }
+    }
+    
+    int Application::GetCurrentInputMethod()
+    {
+        return InputSystem::GetCurrentInputMethod();
     }
 }

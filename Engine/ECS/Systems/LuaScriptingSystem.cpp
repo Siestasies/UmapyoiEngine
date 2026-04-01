@@ -48,6 +48,7 @@ All rights reserved.
 #include "../UI/Components/Slider.h"
 #include "../UI/Components/Checkbox.h"
 #include "../UI/Components/Button.h"
+#include "../UI/Systems/UISystem.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/SpriteMaterial.h"
 #include "../Components/Cutscene.h"
@@ -157,7 +158,7 @@ namespace Uma_ECS
                 {
                     if (script.wasEnabledLastFrame)
                     {
-                        //CallLuaFunction(script, "OnDisable");
+                        CallLuaFunction(script, "OnDisable");
                         script.wasEnabledLastFrame = false;
                     }
                     continue;
@@ -174,7 +175,7 @@ namespace Uma_ECS
                         CallLuaFunction(script, "Start");
                     }
 
-                    //CallLuaFunction(script, "OnEnable");
+                    CallLuaFunction(script, "OnEnable");
                 }
 
                 if (!script.isInitialized)
@@ -1591,6 +1592,15 @@ namespace Uma_ECS
             }
         );
 
+        sharedLua->new_enum<Uma_UI::ButtonState>("ButtonState",
+            {
+                {"Normal", Uma_UI::ButtonState::Normal},
+                {"Hovered", Uma_UI::ButtonState::Hovered},
+                {"Pressed", Uma_UI::ButtonState::Pressed},
+                {"Disabled", Uma_UI::ButtonState::Disabled}
+            }
+        );
+
         sharedLua->new_usertype<Uma_UI::Button>("Button",
             "interactable", &Uma_UI::Button::interactable,
             "currentState", &Uma_UI::Button::currentState,
@@ -1599,6 +1609,20 @@ namespace Uma_ECS
             "pressedColour", &Uma_UI::Button::pressedColour,
             "disabledColour", &Uma_UI::Button::disabledColour
         );
+
+        sharedLua->set_function("SimulateButtonAction",
+            [this](const Entity& button_id, const Uma_UI::ButtonState& state)
+            {
+                if (!pCoordinator->HasComponent<Uma_UI::Button>(button_id)) return;
+
+                std::shared_ptr<Uma_UI::UISystem> pUIsystem = pCoordinator->GetSystem<Uma_UI::UISystem>();
+
+                if (pUIsystem)
+                {
+                    pUIsystem->SimulateButtonAction(button_id, state);
+                }
+
+            });
 
         // Register DialogueLine so Lua can read fields off returned line tables
         sharedLua->new_usertype<Uma_UI::DialogueLine>("DialogueLine",
@@ -2903,7 +2927,7 @@ namespace Uma_ECS
         // controller 
         sharedLua->set_function("GetControllerButtonInput", [this](int key, int action, int controller_id) -> bool
             {
-                return Uma_Engine::HybridInputSystem::GetControllerButtonInput(key, action, 0);
+                return Uma_Engine::HybridInputSystem::GetControllerButtonInput(key, action, controller_id);
             });
 
         sharedLua->set_function("GetControllerAxesInput", [this](int axis, int controller_id) -> float

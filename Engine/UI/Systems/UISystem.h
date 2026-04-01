@@ -164,6 +164,8 @@ namespace Uma_UI
          */
         bool IsUIHovered() const { return !mHitTestCache.empty(); }
 
+        void SimulateButtonAction(const Uma_ECS::Entity& buttonId, ButtonState state);
+
     private:
         Uma_ECS::Coordinator* pCoordinator = nullptr;
         Uma_Engine::EventSystem* pEventSystem = nullptr;
