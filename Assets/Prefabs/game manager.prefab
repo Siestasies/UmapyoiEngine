@@ -884,7 +884,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             },
                             {
                                 "name": "",
@@ -919,7 +922,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -1226,7 +1232,10 @@
                                 "startFrame": 0,
                                 "endFrame": 13,
                                 "fps": 14.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -2898,7 +2907,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "complete bg",
+                        "name": "frames",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -2944,7 +2953,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/stage cleared ui.png",
+                        "texturePath": "Assets/Cinematics/ending sequence/ending illust 1.png",
                         "sortingOrder": 0,
                         "color": {
                             "r": 1.0,
@@ -2956,7 +2965,7 @@
                         "fillDirection": 0,
                         "fillAmount": 1.0,
                         "spriteSheetGrid": {
-                            "x": 7.0,
+                            "x": 1.0,
                             "y": 1.0
                         },
                         "spriteCell": {
@@ -2972,10 +2981,10 @@
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "SpriteAnim",
-                                "property": 5,
+                                "name": "",
+                                "property": 6,
                                 "easing": 0,
-                                "duration": 5.0,
+                                "duration": 35.0,
                                 "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
@@ -3004,7 +3013,115 @@
                                 "startFrame": 0,
                                 "endFrame": 6,
                                 "fps": 24.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 0.2,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/ending sequence/ending illust 1.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 2.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 3.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 4.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 5.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 6.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 7.png"
+                                ]
+                            },
+                            {
+                                "name": "",
+                                "property": 6,
+                                "easing": 0,
+                                "duration": 0.3,
+                                "delay": 35.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false,
+                                "cinematicFps": 10.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/ending sequence/ending illust 7.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 8.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 9.png"
+                                ]
+                            },
+                            {
+                                "name": "",
+                                "property": 6,
+                                "easing": 0,
+                                "duration": 1.6,
+                                "delay": 35.299,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false,
+                                "cinematicFps": 10.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0001.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0002.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0003.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0004.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0005.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0006.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0007.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0008.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0009.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0010.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0011.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0012.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0013.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0014.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0015.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0016.png"
+                                ]
                             }
                         ]
                     }
@@ -3119,7 +3236,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -3250,7 +3370,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -9255,7 +9378,41 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/lost hp point.png"
+            },
+            {
+                "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/mana bar empty.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 1.png"
+            },
+            {
+                "path": "assets/mana bar full.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/fire ability icon.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/wind ability icon.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }
