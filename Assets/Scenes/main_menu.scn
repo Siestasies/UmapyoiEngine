@@ -17,6 +17,9 @@
                 "path": "assets/floor_tatami.png"
             },
             {
+                "path": "assets/controller button.png"
+            },
+            {
                 "path": "assets/main menu fade out.png"
             },
             {
@@ -123,12 +126,12 @@
             }
         },
         {
-            "id": 20,
+            "id": 29,
             "isActive": true,
             "components": {}
         },
         {
-            "id": 21,
+            "id": 30,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -147,8 +150,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        22,
-                        23
+                        31,
+                        32
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
