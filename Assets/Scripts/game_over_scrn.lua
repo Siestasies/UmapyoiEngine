@@ -4,6 +4,9 @@ local nav
 local isOptionTurnedOn
 local optionScrn
 
+local controllerInputIndicator
+local isControllerInputIndicatorActive
+
 function Start()
 
     local children = GetChildrenList(EntityID)
@@ -21,11 +24,22 @@ function Start()
     local gm_id = GetParent(EntityID)
     optionScrn = GetChildren(gm_id, 4)
 
+    controllerInputIndicator = children[5]
+    isControllerInputIndicatorActive = false
+
 end
 
 function Update(dt)
     
     isOptionTurnedOn = GetActiveEntity(optionScrn)
+
+    if GetCurrentInputMethod() == 1 and not isControllerInputIndicatorActive then
+        SetActiveEntity(controllerInputIndicator, true) 
+        isControllerInputIndicatorActive = true
+    elseif GetCurrentInputMethod() == 0 and isControllerInputIndicatorActive then
+        SetActiveEntity(controllerInputIndicator, false) 
+        isControllerInputIndicatorActive = false
+    end
 
     if isOptionTurnedOn and nav:getActive() == true then 
         nav:setActive(false)

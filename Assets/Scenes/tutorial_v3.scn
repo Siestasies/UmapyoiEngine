@@ -2,22 +2,22 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
-                "path": "assets/player_ss.png"
+                "path": "assets/snow particle 1.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/snow particle 1.png"
+                "path": "assets/player_ss.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -66,6 +66,9 @@
             },
             {
                 "path": "assets/howtoplay.png"
+            },
+            {
+                "path": "assets/controller button.png"
             },
             {
                 "path": "assets/props animation.png"
@@ -168,6 +171,9 @@
             },
             {
                 "path": "assets/stage cleared ui.png"
+            },
+            {
+                "path": "assets/keycap button.png"
             }
         ],
         "fonts": [
@@ -192,16 +198,6 @@
                 "name": "CombatGameplayBGM",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
-            },
-            {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
-                "type": 0
             }
         ],
         "shaders": [
@@ -15088,65 +15084,6 @@
             }
         },
         {
-            "id": 85,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "game manager",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        86,
-                        110,
-                        122,
-                        128,
-                        139,
-                        176
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/gm.lua",
-                            "scriptName": "gm.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "isBossRoom",
-                                    "type": 2,
-                                    "value": false,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
-                            "scriptName": "Cheat_code.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/game manager lite.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
             "id": 209,
             "isActive": true,
             "components": {
@@ -15204,6 +15141,65 @@
                     },
                     "scaleMode": 1,
                     "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 208,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "game manager",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        207,
+                        174,
+                        162,
+                        156,
+                        145,
+                        108
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/gm.lua",
+                            "scriptName": "gm.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "isBossRoom",
+                                    "type": 2,
+                                    "value": false,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                            "scriptName": "Cheat_code.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/game manager.prefab",
+                    "isRoot": true
                 }
             }
         }

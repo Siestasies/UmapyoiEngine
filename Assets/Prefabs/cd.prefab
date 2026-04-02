@@ -1,0 +1,1260 @@
+{
+    "Prefab": {
+        "entities": [
+            {
+                "id": 0,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "cd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": -1,
+                        "children": [
+                            1,
+                            6,
+                            11
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/cd.lua",
+                                "scriptName": "cd.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": true
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 1",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            2,
+                            3,
+                            4,
+                            5
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/UIKeycapController.lua",
+                                "scriptName": "UIKeycapController.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "keyboard",
+                                        "type": 3,
+                                        "value": "j",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "controller",
+                                        "type": 3,
+                                        "value": "y",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": -275.0,
+                            "y": 20.0
+                        },
+                        "sizeDelta": {
+                            "x": 150.0,
+                            "y": 150.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/water ability icon.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 1 shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": -25.0,
+                            "y": -25.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.699
+                        },
+                        "visible": true,
+                        "fillDirection": 4,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 3,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "keycap",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 75.0,
+                            "y": 75.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/keycap button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 4,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "control",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/controller button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 5,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "text",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 1,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -52.5
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "j",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.5,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 6,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 2",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            7,
+                            8,
+                            9,
+                            10
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/UIKeycapController.lua",
+                                "scriptName": "UIKeycapController.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "keyboard",
+                                        "type": 3,
+                                        "value": "k",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "controller",
+                                        "type": 3,
+                                        "value": "b",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": -137.0,
+                            "y": 20.0
+                        },
+                        "sizeDelta": {
+                            "x": 150.0,
+                            "y": 150.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/fire ability icon.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 7,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 2 shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 6,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": -25.0,
+                            "y": -25.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.699
+                        },
+                        "visible": true,
+                        "fillDirection": 4,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 8,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "keycap",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 6,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 75.0,
+                            "y": 75.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/keycap button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 9,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "control",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 6,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/controller button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 10,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "text",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 6,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -52.5
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "k",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.5,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 11,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 3",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": [
+                            12,
+                            13,
+                            14,
+                            15
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/UIKeycapController.lua",
+                                "scriptName": "UIKeycapController.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "keyboard",
+                                        "type": 3,
+                                        "value": "L",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "controller",
+                                        "type": 3,
+                                        "value": "X",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 20.0
+                        },
+                        "sizeDelta": {
+                            "x": 150.0,
+                            "y": 150.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/wind ability icon.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 12,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "skill 3 shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 11,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": -25.0,
+                            "y": -25.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/whitePixel.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 0.699
+                        },
+                        "visible": true,
+                        "fillDirection": 4,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 13,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "keycap",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 11,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 75.0,
+                            "y": 75.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/keycap button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 14,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "control",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 11,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -60.0
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/controller button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 15,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "text",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 11,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/cd.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": -52.5
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "L",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.5,
+                        "colour": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            }
+        ],
+        "rootEntity": 0
+    },
+    "resources": {
+        "textures": [
+            {
+                "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/wind ability icon.png"
+            },
+            {
+                "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/fire ability icon.png"
+            },
+            {
+                "path": "assets/keycap button.png"
+            },
+            {
+                "path": "assets/controller button.png"
+            }
+        ],
+        "fonts": [],
+        "sounds": []
+    }
+}

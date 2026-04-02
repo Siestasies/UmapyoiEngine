@@ -55,6 +55,8 @@ All rights reserved.
 #pragma warning(pop)
 #include <memory>
 
+#include <sstream>
+
 namespace Uma_ECS
 {
     class LuaScriptingSystem : public ECSSystem
@@ -118,6 +120,14 @@ namespace Uma_ECS
         template<typename... Args>
         void CallScriptFunction(Entity entity, std::string scriptName, std::string functionName, Args&&... args)
         {
+            if (scriptName.empty() || functionName.empty())
+            {
+                std::stringstream ss{ "" };
+                ss << "UI object (" << entity << ") has a invalid script name or function name";
+                Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eWarning, ss.str());
+                return;
+            }  
+
             auto& luaScript = pCoordinator->GetComponent<LuaScript>(entity);
 
             CallLuaFunction(*luaScript.GetScriptByName(scriptName), functionName.c_str(), std::forward<Args>(args)...);
@@ -192,11 +202,6 @@ namespace Uma_ECS
 
                 if (!func)
                 {
-                    /*Uma_Engine::Debugger::Log(Uma_Engine::WarningLevel::eError,
-                        "function " + std::string(funcName) + "(): " + "is invalid / doesn't exists");*/
-
-                    // if function is invalid just dont do anything
-
                     return;
                 }
 
