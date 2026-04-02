@@ -101,7 +101,7 @@ function HandleCollision(trigger)
             --Log("===================")
 
             if attack.elementType == ElementType.Steam or  
-            attack.elementType == ElementType.Pyronado then 
+            attack.elementType == ElementType.Whirlpool then 
                 isEffective = true
                 isFusion = true
                 OnHurt(playerId, math.floor(playerComp.mAttackDamage + playerComp.mCritDamage))
@@ -127,7 +127,7 @@ function HandleCollision(trigger)
             local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
 
             if attack.elementType == ElementType.Steam or  
-            attack.elementType == ElementType.Pyronado then 
+            attack.elementType == ElementType.Whirlpool then 
                 isEffective = true
                 isFusion = true
                 OnHurt(playerId, math.floor(projectile.mStats.damage))

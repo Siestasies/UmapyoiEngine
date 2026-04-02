@@ -576,6 +576,8 @@ namespace Uma_Engine
         ss << "Controller " << id << " has " << (event == GLFW_CONNECTED ? "connected" : "disconnected");
         Debugger::Log(WarningLevel::eInfo, ss.str());
 
+        //pSystemManager
+
 
         if (event == GLFW_CONNECTED)
         {

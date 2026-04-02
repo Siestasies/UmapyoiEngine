@@ -5,8 +5,8 @@ function Start()
 
     local children = GetChildrenList(EntityID)
     nav = MenuNav.new(
-        { children[2], children[3] },
-        { backButton = children[2], wrapAround = false, isHorizontal = true}
+        { children[3] },
+        { backButton = children[3], wrapAround = false }
     )
 
     

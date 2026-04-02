@@ -1693,9 +1693,9 @@
                             "a": 1.0
                         },
                         "pressedColour": {
-                            "r": 0.338,
-                            "g": 0.338,
-                            "b": 0.338,
+                            "r": 0.337,
+                            "g": 0.337,
+                            "b": 0.337,
                             "a": 1.0
                         },
                         "disabledColour": {
@@ -1776,7 +1776,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "indicator",
+                        "name": "Indicator panel",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -1792,7 +1792,7 @@
                         "parent": 1,
                         "children": [
                             21,
-                            23
+                            25
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1829,7 +1829,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "icon",
+                        "name": "indicator1",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -1844,7 +1844,60 @@
                         },
                         "parent": 20,
                         "children": [
-                            22
+                            22,
+                            24
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": 56.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    }
+                }
+            },
+            {
+                "id": 22,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "icon",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 21,
+                        "children": [
+                            23
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1869,8 +1922,8 @@
                             "y": -6.0
                         },
                         "sizeDelta": {
-                            "x": 60.0,
-                            "y": 60.0
+                            "x": 70.0,
+                            "y": 70.0
                         },
                         "isDirty": true
                     },
@@ -1902,7 +1955,7 @@
                 }
             },
             {
-                "id": 22,
+                "id": 23,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1919,7 +1972,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 21,
+                        "parent": 22,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -1953,7 +2006,7 @@
                         "text": "A",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 2.0,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.791,
                             "g": 0.647,
@@ -1966,7 +2019,7 @@
                 }
             },
             {
-                "id": 23,
+                "id": 24,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -1983,7 +2036,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 20,
+                        "parent": 21,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -2005,7 +2058,7 @@
                         },
                         "anchoredPosition": {
                             "x": -142.0,
-                            "y": -12.0
+                            "y": -10.0
                         },
                         "sizeDelta": {
                             "x": 80.0,
@@ -2017,7 +2070,265 @@
                         "text": "Select",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
                         "sortingOrder": 2,
-                        "fontSize": 2.0,
+                        "fontSize": 1.5,
+                        "colour": {
+                            "r": 0.791,
+                            "g": 0.647,
+                            "b": 0.583,
+                            "a": 1.0
+                        },
+                        "alignment": 0,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 25,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "indicator2",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 20,
+                        "children": [
+                            26,
+                            28
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 1.0,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": -181.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    }
+                }
+            },
+            {
+                "id": 26,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "icon",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 25,
+                        "children": [
+                            27
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": -208.0,
+                            "y": -6.0
+                        },
+                        "sizeDelta": {
+                            "x": 70.0,
+                            "y": 70.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/controller button.png",
+                        "sortingOrder": 0,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                }
+            },
+            {
+                "id": 27,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "text",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 26,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 2.0
+                        },
+                        "sizeDelta": {
+                            "x": 100.0,
+                            "y": 100.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "b",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 2,
+                        "fontSize": 1.5,
+                        "colour": {
+                            "r": 0.791,
+                            "g": 0.647,
+                            "b": 0.583,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 28,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "icon_dup",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 25,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/main.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.0
+                        },
+                        "anchoredPosition": {
+                            "x": -142.0,
+                            "y": -10.0
+                        },
+                        "sizeDelta": {
+                            "x": 80.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "cancel",
+                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "sortingOrder": 2,
+                        "fontSize": 1.5,
                         "colour": {
                             "r": 0.791,
                             "g": 0.647,

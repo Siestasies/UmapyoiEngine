@@ -17,10 +17,10 @@
                 "path": "assets/water ability icon.png"
             },
             {
-                "path": "assets/hover button ui white.png"
+                "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/wind ability icon.png"
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/mana bar empty.png"
@@ -40,13 +40,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -111,7 +111,14 @@
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
-                    "scripts": []
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/leaderboard_scrn.lua",
+                            "scriptName": "leaderboard_scrn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
                 },
                 "class Uma_UI::RectTransform": {
                     "anchorMin": {
@@ -2036,7 +2043,7 @@
                         "y": -400.0
                     },
                     "sizeDelta": {
-                        "x": 500.0,
+                        "x": 673.0,
                         "y": 75.0
                     },
                     "isDirty": true
@@ -2088,9 +2095,9 @@
                         "a": 1.0
                     },
                     "disabledColour": {
-                        "r": 0.501,
-                        "g": 0.501,
-                        "b": 0.501,
+                        "r": 0.5,
+                        "g": 0.5,
+                        "b": 0.5,
                         "a": 0.0
                     }
                 }

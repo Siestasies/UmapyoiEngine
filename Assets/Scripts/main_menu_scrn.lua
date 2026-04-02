@@ -50,10 +50,8 @@ function Update(dt)
 
     if (isHelpTurnedOn or isCfmTurnedOn) and nav:getActive() == true then 
         nav:setActive(false)
-    elseif not isHelpTurnedOn and nav:getActive() == false then
-        Focused(3)
-    elseif not isCfmTurnedOn and nav:getActive() == false then
-        Focused(4)
+    elseif not isHelpTurnedOn and not isCfmTurnedOn and nav:getActive() == false then
+        Focused(1)
     end
 
     nav:update(dt)

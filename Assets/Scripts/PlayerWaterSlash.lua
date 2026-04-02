@@ -114,6 +114,8 @@ function state_update(entity, dt)
         ChangeState(entity, "PlayerIdle")
         return
     end
+
+    local transform = GetTransformFrom(EntityID)
     
     -- Update timer
     attackTimer = attackTimer - dt
