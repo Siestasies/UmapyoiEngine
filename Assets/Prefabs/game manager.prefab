@@ -9836,7 +9836,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -9900,7 +9900,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -9964,7 +9964,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10028,7 +10028,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10092,7 +10092,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10156,7 +10156,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10220,7 +10220,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10284,7 +10284,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10348,7 +10348,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10412,7 +10412,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 64.0,
                         "colour": {
@@ -10476,7 +10476,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10540,7 +10540,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10604,7 +10604,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10668,7 +10668,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10732,7 +10732,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10796,7 +10796,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10860,7 +10860,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10924,7 +10924,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -10988,7 +10988,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11052,7 +11052,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11116,7 +11116,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11180,7 +11180,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11244,7 +11244,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11308,7 +11308,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11372,7 +11372,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11436,7 +11436,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11500,7 +11500,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11564,7 +11564,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11628,7 +11628,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11692,7 +11692,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11756,7 +11756,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {
@@ -11820,7 +11820,7 @@
                     },
                     "class Uma_UI::Text": {
                         "text": "",
-                        "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
                         "colour": {

@@ -23,16 +23,19 @@
                 "path": "assets/tilemap.png"
             },
             {
-                "path": "assets/int_ss.png"
-            },
-            {
                 "path": "assets/door opening ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/int_ss.png"
+            },
+            {
+                "path": "assets/sound settings bodx.png"
             },
             {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,13 +47,16 @@
                 "path": "assets/fire enemy shadow.png"
             },
             {
+                "path": "assets/full volume.png"
+            },
+            {
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -62,13 +68,19 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/controller button.png"
+            },
+            {
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
+            },
+            {
+                "path": "assets/red button.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -77,13 +89,16 @@
                 "path": "assets/water ability icon.png"
             },
             {
+                "path": "assets/hover button ui white.png"
+            },
+            {
                 "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/tutorial box wind.png"
+                "path": "assets/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/vfx 512 ss 1.png"
+                "path": "assets/tutorial box wind.png"
             },
             {
                 "path": "assets/star.png"
@@ -95,13 +110,16 @@
                 "path": "assets/x escape button.png"
             },
             {
+                "path": "assets/sliding controller.png"
+            },
+            {
                 "path": "assets/controlspopup2.png"
             },
             {
-                "path": "assets/controlspopup3.png"
+                "path": "assets/mana bar full.png"
             },
             {
-                "path": "assets/mana bar full.png"
+                "path": "assets/controlspopup3.png"
             },
             {
                 "path": "assets/vfx 512 ss 3.png"
@@ -110,25 +128,28 @@
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/vfx 512 ss 2.png"
+                "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
                 "path": "assets/skill tree/skill frame.png"
             },
             {
-                "path": "assets/wind enemy spritesheets 2.png"
+                "path": "assets/vfx 512 ss 2.png"
             },
             {
                 "path": "assets/skill tree/skill tree menu frame.png"
             },
             {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
                 "path": "assets/skill tree/plus hp skill.png"
             },
             {
-                "path": "assets/tutorial box fire.png"
+                "path": "assets/dialogue ui box.png"
             },
             {
-                "path": "assets/dialogue ui box.png"
+                "path": "assets/tutorial box fire.png"
             },
             {
                 "path": "assets/dialogue player ui sprite.png"
@@ -153,17 +174,35 @@
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
+            },
+            {
+                "path": "assets/empty volume.png"
+            },
+            {
+                "path": "assets/keycap button.png"
+            },
+            {
+                "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/stage cleared ui.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-sole-100.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -174,103 +213,13 @@
         ],
         "sounds": [
             {
-                "name": "Water Demon Charge",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
-                "type": 0
-            },
-            {
-                "name": "WindDemonAttack(Charge)",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
-                "type": 0
-            },
-            {
                 "name": "CombatGameplayBGM",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
             },
             {
-                "name": "KappaInteract",
-                "path": "Assets/sounds/KappaSFX/KappaInteract.wav",
-                "type": 0
-            },
-            {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                "type": 0
-            },
-            {
-                "name": "FireSlash",
-                "path": "Assets/sounds/Player Wav/FireSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "WindDemonDamage",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
-                "type": 0
-            },
-            {
-                "name": "SteamBurst",
-                "path": "Assets/sounds/Player Wav/SteamBurst.wav",
-                "type": 0
-            },
-            {
-                "name": "WindDemonDeath",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
-                "type": 0
-            },
-            {
-                "name": "Fire Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
-                "type": 0
-            },
-            {
-                "name": "Water Demon Damage Scream",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
-                "type": 0
-            },
-            {
-                "name": "Water Demon ChargenAttack",
-                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
-                "type": 0
-            },
-            {
-                "name": "PlayerDamageMono",
-                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
-                "type": 0
-            },
-            {
-                "name": "FireCyclone",
-                "path": "Assets/sounds/Player Wav/FireCyclone.wav",
-                "type": 0
-            },
-            {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "WaterDemonSuicide",
-                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
-                "type": 0
-            },
-            {
-                "name": "PlayerDash",
-                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
-                "type": 0
-            },
-            {
-                "name": "FireEnemyAttack",
-                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
-                "type": 0
-            },
-            {
                 "name": "WindSlash",
                 "path": "Assets/sounds/Player Wav/WindSlash.wav",
-                "type": 0
-            },
-            {
-                "name": "SFX_Eye_Close",
-                "path": "Assets/sounds/SFX_Eye_Close.wav",
                 "type": 0
             }
         ],
@@ -333,7 +282,7 @@
                         "tilesetWidth": 0,
                         "tilesetHeight": 0,
                         "columns": 9,
-                        "rows": 8
+                        "rows": 9
                     },
                     "tintColor": [
                         1.0,
@@ -11710,7 +11659,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        3
+                        3,
+                        4,
+                        5
                     ]
                 },
                 "struct Uma_ECS::Player": {
@@ -11901,13 +11852,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -11923,13 +11874,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -12995,6 +12946,16 @@
                     "initialClip": "idle",
                     "clips": [
                         {
+                            "name": "normal_atk",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 0,
+                            "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -13005,11 +12966,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "normal_atk",
+                            "name": "atk_wind",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "hurt",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 16,
+                            "frameCount": 3,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13025,21 +12996,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "hurt",
+                            "name": "atk_water",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_wind",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13050,16 +13011,6 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_water",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13124,9 +13075,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -13134,14 +13085,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -13149,9 +13100,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -13196,7 +13147,7 @@
             }
         },
         {
-            "id": 3,
+            "id": 5,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13219,7 +13170,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13396,7 +13347,7 @@
             }
         },
         {
-            "id": 5,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13663,7 +13614,7 @@
             }
         },
         {
-            "id": 6,
+            "id": 8,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13682,9 +13633,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        7,
-                        14,
-                        214
+                        9,
+                        12,
+                        16
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -13788,7 +13739,7 @@
             }
         },
         {
-            "id": 18,
+            "id": 20,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13807,18 +13758,18 @@
                     },
                     "parent": -1,
                     "children": [
-                        19,
-                        23,
-                        27,
-                        31,
-                        35,
-                        38,
-                        42,
-                        46,
-                        49,
-                        50,
+                        21,
+                        25,
+                        29,
+                        33,
+                        37,
+                        40,
+                        44,
+                        48,
                         51,
-                        52
+                        52,
+                        53,
+                        54
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -13915,6 +13866,30 @@
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
+                                },
+                                {
+                                    "name": "marqueeSpeed",
+                                    "type": 0,
+                                    "value": 12.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "marqueeWidth",
+                                    "type": 0,
+                                    "value": 24.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                },
+                                {
+                                    "name": "marqueePadding",
+                                    "type": 0,
+                                    "value": 6.0,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
                                 }
                             ]
                         }
@@ -13959,12 +13934,12 @@
             }
         },
         {
-            "id": 53,
+            "id": 55,
             "isActive": true,
             "components": {}
         },
         {
-            "id": 54,
+            "id": 56,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13983,7 +13958,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        72
+                        74
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14188,7 +14163,7 @@
             }
         },
         {
-            "id": 73,
+            "id": 75,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14207,7 +14182,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        74
+                        76
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14359,7 +14334,7 @@
             }
         },
         {
-            "id": 75,
+            "id": 77,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14471,67 +14446,8 @@
             }
         },
         {
-            "id": 76,
+            "id": 202,
             "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "game manager",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        77,
-                        101,
-                        113,
-                        119,
-                        130,
-                        167
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/gm.lua",
-                            "scriptName": "gm.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "isBossRoom",
-                                    "type": 2,
-                                    "value": false,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
-                            "scriptName": "Cheat_code.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/game manager lite.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 200,
-            "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "fade out",
@@ -14549,7 +14465,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        201
+                        203
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -14591,7 +14507,7 @@
             }
         },
         {
-            "id": 202,
+            "id": 204,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14610,7 +14526,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        203
+                        205
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14653,7 +14569,7 @@
             }
         },
         {
-            "id": 203,
+            "id": 205,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14670,7 +14586,7 @@
                         "x": 3.5,
                         "y": 4.25
                     },
-                    "parent": 202,
+                    "parent": 204,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14697,7 +14613,7 @@
             }
         },
         {
-            "id": 204,
+            "id": 206,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14716,7 +14632,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        205
+                        207
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14759,7 +14675,7 @@
             }
         },
         {
-            "id": 205,
+            "id": 207,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14776,7 +14692,7 @@
                         "x": 3.5,
                         "y": 4.25
                     },
-                    "parent": 204,
+                    "parent": 206,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14803,7 +14719,7 @@
             }
         },
         {
-            "id": 206,
+            "id": 208,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14822,7 +14738,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        207
+                        209
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14865,7 +14781,7 @@
             }
         },
         {
-            "id": 207,
+            "id": 209,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14882,7 +14798,7 @@
                         "x": 3.5,
                         "y": 4.25
                     },
-                    "parent": 206,
+                    "parent": 208,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -14909,7 +14825,7 @@
             }
         },
         {
-            "id": 208,
+            "id": 210,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15026,7 +14942,7 @@
             }
         },
         {
-            "id": 209,
+            "id": 211,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15212,7 +15128,7 @@
             }
         },
         {
-            "id": 210,
+            "id": 212,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15378,7 +15294,7 @@
             }
         },
         {
-            "id": 211,
+            "id": 213,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15544,7 +15460,7 @@
             }
         },
         {
-            "id": 212,
+            "id": 214,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15677,7 +15593,7 @@
             }
         },
         {
-            "id": 213,
+            "id": 215,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15834,6 +15750,65 @@
                             "targetZoom": 10.0
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 201,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "game manager",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        200,
+                        167,
+                        146,
+                        130,
+                        110,
+                        220
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/gm.lua",
+                            "scriptName": "gm.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "isBossRoom",
+                                    "type": 2,
+                                    "value": false,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                            "scriptName": "Cheat_code.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/game manager.prefab",
+                    "isRoot": true
                 }
             }
         }
