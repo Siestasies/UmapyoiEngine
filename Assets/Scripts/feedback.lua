@@ -36,17 +36,17 @@ local FONT_SIZE_WARNING  = 2.0
 
 -- RGBA colour tables
 local COLOR = {
-    Normal    = { r=1.00, g=1.00, b=1.00 },
-    Affinity  = { r=1.00, g=0.84, b=0.00 },
-    Critical  = { r=1.00, g=0.30, b=0.10 },
-    Heal      = { r=0.30, g=1.00, b=0.45 },
-    PlayerHit = { r=1.00, g=0.20, b=0.20 },
-    ManaSpend = { r=0.40, g=0.60, b=1.00 },
-    ManaGain  = { r=0.55, g=0.85, b=1.00 },
-    Warning   = { r=1.00, g=0.20, b=0.20 },
+    Normal    = { r=0.95, g=0.95, b=0.95 },
+    Affinity  = { r=1.00, g=0.75, b=0.10 },
+    Critical  = { r=1.00, g=0.15, b=0.10 },
+    Heal      = { r=0.15, g=0.85, b=0.35 },
+    PlayerHit = { r=0.85, g=0.20, b=0.20 },
+    ManaSpend = { r=0.25, g=0.50, b=0.85 },
+    ManaGain  = { r=0.60, g=0.80, b=1.00 },
+    Warning   = { r=0.95, g=0.55, b=0.25 },
 }
 
-local FONT_PATH = "Assets/Fonts/Fujimaru-Regular.ttf"
+local FONT_PATH = "Assets/Fonts/Times New Roman Bold.ttf"
 
 -- ─────────────────────────────────────────────────────────────────────────────
 --  POOL STATE
@@ -192,23 +192,28 @@ function Spawn(pixX, pixY, value, typeStr)
         fontSize    = FONT_SIZE_CRIT
 
     elseif t == "heal" then
+        displayText = "+" .. displayText
         color    = COLOR.Heal
         fontSize = FONT_SIZE_NORMAL
 
     elseif t == "playerhit" or t == "player" then
+        displayText = "-" .. displayText
         color    = COLOR.PlayerHit
         fontSize = FONT_SIZE_NORMAL
 
     elseif t == "manaspend" or t == "mana" then
+        displayText = "-" .. displayText
         color    = COLOR.ManaSpend
         fontSize = FONT_SIZE_MANA
         fall     = true
 
     elseif t == "managain" then
+        displayText = "+" .. displayText
         color    = COLOR.ManaGain
         fontSize = FONT_SIZE_MANA
 
     elseif t == "warn" or t == "warning" then
+        displayText = displayText .. "!"
         color    = COLOR.Warning
         fontSize = FONT_SIZE_WARNING
         fall     = true

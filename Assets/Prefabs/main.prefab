@@ -996,7 +996,7 @@
             },
             {
                 "id": 11,
-                "isActive": false,
+                "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "help mnl",
@@ -1133,7 +1133,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 80.0
+                            "y": 57.5
                         },
                         "sizeDelta": {
                             "x": 500.0,
@@ -1142,7 +1142,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/floor_tatami.png",
+                        "texturePath": "Assets/red button.png",
                         "sortingOrder": 4,
                         "color": {
                             "r": 1.0,
@@ -1250,9 +1250,9 @@
                         "sortingOrder": 4,
                         "fontSize": 2.5,
                         "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
                             "a": 1.0
                         },
                         "alignment": 1,
@@ -2355,10 +2355,10 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/floor_tatami.png"
+                "path": "assets/controller button.png"
             },
             {
-                "path": "assets/controller button.png"
+                "path": "assets/red button.png"
             }
         ],
         "fonts": [],

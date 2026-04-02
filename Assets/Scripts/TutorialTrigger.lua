@@ -5,60 +5,102 @@ local missionTextComponent2
 local PlayerStatTrackState = require("PlayerStatTrackState")
 local triggerCount
 local blockerCollider = {}
-local tutorialEnemies = {}
 local rooms_trigger_id = {}
+local roomEnemy = {}
 local curr_room = 0
 
+-- Root children (1-based):
+-- [1]  bg_dup               (UI; child[1]="mission text" -> child[1]="mission text shadow")
+-- [2]  Blocker Collider 1   (id 5)
+-- [3]  Blocker Collider 2   (id 9)
+-- [4]  Blocker Collider 3   (id 13)
+-- [5]  Blocker Collider 4   (id 17)
+-- [6]  static fire enemy    (id 20) -> room 2 enemy
+-- [7]  static water enemy   (id 24) -> room 3 enemy
+-- [8]  static wind enemy    (id 28) -> room 1 enemy
+-- [9]  trigger room 1       (id 31)
+-- [10] trigger room 2       (id 32)
+-- [11] trigger room 3       (id 33)
+-- [12] trigger room 4       (id 34)
+
 ExposedVars = {
-    missionText = "",
-    missionText2 = "",
-    missionText3 = "",
-    missionText4 = "",
-    missionText5 = "",
-    missionText6 = "",
-    missionText7 = "",
-    moveToNext = "",
+    killWindPrompt  = "Defeat the Wind enemy",
+    killFirePrompt  = "Defeat the Fire enemy",
+    killWaterPrompt = "Defeat the Water enemy",
+    moveToNext      = "Move to the next room",
+
+    -- Marquee settings (tweak these in the editor)
+    marqueeWidth    = 24,    -- visible character window width
+    marqueeSpeed    = 12.0,  -- characters per second
+    marqueePadding  = 6,     -- blank spaces inserted between loops
 }
 
+-- -----------------------------------------------------------------------
+-- Marquee state
+-- -----------------------------------------------------------------------
+local marqueeFullStr  = ""   -- the looping string (text + padding)
+local marqueeOffset   = 0.0  -- fractional character offset
+local marqueeLen      = 0    -- length of marqueeFullStr
+
+local function BuildMarqueeString(str)
+    local padding = string.rep(" ", marqueePadding)
+    return str .. padding  -- loops back to start seamlessly
+end
+
+local function GetMarqueeWindow()
+    local idx    = math.floor(marqueeOffset) % marqueeLen
+    local result = {}
+    for i = 0, marqueeWidth - 1 do
+        local ci = (idx + i) % marqueeLen
+        result[i + 1] = marqueeFullStr:sub(ci + 1, ci + 1)
+    end
+    return table.concat(result)
+end
+
+-- -----------------------------------------------------------------------
+-- Startup
+-- -----------------------------------------------------------------------
 function Start()
     if HasCollider() then
         collider = GetCollider()
     end
 
     triggerCount = 0
-
     children = GetChildrenList(EntityID)
-    -- stage blockers ref
-    blockerCollider[1] = children[6]
-    blockerCollider[2] = children[7]
-    blockerCollider[3] = children[8]
-    blockerCollider[4] = children[9]
 
-    -- static enemy refs
-    tutorialEnemies[1] = children[10]
-    tutorialEnemies[2] = children[11]
+    -- Blocker colliders
+    blockerCollider[1] = children[2]
+    blockerCollider[2] = children[3]
+    blockerCollider[3] = children[4]
+    blockerCollider[4] = children[5]
 
-    rooms_trigger_id[1] = children[12]
-    rooms_trigger_id[2] = children[13]
-    rooms_trigger_id[3] = children[14]
-    rooms_trigger_id[4] = children[15]
+    -- Room enemies
+    roomEnemy[1] = children[8]
+    roomEnemy[2] = children[6]
+    roomEnemy[3] = children[7]
 
-    -- mission text refs
-    missionTextComponent = GetTextFrom(children[3])
-    missionTextComponent2 = GetTextFrom(children[4])
+    -- Room entry triggers
+    rooms_trigger_id[1] = children[9]
+    rooms_trigger_id[2] = children[10]
+    rooms_trigger_id[3] = children[11]
+    rooms_trigger_id[4] = children[12]
 
-    PlayerStatTrackState.SetFireAttackCount(0)
-    PlayerStatTrackState.SetWaterAttackCount(0)
-    PlayerStatTrackState.SetWindAttackCount(0)
-    PlayerStatTrackState.SetPyronadoAttackCount(0)
-    PlayerStatTrackState.SetWhirlpoolAttackCount(0)
-    PlayerStatTrackState.SetSteamburstAttackCount(0)
+    -- Mission text components
+    local bg_dup            = children[1]
+    local bg_dup_children   = GetChildrenList(bg_dup)
+    local missionTextEntity = bg_dup_children[1]
+    local shadowChildren    = GetChildrenList(missionTextEntity)
+    local shadowEntity      = shadowChildren[1]
+
+    missionTextComponent  = GetTextFrom(missionTextEntity)
+    missionTextComponent2 = GetTextFrom(shadowEntity)
+
     PlayerStatTrackState.SetPassedTrigger(0)
 end
 
---- Check if any shape on a collider is currently triggered
----@param col Collider
----@return boolean
+-- -----------------------------------------------------------------------
+-- Helpers
+-- -----------------------------------------------------------------------
 local function IsAnyShapeTriggered(col)
     for i = 1, #col.shapes do
         if col.shapes[i].isTriggered then
@@ -68,115 +110,105 @@ local function IsAnyShapeTriggered(col)
     return false
 end
 
+--- Queue a new string into the marquee.
+--- Resets the scroll position so the new message starts from the left.
+function SetMissionText(str)
+    if str == marqueeFullStr:sub(1, #str) and marqueeLen > 0 then
+        return  -- already showing this string, don't reset
+    end
+    marqueeFullStr = BuildMarqueeString(str)
+    marqueeLen     = #marqueeFullStr
+    marqueeOffset  = 0.0
+end
+
+-- -----------------------------------------------------------------------
+-- Update
+-- -----------------------------------------------------------------------
 function Update(dt)
-    -- Room 1: detect entry (only once)
+    -- -----------------------------------------------------------------------
+    -- Room entry detection (fires only once, strictly in order)
+    -- -----------------------------------------------------------------------
+
     if curr_room < 1 then
-        local room1_trigger = GetColliderFrom(rooms_trigger_id[1])
-        if room1_trigger and IsAnyShapeTriggered(room1_trigger) then
+        local t = GetColliderFrom(rooms_trigger_id[1])
+        if t and IsAnyShapeTriggered(t) then
             curr_room = 1
             RoomTriggerInit()
-            SetMissionText(missionText)
-            local prefab = SpawnPrefab("Tutorial Popup2.prefab", Vec2(10000,10000))
-            SetParent(prefab, EntityID)
-            local tf = GetTransformFrom(prefab)
-            tf.position = Vec2(0,0)
+            SetMissionText(killWindPrompt)
         end
     end
 
-    -- Room 2: detect entry (only once)
     if curr_room < 2 then
-        local room2_trigger = GetColliderFrom(rooms_trigger_id[2])
-        if room2_trigger and IsAnyShapeTriggered(room2_trigger) then
+        local t = GetColliderFrom(rooms_trigger_id[2])
+        if t and IsAnyShapeTriggered(t) then
             curr_room = 2
             RoomTriggerInit()
-            SetMissionText(missionText4)
-            local prefab = SpawnPrefab("Tutorial Popup3.prefab", Vec2(10000,10000))
-            SetParent(prefab, EntityID)
-            local tf = GetTransformFrom(prefab)
-            tf.position = Vec2(0,0)
+            SetMissionText(killFirePrompt)
         end
     end
 
-    -- Room 3: detect entry (only once)
     if curr_room < 3 then
-        local room3_trigger = GetColliderFrom(rooms_trigger_id[3])
-        if room3_trigger and IsAnyShapeTriggered(room3_trigger) then
+        local t = GetColliderFrom(rooms_trigger_id[3])
+        if t and IsAnyShapeTriggered(t) then
             curr_room = 3
             RoomTriggerInit()
-            SetMissionText(missionText7)
+            SetMissionText(killWaterPrompt)
         end
     end
 
-    -- Room 4: detect entry (only once)
     if curr_room < 4 then
-        local room4_trigger = GetColliderFrom(rooms_trigger_id[4])
-        if room4_trigger and IsAnyShapeTriggered(room4_trigger) then
+        local t = GetColliderFrom(rooms_trigger_id[4])
+        if t and IsAnyShapeTriggered(t) then
             curr_room = 4
             RoomTriggerInit()
-            SetMissionText(missionText7)
+            SetActiveEntity(blockerCollider[4], false)
+            SetMissionText(moveToNext)
         end
     end
 
-    -- Room 1 mission: use each basic element 3x
+    -- -----------------------------------------------------------------------
+    -- Per-room mission logic: unlock blocker when room enemy is destroyed
+    -- -----------------------------------------------------------------------
+
     if curr_room == 1 then
-        local fire = PlayerStatTrackState.GetFireAttackCount()
-        local water = PlayerStatTrackState.GetWaterAttackCount()
-        local wind = PlayerStatTrackState.GetWindAttackCount()
-
-        if wind >= 3 and water >= 3 and fire >= 3 then
-            SetMissionText(moveToNext)
+        if not IsEntityValid(roomEnemy[1]) then
             SetActiveEntity(blockerCollider[1], false)
-            DestroyWithChildren(tutorialEnemies[1])
-        elseif water >= 3 and fire >= 3 then
-            SetMissionText(missionText3 .. (3-wind) .. " times")
-        elseif fire >= 3 then
-            SetMissionText(missionText2 .. (3-water) .. " times")
-        else
-            SetMissionText(missionText .. (3-fire) .. " times")
-        end
-
-    -- Room 2 mission: use each combo element 3x
-    elseif curr_room == 2 then
-        local pyro = PlayerStatTrackState.GetPyronadoAttackCount()
-        local whirl = PlayerStatTrackState.GetWhirlpoolAttackCount()
-        local steam = PlayerStatTrackState.GetSteamburstAttackCount()
-
-        if steam >= 3 and whirl >= 3 and pyro >= 3 then
             SetMissionText(moveToNext)
-            SetActiveEntity(blockerCollider[2], false)
-            DestroyWithChildren(tutorialEnemies[2])
-        elseif whirl >= 3 and pyro >= 3 then
-            SetMissionText(missionText6 .. (3-steam) .. " times")
-        elseif pyro >= 3 then
-            SetMissionText(missionText5 .. (3-whirl) .. " times")
         else
-            SetMissionText(missionText4 .. (3-pyro) .. " times")
+            SetMissionText(killWindPrompt)
         end
 
-    -- Room 3: kill enemies down to 2
+    elseif curr_room == 2 then
+        if not IsEntityValid(roomEnemy[2]) then
+            SetActiveEntity(blockerCollider[2], false)
+            SetMissionText(moveToNext)
+        else
+            SetMissionText(killFirePrompt)
+        end
+
     elseif curr_room == 3 then
-        local enemyCount = CountEntitiesWithComponent("Enemy")
-        if enemyCount == 2 then
+        if not IsEntityValid(roomEnemy[3]) then
             SetActiveEntity(blockerCollider[3], false)
             SetMissionText(moveToNext)
+        else
+            SetMissionText(killWaterPrompt)
         end
 
-    -- Room 4: kill all remaining enemies
-    elseif curr_room == 4 then
-        local enemyCount = CountEntitiesWithComponent("Enemy")
-        if enemyCount == 0 then
-            SetActiveEntity(blockerCollider[4], false)
-            SetMissionText("Touch the Kappa Shrine")
-        end
+    -- Room 4 is fully handled on entry above
+    end
+
+    -- -----------------------------------------------------------------------
+    -- Advance marquee and write visible window to both text components
+    -- -----------------------------------------------------------------------
+    if marqueeLen > 0 then
+        marqueeOffset = (marqueeOffset + marqueeSpeed * dt) % marqueeLen
+        local visible = GetMarqueeWindow()
+        missionTextComponent.text  = visible
+        missionTextComponent2.text = visible
     end
 end
 
 function RoomTriggerInit()
     PlayerStatTrackState.incrPassedTrigger()
     triggerCount = triggerCount + 1
-end
-
-function SetMissionText(str)
-    missionTextComponent.text = str
-    missionTextComponent2.text = str
 end
