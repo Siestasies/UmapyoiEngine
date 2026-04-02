@@ -105,14 +105,6 @@ function state_enter(entity)
         audio:play(entity, "Boss Phase3 Music")
     end
 
-    -- hp bar
-    local bar = GetChildren(entity, 1)
-    SetActiveEntity(bar, true)
-    local bar = GetChildren(entity, 2)
-    SetActiveEntity(bar, true)
-    local name = GetChildren(entity, 3)
-    SetActiveEntity(name, true)
-
     phase2timer = 90.0
 end
 
@@ -317,7 +309,7 @@ function UpdateExpandingFlower(entity, dt)
                 end
                 if HasTransformOn(bulletId) then
                     local bTransform = GetTransformFrom(bulletId)
-                    bTransform.rotation = Vec2(dirX, dirY)
+                    bTransform.rotation = Vec2(dirX, dirY) * 10
                 end
             end
         end
@@ -342,7 +334,7 @@ function SpawnBullet(entity, bossPos, dirX, dirY, angleDeg)
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = Vec2(dirX, dirY)
+            bTransform.rotation = Vec2(dirX, dirY) * 10
         end
     end
 end
@@ -354,11 +346,4 @@ function state_exit(entity)
         local spriteComp = GetSprite()
         spriteComp.tintColor = Vec3(1.0, 1.0, 1.0)
     end
-
-    local bar = GetChildren(entity, 1)
-    SetActiveEntity(bar, false)
-    local bar = GetChildren(entity, 2)
-    SetActiveEntity(bar, false)
-    local name = GetChildren(entity, 3)
-    SetActiveEntity(name, false)
 end

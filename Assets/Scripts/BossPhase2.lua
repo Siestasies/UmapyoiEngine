@@ -242,7 +242,7 @@ function UpdateFanPattern(entity, dt)
             end
             if HasTransformOn(bulletId) then
                 local bTransform = GetTransformFrom(bulletId)
-                bTransform.rotation = Vec2(dirX, dirY)
+                bTransform.rotation = Vec2(dirX, dirY) * 10
             end
         end
     end
@@ -290,7 +290,7 @@ function UpdateSweepPattern(entity, dt)
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
             local rotRad = math.rad(sweepAngle - 90)
-            bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad))
+            bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad)) * 10
         end
     end
 end
@@ -319,7 +319,7 @@ function UpdateRainPattern(entity, dt)
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = Vec2(0, -1)
+            bTransform.rotation = Vec2(0, -1) * 10
         end
     end
 end
