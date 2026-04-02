@@ -105,6 +105,30 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "killWaterPrompt",
+                                        "type": 3,
+                                        "value": "Defeat the Water enemy",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "killWindPrompt",
+                                        "type": 3,
+                                        "value": "Defeat the Wind enemy",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "killFirePrompt",
+                                        "type": 3,
+                                        "value": "Defeat the Fire enemy",
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             }
@@ -479,12 +503,12 @@
                                     "y": 29.399
                                 },
                                 "size": {
-                                    "x": 15.0,
-                                    "y": 50.0
+                                    "x": 25.0,
+                                    "y": 100.0
                                 },
                                 "purpose": 1,
                                 "layer": 8,
-                                "colliderMask": 66,
+                                "colliderMask": 70,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }
@@ -757,12 +781,12 @@
                                     "y": 29.399
                                 },
                                 "size": {
-                                    "x": 15.0,
-                                    "y": 50.0
+                                    "x": 25.0,
+                                    "y": 100.0
                                 },
                                 "purpose": 1,
                                 "layer": 8,
-                                "colliderMask": 66,
+                                "colliderMask": 70,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }
@@ -966,12 +990,12 @@
                                     "y": 29.399
                                 },
                                 "size": {
-                                    "x": 15.0,
-                                    "y": 50.0
+                                    "x": 25.0,
+                                    "y": 100.0
                                 },
                                 "purpose": 1,
                                 "layer": 8,
-                                "colliderMask": 66,
+                                "colliderMask": 70,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }
@@ -1174,12 +1198,12 @@
                                     "y": 48.999
                                 },
                                 "size": {
-                                    "x": 31.0,
-                                    "y": 19.6
+                                    "x": 100.0,
+                                    "y": 25.0
                                 },
                                 "purpose": 1,
                                 "layer": 8,
-                                "colliderMask": 66,
+                                "colliderMask": 70,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }

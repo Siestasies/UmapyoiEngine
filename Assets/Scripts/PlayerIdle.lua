@@ -22,11 +22,13 @@ function state_enter(entity)
 end
 
 function state_update(entity, dt)
+    if IsCutsceneActive() then return end
+
     if not HasPlayer() then return end
-    
+
     local player = GetPlayer()
     if not player then return end
-    
+
     -- Check if stunned - can't do anything
     if player.isStunned then
         return

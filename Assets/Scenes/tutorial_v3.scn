@@ -2,37 +2,37 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/snow particle 1.png"
-            },
-            {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/door opening ss.png"
+                "path": "assets/snow particle 1.png"
+            },
+            {
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/door opening ss.png"
             },
             {
                 "path": "assets/player ss 2.png"
+            },
+            {
+                "path": "assets/props_animation.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -47,10 +47,10 @@
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -62,13 +62,13 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -80,10 +80,10 @@
                 "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/vfx 512 ss 1.png"
+                "path": "assets/tutorial box wind.png"
             },
             {
-                "path": "assets/tutorial box wind.png"
+                "path": "assets/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/star.png"
@@ -98,10 +98,10 @@
                 "path": "assets/controlspopup2.png"
             },
             {
-                "path": "assets/mana bar full.png"
+                "path": "assets/controlspopup3.png"
             },
             {
-                "path": "assets/controlspopup3.png"
+                "path": "assets/mana bar full.png"
             },
             {
                 "path": "assets/vfx 512 ss 3.png"
@@ -110,25 +110,25 @@
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/skill tree/skill frame.png"
-            },
-            {
                 "path": "assets/vfx 512 ss 2.png"
             },
             {
-                "path": "assets/skill tree/skill tree menu frame.png"
+                "path": "assets/skill tree/skill frame.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 2.png"
             },
             {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
                 "path": "assets/skill tree/plus hp skill.png"
             },
             {
-                "path": "assets/dialogue ui box.png"
+                "path": "assets/tutorial box fire.png"
             },
             {
-                "path": "assets/tutorial box fire.png"
+                "path": "assets/dialogue ui box.png"
             },
             {
                 "path": "assets/dialogue player ui sprite.png"
@@ -154,13 +154,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -171,24 +171,9 @@
         ],
         "sounds": [
             {
-                "name": "WindDemonAttack(Charge)",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonAttack(Charge).wav",
-                "type": 0
-            },
-            {
                 "name": "CombatGameplayBGM",
                 "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
                 "type": 1
-            },
-            {
-                "name": "WindDemonDeath",
-                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
-                "type": 0
-            },
-            {
-                "name": "PlayerDash",
-                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
-                "type": 0
             },
             {
                 "name": "Neutral Slash(BasicAttack)",
@@ -201,8 +186,18 @@
                 "type": 0
             },
             {
+                "name": "WaterSlash",
+                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "type": 0
+            },
+            {
                 "name": "SteamBurst",
                 "path": "Assets/sounds/Player Wav/SteamBurst.wav",
+                "type": 0
+            },
+            {
+                "name": "TyphoonGuard",
+                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
                 "type": 0
             },
             {
@@ -216,13 +211,13 @@
                 "type": 0
             },
             {
-                "name": "WaterSlash",
-                "path": "Assets/sounds/Player Wav/WaterSlash.wav",
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
                 "type": 0
             },
             {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
                 "type": 0
             },
             {
@@ -231,23 +226,8 @@
                 "type": 0
             },
             {
-                "name": "TyphoonGuard",
-                "path": "Assets/sounds/Player Wav/TyphoonGuard.wav",
-                "type": 0
-            },
-            {
-                "name": "PlayerDamageMono",
-                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
-                "type": 0
-            },
-            {
-                "name": "FireEnemyAttack",
-                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
-                "type": 0
-            },
-            {
-                "name": "SFX_Eye_Close",
-                "path": "Assets/sounds/SFX_Eye_Close.wav",
+                "name": "PlayerDash",
+                "path": "Assets/sounds/Player Wav/PlayerDash.wav",
                 "type": 0
             }
         ],
@@ -11878,13 +11858,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -11900,13 +11880,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -12972,16 +12952,6 @@
                     "initialClip": "idle",
                     "clips": [
                         {
-                            "name": "normal_atk",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -12992,21 +12962,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_wind",
+                            "name": "normal_atk",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "hurt",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
+                            "startFrame": 0,
+                            "frameCount": 5,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13022,11 +12982,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_water",
+                            "name": "hurt",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
+                            "startFrame": 16,
+                            "frameCount": 3,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_wind",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13037,6 +13007,16 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_water",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -13101,9 +13081,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -13111,14 +13091,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -13126,9 +13106,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -13659,9 +13639,9 @@
                     },
                     "parent": -1,
                     "children": [
-                        202,
-                        205,
-                        212
+                        7,
+                        10,
+                        14
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -13765,7 +13745,7 @@
             }
         },
         {
-            "id": 7,
+            "id": 18,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13784,18 +13764,18 @@
                     },
                     "parent": -1,
                     "children": [
-                        8,
-                        12,
-                        16,
-                        20,
-                        24,
+                        19,
+                        23,
                         27,
                         31,
                         35,
                         38,
-                        39,
-                        40,
-                        41
+                        42,
+                        46,
+                        49,
+                        50,
+                        51,
+                        52
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -13936,12 +13916,12 @@
             }
         },
         {
-            "id": 42,
+            "id": 53,
             "isActive": true,
             "components": {}
         },
         {
-            "id": 43,
+            "id": 54,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -13960,7 +13940,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        61
+                        72
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14165,7 +14145,7 @@
             }
         },
         {
-            "id": 62,
+            "id": 73,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14184,7 +14164,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        63
+                        74
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14256,7 +14236,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": -4.397
+                                "y": -4.394
                             },
                             "size": {
                                 "x": 12.399,
@@ -14336,7 +14316,7 @@
             }
         },
         {
-            "id": 64,
+            "id": 75,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14448,586 +14428,7 @@
             }
         },
         {
-            "id": 65,
-            "isActive": false,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "cutscene",
-                    "position": {
-                        "x": 70.8,
-                        "y": -135.699
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": []
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 0.0,
-                    "fric_coeff": 0.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 50.0,
-                                "y": 12.6
-                            },
-                            "purpose": 2,
-                            "layer": 32,
-                            "colliderMask": 2,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
-                            "scriptName": "CutsceneTrigger.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "prefabName",
-                                    "type": 3,
-                                    "value": "Dialogue.prefab",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_UI::Dialogue": {
-                    "sequences": [
-                        {
-                            "id": "Intro",
-                            "lines": [
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "Just one guard?",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "They are underestimating me",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Press Q, E, R to use element skills",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Element skills cost mana",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Restore it over time or by neutral attack",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Using the correct elements deals more damage",
-                                    "portrait": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Cutscene": {
-                    "playOnce": true,
-                    "hasPlayed": false,
-                    "actions": [
-                        {
-                            "type": 1,
-                            "targetX": 53.0,
-                            "targetY": -56.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 2,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "Intro",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 4,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 66,
-            "isActive": false,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "cutscene_dup",
-                    "position": {
-                        "x": -7.098,
-                        "y": -64.694
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": []
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 0.0,
-                    "fric_coeff": 0.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 15.399,
-                                "y": 64.0
-                            },
-                            "purpose": 2,
-                            "layer": 32,
-                            "colliderMask": 2,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
-                            "scriptName": "CutsceneTrigger.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "prefabName",
-                                    "type": 3,
-                                    "value": "Dialogue.prefab",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_UI::Dialogue": {
-                    "sequences": [
-                        {
-                            "id": "Intro",
-                            "lines": [
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "Let me try my fusion skill here",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "Best to stun the enemy first",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "To use fusion skills, use an element skill",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Followed by a subsequent elemental skill",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Correct elements stuns the enemy",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "But costs a lot of mana to use these",
-                                    "portrait": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Cutscene": {
-                    "playOnce": true,
-                    "hasPlayed": false,
-                    "actions": [
-                        {
-                            "type": 1,
-                            "targetX": -88.0,
-                            "targetY": -56.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 2,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "Intro",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 4,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 67,
-            "isActive": false,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "cutscene_dup_dup",
-                    "position": {
-                        "x": -152.5,
-                        "y": -64.694
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": []
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 0.0,
-                    "fric_coeff": 0.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 15.399,
-                                "y": 64.0
-                            },
-                            "purpose": 2,
-                            "layer": 32,
-                            "colliderMask": 2,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
-                            "scriptName": "CutsceneTrigger.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "prefabName",
-                                    "type": 3,
-                                    "value": "Dialogue.prefab",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_UI::Dialogue": {
-                    "sequences": [
-                        {
-                            "id": "Intro",
-                            "lines": [
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "Looks like the door is locked ahead",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "I have seen this eye before",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "Killing enemies should siphon the eye",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Each level contains rooms with eyes",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Kill enemies to destroy the eye to progress",
-                                    "portrait": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Cutscene": {
-                    "playOnce": true,
-                    "hasPlayed": false,
-                    "actions": [
-                        {
-                            "type": 1,
-                            "targetX": -223.0,
-                            "targetY": -35.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 2,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "Intro",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 4,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 68,
-            "isActive": false,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "cutscene_dup_dup_dup",
-                    "position": {
-                        "x": -360.898,
-                        "y": 44.9
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        209
-                    ]
-                },
-                "struct Uma_ECS::RigidBody": {
-                    "velocity": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "acceleration": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "accel_strength": 0.0,
-                    "fric_coeff": 0.0
-                },
-                "struct Uma_ECS::Collider": {
-                    "defaultLayer": 1,
-                    "defaultMask": 64,
-                    "showBBox": false,
-                    "shapes": [
-                        {
-                            "offset": {
-                                "x": 1.0,
-                                "y": 0.0
-                            },
-                            "size": {
-                                "x": 41.0,
-                                "y": 11.0
-                            },
-                            "purpose": 2,
-                            "layer": 32,
-                            "colliderMask": 2,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        }
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
-                            "scriptName": "CutsceneTrigger.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "prefabName",
-                                    "type": 3,
-                                    "value": "Dialogue.prefab",
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_UI::Dialogue": {
-                    "sequences": [
-                        {
-                            "id": "Intro",
-                            "lines": [
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "A kappa shrine",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "Ichou",
-                                    "text": "I should pray to it",
-                                    "portrait": "Assets/dialogue player UI sprite.png"
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Kappa shrines buffs and heals you",
-                                    "portrait": ""
-                                },
-                                {
-                                    "speaker": "System",
-                                    "text": "Go near it to receive the blessing",
-                                    "portrait": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Cutscene": {
-                    "playOnce": true,
-                    "hasPlayed": false,
-                    "actions": [
-                        {
-                            "type": 1,
-                            "targetX": -319.0,
-                            "targetY": 85.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 2,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "Intro",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        },
-                        {
-                            "type": 4,
-                            "targetX": 0.0,
-                            "targetY": 0.0,
-                            "duration": 1.0,
-                            "dialogueSequenceId": "",
-                            "shakeIntensity": 1.0,
-                            "targetZoom": 10.0
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "id": 69,
+            "id": 76,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15046,12 +14447,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        70,
-                        94,
-                        106,
-                        112,
-                        123,
-                        160
+                        77,
+                        101,
+                        113,
+                        119,
+                        130,
+                        167
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -15086,7 +14487,7 @@
             }
         },
         {
-            "id": 193,
+            "id": 200,
             "isActive": false,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15105,7 +14506,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        194
+                        201
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15147,7 +14548,7 @@
             }
         },
         {
-            "id": 195,
+            "id": 202,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15166,7 +14567,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        196
+                        203
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15209,7 +14610,7 @@
             }
         },
         {
-            "id": 196,
+            "id": 203,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15226,7 +14627,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 195,
+                    "parent": 202,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15253,7 +14654,7 @@
             }
         },
         {
-            "id": 197,
+            "id": 204,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15272,7 +14673,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        198
+                        205
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15315,7 +14716,7 @@
             }
         },
         {
-            "id": 198,
+            "id": 205,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15332,7 +14733,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 197,
+                    "parent": 204,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15359,7 +14760,7 @@
             }
         },
         {
-            "id": 199,
+            "id": 206,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15378,7 +14779,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        200
+                        207
                     ]
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15421,7 +14822,7 @@
             }
         },
         {
-            "id": 200,
+            "id": 207,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15438,7 +14839,7 @@
                         "x": 5.0,
                         "y": 5.0
                     },
-                    "parent": 199,
+                    "parent": 206,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15465,7 +14866,7 @@
             }
         },
         {
-            "id": 201,
+            "id": 208,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15586,95 +14987,21 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "bird enemy",
+                    "name": "cutscene 1",
                     "position": {
-                        "x": 888.114,
-                        "y": -275.183
+                        "x": 71.0,
+                        "y": -103.697
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.689,
-                        "y": 1.519
+                        "x": 1.0,
+                        "y": 1.0
                     },
-                    "parent": 68,
-                    "children": [
-                        210,
-                        211
-                    ]
-                },
-                "struct Uma_ECS::AudioComponent": {
-                    "defaultVolume": 1.0,
-                    "default3D": true,
-                    "loadedSounds": {
-                        "Fire Demon Shoot Fireball": {
-                            "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
-                            "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
-                            "volume": 0.2,
-                            "pitch": 1.0,
-                            "minDistance": 30.0,
-                            "maxDistance": 80.0
-                        },
-                        "Fire Demon Charge": {
-                            "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
-                            "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
-                            "volume": 1.0,
-                            "pitch": 1.0,
-                            "minDistance": 30.0,
-                            "maxDistance": 80.0
-                        },
-                        "Fire Demon Damage Scream": {
-                            "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
-                            "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
-                            "volume": 0.5,
-                            "pitch": 1.0,
-                            "minDistance": 30.0,
-                            "maxDistance": 80.0
-                        },
-                        "FireEnemyAttack": {
-                            "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
-                            "isPlaying": false,
-                            "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
-                            "volume": 0.4,
-                            "pitch": 1.0,
-                            "minDistance": 30.0,
-                            "maxDistance": 80.0
-                        }
-                    }
-                },
-                "struct Uma_ECS::Sprite": {
-                    "texturePath": "Assets/fire bird.png",
-                    "layer": 16,
-                    "order": 0,
-                    "flipX": false,
-                    "flipY": false,
-                    "autoFlip": true,
-                    "Native": true,
-                    "gridX": 0.0,
-                    "gridY": 0.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "offsetX": 0.0,
-                    "offsetY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                    "parent": -1,
+                    "children": []
                 },
                 "struct Uma_ECS::RigidBody": {
                     "velocity": {
@@ -15682,11 +15009,11 @@
                         "y": 0.0
                     },
                     "acceleration": {
-                        "x": -0.0,
+                        "x": 0.0,
                         "y": 0.0
                     },
-                    "accel_strength": 500.0,
-                    "fric_coeff": 5.0
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
                 },
                 "struct Uma_ECS::Collider": {
                     "defaultLayer": 1,
@@ -15695,31 +15022,16 @@
                     "shapes": [
                         {
                             "offset": {
-                                "x": -2.2,
-                                "y": 2.0
+                                "x": 0.0,
+                                "y": 0.0
                             },
                             "size": {
-                                "x": 10.6,
-                                "y": 3.7
+                                "x": 50.0,
+                                "y": 12.6
                             },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 18,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": -2.0,
-                                "y": -3.4
-                            },
-                            "size": {
-                                "x": 10.8,
-                                "y": 1.399
-                            },
-                            "purpose": 0,
-                            "layer": 4,
-                            "colliderMask": 8,
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
                             "isActive": true,
                             "autoFitToSprite": false
                         }
@@ -15728,121 +15040,14 @@
                 "struct Uma_ECS::LuaScript": {
                     "scripts": [
                         {
-                            "scriptPath": "Assets/Scripts/FireDemonBase.lua",
-                            "scriptName": "FireDemonBase.lua",
+                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                            "scriptName": "CutsceneTrigger.lua",
                             "isEnabled": true,
                             "exposedVariables": [
                                 {
-                                    "name": "enemyHurtEffectDuration",
-                                    "type": 0,
-                                    "value": 0.5,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
-                            "scriptName": "FireDemonIdle.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "chaseEnterRange",
-                                    "type": 0,
-                                    "value": 20.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/FireDemonChase.lua",
-                            "scriptName": "FireDemonChase.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "attackEnterRange",
-                                    "type": 0,
-                                    "value": 8.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "chaseExitRange",
-                                    "type": 0,
-                                    "value": 25.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
-                            "scriptName": "FireDemonAttack.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "chargeTime",
-                                    "type": 0,
-                                    "value": 2.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "attackRange",
-                                    "type": 0,
-                                    "value": 5.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "HoverSpd",
-                                    "type": 0,
-                                    "value": 1.5,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                },
-                                {
-                                    "name": "attackExitRange",
-                                    "type": 0,
-                                    "value": 12.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
-                            "scriptName": "FireDemonStunned.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "StunnedDuration",
-                                    "type": 0,
-                                    "value": 3.0,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/FireDemonDead.lua",
-                            "scriptName": "FireDemonDead.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "deathDuration",
-                                    "type": 0,
-                                    "value": 2.0,
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -15851,186 +15056,115 @@
                         }
                     ]
                 },
-                "struct Uma_ECS::Enemy": {
-                    "mHealth": 100,
-                    "mMaxHealth": 100,
-                    "mHealthRegenRate": 1.0,
-                    "mSpeed": 10.0,
-                    "mAttackDamage": 15,
-                    "mAttackSpeed": 1.5,
-                    "mAttackRange": 20.0,
-                    "mDefense": 5
-                },
-                "struct Uma_ECS::Animator": {
-                    "autoPlay": true,
-                    "initialClip": "idle",
-                    "clips": [
+                "struct Uma_UI::Dialogue": {
+                    "sequences": [
                         {
-                            "name": "charging_atk",
-                            "framesX": 11,
-                            "framesY": 4,
-                            "startFrame": 11,
-                            "frameCount": 8,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": ""
+                            "id": "Intro",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "That is a wind enemy",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "They are weak to fire type attacks",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "I already have what I need to defeat this",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Basic fire attack and fire fusion skills",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
                         },
                         {
-                            "name": "idle",
-                            "framesX": 11,
-                            "framesY": 4,
-                            "startFrame": 0,
-                            "frameCount": 10,
-                            "speed": 10.0,
-                            "loop": true,
-                            "texturePath": ""
-                        },
-                        {
-                            "name": "die",
-                            "framesX": 11,
-                            "framesY": 4,
-                            "startFrame": 33,
-                            "frameCount": 11,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": ""
-                        },
-                        {
-                            "name": "attack",
-                            "framesX": 11,
-                            "framesY": 4,
-                            "startFrame": 22,
-                            "frameCount": 8,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": ""
+                            "id": "Intro2",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "My manifested shadow will guide you",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Using basic elemental skills costs mana",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Fusion skills costs even more mana to use",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "System",
+                                    "text": "Keep track of mana and health",
+                                    "portrait": ""
+                                },
+                                {
+                                    "speaker": "System",
+                                    "text": "At the top left of the screen",
+                                    "portrait": ""
+                                }
+                            ]
                         }
                     ]
                 },
-                "struct Uma_ECS::PathFinding": {
-                    "pathUpdateTimer": 0.133,
-                    "pathUpdateInterval": 0.5
-                },
-                "struct Uma_ECS::ParticleEmitter": {
-                    "emitters": [
+                "struct Uma_ECS::Cutscene": {
+                    "playOnce": true,
+                    "hasPlayed": false,
+                    "actions": [
                         {
-                            "mode": 1,
-                            "maxParticles": 3,
-                            "isActive": false,
-                            "renderLayer": 16,
-                            "renderOrder": 100,
-                            "texturePath": "Assets/star.png",
-                            "appearance": {
-                                "scaleRange": [
-                                    4.0,
-                                    4.0
-                                ],
-                                "startColor": [
-                                    1.0,
-                                    1.0,
-                                    0.5
-                                ],
-                                "endColor": [
-                                    1.0,
-                                    1.0,
-                                    1.0
-                                ],
-                                "colorLerp": true,
-                                "randomOpacity": true,
-                                "opacityRange": [
-                                    0.699,
-                                    1.0
-                                ],
-                                "rotateParticles": true,
-                                "rotationSpeedRange": [
-                                    -180.0,
-                                    180.0
-                                ]
-                            },
-                            "fade": {
-                                "fadeIn": true,
-                                "fadeInDuration": 0.2,
-                                "fadeOut": true,
-                                "fadeOutDuration": 0.3,
-                                "fadeAtEdges": true,
-                                "edgeFadeDistance": 150.0
-                            },
-                            "physics": {
-                                "speedRange": [
-                                    0.0,
-                                    0.0
-                                ],
-                                "lifetimeRange": [
-                                    1.0,
-                                    1.0
-                                ],
-                                "gravity": [
-                                    2.0,
-                                    2.0
-                                ],
-                                "drag": 0.0
-                            },
-                            "spawn": {
-                                "spawnOffset": [
-                                    0.0,
-                                    0.3
-                                ],
-                                "spawnRadius": 5.0,
-                                "useEmissionCone": false,
-                                "emissionAngle": 0.0,
-                                "emissionSpread": 360.0
-                            },
-                            "emission": {
-                                "emissionRate": 3.0,
-                                "loop": false,
-                                "loopDelay": 0.0
-                            },
-                            "screenFill": {
-                                "velocityXRange": [
-                                    -20.0,
-                                    20.0
-                                ],
-                                "velocityYRange": [
-                                    -150.0,
-                                    -80.0
-                                ],
-                                "spawnAtTop": true,
-                                "spawnMargin": 100.0
-                            }
+                            "type": 1,
+                            "targetX": 34.0,
+                            "targetY": -48.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 1,
+                            "targetX": 78.0,
+                            "targetY": -38.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro2",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 4,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
                         }
                     ]
-                },
-                "struct Uma_ECS::FSM": {
-                    "states": [
-                        {
-                            "name": "FireDemonIdle.lua",
-                            "isActive": true,
-                            "scriptIndex": 0
-                        },
-                        {
-                            "name": "FireDemonDead.lua",
-                            "isActive": true,
-                            "scriptIndex": 4
-                        },
-                        {
-                            "name": "FireDemonChase.lua",
-                            "isActive": true,
-                            "scriptIndex": 1
-                        },
-                        {
-                            "name": "FireDemonAttack.lua",
-                            "isActive": true,
-                            "scriptIndex": 2
-                        },
-                        {
-                            "name": "FireDemonStunned.lua",
-                            "isActive": true,
-                            "scriptIndex": 3
-                        }
-                    ],
-                    "nextId": 5,
-                    "current": "FireDemonIdle",
-                    "next": ""
                 }
             }
         },
@@ -16039,42 +15173,164 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "bird enemy child",
+                    "name": "cutscene 3",
                     "position": {
-                        "x": -1.7,
-                        "y": 4.006
+                        "x": -178.699,
+                        "y": -62.9
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 5.059,
-                        "y": 3.38
+                        "x": 1.0,
+                        "y": 1.0
                     },
-                    "parent": 209,
+                    "parent": -1,
                     "children": []
                 },
-                "struct Uma_ECS::Sprite": {
-                    "texturePath": "Assets/fire enemy shadow.png",
-                    "layer": 16,
-                    "order": 0,
-                    "flipX": false,
-                    "flipY": false,
-                    "autoFlip": false,
-                    "Native": true,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "offsetX": 0.0,
-                    "offsetY": 0.0,
-                    "tintColor": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "alpha": 1.0
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 12.6,
+                                "y": 69.0
+                            },
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                            "scriptName": "CutsceneTrigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_UI::Dialogue": {
+                    "sequences": [
+                        {
+                            "id": "Intro",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "That is a water enemy",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "They are weak to wind type attacks",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "The final elemental enemy we need to know",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Use basic wind attack and wind fusion skills",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "Intro2",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "My manifested shadow will guide you",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Cutscene": {
+                    "playOnce": true,
+                    "hasPlayed": false,
+                    "actions": [
+                        {
+                            "type": 1,
+                            "targetX": -255.0,
+                            "targetY": -64.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 1,
+                            "targetX": -213.0,
+                            "targetY": -35.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro2",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 4,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        }
+                    ]
                 }
             }
         },
@@ -16083,42 +15339,458 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "hp fill",
+                    "name": "cutscene 2",
                     "position": {
-                        "x": 0.0,
-                        "y": 4.8
+                        "x": -34.798,
+                        "y": -62.9
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 15.0,
-                        "y": 0.699
+                        "x": 1.0,
+                        "y": 1.0
                     },
-                    "parent": 209,
+                    "parent": -1,
                     "children": []
                 },
-                "struct Uma_ECS::Sprite": {
-                    "texturePath": "Assets/whitePixel.png",
-                    "layer": 128,
-                    "order": 20,
-                    "flipX": false,
-                    "flipY": false,
-                    "autoFlip": true,
-                    "Native": false,
-                    "gridX": 1.0,
-                    "gridY": 1.0,
-                    "cellX": 0.0,
-                    "cellY": 0.0,
-                    "offsetX": 0.0,
-                    "offsetY": 0.0,
-                    "tintColor": [
-                        0.442,
-                        0.442,
-                        0.442
-                    ],
-                    "alpha": 1.0
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 12.6,
+                                "y": 69.0
+                            },
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                            "scriptName": "CutsceneTrigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_UI::Dialogue": {
+                    "sequences": [
+                        {
+                            "id": "Intro",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "That is a fire enemy",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "They are weak to water type attacks",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "The second elemental enemy we need to know",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Use basic water attack and water fusion skills",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "Intro2",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "My manifested shadow will guide you",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Cutscene": {
+                    "playOnce": true,
+                    "hasPlayed": false,
+                    "actions": [
+                        {
+                            "type": 1,
+                            "targetX": -110.0,
+                            "targetY": -55.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 1,
+                            "targetX": -70.0,
+                            "targetY": -35.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro2",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 4,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 212,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cutscene 4",
+                    "position": {
+                        "x": -322.997,
+                        "y": -62.9
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 12.6,
+                                "y": 69.0
+                            },
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                            "scriptName": "CutsceneTrigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_UI::Dialogue": {
+                    "sequences": [
+                        {
+                            "id": "Intro",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "That is a kappa shrine",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "I need to go near to pray to it",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Praying to it will restore my health",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Cutscene": {
+                    "playOnce": true,
+                    "hasPlayed": false,
+                    "actions": [
+                        {
+                            "type": 1,
+                            "targetX": -362.0,
+                            "targetY": -50.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 4,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": 213,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "cutscene 5",
+                    "position": {
+                        "x": -359.898,
+                        "y": 41.7
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::RigidBody": {
+                    "velocity": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "acceleration": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "accel_strength": 0.0,
+                    "fric_coeff": 0.0
+                },
+                "struct Uma_ECS::Collider": {
+                    "defaultLayer": 1,
+                    "defaultMask": 64,
+                    "showBBox": false,
+                    "shapes": [
+                        {
+                            "offset": {
+                                "x": 0.0,
+                                "y": 0.0
+                            },
+                            "size": {
+                                "x": 50.0,
+                                "y": 12.6
+                            },
+                            "purpose": 2,
+                            "layer": 32,
+                            "colliderMask": 2,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        }
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/CutsceneTrigger.lua",
+                            "scriptName": "CutsceneTrigger.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "prefabName",
+                                    "type": 3,
+                                    "value": "Dialogue.prefab",
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_UI::Dialogue": {
+                    "sequences": [
+                        {
+                            "id": "Intro",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Looks like the door ahead is locked",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "Intro2",
+                            "lines": [
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "I have seen this eye before",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "Killing all enemies near it will kill the eye",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                },
+                                {
+                                    "speaker": "Ichou",
+                                    "text": "After all eyes are gone the door will open",
+                                    "portrait": "Assets/dialogue player UI sprite.png"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Cutscene": {
+                    "playOnce": true,
+                    "hasPlayed": false,
+                    "actions": [
+                        {
+                            "type": 1,
+                            "targetX": -197.0,
+                            "targetY": 250.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 1,
+                            "targetX": -282.0,
+                            "targetY": 101.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 2,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "Intro2",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        },
+                        {
+                            "type": 4,
+                            "targetX": 0.0,
+                            "targetY": 0.0,
+                            "duration": 1.0,
+                            "dialogueSequenceId": "",
+                            "shakeIntensity": 1.0,
+                            "targetZoom": 10.0
+                        }
+                    ]
                 }
             }
         }

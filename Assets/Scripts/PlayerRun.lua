@@ -21,16 +21,22 @@ function state_enter(entity)
 end
 
 function state_update(entity, dt)
+    if IsCutsceneActive() then
+        local rb = GetRigidBody()
+        if rb then rb.velocity = Vec2(0, 0) end
+        return
+    end
+
     if not HasPlayer() then return end
     if not HasRigidBody() then return end
     if not HasTransform() then return end
-    
+
     local player = GetPlayer()
     local rb = GetRigidBody()
     local transform = GetTransform()
-    
+
     if not player or not rb or not transform then return end
-    
+
     -- Check if stunned
     if player.isStunned then
         rb.velocity = Vec2(0, 0)
