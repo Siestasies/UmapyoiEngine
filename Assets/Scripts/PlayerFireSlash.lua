@@ -248,6 +248,8 @@ end
 
 -- Helper function to move player slightly towards mouse when attacking
 function getAttackDirection(player)
+    --local shape = collider.shapes[1]
+    
     if not HasTransform() then return end
     if not HasSprite() then return end
     
@@ -256,12 +258,13 @@ function getAttackDirection(player)
     
     if not transform then return end
     
-    local mousePos = GetMouseWorldPosition()
+    --local mousePos = GetMouseWorldPosition()
     local myPos = transform.position
-    local direction = Vec2(1, 0)
+    --local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+    local direction = Vec2(transform.scale.x, 0)
     
     -- Determine direction based on mouse position and player postion
-    direction = mousePos - myPos
+    --direction = mousePos - myPos
     
     -- Normalize direction
     local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
