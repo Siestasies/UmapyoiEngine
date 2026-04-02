@@ -17,10 +17,10 @@
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/controller button.png"
+                "path": "assets/main menu fade out.png"
             },
             {
-                "path": "assets/main menu fade out.png"
+                "path": "assets/controller button.png"
             },
             {
                 "path": "assets/cutscene to main menu.png"
@@ -38,6 +38,11 @@
                 "name": "MainMenuBGM",
                 "path": "Assets/sounds/Music/MainMenuBGM.wav",
                 "type": 1
+            },
+            {
+                "name": "Menu Click",
+                "path": "Assets/sounds/Menu Click.wav",
+                "type": 0
             }
         ],
         "shaders": [

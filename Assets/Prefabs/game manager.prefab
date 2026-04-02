@@ -2771,7 +2771,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -3576,7 +3576,7 @@
             },
             {
                 "id": 46,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "Indicator panel",
@@ -4272,7 +4272,7 @@
                             "r": 0.0,
                             "g": 0.0,
                             "b": 0.0,
-                            "a": 0.7
+                            "a": 0.699
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -4810,7 +4810,7 @@
             },
             {
                 "id": 62,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "Indicator panel_dup",
@@ -6261,7 +6261,7 @@
             },
             {
                 "id": 82,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "Indicator panel_dup",
