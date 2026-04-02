@@ -1377,7 +1377,7 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/fire bird.png",
-                        "layer": 1,
+                        "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
@@ -1937,9 +1937,81 @@
                             27
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Water Demon Charge": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Water Demon Damage Scream": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Water Demon ChargenAttack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "WaterDemonSuicide": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "waterDemon Death": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Water Demon Explode attack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
-                        "layer": 1,
+                        "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
@@ -2632,7 +2704,7 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Wind Enemy Spritesheets 1.png",
-                        "layer": 1,
+                        "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
