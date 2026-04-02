@@ -9,7 +9,7 @@
                         "name": "lvl1eye2",
                         "position": {
                             "x": -39.097,
-                            "y": 169.1
+                            "y": 153.1
                         },
                         "rotation": {
                             "x": 0.0,
@@ -22,9 +22,7 @@
                         "parent": -1,
                         "children": [
                             1,
-                            5,
-                            9,
-                            13
+                            5
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -134,8 +132,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": -0.1,
-                            "y": -19.7
+                            "x": -10.899,
+                            "y": -31.6
                         },
                         "rotation": {
                             "x": 0.0,
@@ -744,18 +742,18 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "bird enemy",
+                        "name": "water enemy",
                         "position": {
-                            "x": -32.7,
-                            "y": -48.597
+                            "x": 21.899,
+                            "y": -31.6
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 0.689,
-                            "y": 1.519
+                            "x": 30.0,
+                            "y": 30.0
                         },
                         "parent": 0,
                         "children": [
@@ -766,21 +764,43 @@
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
-                        "default3D": true,
+                        "default3D": false,
                         "loadedSounds": {
-                            "Fire Demon Shoot Fireball": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
+                            "Water Demon Damage Scream": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
-                            "Fire Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
+                            "Water Demon Charge": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "waterDemon Death": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.349,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "WaterDemonSuicide": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
@@ -790,8 +810,19 @@
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
-                            "Fire Demon Damage Scream": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Damage Scream.wav",
+                            "Water Demon ChargenAttack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.6,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Water Demon Explode attack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
@@ -800,30 +831,19 @@
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
-                            },
-                            "FireEnemyAttack": {
-                                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
                             }
                         }
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire bird.png",
+                        "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
                         "layer": 16,
-                        "order": 0,
+                        "order": 1,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
-                        "Native": true,
-                        "gridX": 0.0,
-                        "gridY": 0.0,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 8.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -841,11 +861,11 @@
                             "y": 0.0
                         },
                         "acceleration": {
-                            "x": -0.0,
+                            "x": 0.0,
                             "y": 0.0
                         },
-                        "accel_strength": 500.0,
-                        "fric_coeff": 5.0
+                        "accel_strength": 0.0,
+                        "fric_coeff": 0.0
                     },
                     "struct Uma_ECS::Collider": {
                         "defaultLayer": 1,
@@ -854,12 +874,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.2,
-                                    "y": 2.0
+                                    "x": 0.0,
+                                    "y": -0.2
                                 },
                                 "size": {
-                                    "x": 10.6,
-                                    "y": 3.7
+                                    "x": 0.6,
+                                    "y": 0.5
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -869,17 +889,32 @@
                             },
                             {
                                 "offset": {
-                                    "x": -2.0,
-                                    "y": -3.4
+                                    "x": 0.0,
+                                    "y": -0.4
                                 },
                                 "size": {
-                                    "x": 10.8,
-                                    "y": 1.399
+                                    "x": 0.5,
+                                    "y": 0.2
                                 },
                                 "purpose": 0,
                                 "layer": 4,
                                 "colliderMask": 8,
                                 "isActive": true,
+                                "autoFitToSprite": false
+                            },
+                            {
+                                "offset": {
+                                    "x": 0.0,
+                                    "y": -0.3
+                                },
+                                "size": {
+                                    "x": 1.5,
+                                    "y": 1.5
+                                },
+                                "purpose": 2,
+                                "layer": 4,
+                                "colliderMask": 2,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             }
                         ]
@@ -887,8 +922,31 @@
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonBase.lua",
-                                "scriptName": "FireDemonBase.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonIdle.lua",
+                                "scriptName": "WaterDemonIdle.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "ChaseRange",
+                                        "type": 0,
+                                        "value": 8.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "chaseEnterRange",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WaterDemonBase.lua",
+                                "scriptName": "WaterDemonBase.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -902,48 +960,18 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonIdle.lua",
-                                "scriptName": "FireDemonIdle.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonAttack.lua",
+                                "scriptName": "WaterDemonAttack.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "chaseEnterRange",
+                                        "name": "attackRange",
                                         "type": 0,
-                                        "value": 20.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/FireDemonChase.lua",
-                                "scriptName": "FireDemonChase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "attackEnterRange",
-                                        "type": 0,
-                                        "value": 8.0,
+                                        "value": 16.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
-                                    {
-                                        "name": "chaseExitRange",
-                                        "type": 0,
-                                        "value": 25.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/FireDemonAttack.lua",
-                                "scriptName": "FireDemonAttack.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
                                     {
                                         "name": "chargeTime",
                                         "type": 0,
@@ -953,17 +981,17 @@
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "attackRange",
+                                        "name": "HoverSpd",
                                         "type": 0,
-                                        "value": 5.0,
+                                        "value": 1.5,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
                                     },
                                     {
-                                        "name": "HoverSpd",
+                                        "name": "damageDuration",
                                         "type": 0,
-                                        "value": 1.5,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -979,8 +1007,39 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonStunned.lua",
-                                "scriptName": "FireDemonStunned.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonChase.lua",
+                                "scriptName": "WaterDemonChase.lua",
+                                "isEnabled": true,
+                                "exposedVariables": [
+                                    {
+                                        "name": "ChaseRange",
+                                        "type": 0,
+                                        "value": 30.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "chaseExitRange",
+                                        "type": 0,
+                                        "value": 35.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "attackEnterRange",
+                                        "type": 0,
+                                        "value": 1000.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    }
+                                ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/WaterDemonStunned.lua",
+                                "scriptName": "WaterDemonStunned.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
@@ -994,14 +1053,22 @@
                                 ]
                             },
                             {
-                                "scriptPath": "Assets/Scripts/FireDemonDead.lua",
-                                "scriptName": "FireDemonDead.lua",
+                                "scriptPath": "Assets/Scripts/WaterDemonSuicide.lua",
+                                "scriptName": "WaterDemonSuicide.lua",
                                 "isEnabled": true,
                                 "exposedVariables": [
                                     {
-                                        "name": "deathDuration",
+                                        "name": "explosionTimer",
                                         "type": 0,
                                         "value": 2.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "damageLinger",
+                                        "type": 0,
+                                        "value": 0.5,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1015,8 +1082,8 @@
                         "mMaxHealth": 100,
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 10.0,
-                        "mAttackDamage": 15,
-                        "mAttackSpeed": 1.5,
+                        "mAttackDamage": 10,
+                        "mAttackSpeed": 1.0,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -1026,52 +1093,82 @@
                         "clips": [
                             {
                                 "name": "charging_atk",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 11,
-                                "frameCount": 8,
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 13,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
                             },
                             {
                                 "name": "idle",
-                                "framesX": 11,
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 0,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "charging_explode",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 16,
+                                "frameCount": 2,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                            },
+                            {
+                                "name": "shield_broken",
+                                "framesX": 8,
                                 "framesY": 4,
                                 "startFrame": 0,
-                                "frameCount": 10,
-                                "speed": 10.0,
-                                "loop": true,
-                                "texturePath": ""
-                            },
-                            {
-                                "name": "die",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 33,
-                                "frameCount": 11,
+                                "frameCount": 12,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             },
                             {
-                                "name": "attack",
-                                "framesX": 11,
+                                "name": "walking",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 16,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "atk",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 48,
+                                "frameCount": 6,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "explode",
+                                "framesX": 8,
                                 "framesY": 4,
-                                "startFrame": 22,
+                                "startFrame": 24,
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": ""
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             }
                         ]
                     },
                     "struct Uma_ECS::PathFinding": {
-                        "pathUpdateTimer": 0.133,
+                        "pathUpdateTimer": 0.0,
                         "pathUpdateInterval": 0.5
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
                         "isRoot": true
                     },
                     "struct Uma_ECS::ParticleEmitter": {
@@ -1166,33 +1263,33 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "FireDemonIdle.lua",
+                                "name": "WaterDemonSuicide.lua",
+                                "isActive": true,
+                                "scriptIndex": 5
+                            },
+                            {
+                                "name": "WaterDemonIdle.lua",
                                 "isActive": true,
                                 "scriptIndex": 0
                             },
                             {
-                                "name": "FireDemonDead.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
-                            },
-                            {
-                                "name": "FireDemonChase.lua",
-                                "isActive": true,
-                                "scriptIndex": 1
-                            },
-                            {
-                                "name": "FireDemonAttack.lua",
+                                "name": "WaterDemonAttack.lua",
                                 "isActive": true,
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "FireDemonStunned.lua",
+                                "name": "WaterDemonChase.lua",
                                 "isActive": true,
                                 "scriptIndex": 3
+                            },
+                            {
+                                "name": "WaterDemonStunned.lua",
+                                "isActive": true,
+                                "scriptIndex": 4
                             }
                         ],
-                        "nextId": 5,
-                        "current": "FireDemonIdle",
+                        "nextId": 6,
+                        "current": "",
                         "next": ""
                     }
                 }
@@ -1202,32 +1299,32 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "bird enemy child",
+                        "name": "vfx",
                         "position": {
-                            "x": -1.7,
-                            "y": 4.006
+                            "x": 0.0,
+                            "y": -0.2
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 5.059,
-                            "y": 3.38
+                            "x": 1.5,
+                            "y": 1.5
                         },
                         "parent": 5,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/fire enemy shadow.png",
+                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
                         "layer": 16,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
-                        "autoFlip": false,
-                        "Native": true,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
+                        "autoFlip": true,
+                        "Native": false,
+                        "gridX": 8.0,
+                        "gridY": 7.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -1239,8 +1336,24 @@
                         ],
                         "alpha": 1.0
                     },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": false,
+                        "initialClip": "",
+                        "clips": [
+                            {
+                                "name": "splash",
+                                "framesX": 8,
+                                "framesY": 7,
+                                "startFrame": 32,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
                         "isRoot": false
                     }
                 }
@@ -1253,15 +1366,15 @@
                         "name": "hp fill",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.1
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.8,
+                            "y": 0.07
                         },
                         "parent": 5,
                         "children": []
@@ -1288,7 +1401,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
+                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
                         "isRoot": false
                     }
                 }
@@ -1301,1471 +1414,17 @@
                         "name": "hp fill_dup",
                         "position": {
                             "x": 0.0,
-                            "y": 4.8
+                            "y": 0.1
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 0.699
+                            "x": 0.8,
+                            "y": 0.07
                         },
                         "parent": 5,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.33,
-                            0.045,
-                            0.045
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
-                                "scriptName": "EnemyHealthBar.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/bird enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 9,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "water enemy",
-                        "position": {
-                            "x": 24.2,
-                            "y": -82.9
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 30.0,
-                            "y": 30.0
-                        },
-                        "parent": 0,
-                        "children": [
-                            10,
-                            11,
-                            12
-                        ]
-                    },
-                    "struct Uma_ECS::AudioComponent": {
-                        "defaultVolume": 1.0,
-                        "default3D": false,
-                        "loadedSounds": {
-                            "Water Demon Damage Scream": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "waterDemon Death": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.349,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "WaterDemonSuicide": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon ChargenAttack": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.6,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon Explode attack": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.5,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            }
-                        }
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
-                        "layer": 16,
-                        "order": 1,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 8.0,
-                        "gridY": 8.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 0.0,
-                        "fric_coeff": 0.0
-                    },
-                    "struct Uma_ECS::Collider": {
-                        "defaultLayer": 1,
-                        "defaultMask": 64,
-                        "showBBox": false,
-                        "shapes": [
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.2
-                                },
-                                "size": {
-                                    "x": 0.6,
-                                    "y": 0.5
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 18,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.4
-                                },
-                                "size": {
-                                    "x": 0.5,
-                                    "y": 0.2
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 8,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.3
-                                },
-                                "size": {
-                                    "x": 1.5,
-                                    "y": 1.5
-                                },
-                                "purpose": 2,
-                                "layer": 4,
-                                "colliderMask": 2,
-                                "isActive": false,
-                                "autoFitToSprite": false
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonIdle.lua",
-                                "scriptName": "WaterDemonIdle.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "ChaseRange",
-                                        "type": 0,
-                                        "value": 8.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chaseEnterRange",
-                                        "type": 0,
-                                        "value": 30.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonBase.lua",
-                                "scriptName": "WaterDemonBase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "enemyHurtEffectDuration",
-                                        "type": 0,
-                                        "value": 0.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonAttack.lua",
-                                "scriptName": "WaterDemonAttack.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "attackRange",
-                                        "type": 0,
-                                        "value": 16.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chargeTime",
-                                        "type": 0,
-                                        "value": 2.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "HoverSpd",
-                                        "type": 0,
-                                        "value": 1.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "damageDuration",
-                                        "type": 0,
-                                        "value": 1.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "attackExitRange",
-                                        "type": 0,
-                                        "value": 12.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonChase.lua",
-                                "scriptName": "WaterDemonChase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "ChaseRange",
-                                        "type": 0,
-                                        "value": 30.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chaseExitRange",
-                                        "type": 0,
-                                        "value": 35.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "attackEnterRange",
-                                        "type": 0,
-                                        "value": 1000.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonStunned.lua",
-                                "scriptName": "WaterDemonStunned.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "StunnedDuration",
-                                        "type": 0,
-                                        "value": 3.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonSuicide.lua",
-                                "scriptName": "WaterDemonSuicide.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "explosionTimer",
-                                        "type": 0,
-                                        "value": 2.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "damageLinger",
-                                        "type": 0,
-                                        "value": 0.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Enemy": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
-                        "mHealthRegenRate": 1.0,
-                        "mSpeed": 10.0,
-                        "mAttackDamage": 10,
-                        "mAttackSpeed": 1.0,
-                        "mAttackRange": 20.0,
-                        "mDefense": 5
-                    },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": true,
-                        "initialClip": "idle",
-                        "clips": [
-                            {
-                                "name": "charging_atk",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 13,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "idle",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "charging_explode",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 16,
-                                "frameCount": 2,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            },
-                            {
-                                "name": "shield_broken",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            },
-                            {
-                                "name": "walking",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 16,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "atk",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 48,
-                                "frameCount": 6,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "explode",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 24,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::PathFinding": {
-                        "pathUpdateTimer": 0.0,
-                        "pathUpdateInterval": 0.5
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": true
-                    },
-                    "struct Uma_ECS::ParticleEmitter": {
-                        "emitters": [
-                            {
-                                "mode": 1,
-                                "maxParticles": 3,
-                                "isActive": false,
-                                "renderLayer": 16,
-                                "renderOrder": 100,
-                                "texturePath": "Assets/star.png",
-                                "appearance": {
-                                    "scaleRange": [
-                                        4.0,
-                                        4.0
-                                    ],
-                                    "startColor": [
-                                        1.0,
-                                        1.0,
-                                        0.5
-                                    ],
-                                    "endColor": [
-                                        1.0,
-                                        1.0,
-                                        1.0
-                                    ],
-                                    "colorLerp": true,
-                                    "randomOpacity": true,
-                                    "opacityRange": [
-                                        0.699,
-                                        1.0
-                                    ],
-                                    "rotateParticles": true,
-                                    "rotationSpeedRange": [
-                                        -180.0,
-                                        180.0
-                                    ]
-                                },
-                                "fade": {
-                                    "fadeIn": true,
-                                    "fadeInDuration": 0.2,
-                                    "fadeOut": true,
-                                    "fadeOutDuration": 0.3,
-                                    "fadeAtEdges": true,
-                                    "edgeFadeDistance": 150.0
-                                },
-                                "physics": {
-                                    "speedRange": [
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "lifetimeRange": [
-                                        1.0,
-                                        1.0
-                                    ],
-                                    "gravity": [
-                                        2.0,
-                                        2.0
-                                    ],
-                                    "drag": 0.0
-                                },
-                                "spawn": {
-                                    "spawnOffset": [
-                                        0.0,
-                                        0.3
-                                    ],
-                                    "spawnRadius": 5.0,
-                                    "useEmissionCone": false,
-                                    "emissionAngle": 0.0,
-                                    "emissionSpread": 360.0
-                                },
-                                "emission": {
-                                    "emissionRate": 3.0,
-                                    "loop": false,
-                                    "loopDelay": 0.0
-                                },
-                                "screenFill": {
-                                    "velocityXRange": [
-                                        -20.0,
-                                        20.0
-                                    ],
-                                    "velocityYRange": [
-                                        -150.0,
-                                        -80.0
-                                    ],
-                                    "spawnAtTop": true,
-                                    "spawnMargin": 100.0
-                                }
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::FSM": {
-                        "states": [
-                            {
-                                "name": "WaterDemonSuicide.lua",
-                                "isActive": true,
-                                "scriptIndex": 5
-                            },
-                            {
-                                "name": "WaterDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
-                                "name": "WaterDemonAttack.lua",
-                                "isActive": true,
-                                "scriptIndex": 2
-                            },
-                            {
-                                "name": "WaterDemonChase.lua",
-                                "isActive": true,
-                                "scriptIndex": 3
-                            },
-                            {
-                                "name": "WaterDemonStunned.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
-                            }
-                        ],
-                        "nextId": 6,
-                        "current": "",
-                        "next": ""
-                    }
-                }
-            },
-            {
-                "id": 10,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "vfx",
-                        "position": {
-                            "x": 0.0,
-                            "y": -0.2
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.5,
-                            "y": 1.5
-                        },
-                        "parent": 9,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
-                        "layer": 16,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 8.0,
-                        "gridY": 7.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": false,
-                        "initialClip": "",
-                        "clips": [
-                            {
-                                "name": "splash",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 11,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.1
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 9,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.442,
-                            0.442,
-                            0.442
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 12,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.1
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 9,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.33,
-                            0.045,
-                            0.045
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
-                                "scriptName": "EnemyHealthBar.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 13,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "water enemy",
-                        "position": {
-                            "x": -15.699,
-                            "y": -73.9
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 30.0,
-                            "y": 30.0
-                        },
-                        "parent": 0,
-                        "children": [
-                            14,
-                            15,
-                            16
-                        ]
-                    },
-                    "struct Uma_ECS::AudioComponent": {
-                        "defaultVolume": 1.0,
-                        "default3D": false,
-                        "loadedSounds": {
-                            "Water Demon Damage Scream": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "waterDemon Death": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.349,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "WaterDemonSuicide": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon ChargenAttack": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.6,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
-                            "Water Demon Explode attack": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Explode attack.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.5,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            }
-                        }
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
-                        "layer": 16,
-                        "order": 1,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 8.0,
-                        "gridY": 8.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::RigidBody": {
-                        "velocity": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "acceleration": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "accel_strength": 0.0,
-                        "fric_coeff": 0.0
-                    },
-                    "struct Uma_ECS::Collider": {
-                        "defaultLayer": 1,
-                        "defaultMask": 64,
-                        "showBBox": false,
-                        "shapes": [
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.2
-                                },
-                                "size": {
-                                    "x": 0.6,
-                                    "y": 0.5
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 18,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.4
-                                },
-                                "size": {
-                                    "x": 0.5,
-                                    "y": 0.2
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 8,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": -0.3
-                                },
-                                "size": {
-                                    "x": 1.5,
-                                    "y": 1.5
-                                },
-                                "purpose": 2,
-                                "layer": 4,
-                                "colliderMask": 2,
-                                "isActive": false,
-                                "autoFitToSprite": false
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonIdle.lua",
-                                "scriptName": "WaterDemonIdle.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "ChaseRange",
-                                        "type": 0,
-                                        "value": 8.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chaseEnterRange",
-                                        "type": 0,
-                                        "value": 30.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonBase.lua",
-                                "scriptName": "WaterDemonBase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "enemyHurtEffectDuration",
-                                        "type": 0,
-                                        "value": 0.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonAttack.lua",
-                                "scriptName": "WaterDemonAttack.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "attackRange",
-                                        "type": 0,
-                                        "value": 16.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chargeTime",
-                                        "type": 0,
-                                        "value": 2.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "HoverSpd",
-                                        "type": 0,
-                                        "value": 1.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "damageDuration",
-                                        "type": 0,
-                                        "value": 1.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "attackExitRange",
-                                        "type": 0,
-                                        "value": 12.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonChase.lua",
-                                "scriptName": "WaterDemonChase.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "ChaseRange",
-                                        "type": 0,
-                                        "value": 30.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "chaseExitRange",
-                                        "type": 0,
-                                        "value": 35.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "attackEnterRange",
-                                        "type": 0,
-                                        "value": 1000.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonStunned.lua",
-                                "scriptName": "WaterDemonStunned.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "StunnedDuration",
-                                        "type": 0,
-                                        "value": 3.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/WaterDemonSuicide.lua",
-                                "scriptName": "WaterDemonSuicide.lua",
-                                "isEnabled": true,
-                                "exposedVariables": [
-                                    {
-                                        "name": "explosionTimer",
-                                        "type": 0,
-                                        "value": 2.0,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    },
-                                    {
-                                        "name": "damageLinger",
-                                        "type": 0,
-                                        "value": 0.5,
-                                        "min": 0.0,
-                                        "max": 100.0,
-                                        "isSlider": false
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Enemy": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
-                        "mHealthRegenRate": 1.0,
-                        "mSpeed": 10.0,
-                        "mAttackDamage": 10,
-                        "mAttackSpeed": 1.0,
-                        "mAttackRange": 20.0,
-                        "mDefense": 5
-                    },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": true,
-                        "initialClip": "idle",
-                        "clips": [
-                            {
-                                "name": "charging_atk",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 13,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "idle",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "charging_explode",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 16,
-                                "frameCount": 2,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            },
-                            {
-                                "name": "shield_broken",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            },
-                            {
-                                "name": "walking",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 16,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "atk",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 48,
-                                "frameCount": 6,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
-                                "name": "explode",
-                                "framesX": 8,
-                                "framesY": 4,
-                                "startFrame": 24,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::PathFinding": {
-                        "pathUpdateTimer": 0.0,
-                        "pathUpdateInterval": 0.5
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": true
-                    },
-                    "struct Uma_ECS::ParticleEmitter": {
-                        "emitters": [
-                            {
-                                "mode": 1,
-                                "maxParticles": 3,
-                                "isActive": false,
-                                "renderLayer": 16,
-                                "renderOrder": 100,
-                                "texturePath": "Assets/star.png",
-                                "appearance": {
-                                    "scaleRange": [
-                                        4.0,
-                                        4.0
-                                    ],
-                                    "startColor": [
-                                        1.0,
-                                        1.0,
-                                        0.5
-                                    ],
-                                    "endColor": [
-                                        1.0,
-                                        1.0,
-                                        1.0
-                                    ],
-                                    "colorLerp": true,
-                                    "randomOpacity": true,
-                                    "opacityRange": [
-                                        0.699,
-                                        1.0
-                                    ],
-                                    "rotateParticles": true,
-                                    "rotationSpeedRange": [
-                                        -180.0,
-                                        180.0
-                                    ]
-                                },
-                                "fade": {
-                                    "fadeIn": true,
-                                    "fadeInDuration": 0.2,
-                                    "fadeOut": true,
-                                    "fadeOutDuration": 0.3,
-                                    "fadeAtEdges": true,
-                                    "edgeFadeDistance": 150.0
-                                },
-                                "physics": {
-                                    "speedRange": [
-                                        0.0,
-                                        0.0
-                                    ],
-                                    "lifetimeRange": [
-                                        1.0,
-                                        1.0
-                                    ],
-                                    "gravity": [
-                                        2.0,
-                                        2.0
-                                    ],
-                                    "drag": 0.0
-                                },
-                                "spawn": {
-                                    "spawnOffset": [
-                                        0.0,
-                                        0.3
-                                    ],
-                                    "spawnRadius": 5.0,
-                                    "useEmissionCone": false,
-                                    "emissionAngle": 0.0,
-                                    "emissionSpread": 360.0
-                                },
-                                "emission": {
-                                    "emissionRate": 3.0,
-                                    "loop": false,
-                                    "loopDelay": 0.0
-                                },
-                                "screenFill": {
-                                    "velocityXRange": [
-                                        -20.0,
-                                        20.0
-                                    ],
-                                    "velocityYRange": [
-                                        -150.0,
-                                        -80.0
-                                    ],
-                                    "spawnAtTop": true,
-                                    "spawnMargin": 100.0
-                                }
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::FSM": {
-                        "states": [
-                            {
-                                "name": "WaterDemonSuicide.lua",
-                                "isActive": true,
-                                "scriptIndex": 5
-                            },
-                            {
-                                "name": "WaterDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
-                                "name": "WaterDemonAttack.lua",
-                                "isActive": true,
-                                "scriptIndex": 2
-                            },
-                            {
-                                "name": "WaterDemonChase.lua",
-                                "isActive": true,
-                                "scriptIndex": 3
-                            },
-                            {
-                                "name": "WaterDemonStunned.lua",
-                                "isActive": true,
-                                "scriptIndex": 4
-                            }
-                        ],
-                        "nextId": 6,
-                        "current": "",
-                        "next": ""
-                    }
-                }
-            },
-            {
-                "id": 14,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "vfx",
-                        "position": {
-                            "x": 0.0,
-                            "y": -0.2
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.5,
-                            "y": 1.5
-                        },
-                        "parent": 13,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Sprites/VFX 512 SS 1.png",
-                        "layer": 16,
-                        "order": 0,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 8.0,
-                        "gridY": 7.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            1.0,
-                            1.0,
-                            1.0
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Animator": {
-                        "autoPlay": false,
-                        "initialClip": "",
-                        "clips": [
-                            {
-                                "name": "splash",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 32,
-                                "frameCount": 8,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/VFX 512 SS 1.png"
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 15,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.1
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 13,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.442,
-                            0.442,
-                            0.442
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/water enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 16,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.1
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 13,
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {

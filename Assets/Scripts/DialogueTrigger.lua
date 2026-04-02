@@ -220,7 +220,7 @@ function Update(dt)
     end
 
     -- ── Click to advance ──────────────────────────────────────────────────────
-    if skipFrames <= 0 and MouseButtonPressed(MOUSE_LEFT) then
+    if skipFrames <= 0 and (MouseButtonPressed(MOUSE_LEFT) or KeyPressed(KEY_SPACE)) then
         if isTyping then
             FinishTyping()
         else

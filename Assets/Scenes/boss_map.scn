@@ -135,6 +135,12 @@
             },
             {
                 "path": "assets/sprites/boss ss 2.png"
+            },
+            {
+                "path": "assets/wind vfx spritesheet.png"
+            },
+            {
+                "path": "assets/256px vfx.png"
             }
         ],
         "fonts": [
@@ -191,8 +197,8 @@
                 "struct Uma_ECS::Transform": {
                     "name": "map",
                     "position": {
-                        "x": -400.0,
-                        "y": 29.0
+                        "x": -551.817,
+                        "y": 110.818
                     },
                     "rotation": {
                         "x": 0.0,
@@ -232,10 +238,18 @@
                         }
                     ]
                 },
+                "struct Uma_ECS::SceneLighting": {
+                    "ambientColor": [
+                        0.726,
+                        0.381,
+                        0.381
+                    ],
+                    "ambientStrength": 2.2
+                },
                 "struct Uma_ECS::Tilemap": {
                     "mapWidth": 40,
                     "mapHeight": 40,
-                    "tileSize": 16,
+                    "tileSize": 24,
                     "tileset": {
                         "texturePath": "Assets/whole boss level.png",
                         "tilesetWidth": 0,
@@ -6684,11 +6698,11 @@
                     "shapes": [
                         {
                             "offset": {
-                                "x": -71.194,
-                                "y": -50.5
+                                "x": -99.594,
+                                "y": -88.8
                             },
                             "size": {
-                                "x": 130.0,
+                                "x": 180.0,
                                 "y": 30.399
                             },
                             "purpose": 1,
@@ -6699,11 +6713,11 @@
                         },
                         {
                             "offset": {
-                                "x": 72.0,
-                                "y": -50.298
+                                "x": 100.4,
+                                "y": -88.8
                             },
                             "size": {
-                                "x": 130.0,
+                                "x": 180.0,
                                 "y": 30.0
                             },
                             "purpose": 1,
@@ -6714,11 +6728,71 @@
                         },
                         {
                             "offset": {
-                                "x": -119.0,
-                                "y": 24.298
+                                "x": -169.899,
+                                "y": -15.302
                             },
                             "size": {
                                 "x": 33.597,
+                                "y": 280.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 22,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": -6.598,
+                                "y": 96.8
+                            },
+                            "size": {
+                                "x": 400.0,
+                                "y": 32.7
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 22,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": 169.996,
+                                "y": -14.1
+                            },
+                            "size": {
+                                "x": 32.7,
+                                "y": 280.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 22,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": -25.197,
+                                "y": -163.699
+                            },
+                            "size": {
+                                "x": 31.1,
+                                "y": 180.0
+                            },
+                            "purpose": 1,
+                            "layer": 8,
+                            "colliderMask": 22,
+                            "isActive": true,
+                            "autoFitToSprite": false
+                        },
+                        {
+                            "offset": {
+                                "x": 26.399,
+                                "y": -163.899
+                            },
+                            "size": {
+                                "x": 32.2,
                                 "y": 180.0
                             },
                             "purpose": 1,
@@ -6730,67 +6804,7 @@
                         {
                             "offset": {
                                 "x": 0.0,
-                                "y": 84.5
-                            },
-                            "size": {
-                                "x": 300.0,
-                                "y": 32.7
-                            },
-                            "purpose": 1,
-                            "layer": 8,
-                            "colliderMask": 22,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": 119.097,
-                                "y": 21.6
-                            },
-                            "size": {
-                                "x": 32.7,
-                                "y": 200.0
-                            },
-                            "purpose": 1,
-                            "layer": 8,
-                            "colliderMask": 22,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": -21.899,
-                                "y": -101.5
-                            },
-                            "size": {
-                                "x": 31.1,
-                                "y": 130.0
-                            },
-                            "purpose": 1,
-                            "layer": 8,
-                            "colliderMask": 22,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": 23.2,
-                                "y": -101.8
-                            },
-                            "size": {
-                                "x": 32.2,
-                                "y": 130.0
-                            },
-                            "purpose": 1,
-                            "layer": 8,
-                            "colliderMask": 22,
-                            "isActive": true,
-                            "autoFitToSprite": false
-                        },
-                        {
-                            "offset": {
-                                "x": 0.0,
-                                "y": -162.0
+                                "y": -256.6
                             },
                             "size": {
                                 "x": 80.3,
@@ -7606,6 +7620,78 @@
                     },
                     "scaleMode": 1,
                     "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 140,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "light",
+                    "position": {
+                        "x": -143.634,
+                        "y": -87.536
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::Light2D": {
+                    "color": [
+                        0.639,
+                        0.532,
+                        0.172
+                    ],
+                    "radius": 54.2,
+                    "intensity": 0.898,
+                    "innerRadius": 0.3,
+                    "flickerSpeed": 5.0,
+                    "flickerAmount": 0.1,
+                    "enabled": true
+                }
+            }
+        },
+        {
+            "id": 141,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "light_dup",
+                    "position": {
+                        "x": -46.932,
+                        "y": -87.536
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": []
+                },
+                "struct Uma_ECS::Light2D": {
+                    "color": [
+                        0.639,
+                        0.532,
+                        0.172
+                    ],
+                    "radius": 54.2,
+                    "intensity": 0.898,
+                    "innerRadius": 0.3,
+                    "flickerSpeed": 5.0,
+                    "flickerAmount": 0.1,
+                    "enabled": true
                 }
             }
         }
