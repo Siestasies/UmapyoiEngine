@@ -5663,6 +5663,24 @@ namespace Uma_Engine
                     m_hasUnsavedEdit = true;
                 }
 
+                ImGui::SameLine();
+                if (ImGui::Button("Cinematic"))
+                {
+                    Uma_UI::EffectClip cinClip;
+                    cinClip.name = "Cinematic";
+                    cinClip.property = Uma_UI::EffectProperty::CinematicFrame;
+                    cinClip.easing = Uma_UI::EasingType::Linear;
+                    // No frames yet — user drags or types paths in the inspector.
+                    // Duration defaults to 0 until frames are added.
+                    cinClip.duration = 0.0f;
+                    cinClip.delay = 0.0f;
+                    cinClip.loop = false;
+                    cinClip.cinematicFps = 24.0f;
+                    cinClip.cinematicPingPong = false;
+                    effects.clips.push_back(cinClip);
+                    m_hasUnsavedEdit = true;
+                }
+
                 ImGui::Separator();
 
                 // Display each clip
@@ -5698,7 +5716,7 @@ namespace Uma_Engine
                         ImGui::Separator();
 
                         // Property Type
-                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha", "Fill Amount", "Spritesheet Frame" };
+                        const char* properties[] = { "Position", "Scale", "ColorTint", "Alpha", "Fill Amount", "Spritesheet Frame", "Cinematic Frame" };
                         int currentProperty = static_cast<int>(clip.property);
                         if (ImGui::Combo("Property", &currentProperty, properties, IM_ARRAYSIZE(properties)))
                         {
@@ -5875,7 +5893,265 @@ namespace Uma_Engine
                             ImGui::TextDisabled("Requires Image with Sprite Sheet Grid set.");
                             break;
                         }
+                        case Uma_UI::EffectProperty::CinematicFrame:
+                        {
+                            // FPS and ping-pong controls
+                            if (ImGui::DragFloat("FPS##Cinematic", &clip.cinematicFps, 0.5f, 0.1f, 120.0f, "%.1f"))
+                            {
+                                clip.duration = clip.GetCinematicDuration();
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                            {
+                                ImGui::SetTooltip("Playback speed in frames per second.\nDuration is auto-set to frame count / FPS.");
+                            }
+
+                            if (ImGui::Checkbox("Ping Pong##Cinematic", &clip.cinematicPingPong))
+                            {
+                                m_hasUnsavedEdit = true;
+                            }
+                            if (ImGui::IsItemHovered())
+                            {
+                                ImGui::SetTooltip("Play forward then in reverse, alternating each loop.");
+                            }
+
+                            ImGui::Separator();
+
+                            int frameCount = static_cast<int>(clip.cinematicFrames.size());
+                            ImGui::Text("Frames (%d)", frameCount);
+
+                            ImGui::Spacing();
+
+                            ImDrawList* cinDrawList = ImGui::GetWindowDrawList();
+                            float availWidth = ImGui::GetContentRegionAvail().x;
+                            // Each frame row: a drop zone on the left, a remove button on the right
+                            float removeButtonWidth = 22.0f;
+                            float dropZoneWidth = availWidth - removeButtonWidth - ImGui::GetStyle().ItemSpacing.x;
+                            float dropZoneHeight = 40.0f;
+
+                            int removeIndex = -1;
+                            int activeFrame = clip.isPlaying ? clip.GetCurrentCinematicFrame() : -1;
+
+                            for (int fi = 0; fi < frameCount; ++fi)
+                            {
+                                ImGui::PushID(fi);
+
+                                bool isActive = (fi == activeFrame);
+
+                                // ── Drop zone ────────────────────────────────────────────
+                                ImVec2 dzCursor = ImGui::GetCursorScreenPos();
+
+                                ImU32 bgCol = isActive
+                                    ? IM_COL32(30, 80, 30, 140)   // green tint for live frame
+                                    : IM_COL32(40, 40, 60, 100);
+                                cinDrawList->AddRectFilled(
+                                    dzCursor,
+                                    ImVec2(dzCursor.x + dropZoneWidth, dzCursor.y + dropZoneHeight),
+                                    bgCol, 4.0f);
+
+                                // Frame index label (left-aligned)
+                                char frameLabel[32];
+                                snprintf(frameLabel, sizeof(frameLabel), "Frame %d", fi);
+                                cinDrawList->AddText(
+                                    ImVec2(dzCursor.x + 6.0f, dzCursor.y + 4.0f),
+                                    IM_COL32(120, 120, 120, 255),
+                                    frameLabel);
+
+                                // Filename centred in lower half of drop zone
+                                const std::string& framePath = clip.cinematicFrames[fi];
+                                std::string displayName = framePath.empty()
+                                    ? "Drop texture here"
+                                    : std::filesystem::path(framePath).filename().string();
+
+                                ImU32 textCol = framePath.empty()
+                                    ? IM_COL32(120, 120, 120, 200)
+                                    : (isActive ? IM_COL32(100, 220, 100, 255) : IM_COL32(200, 200, 200, 255));
+
+                                ImVec2 nameSize = ImGui::CalcTextSize(displayName.c_str());
+                                cinDrawList->AddText(
+                                    ImVec2(dzCursor.x + (dropZoneWidth - nameSize.x) * 0.5f,
+                                        dzCursor.y + dropZoneHeight - nameSize.y - 5.0f),
+                                    textCol,
+                                    displayName.c_str());
+
+                                // Invisible button to capture hover/drop
+                                ImGui::SetCursorScreenPos(dzCursor);
+                                ImGui::InvisibleButton("##CinDrop", ImVec2(dropZoneWidth, dropZoneHeight));
+                                bool dzHovered = ImGui::IsItemHovered();
+
+                                // Highlight border on hover or active frame
+                                if (ImGui::BeginDragDropTarget())
+                                {
+                                    cinDrawList->AddRect(
+                                        dzCursor,
+                                        ImVec2(dzCursor.x + dropZoneWidth, dzCursor.y + dropZoneHeight),
+                                        IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+                                    cinDrawList->AddRectFilled(
+                                        dzCursor,
+                                        ImVec2(dzCursor.x + dropZoneWidth, dzCursor.y + dropZoneHeight),
+                                        IM_COL32(100, 150, 255, 50), 4.0f);
+
+                                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                                    {
+                                        const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                        std::string fullPath = data->filepath;
+                                        std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                        std::filesystem::path p(fullPath);
+                                        std::string ext = p.extension().string();
+                                        std::transform(ext.begin(), ext.end(), ext.begin(),
+                                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+                                        if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                        {
+                                            std::string relativePath = fullPath;
+                                            size_t assetsPos = fullPath.find("Assets/");
+                                            if (assetsPos != std::string::npos)
+                                                relativePath = fullPath.substr(assetsPos);
+
+                                            clip.cinematicFrames[fi] = relativePath;
+                                            m_hasUnsavedEdit = true;
+                                        }
+                                        else
+                                        {
+                                            m_popupErrorMessage = "Invalid file type for Cinematic Frame!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                            ImGui::OpenPopup("Invalid File Format");
+                                        }
+                                    }
+                                    ImGui::EndDragDropTarget();
+                                }
+                                else if (dzHovered)
+                                {
+                                    cinDrawList->AddRect(
+                                        dzCursor,
+                                        ImVec2(dzCursor.x + dropZoneWidth, dzCursor.y + dropZoneHeight),
+                                        IM_COL32(100, 150, 200, 200), 4.0f, 0, 2.0f);
+                                }
+                                else if (isActive)
+                                {
+                                    cinDrawList->AddRect(
+                                        dzCursor,
+                                        ImVec2(dzCursor.x + dropZoneWidth, dzCursor.y + dropZoneHeight),
+                                        IM_COL32(80, 200, 80, 220), 4.0f, 0, 2.0f);
+                                }
+
+                                // Full path tooltip on hover
+                                if (dzHovered && !framePath.empty())
+                                    ImGui::SetTooltip("%s", framePath.c_str());
+
+                                // ── Remove button (right of drop zone) ───────────────────
+                                ImGui::SameLine();
+                                ImGui::SetCursorPosY(ImGui::GetCursorPosY() +
+                                    (dropZoneHeight - ImGui::GetFrameHeight()) * 0.5f);
+                                if (ImGui::SmallButton("X"))
+                                    removeIndex = fi;
+                                if (ImGui::IsItemHovered())
+                                    ImGui::SetTooltip("Remove frame %d", fi);
+
+                                ImGui::Spacing();
+                                ImGui::PopID();
+                            }
+
+                            if (removeIndex >= 0)
+                            {
+                                clip.cinematicFrames.erase(clip.cinematicFrames.begin() + removeIndex);
+                                clip.duration = clip.GetCinematicDuration();
+                                m_hasUnsavedEdit = true;
+                            }
+
+                            // ── Append drop zone ─────────────────────────────────────────
+                            // Appends a new frame when a texture is dropped onto it.
+                            ImGui::Spacing();
+                            ImVec2 appendCursor = ImGui::GetCursorScreenPos();
+                            ImVec2 appendSize = ImVec2(availWidth, 40.0f);
+
+                            cinDrawList->AddRectFilled(
+                                appendCursor,
+                                ImVec2(appendCursor.x + appendSize.x, appendCursor.y + appendSize.y),
+                                IM_COL32(30, 50, 30, 100), 4.0f);
+
+                            ImVec2 appendTextSize = ImGui::CalcTextSize("+ Drop texture to add frame");
+                            cinDrawList->AddText(
+                                ImVec2(appendCursor.x + (appendSize.x - appendTextSize.x) * 0.5f,
+                                    appendCursor.y + (appendSize.y - appendTextSize.y) * 0.5f),
+                                IM_COL32(100, 160, 100, 200),
+                                "+ Drop texture to add frame");
+
+                            ImGui::SetCursorScreenPos(appendCursor);
+                            ImGui::InvisibleButton("##CinAppend", appendSize);
+                            bool appendHovered = ImGui::IsItemHovered();
+
+                            if (ImGui::BeginDragDropTarget())
+                            {
+                                cinDrawList->AddRect(
+                                    appendCursor,
+                                    ImVec2(appendCursor.x + appendSize.x, appendCursor.y + appendSize.y),
+                                    IM_COL32(100, 200, 255, 255), 4.0f, 0, 3.0f);
+                                cinDrawList->AddRectFilled(
+                                    appendCursor,
+                                    ImVec2(appendCursor.x + appendSize.x, appendCursor.y + appendSize.y),
+                                    IM_COL32(100, 150, 255, 50), 4.0f);
+
+                                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+                                {
+                                    const auto* data = static_cast<const Uma_Engine::FilePayload*>(payload->Data);
+                                    std::string fullPath = data->filepath;
+                                    std::replace(fullPath.begin(), fullPath.end(), '\\', '/');
+
+                                    std::filesystem::path p(fullPath);
+                                    std::string ext = p.extension().string();
+                                    std::transform(ext.begin(), ext.end(), ext.begin(),
+                                        [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+
+                                    if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
+                                    {
+                                        std::string relativePath = fullPath;
+                                        size_t assetsPos = fullPath.find("Assets/");
+                                        if (assetsPos != std::string::npos)
+                                            relativePath = fullPath.substr(assetsPos);
+
+                                        clip.cinematicFrames.push_back(relativePath);
+                                        clip.duration = clip.GetCinematicDuration();
+                                        m_hasUnsavedEdit = true;
+                                    }
+                                    else
+                                    {
+                                        m_popupErrorMessage = "Invalid file type for Cinematic Frame!\nExpected: .png, .jpg, .jpeg, .bmp";
+                                        ImGui::OpenPopup("Invalid File Format");
+                                    }
+                                }
+                                ImGui::EndDragDropTarget();
+                            }
+                            else if (appendHovered)
+                            {
+                                cinDrawList->AddRect(
+                                    appendCursor,
+                                    ImVec2(appendCursor.x + appendSize.x, appendCursor.y + appendSize.y),
+                                    IM_COL32(80, 180, 80, 200), 4.0f, 0, 2.0f);
+                            }
+
+                            ImGui::Spacing();
+                            ImGui::Separator();
+
+                            // Info bar
+                            float naturalDur = clip.GetCinematicDuration();
+                            if (frameCount > 0)
+                            {
+                                ImGui::TextDisabled("Active frame: %d / %d  |  %s",
+                                    clip.GetCurrentCinematicFrame() + 1,
+                                    frameCount,
+                                    clip.GetCurrentCinematicPath().c_str());
+                                ImGui::TextDisabled("Natural duration: %.2fs  (%.1f fps x %d frames)",
+                                    naturalDur, clip.cinematicFps, frameCount);
+                            }
+                            else
+                            {
+                                ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.2f, 1.0f), "No frames — drop textures above.");
+                            }
+                            ImGui::TextDisabled("Swaps Image.texturePath each frame — no spritesheet needed.");
+                            break;
                         }
+                        }  // end switch (clip.property)
 
                         ImGui::Separator();
 
