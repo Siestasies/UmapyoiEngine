@@ -60,9 +60,17 @@ namespace Uma_UI
         // Spritesheet animation (used when property == SpritesheetFrame)
         // Frames are specified as flat row-major indices into the spritesheet grid.
         int   startFrame = 0;      // First frame index (inclusive)
-        int   endFrame = 0;      // Last frame index (inclusive)
-        float fps = 12.0f;  // Playback speed in frames per second
-        bool  pingPong = false;  // If true, plays forward then in reverse
+        int   endFrame = 0;        // Last frame index (inclusive)
+        float fps = 12.0f;         // Playback speed in frames per second
+        bool  pingPong = false;    // If true, plays forward then in reverse
+
+        // Cinematic animation (used when property == CinematicFrame)
+        // Each entry is an asset path to a full-resolution texture; no spritesheet required.
+        // Storage is O(frames) paths rather than one giant atlas, which is optimal for
+        // native-resolution images that cannot be packed into a single spritesheet.
+        std::vector<std::string> cinematicFrames;  // Ordered list of texture paths
+        float cinematicFps = 24.0f;                // Playback speed (frames per second)
+        bool  cinematicPingPong = false;            // Play forward then reverse each cycle
 
         // Runtime state
         float currentTime = 0.0f;
@@ -144,6 +152,59 @@ namespace Uma_UI
                 int step = loop ? (totalSteps % frameCount) : (std::min)(totalSteps, frameCount - 1);
                 return startFrame + step;
             }
+        }
+
+        /*!
+         * \brief Computes the current frame index into cinematicFrames for CinematicFrame effects.
+         *
+         * Uses cinematicFps and currentTime to step through the frame list.
+         * Supports looping and ping-pong playback. When cinematicFrames is empty returns 0.
+         * \return Zero-based index into cinematicFrames.
+         */
+        int GetCurrentCinematicFrame() const
+        {
+            int frameCount = static_cast<int>(cinematicFrames.size());
+            if (frameCount <= 0) return 0;
+
+            float elapsed = currentTime - delay;
+            if (elapsed < 0.0f) return 0;
+
+            int totalSteps = static_cast<int>(elapsed * cinematicFps);
+
+            if (cinematicPingPong)
+            {
+                int cycleLen = (frameCount > 1) ? (frameCount * 2 - 2) : 1;
+                int step = loop ? (totalSteps % cycleLen) : (std::min)(totalSteps, cycleLen - 1);
+                return (step < frameCount) ? step : (cycleLen - step);
+            }
+            else
+            {
+                int step = loop ? (totalSteps % frameCount) : (std::min)(totalSteps, frameCount - 1);
+                return step;
+            }
+        }
+
+        /*!
+         * \brief Returns the texture path for the current cinematic frame.
+         * \return Asset path string, or empty string if cinematicFrames is empty.
+         */
+        const std::string& GetCurrentCinematicPath() const
+        {
+            static const std::string empty;
+            if (cinematicFrames.empty()) return empty;
+            return cinematicFrames[GetCurrentCinematicFrame()];
+        }
+
+        /*!
+         * \brief Returns the natural duration of the cinematic clip based on frame count and fps.
+         *
+         * Useful as a default value when constructing a clip: set duration = GetCinematicDuration().
+         * \return Duration in seconds, or 0 if no frames or fps is zero.
+         */
+        float GetCinematicDuration() const
+        {
+            if (cinematicFps <= 0.0f || cinematicFrames.empty()) return 0.0f;
+            return static_cast<float>(cinematicFrames.size()) / cinematicFps;
         }
 
         /*!
@@ -435,6 +496,20 @@ namespace Uma_UI
                 clipObj.AddMember("fps", clip.fps, allocator);
                 clipObj.AddMember("pingPong", clip.pingPong, allocator);
 
+                // Cinematic frames: store as a JSON array of path strings.
+                // This is intentionally separate from the spritesheet fields — each path
+                // points to a full-resolution texture loaded individually at runtime.
+                clipObj.AddMember("cinematicFps", clip.cinematicFps, allocator);
+                clipObj.AddMember("cinematicPingPong", clip.cinematicPingPong, allocator);
+                rapidjson::Value pathsArray(rapidjson::kArrayType);
+                for (const auto& path : clip.cinematicFrames)
+                {
+                    rapidjson::Value pathVal;
+                    pathVal.SetString(path.c_str(), static_cast<rapidjson::SizeType>(path.length()), allocator);
+                    pathsArray.PushBack(pathVal, allocator);
+                }
+                clipObj.AddMember("cinematicFrames", pathsArray, allocator);
+
                 clipsArray.PushBack(clipObj, allocator);
             }
             jsonValue.AddMember("clips", clipsArray, allocator);
@@ -490,6 +565,20 @@ namespace Uma_UI
                 clip.endFrame = clipObj.HasMember("endFrame") ? clipObj["endFrame"].GetInt() : 0;
                 clip.fps = clipObj.HasMember("fps") ? clipObj["fps"].GetFloat() : 12.0f;
                 clip.pingPong = clipObj.HasMember("pingPong") ? clipObj["pingPong"].GetBool() : false;
+
+                clip.cinematicFps = clipObj.HasMember("cinematicFps") ? clipObj["cinematicFps"].GetFloat() : 24.0f;
+                clip.cinematicPingPong = clipObj.HasMember("cinematicPingPong") ? clipObj["cinematicPingPong"].GetBool() : false;
+                clip.cinematicFrames.clear();
+                if (clipObj.HasMember("cinematicFrames") && clipObj["cinematicFrames"].IsArray())
+                {
+                    for (const auto& pathVal : clipObj["cinematicFrames"].GetArray())
+                    {
+                        if (pathVal.IsString())
+                        {
+                            clip.cinematicFrames.push_back(pathVal.GetString());
+                        }
+                    }
+                }
 
                 clips.push_back(clip);
             }

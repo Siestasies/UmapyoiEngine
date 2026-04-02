@@ -111,7 +111,7 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/main menu fade out.png",
+                        "texturePath": "Assets/Cinematics/main menu transition/Main Menu Transition_0001.png",
                         "sortingOrder": 20,
                         "color": {
                             "r": 1.0,
@@ -123,7 +123,7 @@
                         "fillDirection": 0,
                         "fillAmount": 1.0,
                         "spriteSheetGrid": {
-                            "x": 17.0,
+                            "x": 1.0,
                             "y": 1.0
                         },
                         "spriteCell": {
@@ -139,10 +139,10 @@
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "SpriteAnim",
-                                "property": 5,
+                                "name": "",
+                                "property": 6,
                                 "easing": 0,
-                                "duration": 0.75,
+                                "duration": 0.708,
                                 "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
@@ -171,7 +171,28 @@
                                 "startFrame": 0,
                                 "endFrame": 17,
                                 "fps": 24.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0001.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0002.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0003.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0004.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0005.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0006.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0007.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0008.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0009.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0010.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0011.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0012.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0013.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0014.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0015.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0016.png",
+                                    "Assets/Cinematics/main menu transition/Main Menu Transition_0017.png"
+                                ]
                             },
                             {
                                 "name": "",
@@ -206,7 +227,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -216,7 +240,11 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/cinematics/main menu transition/main menu transition_0001.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }

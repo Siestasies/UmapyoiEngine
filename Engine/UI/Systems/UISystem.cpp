@@ -649,6 +649,20 @@ namespace Uma_UI
             Uma_ECS::Entity entity = effectsArray.GetEntity(i);
             auto& effects = effectsArray.GetComponentAt(i);
 
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+            {
+                if (effects.playOnEnable)
+                {
+                    for (auto& clip : effects.clips)
+                    {
+                        clip.isPlaying = false;
+                        clip.hasStarted = false;
+                        clip.currentTime = 0.0f;
+                    }
+                }
+                continue;
+            }
+
             if (effects.playOnEnable)
             {
                 for (auto& clip : effects.clips)
@@ -791,7 +805,6 @@ namespace Uma_UI
                 text.color = LerpColor(clip.startColor, clip.endColor, easedT);
             }
             break;
-
         case EffectProperty::Alpha:
             if (imageArray.Has(entity))
             {
@@ -804,7 +817,6 @@ namespace Uma_UI
                 text.color.a = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
             break;
-
         case EffectProperty::FillAmount:
             if (imageArray.Has(entity))
             {
@@ -812,7 +824,6 @@ namespace Uma_UI
                 image.fillAmount = LerpFloat(clip.startFloat, clip.endFloat, easedT);
             }
             break;
-
         case EffectProperty::SpritesheetFrame:
             if (imageArray.Has(entity))
             {
@@ -820,7 +831,29 @@ namespace Uma_UI
                 image.SetFrame(clip.GetCurrentFrame());
             }
             break;
+        case EffectProperty::CinematicFrame:
+        {
+            if (!imageArray.Has(entity)) break;
 
+            const std::string& desiredPath = clip.GetCurrentCinematicPath();
+            if (desiredPath.empty()) break;
+
+            auto& image = imageArray.GetData(entity);
+
+            if (image.texturePath == desiredPath) break;
+
+            image.texturePath = desiredPath;
+
+            std::shared_ptr<Uma_Engine::Texture> tex = pResourcesManager->GetTexture(desiredPath);
+            if (!tex)
+            {
+                pResourcesManager->LoadTexture(desiredPath);
+                tex = pResourcesManager->GetTexture(desiredPath);
+            }
+            image.texture = tex;
+            image.change = true;
+            break;
+        }
         default:
             break;
         }

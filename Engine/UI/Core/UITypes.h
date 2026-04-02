@@ -263,8 +263,9 @@ namespace Uma_UI
         Scale,             // RectTransform.sizeDelta
         ColorTint,         // Image.color
         Alpha,             // Image.color.a / Text.color.a
-        FillAmount,         // For progress bars, radial fills
-        SpritesheetFrame
+        FillAmount,        // For progress bars, radial fills
+        SpritesheetFrame,  // Cycles cells within a single spritesheet texture
+        CinematicFrame     // Swaps Image.texturePath from a list of individual frame textures
     };
 
     /*!
@@ -274,7 +275,7 @@ namespace Uma_UI
     struct DialogueLine
     {
         std::string speaker = "";
-        std::string text = "";   
+        std::string text = "";
         std::string portrait = "";
 
         /*!
