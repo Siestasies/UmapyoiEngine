@@ -90,6 +90,7 @@ function state_update(entity, dt)
             if animator then
                 animator.animator:Play("charging_atk", false)
             end
+            audio:play(entity,"Fire Demon Charge")
         end
 
         -- finish attack when animation ends (even if interrupted once)

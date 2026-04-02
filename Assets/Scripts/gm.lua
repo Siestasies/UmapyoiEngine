@@ -10,6 +10,7 @@ local escConsumed = false
 
 function Start()
     PauseGame(false)
+    toggleGroupLowpass("MASTER", false)
 end
 
 function Update(dt)

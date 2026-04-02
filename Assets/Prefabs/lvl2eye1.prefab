@@ -9,7 +9,7 @@
                         "name": "lvl2eye1",
                         "position": {
                             "x": -280.5,
-                            "y": 233.0
+                            "y": 169.199
                         },
                         "rotation": {
                             "x": 0.0,
@@ -133,8 +133,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": -29.399,
-                            "y": -62.798
+                            "x": -19.099,
+                            "y": -32.498
                         },
                         "rotation": {
                             "x": 0.0,
@@ -860,7 +860,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "wind enemy",
                         "position": {
-                            "x": 27.7,
+                            "x": 46.5,
                             "y": -33.9
                         },
                         "rotation": {
@@ -1455,8 +1455,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "wind enemy",
                         "position": {
-                            "x": 27.0,
-                            "y": -111.197
+                            "x": 10.6,
+                            "y": -36.896
                         },
                         "rotation": {
                             "x": 0.0,
