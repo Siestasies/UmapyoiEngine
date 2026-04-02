@@ -2,10 +2,13 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -17,31 +20,34 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0012.png"
+                "path": "assets/props animation.png"
             },
             {
-                "path": "assets/main menu fade out.png"
+                "path": "assets/controller button.png"
+            },
+            {
+                "path": "assets/cinematics/main menu transition/main menu transition_0012.png"
             },
             {
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
-                "path": "assets/sprite_sheet_17.png"
+                "path": "assets/main menu fade out.png"
             },
             {
                 "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
+                "path": "assets/sprite_sheet_17.png"
+            },
+            {
                 "path": "assets/cinematics/main menu transition/main menu transition_0013.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/pause menu.png"
             },
             {
-                "path": "assets/pause menu.png"
+                "path": "assets/exterior_environment_fence_with_water.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -50,10 +56,10 @@
                 "path": "assets/player ss 2.png"
             },
             {
-                "path": "assets/sound settings bodx.png"
+                "path": "assets/props_animation.png"
             },
             {
-                "path": "assets/props_animation.png"
+                "path": "assets/sound settings bodx.png"
             },
             {
                 "path": "assets/floor_tatami.png"
@@ -62,19 +68,25 @@
                 "path": "assets/whole castle.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0005.png"
-            },
-            {
                 "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/hp point.png"
             },
             {
+                "path": "assets/cinematics/main menu transition/main menu transition_0005.png"
+            },
+            {
                 "path": "assets/fire ability icon.png"
             },
             {
+                "path": "assets/red button.png"
+            },
+            {
                 "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/wind ability icon.png"
@@ -86,16 +98,16 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/player ss 3.png"
-            },
-            {
                 "path": "assets/water side.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0009.png"
+                "path": "assets/player ss 3.png"
             },
             {
                 "path": "assets/m5 exterior.png"
+            },
+            {
+                "path": "assets/cinematics/main menu transition/main menu transition_0009.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0007.png"
@@ -110,19 +122,19 @@
                 "path": "assets/dialogue player ui sprite.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0016.png"
+                "path": "assets/dialogue end icon.png"
             },
             {
-                "path": "assets/dialogue end icon.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0016.png"
             },
             {
                 "path": "assets/injured hud.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0011.png"
+                "path": "assets/mana bar empty.png"
             },
             {
-                "path": "assets/mana bar empty.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0011.png"
             },
             {
                 "path": "assets/mana bar full.png"
@@ -140,10 +152,10 @@
                 "path": "assets/sliding controller.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0015.png"
+                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
             },
             {
-                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0015.png"
             },
             {
                 "path": "assets/free textures/icons8.com/icons8-sole-100.png"
@@ -152,10 +164,10 @@
                 "path": "assets/x escape button.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0003.png"
+                "path": "assets/star.png"
             },
             {
-                "path": "assets/star.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0003.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0001.png"
@@ -180,17 +192,26 @@
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0017.png"
+            },
+            {
+                "path": "assets/keycap button.png"
+            },
+            {
+                "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/stage cleared ui.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -206,8 +227,13 @@
                 "type": 1
             },
             {
-                "name": "Neutral Slash(BasicAttack)",
-                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
                 "type": 0
             }
         ],
@@ -19559,7 +19585,10 @@
                         "y": 0.75
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        2,
+                        3
+                    ]
                 },
                 "struct Uma_ECS::Player": {
                     "mHealth": 100,
@@ -19749,13 +19778,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19771,13 +19800,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -20854,16 +20883,6 @@
                     "initialClip": "idle",
                     "clips": [
                         {
-                            "name": "normal_atk",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -20874,21 +20893,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_wind",
+                            "name": "normal_atk",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "hurt",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
+                            "startFrame": 0,
+                            "frameCount": 5,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -20904,11 +20913,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "atk_water",
+                            "name": "hurt",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
+                            "startFrame": 16,
+                            "frameCount": 3,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_wind",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -20919,6 +20938,16 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "atk_water",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -20983,9 +21012,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -20993,14 +21022,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -21008,9 +21037,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -21055,7 +21084,7 @@
             }
         },
         {
-            "id": 2,
+            "id": 4,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21082,7 +21111,7 @@
             }
         },
         {
-            "id": 3,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21142,7 +21171,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21202,7 +21231,7 @@
             }
         },
         {
-            "id": 5,
+            "id": 7,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21262,7 +21291,7 @@
             }
         },
         {
-            "id": 6,
+            "id": 8,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21322,7 +21351,7 @@
             }
         },
         {
-            "id": 7,
+            "id": 9,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21382,7 +21411,7 @@
             }
         },
         {
-            "id": 8,
+            "id": 10,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21442,7 +21471,7 @@
             }
         },
         {
-            "id": 9,
+            "id": 11,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21502,7 +21531,7 @@
             }
         },
         {
-            "id": 10,
+            "id": 12,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21562,7 +21591,7 @@
             }
         },
         {
-            "id": 11,
+            "id": 13,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21622,7 +21651,7 @@
             }
         },
         {
-            "id": 12,
+            "id": 14,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21682,7 +21711,7 @@
             }
         },
         {
-            "id": 13,
+            "id": 15,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21784,7 +21813,7 @@
             }
         },
         {
-            "id": 14,
+            "id": 16,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -21930,7 +21959,7 @@
             }
         },
         {
-            "id": 16,
+            "id": 17,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22046,66 +22075,7 @@
             }
         },
         {
-            "id": 17,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "game manager",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        18,
-                        42,
-                        54,
-                        60,
-                        71,
-                        108
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/gm.lua",
-                            "scriptName": "gm.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "isBossRoom",
-                                    "type": 2,
-                                    "value": false,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
-                            "scriptName": "Cheat_code.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/game manager lite.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 141,
+            "id": 142,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22141,7 +22111,7 @@
             }
         },
         {
-            "id": 142,
+            "id": 143,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22177,14 +22147,14 @@
             }
         },
         {
-            "id": 143,
+            "id": 144,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "light_dup_dup",
                     "position": {
                         "x": -93.055,
-                        "y": -69.557
+                        "y": -69.556
                     },
                     "rotation": {
                         "x": 0.0,
@@ -22213,7 +22183,7 @@
             }
         },
         {
-            "id": 144,
+            "id": 145,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22249,7 +22219,7 @@
             }
         },
         {
-            "id": 145,
+            "id": 146,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22285,14 +22255,14 @@
             }
         },
         {
-            "id": 146,
+            "id": 147,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "light_dup_dup_dup_dup_dup",
                     "position": {
                         "x": -145.054,
-                        "y": -69.557
+                        "y": -69.556
                     },
                     "rotation": {
                         "x": 0.0,
@@ -22321,7 +22291,7 @@
             }
         },
         {
-            "id": 147,
+            "id": 148,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22357,7 +22327,7 @@
             }
         },
         {
-            "id": 148,
+            "id": 149,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22393,7 +22363,7 @@
             }
         },
         {
-            "id": 149,
+            "id": 150,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22429,7 +22399,7 @@
             }
         },
         {
-            "id": 150,
+            "id": 151,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22465,7 +22435,7 @@
             }
         },
         {
-            "id": 15,
+            "id": 152,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22484,7 +22454,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        151
+                        153
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -22522,6 +22492,65 @@
                     },
                     "scaleMode": 1,
                     "matchWidthOrHeight": 0.5
+                }
+            }
+        },
+        {
+            "id": 141,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "game manager",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        140,
+                        107,
+                        86,
+                        70,
+                        50,
+                        158
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/gm.lua",
+                            "scriptName": "gm.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "isBossRoom",
+                                    "type": 2,
+                                    "value": false,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                            "scriptName": "Cheat_code.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/game manager.prefab",
+                    "isRoot": true
                 }
             }
         }
