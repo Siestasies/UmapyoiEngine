@@ -744,8 +744,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "bird enemy",
                         "position": {
-                            "x": 30.5,
-                            "y": -16.6
+                            "x": -2.4,
+                            "y": -41.2
                         },
                         "rotation": {
                             "x": 0.0,
