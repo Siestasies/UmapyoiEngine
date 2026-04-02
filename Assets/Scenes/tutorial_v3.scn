@@ -2,22 +2,22 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/snow particle 1.png"
+                "path": "assets/player_ss.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/player_ss.png"
+                "path": "assets/snow particle 1.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -193,13 +193,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -11596,7 +11590,7 @@
                 "struct Uma_ECS::Transform": {
                     "name": "cam",
                     "position": {
-                        "x": 72.099,
+                        "x": 72.097,
                         "y": -173.3
                     },
                     "rotation": {
@@ -15084,7 +15078,7 @@
             }
         },
         {
-            "id": 209,
+            "id": 85,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15103,7 +15097,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        210
+                        86
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15145,7 +15139,7 @@
             }
         },
         {
-            "id": 208,
+            "id": 87,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15164,12 +15158,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        207,
-                        174,
-                        162,
-                        156,
-                        145,
-                        108
+                        88,
+                        121,
+                        142,
+                        158,
+                        178,
+                        215
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
