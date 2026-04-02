@@ -36,6 +36,7 @@ function Update(dt)
         if enemy.mHealth <= 0  and not isDead then
             isDead = true
             ChangeState(EntityID, "WaterDemonSuicide")
+            GetAudioComponent():play(EntityID, "waterDemon Death")
         end
 
         if isHurt then
