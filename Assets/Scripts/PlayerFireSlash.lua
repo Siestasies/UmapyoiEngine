@@ -86,7 +86,7 @@ function state_enter(entity)
     end
     
     -- Face towards mouse
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     local attackDir = getAttackDirection(player)
 
@@ -122,7 +122,8 @@ function state_update(entity, dt)
     attackTimer = attackTimer - dt
     local transform = GetTransformFrom(EntityID)
 
-    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_L) or GetControllerButtonInput(BTN_A, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerPyronado")
@@ -134,7 +135,8 @@ function state_update(entity, dt)
     end
 
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_J) or GetControllerButtonInput(BTN_Y, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerSteamBurst")
             return
@@ -246,6 +248,8 @@ end
 
 -- Helper function to move player slightly towards mouse when attacking
 function getAttackDirection(player)
+    --local shape = collider.shapes[1]
+    
     if not HasTransform() then return end
     if not HasSprite() then return end
     
@@ -254,12 +258,13 @@ function getAttackDirection(player)
     
     if not transform then return end
     
-    local mousePos = GetMouseWorldPosition()
+    --local mousePos = GetMouseWorldPosition()
     local myPos = transform.position
-    local direction = Vec2(1, 0)
+    --local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+    local direction = Vec2(transform.scale.x, 0)
     
     -- Determine direction based on mouse position and player postion
-    direction = mousePos - myPos
+    --direction = mousePos - myPos
     
     -- Normalize direction
     local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)

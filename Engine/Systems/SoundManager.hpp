@@ -280,6 +280,10 @@ namespace Uma_Engine
 				FMOD_DSP* pLowpassSFX = nullptr;
 				FMOD_DSP* pLowpassBGM = nullptr;
 
+				float m_sfxCutoffCurrent = 22000.0f, m_sfxCutoffTarget = 22000.0f;
+				float m_bgmCutoffCurrent = 22000.0f, m_bgmCutoffTarget = 22000.0f;
+				float m_masterCutoffCurrent = 22000.0f, m_masterCutoffTarget = 22000.0f;
+
 				FMOD_SOUNDGROUP* SFX_SG = nullptr;
 
 				EventSystem* pEventSystem = nullptr;

@@ -217,14 +217,14 @@ namespace Uma_Engine
         sceneManager->RegisterScript<EditorScript>("EditorBehaviour");
 
         // Create the editor scene and configure it
-        auto editorScene = sceneManager->CreateScene("tutorial_v2.scn", "tutorial_v2.scn");
+        auto editorScene = sceneManager->CreateScene("tutorial_v3.scn", "tutorial_v3.scn");
         editorScene->g_EngineConfig = *GetConfig();
 
-        sceneManager->AttachScriptToScene("tutorial_v2.scn", "GameBehaviour");
-        sceneManager->AttachScriptToScene("tutorial_v2.scn", "EditorBehaviour");
+        sceneManager->AttachScriptToScene("tutorial_v3.scn", "GameBehaviour");
+        sceneManager->AttachScriptToScene("tutorial_v3.scn", "EditorBehaviour");
 
         // Load the default scene
-        sceneManager->LoadScene("tutorial_v2.scn");
+        sceneManager->LoadScene("tutorial_v3.scn");
 
         // load and configure playfab
         PlayFabConfiguration();
@@ -259,11 +259,11 @@ namespace Uma_Engine
     void EditorApplication::PostUpdate(float dt)
     {
         (void)dt;
-        if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
+        /*if (Uma_Engine::HybridInputSystem::KeyPressed(GLFW_KEY_ESCAPE))
         {
             GamePause() = !GamePause();
             GetEventSystem()->Emit<ApplicationGamePauseRequest>(GamePause());
-        }
+        }*/
 
         ImguiRender();
     }

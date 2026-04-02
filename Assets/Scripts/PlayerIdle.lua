@@ -36,10 +36,12 @@ function state_update(entity, dt)
     local moveX = 0
     local moveY = 0
     
-    if KeyDown(KEY_W) then moveY = moveY + 1 end
-    if KeyDown(KEY_S) then moveY = moveY - 1 end
-    if KeyDown(KEY_A) then moveX = moveX - 1 end
-    if KeyDown(KEY_D) then moveX = moveX + 1 end
+    local deadZone = 0.25
+
+    if KeyDown(KEY_W) or GetControllerAxesInput(AXIS_LEFT_Y, 0) < -deadZone then moveY = moveY + 1 end
+    if KeyDown(KEY_S) or GetControllerAxesInput(AXIS_LEFT_Y, 0) > deadZone  then moveY = moveY - 1 end
+    if KeyDown(KEY_A) or GetControllerAxesInput(AXIS_LEFT_X, 0) < -deadZone then moveX = moveX - 1 end
+    if KeyDown(KEY_D) or GetControllerAxesInput(AXIS_LEFT_X, 0) > deadZone  then moveX = moveX + 1 end
     
     -- If there's movement input, transition to Run state
     if moveX ~= 0 or moveY ~= 0 then
@@ -48,14 +50,15 @@ function state_update(entity, dt)
     end
     
     -- Check for basic attack input (Left mouse button)
-    if MouseButtonPressed(MOUSE_LEFT) then
-        ChangeState(entity, "PlayerAttack")
-        return
-    end
+    --if MouseButtonPressed(MOUSE_LEFT) then
+    --    ChangeState(entity, "PlayerAttack")
+    --    return
+    --end
 
     local transform = GetTransformFrom(EntityID)
 
-    if KeyPressed(KEY_R) then
+    if KeyPressed(KEY_L) or 
+        GetControllerButtonInput(BTN_A, BTN_PRESS, 0) then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerWindDash")
@@ -67,7 +70,8 @@ function state_update(entity, dt)
     end
     
     -- Check for Fire Slash (Q key or configurable)
-    if KeyPressed(KEY_Q) then
+    if KeyPressed(KEY_K) or 
+        GetControllerButtonInput(BTN_B, BTN_PRESS, 0) then
         -- Check if player has enough mana for fire slash
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerFireSlash")
@@ -79,7 +83,8 @@ function state_update(entity, dt)
     end
     
     -- Check for Water Slash (E key)
-    if KeyPressed(KEY_E) then
+    if KeyPressed(KEY_J) or 
+        GetControllerButtonInput(BTN_Y, BTN_PRESS, 0) then
         if CanUseElementalAttack(player, "water") then
             ChangeState(entity, "PlayerWaterSlash")
             return
@@ -88,6 +93,8 @@ function state_update(entity, dt)
             SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y + 10, "Not enough mana for Water Slash!", "warning")
         end
     end
+
+    
 end
 
 function state_exit(entity)

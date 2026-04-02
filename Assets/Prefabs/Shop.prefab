@@ -35,6 +35,12 @@
                                 "scriptName": "Shop.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/shop_scrn.lua",
+                                "scriptName": "shop_scrn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
                             }
                         ]
                     },
@@ -63,13 +69,7 @@
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "width": 0.098,
-                            "height": 0.196
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Canvas": {
                         "sortingOrder": 0,
@@ -128,13 +128,7 @@
                             "x": 1920.0,
                             "y": 1080.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "width": 1.892,
-                            "height": 2.12
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
@@ -147,7 +141,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -197,13 +203,7 @@
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.922,
-                            "width": 0.098,
-                            "height": 0.196
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
                         "text": "SHOP",
@@ -282,13 +282,7 @@
                             "x": 630.0,
                             "y": 1000.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.586,
-                            "y": -0.117,
-                            "width": 0.62,
-                            "height": 1.963
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill tree menu frame.png",
@@ -301,7 +295,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -379,13 +385,7 @@
                             "x": 456.0,
                             "y": 724.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.586,
-                            "y": -0.117,
-                            "width": 0.449,
-                            "height": 1.421
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
@@ -398,7 +398,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -448,13 +460,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.586,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill frame.png",
@@ -467,7 +473,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -517,13 +535,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.586,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/plus hp skill.png",
@@ -536,7 +548,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -586,13 +610,7 @@
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": -0.586,
-                            "y": -0.274,
-                            "width": 0.098,
-                            "height": 0.196
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
                         "text": "INCREASE MAX HP BY XX",
@@ -671,13 +689,7 @@
                             "x": 630.0,
                             "y": 1000.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": -0.117,
-                            "width": 0.62,
-                            "height": 1.963
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill tree menu frame.png",
@@ -690,7 +702,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -768,13 +792,7 @@
                             "x": 455.0,
                             "y": 726.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": -0.117,
-                            "width": 0.448,
-                            "height": 1.425
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
@@ -787,7 +805,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -837,13 +867,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill frame.png",
@@ -856,7 +880,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -906,13 +942,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/plus hp skill.png",
@@ -925,7 +955,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -975,13 +1017,7 @@
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.0,
-                            "y": -0.274,
-                            "width": 0.098,
-                            "height": 0.196
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
                         "text": "increase max hp by xx",
@@ -1060,13 +1096,7 @@
                             "x": 630.0,
                             "y": 1000.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.576,
-                            "y": -0.117,
-                            "width": 0.62,
-                            "height": 1.963
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill tree menu frame.png",
@@ -1079,7 +1109,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     },
                     "class Uma_UI::Button": {
                         "interactable": true,
@@ -1157,13 +1199,7 @@
                             "x": 456.0,
                             "y": 730.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.576,
-                            "y": -0.117,
-                            "width": 0.449,
-                            "height": 1.433
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/whitePixel.png",
@@ -1176,7 +1212,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1226,13 +1274,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.576,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/skill frame.png",
@@ -1245,7 +1287,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1295,13 +1349,7 @@
                             "x": 300.0,
                             "y": 300.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.576,
-                            "y": 0.147,
-                            "width": 0.295,
-                            "height": 0.589
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/Skill Tree/plus hp skill.png",
@@ -1314,7 +1362,19 @@
                         },
                         "visible": true,
                         "fillDirection": 0,
-                        "fillAmount": 1.0
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
                     }
                 }
             },
@@ -1364,13 +1424,7 @@
                             "x": 100.0,
                             "y": 100.0
                         },
-                        "isDirty": false,
-                        "computedRect": {
-                            "x": 0.576,
-                            "y": -0.274,
-                            "width": 0.098,
-                            "height": 0.196
-                        }
+                        "isDirty": true
                     },
                     "class Uma_UI::Text": {
                         "text": "increase max hp by xx",
@@ -1392,7 +1446,11 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/whitepixel.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }

@@ -160,7 +160,18 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "footsteps",
+                "path": "Assets/sounds/footsteps.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -5136,7 +5147,10 @@
                         "y": 0.75
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        2,
+                        3
+                    ]
                 },
                 "struct Uma_ECS::Player": {
                     "mHealth": 100,
@@ -6632,7 +6646,7 @@
             }
         },
         {
-            "id": 2,
+            "id": 4,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -6659,7 +6673,7 @@
             }
         },
         {
-            "id": 3,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -6821,7 +6835,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 6,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -6840,12 +6854,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        5,
-                        6,
+                        7,
                         8,
                         10,
                         12,
-                        13
+                        14,
+                        15
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -7510,7 +7524,7 @@
             }
         },
         {
-            "id": 14,
+            "id": 16,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -7529,12 +7543,12 @@
                     },
                     "parent": -1,
                     "children": [
-                        15,
-                        39,
-                        51,
-                        57,
-                        68,
-                        105
+                        17,
+                        41,
+                        53,
+                        59,
+                        70,
+                        107
                     ]
                 },
                 "struct Uma_ECS::LuaScript": {
@@ -7563,7 +7577,7 @@
             }
         },
         {
-            "id": 138,
+            "id": 140,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -7582,7 +7596,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        139
+                        141
                     ]
                 },
                 "struct Uma_ECS::Prefab": {

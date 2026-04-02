@@ -8,19 +8,22 @@
                     "struct Uma_ECS::Transform": {
                         "name": "player_new",
                         "position": {
-                            "x": 1036.291,
-                            "y": -1639.791
+                            "x": 72.19,
+                            "y": -173.263
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": -0.75,
+                            "x": 0.75,
                             "y": 0.75
                         },
                         "parent": -1,
-                        "children": []
+                        "children": [
+                            1,
+                            2
+                        ]
                     },
                     "struct Uma_ECS::Player": {
                         "mHealth": 100,
@@ -31,7 +34,7 @@
                         "mDashSpeed": 2.0,
                         "mDashDuration": 0.2,
                         "mDashCD": -0.0,
-                        "mDashCDMax": 0.6,
+                        "mDashCDMax": 2.0,
                         "mAttackDamage": 40,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 10.0,
@@ -908,7 +911,7 @@
                                     {
                                         "name": "ComboActivationFrame",
                                         "type": 0,
-                                        "value": 4.0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -971,7 +974,7 @@
                                     {
                                         "name": "ComboActivationFrame",
                                         "type": 0,
-                                        "value": 3.0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1159,7 +1162,7 @@
                                     {
                                         "name": "ComboActivationFrame",
                                         "type": 0,
-                                        "value": 4.0,
+                                        "value": 1.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -1512,6 +1515,60 @@
                         "nextId": 13,
                         "current": "PlayerAttack",
                         "next": ""
+                    }
+                }
+            },
+            {
+                "id": 1,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "new entity",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/player_new.prefab",
+                        "isRoot": false
+                    }
+                }
+            },
+            {
+                "id": 2,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "new entity",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 0,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/player_new.prefab",
+                        "isRoot": false
                     }
                 }
             }

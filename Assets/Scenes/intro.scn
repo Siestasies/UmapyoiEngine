@@ -26,7 +26,43 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "Cutscene_Frame_1",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_1.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_2",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_2.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_3",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_3.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_4",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_4.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_5",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_5.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_6",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_6.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_Frame_7",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_7.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -202,6 +238,12 @@
                         {
                             "scriptPath": "Assets/Scripts/intro.lua",
                             "scriptName": "intro.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        },
+                        {
+                            "scriptPath": "Assets/Scripts/intro_scrn.lua",
+                            "scriptName": "intro_scrn.lua",
                             "isEnabled": true,
                             "exposedVariables": []
                         }

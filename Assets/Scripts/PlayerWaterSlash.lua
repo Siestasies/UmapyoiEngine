@@ -83,7 +83,7 @@ function state_enter(entity)
     end
     
     -- Face towards mouse
-    FaceTowardsMouse(entity)
+    --FaceTowardsMouse(entity)
 
     attackDir = getAttackDirection(player)
 
@@ -114,11 +114,14 @@ function state_update(entity, dt)
         ChangeState(entity, "PlayerIdle")
         return
     end
+
+    local transform = GetTransformFrom(EntityID)
     
     -- Update timer
     attackTimer = attackTimer - dt
 
-    if KeyPressed(KEY_R) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_L) or GetControllerButtonInput(BTN_A, BTN_PRESS, 0)) 
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         -- Check if player has enough mana for wind dash
         if CanUseElementalAttack(player, "wind") then
             ChangeState(entity, "PlayerWhirlpool")
@@ -130,7 +133,8 @@ function state_update(entity, dt)
     end
 
     -- Check for Fire Slash (Q key)
-    if KeyPressed(KEY_Q) and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
+    if (KeyPressed(KEY_K) or GetControllerButtonInput(BTN_B, BTN_PRESS, 0))
+    and animator.animator:GetCurrentFrame() >= ComboActivationFrame then
         if CanUseElementalAttack(player, "fire") then
             ChangeState(entity, "PlayerSteamBurst")
             return
@@ -242,30 +246,29 @@ end
 
 -- Helper function to move player slightly towards mouse when attacking
 function getAttackDirection(player)
-
-
+    --local shape = collider.shapes[1]
+    
+    if not HasTransform() then return end
+    if not HasSprite() then return end
+    
     local transform = GetTransform()
-    local collider = GetCollider()
-
-    local shape = collider.shapes[1]
-
+    --local sprite = GetSprite()
+    
     if not transform then return end
-
-    local mousePos = GetMouseWorldPosition()
-    local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
-
-    -- Direction from player to mouse
-    local dx = mousePos.x - myPos.x
-    local dy = mousePos.y - myPos.y
-    local len = math.sqrt(dx * dx + dy * dy)
-    if len == 0 then len = 1 end
-    local dir = Vec2(dx / len, dy / len)
+    
+    --local mousePos = GetMouseWorldPosition()
+    local myPos = transform.position
+    --local myPos = Vec2(transform.position.x, transform.position.y + shape.offset.y)
+    local direction = Vec2(transform.scale.x, 0)
+    
+    -- Determine direction based on mouse position and player postion
+    --direction = mousePos - myPos
     
     -- Normalize direction
-    local length = math.sqrt(dir.x * dir.x + dir.y * dir.y)
+    local length = math.sqrt(direction.x * direction.x + direction.y * direction.y)
     if length > 0 then
-        dir = Vec2(dir.x / length, dir.y / length)
+        direction = Vec2(direction.x / length, direction.y / length)
     end
 
-    return dir
+    return direction
 end

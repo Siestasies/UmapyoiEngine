@@ -154,10 +154,12 @@ ElementType = {
 ---@field mDashSpeed number
 ---@field mDashDuration number
 ---@field mDashCD number
+---@field mDashCDMax number
 ---@field mAttackDamage number
 ---@field mAttackSpeed number
 ---@field mAttackRange number
 ---@field mDefense number
+---@field mCritDamage number
 ---@field mMana number
 ---@field mMaxMana number
 ---@field mManaRegenRate number
@@ -306,14 +308,26 @@ CollisionLayer = {
 ---@field b number
 ---@field a number
 
+---@class RectTransform
+---@field anchoredPosition Vec2
+---@field sizeDelta Vec2
+---@field anchorMin Vec2
+---@field anchorMax Vec2
+---@field pivot Vec2
+---@field isDirty boolean
+
 ---@class Text
 ---@field text string
+---@field fontSize number
+---@field color Color
 ---@field visible boolean
 
 ---@class Image
 ---@field textureName string
 ---@field sortingOrder integer
+---@field fillAmount number
 ---@field color Color
+---@field change boolean
 
 ---@enum SliderDirection
 SliderDirection = {
@@ -364,6 +378,26 @@ CheckboxState = {
 ---@field scriptName string
 ---@field wasHoveredLastFrame boolean
 ---@field wasPressedWhileHovered boolean
+
+---@enum ButtonState
+ButtonState = {
+    Normal = 0,
+    Hovered = 1,
+    Pressed = 2,
+    Disabled = 3,
+}
+
+---@class Button
+---@field interactable boolean
+---@field currentState ButtonState
+---@field normalColour Color
+---@field hoverColour Color
+---@field pressedColour Color
+---@field disabledColour Color
+
+---@param buttonId integer
+---@param action ButtonState
+function SimulateButtonAction(buttonId, action) end
 
 ---@class DialogueLine
 ---@field speaker string
@@ -680,10 +714,16 @@ FeedbackType = {
 ---@field HasProjectile fun(): boolean
 ---@field GetAnimator fun(): Animator|nil
 ---@field HasAnimator fun(): boolean
+---@field GetRectTransform fun(): RectTransform|nil
+---@field HasRectTransform fun(): boolean
 ---@field GetText fun(): Text|nil
 ---@field HasText fun(): boolean
 ---@field GetImage fun(): Image|nil
 ---@field HasImage fun(): boolean
+---@field GetButton fun(): Button|nil
+---@field HasButton fun(): boolean
+---@field GetDialogue fun(): Dialogue|nil
+---@field HasDialogue fun(): boolean
 ---@field GetEffects fun(): Effects|nil
 ---@field HasEffects fun(): boolean
 ---@field GetParticleEmitter fun(): ParticleEmitter|nil
@@ -728,6 +768,9 @@ function SetParent(child, parent) end
 
 ---@param child Entity
 function RemoveParent(child) end
+
+---@param child Entity
+function RemoveParentSpecial(child) end
 
 ---@param entity Entity
 ---@return integer  @ parent entity ID, or -1 if no parent
@@ -913,6 +956,13 @@ function GetCheckboxFrom(entity) end
 function HasCheckboxOn(entity) end
 
 ---@param entity Entity
+---@return Button|nil
+function GetButtonFrom(entity) end
+---@param entity Entity
+---@return boolean
+function HasButtonOn(entity) end
+
+---@param entity Entity
 ---@return SpriteMaterial|nil
 function GetSpriteMaterialFrom(entity) end
 ---@param entity Entity
@@ -925,6 +975,13 @@ function GetCutsceneFrom(entity) end
 ---@param entity Entity
 ---@return boolean
 function HasCutsceneOn(entity) end
+
+---@param entity Entity
+---@return RectTransform|nil
+function GetRectTransformFrom(entity) end
+---@param entity Entity
+---@return boolean
+function HasRectTransformOn(entity) end
 
 ---@param entity Entity
 ---@return Dialogue|nil
@@ -1150,6 +1207,28 @@ function setGroupVolume(volume, type) end
 ---@param enable boolean
 function toggleGroupLowpass(groupName, enable) end
 
+---@return number
+function getSFXVolume() end
+
+---@return number
+function getBGMVolume() end
+
+---@return number
+function getMasterVolume() end
+
+---@param type integer
+---@return number
+function getGroupVolume(type) end
+
+---@param entity Entity
+function StopEntityAudio(entity) end
+
+---@param entity Entity
+---@param name string
+function StopEntityAudioByName(entity, name) end
+
+function StopAllAudio() end
+
 -- =============================================================================
 --  Global Functions — Feedback
 -- =============================================================================
@@ -1179,7 +1258,7 @@ function ClearAttackStats(player) end
 function GetAttackStatsCount(player) end
 
 -- =============================================================================
---  Global Functions — Input
+--  Global Functions — Input (Keyboard & Mouse)
 -- =============================================================================
 
 ---@return Vec2
@@ -1302,6 +1381,10 @@ KEY_BACKSPACE = 0
 ---@type integer
 KEY_DELETE = 0
 ---@type integer
+KEY_LALT = 0
+---@type integer
+KEY_RALT = 0
+---@type integer
 KEY_F1 = 0
 ---@type integer
 KEY_F2 = 0
@@ -1331,6 +1414,95 @@ MOUSE_LEFT = 0
 MOUSE_RIGHT = 0
 ---@type integer
 MOUSE_MIDDLE = 0
+
+-- =============================================================================
+--  Global Functions — Input (Controller)
+-- =============================================================================
+
+---@param button integer
+---@param action integer
+---@param controller_id integer
+---@return boolean
+function GetControllerButtonInput(button, action, controller_id) end
+
+---@param axis integer
+---@param controller_id integer
+---@return number
+function GetControllerAxesInput(axis, controller_id) end
+
+---@param controller_id integer
+---@return boolean
+function IsControllerConnected(controller_id) end
+
+-- 0 is keyboard and mouse
+-- 1 is controller
+---@return integer
+function GetCurrentInputMethod() end
+
+---@type integer
+BTN_A = 0
+---@type integer
+BTN_B = 1
+---@type integer
+BTN_X = 2
+---@type integer
+BTN_Y = 3
+
+---@type integer
+BTN_CROSS = 0
+---@type integer
+BTN_CIRCLE = 1
+---@type integer
+BTN_SQUARE = 2
+---@type integer
+BTN_TRIANGLE = 3
+
+---@type integer
+BTN_LB = 4
+---@type integer
+BTN_RB = 5
+
+---@type integer
+BTN_BACK = 6
+---@type integer
+BTN_START = 7
+---@type integer
+BTN_GUIDE = 8
+
+---@type integer
+BTN_LEFT_THUMB = 9
+---@type integer
+BTN_RIGHT_THUMB = 10
+
+---@type integer
+BTN_UP = 11
+---@type integer
+BTN_RIGHT = 12
+---@type integer
+BTN_DOWN = 13
+---@type integer
+BTN_LEFT = 14
+
+---@type integer
+BTN_PRESS = 1
+---@type integer
+BTN_HOLD = 2
+---@type integer
+BTN_RELEASE = 0
+
+---@type integer
+AXIS_LEFT_X = 0
+---@type integer
+AXIS_LEFT_Y = 1
+---@type integer
+AXIS_RIGHT_X = 2
+---@type integer
+AXIS_RIGHT_Y = 3
+---@type integer
+AXIS_LEFT_TRIGGER = 4
+---@type integer
+AXIS_RIGHT_TRIGGER = 5
+
 
 -- =============================================================================
 --  Global Functions — PlayFab

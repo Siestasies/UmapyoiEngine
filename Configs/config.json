@@ -5,6 +5,8 @@
         "fps": 480,
         "fullscreen": true,
         "vsync": false,
-        "windowTitle": "UmaPyoi Engine"
+        "windowTitle": "UmaPyoi Engine",
+        "controller_interaction_accept": 0,
+        "controller_interaction_cancel": 1
     }
 }

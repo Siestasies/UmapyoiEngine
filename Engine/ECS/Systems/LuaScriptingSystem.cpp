@@ -48,6 +48,7 @@ All rights reserved.
 #include "../UI/Components/Slider.h"
 #include "../UI/Components/Checkbox.h"
 #include "../UI/Components/Button.h"
+#include "../UI/Systems/UISystem.h"
 #include "../Components/AudioComponent.h"
 #include "../Components/SpriteMaterial.h"
 #include "../Components/Cutscene.h"
@@ -137,15 +138,23 @@ namespace Uma_ECS
         for (auto const& entity : aEntities)
         {
             if (!pCoordinator->IsActiveInHierarchy(entity))
+            {
+                auto& scriptComponent = scriptArray.GetData(entity);
+                for (auto& script : scriptComponent.scripts)
+                {
+                    if (script.hasError || !script.isInitialized)
+                        continue;
+
+                    if (script.wasEnabledLastFrame)
+                    {
+                        CallLuaFunction(script, "OnDisable");
+                        script.wasEnabledLastFrame = false;
+                    }
+                }
                 continue;
+            }
 
             auto& scriptComponent = scriptArray.GetData(entity);
-
-            // Initialize scripts if needed
-            /* if (!scriptComponent.lua || !scriptComponent.lua->lua_state())
-            {
-                InitializeEntityScripts(entity, scriptComponent);
-            }*/
 
             // update each script instance
             for (auto& script : scriptComponent.scripts)
@@ -157,7 +166,7 @@ namespace Uma_ECS
                 {
                     if (script.wasEnabledLastFrame)
                     {
-                        //CallLuaFunction(script, "OnDisable");
+                        CallLuaFunction(script, "OnDisable");
                         script.wasEnabledLastFrame = false;
                     }
                     continue;
@@ -174,7 +183,7 @@ namespace Uma_ECS
                         CallLuaFunction(script, "Start");
                     }
 
-                    //CallLuaFunction(script, "OnEnable");
+                    CallLuaFunction(script, "OnEnable");
                 }
 
                 if (!script.isInitialized)
@@ -1591,6 +1600,15 @@ namespace Uma_ECS
             }
         );
 
+        sharedLua->new_enum<Uma_UI::ButtonState>("ButtonState",
+            {
+                {"Normal", Uma_UI::ButtonState::Normal},
+                {"Hovered", Uma_UI::ButtonState::Hovered},
+                {"Pressed", Uma_UI::ButtonState::Pressed},
+                {"Disabled", Uma_UI::ButtonState::Disabled}
+            }
+        );
+
         sharedLua->new_usertype<Uma_UI::Button>("Button",
             "interactable", &Uma_UI::Button::interactable,
             "currentState", &Uma_UI::Button::currentState,
@@ -1599,6 +1617,20 @@ namespace Uma_ECS
             "pressedColour", &Uma_UI::Button::pressedColour,
             "disabledColour", &Uma_UI::Button::disabledColour
         );
+
+        sharedLua->set_function("SimulateButtonAction",
+            [this](const Entity& button_id, const Uma_UI::ButtonState& state)
+            {
+                if (!pCoordinator->HasComponent<Uma_UI::Button>(button_id)) return;
+
+                std::shared_ptr<Uma_UI::UISystem> pUIsystem = pCoordinator->GetSystem<Uma_UI::UISystem>();
+
+                if (pUIsystem)
+                {
+                    pUIsystem->SimulateButtonAction(button_id, state);
+                }
+
+            });
 
         // Register DialogueLine so Lua can read fields off returned line tables
         sharedLua->new_usertype<Uma_UI::DialogueLine>("DialogueLine",
@@ -2572,6 +2604,7 @@ namespace Uma_ECS
                         CallLuaFunction(script, "OnDisable");
                     }
                     script.isEnabled = e.isActive;
+                    script.wasEnabledLastFrame = e.isActive;
                 }
             }
         );
@@ -2899,6 +2932,28 @@ namespace Uma_ECS
 
             return pInputSystem ? pGraphics->ScreenToWorld(pInputSystem->GetSceneMousePosition()) : Vec2{ 0, 0 };
             });
+
+        // controller 
+        sharedLua->set_function("GetControllerButtonInput", [this](int key, int action, int controller_id) -> bool
+            {
+                return Uma_Engine::HybridInputSystem::GetControllerButtonInput(key, action, controller_id);
+            });
+
+        sharedLua->set_function("GetControllerAxesInput", [this](int axis, int controller_id) -> float
+            {
+                return Uma_Engine::HybridInputSystem::GetControllerAxesInput(axis, 0);
+            });
+
+        sharedLua->set_function("IsControllerConnected", [this](int controller_id) -> bool
+            {
+                return Uma_Engine::HybridInputSystem::IsControllerConnected(controller_id);
+            });
+
+        // universal
+        sharedLua->set_function("GetCurrentInputMethod", [this]() -> int
+            {
+                return Uma_Engine::HybridInputSystem::GetCurrentInputMethod();
+            });
     }
 
     void LuaScriptingSystem::RegisterKeyConstants()
@@ -2936,13 +2991,13 @@ namespace Uma_ECS
             std::string keyName = std::string("KEY_") + std::to_string(i);
             sharedLua->set(keyName, GLFW_KEY_0 + i);
         }
-
+        
         // Register function keys F1-F12
         for (int i = 1; i <= 12; ++i) {
             std::string keyName = std::string("KEY_F") + std::to_string(i);
             sharedLua->set(keyName, GLFW_KEY_F1 + (i - 1));
         }
-
+        
         // Other common keys
         sharedLua->set("KEY_ESCAPE", GLFW_KEY_ESCAPE);
         sharedLua->set("KEY_ENTER", GLFW_KEY_ENTER);
@@ -2951,6 +3006,45 @@ namespace Uma_ECS
         sharedLua->set("KEY_DELETE", GLFW_KEY_DELETE);
         sharedLua->set("KEY_LALT", GLFW_KEY_LEFT_ALT);
         sharedLua->set("KEY_RALT", GLFW_KEY_RIGHT_ALT);
+        
+        sharedLua->set("BTN_A", GLFW_GAMEPAD_BUTTON_A);
+        sharedLua->set("BTN_B", GLFW_GAMEPAD_BUTTON_B);
+        sharedLua->set("BTN_X", GLFW_GAMEPAD_BUTTON_X);
+        sharedLua->set("BTN_Y", GLFW_GAMEPAD_BUTTON_Y);
+        
+        sharedLua->set("BTN_CROSS", GLFW_GAMEPAD_BUTTON_CROSS   );
+        sharedLua->set("BTN_CIRCLE", GLFW_GAMEPAD_BUTTON_CIRCLE  );
+        sharedLua->set("BTN_SQUARE", GLFW_GAMEPAD_BUTTON_SQUARE  ); 
+        sharedLua->set("BTN_TRIANGLE", GLFW_GAMEPAD_BUTTON_TRIANGLE);
+
+        sharedLua->set("BTN_LB", GLFW_GAMEPAD_BUTTON_LEFT_BUMPER );
+        sharedLua->set("BTN_RB", GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER);
+        
+        sharedLua->set("BTN_BACK", GLFW_GAMEPAD_BUTTON_BACK );
+        sharedLua->set("BTN_START", GLFW_GAMEPAD_BUTTON_START);
+        sharedLua->set("BTN_GUIDE", GLFW_GAMEPAD_BUTTON_GUIDE);
+
+        sharedLua->set("BTN_LEFT_THUMB", GLFW_GAMEPAD_BUTTON_LEFT_THUMB );
+        sharedLua->set("BTN_RIGHT_THUMB", GLFW_GAMEPAD_BUTTON_RIGHT_THUMB);
+        
+        sharedLua->set("BTN_UP", GLFW_GAMEPAD_BUTTON_DPAD_UP   );
+        sharedLua->set("BTN_RIGHT", GLFW_GAMEPAD_BUTTON_DPAD_RIGHT);
+        sharedLua->set("BTN_DOWN", GLFW_GAMEPAD_BUTTON_DPAD_DOWN );
+        sharedLua->set("BTN_LEFT", GLFW_GAMEPAD_BUTTON_DPAD_LEFT );
+
+        sharedLua->set("AXIS_LEFT_X", GLFW_GAMEPAD_AXIS_LEFT_X);
+        sharedLua->set("AXIS_LEFT_Y", GLFW_GAMEPAD_AXIS_LEFT_Y);
+
+        sharedLua->set("AXIS_RIGHT_X", GLFW_GAMEPAD_AXIS_RIGHT_X);
+        sharedLua->set("AXIS_RIGHT_Y", GLFW_GAMEPAD_AXIS_RIGHT_Y);
+
+        sharedLua->set("AXIS_LEFT_TRIGGER", GLFW_GAMEPAD_AXIS_LEFT_TRIGGER);
+        sharedLua->set("AXIS_RIGHT_TRIGGER", GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER);
+
+        // contrller action
+        sharedLua->set("BTN_PRESS", GLFW_PRESS);
+        sharedLua->set("BTN_HOLD", GLFW_REPEAT);
+        sharedLua->set("BTN_RELEASE", GLFW_RELEASE);
     }
 
     void LuaScriptingSystem::OnEntityDestroyed(Entity entity)

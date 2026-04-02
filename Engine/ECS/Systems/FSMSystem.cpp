@@ -18,21 +18,39 @@ All rights reserved.
 
 #include "FSMSystem.hpp"
 #include "LuaScriptingSystem.hpp"
+#include "Events/ApplicationEvents.h"
+#include "AudioSystem.hpp"
 
-void Uma_ECS::FSMSystem::Init(Coordinator* c)
+void Uma_ECS::FSMSystem::Init(Coordinator* c ,Uma_Engine::EventSystem* es)
 {
 	pCoordinator = c;
+	pEventSystem = es;
+	pEventSystem->Subscribe<Uma_Engine::ApplicationGamePauseRequest, FSMSystem>(
+		[this](const Uma_Engine::ApplicationGamePauseRequest& e)
+		{
+			GamePaused = e.pause;
+			WasPaused = false;
+		});
 }
 
 void Uma_ECS::FSMSystem::Update(float dt)
 {
 	//add event call to lua update
 	auto& FSMArray = pCoordinator->GetComponentArray<FSM>();
+	auto& playerArray = pCoordinator->GetComponentArray<Player>();
+	auto& enemyArray = pCoordinator->GetComponentArray<Enemy>();
 
 	for (auto const& entity : aEntities) {
 		if (!pCoordinator->IsActiveInHierarchy(entity))
 			continue;
-
+		if (GamePaused) {
+			if (!WasPaused) {
+				if (playerArray.Has(entity) || enemyArray.Has(entity)) {
+					pCoordinator->GetSystem<AudioSystem>()->StopEntitySound(entity);
+				}
+			}
+			continue;
+		}
 
 		auto& curr = FSMArray.GetData(entity);
 		if (curr.current.empty() && !curr.states.empty()) {
@@ -91,6 +109,10 @@ void Uma_ECS::FSMSystem::Update(float dt)
 		}
 
 	}
+	WasPaused = GamePaused;
 }
 
-
+void Uma_ECS::FSMSystem::Shutdown() 
+{
+	pEventSystem->UnsubscribeSystem<FSMSystem>();
+}

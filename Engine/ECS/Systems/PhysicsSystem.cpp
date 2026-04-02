@@ -34,6 +34,8 @@ All rights reserved.
 #include <cmath>
 #include <algorithm>
 
+#include "HybridInputSystem.h"
+
 void Uma_ECS::PhysicsSystem::Update(float dt)
 {
     auto& rbArray = gCoordinator->GetComponentArray<RigidBody>();

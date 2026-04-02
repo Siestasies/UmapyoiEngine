@@ -247,6 +247,8 @@ namespace Uma_Engine
         */
         void MainLoop();
 
+        int GetCurrentInputMethod();
+
         /*!
         \brief Subscribes the application to relevant engine events.
         */
@@ -259,6 +261,10 @@ namespace Uma_Engine
         inline static float mFps = 0;
         inline static float playTime = 0.f;
         inline static bool startPlayTimeTimer = false;
+
+        inline static int mControllerInteractionAccept = 0;
+        inline static int mControllerInteractionCancel = 1;
+        inline static int mUsingMouseOrController = 0; // 0 is mouse & keyboard, 1 is controller
 
     protected:
 

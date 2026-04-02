@@ -2,13 +2,51 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/game over menu.png"
+            },
+            {
                 "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/player_ss.png"
+            },
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/lost hp point.png"
+            },
+            {
+                "path": "assets/hp point.png"
+            },
+            {
+                "path": "assets/mana bar empty.png"
+            },
+            {
+                "path": "assets/mana bar full.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/fire ability icon.png"
+            },
+            {
+                "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/hover button ui white.png"
+            },
+            {
+                "path": "assets/wind ability icon.png"
             }
         ],
         "fonts": [
+            {
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "size": 48
+            },
             {
                 "name": "assets/fonts/neucha.ttf",
                 "path": "Assets/Fonts/Neucha.ttf",
@@ -55,23 +93,50 @@
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
-                    "name": "player",
+                    "name": "game manager",
                     "position": {
-                        "x": -2.278,
-                        "y": 11.597
+                        "x": 0.0,
+                        "y": 0.0
                     },
                     "rotation": {
                         "x": 0.0,
                         "y": 0.0
                     },
                     "scale": {
-                        "x": 0.493,
-                        "y": 0.493
+                        "x": 1.0,
+                        "y": 1.0
                     },
-                    "parent": -1
+                    "parent": -1,
+                    "children": [
+                        1,
+                        25,
+                        37,
+                        43,
+                        54,
+                        91
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/gm.lua",
+                            "scriptName": "gm.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "isBossRoom",
+                                    "type": 2,
+                                    "value": false,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
                 },
                 "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/player.prefab",
+                    "prefabPath": "Assets/Prefabs/game manager lite.prefab",
                     "isRoot": true
                 }
             }

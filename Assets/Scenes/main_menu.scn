@@ -30,7 +30,13 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "MainMenuBGM",
+                "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                "type": 1
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -83,6 +89,33 @@
                         1
                     ]
                 },
+                "struct Uma_ECS::AudioComponent": {
+                    "defaultVolume": 1.0,
+                    "default3D": false,
+                    "loadedSounds": {
+                        "MainMenuBGM": {
+                            "path": "Assets/sounds/Music/MainMenuBGM.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 1,
+                            "volume": 0.5,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 200.0
+                        }
+                    }
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/BGM_mainmenu.lua",
+                            "scriptName": "BGM_mainmenu.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
+                    ]
+                },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/main.prefab",
                     "isRoot": true
@@ -114,12 +147,45 @@
                     },
                     "parent": -1,
                     "children": [
-                        22
+                        22,
+                        23
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
                     "prefabPath": "Assets/Prefabs/main_transition.prefab",
                     "isRoot": true
+                },
+                "class Uma_UI::RectTransform": {
+                    "anchorMin": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "anchorMax": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "pivot": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "anchoredPosition": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "sizeDelta": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "isDirty": true
+                },
+                "class Uma_UI::Canvas": {
+                    "sortingOrder": 0,
+                    "referenceResolution": {
+                        "x": 1920.0,
+                        "y": 1080.0
+                    },
+                    "scaleMode": 1,
+                    "matchWidthOrHeight": 0.5
                 }
             }
         }

@@ -20,6 +20,9 @@
                 "path": "assets/wind ability icon.png"
             },
             {
+                "path": "assets/hover button ui white.png"
+            },
+            {
                 "path": "assets/mana bar empty.png"
             },
             {
@@ -27,6 +30,12 @@
             },
             {
                 "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/injured hud.png"
+            },
+            {
+                "path": "assets/gain mana ss.png"
             }
         ],
         "fonts": [
@@ -99,6 +108,16 @@
                         1,
                         22,
                         30
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/leaderboard_scrn.lua",
+                            "scriptName": "leaderboard_scrn.lua",
+                            "isEnabled": true,
+                            "exposedVariables": []
+                        }
                     ]
                 },
                 "class Uma_UI::RectTransform": {
@@ -2024,10 +2043,35 @@
                         "y": -400.0
                     },
                     "sizeDelta": {
-                        "x": 500.0,
+                        "x": 673.0,
                         "y": 75.0
                     },
                     "isDirty": true
+                },
+                "class Uma_UI::Image": {
+                    "texturePath": "Assets/hover button UI white.png",
+                    "sortingOrder": 0,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0,
+                        "a": 1.0
+                    },
+                    "visible": true,
+                    "fillDirection": 0,
+                    "fillAmount": 1.0,
+                    "spriteSheetGrid": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "spriteCell": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "spriteOffset": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
                 },
                 "class Uma_UI::Button": {
                     "interactable": true,
@@ -2054,7 +2098,7 @@
                         "r": 0.5,
                         "g": 0.5,
                         "b": 0.5,
-                        "a": 0.5
+                        "a": 0.0
                     }
                 }
             }

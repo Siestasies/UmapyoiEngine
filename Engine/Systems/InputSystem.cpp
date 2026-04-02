@@ -22,7 +22,10 @@ All rights reserved.
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <GLFW/glfw3.h>
+
+#include "../Core/FilePaths.h"
 
 // Include ImGui for input checking
 #include "../EditorApp/imgui/imgui.h"
@@ -34,6 +37,42 @@ All rights reserved.
 
 namespace Uma_Engine
 {
+    struct ControllerInput
+    {
+        GLFWgamepadstate currState;
+        GLFWgamepadstate prevState; 
+        bool anyButtonPressed = false;
+        bool anyAxisChanged = false;
+        float axisThreshold = 0.1f;
+
+        void UpdateState(const GLFWgamepadstate& state)
+        {
+            prevState = currState;
+            currState = state;
+
+            anyButtonPressed = false;
+            for (int i = 0; i < GLFW_GAMEPAD_BUTTON_LAST; i++)
+            {
+                if (currState.buttons[i] == GLFW_PRESS &&
+                    prevState.buttons[i] == GLFW_RELEASE)
+                {
+                    anyButtonPressed = true;
+                    break;
+                }
+            }
+
+            anyAxisChanged = false;
+            for (int i = 0; i < GLFW_GAMEPAD_AXIS_LAST; i++)
+            {
+                if (std::abs(currState.axes[i] - prevState.axes[i]) > axisThreshold)
+                {
+                    anyAxisChanged = true;
+                    break;
+                }
+            }
+        }
+    };
+
     // Static member definitions
     std::vector<bool> Uma_Engine::InputSystem::sKeys(GLFW_KEY_LAST + 1);
     std::vector<bool> Uma_Engine::InputSystem::sKeysPrevFrame(GLFW_KEY_LAST + 1);
@@ -45,7 +84,11 @@ namespace Uma_Engine
     double InputSystem::sScrollX = 0.0;
     double InputSystem::sScrollY = 0.0;
 
+    int InputSystem::sCurrInputMethod = 0;
+
     InputSystem::InputSystem() : mWindow(nullptr) {}
+
+    std::unordered_map<int, std::unique_ptr<ControllerInput>> InputSystem::sActiveController;
 
     void InputSystem::Init()
     {
@@ -54,6 +97,8 @@ namespace Uma_Engine
         sKeysPrevFrame.assign(GLFW_KEY_LAST + 1, false);
         sMouseButtons.assign(GLFW_MOUSE_BUTTON_LAST + 1, false);
         sMouseButtonsPrevFrame.assign(GLFW_MOUSE_BUTTON_LAST + 1, false);
+
+        SetUpSDLControllerDB();
 
 #ifdef _DEBUG_LOG
         std::cout << "InputSystem initialized" << std::endl;
@@ -88,6 +133,18 @@ namespace Uma_Engine
         glfwSetMouseButtonCallback(mWindow, MouseButtonCallback);
         glfwSetCursorPosCallback(mWindow, CursorPositionCallback);
         glfwSetScrollCallback(mWindow, MouseScrollCallback);
+
+        // check all joystick slots for controllers already connected (including BT)
+        for (int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid)
+        {
+            if (glfwJoystickPresent(jid))
+            {
+                ControllerConnectionCallback(jid, GLFW_CONNECTED);
+            }
+        }
+
+        // controller
+        glfwSetJoystickCallback(ControllerConnectionCallback);
     }
 
     void InputSystem::Update(float dt)
@@ -103,9 +160,15 @@ namespace Uma_Engine
         // Update mouse position
         double xpos, ypos;
         glfwGetCursorPos(mWindow, &xpos, &ypos);
+
+        if (xpos != sMouseX || ypos != sMouseY)
+        {
+            sCurrInputMethod = 0;
+        }
+
         sMouseX = xpos;
         sMouseY = ypos;
-        
+
         // Update previous frame state
         // sKeysPrevFrame = sKeys;
         // sMouseButtonsPrevFrame = sMouseButtons;
@@ -132,17 +195,110 @@ namespace Uma_Engine
             }
         }
 #endif
+
+        static float pollTimer = 0.f;
+        pollTimer += dt;
+
+        if (pollTimer >= 1.0f) // check once per second
+        {
+            pollTimer = 0.f;
+            for (int jid = 0; jid <= GLFW_JOYSTICK_LAST; ++jid)
+            {
+                bool present = glfwJoystickPresent(jid);
+                bool tracked = sActiveController.count(jid);
+
+                if (present && !tracked)
+                    ControllerConnectionCallback(jid, GLFW_CONNECTED); // BT controller appeared
+                else if (!present && tracked)
+                    ControllerConnectionCallback(jid, GLFW_DISCONNECTED);    // BT controller dropped
+            }
+        }
+
+        // controller polling
+        for (auto& [id, controller] : sActiveController)
+        {
+            // --- Gamepad mapped state ---
+            GLFWgamepadstate state;
+
+            if (glfwGetGamepadState(id, &state))
+            {
+                controller->UpdateState(state);
+
+                if (controller->anyAxisChanged || controller->anyButtonPressed)
+                    sCurrInputMethod = 1;
+            }
+        }
+
+#ifdef _DEBUG_LOG
+        // DEBUGGING 
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_UP, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_DOWN, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_A, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_B, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_X, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_Y, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_LEFT_THUMB, GLFW_RELEASE, 0);
+
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_PRESS, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_REPEAT, 0);
+        GetControllerButtonInput(GLFW_GAMEPAD_BUTTON_RIGHT_THUMB, GLFW_RELEASE, 0);
+
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_X, 0);
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_Y, 0);
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_X, 0);
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_Y, 0);
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, 0);
+        GetControllerAxesInput(GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, 0);
+
+#endif
     }
 
     void InputSystem::Shutdown()
     {
-        if (mWindow) 
+        if (mWindow)
         {
             glfwSetKeyCallback(mWindow, nullptr);
             glfwSetMouseButtonCallback(mWindow, nullptr);
             glfwSetCursorPosCallback(mWindow, nullptr);
         }
-        
+
 
 #ifdef _DEBUG_LOG
         std::cout << "InputSystem shut down" << std::endl;
@@ -153,6 +309,8 @@ namespace Uma_Engine
     void InputSystem::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
         (void)window; (void)mods; (void)scancode;
+
+        sCurrInputMethod = 0;
 
         if (key >= 0 && key <= GLFW_KEY_LAST)
         {
@@ -180,6 +338,8 @@ namespace Uma_Engine
     void InputSystem::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
     {
         (void)window; (void)mods;
+
+        sCurrInputMethod = 0;
 
         if (button >= 0 && button <= GLFW_MOUSE_BUTTON_LAST)
         {
@@ -347,5 +507,208 @@ namespace Uma_Engine
 
         default: return "UNKNOWN";
         }
+    }
+
+    const char* InputSystem::GetControllerButtonName(int btn)
+    {
+        switch (btn)
+        {
+        
+        case GLFW_GAMEPAD_BUTTON_B: return "B";
+        case GLFW_GAMEPAD_BUTTON_A: return "A";
+        case GLFW_GAMEPAD_BUTTON_Y: return "Y";
+        case GLFW_GAMEPAD_BUTTON_X: return "X";
+
+        case GLFW_GAMEPAD_BUTTON_LEFT_BUMPER: return "LB"; case GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER: return "RB";
+        case GLFW_GAMEPAD_BUTTON_LEFT_THUMB: return "LEFT_THUMB"; case GLFW_GAMEPAD_BUTTON_RIGHT_THUMB: return "RIGHT_THUMB";
+
+        case GLFW_GAMEPAD_BUTTON_BACK: return "BACK";
+        case GLFW_GAMEPAD_BUTTON_START: return "START";
+        case GLFW_GAMEPAD_BUTTON_GUIDE: return "GUIDE";
+
+        case GLFW_GAMEPAD_BUTTON_DPAD_UP: return "DPAD_UP";
+        case GLFW_GAMEPAD_BUTTON_DPAD_RIGHT: return "DPAD_RIGHT";
+        case GLFW_GAMEPAD_BUTTON_DPAD_DOWN: return "DPAD_DOWN";
+        case GLFW_GAMEPAD_BUTTON_DPAD_LEFT: return "DPAD_LEFT";
+
+        default: return "UNKNOWN";
+        }
+    }
+
+    const char* InputSystem::GetControllerAxisName(int axis)
+    {
+        switch (axis)
+        {
+
+        case GLFW_GAMEPAD_AXIS_LEFT_X: return "LEFT_X";
+        case GLFW_GAMEPAD_AXIS_LEFT_Y: return "LEFT_Y";
+        case GLFW_GAMEPAD_AXIS_RIGHT_X: return "RIGHT_X";
+        case GLFW_GAMEPAD_AXIS_RIGHT_Y: return "RIGHT_Y";
+
+        case GLFW_GAMEPAD_AXIS_LEFT_TRIGGER: return "LEFT_TRIGGER";
+        case GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER: return "RIGHT_TRIGGER";
+
+        default: return "UNKNOWN";
+        }
+    }
+
+    void InputSystem::SetUpSDLControllerDB()
+    {
+        std::ifstream ifs(Uma_FilePath::CONFIG_ROOT + "/gamecontrollerdb.txt");
+
+        std::string content((std::istreambuf_iterator<char>(ifs)),
+                            std::istreambuf_iterator<char>());
+
+        if (glfwUpdateGamepadMappings(content.c_str()))
+        {
+            std::cout << "Mappings loaded!\n";
+        }
+        else
+        {
+            std::cout << "Failed to load mappings\n";
+        }
+    }
+
+
+    void InputSystem::ControllerConnectionCallback(int id, int event)
+    {
+        std::stringstream ss;
+        ss << "Controller " << id << " has " << (event == GLFW_CONNECTED ? "connected" : "disconnected");
+        Debugger::Log(WarningLevel::eInfo, ss.str());
+
+        //pSystemManager
+
+
+        if (event == GLFW_CONNECTED)
+        {
+            if (!sActiveController.contains(id))
+            {
+                const char* name = glfwGetJoystickName(id);
+                const char* guid = glfwGetJoystickGUID(id);
+                bool isGamepad   = glfwJoystickIsGamepad(id);
+                const char* gpName = isGamepad ? glfwGetGamepadName(id) : "N/A";
+
+                ss.str("");
+                ss << "[Diag] Controller " << id
+                   << " | Name: " << (name ? name : "null")
+                   << " | GUID: " << (guid ? guid : "null")
+                   << " | IsGamepad: " << (isGamepad ? "YES" : "NO")
+                   << " | GamepadName: " << (gpName ? gpName : "null");
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+
+                // new controller connected
+                sActiveController[id] = std::make_unique<ControllerInput>();
+            }
+        }
+        else if (event == GLFW_DISCONNECTED)
+        {
+            if (sActiveController.contains(id))
+            {
+                sActiveController.erase(id);
+            }
+        }
+    }
+
+    const bool InputSystem::IsControllerConnected(int id)
+    {
+        return sActiveController.contains(id);
+    }
+
+    bool InputSystem::GetControllerButtonInput(int key, int action, int controllerId)
+    {
+        if (!sActiveController.contains(controllerId)) 
+            return false;
+
+        const char* buttonNames[] = {
+                                "A", "B", "X", "Y",
+                                "LB", "RB", "BACK", "START", "GUIDE",
+                                "LEFT_THUMB", "RIGHT_THUMB",
+                                "DPAD_UP", "DPAD_RIGHT", "DPAD_DOWN", "DPAD_LEFT"
+                            };
+
+        ControllerInput* con = sActiveController[controllerId].get();
+
+        bool result = false;
+
+        switch (action)
+        {
+        case GLFW_PRESS:
+        {
+            if (con->currState.buttons[key] == GLFW_PRESS && con->prevState.buttons[key] == GLFW_RELEASE)
+            {
+#ifdef _DEBUG_LOG
+                std::stringstream ss{ "" };
+                ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: PRESSED";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
+                result = true;
+            }
+            break;
+        }
+        case GLFW_REPEAT:
+        {
+            if (con->currState.buttons[key] == GLFW_PRESS && con->prevState.buttons[key] == GLFW_PRESS)
+            {
+#ifdef _DEBUG_LOG
+                std::stringstream ss{ "" };
+                ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: HOLD";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
+                result = true;
+            }
+            break;
+        }
+        case GLFW_RELEASE:
+        {
+            if (con->prevState.buttons[key] == GLFW_PRESS && con->currState.buttons[key] == GLFW_RELEASE)
+            {
+#ifdef _DEBUG_LOG
+                std::stringstream ss{ "" };
+                ss << "Controller " << controllerId << " Button [" << buttonNames[key] << "]: RELEASED";
+                Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
+                result = true;
+            }
+            break;
+        }
+        }
+
+        return result;
+    }
+    float InputSystem::GetControllerAxesInput(int axis, int controllerId)
+    {
+        if (!sActiveController.contains(controllerId))
+            return false;
+
+        const char* axisNames[] = 
+        {
+            "LEFT_X", "LEFT_Y", "RIGHT_X", "RIGHT_Y", "LEFT_TRIGGER", "RIGHT_TRIGGER"
+        };
+
+        ControllerInput* con = sActiveController[controllerId].get();
+
+        if (axis <= GLFW_GAMEPAD_AXIS_RIGHT_Y && std::abs(con->currState.axes[axis]) > 0.15f)  // only log if outside deadzone
+        {
+#ifdef _DEBUG_LOG
+            std::stringstream ss{ "" };
+            ss << "Controller " << controllerId << " Axis [" << axisNames[axis] << "]: " << con->currState.axes[axis];
+            Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
+        }
+        else if (axis > GLFW_GAMEPAD_AXIS_RIGHT_Y && con->currState.axes[axis] > -1)
+        {
+#ifdef _DEBUG_LOG
+            std::stringstream ss{ "" };
+            ss << "Controller " << controllerId << " Axis [" << axisNames[axis] << "]: " << con->currState.axes[axis];
+            Debugger::Log(WarningLevel::eInfo, ss.str());
+#endif
+        }
+
+        return con->currState.axes[axis];
+    }
+
+    int InputSystem::GetCurrentInputMethod()
+    {
+        return sCurrInputMethod;
     }
 }

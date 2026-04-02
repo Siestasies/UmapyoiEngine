@@ -26,6 +26,16 @@
                             3
                         ]
                     },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/tutorial_panel_scrn.lua",
+                                "scriptName": "tutorial_panel_scrn.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Tutorial Popup3.prefab",
                         "isRoot": true
@@ -320,7 +330,14 @@
         "rootEntity": 0
     },
     "resources": {
-        "textures": [],
+        "textures": [
+            {
+                "path": "assets/controlspopup2.png"
+            },
+            {
+                "path": "assets/x escape button.png"
+            }
+        ],
         "fonts": [],
         "sounds": []
     }
