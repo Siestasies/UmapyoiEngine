@@ -117,7 +117,7 @@
                             "r": 1.0,
                             "g": 1.0,
                             "b": 1.0,
-                            "a": 0.0
+                            "a": 1.0
                         },
                         "visible": true,
                         "fillDirection": 0,
@@ -139,7 +139,7 @@
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "SpriteAnim",
+                                "name": "",
                                 "property": 6,
                                 "easing": 0,
                                 "duration": 0.708,
