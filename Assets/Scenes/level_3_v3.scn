@@ -2,37 +2,40 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/whitepixel.png"
-            },
-            {
-                "path": "assets/snow particle 1.png"
-            },
-            {
-                "path": "assets/player_ss.png"
+                "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 1.png"
             },
             {
-                "path": "assets/tilemap.png"
+                "path": "assets/player_ss.png"
             },
             {
-                "path": "assets/int_ss.png"
+                "path": "assets/snow particle 1.png"
+            },
+            {
+                "path": "assets/tilemap.png"
             },
             {
                 "path": "assets/door opening ss.png"
             },
             {
-                "path": "assets/player ss 2.png"
+                "path": "assets/int_ss.png"
+            },
+            {
+                "path": "assets/sound settings bodx.png"
             },
             {
                 "path": "assets/props_animation.png"
+            },
+            {
+                "path": "assets/player ss 2.png"
             },
             {
                 "path": "assets/player ss 1.png"
@@ -44,13 +47,16 @@
                 "path": "assets/fire enemy shadow.png"
             },
             {
+                "path": "assets/full volume.png"
+            },
+            {
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/sprites/vfx 512 ss 1.png"
+                "path": "assets/hp point.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/pause menu.png"
@@ -62,19 +68,28 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/lost hp point.png"
+                "path": "assets/controller button.png"
+            },
+            {
+                "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
                 "path": "assets/props animation.png"
             },
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/lost hp point.png"
+            },
+            {
+                "path": "assets/red button.png"
             },
             {
                 "path": "assets/fire ability icon.png"
             },
             {
                 "path": "assets/water ability icon.png"
+            },
+            {
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/wind ability icon.png"
@@ -92,10 +107,13 @@
                 "path": "assets/wind vfx spritesheet.png"
             },
             {
+                "path": "assets/wind enemy spritesheets 2.png"
+            },
+            {
                 "path": "assets/skill tree/skill tree menu frame.png"
             },
             {
-                "path": "assets/wind enemy spritesheets 2.png"
+                "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
                 "path": "assets/skill tree/skill frame.png"
@@ -114,17 +132,41 @@
             },
             {
                 "path": "assets/gain mana ss.png"
+            },
+            {
+                "path": "assets/empty volume.png"
+            },
+            {
+                "path": "assets/keycap button.png"
+            },
+            {
+                "path": "assets/pause icon updated.png"
+            },
+            {
+                "path": "assets/stage cleared ui.png"
+            },
+            {
+                "path": "assets/sliding controller.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
+            },
+            {
+                "path": "assets/free textures/icons8.com/icons8-sole-100.png"
+            },
+            {
+                "path": "assets/x escape button.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
@@ -133,7 +175,13 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -12960,7 +13008,10 @@
                         "y": 0.75
                     },
                     "parent": -1,
-                    "children": []
+                    "children": [
+                        3,
+                        4
+                    ]
                 },
                 "struct Uma_ECS::Player": {
                     "mHealth": 100,
@@ -13150,13 +13201,13 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "PlayerDamageMono": {
+                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 0.259,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -13172,13 +13223,13 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
-                        "PlayerDamageMono": {
-                            "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -14255,6 +14306,16 @@
                     "initialClip": "idle",
                     "clips": [
                         {
+                            "name": "normal_atk",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 0,
+                            "frameCount": 5,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
                             "name": "idle",
                             "framesX": 8,
                             "framesY": 8,
@@ -14265,11 +14326,21 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "normal_atk",
+                            "name": "atk_wind",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 0,
-                            "frameCount": 5,
+                            "startFrame": 24,
+                            "frameCount": 8,
+                            "speed": 24.0,
+                            "loop": false,
+                            "texturePath": "Assets/player ss 2.png"
+                        },
+                        {
+                            "name": "hurt",
+                            "framesX": 8,
+                            "framesY": 5,
+                            "startFrame": 16,
+                            "frameCount": 3,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -14285,21 +14356,11 @@
                             "texturePath": "Assets/player ss 1.png"
                         },
                         {
-                            "name": "hurt",
+                            "name": "atk_water",
                             "framesX": 8,
                             "framesY": 5,
-                            "startFrame": 16,
-                            "frameCount": 3,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_wind",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 24,
-                            "frameCount": 8,
+                            "startFrame": 32,
+                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -14310,16 +14371,6 @@
                             "framesY": 5,
                             "startFrame": 8,
                             "frameCount": 5,
-                            "speed": 24.0,
-                            "loop": false,
-                            "texturePath": "Assets/player ss 2.png"
-                        },
-                        {
-                            "name": "atk_water",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 32,
-                            "frameCount": 7,
                             "speed": 24.0,
                             "loop": false,
                             "texturePath": "Assets/player ss 2.png"
@@ -14384,9 +14435,9 @@
                 "struct Uma_ECS::FSM": {
                     "states": [
                         {
-                            "name": "PlayerFireSlash.lua",
+                            "name": "PlayerBase.lua",
                             "isActive": true,
-                            "scriptIndex": 5
+                            "scriptIndex": 0
                         },
                         {
                             "name": "PlayerRun.lua",
@@ -14394,14 +14445,14 @@
                             "scriptIndex": 2
                         },
                         {
-                            "name": "PlayerBase.lua",
+                            "name": "PlayerFireSlash.lua",
                             "isActive": true,
-                            "scriptIndex": 0
+                            "scriptIndex": 5
                         },
                         {
-                            "name": "PlayerDeath.lua",
+                            "name": "PlayerIdle.lua",
                             "isActive": true,
-                            "scriptIndex": 4
+                            "scriptIndex": 1
                         },
                         {
                             "name": "PlayerWhirlpool.lua",
@@ -14409,9 +14460,9 @@
                             "scriptIndex": 12
                         },
                         {
-                            "name": "PlayerIdle.lua",
+                            "name": "PlayerDeath.lua",
                             "isActive": true,
-                            "scriptIndex": 1
+                            "scriptIndex": 4
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -14456,7 +14507,7 @@
             }
         },
         {
-            "id": 4,
+            "id": 5,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14475,7 +14526,10 @@
                     },
                     "parent": -1,
                     "children": [
-                        8
+                        6,
+                        10,
+                        14,
+                        18
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14579,7 +14633,7 @@
             }
         },
         {
-            "id": 9,
+            "id": 21,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14598,7 +14652,10 @@
                     },
                     "parent": -1,
                     "children": [
-                        13
+                        22,
+                        26,
+                        30,
+                        33
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14702,7 +14759,7 @@
             }
         },
         {
-            "id": 14,
+            "id": 36,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14721,7 +14778,10 @@
                     },
                     "parent": -1,
                     "children": [
-                        17
+                        37,
+                        40,
+                        44,
+                        48
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -14825,7 +14885,7 @@
             }
         },
         {
-            "id": 18,
+            "id": 51,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -14844,7 +14904,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        36
+                        69
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -15049,7 +15109,7 @@
             }
         },
         {
-            "id": 37,
+            "id": 70,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15068,8 +15128,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        38,
-                        39
+                        71,
+                        72
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15111,7 +15171,7 @@
             }
         },
         {
-            "id": 40,
+            "id": 73,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15130,7 +15190,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        41
+                        74
                     ]
                 },
                 "struct Uma_ECS::AudioComponent": {
@@ -15278,7 +15338,7 @@
             }
         },
         {
-            "id": 41,
+            "id": 74,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15295,7 +15355,7 @@
                         "x": 13.05,
                         "y": 8.538
                     },
-                    "parent": 40,
+                    "parent": 73,
                     "children": []
                 },
                 "struct Uma_ECS::Sprite": {
@@ -15322,66 +15382,7 @@
             }
         },
         {
-            "id": 42,
-            "isActive": true,
-            "components": {
-                "struct Uma_ECS::Transform": {
-                    "name": "game manager",
-                    "position": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "rotation": {
-                        "x": 0.0,
-                        "y": 0.0
-                    },
-                    "scale": {
-                        "x": 1.0,
-                        "y": 1.0
-                    },
-                    "parent": -1,
-                    "children": [
-                        43,
-                        67,
-                        79,
-                        85,
-                        96,
-                        133
-                    ]
-                },
-                "struct Uma_ECS::LuaScript": {
-                    "scripts": [
-                        {
-                            "scriptPath": "Assets/Scripts/gm.lua",
-                            "scriptName": "gm.lua",
-                            "isEnabled": true,
-                            "exposedVariables": [
-                                {
-                                    "name": "isBossRoom",
-                                    "type": 2,
-                                    "value": false,
-                                    "min": 0.0,
-                                    "max": 100.0,
-                                    "isSlider": false
-                                }
-                            ]
-                        },
-                        {
-                            "scriptPath": "Assets/Scripts/Cheat_code.lua",
-                            "scriptName": "Cheat_code.lua",
-                            "isEnabled": true,
-                            "exposedVariables": []
-                        }
-                    ]
-                },
-                "struct Uma_ECS::Prefab": {
-                    "prefabPath": "Assets/Prefabs/game manager lite.prefab",
-                    "isRoot": true
-                }
-            }
-        },
-        {
-            "id": 166,
+            "id": 199,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15400,7 +15401,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        167
+                        200
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -15442,7 +15443,7 @@
             }
         },
         {
-            "id": 168,
+            "id": 201,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15530,7 +15531,7 @@
                                 "y": 3.9
                             },
                             "size": {
-                                "x": 99.197,
+                                "x": 99.196,
                                 "y": 24.7
                             },
                             "purpose": 1,
@@ -15556,7 +15557,7 @@
                         },
                         {
                             "offset": {
-                                "x": 76.197,
+                                "x": 76.196,
                                 "y": 22.798
                             },
                             "size": {
@@ -15571,7 +15572,7 @@
                         },
                         {
                             "offset": {
-                                "x": 77.197,
+                                "x": 77.196,
                                 "y": -80.4
                             },
                             "size": {
@@ -15590,7 +15591,7 @@
                                 "y": 7.0
                             },
                             "size": {
-                                "x": 67.197,
+                                "x": 67.196,
                                 "y": 30.0
                             },
                             "purpose": 1,
@@ -15649,13 +15650,13 @@
             }
         },
         {
-            "id": 169,
+            "id": 202,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "map colliders 2",
                     "position": {
-                        "x": 97.03,
+                        "x": 97.029,
                         "y": 136.901
                     },
                     "rotation": {
@@ -15811,7 +15812,7 @@
             }
         },
         {
-            "id": 170,
+            "id": 203,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15830,14 +15831,14 @@
                     },
                     "parent": -1,
                     "children": [
-                        171,
-                        172
+                        204,
+                        205
                     ]
                 }
             }
         },
         {
-            "id": 171,
+            "id": 204,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15854,7 +15855,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 170,
+                    "parent": 203,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -15873,7 +15874,7 @@
             }
         },
         {
-            "id": 172,
+            "id": 205,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15890,7 +15891,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 170,
+                    "parent": 203,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -15909,7 +15910,7 @@
             }
         },
         {
-            "id": 173,
+            "id": 206,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15928,14 +15929,14 @@
                     },
                     "parent": -1,
                     "children": [
-                        174,
-                        175
+                        207,
+                        208
                     ]
                 }
             }
         },
         {
-            "id": 174,
+            "id": 207,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15952,7 +15953,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 173,
+                    "parent": 206,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -15971,7 +15972,7 @@
             }
         },
         {
-            "id": 175,
+            "id": 208,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -15988,7 +15989,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 173,
+                    "parent": 206,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16007,7 +16008,7 @@
             }
         },
         {
-            "id": 176,
+            "id": 209,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16026,14 +16027,14 @@
                     },
                     "parent": -1,
                     "children": [
-                        177,
-                        178
+                        210,
+                        211
                     ]
                 }
             }
         },
         {
-            "id": 177,
+            "id": 210,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16050,7 +16051,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 176,
+                    "parent": 209,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16069,7 +16070,7 @@
             }
         },
         {
-            "id": 178,
+            "id": 211,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16086,7 +16087,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 176,
+                    "parent": 209,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16105,7 +16106,7 @@
             }
         },
         {
-            "id": 179,
+            "id": 212,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16124,14 +16125,14 @@
                     },
                     "parent": -1,
                     "children": [
-                        180,
-                        181
+                        213,
+                        214
                     ]
                 }
             }
         },
         {
-            "id": 180,
+            "id": 213,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16148,7 +16149,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 179,
+                    "parent": 212,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16167,7 +16168,7 @@
             }
         },
         {
-            "id": 181,
+            "id": 214,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16184,7 +16185,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 179,
+                    "parent": 212,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16203,7 +16204,7 @@
             }
         },
         {
-            "id": 182,
+            "id": 215,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16222,14 +16223,14 @@
                     },
                     "parent": -1,
                     "children": [
-                        183,
-                        184
+                        216,
+                        217
                     ]
                 }
             }
         },
         {
-            "id": 183,
+            "id": 216,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16246,7 +16247,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 182,
+                    "parent": 215,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16265,7 +16266,7 @@
             }
         },
         {
-            "id": 184,
+            "id": 217,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16282,7 +16283,7 @@
                         "x": 1.0,
                         "y": 1.0
                     },
-                    "parent": 182,
+                    "parent": 215,
                     "children": []
                 },
                 "struct Uma_ECS::Light2D": {
@@ -16301,7 +16302,7 @@
             }
         },
         {
-            "id": 185,
+            "id": 218,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -16413,6 +16414,59 @@
                             }
                         }
                     ]
+                }
+            }
+        },
+        {
+            "id": 198,
+            "isActive": true,
+            "components": {
+                "struct Uma_ECS::Transform": {
+                    "name": "game manager",
+                    "position": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "rotation": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    },
+                    "parent": -1,
+                    "children": [
+                        197,
+                        164,
+                        143,
+                        127,
+                        107,
+                        223
+                    ]
+                },
+                "struct Uma_ECS::LuaScript": {
+                    "scripts": [
+                        {
+                            "scriptPath": "Assets/Scripts/gm.lua",
+                            "scriptName": "gm.lua",
+                            "isEnabled": true,
+                            "exposedVariables": [
+                                {
+                                    "name": "isBossRoom",
+                                    "type": 2,
+                                    "value": false,
+                                    "min": 0.0,
+                                    "max": 100.0,
+                                    "isSlider": false
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "struct Uma_ECS::Prefab": {
+                    "prefabPath": "Assets/Prefabs/game manager.prefab",
+                    "isRoot": true
                 }
             }
         }
