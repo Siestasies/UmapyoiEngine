@@ -643,6 +643,20 @@ namespace Uma_UI
             Uma_ECS::Entity entity = effectsArray.GetEntity(i);
             auto& effects = effectsArray.GetComponentAt(i);
 
+            if (!pCoordinator->IsActiveInHierarchy(entity))
+            {
+                if (effects.playOnEnable)
+                {
+                    for (auto& clip : effects.clips)
+                    {
+                        clip.isPlaying = false;
+                        clip.hasStarted = false;
+                        clip.currentTime = 0.0f;
+                    }
+                }
+                continue;
+            }
+
             if (effects.playOnEnable)
             {
                 for (auto& clip : effects.clips)
