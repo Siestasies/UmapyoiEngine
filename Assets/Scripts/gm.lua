@@ -8,6 +8,14 @@ local gameOverTimer = 0.0
 local pausedByEscape = false
 local escConsumed = false
 
+<<<<<<< Updated upstream
+=======
+function Start()
+    PauseGame(false)
+    toggleGroupLowpass("MASTER", false)
+end
+
+>>>>>>> Stashed changes
 function Update(dt)
     playerEntity = FindEntityWithComponent("Player")
     local player = GetPlayerFrom(playerEntity)
