@@ -143,8 +143,6 @@ function state_update(entity, dt)
         changeElementTimer = changeElementTimer - dt
     end
 
-    Log("boss : " .. bossStat.GetBossElement())
-
     -- Pattern switching
     patternTimer = patternTimer + dt
     if patternTimer >= ExposedVars.patternSwitchTime then

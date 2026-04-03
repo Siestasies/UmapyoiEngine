@@ -58,9 +58,16 @@ function state_update(entity, dt)
     transform = GetTransform()
     if not transform then return end
 
+    local collider = GetColliderFrom(playerId)
+    if not collider then return end
+
+    local shape = collider.shapes[1]
+
+    local playerPos = Vec2(playerTransform.worldPosition.x, playerTransform.worldPosition.y + (shape.offset.y * 0.8))
+
     local dir = Vec2(
-        playerTransform.worldPosition.x - transform.worldPosition.x,
-        playerTransform.worldPosition.y - transform.worldPosition.y
+        playerPos.x - transform.worldPosition.x,
+        playerPos.y - transform.worldPosition.y
     )
 
 
