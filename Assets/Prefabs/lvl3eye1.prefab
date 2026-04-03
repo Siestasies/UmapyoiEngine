@@ -37,7 +37,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 100.0
@@ -224,6 +224,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -747,7 +748,7 @@
                         "name": "bird enemy",
                         "position": {
                             "x": -36.2,
-                            "y": -34.599
+                            "y": -34.598
                         },
                         "rotation": {
                             "x": 0.0,
@@ -836,6 +837,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1359,7 +1361,7 @@
                         "name": "water enemy",
                         "position": {
                             "x": -58.499,
-                            "y": -33.099
+                            "y": -33.098
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1470,6 +1472,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -2163,6 +2166,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0

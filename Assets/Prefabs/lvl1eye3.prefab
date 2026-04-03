@@ -36,7 +36,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 100.0
@@ -155,13 +155,24 @@
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
+                            "SFX_FireDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/SFX_FireDemon_Damage2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "Fire Demon Shoot Fireball": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.349,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -172,7 +183,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.3,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -223,6 +234,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -241,12 +253,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.2,
+                                    "x": -1.899,
                                     "y": 2.0
                                 },
                                 "size": {
-                                    "x": 10.6,
-                                    "y": 3.7
+                                    "x": 19.298,
+                                    "y": 4.3
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -260,7 +272,7 @@
                                     "y": -3.4
                                 },
                                 "size": {
-                                    "x": 10.8,
+                                    "x": 16.0,
                                     "y": 1.399
                                 },
                                 "purpose": 0,
@@ -789,6 +801,17 @@
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
+                            "SFX_WaterDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/SFX_WaterDemon_Damage2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
                                 "isPlaying": false,
@@ -857,6 +880,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1264,14 +1288,14 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "WaterDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
                                 "name": "WaterDemonSuicide.lua",
                                 "isActive": true,
                                 "scriptIndex": 5
+                            },
+                            {
+                                "name": "WaterDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "WaterDemonAttack.lua",
@@ -1516,6 +1540,17 @@
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
+                            "SFX_WaterDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/SFX_WaterDemon_Damage2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
                                 "isPlaying": false,
@@ -1584,6 +1619,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1820,16 +1856,6 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "idle",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
-                            {
                                 "name": "charging_atk",
                                 "framesX": 8,
                                 "framesY": 7,
@@ -1840,14 +1866,24 @@
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
                             },
                             {
-                                "name": "walking",
+                                "name": "idle",
                                 "framesX": 8,
                                 "framesY": 7,
-                                "startFrame": 16,
+                                "startFrame": 0,
                                 "frameCount": 12,
                                 "speed": 24.0,
                                 "loop": true,
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "charging_explode",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 16,
+                                "frameCount": 2,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             },
                             {
                                 "name": "shield_broken",
@@ -1860,14 +1896,14 @@
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             },
                             {
-                                "name": "charging_explode",
+                                "name": "walking",
                                 "framesX": 8,
-                                "framesY": 4,
+                                "framesY": 7,
                                 "startFrame": 16,
-                                "frameCount": 2,
+                                "frameCount": 12,
                                 "speed": 24.0,
                                 "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
                             },
                             {
                                 "name": "atk",
@@ -1991,14 +2027,14 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "WaterDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
                                 "name": "WaterDemonSuicide.lua",
                                 "isActive": true,
                                 "scriptIndex": 5
+                            },
+                            {
+                                "name": "WaterDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "WaterDemonAttack.lua",
