@@ -8,7 +8,7 @@ ExposedVars = {
 local animator = nil
 
 local FOOTSTEP_SOUNDS = { "footsteps1", "footsteps2", "footsteps3", "footsteps4", "footsteps5", "footsteps6", "footsteps7", "footsteps8" }
-local CADENCE         = 0.5
+local CADENCE         = 0.2
 local _timer          = 0
 local _lastIdx        = -1
 

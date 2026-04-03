@@ -27,7 +27,7 @@ ExposedVars = {
     -- Wind Dash settings
     windDash_damage = 1.3,
     windDash_speed = 1.0,
-    windDash_manaCost = 5,
+    windDash_manaCost = 20,
     
     -- Steam Burst settings
     steamBurst_damage = 2.5,

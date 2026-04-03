@@ -213,27 +213,16 @@
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
                             },
-                            "FireSlash": {
-                                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                            "PlayerDamageMono": {
+                                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.648,
+                                "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
-                            },
-                            "Neutral Slash(BasicAttack)": {
-                                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 0.4,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
                             },
                             "WindSlash2": {
                                 "path": "Assets/sounds/Player Wav/WindSlash2.wav",
@@ -246,13 +235,24 @@
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
-                            "PlayerDamageMono": {
-                                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                            "Neutral Slash(BasicAttack)": {
+                                "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "FireSlash": {
+                                "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.648,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 1000.0
@@ -360,7 +360,7 @@
                                 "path": "Assets/sounds/footsteps1.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -371,7 +371,7 @@
                                 "path": "Assets/sounds/footsteps2.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -382,7 +382,7 @@
                                 "path": "Assets/sounds/footsteps3.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -393,7 +393,7 @@
                                 "path": "Assets/sounds/footsteps4.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -404,7 +404,7 @@
                                 "path": "Assets/sounds/footsteps5.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -415,7 +415,7 @@
                                 "path": "Assets/sounds/footsteps6.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -426,7 +426,7 @@
                                 "path": "Assets/sounds/footsteps7.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -437,7 +437,7 @@
                                 "path": "Assets/sounds/footsteps8.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
-                                "is3D": true,
+                                "is3D": false,
                                 "type": 0,
                                 "volume": 0.2,
                                 "pitch": 1.0,
@@ -468,6 +468,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1472,6 +1473,16 @@
                         "initialClip": "idle",
                         "clips": [
                             {
+                                "name": "normal_atk",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 0,
+                                "frameCount": 5,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
                                 "name": "idle",
                                 "framesX": 8,
                                 "framesY": 8,
@@ -1482,11 +1493,21 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "normal_atk",
+                                "name": "atk_wind",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 0,
-                                "frameCount": 5,
+                                "startFrame": 24,
+                                "frameCount": 8,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/player ss 2.png"
+                            },
+                            {
+                                "name": "hurt",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 16,
+                                "frameCount": 3,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1502,21 +1523,11 @@
                                 "texturePath": "Assets/player ss 1.png"
                             },
                             {
-                                "name": "hurt",
+                                "name": "atk_water",
                                 "framesX": 8,
                                 "framesY": 5,
-                                "startFrame": 16,
-                                "frameCount": 3,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_wind",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 24,
-                                "frameCount": 8,
+                                "startFrame": 32,
+                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1527,16 +1538,6 @@
                                 "framesY": 5,
                                 "startFrame": 8,
                                 "frameCount": 5,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/player ss 2.png"
-                            },
-                            {
-                                "name": "atk_water",
-                                "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 32,
-                                "frameCount": 7,
                                 "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/player ss 2.png"
@@ -1601,9 +1602,9 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "PlayerFireSlash.lua",
+                                "name": "PlayerBase.lua",
                                 "isActive": true,
-                                "scriptIndex": 5
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "PlayerRun.lua",
@@ -1611,14 +1612,14 @@
                                 "scriptIndex": 2
                             },
                             {
-                                "name": "PlayerBase.lua",
+                                "name": "PlayerFireSlash.lua",
                                 "isActive": true,
-                                "scriptIndex": 0
+                                "scriptIndex": 5
                             },
                             {
-                                "name": "PlayerDeath.lua",
+                                "name": "PlayerIdle.lua",
                                 "isActive": true,
-                                "scriptIndex": 4
+                                "scriptIndex": 1
                             },
                             {
                                 "name": "PlayerWhirlpool.lua",
@@ -1626,9 +1627,9 @@
                                 "scriptIndex": 12
                             },
                             {
-                                "name": "PlayerIdle.lua",
+                                "name": "PlayerDeath.lua",
                                 "isActive": true,
-                                "scriptIndex": 1
+                                "scriptIndex": 4
                             },
                             {
                                 "name": "PlayerHurt.lua",
