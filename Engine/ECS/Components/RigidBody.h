@@ -37,6 +37,8 @@ namespace Uma_ECS
         float accel_strength{};   // acceleration (for tweak)
         float fric_coeff{};       // friction
 
+        bool isStatic;
+
         /*!
         \brief Serialize rigid body data to JSON, including velocity, acceleration, and physics properties.
         \param value Output JSON value to populate.
@@ -45,6 +47,8 @@ namespace Uma_ECS
         void Serialize(rapidjson::Value& value, rapidjson::Document::AllocatorType& allocator) const //override
         {
             value.SetObject();
+
+            value.AddMember("isStatic", isStatic, allocator);
 
             // velocity
             rapidjson::Value vel(rapidjson::kObjectType);
@@ -60,6 +64,8 @@ namespace Uma_ECS
 
             value.AddMember("accel_strength", accel_strength, allocator);
             value.AddMember("fric_coeff", fric_coeff, allocator);
+
+
         }
 
         /*!
@@ -68,6 +74,15 @@ namespace Uma_ECS
         */
         void Deserialize(const rapidjson::Value& value) //override
         {
+            if (value.HasMember("isStatic"))
+            {
+                isStatic = value["isStatic"].GetBool();
+            }
+            else
+            {
+                isStatic = false;
+            }
+
             const auto& vel = value["velocity"];
             velocity.x = vel["x"].GetFloat();
             velocity.y = vel["y"].GetFloat();
@@ -78,6 +93,7 @@ namespace Uma_ECS
 
             accel_strength = value["accel_strength"].GetFloat();
             fric_coeff = value["fric_coeff"].GetFloat();
+
         }
     };
 }

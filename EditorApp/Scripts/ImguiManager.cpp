@@ -1700,6 +1700,13 @@ namespace Uma_Engine
                 // begin tracking
                 BeginComponentEdit(entity, coordinator);
 
+                bool isStatic = rb.isStatic;
+                if (ImGui::Checkbox("isStatic", &isStatic))
+                {
+                    rb.isStatic = isStatic;
+                    m_hasUnsavedEdit = true;
+                }
+
                 float velocity[2] = { rb.velocity.x, rb.velocity.y };
                 if (ImGui::DragFloat2("Velocity", velocity, 0.1f))
                 {

@@ -23,6 +23,7 @@ function Start()
         return
     end
 
+    isDead = false 
     isEffective = false
     isFusion = false
     isHurt = false

@@ -489,8 +489,8 @@ void Uma_ECS::CollisionSystem::HandleShapeCollision(
     }
 
     // Determine if entities can move
-    bool e1CanMove = rb1 != nullptr;
-    bool e2CanMove = rb2 != nullptr;
+    bool e1CanMove = rb1 != nullptr && !rb1->isStatic;
+    bool e2CanMove = rb2 != nullptr && !rb2->isStatic;
 
     // Override: Environment purpose is ALWAYS static
     if (purpose1 == ColliderPurpose::Environment)

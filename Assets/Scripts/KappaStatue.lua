@@ -5,6 +5,8 @@ ExposedVars = {
     healAmount = 100
 }
 
+local isUsed = false
+
 function Start()
     children = GetChildrenList(EntityID)
 end
@@ -18,16 +20,18 @@ function OnDestroy()
 end
 
 function OnTriggerEnter(other)
-    if HasPlayerOn(other) then
+    if not isUsed and HasPlayerOn(other) then
         local player = GetPlayerFrom(other)
         if player then
             player.mHealth = math.floor(player.mHealth + healAmount)
             player.mHealth = math.floor(math.min(player.mMaxHealth, player.mHealth))
+
+            isUsed = true
             
-            SetActiveEntity(children[1], true)
+            --SetActiveEntity(children[1], true)
         end
 
         GetAudioComponent():play(EntityID,"KappaInteract")
-        PauseGame(true)
+        --PauseGame(true)
     end
 end

@@ -9,7 +9,7 @@
                         "name": "Kappa_Statue",
                         "position": {
                             "x": -321.725,
-                            "y": 94.781
+                            "y": 94.78
                         },
                         "rotation": {
                             "x": 0.0,
@@ -63,6 +63,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -250,22 +251,6 @@
                             4,
                             9,
                             14
-                        ]
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/Shop.lua",
-                                "scriptName": "Shop.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/shop_scrn.lua",
-                                "scriptName": "shop_scrn.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
