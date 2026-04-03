@@ -96,9 +96,10 @@
                             1.0,
                             1.0
                         ],
-                        "alpha": 1.0
+                        "alpha": 0.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -127,7 +128,7 @@
                                 "purpose": 1,
                                 "layer": 4,
                                 "colliderMask": 18,
-                                "isActive": true,
+                                "isActive": false,
                                 "autoFitToSprite": false
                             }
                         ]
@@ -595,11 +596,11 @@
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 100,
-                        "mMaxHealth": 100,
+                        "mHealth": 300,
+                        "mMaxHealth": 300,
                         "mHealthRegenRate": 1.0,
                         "mSpeed": 10.0,
-                        "mAttackDamage": 10,
+                        "mAttackDamage": 5,
                         "mAttackSpeed": 1.0,
                         "mAttackRange": 20.0,
                         "mDefense": 5
@@ -752,7 +753,7 @@
                         ],
                         "nextId": 6,
                         "current": "",
-                        "next": ""
+                        "next": "BossPhase1"
                     }
                 }
             },

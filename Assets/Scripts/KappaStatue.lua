@@ -27,6 +27,18 @@ function OnTriggerEnter(other)
             player.mHealth = math.floor(math.min(player.mMaxHealth, player.mHealth))
 
             isUsed = true
+
+            local particleEmitter = GetParticleEmitterFrom(EntityID)
+            if particleEmitter then
+                particleEmitter:StopAll()
+            end
+            
+
+            local animator = GetAnimatorFrom(EntityID)
+            if animator then
+                animator.animator:Play("break", true)
+            end
+            
             
             --SetActiveEntity(children[1], true)
         end
