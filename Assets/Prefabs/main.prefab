@@ -773,7 +773,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 7.5,
+                            "x": -7.5,
                             "y": 7.5
                         },
                         "sizeDelta": {
@@ -969,7 +969,7 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": 7.5,
+                            "x": -7.5,
                             "y": 7.5
                         },
                         "sizeDelta": {
@@ -1994,7 +1994,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 2.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -2057,8 +2057,8 @@
                             "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": -142.0,
-                            "y": -10.0
+                            "x": -137.5,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 80.0,
@@ -2252,7 +2252,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 2.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -2315,8 +2315,8 @@
                             "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": -142.0,
-                            "y": -10.0
+                            "x": -137.5,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 80.0,
