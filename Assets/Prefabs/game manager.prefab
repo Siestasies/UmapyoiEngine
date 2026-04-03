@@ -62,6 +62,12 @@
                                         "isSlider": false
                                     }
                                 ]
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/Cheat_code.lua",
+                                "scriptName": "Cheat_code.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
                             }
                         ]
                     },
@@ -4226,16 +4232,6 @@
                             61
                         ]
                     },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/complete_scrn.lua",
-                                "scriptName": "complete_scrn.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
                         "isRoot": false
@@ -4303,6 +4299,12 @@
                             {
                                 "scriptPath": "Assets/Scripts/ending.lua",
                                 "scriptName": "ending.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/complete_scrn.lua",
+                                "scriptName": "complete_scrn.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
                             }
@@ -9980,7 +9982,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10110,7 +10112,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10240,7 +10242,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10370,7 +10372,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10500,7 +10502,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10630,7 +10632,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10760,7 +10762,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10890,7 +10892,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11020,7 +11022,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11150,7 +11152,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11280,7 +11282,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11410,7 +11412,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11540,7 +11542,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11670,7 +11672,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11800,7 +11802,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11930,7 +11932,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12060,7 +12062,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12190,7 +12192,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12320,7 +12322,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12450,7 +12452,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12580,7 +12582,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12710,7 +12712,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12840,7 +12842,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -12970,7 +12972,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13100,7 +13102,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13230,7 +13232,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13360,7 +13362,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13490,7 +13492,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13620,7 +13622,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13750,7 +13752,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -13880,7 +13882,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -14010,7 +14012,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.099,
+                        "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
