@@ -30,16 +30,17 @@ function Update(dt)
     end
 
     if (KeyPressed(KEY_ESCAPE) or GetControllerButtonInput(BTN_START, BTN_PRESS, 0)) and not escConsumed then
-        escConsumed = true
-        if pausedByEscape then
-            pausedByEscape = false
-            PauseGame(false)  -- ESC owned this pause, ESC releases it
-        elseif not paused then
-            pausedByEscape = true
-            PauseGame(true)   -- nothing else is paused, ESC takes ownership
-        end
-        -- if externally paused (statue etc.), ESC does nothing
+    escConsumed = true
+    if pausedByEscape then
+        pausedByEscape = false
+        PauseGame(false)
+        GetAudioComponent():playFaded(EntityID, "Gong-Low-hit_SFX", 1.0, true)  -- ADD
+    elseif not paused then
+        pausedByEscape = true
+        PauseGame(true)
+        GetAudioComponent():playFaded(EntityID, "Gong-Low-hit_SFX", 1.0, true)
     end
+end
 
     if IsEntityValid(playerEntity) then
         if health > 0 then

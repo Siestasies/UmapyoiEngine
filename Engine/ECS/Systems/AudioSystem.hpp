@@ -111,7 +111,7 @@ namespace Uma_ECS
          * \param soundName Name of the sound resource to play.
          * \param fadeInTime Duration of fade-in in seconds.
          */
-        void PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime = 1.0f);
+        void PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime = 1.0f, bool exclusive = false);
 
         /*!
          * \brief Fades out a specific sound on an entity.

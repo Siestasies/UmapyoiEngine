@@ -320,13 +320,27 @@ void Uma_ECS::AudioSystem::PlayOneShotAtPosition(Entity entity, float x, float y
         FMOD_Channel_Set3DMinMaxDistance(channel, audio.loadedSounds[soundName].minDistance, audio.loadedSounds[soundName].maxDistance);
 }
 
-void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime) {
+void Uma_ECS::AudioSystem::PlayEntitySoundFaded(Entity entity, const std::string& soundName, float fadeInTime, bool exclusive) {
     auto& audioArray = pCoordinator->GetComponentArray<AudioComponent>();
     if (!audioArray.Has(entity)) {
         pCoordinator->AddComponent(entity, AudioComponent{});
     }
 
     auto& audio = audioArray.GetData(entity);
+
+    if (exclusive && audio.activeSounds.count(soundName)) {
+        for (auto& instance : audio.activeSounds[soundName]) {
+            if (instance.channel) {
+                unsigned long long dspclock = 0;
+                FMOD_Channel_GetDSPClock(instance.channel, nullptr, &dspclock);
+                FMOD_Channel_SetVolumeRamp(instance.channel, true);
+                FMOD_Channel_SetVolume(instance.channel, 0.0f);
+                FMOD_Channel_SetDelay(instance.channel, 0, dspclock + 64, true);
+            }
+        }
+        audio.activeSounds[soundName].clear();
+    }
+
     SoundInfo* info = GetSoundInfo(entity, soundName);
     if (!info) return;
 

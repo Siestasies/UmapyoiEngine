@@ -27,6 +27,7 @@ All rights reserved.
 #include "Events/IMGUIEvents.h"
 
 #include "Debugging/Debugger.hpp"
+#include <algorithm>
 
 #define DEBUG
 
@@ -581,35 +582,51 @@ namespace Uma_Engine {
     void SoundManager::StartFade(FMOD_CHANNEL* channel, float targetVolume, float duration, bool fadeOut) {
         if (!channel) return;
 
+        fadingChannels.erase(
+            std::remove_if(fadingChannels.begin(), fadingChannels.end(),
+                [channel](const auto& fadeInfo) { return fadeInfo.channel == channel; }),
+            fadingChannels.end()
+        );
+
+        float startVol = 0.0f;
+        FMOD_Channel_GetVolume(channel, &startVol);
+
         fadingChannels.push_back({
             channel,
             targetVolume,
             duration,
             (float)currentTime,
-            0.0f,  // Will get current volume
+            startVol,
             fadeOut
             });
 
-        // Get starting volume
-        FMOD_Channel_GetVolume(channel, &fadingChannels.back().startVolume);
-
-        // Pause channel during fade for smoother interpolation
-        FMOD_Channel_SetPaused(channel, true);
+        FMOD_BOOL isPaused = 0;
+        FMOD_Channel_GetPaused(channel, &isPaused);
+        if (isPaused) {
+            FMOD_Channel_SetPaused(channel, false);
+        }
     }
 
     void SoundManager::UpdateFades(float dt) {
         currentTime += dt;
 
         for (auto it = fadingChannels.begin(); it != fadingChannels.end(); ) {
+
+            // Guard against stale/recycled FMOD channels
+            FMOD_BOOL isPlaying = 0;
+            FMOD_Channel_IsPlaying(it->channel, &isPlaying);
+            if (!isPlaying && !it->fadeOut) {
+                it = fadingChannels.erase(it);
+                continue;
+            }
+
             float elapsed = currentTime - it->fadeStartTime;
             float t = (std::min)(elapsed / it->fadeDuration, 1.0f);
 
-            // Smooth easing (EaseOutQuad) - inline lerp
             t = t * t * (3.0f - 2.0f * t);
-            float currentVol = it->startVolume + (it->targetVolume - it->startVolume) * t;  // Inline lerp
+            float currentVol = it->startVolume + (it->targetVolume - it->startVolume) * t;
 
             FMOD_Channel_SetVolume(it->channel, currentVol);
-            FMOD_Channel_SetPaused(it->channel, false);
 
             // Fade complete
             if (t >= 1.0f) {
@@ -637,12 +654,39 @@ namespace Uma_Engine {
     }
 
     void SoundManager::FadeOutChannel(FMOD_CHANNEL* channel, float fadeOutTime) {
-        if (channel && fadeOutTime > 0.0f) {
-            StartFade(channel, 0.0f, fadeOutTime, true);  // Fade OUT to 0
-        }
-        else {
-            StopChannel(channel);  // Instant stop
-        }
+        if (!channel) return;
+
+        FMOD_BOOL isPlaying = 0;
+        FMOD_Channel_IsPlaying(channel, &isPlaying);
+        if (!isPlaying) return;
+
+        fadingChannels.erase(
+            std::remove_if(fadingChannels.begin(), fadingChannels.end(),
+                [channel](const auto& f) { return f.channel == channel; }),
+            fadingChannels.end()
+        );
+
+        // Clear any previously scheduled fade points
+        FMOD_Channel_RemoveFadePoints(channel, 0, ULLONG_MAX);
+
+        // Get DSP clock and sample rate
+        unsigned long long dspclock = 0;
+        FMOD_Channel_GetDSPClock(channel, nullptr, &dspclock);
+
+        FMOD_SYSTEM* sys = nullptr;
+        FMOD_Channel_GetSystemObject(channel, &sys);
+        int rate = 48000;
+        if (sys) FMOD_System_GetSoftwareFormat(sys, &rate, nullptr, nullptr);
+
+        float currentVol = 1.0f;
+        FMOD_Channel_GetVolume(channel, &currentVol);
+
+        unsigned long long fadeSamples = (unsigned long long)(fadeOutTime * rate);
+
+        // Sample-accurate fade via DSP clock
+        FMOD_Channel_AddFadePoint(channel, dspclock, currentVol);
+        FMOD_Channel_AddFadePoint(channel, dspclock + fadeSamples, 0.0f);
+        FMOD_Channel_SetDelay(channel, 0, dspclock + fadeSamples, true); // auto-stop when done
     }
 
     void SoundManager::ToggleLowpass(SoundInfo* info, bool enable) {
