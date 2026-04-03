@@ -2945,7 +2945,7 @@ namespace Uma_ECS
 
         sharedLua->set_function("GetControllerAxesInput", [this](int axis, int controller_id) -> float
             {
-                return Uma_Engine::HybridInputSystem::GetControllerAxesInput(axis, 0);
+                return Uma_Engine::HybridInputSystem::GetControllerAxesInput(axis, controller_id);
             });
 
         sharedLua->set_function("IsControllerConnected", [this](int controller_id) -> bool

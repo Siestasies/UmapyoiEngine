@@ -11,7 +11,9 @@
       "Bash(find /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine/Engine/UI -type f -name \"*.{h,hpp,cpp}\")",
       "Bash(cat:*)",
       "Read(//tmp/**)",
-      "Bash(ls -1 /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine/Assets/Prefabs/*.prefab | wc -l)"
+      "Bash(ls -1 /mnt/c/Users/waime/OneDrive/Documents/GitHub/UmapyoiEngine/Assets/Prefabs/*.prefab | wc -l)",
+      "Bash(set +H; find Engine -type f \\\\\\( -name \"*.h\" -o -name \"*.hpp\" -o -name \"*.cpp\" \\\\\\) | grep -v \"/fmod/\" | grep -v \"/freetype/\" | grep -v \"/glad/\" | grep -v \"/imgui/\" | grep -v \"/RapidJSON/\" | while read f; do\n  if head -3 \"$f\" | grep -q '/\\\\*!' ; then\n    true\n  else\n    echo \"Missing header: $f\"\n  fi\ndone)",
+      "Bash(set +H; echo \"=== Checking a sample of files ===\" && head -3 Engine/Core/Application.cpp && echo \"\" && head -3 Game/main.cpp && echo \"\" && head -3 EditorApp/main.cpp)"
     ]
   }
 }

@@ -36,6 +36,7 @@ All rights reserved.
 #include "Scripts/ImguiManager.h"
 #include "../Editor/Systems/TilemapEditorManager.h"
 #include "../Editor/Systems/PlayFabEditorManager.h"
+#include "../Editor/Systems/BuildSizeAnalyzer.h"
 #include "PlayFab/Core/PlayFabManager.h"
 
 // imgui
@@ -76,6 +77,7 @@ namespace Uma_Engine
         mImguiManager = GetSystemManager()->RegisterSystem<ImguiManager>();
         mTilemapEditorManager = GetSystemManager()->RegisterSystem<TilemapEditorManager>();
         mPlayFabEditorManager = GetSystemManager()->RegisterSystem<PlayFabEditorManager>();
+        mBuildSizeAnalyzer = GetSystemManager()->RegisterSystem<BuildSizeAnalyzer>();
     }
 
     /**

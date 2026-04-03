@@ -19,7 +19,7 @@
 \par        E-mail: javierdongqing.chua@digipen.edu
 \par        DigiPen login: javierdongqing.chua
 
-\author     Leong Wai Men   (Display Component modify, Bug fix for loading scene / play stop,
+\author     Leong Wai Men   (Display Component modify, Bug fix for loading scene / play stop, Build size analyzer
                              Playfab UI interface, control bar modification(tools button on top left))
 \par        E-mail: waimen.leong@digipen.edu
 \par        DigiPen login: waimen.leong
@@ -36,6 +36,7 @@ All rights reserved.
 #include "Systems/Graphics.hpp"
 #include "Systems/TilemapEditorManager.h"
 #include "Systems/PlayFabEditorManager.h"
+#include "Systems/BuildSizeAnalyzer.h"
 #include "ECS/Components/SpriteMaterial.h"
 #include "ECS/Components/Cutscene.h"
 
@@ -146,6 +147,7 @@ namespace Uma_Engine
         pResourcesManager = pSystemManager->GetSystem<ResourcesManager>();
         pTilemapEditorManager = pSystemManager->GetSystem<TilemapEditorManager>();
         pPlayFabEditorManager = pSystemManager->GetSystem<PlayFabEditorManager>();
+        pBuildSizeAnalyzer = pSystemManager->GetSystem<BuildSizeAnalyzer>();
 
         resourcesWindow.SetResourcesManager(pResourcesManager);
 
@@ -246,7 +248,6 @@ namespace Uma_Engine
                 CreateDebugWindows(currentFps, deltaTime);
 
                 fileBrowser.Render();
-                CreateBuildSizeAnalyzerWindow();
             }
         }
 
@@ -307,7 +308,8 @@ namespace Uma_Engine
                 }
                 if (ImGui::MenuItem("Build Size Analyzer"))
                 {
-                    m_showBuildSizeAnalyzer = !m_showBuildSizeAnalyzer;
+                    if (pBuildSizeAnalyzer)
+                        pBuildSizeAnalyzer->ToggleWindow();
                 }
                 ImGui::EndMenu();
             }
@@ -8174,346 +8176,6 @@ namespace Uma_Engine
         std::string command = "code \"" + filepath + "\"";
         system(command.c_str());
 #endif
-    }
-
-    // ── Build Size Analyzer ─────────────────────────────────────────────
-
-    void ImguiManager::ScanAssets()
-    {
-        m_buildAssets.clear();
-        std::string assetsRoot = Uma_FilePath::ASSET_ROOT;
-
-        namespace fs = std::filesystem;
-        if (!fs::exists(assetsRoot) || !fs::is_directory(assetsRoot))
-            return;
-
-        for (auto& entry : fs::recursive_directory_iterator(assetsRoot))
-        {
-            if (!entry.is_regular_file())
-                continue;
-
-            AssetEntry asset;
-            asset.absolutePath = entry.path().string();
-            // Store relative path from Assets/ root
-            asset.relativePath = fs::relative(entry.path(), assetsRoot).string();
-            asset.fileSize = entry.file_size();
-            asset.selected = true; // Default all selected
-            m_buildAssets.push_back(asset);
-        }
-
-        // Sort by relative path
-        std::sort(m_buildAssets.begin(), m_buildAssets.end(),
-            [](const AssetEntry& a, const AssetEntry& b) { return a.relativePath < b.relativePath; });
-
-        m_buildAssetsScanned = true;
-        m_buildSelectionConfigPath = Uma_FilePath::CONFIG_ROOT + "build_selection.cfg";
-
-        // Load previous selection state
-        LoadBuildSelection();
-    }
-
-    void ImguiManager::SaveBuildSelection()
-    {
-        std::ofstream file(m_buildSelectionConfigPath);
-        if (!file.is_open())
-            return;
-
-        for (auto& asset : m_buildAssets)
-        {
-            file << (asset.selected ? "1" : "0") << "|" << asset.relativePath << "\n";
-        }
-    }
-
-    void ImguiManager::LoadBuildSelection()
-    {
-        std::ifstream file(m_buildSelectionConfigPath);
-        if (!file.is_open())
-            return;
-
-        // Build a map from the config file
-        std::unordered_map<std::string, bool> selectionMap;
-        std::string line;
-        while (std::getline(file, line))
-        {
-            if (line.size() < 3)
-                continue;
-            bool selected = (line[0] == '1');
-            std::string path = line.substr(2); // skip "0|" or "1|"
-            selectionMap[path] = selected;
-        }
-
-        // Apply to current assets
-        for (auto& asset : m_buildAssets)
-        {
-            auto it = selectionMap.find(asset.relativePath);
-            if (it != selectionMap.end())
-                asset.selected = it->second;
-        }
-    }
-
-    void ImguiManager::CreateBuildSizeAnalyzerWindow()
-    {
-        if (!m_showBuildSizeAnalyzer)
-            return;
-
-        // Scan assets on first open
-        if (!m_buildAssetsScanned)
-            ScanAssets();
-
-        ImGui::Begin("Build Size Analyzer", &m_showBuildSizeAnalyzer);
-
-        // ── Size display helper ──
-        auto FormatSize = [](uintmax_t bytes) -> std::string
-        {
-            if (bytes >= 1024ULL * 1024ULL * 1024ULL)
-                return std::to_string(bytes / (1024ULL * 1024ULL * 1024ULL)) + "." +
-                       std::to_string((bytes % (1024ULL * 1024ULL * 1024ULL)) * 10 / (1024ULL * 1024ULL * 1024ULL)) + " GB";
-            if (bytes >= 1024ULL * 1024ULL)
-                return std::to_string(bytes / (1024ULL * 1024ULL)) + "." +
-                       std::to_string((bytes % (1024ULL * 1024ULL)) * 10 / (1024ULL * 1024ULL)) + " MB";
-            if (bytes >= 1024ULL)
-                return std::to_string(bytes / 1024ULL) + "." +
-                       std::to_string((bytes % 1024ULL) * 10 / 1024ULL) + " KB";
-            return std::to_string(bytes) + " B";
-        };
-
-        // ── Category classifier ──
-        // Returns category index: 0=Images, 1=Sounds, 2=Scenes, 3=Prefabs, 4=Scripts, 5=Shaders, 6=Fonts, 7=Other
-        auto GetCategory = [](const std::string& path) -> int
-        {
-            namespace fs = std::filesystem;
-            std::string ext = fs::path(path).extension().string();
-            // lowercase ext
-            for (auto& c : ext) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-
-            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".tga" || ext == ".gif")
-                return 0; // Images
-            if (ext == ".wav" || ext == ".mp3" || ext == ".ogg" || ext == ".flac" || ext == ".bank" || ext == ".strings")
-                return 1; // Sounds
-            if (ext == ".scn")
-                return 2; // Scenes
-            if (ext == ".prefab")
-                return 3; // Prefabs
-            if (ext == ".lua" || ext == ".json" || ext == ".cfg" || ext == ".txt")
-                return 4; // Scripts/Data
-            if (ext == ".vert" || ext == ".frag" || ext == ".glsl" || ext == ".hlsl")
-                return 5; // Shaders
-            if (ext == ".ttf" || ext == ".otf")
-                return 6; // Fonts
-            return 7; // Other
-        };
-
-        static const char* kCategoryNames[] = { "Images", "Sounds", "Scenes", "Prefabs", "Scripts & Data", "Shaders", "Fonts", "Other" };
-        static const ImVec4 kCategoryColors[] = {
-            ImVec4(0.4f, 0.8f, 0.4f, 1.0f),  // Images   - green
-            ImVec4(1.0f, 0.7f, 0.3f, 1.0f),  // Sounds   - orange
-            ImVec4(0.4f, 0.7f, 1.0f, 1.0f),  // Scenes   - blue
-            ImVec4(0.9f, 0.5f, 0.9f, 1.0f),  // Prefabs  - purple
-            ImVec4(1.0f, 1.0f, 0.4f, 1.0f),  // Scripts  - yellow
-            ImVec4(0.6f, 0.9f, 0.9f, 1.0f),  // Shaders  - cyan
-            ImVec4(1.0f, 0.6f, 0.6f, 1.0f),  // Fonts    - pink
-            ImVec4(0.7f, 0.7f, 0.7f, 1.0f),  // Other    - grey
-        };
-        constexpr int kNumCategories = 8;
-
-        // ── Toolbar ──
-        if (ImGui::Button("Rescan Assets"))
-        {
-            m_buildAssetsScanned = false;
-            ScanAssets();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Select All"))
-        {
-            for (auto& asset : m_buildAssets) asset.selected = true;
-            SaveBuildSelection();
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("Deselect All"))
-        {
-            for (auto& asset : m_buildAssets) asset.selected = false;
-            SaveBuildSelection();
-        }
-
-        // ── Totals ──
-        uintmax_t totalSize = 0, selectedSize = 0;
-        int totalCount = static_cast<int>(m_buildAssets.size()), selectedCount = 0;
-        for (auto& asset : m_buildAssets)
-        {
-            totalSize += asset.fileSize;
-            if (asset.selected) { selectedSize += asset.fileSize; selectedCount++; }
-        }
-
-        ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "Selected: %d/%d assets  |  %s / %s",
-            selectedCount, totalCount,
-            FormatSize(selectedSize).c_str(), FormatSize(totalSize).c_str());
-        ImGui::Separator();
-
-        // ── Per-category stats bar ──
-        uintmax_t catTotalSize[kNumCategories] = {};
-        uintmax_t catSelSize[kNumCategories]   = {};
-        int        catTotalCount[kNumCategories] = {};
-        int        catSelCount[kNumCategories]   = {};
-        for (auto& asset : m_buildAssets)
-        {
-            int cat = GetCategory(asset.relativePath);
-            catTotalSize[cat]  += asset.fileSize;
-            catTotalCount[cat] += 1;
-            if (asset.selected) { catSelSize[cat] += asset.fileSize; catSelCount[cat]++; }
-        }
-
-        // Draw a proportional stacked bar (total size)
-        if (totalSize > 0)
-        {
-            ImGui::Text("Size breakdown:");
-            float barWidth = ImGui::GetContentRegionAvail().x;
-            ImVec2 barPos = ImGui::GetCursorScreenPos();
-            float barHeight = 16.0f;
-            ImDrawList* dl = ImGui::GetWindowDrawList();
-            float x = barPos.x;
-            for (int c = 0; c < kNumCategories; ++c)
-            {
-                if (catTotalSize[c] == 0) continue;
-                float segW = barWidth * (static_cast<float>(catTotalSize[c]) / static_cast<float>(totalSize));
-                ImVec4 col = kCategoryColors[c];
-                dl->AddRectFilled(ImVec2(x, barPos.y), ImVec2(x + segW, barPos.y + barHeight),
-                    IM_COL32(static_cast<int>(col.x * 255), static_cast<int>(col.y * 255),
-                             static_cast<int>(col.z * 255), 220));
-                x += segW;
-            }
-            ImGui::Dummy(ImVec2(barWidth, barHeight));
-
-            // Legend
-            for (int c = 0; c < kNumCategories; ++c)
-            {
-                if (catTotalSize[c] == 0) continue;
-                ImGui::SameLine();
-                ImGui::TextColored(kCategoryColors[c], "%s", kCategoryNames[c]);
-            }
-            ImGui::NewLine();
-        }
-        ImGui::Separator();
-
-        // ── Scrollable asset list grouped by category ──
-        bool selectionChanged = false;
-        float listHeight = ImGui::GetContentRegionAvail().y - 40.0f;
-        ImGui::BeginChild("AssetListChild", ImVec2(0, listHeight), false);
-
-        for (int cat = 0; cat < kNumCategories; ++cat)
-        {
-            if (catTotalCount[cat] == 0) continue;
-
-            // Category header with size summary
-            std::string header = std::string(kCategoryNames[cat]) +
-                "  [" + std::to_string(catSelCount[cat]) + "/" + std::to_string(catTotalCount[cat]) +
-                "  " + FormatSize(catSelSize[cat]) + " / " + FormatSize(catTotalSize[cat]) + "]";
-
-            ImGui::PushStyleColor(ImGuiCol_Header,        ImVec4(kCategoryColors[cat].x * 0.3f, kCategoryColors[cat].y * 0.3f, kCategoryColors[cat].z * 0.3f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(kCategoryColors[cat].x * 0.45f, kCategoryColors[cat].y * 0.45f, kCategoryColors[cat].z * 0.45f, 1.0f));
-            bool open = ImGui::CollapsingHeader(header.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
-            ImGui::PopStyleColor(2);
-
-            if (!open) continue;
-
-            // Select All / Deselect All for this category
-            ImGui::PushID(cat);
-            if (ImGui::SmallButton("All"))
-            {
-                for (auto& asset : m_buildAssets)
-                    if (GetCategory(asset.relativePath) == cat) asset.selected = true;
-                selectionChanged = true;
-            }
-            ImGui::SameLine();
-            if (ImGui::SmallButton("None"))
-            {
-                for (auto& asset : m_buildAssets)
-                    if (GetCategory(asset.relativePath) == cat) asset.selected = false;
-                selectionChanged = true;
-            }
-            ImGui::PopID();
-
-            if (ImGui::BeginTable(kCategoryNames[cat], 3,
-                ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg |
-                ImGuiTableFlags_Resizable | ImGuiTableFlags_SizingStretchProp))
-            {
-                ImGui::TableSetupColumn("##chk",  ImGuiTableColumnFlags_WidthFixed, 28.0f);
-                ImGui::TableSetupColumn("Path",   ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("Size",   ImGuiTableColumnFlags_WidthFixed, 90.0f);
-                ImGui::TableHeadersRow();
-
-                for (size_t i = 0; i < m_buildAssets.size(); ++i)
-                {
-                    auto& asset = m_buildAssets[i];
-                    if (GetCategory(asset.relativePath) != cat) continue;
-
-                    ImGui::TableNextRow();
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::PushID(static_cast<int>(i));
-                    if (ImGui::Checkbox("##s", &asset.selected))
-                        selectionChanged = true;
-                    ImGui::PopID();
-
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::TextUnformatted(asset.relativePath.c_str());
-
-                    ImGui::TableSetColumnIndex(2);
-                    ImGui::Text("%s", FormatSize(asset.fileSize).c_str());
-                }
-                ImGui::EndTable();
-            }
-            ImGui::Spacing();
-        }
-        ImGui::EndChild();
-
-        if (selectionChanged)
-            SaveBuildSelection();
-
-        // ── Export button ──
-        if (ImGui::Button("Export Selected Assets", ImVec2(-1, 0)))
-        {
-#ifdef _WIN32
-            BROWSEINFOA bi = {};
-            bi.hwndOwner = GetActiveWindow();
-            bi.lpszTitle = "Select Export Destination Folder";
-            bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
-
-            LPITEMIDLIST pidl = SHBrowseForFolderA(&bi);
-            if (pidl)
-            {
-                char folderPath[MAX_PATH] = {};
-                if (SHGetPathFromIDListA(pidl, folderPath))
-                {
-                    namespace fs = std::filesystem;
-                    std::string destRoot = std::string(folderPath);
-                    int exported = 0, failed = 0;
-
-                    for (auto& asset : m_buildAssets)
-                    {
-                        if (!asset.selected) continue;
-                        fs::path destPath = fs::path(destRoot) / asset.relativePath;
-                        try
-                        {
-                            fs::create_directories(destPath.parent_path());
-                            fs::copy_file(asset.absolutePath, destPath, fs::copy_options::overwrite_existing);
-                            exported++;
-                        }
-                        catch (const std::exception&) { failed++; }
-                    }
-
-                    std::string msg = "Export complete: " + std::to_string(exported) + " files exported";
-                    if (failed > 0) msg += ", " + std::to_string(failed) + " failed";
-                    AddConsoleLog(msg);
-                }
-                CoTaskMemFree(pidl);
-            }
-#endif
-        }
-
-        ImGui::End();
-
-        if (!m_showBuildSizeAnalyzer)
-            SaveBuildSelection();
     }
 
 }

@@ -20,6 +20,7 @@ namespace Uma_Engine
     class ImguiManager;
     class TilemapEditorManager;
     class PlayFabEditorManager;
+    class BuildSizeAnalyzer;
 
     /**
      * \brief Editor application with full editor functionality
@@ -70,6 +71,7 @@ namespace Uma_Engine
         ImguiManager* mImguiManager;
         TilemapEditorManager* mTilemapEditorManager;
         PlayFabEditorManager* mPlayFabEditorManager;
+        BuildSizeAnalyzer* mBuildSizeAnalyzer;
 
         bool mWasFocused = true;
     };

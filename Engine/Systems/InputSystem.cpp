@@ -5,9 +5,13 @@
 \par    Section A
 \par    Software Engineering Project 4
 
-\author Javier Chua Dong Qing (100%)
+\author Javier Chua Dong Qing (50%)
 \par    E-mail: javierdongqing.chua@digipen.edu
 \par    DigiPen login: javierdongqing.chua
+
+\author Leong Wai Men (50%, all controller input)
+\par    E-mail: waimen.leong@digipen.edu
+\par    DigiPen login: waimen.leong
 
 \brief
 Definition of a GLFW-based input handling system class that manages keyboard and mouse input through callbacks and query functions.
