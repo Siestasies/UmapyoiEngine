@@ -16,17 +16,15 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 30.0,
-                            "y": 30.0
+                            "x": 45.0,
+                            "y": 45.0
                         },
                         "parent": -1,
                         "children": [
                             1,
                             2,
                             4,
-                            6,
-                            8,
-                            9
+                            6
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -126,7 +124,7 @@
                                     "x": 0.5,
                                     "y": 0.5
                                 },
-                                "purpose": 0,
+                                "purpose": 1,
                                 "layer": 4,
                                 "colliderMask": 18,
                                 "isActive": true,
@@ -543,6 +541,54 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "flowerPetalCount",
+                                        "type": 0,
+                                        "value": 6.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "ringBulletCount",
+                                        "type": 0,
+                                        "value": 10.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "ringBurstInterval",
+                                        "type": 0,
+                                        "value": 0.6,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "flowerSpeedLayers",
+                                        "type": 0,
+                                        "value": 3.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "flowerBulletInterval",
+                                        "type": 0,
+                                        "value": 0.25,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "flowerRotateSpeed",
+                                        "type": 0,
+                                        "value": 40.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             }
@@ -563,14 +609,14 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "final_phase_transition2",
+                                "name": "boss_reveal_to_idle",
                                 "framesX": 8,
-                                "framesY": 5,
-                                "startFrame": 8,
-                                "frameCount": 12,
+                                "framesY": 8,
+                                "startFrame": 56,
+                                "frameCount": 6,
                                 "speed": 24.0,
                                 "loop": false,
-                                "texturePath": "Assets/Sprites/boss ss 3.png"
+                                "texturePath": "Assets/Sprites/boss ss 1.png"
                             },
                             {
                                 "name": "idle2",
@@ -583,16 +629,6 @@
                                 "texturePath": "Assets/Sprites/boss ss 1.png"
                             },
                             {
-                                "name": "boss_reveal_to_idle",
-                                "framesX": 8,
-                                "framesY": 8,
-                                "startFrame": 56,
-                                "frameCount": 6,
-                                "speed": 24.0,
-                                "loop": false,
-                                "texturePath": "Assets/Sprites/boss ss 1.png"
-                            },
-                            {
                                 "name": "idle",
                                 "framesX": 8,
                                 "framesY": 8,
@@ -601,6 +637,16 @@
                                 "speed": 24.0,
                                 "loop": true,
                                 "texturePath": "Assets/Sprites/boss ss 1.png"
+                            },
+                            {
+                                "name": "final_phase_transition2",
+                                "framesX": 8,
+                                "framesY": 5,
+                                "startFrame": 8,
+                                "frameCount": 12,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 3.png"
                             },
                             {
                                 "name": "boss_reveal",
@@ -639,6 +685,26 @@
                                 "startFrame": 48,
                                 "frameCount": 16,
                                 "speed": 10.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 2.png"
+                            },
+                            {
+                                "name": "attack1",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 0,
+                                "frameCount": 21,
+                                "speed": 24.0,
+                                "loop": false,
+                                "texturePath": "Assets/Sprites/boss ss 2.png"
+                            },
+                            {
+                                "name": "attack2",
+                                "framesX": 8,
+                                "framesY": 8,
+                                "startFrame": 24,
+                                "frameCount": 21,
+                                "speed": 24.0,
                                 "loop": false,
                                 "texturePath": "Assets/Sprites/boss ss 2.png"
                             }
@@ -1047,112 +1113,6 @@
                         "isRoot": false
                     }
                 }
-            },
-            {
-                "id": 8,
-                "isActive": false,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.4
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 0,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.442,
-                            0.442,
-                            0.442
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
-                        "isRoot": false
-                    }
-                }
-            },
-            {
-                "id": 9,
-                "isActive": false,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "hp fill_dup",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.4
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 0.8,
-                            "y": 0.07
-                        },
-                        "parent": 0,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "layer": 128,
-                        "order": 20,
-                        "flipX": false,
-                        "flipY": false,
-                        "autoFlip": true,
-                        "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
-                        "cellX": 0.0,
-                        "cellY": 0.0,
-                        "offsetX": 0.0,
-                        "offsetY": 0.0,
-                        "tintColor": [
-                            0.33,
-                            0.045,
-                            0.045
-                        ],
-                        "alpha": 1.0
-                    },
-                    "struct Uma_ECS::LuaScript": {
-                        "scripts": [
-                            {
-                                "scriptPath": "Assets/Scripts/EnemyHealthBar.lua",
-                                "scriptName": "EnemyHealthBar.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
-                            }
-                        ]
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/Boss Enemy.prefab",
-                        "isRoot": false
-                    }
-                }
             }
         ],
         "rootEntity": 0
@@ -1167,9 +1127,6 @@
             },
             {
                 "path": "assets/sprites/vfx 512 ss 1.png"
-            },
-            {
-                "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/elite crown.png"

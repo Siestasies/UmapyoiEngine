@@ -51,13 +51,17 @@ function Update(dt)
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
     
-    if animator and animator.animator:HasFinished() and animator.animator:GetCurrentClip() == "spawn" and initialDelayTimer <= 0 then
+    if animator and animator.animator:HasFinished() and initialDelayTimer <= 0 then
         if HasSprite() then
             local sprite = GetSprite()
             sprite.alpha = 0.0
         end
-        if placeholderSprite then
-            placeholderSprite.alpha = 1
+        local childId = GetChildren(EntityID, 0)
+        if IsEntityValid(childId) and HasSpriteOn(childId) then
+            placeholderSprite = GetSpriteFrom(childId)
+            if placeholderSprite then
+                placeholderSprite.alpha = 1.0
+            end
         end
     else
         initialDelayTimer = initialDelayTimer - dt

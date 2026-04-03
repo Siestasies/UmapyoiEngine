@@ -5,7 +5,7 @@
 ExposedVars = {
     topOffsetY = 50.0,
     --bulletInterval = 0.2,
-    bulletInterval = 100,
+    bulletInterval = 0.3,
     bulletSpeed = 100.0,
     bulletDamage = 15,
     bulletPrefab = "boss projectile.prefab",
@@ -14,9 +14,9 @@ ExposedVars = {
     windTotemPrefab = "Wind Totem.prefab",
     totemCount = 3,
     totemSpawnDelay = 1.5,
-    spreadAngle = 120.0,
-    bulletsPerVolley = 5,
-    volleyInterval = 1.5,
+    spreadAngle = 150.0,
+    bulletsPerVolley = 8,
+    volleyInterval = 0.8,
     sweepSpeed = 40.0,
     patternSwitchTime = 6.0,
     finalTransformationTime = 3.5
@@ -41,9 +41,9 @@ local totemsAlive = 0
 local finalPhase = false
 local finalTransformationItr = 1
 
-local totemPos1 = Vec2(-160, -159)
-local totemPos2 = Vec2(-96 , -175.5)
-local totemPos3 = Vec2(-32 , -159)
+local totemPos1 = Vec2(-192, -170)
+local totemPos2 = Vec2(-96 , -195.5)
+local totemPos3 = Vec2(0 , -170)
 
 local wasNotFinalPhase = true;
 
@@ -54,6 +54,8 @@ function state_enter(entity)
     volleyTimer = 0.0
     totemSpawnTimer = ExposedVars.totemSpawnDelay
     totemsSpawned = false
+    finalPhase = false
+    wasNotFinalPhase = true
     currentPattern = 1
     patternTimer = 0.0
     sweepAngle = -ExposedVars.spreadAngle / 2
@@ -117,6 +119,7 @@ function state_update(entity, dt)
         end
         if ExposedVars.finalTransformationTime <= 0 and not isMoving then
             ChangeState(entity, "BossPhase3")
+            
         end
     end
 
@@ -179,6 +182,9 @@ function state_update(entity, dt)
             if currentPattern > 3 then
                 currentPattern = 1
             end
+            if animator then
+                animator.animator:Play("attack1", false)
+            end
             Log("Boss switching to pattern: " .. tostring(currentPattern))
         end
         
@@ -190,26 +196,34 @@ function state_update(entity, dt)
             UpdateRainPattern(entity, dt)
         end
     end
+
+    if not finalPhase and animator and animator.animator:HasFinished() then
+        animator.animator:Play("idle", true)
+    end
 end
 
 -- ============ BULLET PATTERNS ============
-
 function UpdateFanPattern(entity, dt)
     volleyTimer = volleyTimer + dt
+
     if volleyTimer < ExposedVars.volleyInterval then return end
     volleyTimer = 0.0
 
-    if animator then
-        animator.animator:Play("atk", false)
-    end
-
     local bossPos = bossTransform.worldPosition
-    local halfSpread = ExposedVars.spreadAngle / 2
-    local step = ExposedVars.spreadAngle / math.max(1, ExposedVars.bulletsPerVolley - 1)
+    local count = ExposedVars.bulletsPerVolley
+    local totalSpread = ExposedVars.spreadAngle
+    local step = totalSpread / (count - 1)
+    local startAngle = -totalSpread / 2
 
-    for i = 0, ExposedVars.bulletsPerVolley - 1 do
-        local angleDeg = -halfSpread + (step * i)
-        local angleRad = math.rad(angleDeg - 90)
+    -- Sway the entire fan left/right over time
+    local swayAmount = 12.0  -- degrees of sway in each direction
+    local swaySpeed = 2.5    -- how fast it oscillates
+    local sway = math.sin(patternTimer * swaySpeed) * swayAmount
+
+    for i = 0, count - 1 do
+        -- -90 points downward, then spread across the fan + sway offset
+        local angleDeg = -90 + startAngle + (step * i) + sway
+        local angleRad = math.rad(angleDeg)
         local dirX = math.cos(angleRad)
         local dirY = math.sin(angleRad)
 
@@ -228,10 +242,13 @@ function UpdateFanPattern(entity, dt)
             end
             if HasTransformOn(bulletId) then
                 local bTransform = GetTransformFrom(bulletId)
-                local rotRad = math.rad(angleDeg - 90)
-                bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad))
+                bTransform.rotation = Vec2(dirX, dirY) * 10
             end
         end
+    end
+
+    if animator then
+        animator.animator:Play("atk", false)
     end
 
     local audio = GetAudioComponent()
@@ -273,7 +290,7 @@ function UpdateSweepPattern(entity, dt)
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
             local rotRad = math.rad(sweepAngle - 90)
-            bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad))
+            bTransform.rotation = Vec2(math.cos(rotRad), math.sin(rotRad)) * 10
         end
     end
 end
@@ -302,7 +319,7 @@ function UpdateRainPattern(entity, dt)
         end
         if HasTransformOn(bulletId) then
             local bTransform = GetTransformFrom(bulletId)
-            bTransform.rotation = Vec2(0, -1)
+            bTransform.rotation = Vec2(0, -1) * 10
         end
     end
 end

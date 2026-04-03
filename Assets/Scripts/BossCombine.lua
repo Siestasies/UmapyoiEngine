@@ -119,16 +119,6 @@ function state_update(entity, dt)
             spriteComp.alpha = 1
         end
 
-        -- Enable boss colliders
-        if HasCollider() then
-            local collider = GetCollider(entity)
-            if collider then
-                for i = 1, collider.shapes:size() do
-                    collider.shapes[i].isActive = true
-                end
-            end
-        end
-
         if animator then
             animator.animator:Play("boss_reveal", false)
         end

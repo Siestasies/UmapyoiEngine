@@ -4,6 +4,7 @@
 -- Base only handles: boss HP death check, hurt flash, and collision/damage.
 
 local audio = nil
+local bhp = require("BossHPState")
 ExposedVars = {
     enemyHurtEffectDuration = 0.5,
     bossMaxHealth = 500
@@ -50,6 +51,7 @@ function Start()
     end
 
     ChangeState(EntityID, "BossPhase1")
+    bhp.SetBossHP(enemy.mHealth)
 end
 
 function Update(dt)
@@ -165,6 +167,7 @@ function OnHurt(player, damage)
     PlayEntitySound(EntityID, "enemy_hit", false, 0.8)
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
+    bhp.SetBossHP(enemy.mHealth)
     isHurt = true
 
     local transform = GetTransformFrom(EntityID)
