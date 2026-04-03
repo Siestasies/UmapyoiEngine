@@ -2,13 +2,13 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/sprites/water enemy spritesheet 1.png"
+            },
+            {
                 "path": "assets/game over menu.png"
             },
             {
                 "path": "assets/whitepixel.png"
-            },
-            {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
@@ -20,10 +20,7 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
-                "path": "assets/controller button.png"
+                "path": "assets/main menu fade out.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0012.png"
@@ -32,13 +29,19 @@
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/main menu fade out.png"
+                "path": "assets/props animation.png"
+            },
+            {
+                "path": "assets/controller button.png"
+            },
+            {
+                "path": "assets/sprite_sheet_17.png"
             },
             {
                 "path": "assets/free textures/icons8.com/icons8-volume-100.png"
             },
             {
-                "path": "assets/sprite_sheet_17.png"
+                "path": "assets/exterior_environment_fence_with_water.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0013.png"
@@ -47,10 +50,10 @@
                 "path": "assets/pause menu.png"
             },
             {
-                "path": "assets/exterior_environment_fence_with_water.png"
+                "path": "assets/player ss 1.png"
             },
             {
-                "path": "assets/player ss 1.png"
+                "path": "assets/sound settings bodx.png"
             },
             {
                 "path": "assets/player ss 2.png"
@@ -59,22 +62,19 @@
                 "path": "assets/props_animation.png"
             },
             {
-                "path": "assets/sound settings bodx.png"
-            },
-            {
                 "path": "assets/floor_tatami.png"
             },
             {
                 "path": "assets/whole castle.png"
             },
             {
+                "path": "assets/cinematics/main menu transition/main menu transition_0005.png"
+            },
+            {
                 "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
                 "path": "assets/hp point.png"
-            },
-            {
-                "path": "assets/cinematics/main menu transition/main menu transition_0005.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -86,10 +86,10 @@
                 "path": "assets/water ability icon.png"
             },
             {
-                "path": "assets/hover button ui white.png"
+                "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/wind ability icon.png"
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 2.png"
@@ -98,16 +98,16 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/water side.png"
-            },
-            {
                 "path": "assets/player ss 3.png"
             },
             {
-                "path": "assets/m5 exterior.png"
+                "path": "assets/water side.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0009.png"
+            },
+            {
+                "path": "assets/m5 exterior.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0007.png"
@@ -122,19 +122,19 @@
                 "path": "assets/dialogue player ui sprite.png"
             },
             {
-                "path": "assets/dialogue end icon.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0016.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0016.png"
+                "path": "assets/dialogue end icon.png"
             },
             {
                 "path": "assets/injured hud.png"
             },
             {
-                "path": "assets/mana bar empty.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0011.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0011.png"
+                "path": "assets/mana bar empty.png"
             },
             {
                 "path": "assets/mana bar full.png"
@@ -152,10 +152,10 @@
                 "path": "assets/sliding controller.png"
             },
             {
-                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0015.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0015.png"
+                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
             },
             {
                 "path": "assets/free textures/icons8.com/icons8-sole-100.png"
@@ -164,10 +164,10 @@
                 "path": "assets/x escape button.png"
             },
             {
-                "path": "assets/star.png"
+                "path": "assets/cinematics/main menu transition/main menu transition_0003.png"
             },
             {
-                "path": "assets/cinematics/main menu transition/main menu transition_0003.png"
+                "path": "assets/star.png"
             },
             {
                 "path": "assets/cinematics/main menu transition/main menu transition_0001.png"
@@ -205,13 +205,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -220,23 +220,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "CombatGameplayBGM",
-                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "footsteps",
-                "path": "Assets/sounds/footsteps.wav",
-                "type": 0
-            },
-            {
-                "name": "WindSlash",
-                "path": "Assets/sounds/Player Wav/WindSlash.wav",
-                "type": 0
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -19567,7 +19551,7 @@
             }
         },
         {
-            "id": 1,
+            "id": 191,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -19586,8 +19570,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        2,
-                        3
+                        192,
+                        193
                     ]
                 },
                 "struct Uma_ECS::Player": {
@@ -19740,7 +19724,7 @@
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 1.0,
+                            "volume": 0.828,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19778,16 +19762,16 @@
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
                         },
-                        "FireSlash": {
-                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                        "WindSlash2": {
+                            "path": "Assets/sounds/Player Wav/WindSlash2.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.5,
+                            "volume": 1.0,
                             "pitch": 1.0,
-                            "minDistance": 100.0,
-                            "maxDistance": 1000.0
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
                         },
                         "Neutral Slash(BasicAttack)": {
                             "path": "Assets/sounds/Player Wav/Neutral Slash(BasicAttack).wav",
@@ -19800,13 +19784,24 @@
                             "minDistance": 30.0,
                             "maxDistance": 80.0
                         },
+                        "FireSlash": {
+                            "path": "Assets/sounds/Player Wav/FireSlash.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 0.648,
+                            "pitch": 1.0,
+                            "minDistance": 100.0,
+                            "maxDistance": 1000.0
+                        },
                         "PlayerDamageMono": {
                             "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.259,
+                            "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19817,7 +19812,7 @@
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.81,
+                            "volume": 0.949,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19828,7 +19823,7 @@
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.079,
+                            "volume": 0.25,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19839,7 +19834,7 @@
                             "shouldLoop": false,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.337,
+                            "volume": 0.449,
                             "pitch": 1.0,
                             "minDistance": 100.0,
                             "maxDistance": 1000.0
@@ -19850,7 +19845,62 @@
                             "shouldLoop": true,
                             "is3D": true,
                             "type": 0,
+                            "volume": 0.4,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "FireSlash10": {
+                            "path": "Assets/sounds/Player Wav/FireSlash10.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
                             "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "WaterSlash2": {
+                            "path": "Assets/sounds/Player Wav/WaterSlash2.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "SFX_PlayerRecover": {
+                            "path": "Assets/sounds/Player Wav/SFX_PlayerRecover.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "SFX_PlayerCriticalHP": {
+                            "path": "Assets/sounds/Player Wav/SFX_PlayerCriticalHP.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "SFX_HeartBeat": {
+                            "path": "Assets/sounds/Player Wav/SFX_HeartBeat.wav",
+                            "isPlaying": false,
+                            "shouldLoop": true,
+                            "is3D": true,
+                            "type": 0,
+                            "volume": 0.75,
                             "pitch": 1.0,
                             "minDistance": 30.0,
                             "maxDistance": 80.0
@@ -19898,11 +19948,11 @@
                         {
                             "offset": {
                                 "x": 0.6,
-                                "y": -8.8
+                                "y": -9.6
                             },
                             "size": {
-                                "x": 8.8,
-                                "y": 17.298
+                                "x": 7.697,
+                                "y": 16.197
                             },
                             "purpose": 0,
                             "layer": 2,
@@ -19916,7 +19966,7 @@
                                 "y": -15.85
                             },
                             "size": {
-                                "x": 14.399,
+                                "x": 13.199,
                                 "y": 3.2
                             },
                             "purpose": 0,
@@ -20476,7 +20526,7 @@
                                 {
                                     "name": "ComboActivationFrame",
                                     "type": 0,
-                                    "value": 4.0,
+                                    "value": 1.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -20539,7 +20589,7 @@
                                 {
                                     "name": "ComboActivationFrame",
                                     "type": 0,
-                                    "value": 3.0,
+                                    "value": 1.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -20727,7 +20777,7 @@
                                 {
                                     "name": "ComboActivationFrame",
                                     "type": 0,
-                                    "value": 4.0,
+                                    "value": 1.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -21032,14 +21082,14 @@
                             "scriptIndex": 4
                         },
                         {
-                            "name": "PlayerWhirlpool.lua",
-                            "isActive": true,
-                            "scriptIndex": 12
-                        },
-                        {
                             "name": "PlayerIdle.lua",
                             "isActive": true,
                             "scriptIndex": 1
+                        },
+                        {
+                            "name": "PlayerWhirlpool.lua",
+                            "isActive": true,
+                            "scriptIndex": 12
                         },
                         {
                             "name": "PlayerHurt.lua",
@@ -22075,7 +22125,7 @@
             }
         },
         {
-            "id": 142,
+            "id": 18,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22111,7 +22161,7 @@
             }
         },
         {
-            "id": 143,
+            "id": 19,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22147,14 +22197,14 @@
             }
         },
         {
-            "id": 144,
+            "id": 20,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "light_dup_dup",
                     "position": {
                         "x": -93.055,
-                        "y": -69.556
+                        "y": -69.555
                     },
                     "rotation": {
                         "x": 0.0,
@@ -22183,7 +22233,7 @@
             }
         },
         {
-            "id": 145,
+            "id": 21,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22219,7 +22269,7 @@
             }
         },
         {
-            "id": 146,
+            "id": 22,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22255,14 +22305,14 @@
             }
         },
         {
-            "id": 147,
+            "id": 23,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
                     "name": "light_dup_dup_dup_dup_dup",
                     "position": {
                         "x": -145.054,
-                        "y": -69.556
+                        "y": -69.555
                     },
                     "rotation": {
                         "x": 0.0,
@@ -22291,7 +22341,7 @@
             }
         },
         {
-            "id": 148,
+            "id": 24,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22327,7 +22377,7 @@
             }
         },
         {
-            "id": 149,
+            "id": 25,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22363,7 +22413,7 @@
             }
         },
         {
-            "id": 150,
+            "id": 26,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22399,7 +22449,7 @@
             }
         },
         {
-            "id": 151,
+            "id": 27,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22435,7 +22485,7 @@
             }
         },
         {
-            "id": 152,
+            "id": 28,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22454,7 +22504,7 @@
                     },
                     "parent": -1,
                     "children": [
-                        153
+                        29
                     ]
                 },
                 "struct Uma_ECS::Prefab": {
@@ -22496,7 +22546,7 @@
             }
         },
         {
-            "id": 141,
+            "id": 30,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -22515,11 +22565,11 @@
                     },
                     "parent": -1,
                     "children": [
-                        140,
-                        107,
-                        86,
-                        70,
-                        50,
+                        31,
+                        64,
+                        85,
+                        101,
+                        121,
                         158
                     ]
                 },

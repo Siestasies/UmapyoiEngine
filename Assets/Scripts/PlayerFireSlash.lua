@@ -74,7 +74,13 @@ function state_enter(entity)
     animator.animator:Play(fireSlashAnimationName, true)
     --PlaySound(fireSlashSoundName, 0.8, 0)
     audio = GetAudioComponent()
-    audio:play(EntityID, "FireSlash")
+    
+    local rand = math.random(2)
+    if rand == 1 then
+        audio:play(EntityID, "FireSlash")
+    elseif rand == 2 then
+        audio:play(EntityID, "FireSlash10")
+    end
     Log("Player has died!")
     
     -- Stop movement

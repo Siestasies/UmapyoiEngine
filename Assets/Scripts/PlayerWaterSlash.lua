@@ -72,8 +72,13 @@ function state_enter(entity)
     -- Play animation and sound
     animator.animator:Play(waterSlashAnimationName, true)
     audio = GetAudioComponent()
-    audio:play(EntityID, "WaterSlash")
     
+    local rand = math.random(2)
+    if rand == 1 then
+        audio:play(EntityID, "WaterSlash")
+    elseif rand == 2 then
+        audio:play(EntityID, "WaterSlash2")
+    end
     -- Stop movement
     if HasRigidBody() then
         local rb = GetRigidBody()
