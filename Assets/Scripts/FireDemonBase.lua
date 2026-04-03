@@ -23,6 +23,7 @@ function Start()
         return
     end
 
+    isDead = false 
     isEffective = false
     isFusion = false
     isHurt = false
@@ -160,6 +161,21 @@ function OnHurt(player, damage)
     isHurt = true
 
     local transform = GetTransformFrom(EntityID)
+
+    -- Immediately trigger death so it can't be missed by a state change
+    if enemy.mHealth <= 0 and not isDead then
+        isDead = true
+        if isEffective and isFusion then
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "crit")
+        elseif isEffective then
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "affinity")
+        else
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense))
+        end
+        ChangeState(EntityID, "FireDemonDead")
+        return
+    end
+
     if isEffective and isFusion then
         ChangeState(EntityID, "FireDemonStunned")
         isEffective = false

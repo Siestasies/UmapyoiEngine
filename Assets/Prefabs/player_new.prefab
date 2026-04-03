@@ -380,6 +380,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -399,11 +400,11 @@
                             {
                                 "offset": {
                                     "x": 0.6,
-                                    "y": -9.6
+                                    "y": -8.699
                                 },
                                 "size": {
                                     "x": 7.697,
-                                    "y": 16.197
+                                    "y": 15.196
                                 },
                                 "purpose": 0,
                                 "layer": 2,

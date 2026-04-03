@@ -996,7 +996,7 @@
             },
             {
                 "id": 11,
-                "isActive": true,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "help mnl",
@@ -2355,10 +2355,10 @@
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/controller button.png"
+                "path": "assets/red button.png"
             },
             {
-                "path": "assets/red button.png"
+                "path": "assets/controller button.png"
             }
         ],
         "fonts": [],

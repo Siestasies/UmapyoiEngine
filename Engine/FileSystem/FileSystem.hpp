@@ -102,7 +102,7 @@ namespace Uma_Engine
             , eSortMode(SortMode::Name)
             , bSortAscending(true)
             , mPrefabEdit(false)
-            , mPrefabSceneName("prefabEditor")
+            , mPrefabSceneName("prefabEditor.scn")
             , mPrevSceneName("")
             , mPrefabName("")
         {

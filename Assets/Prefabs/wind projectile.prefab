@@ -19,7 +19,8 @@
                             "x": 0.43,
                             "y": 1.0
                         },
-                        "parent": -1
+                        "parent": -1,
+                        "children": []
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Wind VFX Spritesheet.png",
@@ -43,6 +44,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -65,8 +67,8 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 13.3,
-                                    "y": 1.899
+                                    "x": 15.0,
+                                    "y": 6.3
                                 },
                                 "purpose": 2,
                                 "layer": 16,
@@ -102,6 +104,7 @@
                             "damage": 10,
                             "speed": 40.0,
                             "fadeOVerTime": true,
+                            "fadeAfterAnimEnded": false,
                             "lifeTime": 5.0
                         }
                     }

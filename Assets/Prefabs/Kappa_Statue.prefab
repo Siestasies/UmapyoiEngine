@@ -8,16 +8,16 @@
                     "struct Uma_ECS::Transform": {
                         "name": "Kappa_Statue",
                         "position": {
-                            "x": -321.725,
-                            "y": 94.781
+                            "x": 55.273,
+                            "y": -159.72
                         },
                         "rotation": {
                             "x": 0.0,
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 5.0,
-                            "y": 5.0
+                            "x": 15.0,
+                            "y": 15.0
                         },
                         "parent": -1,
                         "children": [
@@ -42,13 +42,13 @@
                         }
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/Environment/kappa gem forming_0023.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 8,
                         "order": 0,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
-                        "Native": true,
+                        "Native": false,
                         "gridX": 1.0,
                         "gridY": 1.0,
                         "cellX": 0.0,
@@ -63,6 +63,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -85,8 +86,8 @@
                                     "y": -0.1
                                 },
                                 "size": {
-                                    "x": 2.299,
-                                    "y": 3.5
+                                    "x": 0.898,
+                                    "y": 1.0
                                 },
                                 "purpose": 1,
                                 "layer": 8,
@@ -97,11 +98,11 @@
                             {
                                 "offset": {
                                     "x": 0.0,
-                                    "y": -0.699
+                                    "y": -0.1
                                 },
                                 "size": {
-                                    "x": 4.9,
-                                    "y": 3.9
+                                    "x": 1.598,
+                                    "y": 1.6
                                 },
                                 "purpose": 2,
                                 "layer": 0,
@@ -130,6 +131,32 @@
                             }
                         ]
                     },
+                    "struct Uma_ECS::Animator": {
+                        "autoPlay": true,
+                        "initialClip": "idle",
+                        "clips": [
+                            {
+                                "name": "idle",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 65,
+                                "frameCount": 1,
+                                "speed": 10.0,
+                                "loop": true,
+                                "texturePath": ""
+                            },
+                            {
+                                "name": "break",
+                                "framesX": 13,
+                                "framesY": 11,
+                                "startFrame": 78,
+                                "frameCount": 11,
+                                "speed": 12.0,
+                                "loop": false,
+                                "texturePath": ""
+                            }
+                        ]
+                    },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/Kappa_Statue.prefab",
                         "isRoot": true
@@ -138,25 +165,25 @@
                         "emitters": [
                             {
                                 "mode": 1,
-                                "maxParticles": 20,
+                                "maxParticles": 10,
                                 "isActive": true,
                                 "renderLayer": 8,
                                 "renderOrder": 1,
                                 "texturePath": "Assets/whitePixel.png",
                                 "appearance": {
                                     "scaleRange": [
-                                        2.0,
-                                        3.0
+                                        1.0,
+                                        1.0
                                     ],
                                     "startColor": [
+                                        0.754,
                                         1.0,
-                                        1.0,
-                                        1.0
+                                        0.365
                                     ],
                                     "endColor": [
+                                        0.722,
                                         1.0,
-                                        1.0,
-                                        1.0
+                                        0.402
                                     ],
                                     "colorLerp": false,
                                     "randomOpacity": true,
@@ -181,7 +208,7 @@
                                 "physics": {
                                     "speedRange": [
                                         0.0,
-                                        0.0
+                                        1.0
                                     ],
                                     "lifetimeRange": [
                                         1.0,
@@ -198,7 +225,7 @@
                                         0.0,
                                         0.0
                                     ],
-                                    "spawnRadius": 10.0,
+                                    "spawnRadius": 6.0,
                                     "useEmissionCone": false,
                                     "emissionAngle": 0.0,
                                     "emissionSpread": 360.0
@@ -1672,10 +1699,19 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/environment/kappa gem forming_0023.png"
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/whitepixel.png"
+            },
+            {
+                "path": "assets/skill tree/skill tree menu frame.png"
+            },
+            {
+                "path": "assets/skill tree/skill frame.png"
+            },
+            {
+                "path": "assets/skill tree/plus hp skill.png"
             }
         ],
         "fonts": [],

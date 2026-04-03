@@ -24,9 +24,9 @@
                             1,
                             34,
                             55,
-                            71,
-                            91,
-                            128
+                            70,
+                            90,
+                            127
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -62,12 +62,6 @@
                                         "isSlider": false
                                     }
                                 ]
-                            },
-                            {
-                                "scriptPath": "Assets/Scripts/Cheat_code.lua",
-                                "scriptName": "Cheat_code.lua",
-                                "isEnabled": true,
-                                "exposedVariables": []
                             }
                         ]
                     },
@@ -4229,9 +4223,7 @@
                         "parent": 0,
                         "children": [
                             56,
-                            57,
-                            59,
-                            62
+                            61
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -4287,82 +4279,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "shade",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 55,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "anchorMax": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": 2,
-                        "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.699
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    }
-                }
-            },
-            {
-                "id": 57,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "complete bg",
+                        "name": "cinematic",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -4377,7 +4294,18 @@
                         },
                         "parent": 55,
                         "children": [
-                            58
+                            57,
+                            60
+                        ]
+                    },
+                    "struct Uma_ECS::LuaScript": {
+                        "scripts": [
+                            {
+                                "scriptPath": "Assets/Scripts/ending.lua",
+                                "scriptName": "ending.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            }
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4408,8 +4336,8 @@
                         "isDirty": true
                     },
                     "class Uma_UI::Image": {
-                        "texturePath": "Assets/stage cleared ui.png",
-                        "sortingOrder": 0,
+                        "texturePath": "Assets/Cinematics/ending sequence/ending illust 1.png",
+                        "sortingOrder": 20,
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4420,7 +4348,7 @@
                         "fillDirection": 0,
                         "fillAmount": 1.0,
                         "spriteSheetGrid": {
-                            "x": 7.0,
+                            "x": 1.0,
                             "y": 1.0
                         },
                         "spriteCell": {
@@ -4436,10 +4364,10 @@
                         "playOnEnable": true,
                         "clips": [
                             {
-                                "name": "SpriteAnim",
-                                "property": 5,
+                                "name": "",
+                                "property": 6,
                                 "easing": 0,
-                                "duration": 5.0,
+                                "duration": 35.0,
                                 "delay": 0.0,
                                 "loop": false,
                                 "applyToChildren": false,
@@ -4466,99 +4394,27 @@
                                 "startFloat": 0.0,
                                 "endFloat": 1.0,
                                 "startFrame": 0,
-                                "endFrame": 6,
-                                "fps": 24.0,
+                                "endFrame": 0,
+                                "fps": 12.0,
                                 "pingPong": false,
-                                "cinematicFps": 24.0,
+                                "cinematicFps": 0.2,
                                 "cinematicPingPong": false,
-                                "cinematicFrames": []
-                            }
-                        ]
-                    }
-                }
-            },
-            {
-                "id": 58,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "bg shd",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 57,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "anchorMax": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "sizeDelta": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Image": {
-                        "texturePath": "Assets/whitePixel.png",
-                        "sortingOrder": -1,
-                        "color": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 0.0
-                        },
-                        "visible": true,
-                        "fillDirection": 0,
-                        "fillAmount": 1.0,
-                        "spriteSheetGrid": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "spriteCell": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "spriteOffset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
-                    },
-                    "class Uma_UI::Effects": {
-                        "playOnEnable": true,
-                        "clips": [
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/ending sequence/ending illust 1.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 2.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 3.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 4.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 5.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 6.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 7.png"
+                                ]
+                            },
                             {
                                 "name": "",
-                                "property": 3,
+                                "property": 6,
                                 "easing": 0,
-                                "duration": 0.5,
-                                "delay": 0.0,
+                                "duration": 1.899,
+                                "delay": 35.0,
                                 "loop": false,
                                 "applyToChildren": false,
                                 "startVec2": {
@@ -4582,22 +4438,42 @@
                                     "a": 1.0
                                 },
                                 "startFloat": 0.0,
-                                "endFloat": 0.5,
+                                "endFloat": 1.0,
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
                                 "pingPong": false,
-                                "cinematicFps": 24.0,
+                                "cinematicFps": 10.0,
                                 "cinematicPingPong": false,
-                                "cinematicFrames": []
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/ending sequence/ending illust 7.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 8.png",
+                                    "Assets/Cinematics/ending sequence/ending illust 9.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0001.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0002.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0003.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0004.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0005.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0006.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0007.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0008.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0009.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0010.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0011.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0012.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0013.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0014.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0015.png",
+                                    "Assets/Cinematics/ending cutscene to thank you transitiion/Timeline 1_0016.png"
+                                ]
                             }
                         ]
                     }
                 }
             },
             {
-                "id": 59,
-                "isActive": true,
+                "id": 57,
+                "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
                         "name": "next btn",
@@ -4613,10 +4489,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 55,
+                        "parent": 56,
                         "children": [
-                            60,
-                            61
+                            58,
+                            59
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -4648,7 +4524,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": -350.0
+                            "y": -550.0
                         },
                         "sizeDelta": {
                             "x": 600.0,
@@ -4658,7 +4534,7 @@
                     },
                     "class Uma_UI::Image": {
                         "texturePath": "Assets/red button.png",
-                        "sortingOrder": 3,
+                        "sortingOrder": 21,
                         "color": {
                             "r": 1.0,
                             "g": 1.0,
@@ -4716,17 +4592,17 @@
                                 "name": "",
                                 "property": 0,
                                 "easing": 0,
-                                "duration": 0.5,
-                                "delay": 0.0,
+                                "duration": 1.0,
+                                "delay": 0.349,
                                 "loop": false,
                                 "applyToChildren": false,
                                 "startVec2": {
                                     "x": 0.0,
-                                    "y": -350.0
+                                    "y": -550.0
                                 },
                                 "endVec2": {
                                     "x": 0.0,
-                                    "y": -250.0
+                                    "y": -400.0
                                 },
                                 "startColor": {
                                     "r": 1.0,
@@ -4755,7 +4631,7 @@
                 }
             },
             {
-                "id": 60,
+                "id": 58,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4772,7 +4648,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 59,
+                        "parent": 57,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4794,7 +4670,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 10.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -4805,7 +4681,7 @@
                     "class Uma_UI::Text": {
                         "text": "Next",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 5,
+                        "sortingOrder": 22,
                         "fontSize": 2.0,
                         "colour": {
                             "r": 1.0,
@@ -4819,7 +4695,7 @@
                 }
             },
             {
-                "id": 61,
+                "id": 59,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4836,7 +4712,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 59,
+                        "parent": 57,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4858,7 +4734,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 10.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -4869,7 +4745,7 @@
                     "class Uma_UI::Text": {
                         "text": "Next\n",
                         "fontPath": "Assets/fonts/Fujimaru-Regular.ttf",
-                        "sortingOrder": 4,
+                        "sortingOrder": 21,
                         "fontSize": 2.098,
                         "colour": {
                             "r": 0.0,
@@ -4883,7 +4759,133 @@
                 }
             },
             {
-                "id": 62,
+                "id": 60,
+                "isActive": false,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "complete bg",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 56,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "anchorMax": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Image": {
+                        "texturePath": "Assets/Cinematics/stage cleared transition/stage clear transitin 1.png",
+                        "sortingOrder": 20,
+                        "color": {
+                            "r": 1.0,
+                            "g": 1.0,
+                            "b": 1.0,
+                            "a": 1.0
+                        },
+                        "visible": true,
+                        "fillDirection": 0,
+                        "fillAmount": 1.0,
+                        "spriteSheetGrid": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "spriteCell": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "spriteOffset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    "class Uma_UI::Effects": {
+                        "playOnEnable": true,
+                        "clips": [
+                            {
+                                "name": "",
+                                "property": 6,
+                                "easing": 0,
+                                "duration": 0.699,
+                                "delay": 0.0,
+                                "loop": false,
+                                "applyToChildren": false,
+                                "startVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "endVec2": {
+                                    "x": 0.0,
+                                    "y": 0.0
+                                },
+                                "startColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "endColor": {
+                                    "r": 1.0,
+                                    "g": 1.0,
+                                    "b": 1.0,
+                                    "a": 1.0
+                                },
+                                "startFloat": 0.0,
+                                "endFloat": 1.0,
+                                "startFrame": 0,
+                                "endFrame": 0,
+                                "fps": 12.0,
+                                "pingPong": false,
+                                "cinematicFps": 10.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": [
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 1.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 2.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 3.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 4.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 5.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 6.png",
+                                    "Assets/Cinematics/stage cleared transition/stage clear transitin 7.png"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            },
+            {
+                "id": 61,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4902,8 +4904,8 @@
                         },
                         "parent": 55,
                         "children": [
-                            63,
-                            67
+                            62,
+                            66
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4936,7 +4938,7 @@
                 }
             },
             {
-                "id": 63,
+                "id": 62,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -4953,10 +4955,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 62,
+                        "parent": 61,
                         "children": [
-                            64,
-                            66
+                            63,
+                            65
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -4989,7 +4991,7 @@
                 }
             },
             {
-                "id": 64,
+                "id": 63,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5006,9 +5008,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 63,
+                        "parent": 62,
                         "children": [
-                            65
+                            64
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5066,7 +5068,7 @@
                 }
             },
             {
-                "id": 65,
+                "id": 64,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5083,7 +5085,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 64,
+                        "parent": 63,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5105,7 +5107,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 2.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -5130,7 +5132,7 @@
                 }
             },
             {
-                "id": 66,
+                "id": 65,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5147,7 +5149,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 63,
+                        "parent": 62,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5168,8 +5170,8 @@
                             "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": -142.0,
-                            "y": -10.0
+                            "x": -135.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 80.0,
@@ -5194,7 +5196,7 @@
                 }
             },
             {
-                "id": 67,
+                "id": 66,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5211,10 +5213,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 62,
+                        "parent": 61,
                         "children": [
-                            68,
-                            70
+                            67,
+                            69
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5247,7 +5249,7 @@
                 }
             },
             {
-                "id": 68,
+                "id": 67,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5264,9 +5266,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 67,
+                        "parent": 66,
                         "children": [
-                            69
+                            68
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5324,7 +5326,7 @@
                 }
             },
             {
-                "id": 69,
+                "id": 68,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5341,7 +5343,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 68,
+                        "parent": 67,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5363,7 +5365,7 @@
                         },
                         "anchoredPosition": {
                             "x": 0.0,
-                            "y": 2.0
+                            "y": 12.5
                         },
                         "sizeDelta": {
                             "x": 100.0,
@@ -5388,7 +5390,7 @@
                 }
             },
             {
-                "id": 70,
+                "id": 69,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5405,7 +5407,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 67,
+                        "parent": 66,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5426,8 +5428,8 @@
                             "y": 0.0
                         },
                         "anchoredPosition": {
-                            "x": -142.0,
-                            "y": -10.0
+                            "x": -135.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 80.0,
@@ -5452,7 +5454,7 @@
                 }
             },
             {
-                "id": 71,
+                "id": 70,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5471,11 +5473,11 @@
                         },
                         "parent": 0,
                         "children": [
+                            71,
                             72,
-                            73,
-                            76,
-                            79,
-                            82
+                            75,
+                            78,
+                            81
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -5527,7 +5529,7 @@
                 }
             },
             {
-                "id": 72,
+                "id": 71,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5544,7 +5546,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 71,
+                        "parent": 70,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5602,7 +5604,7 @@
                 }
             },
             {
-                "id": 73,
+                "id": 72,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5619,10 +5621,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 71,
+                        "parent": 70,
                         "children": [
-                            74,
-                            75
+                            73,
+                            74
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -5718,7 +5720,7 @@
                 }
             },
             {
-                "id": 74,
+                "id": 73,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5735,7 +5737,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 73,
+                        "parent": 72,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5782,7 +5784,7 @@
                 }
             },
             {
-                "id": 75,
+                "id": 74,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5799,7 +5801,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 73,
+                        "parent": 72,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -5846,7 +5848,7 @@
                 }
             },
             {
-                "id": 76,
+                "id": 75,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5863,10 +5865,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 71,
+                        "parent": 70,
                         "children": [
-                            77,
-                            78
+                            76,
+                            77
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -5962,7 +5964,7 @@
                 }
             },
             {
-                "id": 77,
+                "id": 76,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -5979,7 +5981,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 76,
+                        "parent": 75,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6026,7 +6028,7 @@
                 }
             },
             {
-                "id": 78,
+                "id": 77,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6043,7 +6045,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 76,
+                        "parent": 75,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6090,7 +6092,7 @@
                 }
             },
             {
-                "id": 79,
+                "id": 78,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6107,10 +6109,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 71,
+                        "parent": 70,
                         "children": [
-                            80,
-                            81
+                            79,
+                            80
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -6206,7 +6208,7 @@
                 }
             },
             {
-                "id": 80,
+                "id": 79,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6223,7 +6225,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 79,
+                        "parent": 78,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6270,7 +6272,7 @@
                 }
             },
             {
-                "id": 81,
+                "id": 80,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6287,7 +6289,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 79,
+                        "parent": 78,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6334,7 +6336,7 @@
                 }
             },
             {
-                "id": 82,
+                "id": 81,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6351,10 +6353,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 71,
+                        "parent": 70,
                         "children": [
-                            83,
-                            87
+                            82,
+                            86
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6387,7 +6389,7 @@
                 }
             },
             {
-                "id": 83,
+                "id": 82,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6404,10 +6406,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 82,
+                        "parent": 81,
                         "children": [
-                            84,
-                            86
+                            83,
+                            85
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6440,7 +6442,7 @@
                 }
             },
             {
-                "id": 84,
+                "id": 83,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6457,9 +6459,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 83,
+                        "parent": 82,
                         "children": [
-                            85
+                            84
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6517,7 +6519,7 @@
                 }
             },
             {
-                "id": 85,
+                "id": 84,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6534,7 +6536,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 84,
+                        "parent": 83,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6581,7 +6583,7 @@
                 }
             },
             {
-                "id": 86,
+                "id": 85,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6598,7 +6600,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 83,
+                        "parent": 82,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6645,7 +6647,7 @@
                 }
             },
             {
-                "id": 87,
+                "id": 86,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6662,10 +6664,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 82,
+                        "parent": 81,
                         "children": [
-                            88,
-                            90
+                            87,
+                            89
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6698,7 +6700,7 @@
                 }
             },
             {
-                "id": 88,
+                "id": 87,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6715,9 +6717,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 87,
+                        "parent": 86,
                         "children": [
-                            89
+                            88
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6775,7 +6777,7 @@
                 }
             },
             {
-                "id": 89,
+                "id": 88,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6792,7 +6794,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 88,
+                        "parent": 87,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6839,7 +6841,7 @@
                 }
             },
             {
-                "id": 90,
+                "id": 89,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6856,7 +6858,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 87,
+                        "parent": 86,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6903,7 +6905,7 @@
                 }
             },
             {
-                "id": 91,
+                "id": 90,
                 "isActive": false,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6922,7 +6924,7 @@
                         },
                         "parent": 0,
                         "children": [
-                            92
+                            91
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -6964,7 +6966,7 @@
                 }
             },
             {
-                "id": 92,
+                "id": 91,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -6981,12 +6983,12 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 91,
+                        "parent": 90,
                         "children": [
-                            93,
-                            104,
-                            115,
-                            126
+                            92,
+                            103,
+                            114,
+                            125
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -7054,7 +7056,7 @@
                 }
             },
             {
-                "id": 93,
+                "id": 92,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7071,11 +7073,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": [
-                            94,
-                            97,
-                            103
+                            93,
+                            96,
+                            102
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7108,7 +7110,7 @@
                 }
             },
             {
-                "id": 94,
+                "id": 93,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7125,10 +7127,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 93,
+                        "parent": 92,
                         "children": [
-                            95,
-                            96
+                            94,
+                            95
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -7220,7 +7222,7 @@
                 }
             },
             {
-                "id": 95,
+                "id": 94,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7237,7 +7239,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 94,
+                        "parent": 93,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7295,7 +7297,7 @@
                 }
             },
             {
-                "id": 96,
+                "id": 95,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7312,7 +7314,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 94,
+                        "parent": 93,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7370,7 +7372,7 @@
                 }
             },
             {
-                "id": 97,
+                "id": 96,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7387,11 +7389,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 93,
+                        "parent": 92,
                         "children": [
+                            97,
                             98,
-                            99,
-                            100
+                            99
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -7464,7 +7466,7 @@
                 }
             },
             {
-                "id": 98,
+                "id": 97,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7481,7 +7483,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 97,
+                        "parent": 96,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7539,7 +7541,7 @@
                 }
             },
             {
-                "id": 99,
+                "id": 98,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7556,7 +7558,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 97,
+                        "parent": 96,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7614,7 +7616,7 @@
                 }
             },
             {
-                "id": 100,
+                "id": 99,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7631,10 +7633,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 97,
+                        "parent": 96,
                         "children": [
-                            101,
-                            102
+                            100,
+                            101
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7692,7 +7694,7 @@
                 }
             },
             {
-                "id": 101,
+                "id": 100,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7709,7 +7711,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 100,
+                        "parent": 99,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7767,7 +7769,7 @@
                 }
             },
             {
-                "id": 102,
+                "id": 101,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7784,7 +7786,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 100,
+                        "parent": 99,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7831,7 +7833,7 @@
                 }
             },
             {
-                "id": 103,
+                "id": 102,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7848,7 +7850,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 93,
+                        "parent": 92,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7895,7 +7897,7 @@
                 }
             },
             {
-                "id": 104,
+                "id": 103,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7912,11 +7914,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": [
-                            105,
-                            108,
-                            114
+                            104,
+                            107,
+                            113
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -7949,7 +7951,7 @@
                 }
             },
             {
-                "id": 105,
+                "id": 104,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -7966,10 +7968,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 104,
+                        "parent": 103,
                         "children": [
-                            106,
-                            107
+                            105,
+                            106
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -8061,7 +8063,7 @@
                 }
             },
             {
-                "id": 106,
+                "id": 105,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8078,7 +8080,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 105,
+                        "parent": 104,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8136,7 +8138,7 @@
                 }
             },
             {
-                "id": 107,
+                "id": 106,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8153,7 +8155,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 105,
+                        "parent": 104,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8211,7 +8213,7 @@
                 }
             },
             {
-                "id": 108,
+                "id": 107,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8228,11 +8230,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 104,
+                        "parent": 103,
                         "children": [
+                            108,
                             109,
-                            110,
-                            111
+                            110
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -8305,7 +8307,7 @@
                 }
             },
             {
-                "id": 109,
+                "id": 108,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8322,7 +8324,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 108,
+                        "parent": 107,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8380,7 +8382,7 @@
                 }
             },
             {
-                "id": 110,
+                "id": 109,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8397,7 +8399,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 108,
+                        "parent": 107,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8455,7 +8457,7 @@
                 }
             },
             {
-                "id": 111,
+                "id": 110,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8472,10 +8474,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 108,
+                        "parent": 107,
                         "children": [
-                            112,
-                            113
+                            111,
+                            112
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8533,7 +8535,7 @@
                 }
             },
             {
-                "id": 112,
+                "id": 111,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8550,7 +8552,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 111,
+                        "parent": 110,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8608,7 +8610,7 @@
                 }
             },
             {
-                "id": 113,
+                "id": 112,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8625,7 +8627,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 111,
+                        "parent": 110,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8672,7 +8674,7 @@
                 }
             },
             {
-                "id": 114,
+                "id": 113,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8689,7 +8691,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 104,
+                        "parent": 103,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8736,7 +8738,7 @@
                 }
             },
             {
-                "id": 115,
+                "id": 114,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8753,11 +8755,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": [
-                            116,
-                            119,
-                            125
+                            115,
+                            118,
+                            124
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8790,7 +8792,7 @@
                 }
             },
             {
-                "id": 116,
+                "id": 115,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8807,10 +8809,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 115,
+                        "parent": 114,
                         "children": [
-                            117,
-                            118
+                            116,
+                            117
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -8902,7 +8904,7 @@
                 }
             },
             {
-                "id": 117,
+                "id": 116,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8919,7 +8921,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 116,
+                        "parent": 115,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -8977,7 +8979,7 @@
                 }
             },
             {
-                "id": 118,
+                "id": 117,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -8994,7 +8996,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 116,
+                        "parent": 115,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9052,7 +9054,7 @@
                 }
             },
             {
-                "id": 119,
+                "id": 118,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9069,11 +9071,11 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 115,
+                        "parent": 114,
                         "children": [
+                            119,
                             120,
-                            121,
-                            122
+                            121
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -9146,7 +9148,7 @@
                 }
             },
             {
-                "id": 120,
+                "id": 119,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9163,7 +9165,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 119,
+                        "parent": 118,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9221,7 +9223,7 @@
                 }
             },
             {
-                "id": 121,
+                "id": 120,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9238,7 +9240,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 119,
+                        "parent": 118,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9296,7 +9298,7 @@
                 }
             },
             {
-                "id": 122,
+                "id": 121,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9313,10 +9315,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 119,
+                        "parent": 118,
                         "children": [
-                            123,
-                            124
+                            122,
+                            123
                         ]
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9374,7 +9376,7 @@
                 }
             },
             {
-                "id": 123,
+                "id": 122,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9391,7 +9393,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 122,
+                        "parent": 121,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9449,7 +9451,7 @@
                 }
             },
             {
-                "id": 124,
+                "id": 123,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9466,7 +9468,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 122,
+                        "parent": 121,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9513,7 +9515,7 @@
                 }
             },
             {
-                "id": 125,
+                "id": 124,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9530,7 +9532,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 115,
+                        "parent": 114,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9577,7 +9579,7 @@
                 }
             },
             {
-                "id": 126,
+                "id": 125,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9594,9 +9596,9 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 92,
+                        "parent": 91,
                         "children": [
-                            127
+                            126
                         ]
                     },
                     "struct Uma_ECS::AudioComponent": {
@@ -9684,7 +9686,7 @@
                 }
             },
             {
-                "id": 127,
+                "id": 126,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9701,7 +9703,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 126,
+                        "parent": 125,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -9759,7 +9761,7 @@
                 }
             },
             {
-                "id": 128,
+                "id": 127,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9778,38 +9780,38 @@
                         },
                         "parent": 0,
                         "children": [
-                            129,
+                            128,
                             130,
-                            131,
                             132,
-                            133,
                             134,
-                            135,
                             136,
-                            137,
                             138,
-                            139,
                             140,
-                            141,
                             142,
-                            143,
                             144,
-                            145,
                             146,
-                            147,
                             148,
-                            149,
                             150,
-                            151,
                             152,
-                            153,
                             154,
-                            155,
                             156,
-                            157,
                             158,
-                            159,
-                            160
+                            160,
+                            162,
+                            164,
+                            166,
+                            168,
+                            170,
+                            172,
+                            174,
+                            176,
+                            178,
+                            180,
+                            182,
+                            184,
+                            186,
+                            188,
+                            190
                         ]
                     },
                     "struct Uma_ECS::LuaScript": {
@@ -9861,7 +9863,7 @@
                 }
             },
             {
-                "id": 129,
+                "id": 128,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
@@ -9878,8 +9880,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            129
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -9925,6 +9929,70 @@
                 }
             },
             {
+                "id": 129,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 128,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
                 "id": 130,
                 "isActive": true,
                 "components": {
@@ -9942,8 +10010,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            131
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -9993,7 +10063,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 3",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10006,7 +10076,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 130,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10027,8 +10097,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10040,7 +10110,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10057,7 +10127,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 4",
+                        "name": "feedback txt 3",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10070,8 +10140,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            133
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10121,7 +10193,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 5",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10134,7 +10206,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 132,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10155,8 +10227,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10168,7 +10240,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10185,7 +10257,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 6",
+                        "name": "feedback txt 4",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10198,8 +10270,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            135
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10249,7 +10323,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 7",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10262,7 +10336,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 134,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10283,8 +10357,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10296,7 +10370,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10313,7 +10387,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 8",
+                        "name": "feedback txt 5",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10326,8 +10400,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            137
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10377,7 +10453,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 9",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10390,7 +10466,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 136,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10411,8 +10487,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10424,7 +10500,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10441,7 +10517,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 10",
+                        "name": "feedback txt 6",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10454,72 +10530,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
-                    },
-                    "struct Uma_ECS::Prefab": {
-                        "prefabPath": "Assets/Prefabs/game manager.prefab",
-                        "isRoot": false
-                    },
-                    "class Uma_UI::RectTransform": {
-                        "anchorMin": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchorMax": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "pivot": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
-                        },
-                        "sizeDelta": {
-                            "x": 200.0,
-                            "y": 80.0
-                        },
-                        "isDirty": true
-                    },
-                    "class Uma_UI::Text": {
-                        "text": "",
-                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
-                        "sortingOrder": 0,
-                        "fontSize": 64.0,
-                        "colour": {
-                            "r": 0.0,
-                            "g": 0.0,
-                            "b": 0.0,
-                            "a": 1.0
-                        },
-                        "alignment": 1,
-                        "visible": true
-                    }
-                }
-            },
-            {
-                "id": 139,
-                "isActive": true,
-                "components": {
-                    "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 11",
-                        "position": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "rotation": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "scale": {
-                            "x": 1.0,
-                            "y": 1.0
-                        },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            139
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10565,11 +10579,11 @@
                 }
             },
             {
-                "id": 140,
+                "id": 139,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 12",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10582,8 +10596,74 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 138,
                         "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 140,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 7",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            141
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10633,7 +10713,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 13",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10646,7 +10726,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 140,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10667,8 +10747,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10680,7 +10760,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10697,7 +10777,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 14",
+                        "name": "feedback txt 8",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10710,8 +10790,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            143
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10761,7 +10843,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 15",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10774,7 +10856,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 142,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10795,8 +10877,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10808,7 +10890,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10825,7 +10907,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 16",
+                        "name": "feedback txt 9",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10838,8 +10920,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            145
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -10889,7 +10973,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 17",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10902,7 +10986,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 144,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -10923,8 +11007,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -10936,7 +11020,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -10953,7 +11037,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 18",
+                        "name": "feedback txt 10",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -10966,8 +11050,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            147
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11000,7 +11086,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 64.0,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11017,7 +11103,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 19",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11030,7 +11116,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 146,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11051,8 +11137,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11064,7 +11150,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11081,7 +11167,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 20",
+                        "name": "feedback txt 11",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11094,8 +11180,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            149
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11145,7 +11233,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 21",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11158,7 +11246,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 148,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11179,8 +11267,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11192,7 +11280,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11209,7 +11297,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 22",
+                        "name": "feedback txt 12",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11222,8 +11310,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            151
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11273,7 +11363,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 23",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11286,7 +11376,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 150,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11307,8 +11397,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11320,7 +11410,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11337,7 +11427,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 24",
+                        "name": "feedback txt 13",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11350,8 +11440,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            153
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11401,7 +11493,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 25",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11414,7 +11506,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 152,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11435,8 +11527,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11448,7 +11540,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11465,7 +11557,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 26",
+                        "name": "feedback txt 14",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11478,8 +11570,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            155
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11529,7 +11623,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 27",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11542,7 +11636,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 154,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11563,8 +11657,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11576,7 +11670,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11593,7 +11687,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 28",
+                        "name": "feedback txt 15",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11606,8 +11700,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            157
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11657,7 +11753,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 29",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11670,7 +11766,7 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 156,
                         "children": []
                     },
                     "struct Uma_ECS::Prefab": {
@@ -11691,8 +11787,8 @@
                             "y": 0.5
                         },
                         "anchoredPosition": {
-                            "x": -9999.0,
-                            "y": -9999.0
+                            "x": 0.0,
+                            "y": 0.0
                         },
                         "sizeDelta": {
                             "x": 200.0,
@@ -11704,7 +11800,7 @@
                         "text": "",
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
-                        "fontSize": 2.0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11721,7 +11817,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 30",
+                        "name": "feedback txt 16",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11734,8 +11830,10 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
-                        "children": []
+                        "parent": 127,
+                        "children": [
+                            159
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11785,7 +11883,7 @@
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 31",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11798,8 +11896,74 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 158,
                         "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 160,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 17",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            161
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11845,11 +12009,11 @@
                 }
             },
             {
-                "id": 160,
+                "id": 161,
                 "isActive": true,
                 "components": {
                     "struct Uma_ECS::Transform": {
-                        "name": "feedback txt 32",
+                        "name": "feedback shd",
                         "position": {
                             "x": 0.0,
                             "y": 0.0
@@ -11862,8 +12026,74 @@
                             "x": 1.0,
                             "y": 1.0
                         },
-                        "parent": 128,
+                        "parent": 160,
                         "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 162,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 18",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            163
+                        ]
                     },
                     "struct Uma_ECS::Prefab": {
                         "prefabPath": "Assets/Prefabs/game manager.prefab",
@@ -11897,6 +12127,1890 @@
                         "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
                         "sortingOrder": 0,
                         "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 163,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 162,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 164,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 19",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            165
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 165,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 164,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 166,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 20",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            167
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 167,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 166,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 168,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 21",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            169
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 169,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 168,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 170,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 22",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            171
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 171,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 170,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 172,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 23",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            173
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 173,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 172,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 174,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 24",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            175
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 175,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 174,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 176,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 25",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            177
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 177,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 176,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 178,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 26",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            179
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 179,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 178,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 180,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 27",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            181
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 181,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 180,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 182,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 28",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            183
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 183,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 182,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 184,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 29",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            185
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 185,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 184,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 186,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 30",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            187
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 187,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 186,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 188,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 31",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            189
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 189,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 188,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 190,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback txt 32",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 127,
+                        "children": [
+                            191
+                        ]
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": -9999.0,
+                            "y": -9999.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.0,
+                        "colour": {
+                            "r": 0.0,
+                            "g": 0.0,
+                            "b": 0.0,
+                            "a": 1.0
+                        },
+                        "alignment": 1,
+                        "visible": true
+                    }
+                }
+            },
+            {
+                "id": 191,
+                "isActive": true,
+                "components": {
+                    "struct Uma_ECS::Transform": {
+                        "name": "feedback shd",
+                        "position": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rotation": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "scale": {
+                            "x": 1.0,
+                            "y": 1.0
+                        },
+                        "parent": 190,
+                        "children": []
+                    },
+                    "struct Uma_ECS::Prefab": {
+                        "prefabPath": "Assets/Prefabs/game manager.prefab",
+                        "isRoot": false
+                    },
+                    "class Uma_UI::RectTransform": {
+                        "anchorMin": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchorMax": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "pivot": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "anchoredPosition": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "sizeDelta": {
+                            "x": 200.0,
+                            "y": 80.0
+                        },
+                        "isDirty": true
+                    },
+                    "class Uma_UI::Text": {
+                        "text": "",
+                        "fontPath": "Assets/fonts/Times New Roman Bold.ttf",
+                        "sortingOrder": 0,
+                        "fontSize": 2.099,
                         "colour": {
                             "r": 0.0,
                             "g": 0.0,
@@ -11932,7 +14046,7 @@
                 "path": "assets/mana bar empty.png"
             },
             {
-                "path": "assets/empty volume.png"
+                "path": "assets/cinematics/ending sequence/ending illust 1.png"
             },
             {
                 "path": "assets/mana bar full.png"
@@ -11962,31 +14076,10 @@
                 "path": "assets/pause icon updated.png"
             },
             {
-                "path": "assets/stage cleared ui.png"
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 1.png"
             },
             {
                 "path": "assets/game over menu.png"
-            },
-            {
-                "path": "assets/sound settings bodx.png"
-            },
-            {
-                "path": "assets/free textures/icons8.com/icons8-volume-100.png"
-            },
-            {
-                "path": "assets/full volume.png"
-            },
-            {
-                "path": "assets/sliding controller.png"
-            },
-            {
-                "path": "assets/free textures/icons8.com/icons8-musical-note-100.png"
-            },
-            {
-                "path": "assets/free textures/icons8.com/icons8-sole-100.png"
-            },
-            {
-                "path": "assets/x escape button.png"
             }
         ],
         "fonts": [],

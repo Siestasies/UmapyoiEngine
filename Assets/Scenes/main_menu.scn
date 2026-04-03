@@ -8,6 +8,9 @@
                 "path": "assets/main menu.png"
             },
             {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0011.png"
+            },
+            {
                 "path": "assets/hover button indicator ui.png"
             },
             {
@@ -17,13 +20,52 @@
                 "path": "assets/floor_tatami.png"
             },
             {
-                "path": "assets/main menu fade out.png"
-            },
-            {
                 "path": "assets/controller button.png"
             },
             {
-                "path": "assets/cutscene to main menu.png"
+                "path": "assets/red button.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0001.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0002.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0003.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0004.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0005.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0006.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0007.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0008.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0009.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0010.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0012.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0013.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0014.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0015.png"
             }
         ],
         "fonts": [
@@ -33,18 +75,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "MainMenuBGM",
-                "path": "Assets/sounds/Music/MainMenuBGM.wav",
-                "type": 1
-            },
-            {
-                "name": "Menu Click",
-                "path": "Assets/sounds/Menu Click.wav",
-                "type": 0
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",

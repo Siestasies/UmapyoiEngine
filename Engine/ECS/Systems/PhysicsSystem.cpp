@@ -49,6 +49,8 @@ void Uma_ECS::PhysicsSystem::Update(float dt)
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
 
+        if (rb.isStatic) continue;
+
         // Store previous position
         //tf.prevPos = tf.position;
 
@@ -89,6 +91,12 @@ void Uma_ECS::PhysicsSystem::ApplyVelocity(float dt)
     {
         auto& rb = rbArray.GetData(entity);
         auto& tf = tfArray.GetData(entity);
+
+        if (rb.isStatic)
+        {
+            rb.velocity = Vec2(0, 0);
+            continue;
+        }
 
         //tf.prevPos = tf.position;
 

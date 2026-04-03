@@ -16,8 +16,8 @@
                             "y": 0.0
                         },
                         "scale": {
-                            "x": 15.0,
-                            "y": 15.0
+                            "x": 25.0,
+                            "y": 25.0
                         },
                         "parent": -1,
                         "children": [
@@ -103,22 +103,7 @@
                                 },
                                 "purpose": 1,
                                 "layer": 4,
-                                "colliderMask": 6,
-                                "isActive": true,
-                                "autoFitToSprite": false
-                            },
-                            {
-                                "offset": {
-                                    "x": 0.0,
-                                    "y": 0.0
-                                },
-                                "size": {
-                                    "x": 0.4,
-                                    "y": 0.5
-                                },
-                                "purpose": 0,
-                                "layer": 4,
-                                "colliderMask": 18,
+                                "colliderMask": 2,
                                 "isActive": true,
                                 "autoFitToSprite": false
                             }

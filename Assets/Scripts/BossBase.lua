@@ -4,6 +4,7 @@
 -- Base only handles: boss HP death check, hurt flash, and collision/damage.
 
 local audio = nil
+local bhp = require("BossHPState")
 ExposedVars = {
     enemyHurtEffectDuration = 0.5,
     bossMaxHealth = 500
@@ -50,6 +51,7 @@ function Start()
     end
 
     ChangeState(EntityID, "BossPhase1")
+    bhp.SetBossHP(enemy.mHealth)
 end
 
 function Update(dt)
@@ -120,39 +122,106 @@ function HandleCollision(trigger)
         if playerComp then
             local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
 
-            if attack.elementType == ElementType.Whirlpool or
-               attack.elementType == ElementType.Pyronado then
-                isEffective = true
-                isFusion = true
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
-            elseif attack.elementType == ElementType.Wind then
-                isEffective = true
-                isFusion = false
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
-            else
-                isEffective = false
-                isFusion = false
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+            if bhp.GetBossElement() == 0 then -- water
+                if attack.elementType == ElementType.Whirlpool or
+                    attack.elementType == ElementType.Pyronado then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Wind then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
+            elseif bhp.GetBossElement() == 1 then -- fire
+                if attack.elementType == ElementType.Steam or
+                    attack.elementType == ElementType.Whirlpool then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Water then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
+            else -- wind
+                if attack.elementType == ElementType.Steam or
+                    attack.elementType == ElementType.Pyronado then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Fire then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
             end
+
+
+            
         end
     elseif HasProjectileOn(trigger) then
         local playerComp = GetPlayerFrom(playerId)
         if playerComp then
             local attack = playerComp.attackStats[math.floor(playerComp.currAttackIndex + 1)]
 
-            if attack.elementType == ElementType.Whirlpool or
-               attack.elementType == ElementType.Pyronado then
-                isEffective = true
-                isFusion = true
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
-            elseif attack.elementType == ElementType.Wind then
-                isEffective = true
-                isFusion = false
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage))
-            else
-                isEffective = false
-                isFusion = false
-                OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+            if bhp.currElement == 0 then -- water
+                if attack.elementType == ElementType.Whirlpool or
+                    attack.elementType == ElementType.Pyronado then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Wind then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
+            elseif bhp.currElement == 1 then -- fire
+                if attack.elementType == ElementType.Steam or
+                    attack.elementType == ElementType.Whirlpool then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Water then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
+            else -- wind
+                if attack.elementType == ElementType.Steam or
+                    attack.elementType == ElementType.Pyronado then
+                    isEffective = true
+                    isFusion = true
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                elseif attack.elementType == ElementType.Fire then
+                    isEffective = true
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage))
+                else
+                    isEffective = false
+                    isFusion = false
+                    OnHurt(playerId, math.floor(playerComp.mAttackDamage * 0.3))
+                end
             end
         end
     end
@@ -165,6 +234,7 @@ function OnHurt(player, damage)
     PlayEntitySound(EntityID, "enemy_hit", false, 0.8)
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
+    bhp.SetBossHP(enemy.mHealth)
     isHurt = true
 
     local transform = GetTransformFrom(EntityID)

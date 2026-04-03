@@ -23,6 +23,7 @@ function Start()
         return
     end
 
+    isDead = false 
     isEffective = false
     isFusion = false
     isHurt = false
@@ -164,6 +165,22 @@ function OnHurt(player, damage)
     isHurt = true
 
     local transform = GetTransformFrom(EntityID)
+
+    -- Immediately trigger death so it can't be missed by a state change
+    if enemy.mHealth <= 0 and not isDead then
+        isDead = true
+        if isEffective and isFusion then
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "crit")
+        elseif isEffective then
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "affinity")
+        else
+            SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense))
+        end
+        GetAudioComponent():play(EntityID, "waterDemon Death")
+        ChangeState(EntityID, "WaterDemonSuicide")
+        return
+    end
+
     if isEffective and isFusion then
         ChangeState(EntityID, "WaterDemonStunned")
         isEffective = false
@@ -174,7 +191,7 @@ function OnHurt(player, damage)
     else
         SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense))
     end
-    
+
     audio = GetAudioComponent()
     local rand = math.random(2)
     if rand == 1 then
