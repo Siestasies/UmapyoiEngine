@@ -66,7 +66,7 @@ end
 
     if IsEntityValid(playerEntity) then
         if health <= 0 then
-            for i = 1, 4 do
+            for i = 1, 3 do
                 local child = GetChildren(EntityID, i)
                 SetActiveEntity(child, i == 3)
             end
