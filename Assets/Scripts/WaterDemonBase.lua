@@ -166,7 +166,11 @@ function OnHurt(player, damage)
 
     local transform = GetTransformFrom(EntityID)
     if isEffective and isFusion then
-        ChangeState(EntityID, "WaterDemonStunned")
+
+        if enemy.mHealth > 0 then 
+            ChangeState(EntityID, "WaterDemonStunned")
+        end
+        
         isEffective = false
         isFusion = false
         SpawnFeedback(transform.worldPosition.x, transform.worldPosition.y, tostring(damage - enemy.mDefense), "crit")
