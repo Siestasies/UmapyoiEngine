@@ -9,7 +9,7 @@ end
   
 function Update(dt)
     local currentHealth = bhp.GetBossHP()
-    local maxHealth = 100
+    local maxHealth = 300
 
     local ratio = currentHealth/maxHealth * 0.7
     img.fillAmount = ratio + 0.15
