@@ -36,7 +36,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 100.0
@@ -177,6 +177,17 @@
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
+                            "SFX_WaterDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/SFX_WaterDemon_Damage2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "waterDemon Death": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
                                 "isPlaying": false,
@@ -245,6 +256,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -887,7 +899,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.699,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -898,7 +910,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.8,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -909,7 +921,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.25,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -938,6 +950,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -960,8 +973,8 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 0.3,
-                                    "y": 0.5
+                                    "x": 0.6,
+                                    "y": 0.699
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -1456,7 +1469,7 @@
                         "name": "wind enemy",
                         "position": {
                             "x": 10.6,
-                            "y": -36.896
+                            "y": -36.895
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1482,7 +1495,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.699,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1493,7 +1506,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.8,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1504,7 +1517,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.25,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1533,6 +1546,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1555,8 +1569,8 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 0.3,
-                                    "y": 0.5
+                                    "x": 0.6,
+                                    "y": 0.699
                                 },
                                 "purpose": 0,
                                 "layer": 4,

@@ -47,7 +47,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.2,
+                                "volume": 0.349,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -58,7 +58,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.3,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -80,7 +80,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.349,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -109,6 +109,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0

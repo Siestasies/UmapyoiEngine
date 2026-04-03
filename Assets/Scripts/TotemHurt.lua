@@ -121,7 +121,7 @@ function OnTriggerEnter(other, triggerOwner)
         HandleDamageIfWater(triggerOwner)
     end
     --Log("totem is hit")
-    GetAudioComponent():play(EntityID, "SFX_Totems_Damage")
+    GetAudioComponent():play(EntityID, "SFX_Totem_Damage")
 end
 
 function OnTriggerExit(other)

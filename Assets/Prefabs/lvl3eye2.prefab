@@ -37,7 +37,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 100.0,
                                 "maxDistance": 100.0
@@ -135,7 +135,7 @@
                         "name": "water enemy",
                         "position": {
                             "x": -75.5,
-                            "y": -35.299
+                            "y": -35.298
                         },
                         "rotation": {
                             "x": 0.0,
@@ -246,6 +246,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -861,7 +862,7 @@
                     "struct Uma_ECS::Transform": {
                         "name": "water enemy",
                         "position": {
-                            "x": -40.599,
+                            "x": -40.598,
                             "y": -30.399
                         },
                         "rotation": {
@@ -973,6 +974,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1589,7 +1591,7 @@
                         "name": "wind enemy",
                         "position": {
                             "x": -5.3,
-                            "y": -37.299
+                            "y": -37.298
                         },
                         "rotation": {
                             "x": 0.0,
@@ -1666,6 +1668,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -2183,8 +2186,8 @@
                     "struct Uma_ECS::Transform": {
                         "name": "wind enemy",
                         "position": {
-                            "x": 58.299,
-                            "y": -39.099
+                            "x": 58.298,
+                            "y": -39.098
                         },
                         "rotation": {
                             "x": 0.0,
@@ -2261,6 +2264,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0

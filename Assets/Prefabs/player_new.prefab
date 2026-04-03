@@ -296,7 +296,7 @@
                                 "shouldLoop": true,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.4,
+                                "volume": 0.2,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -355,6 +355,94 @@
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
+                            },
+                            "footsteps1": {
+                                "path": "Assets/sounds/footsteps1.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps2": {
+                                "path": "Assets/sounds/footsteps2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps3": {
+                                "path": "Assets/sounds/footsteps3.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps4": {
+                                "path": "Assets/sounds/footsteps4.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps5": {
+                                "path": "Assets/sounds/footsteps5.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps6": {
+                                "path": "Assets/sounds/footsteps6.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps7": {
+                                "path": "Assets/sounds/footsteps7.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "footsteps8": {
+                                "path": "Assets/sounds/footsteps8.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -400,11 +488,11 @@
                             {
                                 "offset": {
                                     "x": 0.6,
-                                    "y": -8.699
+                                    "y": -9.6
                                 },
                                 "size": {
                                     "x": 7.697,
-                                    "y": 15.196
+                                    "y": 16.197
                                 },
                                 "purpose": 0,
                                 "layer": 2,

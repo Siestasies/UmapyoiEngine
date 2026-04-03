@@ -2,16 +2,43 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/cinematics/cutscene illust 1.png"
+            },
+            {
                 "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/cutscene.png"
-            },
-            {
-                "path": "assets/lines.png"
-            },
-            {
                 "path": "assets/cutscene skip button.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene dialogue 1.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene illust 2.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene dialogue 2.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene illust 3.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene dialogue 3.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene illust 4.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene dialogue 4.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene illust 4.5.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene illust 5.png"
+            },
+            {
+                "path": "assets/cinematics/cutscene dialogue 5.png"
             }
         ],
         "fonts": [
@@ -27,11 +54,6 @@
             }
         ],
         "sounds": [
-            {
-                "name": "Cutscene_Frame_1",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_1.wav",
-                "type": 0
-            },
             {
                 "name": "Cutscene_Frame_2",
                 "path": "Assets/sounds/Cutscenes/Cutscene_Frame_2.wav",
@@ -58,9 +80,9 @@
                 "type": 0
             },
             {
-                "name": "Cutscene_Frame_7",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_7.wav",
-                "type": 0
+                "name": "Cutscene_Frame_1",
+                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_1.wav",
+                "type": 1
             }
         ],
         "shaders": [
@@ -125,8 +147,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_1.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -136,8 +158,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_2.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -147,8 +169,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_3.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -158,8 +180,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_4.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -169,8 +191,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_5.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -180,8 +202,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_6.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -191,8 +213,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_7.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -202,8 +224,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_8.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -213,8 +235,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_9.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
@@ -224,8 +246,8 @@
                             "path": "Assets/sounds/Cutscenes/Cutscene_Frame_10.wav",
                             "isPlaying": false,
                             "shouldLoop": false,
-                            "is3D": true,
-                            "type": 0,
+                            "is3D": false,
+                            "type": 1,
                             "volume": 1.0,
                             "pitch": 1.0,
                             "minDistance": 30.0,
