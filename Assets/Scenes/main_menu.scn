@@ -5,10 +5,10 @@
                 "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0011.png"
+                "path": "assets/main menu.png"
             },
             {
-                "path": "assets/main menu.png"
+                "path": "assets/cinematics/cutscene to main menu transition animation/cutscene to main menu_0011.png"
             },
             {
                 "path": "assets/hover button indicator ui.png"
@@ -75,13 +75,7 @@
                 "size": 48
             }
         ],
-        "sounds": [
-            {
-                "name": "MainMenuBGM",
-                "path": "Assets/sounds/Music/MainMenuBGM.wav",
-                "type": 1
-            }
-        ],
+        "sounds": [],
         "shaders": [
             {
                 "name": "system_sprite",

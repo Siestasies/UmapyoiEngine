@@ -140,6 +140,7 @@ namespace Uma_Engine
         void CreateConsoleWindow();
         void CreateEditorCameraWindow();
         void CreateSceneViewWindow();
+        void CreateBuildSizeAnalyzerWindow();
         void AddConsoleLog(const std::string& message);
 
         // external helper function
@@ -199,7 +200,23 @@ namespace Uma_Engine
         bool m_showSystemsWindow;
         bool m_showEditorControlBar;
         bool m_showEditorCameraWindow;
+        bool m_showBuildSizeAnalyzer = false;
         PlayState m_playState = PlayState::Stopped;
+
+        // Build Size Analyzer state
+        struct AssetEntry
+        {
+            std::string relativePath;
+            std::string absolutePath;
+            uintmax_t fileSize = 0;
+            bool selected = false;
+        };
+        std::vector<AssetEntry> m_buildAssets;
+        bool m_buildAssetsScanned = false;
+        std::string m_buildSelectionConfigPath;
+        void ScanAssets();
+        void SaveBuildSelection();
+        void LoadBuildSelection();
 
         // values that need to keep track
         int mEntityCount;

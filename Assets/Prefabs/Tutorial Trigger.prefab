@@ -567,7 +567,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -638,7 +638,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -709,7 +709,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -846,7 +846,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -894,7 +894,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -942,7 +942,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -1056,7 +1056,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -1104,7 +1104,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -1152,7 +1152,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -1265,7 +1265,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
@@ -1313,7 +1313,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::Sprite": {
-                        "texturePath": "Assets/PROPS_ANIMATION.png",
+                        "texturePath": "Assets/PROPS ANIMATION.png",
                         "layer": 2,
                         "order": 0,
                         "flipX": false,
