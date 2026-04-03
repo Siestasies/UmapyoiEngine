@@ -121,7 +121,13 @@ function state_enter(entity)
     -- Play animation and sound
     animator.animator:Play(WindDashAnimationName, true)
     audio = GetAudioComponent()
-    audio:play(EntityID, "WindSlash")
+    --audio:play(EntityID, "WindSlash")
+    local rand = math.random(2)
+    if rand == 1 then
+        audio:play(EntityID, "WindSlash")
+    elseif rand == 2 then
+        audio:play(EntityID, "WindSlash2")
+    end
     
     player.mDashCD = attackStat.attackCd
 

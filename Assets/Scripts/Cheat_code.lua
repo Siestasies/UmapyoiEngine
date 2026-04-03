@@ -38,6 +38,7 @@ function Update(dt)
             PlayerRef.mHealth = 100000
             PlayerRef.mMana = 100000
             PlayerRef.mAttackDamage = 100000
+            PlayerRef.mMana = 1000000000000000000000000
         else
             PlayerRef.mHealth = PlayerRef.mMaxHealth
             PlayerRef.mMana = PlayerRef.mMaxMana

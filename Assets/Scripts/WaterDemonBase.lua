@@ -156,8 +156,8 @@ end
 function OnHurt(player, damage)
     -- damage handling logic here
     
-        PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
-        PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
+        -- PlayEntitySound(EntityID, "enemy_hurt", false, 0.8);
+        -- PlayEntitySound(EntityID, "enemy_hit", false, 0.8);
 
     enemy.mHealth = enemy.mHealth - (damage - enemy.mDefense)
 
@@ -176,7 +176,12 @@ function OnHurt(player, damage)
     end
     
     audio = GetAudioComponent()
-    audio:play(EntityID, "Water Demon Damage Scream")
+    local rand = math.random(2)
+    if rand == 1 then
+        audio:play(EntityID, "Water Demon Damage Scream")
+    elseif rand == 2 then
+        audio:play(EntityID, "SFX_WaterDemon_Damage2")
+    end
 end
 
 function OnTriggerEnter(other, triggerOwner)

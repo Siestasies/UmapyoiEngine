@@ -30,6 +30,17 @@
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
+                            "SFX_FireDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/SFX_FireDemon_Damage2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
                             "Fire Demon Shoot Fireball": {
                                 "path": "Assets/sounds/EnemyWav/Fire Demon Shoot Fireball.wav",
                                 "isPlaying": false,
@@ -120,7 +131,7 @@
                                     "y": 2.0
                                 },
                                 "size": {
-                                    "x": 19.299,
+                                    "x": 19.298,
                                     "y": 4.3
                                 },
                                 "purpose": 0,
