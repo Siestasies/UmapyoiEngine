@@ -7,6 +7,20 @@ ExposedVars = {
 
 local animator = nil
 
+local FOOTSTEP_SOUNDS = { "footsteps1", "footsteps2", "footsteps3", "footsteps4", "footsteps5", "footsteps6", "footsteps7", "footsteps8" }
+local CADENCE         = 0.5
+local _timer          = 0
+local _lastIdx        = -1
+
+local function playRandomFootstep(entity)
+    local idx
+    repeat
+        idx = math.random(1, #FOOTSTEP_SOUNDS)
+    until idx ~= _lastIdx or #FOOTSTEP_SOUNDS == 1
+    _lastIdx = idx
+    GetAudioComponent():playOneShot(entity, FOOTSTEP_SOUNDS[idx])  -- hits PlayOneShotAtEntity → FMOD_LOOP_OFF
+end
+
 function state_enter(entity)
     Log("Player entered Run state")
     
@@ -16,7 +30,8 @@ function state_enter(entity)
     end
 
     animator.animator:Play("walk", false)
-    GetAudioComponent():playFaded(EntityID, "footsteps", 0.5)
+    _timer   = CADENCE   -- fire on first update
+    _lastIdx = -1
 end
 
 function state_update(entity, dt)
@@ -111,10 +126,16 @@ function state_update(entity, dt)
         end
     end
     
+    _timer = _timer + dt
+    if _timer >= CADENCE then
+        _timer = _timer - CADENCE
+        playRandomFootstep(entity)
+    end
 end
 
 function state_exit(entity)
-    GetAudioComponent():fadeOut(EntityID, "footsteps", 0.5)
+    _timer   = 0
+    _lastIdx = -1
     Log("Player exited Run state")
 end
 
