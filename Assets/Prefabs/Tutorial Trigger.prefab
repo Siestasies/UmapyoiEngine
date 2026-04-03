@@ -129,6 +129,30 @@
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
+                                    },
+                                    {
+                                        "name": "marqueeSpeed",
+                                        "type": 0,
+                                        "value": 12.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "marqueeWidth",
+                                        "type": 0,
+                                        "value": 24.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
+                                    },
+                                    {
+                                        "name": "marqueePadding",
+                                        "type": 0,
+                                        "value": 6.0,
+                                        "min": 0.0,
+                                        "max": 100.0,
+                                        "isSlider": false
                                     }
                                 ]
                             }
@@ -481,6 +505,7 @@
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -759,6 +784,7 @@
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -968,6 +994,7 @@
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1176,6 +1203,7 @@
                         ]
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1340,8 +1368,8 @@
                         "defaultVolume": 1.0,
                         "default3D": true,
                         "loadedSounds": {
-                            "Fire Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
+                            "SFX_FireDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/SFX_FireDemon_Damage2.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
@@ -1357,7 +1385,18 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 0.1,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Fire Demon Charge": {
+                                "path": "Assets/sounds/EnemyWav/Fire Demon Charge.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 1.0,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -1372,6 +1411,17 @@
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
+                            },
+                            "FireEnemyAttack": {
+                                "path": "Assets/sounds/EnemyWav/FireEnemyAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.4,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -1383,8 +1433,8 @@
                         "flipY": false,
                         "autoFlip": true,
                         "Native": true,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
+                        "gridX": 0.0,
+                        "gridY": 0.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -1397,6 +1447,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": true,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -1415,12 +1466,12 @@
                         "shapes": [
                             {
                                 "offset": {
-                                    "x": -2.2,
+                                    "x": -1.899,
                                     "y": 2.0
                                 },
                                 "size": {
-                                    "x": 10.6,
-                                    "y": 3.7
+                                    "x": 19.298,
+                                    "y": 4.3
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -1434,7 +1485,7 @@
                                     "y": -3.4
                                 },
                                 "size": {
-                                    "x": 10.8,
+                                    "x": 16.0,
                                     "y": 1.399
                                 },
                                 "purpose": 0,
@@ -1572,12 +1623,12 @@
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 500,
-                        "mMaxHealth": 500,
+                        "mHealth": 300,
+                        "mMaxHealth": 300,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 0.0,
-                        "mAttackDamage": 0,
-                        "mAttackSpeed": 9.99999944211969e27,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": -1,
+                        "mAttackSpeed": 1.5,
                         "mAttackRange": 20.0,
                         "mDefense": 5
                     },
@@ -1586,16 +1637,6 @@
                         "initialClip": "idle",
                         "clips": [
                             {
-                                "name": "idle",
-                                "framesX": 11,
-                                "framesY": 4,
-                                "startFrame": 0,
-                                "frameCount": 10,
-                                "speed": 10.0,
-                                "loop": true,
-                                "texturePath": ""
-                            },
-                            {
                                 "name": "charging_atk",
                                 "framesX": 11,
                                 "framesY": 4,
@@ -1603,6 +1644,16 @@
                                 "frameCount": 8,
                                 "speed": 24.0,
                                 "loop": false,
+                                "texturePath": ""
+                            },
+                            {
+                                "name": "idle",
+                                "framesX": 11,
+                                "framesY": 4,
+                                "startFrame": 0,
+                                "frameCount": 10,
+                                "speed": 10.0,
+                                "loop": true,
                                 "texturePath": ""
                             },
                             {
@@ -1939,43 +1990,32 @@
                     },
                     "struct Uma_ECS::AudioComponent": {
                         "defaultVolume": 1.0,
-                        "default3D": true,
+                        "default3D": false,
                         "loadedSounds": {
-                            "Water Demon Charge": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
-                                "isPlaying": false,
-                                "shouldLoop": false,
-                                "is3D": true,
-                                "type": 0,
-                                "volume": 1.0,
-                                "pitch": 1.0,
-                                "minDistance": 30.0,
-                                "maxDistance": 80.0
-                            },
                             "Water Demon Damage Scream": {
                                 "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Damage Scream.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
-                            "Water Demon ChargenAttack": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                            "Water Demon Charge": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.4,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
                             },
-                            "WaterDemonSuicide": {
-                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                            "SFX_WaterDemon_Damage2": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/SFX_WaterDemon_Damage2.wav",
                                 "isPlaying": false,
                                 "shouldLoop": false,
                                 "is3D": true,
@@ -1991,7 +2031,29 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
+                                "volume": 0.349,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "WaterDemonSuicide": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
                                 "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Water Demon ChargenAttack": {
+                                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": true,
+                                "type": 0,
+                                "volume": 0.6,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -2002,7 +2064,7 @@
                                 "shouldLoop": false,
                                 "is3D": true,
                                 "type": 0,
-                                "volume": 1.0,
+                                "volume": 0.5,
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
@@ -2012,13 +2074,13 @@
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/Sprites/water enemy spritesheet 1.png",
                         "layer": 16,
-                        "order": 0,
+                        "order": 1,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
                         "Native": false,
-                        "gridX": 1.0,
-                        "gridY": 1.0,
+                        "gridX": 8.0,
+                        "gridY": 8.0,
                         "cellX": 0.0,
                         "cellY": 0.0,
                         "offsetX": 0.0,
@@ -2031,6 +2093,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": true,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -2220,7 +2283,7 @@
                                     {
                                         "name": "StunnedDuration",
                                         "type": 0,
-                                        "value": 10.0,
+                                        "value": 3.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false
@@ -2253,29 +2316,19 @@
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 500,
-                        "mMaxHealth": 500,
+                        "mHealth": 300,
+                        "mMaxHealth": 300,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 0.0,
-                        "mAttackDamage": 0,
-                        "mAttackSpeed": 1.0000000200408773e21,
-                        "mAttackRange": 0.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": -1,
+                        "mAttackSpeed": 1.0,
+                        "mAttackRange": 20.0,
                         "mDefense": 5
                     },
                     "struct Uma_ECS::Animator": {
                         "autoPlay": true,
                         "initialClip": "idle",
                         "clips": [
-                            {
-                                "name": "idle",
-                                "framesX": 8,
-                                "framesY": 7,
-                                "startFrame": 0,
-                                "frameCount": 12,
-                                "speed": 24.0,
-                                "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
-                            },
                             {
                                 "name": "charging_atk",
                                 "framesX": 8,
@@ -2287,14 +2340,24 @@
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
                             },
                             {
-                                "name": "walking",
+                                "name": "idle",
                                 "framesX": 8,
                                 "framesY": 7,
-                                "startFrame": 16,
+                                "startFrame": 0,
                                 "frameCount": 12,
                                 "speed": 24.0,
                                 "loop": true,
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
+                            },
+                            {
+                                "name": "charging_explode",
+                                "framesX": 8,
+                                "framesY": 4,
+                                "startFrame": 16,
+                                "frameCount": 2,
+                                "speed": 24.0,
+                                "loop": true,
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             },
                             {
                                 "name": "shield_broken",
@@ -2307,14 +2370,14 @@
                                 "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
                             },
                             {
-                                "name": "charging_explode",
+                                "name": "walking",
                                 "framesX": 8,
-                                "framesY": 4,
+                                "framesY": 7,
                                 "startFrame": 16,
-                                "frameCount": 2,
+                                "frameCount": 12,
                                 "speed": 24.0,
                                 "loop": true,
-                                "texturePath": "Assets/Sprites/water enemy spritesheet 2.png"
+                                "texturePath": "Assets/Sprites/water enemy spritesheet 1.png"
                             },
                             {
                                 "name": "atk",
@@ -2350,15 +2413,15 @@
                         "emitters": [
                             {
                                 "mode": 1,
-                                "maxParticles": 8,
+                                "maxParticles": 3,
                                 "isActive": false,
                                 "renderLayer": 16,
                                 "renderOrder": 100,
                                 "texturePath": "Assets/star.png",
                                 "appearance": {
                                     "scaleRange": [
-                                        0.3,
-                                        0.5
+                                        4.0,
+                                        4.0
                                     ],
                                     "startColor": [
                                         1.0,
@@ -2392,16 +2455,16 @@
                                 },
                                 "physics": {
                                     "speedRange": [
-                                        80.0,
-                                        120.0
-                                    ],
-                                    "lifetimeRange": [
-                                        2.0,
-                                        3.0
-                                    ],
-                                    "gravity": [
                                         0.0,
                                         0.0
+                                    ],
+                                    "lifetimeRange": [
+                                        1.0,
+                                        1.0
+                                    ],
+                                    "gravity": [
+                                        2.0,
+                                        2.0
                                     ],
                                     "drag": 0.0
                                 },
@@ -2410,7 +2473,7 @@
                                         0.0,
                                         0.3
                                     ],
-                                    "spawnRadius": 0.5,
+                                    "spawnRadius": 5.0,
                                     "useEmissionCone": false,
                                     "emissionAngle": 0.0,
                                     "emissionSpread": 360.0
@@ -2438,14 +2501,14 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "WaterDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
                                 "name": "WaterDemonSuicide.lua",
                                 "isActive": true,
                                 "scriptIndex": 5
+                            },
+                            {
+                                "name": "WaterDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "WaterDemonAttack.lua",
@@ -2556,8 +2619,8 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 20,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -2604,8 +2667,8 @@
                     },
                     "struct Uma_ECS::Sprite": {
                         "texturePath": "Assets/whitePixel.png",
-                        "layer": 1,
-                        "order": 0,
+                        "layer": 128,
+                        "order": 20,
                         "flipX": false,
                         "flipY": false,
                         "autoFlip": true,
@@ -2724,6 +2787,7 @@
                         "alpha": 1.0
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": true,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -2746,8 +2810,8 @@
                                     "y": 0.0
                                 },
                                 "size": {
-                                    "x": 0.3,
-                                    "y": 0.5
+                                    "x": 0.6,
+                                    "y": 0.699
                                 },
                                 "purpose": 0,
                                 "layer": 4,
@@ -2922,13 +2986,13 @@
                         ]
                     },
                     "struct Uma_ECS::Enemy": {
-                        "mHealth": 500,
-                        "mMaxHealth": 500,
+                        "mHealth": 300,
+                        "mMaxHealth": 300,
                         "mHealthRegenRate": 1.0,
-                        "mSpeed": 0.0,
-                        "mAttackDamage": 0,
-                        "mAttackSpeed": 9.999999884841548e26,
-                        "mAttackRange": 0.0,
+                        "mSpeed": 10.0,
+                        "mAttackDamage": -1,
+                        "mAttackSpeed": 1.5,
+                        "mAttackRange": 20.0,
                         "mDefense": 5
                     },
                     "struct Uma_ECS::Animator": {
@@ -3097,14 +3161,14 @@
                     "struct Uma_ECS::FSM": {
                         "states": [
                             {
-                                "name": "WindDemonIdle.lua",
-                                "isActive": true,
-                                "scriptIndex": 0
-                            },
-                            {
                                 "name": "WindDemonChase.lua",
                                 "isActive": true,
                                 "scriptIndex": 1
+                            },
+                            {
+                                "name": "WindDemonIdle.lua",
+                                "isActive": true,
+                                "scriptIndex": 0
                             },
                             {
                                 "name": "WindDemonAttack.lua",
@@ -3256,6 +3320,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -3332,6 +3397,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -3408,6 +3474,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0
@@ -3484,6 +3551,7 @@
                         "children": []
                     },
                     "struct Uma_ECS::RigidBody": {
+                        "isStatic": false,
                         "velocity": {
                             "x": 0.0,
                             "y": 0.0

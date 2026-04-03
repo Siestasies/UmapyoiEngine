@@ -49,7 +49,7 @@ function state_update(entity, dt)
     end 
 
     --if enemy is within attack range
-    if enemy and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
+    if enemy and enemy.mAttackDamage ~= -1 and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
         ChangeState(entity, "FireDemonAttack")
         return
     end

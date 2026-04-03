@@ -56,7 +56,7 @@ function state_update(entity, dt)
     end 
     
     -- Check attack transition
-    if enemy and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
+    if enemy and enemy.mAttackDamage ~= -1 and distSq <= ExposedVars.attackEnterRange * ExposedVars.attackEnterRange then
         Log("TRANSITIONING TO ATTACK - Distance: " .. dist)
         ChangeState(entity, "WaterDemonAttack")
         return
