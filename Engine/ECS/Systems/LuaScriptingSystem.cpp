@@ -1880,10 +1880,14 @@ namespace Uma_ECS
                 (void)self;
                 pCoordinator->GetSystem<AudioSystem>()->PlayOneShotAtPosition(entity, x, y, name, self.defaultVolume, self.default3D);
             },
-            "playFaded", [this](Uma_ECS::AudioComponent& self, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
-                (void)self;
-                pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime);
-            },
+            "playFaded", sol::overload(
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
+                    pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime, false);
+                },
+                [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, float fadeTime, bool exclusive) {
+                    pCoordinator->GetSystem<AudioSystem>()->PlayEntitySoundFaded(entity, name, fadeTime, exclusive);
+                }
+            ),
             "fadeOut", sol::overload(
                 [this](Uma_ECS::AudioComponent&, Uma_ECS::Entity entity, const std::string& name, float fadeTime) {
                     pCoordinator->GetSystem<AudioSystem>()->FadeOutSound(entity, name, fadeTime);

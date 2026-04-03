@@ -29,6 +29,23 @@
                             128
                         ]
                     },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Gong-Low-hit_SFX": {
+                                "path": "Assets/sounds/STAGE EFFECTS/Gong-Low-hit_SFX.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
+                    },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
                             {
@@ -150,6 +167,45 @@
                             9,
                             11
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "SFX_HeartBeat": {
+                                "path": "Assets/sounds/Player Wav/SFX_HeartBeat.wav",
+                                "isPlaying": false,
+                                "shouldLoop": true,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_PlayerCriticalHP": {
+                                "path": "Assets/sounds/Player Wav/SFX_PlayerCriticalHP.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "SFX_PlayerRecover": {
+                                "path": "Assets/sounds/Player Wav/SFX_PlayerRecover.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
@@ -884,7 +940,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             },
                             {
                                 "name": "",
@@ -919,7 +978,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -1226,7 +1288,10 @@
                                 "startFrame": 0,
                                 "endFrame": 13,
                                 "fps": 14.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -4403,7 +4468,10 @@
                                 "startFrame": 0,
                                 "endFrame": 6,
                                 "fps": 24.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -4518,7 +4586,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }
@@ -4674,7 +4745,10 @@
                                 "startFrame": 0,
                                 "endFrame": 0,
                                 "fps": 12.0,
-                                "pingPong": false
+                                "pingPong": false,
+                                "cinematicFps": 24.0,
+                                "cinematicPingPong": false,
+                                "cinematicFrames": []
                             }
                         ]
                     }

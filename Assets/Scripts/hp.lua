@@ -43,8 +43,12 @@ function Update(dt)
     if belowQuater == false and health <= segment then
         toggleGroupLowpass("MASTER", true)
         belowQuater = true
+        GetAudioComponent():play(EntityID, "SFX_PlayerCriticalHP")
+        GetAudioComponent():play(EntityID, "SFX_HeartBeat")
     elseif belowQuater == true and health > segment then
         toggleGroupLowpass("MASTER", false)
         belowQuater = false
+        GetAudioComponent():play(EntityID, "SFX_PlayerRecover")
+        GetAudioComponent():stop(EntityID, "SFX_HeartBeat")
     end
 end
