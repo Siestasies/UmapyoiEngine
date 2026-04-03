@@ -133,14 +133,6 @@ function state_update(entity, dt)
     end
 
     -- ============ TRACK TOTEM DEATHS ============
-    if KeyPressed(KEY_N) then
-        for i, totemId in ipairs(totemIds) do
-            if IsEntityValid(totemId) then
-                local totemEnemy = GetEnemyFrom(totemId)
-                totemEnemy.mHealth = 0;
-            end
-        end
-    end
 
     if totemsSpawned and totemsAlive > 0 then
         local alive = 0

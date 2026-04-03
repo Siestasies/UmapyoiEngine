@@ -26,6 +26,8 @@ ExposedVars = {
     flowerSpeedLayers = 1
 }
 
+local bossStat = require("BossHPState")
+
 local animator = nil
 local bossTransform = nil
 
@@ -49,6 +51,12 @@ local flowerAngle = 0.0
 local isEnraged = false
 local speedMultiplier = 1.0
 local phase2timer = 90.0
+
+-- 0 : water
+-- 1 : fire
+-- 2 : wind
+local changeElementTime = 3.0
+local changeElementTimer = 3.0
 
 function state_enter(entity)
     Log("Boss Phase 3: Final confrontation!")
@@ -105,6 +113,10 @@ function state_enter(entity)
         audio:play(entity, "Boss Phase3 Music")
     end
 
+    local element_vfx = GetChildren(EntityID, 1)
+    SetActiveEntity(element_vfx, true)
+    bossStat.SetBossElement(0)
+
     phase2timer = 90.0
 end
 
@@ -116,16 +128,22 @@ function state_update(entity, dt)
         GetRigidBody().velocity = Vec2(0.0, 0.0)
     end
 
-    if KeyPressed(KEY_N) and HasEnemy() then
-        local enemy = GetEnemy()
-        enemy.mHealth = 0
-    end
-
     if phase2timer < 0 then
         ChangeState(entity, "BossPhase2")
     else
         phase2timer = phase2timer - dt
     end
+
+    if changeElementTimer < 0.0 then
+        -- change element 
+        bossStat.SetBossElement(( bossStat.GetBossElement() == 2 ) and 0 or bossStat.GetBossElement()+ 1) 
+        changeElementTimer = changeElementTime
+        ChangeElement()
+    else
+        changeElementTimer = changeElementTimer - dt
+    end
+
+    Log("boss : " .. bossStat.GetBossElement())
 
     -- Pattern switching
     patternTimer = patternTimer + dt
@@ -345,5 +363,24 @@ function state_exit(entity)
     if HasSprite() then
         local spriteComp = GetSprite()
         spriteComp.tintColor = Vec3(1.0, 1.0, 1.0)
+    end
+
+    local element_vfx = GetChildren(EntityID, 1)
+    SetActiveEntity(element_vfx, true)
+end
+
+-- 0 : water
+-- 1 : fire
+-- 2 : wind
+function ChangeElement()
+    local element_vfx = GetChildren(EntityID, 1)
+    local sprite = GetSpriteFrom(element_vfx)
+    
+    if bossStat.GetBossElement() == 0 then
+        sprite.spriteCell = Vec2(3, 1)
+    elseif bossStat.GetBossElement() == 1 then
+        sprite.spriteCell = Vec2(3, 0)
+    else 
+        sprite.spriteCell = Vec2(3, 2)
     end
 end
