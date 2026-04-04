@@ -2,22 +2,22 @@
     "resources": {
         "textures": [
             {
+                "path": "assets/game over menu.png"
+            },
+            {
                 "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
-                "path": "assets/game over menu.png"
+                "path": "assets/snow particle 1.png"
             },
             {
                 "path": "assets/player_ss.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 1.png"
-            },
-            {
-                "path": "assets/snow particle 1.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -44,19 +44,22 @@
                 "path": "assets/fire enemy shadow.png"
             },
             {
-                "path": "assets/full volume.png"
-            },
-            {
                 "path": "assets/256px vfx.png"
             },
             {
-                "path": "assets/hp point.png"
+                "path": "assets/full volume.png"
             },
             {
                 "path": "assets/sprites/vfx 512 ss 1.png"
             },
             {
+                "path": "assets/hp point.png"
+            },
+            {
                 "path": "assets/howtoplay.png"
+            },
+            {
+                "path": "assets/props animation.png"
             },
             {
                 "path": "assets/controller button.png"
@@ -65,16 +68,13 @@
                 "path": "assets/lost hp point.png"
             },
             {
-                "path": "assets/props animation.png"
-            },
-            {
                 "path": "assets/environment/kappa gem forming_0023.png"
             },
             {
-                "path": "assets/red button.png"
+                "path": "assets/fire ability icon.png"
             },
             {
-                "path": "assets/fire ability icon.png"
+                "path": "assets/red button.png"
             },
             {
                 "path": "assets/water ability icon.png"
@@ -154,13 +154,13 @@
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -17217,7 +17217,7 @@
             }
         },
         {
-            "id": 288,
+            "id": 2,
             "isActive": true,
             "components": {
                 "struct Uma_ECS::Transform": {
@@ -17236,8 +17236,8 @@
                     },
                     "parent": -1,
                     "children": [
-                        289,
-                        290
+                        3,
+                        4
                     ]
                 },
                 "struct Uma_ECS::Player": {
@@ -18094,7 +18094,7 @@
                                 {
                                     "name": "windDash_manaCost",
                                     "type": 0,
-                                    "value": 5.0,
+                                    "value": 10.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false

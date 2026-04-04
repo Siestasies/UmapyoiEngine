@@ -2,19 +2,19 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/sprites/water enemy spritesheet 1.png"
-            },
-            {
                 "path": "assets/whitepixel.png"
             },
             {
                 "path": "assets/game over menu.png"
             },
             {
-                "path": "assets/wind enemy spritesheets 1.png"
+                "path": "assets/sprites/water enemy spritesheet 1.png"
             },
             {
                 "path": "assets/player_ss.png"
+            },
+            {
+                "path": "assets/wind enemy spritesheets 1.png"
             },
             {
                 "path": "assets/tilemap.png"
@@ -23,19 +23,19 @@
                 "path": "assets/int_ss.png"
             },
             {
-                "path": "assets/lost hp point.png"
-            },
-            {
                 "path": "assets/props animation.png"
             },
             {
                 "path": "assets/controller button.png"
             },
             {
-                "path": "assets/sprite_sheet_17.png"
+                "path": "assets/lost hp point.png"
             },
             {
                 "path": "assets/vfx 512 ss 2.png"
+            },
+            {
+                "path": "assets/sprite_sheet_17.png"
             },
             {
                 "path": "assets/exterior_environment_fence_with_water.png"
@@ -47,19 +47,28 @@
                 "path": "assets/player ss 2.png"
             },
             {
-                "path": "assets/sprites/boss ss 1.png"
+                "path": "assets/whole castle.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0016.png"
             },
             {
                 "path": "assets/fire bird.png"
             },
             {
-                "path": "assets/whole castle.png"
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0009.png"
+            },
+            {
+                "path": "assets/sprites/boss ss 1.png"
             },
             {
                 "path": "assets/hp point.png"
             },
             {
                 "path": "assets/sprites/vfx 512 ss 1.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 5.png"
             },
             {
                 "path": "assets/fire ability icon.png"
@@ -71,28 +80,31 @@
                 "path": "assets/water ability icon.png"
             },
             {
-                "path": "assets/hover button ui white.png"
-            },
-            {
                 "path": "assets/wind ability icon.png"
             },
             {
-                "path": "assets/sprites/water enemy spritesheet 2.png"
+                "path": "assets/hover button ui white.png"
             },
             {
                 "path": "assets/whole boss level.png"
             },
             {
-                "path": "assets/cinematics/stage cleared transition/stage clear transitin 1.png"
+                "path": "assets/sprites/water enemy spritesheet 2.png"
             },
             {
                 "path": "assets/howtoplay.png"
             },
             {
-                "path": "assets/water side.png"
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 1.png"
             },
             {
                 "path": "assets/player ss 3.png"
+            },
+            {
+                "path": "assets/water side.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 2.png"
             },
             {
                 "path": "assets/m5 exterior.png"
@@ -110,10 +122,10 @@
                 "path": "assets/mana bar empty.png"
             },
             {
-                "path": "assets/cinematics/ending sequence/ending illust 1.png"
+                "path": "assets/mana bar full.png"
             },
             {
-                "path": "assets/mana bar full.png"
+                "path": "assets/cinematics/ending sequence/ending illust 1.png"
             },
             {
                 "path": "assets/gain mana ss.png"
@@ -125,22 +137,31 @@
                 "path": "assets/sprites/magic circle ss.png"
             },
             {
+                "path": "assets/cinematics/ending sequence/ending illust 4.png"
+            },
+            {
                 "path": "assets/fire enemy shadow.png"
             },
             {
-                "path": "assets/sprites/boss ss 3.png"
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0014.png"
             },
             {
                 "path": "assets/wind enemy spritesheets 2.png"
             },
             {
-                "path": "assets/vfx 512 ss 3.png"
+                "path": "assets/sprites/boss ss 3.png"
             },
             {
                 "path": "assets/sprites/totems ss.png"
             },
             {
+                "path": "assets/vfx 512 ss 3.png"
+            },
+            {
                 "path": "assets/sprites/boss totem tileset.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 7.png"
             },
             {
                 "path": "assets/sprites/boss proj.png"
@@ -152,6 +173,9 @@
                 "path": "assets/sprites/boss ss 2.png"
             },
             {
+                "path": "assets/cinematics/ending sequence/ending illust 8.png"
+            },
+            {
                 "path": "assets/wind vfx spritesheet.png"
             },
             {
@@ -161,27 +185,93 @@
                 "path": "assets/keycap button.png"
             },
             {
+                "path": "assets/cinematics/ending sequence/ending illust 2.png"
+            },
+            {
                 "path": "assets/boss hp empty.png"
             },
             {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0002.png"
+            },
+            {
                 "path": "assets/boss hp full.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 3.png"
             },
             {
                 "path": "assets/kotengu.png"
             },
             {
                 "path": "assets/star.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 6.png"
+            },
+            {
+                "path": "assets/cinematics/ending sequence/ending illust 9.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0001.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0003.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0004.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0005.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0006.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0007.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0008.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0010.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0011.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0012.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0013.png"
+            },
+            {
+                "path": "assets/cinematics/ending cutscene to thank you transitiion/timeline 1_0015.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 3.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 4.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 5.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 6.png"
+            },
+            {
+                "path": "assets/cinematics/stage cleared transition/stage clear transitin 7.png"
             }
         ],
         "fonts": [
             {
-                "name": "assets/fonts/fujimaru-regular.ttf",
-                "path": "Assets/fonts/Fujimaru-Regular.ttf",
+                "name": "assets/fonts/neucha.ttf",
+                "path": "Assets/Fonts/Neucha.ttf",
                 "size": 48
             },
             {
-                "name": "assets/fonts/neucha.ttf",
-                "path": "Assets/Fonts/Neucha.ttf",
+                "name": "assets/fonts/fujimaru-regular.ttf",
+                "path": "Assets/fonts/Fujimaru-Regular.ttf",
                 "size": 48
             },
             {
@@ -195,7 +285,168 @@
                 "size": 48
             }
         ],
-        "sounds": [],
+        "sounds": [
+            {
+                "name": "BGM_Outro",
+                "path": "Assets/sounds/BGM/BGM_Outro.wav",
+                "type": 0
+            },
+            {
+                "name": "CombatGameplayBGM",
+                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                "type": 1
+            },
+            {
+                "name": "footsteps3",
+                "path": "Assets/sounds/footsteps3.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps6",
+                "path": "Assets/sounds/footsteps6.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps5",
+                "path": "Assets/sounds/footsteps5.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps8",
+                "path": "Assets/sounds/footsteps8.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps4",
+                "path": "Assets/sounds/footsteps4.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps7",
+                "path": "Assets/sounds/footsteps7.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps2",
+                "path": "Assets/sounds/footsteps2.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash",
+                "path": "Assets/sounds/Player Wav/WindSlash.wav",
+                "type": 0
+            },
+            {
+                "name": "footsteps1",
+                "path": "Assets/sounds/footsteps1.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDamage",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDamage.wav",
+                "type": 0
+            },
+            {
+                "name": "WindDemonDeath",
+                "path": "Assets/sounds/EnemyWav/Wind Demon/WindDemonDeath.wav",
+                "type": 0
+            },
+            {
+                "name": "WindSlash2",
+                "path": "Assets/sounds/Player Wav/WindSlash2.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End8",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End8.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon Charge",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon Charge.wav",
+                "type": 0
+            },
+            {
+                "name": "waterDemon Death",
+                "path": "Assets/sounds/EnemyWav/Water Demon/waterDemon Death.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End4",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End4.wav",
+                "type": 0
+            },
+            {
+                "name": "WaterDemonSuicide",
+                "path": "Assets/sounds/EnemyWav/Water Demon/WaterDemonSuicide.wav",
+                "type": 0
+            },
+            {
+                "name": "Water Demon ChargenAttack",
+                "path": "Assets/sounds/EnemyWav/Water Demon/Water Demon ChargenAttack.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Totem_Damage",
+                "path": "Assets/sounds/STAGE EFFECTS/SFX_Totem_Damage.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Boss_Spawn2",
+                "path": "Assets/sounds/Boss SFX/SFX_Boss_Spawn2.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Totems_Spawn",
+                "path": "Assets/sounds/STAGE EFFECTS/SFX_Totems_Spawn.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Boss_Attack",
+                "path": "Assets/sounds/Boss SFX/SFX_Boss_Attack.wav",
+                "type": 0
+            },
+            {
+                "name": "PlayerDamageMono",
+                "path": "Assets/sounds/Player Wav/PlayerDamageMono.wav",
+                "type": 0
+            },
+            {
+                "name": "SFX_Boss_Hurt2",
+                "path": "Assets/sounds/Boss SFX/SFX_Boss_Hurt2.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End1",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End1.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End2",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End2.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End3",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End3.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End5",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End5.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End6",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End6.wav",
+                "type": 0
+            },
+            {
+                "name": "Cutscene_End7",
+                "path": "Assets/sounds/End Cutscene/Cutscene_End7.wav",
+                "type": 0
+            }
+        ],
         "shaders": [
             {
                 "name": "system_sprite",
@@ -5447,7 +5698,7 @@
                             "shouldLoop": true,
                             "is3D": true,
                             "type": 0,
-                            "volume": 0.4,
+                            "volume": 0.2,
                             "pitch": 1.0,
                             "minDistance": 30.0,
                             "maxDistance": 80.0
@@ -5503,6 +5754,94 @@
                             "is3D": true,
                             "type": 0,
                             "volume": 0.75,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps1": {
+                            "path": "Assets/sounds/footsteps1.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps2": {
+                            "path": "Assets/sounds/footsteps2.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps3": {
+                            "path": "Assets/sounds/footsteps3.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps4": {
+                            "path": "Assets/sounds/footsteps4.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps5": {
+                            "path": "Assets/sounds/footsteps5.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps6": {
+                            "path": "Assets/sounds/footsteps6.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps7": {
+                            "path": "Assets/sounds/footsteps7.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "footsteps8": {
+                            "path": "Assets/sounds/footsteps8.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 0,
+                            "volume": 0.2,
                             "pitch": 1.0,
                             "minDistance": 30.0,
                             "maxDistance": 80.0
@@ -5942,7 +6281,7 @@
                                 {
                                     "name": "windDash_manaCost",
                                     "type": 0,
-                                    "value": 5.0,
+                                    "value": 10.0,
                                     "min": 0.0,
                                     "max": 100.0,
                                     "isSlider": false
@@ -7669,13 +8008,23 @@
                     "initialClip": "idle",
                     "clips": [
                         {
-                            "name": "boss_reveal_to_idle",
+                            "name": "final_phase_transition2",
                             "framesX": 8,
-                            "framesY": 8,
-                            "startFrame": 56,
-                            "frameCount": 6,
+                            "framesY": 5,
+                            "startFrame": 8,
+                            "frameCount": 12,
                             "speed": 24.0,
                             "loop": false,
+                            "texturePath": "Assets/Sprites/boss ss 3.png"
+                        },
+                        {
+                            "name": "idle",
+                            "framesX": 8,
+                            "framesY": 8,
+                            "startFrame": 0,
+                            "frameCount": 12,
+                            "speed": 24.0,
+                            "loop": true,
                             "texturePath": "Assets/Sprites/boss ss 1.png"
                         },
                         {
@@ -7689,24 +8038,14 @@
                             "texturePath": "Assets/Sprites/boss ss 1.png"
                         },
                         {
-                            "name": "idle",
+                            "name": "boss_reveal_to_idle",
                             "framesX": 8,
                             "framesY": 8,
-                            "startFrame": 0,
-                            "frameCount": 12,
-                            "speed": 24.0,
-                            "loop": true,
-                            "texturePath": "Assets/Sprites/boss ss 1.png"
-                        },
-                        {
-                            "name": "final_phase_transition2",
-                            "framesX": 8,
-                            "framesY": 5,
-                            "startFrame": 8,
-                            "frameCount": 12,
+                            "startFrame": 56,
+                            "frameCount": 6,
                             "speed": 24.0,
                             "loop": false,
-                            "texturePath": "Assets/Sprites/boss ss 3.png"
+                            "texturePath": "Assets/Sprites/boss ss 1.png"
                         },
                         {
                             "name": "boss_reveal",

@@ -8,6 +8,7 @@
         local frames = GetChildren(EntityID, 0)
         effects = GetEffectsFrom(frames)
         --audio = GetAudioComponent()
+        GetAudioComponent():play(EntityID, "BGM_Intro")
     end
 
     function Update(dt)

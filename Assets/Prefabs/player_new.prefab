@@ -879,7 +879,7 @@
                                     {
                                         "name": "windDash_manaCost",
                                         "type": 0,
-                                        "value": 5.0,
+                                        "value": 10.0,
                                         "min": 0.0,
                                         "max": 100.0,
                                         "isSlider": false

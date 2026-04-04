@@ -18,7 +18,7 @@ local function playRandomFootstep(entity)
         idx = math.random(1, #FOOTSTEP_SOUNDS)
     until idx ~= _lastIdx or #FOOTSTEP_SOUNDS == 1
     _lastIdx = idx
-    GetAudioComponent():playOneShot(entity, FOOTSTEP_SOUNDS[idx])  -- hits PlayOneShotAtEntity → FMOD_LOOP_OFF
+    GetAudioComponent():playOneShot(EntityID, FOOTSTEP_SOUNDS[idx])
 end
 
 function state_enter(entity)

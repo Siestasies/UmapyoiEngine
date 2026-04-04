@@ -43,6 +43,17 @@
                                 "pitch": 1.0,
                                 "minDistance": 30.0,
                                 "maxDistance": 80.0
+                            },
+                            "CombatGameplayBGM": {
+                                "path": "Assets/sounds/Music/CombatGameplayBGM.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 1,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
                             }
                         }
                     },
@@ -66,6 +77,12 @@
                             {
                                 "scriptPath": "Assets/Scripts/Cheat_code.lua",
                                 "scriptName": "Cheat_code.lua",
+                                "isEnabled": true,
+                                "exposedVariables": []
+                            },
+                            {
+                                "scriptPath": "Assets/Scripts/BGM_combat.lua",
+                                "scriptName": "BGM_combat.lua",
                                 "isEnabled": true,
                                 "exposedVariables": []
                             }
@@ -4293,6 +4310,111 @@
                             57,
                             60
                         ]
+                    },
+                    "struct Uma_ECS::AudioComponent": {
+                        "defaultVolume": 1.0,
+                        "default3D": true,
+                        "loadedSounds": {
+                            "Cutscene_End1": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End1.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End2": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End2.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End3": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End3.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End4": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End4.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End5": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End5.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End6": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End6.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End7": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End7.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "Cutscene_End8": {
+                                "path": "Assets/sounds/End Cutscene/Cutscene_End8.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 0,
+                                "volume": 1.0,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            },
+                            "BGM_Outro": {
+                                "path": "Assets/sounds/BGM/BGM_Outro.wav",
+                                "isPlaying": false,
+                                "shouldLoop": false,
+                                "is3D": false,
+                                "type": 1,
+                                "volume": 0.2,
+                                "pitch": 1.0,
+                                "minDistance": 30.0,
+                                "maxDistance": 80.0
+                            }
+                        }
                     },
                     "struct Uma_ECS::LuaScript": {
                         "scripts": [
