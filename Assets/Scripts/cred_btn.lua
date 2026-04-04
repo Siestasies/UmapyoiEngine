@@ -17,5 +17,19 @@ function OnPointerExit()
 end
 
 function OnPointerClick()
+    local canvas = GetParent(EntityID)
+    local mainBg = GetChildren(canvas, 0)
+    local playBtn = GetChildren(canvas, 1)
+    local helpBtn = GetChildren(canvas, 2)
+    local credBtn = GetChildren(canvas, 3)
+    local quitBtn = GetChildren(canvas, 4)
+    local credMnu = GetChildren(canvas, 6)
+    SetActiveEntity(mainBg, false)
+    SetActiveEntity(playBtn, false)
+    SetActiveEntity(helpBtn, false)
+    SetActiveEntity(credBtn, false)
+    SetActiveEntity(quitBtn, false)
+    SetActiveEntity(credMnu, true)
+    
     GetAudioComponent():play(EntityID, "Menu Click")
 end

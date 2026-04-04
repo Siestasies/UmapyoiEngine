@@ -1,6 +1,6 @@
 function OnPointerClick()
-    local helpMnl = GetParent(EntityID)
-    local canvas = GetParent(helpMnl)
+    local parent = GetParent(EntityID)
+    local canvas = GetParent(parent)
     local mainBg = GetChildren(canvas, 0)
     local playBtn = GetChildren(canvas, 1)
     local helpBtn = GetChildren(canvas, 2)
@@ -11,7 +11,7 @@ function OnPointerClick()
     SetActiveEntity(helpBtn, true)
     SetActiveEntity(credBtn, true)
     SetActiveEntity(quitBtn, true)
-    SetActiveEntity(helpMnl, false)
+    SetActiveEntity(parent, false)
 
     --GetAudioComponent():play(EntityID, "Menu Click")
 end

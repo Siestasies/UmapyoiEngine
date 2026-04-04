@@ -22,7 +22,7 @@ function OnPointerClick()
     local helpBtn = GetChildren(canvas, 2)
     local credBtn = GetChildren(canvas, 3)
     local quitBtn = GetChildren(canvas, 4)
-    local cfmMnu = GetChildren(canvas, 6)
+    local cfmMnu = GetChildren(canvas, 7)
 
     GetButtonFrom(playBtn).interactable = false;
     GetButtonFrom(helpBtn).interactable = false;
