@@ -4,17 +4,33 @@ local clip0totalFrames = 7
 local clip1totalFrames = 18
 local currFrame = 0
 local currFramePlayed = false
+local hasPlayedOutro = false
+local hasTransitioned = false
+local lastClip = false
 
 function Start()
     effects = GetEffectsFrom(EntityID)
     children = GetChildrenList(EntityID)
-    GetAudioComponent():play(EntityID, "BGM_Outro")
 end
 
 function Update(dt)
-    if effects and (effects:IsClipComplete(0) and effects:IsClipComplete(1)) then
+    local parent = GetParent(EntityID)
+    local gm = GetParent(parent)
+
+    if GetActiveEntity(parent) and not hasPlayedOutro then
+        hasPlayedOutro = true
+        GetAudioComponent():stop(gm, "CombatGameplayBGM")
+        GetAudioComponent():playFaded(EntityID, "BGM_Outro", 1.5, true)
+    end
+
+    if effects and not hasTransitioned
+       and effects:IsClipComplete(0)
+       and effects:IsClipComplete(1) then
+        hasTransitioned = true
         SetActiveEntity(children[1], true)
         SetActiveEntity(children[2], true)
+        GetAudioComponent():stop(EntityID, "BGM_Outro")
+        GetAudioComponent():playFaded(gm, "CombatGameplayBGM", 1.5, true)
     end
 
     -- Derive frame from the effect's own progress instead of a separate timer
@@ -62,6 +78,9 @@ function Update(dt)
 
         --     currFramePlayed = true
         -- end
-        GetAudioComponent():play(EntityID, "Cutscene_End8")
+        if lastClip == false then
+            GetAudioComponent():play(EntityID, "Cutscene_End8")
+            lastClip = true
+        end
     end
 end
