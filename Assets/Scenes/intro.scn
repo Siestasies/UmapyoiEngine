@@ -2,10 +2,10 @@
     "resources": {
         "textures": [
             {
-                "path": "assets/cinematics/cutscene illust 1.png"
+                "path": "assets/whitepixel.png"
             },
             {
-                "path": "assets/whitepixel.png"
+                "path": "assets/cinematics/cutscene illust 1.png"
             },
             {
                 "path": "assets/cutscene skip button.png"
@@ -55,29 +55,9 @@
         ],
         "sounds": [
             {
-                "name": "Cutscene_Frame_2",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_2.wav",
-                "type": 0
-            },
-            {
-                "name": "Cutscene_Frame_3",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_3.wav",
-                "type": 0
-            },
-            {
-                "name": "Cutscene_Frame_4",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_4.wav",
-                "type": 0
-            },
-            {
-                "name": "Cutscene_Frame_5",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_5.wav",
-                "type": 0
-            },
-            {
-                "name": "Cutscene_Frame_6",
-                "path": "Assets/sounds/Cutscenes/Cutscene_Frame_6.wav",
-                "type": 0
+                "name": "BGM_Intro",
+                "path": "Assets/sounds/BGM/BGM_Intro.wav",
+                "type": 1
             },
             {
                 "name": "Cutscene_Frame_1",
@@ -249,6 +229,17 @@
                             "is3D": false,
                             "type": 1,
                             "volume": 1.0,
+                            "pitch": 1.0,
+                            "minDistance": 30.0,
+                            "maxDistance": 80.0
+                        },
+                        "BGM_Intro": {
+                            "path": "Assets/sounds/BGM/BGM_Intro.wav",
+                            "isPlaying": false,
+                            "shouldLoop": false,
+                            "is3D": false,
+                            "type": 1,
+                            "volume": 0.5,
                             "pitch": 1.0,
                             "minDistance": 30.0,
                             "maxDistance": 80.0
